@@ -1,0 +1,61 @@
+---
+layout: default
+title: 'Blog'
+---
+
+<div id="blog">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-8 content-area">
+        <header class="blog-heading">
+          <h1 class="heading-big text-purple text-uppercase">Blog</h1>
+        </header>
+        <ul class="posts">
+          {% for post in site.posts %}
+            <li class="post">
+              <article itemscope itemtype="http://schema.org/BlogPosting">
+                <header class="post-header">
+                  <h1 class="heading-big" itemprop="name headline">
+                    <a href="{{ post.url }}">
+                      {{ post.title | escape }}
+                    </a>
+                  </h1>
+                  <p class="post-meta text-uppercase font-bold font-sm">
+                    Posted on
+                    <time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
+                      {% assign date_format = site.minima.date_format | default: "%b %-d, %Y" %}
+                      {{ post.date | date: date_format }}
+                    </time>
+                    {% if post.author %}
+                      by <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{ post.author }}</span></span>
+                    {% endif %}</p>
+                </header>
+
+                <div class="post-content" itemprop="articleBody">
+                  {{ post.content }}
+                </div>
+              </article>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="col-sm-4 blog-sidebar">
+        <div>
+          <header>
+            <h1 class="heading-small text-purple text-uppercase">Articles</h1>
+          </header>
+          <ul>
+          {% for post in site.posts %}
+            <li>
+              <a href="{{ post.url }}">
+                {{ post.title | escape }}
+              </a>
+            </li>
+          {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="#" class="btn btn-primary btn-big">Back to top</a>
+  </div>
+</div>
