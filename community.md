@@ -1,6 +1,6 @@
 ---
 layout: page
-title: 'Community'
+title: Community
 ---
 
 This is the community page, blah blah blah
