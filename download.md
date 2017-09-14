@@ -3,7 +3,7 @@ layout: page
 title: Download
 ---
 
-The easiest way to get started with Envoy is by using the pre-built Docker images. Envoy is designed to be highly configurable, with APIs for dynamic configuration and a [JSON configuration format for static configuration](https://lyft.github.io/envoy/docs/configuration/configuration.html).
+The easiest way to get started with Envoy is by using the pre-built Docker images. Envoy is designed to be highly configurable, with APIs for dynamic configuration and a [JSON configuration format for static configuration](https://envoyproxy.github.io/envoy/docs/configuration/configuration.html).
 
 To get it working, you're going to need to create your own Docker image with your own Envoy configuration. Create a `Dockerfile` that uses the latest Envoy images:
 
@@ -14,7 +14,7 @@ COPY envoy.json /etc/envoy.json
 CMD /usr/local/bin/envoy -c /etc/envoy.json
 ```
 
-Create an `envoy.json` configuration file. [Here is a simple, non-production](https://github.com/lyft/envoy/blob/master/configs/google_com_proxy.json) example you can use that proxies incoming requests to Google.com. Note you may have to modify the listener to listen to `0.0.0.0` instead of `127.0.0.1` for this to work locally.
+Create an `envoy.json` configuration file. [Here is a simple, non-production](https://github.com/envoyproxy/envoy/blob/master/configs/google_com_proxy.json) example you can use that proxies incoming requests to Google.com. Note you may have to modify the listener to listen to `0.0.0.0` instead of `127.0.0.1` for this to work locally.
 
 Build the Dockerfile:
 
