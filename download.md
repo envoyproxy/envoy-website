@@ -3,7 +3,7 @@ layout: page
 title: Download
 ---
 
-The easiest way to get started with Envoy is by using the pre-built Docker images. Envoy is designed to be highly configurable, with APIs for dynamic configuration and a [JSON configuration format for static configuration](https://envoyproxy.github.io/envoy/docs/configuration/configuration.html).
+The easiest way to get started with Envoy is by using the pre-built Docker images. Envoy is designed to be highly configurable, with APIs for dynamic configuration and a [JSON configuration format for static configuration](https://envoyproxy.github.io/envoy/configuration/configuration.html).
 
 To get it working, you're going to need to create your own Docker image with your own Envoy configuration. Create a `Dockerfile` that uses the latest Envoy images:
 
@@ -38,4 +38,4 @@ Congratulations! You should receive a bunch of HTML from Google.com, proxied via
 
 ## Next steps
 
-* Read the [Envoy documentation](https://lyft.github.io/envoy/docs/index.html)
+* Read the [Envoy documentation](https://envoyproxy.github.io/envoy/index.html)
