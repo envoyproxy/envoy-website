@@ -2,7 +2,7 @@
 set -ex
 
 # build docs with jekyll
-bundle exec jekyll build
+jekyll build
 
 # copy envoy docs to the main website
 # (we don't want jekyll to parse the docs)
