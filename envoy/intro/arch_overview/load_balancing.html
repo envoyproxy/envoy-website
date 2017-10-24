@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Load balancing &mdash; envoy 1.5.0-9e07aa documentation</title>
+  <title>Load balancing &mdash; envoy 1.5.0-e8a688 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.5.0-9e07aa documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.5.0-e8a688 documentation" href="../../index.html"/>
         <link rel="up" title="Architecture overview" href="arch_overview.html"/>
         <link rel="next" title="Outlier detection" href="outlier.html"/>
         <link rel="prev" title="Connection pooling" href="connection_pooling.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-9e07aa
+                1.5.0-e8a688
               </div>
             
           
@@ -115,6 +115,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#supported-load-balancers">Supported load balancers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#panic-threshold">Panic threshold</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#zone-aware-routing">Zone aware routing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#load-balancer-subsets">Load Balancer Subsets</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="outlier.html">Outlier detection</a></li>
@@ -317,6 +318,207 @@ local zone of the originating cluster and also have some space to allow traffic 
 in the originating cluster (if needed).</li>
 </ul>
 </div>
+<div class="section" id="load-balancer-subsets">
+<span id="arch-overview-load-balancer-subsets"></span><h2>Load Balancer Subsets<a class="headerlink" href="#load-balancer-subsets" title="Permalink to this headline">¶</a></h2>
+<p>Envoy may be configured to divide hosts within an upstream cluster into subsets based on metadata
+attached to the hosts. Routes may then specify the metadata that a host must match in order to be
+selected by the load balancer, with the option of falling back to a predefined set of hosts,
+including any host.</p>
+<p>Subsets use the load balancer policy specified by the cluster. The original destination policy may
+not be used with subsets because the upstream hosts are not known in advance. Subsets are compatible
+with zone aware routing, but be aware that the use of subsets may easily violate the minimum hosts
+condition described above.</p>
+<p>If subsets are <a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/9897e3f/api/cds.proto#L237">configured</a> and a route
+specifies no metadata or no subset matching the metadata exists, the subset load balancer initiates
+its fallback policy. The default policy is <code class="docutils literal"><span class="pre">NO_ENDPOINT</span></code>, in which case the request fails as if
+the cluster had no hosts. Conversely, the <code class="docutils literal"><span class="pre">ANY_ENDPOINT</span></code> fallback policy load balances across all
+hosts in the cluster, without regard to host metadata. Finally, the <code class="docutils literal"><span class="pre">DEFAULT_SUBSET</span></code> causes
+fallback to load balance among hosts that match a specific set of metadata.</p>
+<p>Subsets must be predefined to allow the subset load balancer to efficiently select the correct
+subset of hosts. Each definition is a set of keys, which translates to zero or more
+subsets. Conceptually, each host that has a metadata value for all of the keys in a definition is
+added to a subset specific to its key-value pairs. If no host has all the keys, no subsets result
+from the definition. Multiple definitions may be provided, and a single host may appear in multiple
+subsets if it matches multiple definitions.</p>
+<p>During routing, the route’s metadata match configuration is used to find a specific subset. If there
+is a subset with the exact keys and values specified by the route, the subset is used for load
+balancing. Otherwise, the fallback policy is used. The cluster’s subset configuration must,
+therefore, contain a definition that has the same keys as a given route in order for subset load
+balancing to occur.</p>
+<p>This feature can only be enabled using the V2 configuration API. Furthermore, host metadata is only
+supported when using the EDS discovery type for clusters. Host metadata for subset load balancing
+must be placed under the filter name <code class="docutils literal"><span class="pre">&quot;envoy.lb&quot;</span></code>. Similarly, route metadata match criteria use
+the <code class="docutils literal"><span class="pre">&quot;envoy.lb&quot;</span></code> filter name. Host metadata may be hierarchical (e.g., the value for a top-level
+key may be a structured value or list), but the subset load balancer only compares top-level keys
+and values. Therefore when using structured values, a route’s match criteria will only match if an
+identical structured value appears in the host’s metadata.</p>
+<div class="section" id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<p>We’ll use simple metadata where all values are strings. Assume the following hosts are defined and
+associated with a cluster:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="79%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Host</th>
+<th class="head">Metadata</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>host1</td>
+<td>v: 1.0, stage: prod</td>
+</tr>
+<tr class="row-odd"><td>host2</td>
+<td>v: 1.0, stage: prod</td>
+</tr>
+<tr class="row-even"><td>host3</td>
+<td>v: 1.1, stage: canary</td>
+</tr>
+<tr class="row-odd"><td>host4</td>
+<td>v: 1.2-pre, stage: dev</td>
+</tr>
+</tbody>
+</table>
+<p>The cluster may enable subset load balancing like this:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">---</span>
+<span class="n">name</span><span class="p">:</span> <span class="n">cluster</span><span class="o">-</span><span class="n">name</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">EDS</span>
+<span class="n">eds_cluster_config</span><span class="p">:</span>
+  <span class="n">eds_config</span><span class="p">:</span>
+    <span class="n">path</span><span class="p">:</span> <span class="s1">&#39;.../eds.conf&#39;</span>
+<span class="n">connect_timeout</span><span class="p">:</span>
+  <span class="n">seconds</span><span class="p">:</span> <span class="mi">10</span>
+<span class="n">lb_policy</span><span class="p">:</span> <span class="n">LEAST_REQUEST</span>
+<span class="n">lb_subset_config</span><span class="p">:</span>
+  <span class="n">fallback_policy</span><span class="p">:</span> <span class="n">DEFAULT_SUBSET</span>
+  <span class="n">default_subset</span><span class="p">:</span>
+    <span class="n">stage</span><span class="p">:</span> <span class="n">prod</span>
+  <span class="n">subset_selectors</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">keys</span><span class="p">:</span>
+    <span class="o">-</span> <span class="n">v</span>
+    <span class="o">-</span> <span class="n">stage</span>
+  <span class="o">-</span> <span class="n">keys</span><span class="p">:</span>
+    <span class="o">-</span> <span class="n">stage</span>
+</pre></div>
+</div>
+<p>The following table describes some routes and the result of their application to the
+cluster. Typically the match criteria would be used with routes matching specific aspects of the
+request, such as the path or header information.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="17%" />
+<col width="55%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Match Criteria</th>
+<th class="head">Balances Over</th>
+<th class="head">Reason</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>stage: canary</td>
+<td>host3</td>
+<td>Subset of hosts selected</td>
+</tr>
+<tr class="row-odd"><td>v: 1.2-pre, stage: dev</td>
+<td>host4</td>
+<td>Subset of hosts selected</td>
+</tr>
+<tr class="row-even"><td>v: 1.0</td>
+<td>host1, host2</td>
+<td>Fallback: No subset selector for “v” alone</td>
+</tr>
+<tr class="row-odd"><td>other: x</td>
+<td>host1, host2</td>
+<td>Fallback: No subset selector for “other”</td>
+</tr>
+<tr class="row-even"><td>(none)</td>
+<td>host1, host2</td>
+<td>Fallback: No subset requested</td>
+</tr>
+</tbody>
+</table>
+<p>Metadata match criteria may also be specified on a route’s weighted clusters. Metadata match
+criteria from the selected weighted cluster are merged with and override the criteria from the
+route:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="43%" />
+<col width="29%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Route Match Criteria</th>
+<th class="head">Weighted Cluster Match Criteria</th>
+<th class="head">Final Match Criteria</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>stage: canary</td>
+<td>stage: prod</td>
+<td>stage: prod</td>
+</tr>
+<tr class="row-odd"><td>v: 1.0</td>
+<td>stage: prod</td>
+<td>v: 1.0, stage: prod</td>
+</tr>
+<tr class="row-even"><td>v: 1.0, stage: prod</td>
+<td>stage: canary</td>
+<td>v: 1.0, stage: canary</td>
+</tr>
+<tr class="row-odd"><td>v: 1.0, stage: prod</td>
+<td>v: 1.1, stage: canary</td>
+<td>v: 1.1, stage: canary</td>
+</tr>
+<tr class="row-even"><td>(none)</td>
+<td>v: 1.0</td>
+<td>v: 1.0</td>
+</tr>
+<tr class="row-odd"><td>v: 1.0</td>
+<td>(none)</td>
+<td>v: 1.0</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="example-host-with-metadata">
+<h4>Example Host With Metadata<a class="headerlink" href="#example-host-with-metadata" title="Permalink to this headline">¶</a></h4>
+<p>An EDS <code class="docutils literal"><span class="pre">LbEndpoint</span></code> with host metadata:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">---</span>
+<span class="n">endpoint</span><span class="p">:</span>
+  <span class="n">address</span><span class="p">:</span>
+    <span class="n">socket_address</span><span class="p">:</span>
+      <span class="n">protocol</span><span class="p">:</span> <span class="n">TCP</span>
+      <span class="n">address</span><span class="p">:</span> <span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span>
+      <span class="n">port_value</span><span class="p">:</span> <span class="mi">8888</span>
+<span class="n">metadata</span><span class="p">:</span>
+  <span class="n">filter_metadata</span><span class="p">:</span>
+    <span class="n">envoy</span><span class="o">.</span><span class="n">lb</span><span class="p">:</span>
+      <span class="n">version</span><span class="p">:</span> <span class="s1">&#39;1.0&#39;</span>
+      <span class="n">stage</span><span class="p">:</span> <span class="s1">&#39;prod&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-route-with-metadata-criteria">
+<h4>Example Route With Metadata Criteria<a class="headerlink" href="#example-route-with-metadata-criteria" title="Permalink to this headline">¶</a></h4>
+<p>An RDS <code class="docutils literal"><span class="pre">Route</span></code> with metadata match criteria:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">---</span>
+<span class="n">match</span><span class="p">:</span>
+  <span class="n">prefix</span><span class="p">:</span> <span class="o">/</span>
+<span class="n">route</span><span class="p">:</span>
+  <span class="n">cluster</span><span class="p">:</span> <span class="n">cluster</span><span class="o">-</span><span class="n">name</span>
+  <span class="n">metadata_match</span><span class="p">:</span>
+    <span class="n">filter_metadata</span><span class="p">:</span>
+      <span class="n">envoy</span><span class="o">.</span><span class="n">lb</span><span class="p">:</span>
+        <span class="n">version</span><span class="p">:</span> <span class="s1">&#39;1.0&#39;</span>
+        <span class="n">stage</span><span class="p">:</span> <span class="s1">&#39;prod&#39;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 
@@ -363,7 +565,7 @@ in the originating cluster (if needed).</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.5.0-9e07aa',
+            VERSION:'1.5.0-e8a688',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
