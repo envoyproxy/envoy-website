@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Connection pooling &mdash; envoy 1.5.0-e0c6ea documentation</title>
+  <title>Connection pooling &mdash; envoy 1.5.0-c9ab4a documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.5.0-e0c6ea documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.5.0-c9ab4a documentation" href="../../index.html"/>
         <link rel="up" title="Architecture overview" href="arch_overview.html"/>
         <link rel="next" title="Load balancing" href="load_balancing.html"/>
         <link rel="prev" title="Health checking" href="health_checking.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-e0c6ea
+                1.5.0-c9ab4a
               </div>
             
           
@@ -113,6 +113,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Connection pooling</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#http-1-1">HTTP/1.1</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#http-2">HTTP/2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#health-checking-interactions">Health checking interactions</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="load_balancing.html">Load balancing</a></li>
@@ -231,6 +232,13 @@ multiplexed over this connection. If a GOAWAY frame is received or if the connec
 maximum stream limit, the connection pool will create a new connection and drain the existing one.
 HTTP/2 is the preferred communication protocol as connections rarely if ever get severed.</p>
 </div>
+<div class="section" id="health-checking-interactions">
+<span id="arch-overview-conn-pool-health-checking"></span><h2>Health checking interactions<a class="headerlink" href="#health-checking-interactions" title="Permalink to this headline">¶</a></h2>
+<p>If Envoy is configured for either active or passive <a class="reference internal" href="health_checking.html#arch-overview-health-checking"><span class="std std-ref">health checking</span></a>, all connection pool connections will be closed on behalf of a host
+that transitions from a healthy state to an unhealthy state. If the host reenters the load
+balancing rotation it will create fresh connections which will maximize the chance of working
+around a bad flow (due to ECMP route or something else).</p>
+</div>
 </div>
 
 
@@ -277,7 +285,7 @@ HTTP/2 is the preferred communication protocol as connections rarely if ever get
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.5.0-e0c6ea',
+            VERSION:'1.5.0-c9ab4a',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
