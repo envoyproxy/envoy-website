@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Connection pooling &mdash; envoy 1.5.0-c6256a documentation</title>
+  <title>Draining &mdash; envoy 1.5.0-c6256a documentation</title>
   
 
   
@@ -39,8 +39,8 @@
         <link rel="search" title="Search" href="../../search.html"/>
     <link rel="top" title="envoy 1.5.0-c6256a documentation" href="../../index.html"/>
         <link rel="up" title="Architecture overview" href="arch_overview.html"/>
-        <link rel="next" title="Load balancing" href="load_balancing.html"/>
-        <link rel="prev" title="Health checking" href="health_checking.html"/> 
+        <link rel="next" title="Scripting" href="scripting.html"/>
+        <link rel="prev" title="Initialization" href="init.html"/> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -110,12 +110,7 @@
 <li class="toctree-l3"><a class="reference internal" href="cluster_manager.html">Cluster manager</a></li>
 <li class="toctree-l3"><a class="reference internal" href="service_discovery.html">Service discovery</a></li>
 <li class="toctree-l3"><a class="reference internal" href="health_checking.html">Health checking</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Connection pooling</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#http-1-1">HTTP/1.1</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#http-2">HTTP/2</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#health-checking-interactions">Health checking interactions</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="connection_pooling.html">Connection pooling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="load_balancing.html">Load balancing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="outlier.html">Outlier detection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="circuit_breaking.html">Circuit breaking</a></li>
@@ -132,7 +127,7 @@
 <li class="toctree-l3"><a class="reference internal" href="hot_restart.html">Hot restart</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dynamic_configuration.html">Dynamic configuration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="init.html">Initialization</a></li>
-<li class="toctree-l3"><a class="reference internal" href="draining.html">Draining</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Draining</a></li>
 <li class="toctree-l3"><a class="reference internal" href="scripting.html">Scripting</a></li>
 </ul>
 </li>
@@ -194,13 +189,13 @@
         
           <li><a href="arch_overview.html">Architecture overview</a> &raquo;</li>
         
-      <li>Connection pooling</li>
+      <li>Draining</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/intro/arch_overview/connection_pooling.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/intro/arch_overview/draining.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -213,34 +208,33 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="connection-pooling">
-<span id="arch-overview-conn-pool"></span><h1>Connection pooling<a class="headerlink" href="#connection-pooling" title="Permalink to this headline">¶</a></h1>
-<p>For HTTP traffic, Envoy supports abstract connection pools that are layered on top of the underlying
-wire protocol (HTTP/1.1 or HTTP/2). The utilizing filter code does not need to be aware of whether
-the underlying protocol supports true multiplexing or not. In practice the underlying
-implementations have the following high level properties:</p>
-<div class="section" id="http-1-1">
-<h2>HTTP/1.1<a class="headerlink" href="#http-1-1" title="Permalink to this headline">¶</a></h2>
-<p>The HTTP/1.1 connection pool acquires connections as needed to an upstream host (up to the circuit
-breaking limit). Requests are bound to connections as they become available, either because a
-connection is done processing a previous request or because a new connection is ready to receive its
-first request. The HTTP/1.1 connection pool does not make use of pipelining so that only a single
-downstream request must be reset if the upstream connection is severed.</p>
-</div>
-<div class="section" id="http-2">
-<h2>HTTP/2<a class="headerlink" href="#http-2" title="Permalink to this headline">¶</a></h2>
-<p>The HTTP/2 connection pool acquires a single connection to an upstream host. All requests are
-multiplexed over this connection. If a GOAWAY frame is received or if the connection reaches the
-maximum stream limit, the connection pool will create a new connection and drain the existing one.
-HTTP/2 is the preferred communication protocol as connections rarely if ever get severed.</p>
-</div>
-<div class="section" id="health-checking-interactions">
-<span id="arch-overview-conn-pool-health-checking"></span><h2>Health checking interactions<a class="headerlink" href="#health-checking-interactions" title="Permalink to this headline">¶</a></h2>
-<p>If Envoy is configured for either active or passive <a class="reference internal" href="health_checking.html#arch-overview-health-checking"><span class="std std-ref">health checking</span></a>, all connection pool connections will be closed on behalf of a host
-that transitions from a healthy state to an unhealthy state. If the host reenters the load
-balancing rotation it will create fresh connections which will maximize the chance of working
-around a bad flow (due to ECMP route or something else).</p>
-</div>
+  <div class="section" id="draining">
+<span id="arch-overview-draining"></span><h1>Draining<a class="headerlink" href="#draining" title="Permalink to this headline">¶</a></h1>
+<p>Draining is the process by which Envoy attempts to gracefully shed connections in response to
+various events. Draining occurs at the following times:</p>
+<ul class="simple">
+<li>The server has been manually health check failed via the <a class="reference internal" href="../../operations/admin.html#operations-admin-interface-healthcheck-fail"><span class="std std-ref">healthcheck/fail</span></a> admin endpoint. See the <a class="reference internal" href="health_checking.html#arch-overview-health-checking-filter"><span class="std std-ref">health check filter</span></a> architecture overview for more information.</li>
+<li>The server is being <a class="reference internal" href="hot_restart.html#arch-overview-hot-restart"><span class="std std-ref">hot restarted</span></a>.</li>
+<li>Individual listeners are being modified or removed via <a class="reference internal" href="dynamic_configuration.html#arch-overview-dynamic-config-lds"><span class="std std-ref">LDS</span></a>.</li>
+</ul>
+<p>Each <a class="reference internal" href="listeners.html#arch-overview-listeners"><span class="std std-ref">configured listener</span></a> has a <a class="reference internal" href="../../configuration/listeners/listeners.html#config-listeners-drain-type"><span class="std std-ref">drain_type</span></a> setting which controls when draining takes place. The currently
+supported values are:</p>
+<dl class="docutils">
+<dt>default</dt>
+<dd>Envoy will drain listeners in response to all three cases above (admin drain, hot restart, and
+LDS update/remove). This is the default setting.</dd>
+<dt>modify_only</dt>
+<dd>Envoy will drain listeners only in response to the 2nd and 3rd cases above (hot restart and
+LDS update/remove). This setting is useful if Envoy is hosting both ingress and egress listeners.
+It may be desirable to set <em>modify_only</em> on egress listeners so they only drain during
+modifications while relying on ingress listener draining to perform full server draining when
+attempting to do a controlled shutdown.</dd>
+</dl>
+<p>Note that although draining is a per-listener concept, it must be supported at the network filter
+level. Currently the only filters that support graceful draining are
+<a class="reference internal" href="../../configuration/http_conn_man/http_conn_man.html#config-http-conn-man"><span class="std std-ref">HTTP connection manager</span></a>,
+<a class="reference internal" href="../../configuration/network_filters/redis_proxy_filter.html#config-network-filters-redis-proxy"><span class="std std-ref">Redis</span></a>, and
+<a class="reference internal" href="../../configuration/network_filters/mongo_proxy_filter.html#config-network-filters-mongo-proxy"><span class="std std-ref">Mongo</span></a>.</p>
 </div>
 
 
@@ -253,10 +247,10 @@ around a bad flow (due to ECMP route or something else).</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="load_balancing.html" class="btn btn-neutral float-right" title="Load balancing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="scripting.html" class="btn btn-neutral float-right" title="Scripting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="health_checking.html" class="btn btn-neutral" title="Health checking" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="init.html" class="btn btn-neutral" title="Initialization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
