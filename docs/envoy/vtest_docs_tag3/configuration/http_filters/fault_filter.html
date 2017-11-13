@@ -1,0 +1,455 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Fault Injection &mdash; envoy 1.5.0-tag-vtest_docs_tag3 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="envoy 1.5.0-tag-vtest_docs_tag3 documentation" href="../../index.html"/>
+        <link rel="up" title="HTTP filters" href="http_filters.html"/>
+        <link rel="next" title="DynamoDB" href="dynamodb_filter.html"/>
+        <link rel="prev" title="CORS filter" href="cors_filter.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> envoy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.5.0-tag-vtest_docs_tag3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/install.html">Building and installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../configuration.html">Configuration reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../overview/overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../network_filters/network_filters.html">Network filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../http_conn_man/http_conn_man.html">HTTP connection manager</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="http_filters.html">HTTP filters</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="buffer_filter.html">Buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cors_filter.html">CORS filter</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Fault Injection</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#abort">Abort</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#delay">Delay</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#runtime">Runtime</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#statistics">Statistics</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dynamodb_filter.html">DynamoDB</a></li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_http1_bridge_filter.html">gRPC HTTP/1.1 bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_json_transcoder_filter.html">gRPC-JSON transcoder filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_web_filter.html">gRPC-Web filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="health_check_filter.html">Health check</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ip_tagging_filter.html">Ip tagging filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rate_limit_filter.html">Rate limit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="router_filter.html">Router</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lua_filter.html">Lua</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cluster_manager/cluster_manager.html">Cluster manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../access_log.html">Access logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools/router_check.html">Route table check tool</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">Envoy v2 API reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../configuration.html">Configuration reference</a> &raquo;</li>
+        
+          <li><a href="http_filters.html">HTTP filters</a> &raquo;</li>
+        
+      <li>Fault Injection</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/configuration/http_filters/fault_filter.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="fault-injection">
+<span id="config-http-filters-fault-injection"></span><h1>Fault Injection<a class="headerlink" href="#fault-injection" title="Permalink to this headline">¶</a></h1>
+<p>The fault injection filter can be used to test the resiliency of
+microservices to different forms of failures. The filter can be used to
+inject delays and abort requests with user-specified error codes, thereby
+providing the ability to stage different failure scenarios such as service
+failures, service overloads, high network latency, network partitions,
+etc. Faults injection can be limited to a specific set of requests based on
+the (destination) upstream cluster of a request and/or a set of pre-defined
+request headers.</p>
+<p>The scope of failures is restricted to those that are observable by an
+application communicating over the network. CPU and disk failures on the
+local host cannot be emulated.</p>
+<p>Currently, the fault injection filter has the following limitations:</p>
+<ul class="simple">
+<li>Abort codes are restricted to HTTP status codes only</li>
+<li>Delays are restricted to fixed duration.</li>
+</ul>
+<p>Future versions will include support for restricting faults to specific
+routes, injecting <em>gRPC</em> and <em>HTTP/2</em> specific error codes and delay
+durations based on distributions.</p>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<p><em>Note: The fault injection filter must be inserted before any other filter,
+including the router filter.</em></p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span> <span class="p">:</span> <span class="s2">&quot;fault&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;config&quot;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;abort&quot;</span> <span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;delay&quot;</span> <span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;upstream_cluster&quot;</span> <span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;headers&quot;</span> <span class="p">:</span> <span class="p">[],</span>
+    <span class="nt">&quot;downstream_nodes&quot;</span><span class="p">:</span> <span class="p">[]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt><a class="reference internal" href="#config-http-filters-fault-injection-abort"><span class="std std-ref">abort</span></a></dt>
+<dd><em>(sometimes required, object)</em> If specified, the filter will abort requests based on
+the values in the object. At least <em>abort</em> or <em>delay</em> must be specified.</dd>
+<dt><a class="reference internal" href="#config-http-filters-fault-injection-delay"><span class="std std-ref">delay</span></a></dt>
+<dd><em>(sometimes required, object)</em> If specified, the filter will inject delays based on the values
+in the object. At least <em>abort</em> or <em>delay</em> must be specified.</dd>
+<dt>upstream_cluster:</dt>
+<dd><em>(optional, string)</em> Specifies the name of the (destination) upstream
+cluster that the filter should match on. Fault injection will be
+restricted to requests bound to the specific upstream cluster.</dd>
+<dt><a class="reference internal" href="../http_conn_man/route_config/route.html#config-http-conn-man-route-table-route-headers"><span class="std std-ref">headers</span></a></dt>
+<dd><em>(optional, array)</em> Specifies a set of headers that the filter should match on. The fault
+injection filter can be applied selectively to requests that match a set of headers specified in
+the fault filter config. The chances of actual fault injection further depend on the values of
+<em>abort_percent</em> and <em>fixed_delay_percent</em> parameters.The filter will check the request’s headers
+against all the specified headers in the filter config. A match will happen if all the headers in
+the config are present in the request with the same values (or based on presence if the <code class="docutils literal"><span class="pre">value</span></code>
+field is not in the config).
+TODO: allow runtime configuration on per entry basis for headers match.</dd>
+<dt>downstream_nodes:</dt>
+<dd><em>(optional, array)</em> Faults are injected for the specified list of downstream hosts. If this setting is
+not set, faults are injected for all downstream nodes. Downstream node name is taken from
+<a class="reference internal" href="../http_conn_man/headers.html#config-http-conn-man-headers-downstream-service-node"><span class="std std-ref">the HTTP x-envoy-downstream-service-node</span></a>
+header and compared against downstream_nodes list.</dd>
+</dl>
+<p>The abort and delay blocks can be omitted. If they are not specified in the
+configuration file, their respective values will be obtained from the
+runtime.</p>
+</div>
+<div class="section" id="abort">
+<span id="config-http-filters-fault-injection-abort"></span><h2>Abort<a class="headerlink" href="#abort" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;abort_percent&quot;</span> <span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;http_status&quot;</span> <span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>abort_percent</dt>
+<dd><em>(required, integer)</em> The percentage of requests that
+should be aborted with the specified <em>http_status</em> code. Valid values
+range from 0 to 100.</dd>
+<dt>http_status</dt>
+<dd><em>(required, integer)</em> The HTTP status code that will be used as the
+response code for the request being aborted.</dd>
+</dl>
+</div>
+<div class="section" id="delay">
+<span id="config-http-filters-fault-injection-delay"></span><h2>Delay<a class="headerlink" href="#delay" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;fixed_delay_percent&quot;</span> <span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;fixed_duration_ms&quot;</span> <span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>type:</dt>
+<dd><em>(required, string)</em> Specifies the type of delay being
+injected. Currently only <em>fixed</em> delay type (step function) is supported.</dd>
+<dt>fixed_delay_percent:</dt>
+<dd><em>(required, integer)</em> The percentage of requests that will
+be delayed for the duration specified by <em>fixed_duration_ms</em>. Valid
+values range from 0 to 100.</dd>
+<dt>fixed_duration_ms:</dt>
+<dd><em>(required, integer)</em> The delay duration in milliseconds. Must be greater than 0.</dd>
+</dl>
+</div>
+<div class="section" id="runtime">
+<h2>Runtime<a class="headerlink" href="#runtime" title="Permalink to this headline">¶</a></h2>
+<p>The HTTP fault injection filter supports the following global runtime settings:</p>
+<dl class="docutils">
+<dt>fault.http.abort.abort_percent</dt>
+<dd>% of requests that will be aborted if the headers match. Defaults to the
+<em>abort_percent</em> specified in config. If the config does not contain an
+<em>abort</em> block, then <em>abort_percent</em> defaults to 0.</dd>
+<dt>fault.http.abort.http_status</dt>
+<dd>HTTP status code that will be used as the  of requests that will be
+aborted if the headers match. Defaults to the HTTP status code specified
+in the config. If the config does not contain an <em>abort</em> block, then
+<em>http_status</em> defaults to 0.</dd>
+<dt>fault.http.delay.fixed_delay_percent</dt>
+<dd>% of requests that will be delayed if the headers match. Defaults to the
+<em>delay_percent</em> specified in the config or 0 otherwise.</dd>
+<dt>fault.http.delay.fixed_duration_ms</dt>
+<dd>The delay duration in milliseconds. If not specified, the
+<em>fixed_duration_ms</em> specified in the config will be used. If this field
+is missing from both the runtime and the config, no delays will be
+injected.</dd>
+</dl>
+<p><em>Note</em>, fault filter runtime settings for the specific downstream cluster
+override the default ones if present. The following are downstream specific
+runtime keys:</p>
+<ul class="simple">
+<li>fault.http.&lt;downstream-cluster&gt;.abort.abort_percent</li>
+<li>fault.http.&lt;downstream-cluster&gt;.abort.http_status</li>
+<li>fault.http.&lt;downstream-cluster&gt;.delay.fixed_delay_percent</li>
+<li>fault.http.&lt;downstream-cluster&gt;.delay.fixed_duration_ms</li>
+</ul>
+<p>Downstream cluster name is taken from
+<a class="reference internal" href="../http_conn_man/headers.html#config-http-conn-man-headers-downstream-service-cluster"><span class="std std-ref">the HTTP x-envoy-downstream-service-cluster</span></a>
+header. If the following settings are not found in the runtime it defaults to the global runtime settings
+which defaults to the config settings.</p>
+</div>
+<div class="section" id="statistics">
+<h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
+<p>The fault filter outputs statistics in the <em>http.&lt;stat_prefix&gt;.fault.</em> namespace. The <a class="reference internal" href="../http_conn_man/http_conn_man.html#config-http-conn-man-stat-prefix"><span class="std std-ref">stat
+prefix</span></a> comes from the owning HTTP connection manager.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>delays_injected</td>
+<td>Counter</td>
+<td>Total requests that were delayed</td>
+</tr>
+<tr class="row-odd"><td>aborts_injected</td>
+<td>Counter</td>
+<td>Total requests that were aborted</td>
+</tr>
+<tr class="row-even"><td>&lt;downstream-cluster&gt;.delays_injected</td>
+<td>Counter</td>
+<td>Total delayed requests for the given downstream cluster</td>
+</tr>
+<tr class="row-odd"><td>&lt;downstream-cluster&gt;.aborts_injected</td>
+<td>Counter</td>
+<td>Total aborted requests for the given downstream cluster</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="dynamodb_filter.html" class="btn btn-neutral float-right" title="DynamoDB" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="cors_filter.html" class="btn btn-neutral" title="CORS filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2017, Envoy Project Authors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.5.0-tag-vtest_docs_tag3',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
