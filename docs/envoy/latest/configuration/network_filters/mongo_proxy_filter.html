@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Mongo proxy &mdash; envoy 1.5.0-data-plane-api-4c6922 documentation</title>
+  <title>Mongo proxy &mdash; envoy 1.5.0-data-plane-api-cfe196 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-4c6922 documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-cfe196 documentation" href="../../index.html"/>
         <link rel="up" title="Network filters" href="network_filters.html"/>
         <link rel="next" title="Rate limit" href="rate_limit_filter.html"/>
         <link rel="prev" title="Echo" href="echo_filter.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-4c6922
+                1.5.0-data-plane-api-cfe196
               </div>
             
           
@@ -104,7 +104,6 @@
 <li class="toctree-l3"><a class="reference internal" href="client_ssl_auth_filter.html">Client TLS authentication</a></li>
 <li class="toctree-l3"><a class="reference internal" href="echo_filter.html">Echo</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Mongo proxy</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#fault-configuration">Fault configuration</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#statistics">Statistics</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#runtime">Runtime</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#access-log-format">Access log format</a></li>
@@ -124,7 +123,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">Envoy v2 API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api-v1/api.html">Envoy v1 API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api-v2/api.html">Envoy v2 API reference</a></li>
 </ul>
 
             
@@ -195,47 +195,10 @@
   <div class="section" id="mongo-proxy">
 <span id="config-network-filters-mongo-proxy"></span><h1>Mongo proxy<a class="headerlink" href="#mongo-proxy" title="Permalink to this headline">¶</a></h1>
 <p>MongoDB <a class="reference internal" href="../../intro/arch_overview/mongo.html#arch-overview-mongo"><span class="std std-ref">architecture overview</span></a>.</p>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;mongo_proxy&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;stat_prefix&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;access_log&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;fault&quot;</span><span class="p">:</span> <span class="p">{}</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<dl class="docutils">
-<dt>stat_prefix</dt>
-<dd><em>(required, string)</em> The prefix to use when emitting <a class="reference internal" href="#config-network-filters-mongo-proxy-stats"><span class="std std-ref">statistics</span></a>.</dd>
-<dt>access_log</dt>
-<dd><em>(optional, string)</em> The optional path to use for writing Mongo access logs. If not access log
-path is specified no access logs will be written. Note that access log is also gated by
-<a class="reference internal" href="#config-network-filters-mongo-proxy-runtime"><span class="std std-ref">runtime</span></a>.</dd>
-<dt>fault</dt>
-<dd><em>(optional, object)</em> If specified, the filter will inject faults based on the values in the object.</dd>
-</dl>
-<div class="section" id="fault-configuration">
-<h2>Fault configuration<a class="headerlink" href="#fault-configuration" title="Permalink to this headline">¶</a></h2>
-<p>Configuration for MongoDB fixed duration delays. Delays are applied to the following MongoDB
-operations: Query, Insert, GetMore, and KillCursors. Once an active delay is in progress, all
-incoming data up until the timer event fires will be a part of the delay.</p>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;fixed_delay&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;percent&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;duration_ms&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<dl class="docutils">
-<dt>percent</dt>
-<dd><em>(required, integer)</em> Probability of an eligible MongoDB operation to be affected by the
-injected fault when there is no active fault. Valid values are integers in a range of [0, 100].</dd>
-<dt>duration_ms</dt>
-<dd><em>(required, integer)</em> Non-negative delay duration in milliseconds.</dd>
-</dl>
-</div>
+<ul class="simple">
+<li><a class="reference internal" href="../../api-v1/network_filters/mongo_proxy_filter.html#config-network-filters-mongo-proxy-v1"><span class="std std-ref">v1 API reference</span></a></li>
+<li><a class="reference internal" href="../../api-v2/filter/network/mongo_proxy.proto.html#envoy-api-msg-filter-network-mongoproxy"><span class="std std-ref">v2 API reference</span></a></li>
+</ul>
 <div class="section" id="statistics">
 <span id="config-network-filters-mongo-proxy-stats"></span><h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
 <p>Every configured MongoDB proxy filter has statistics rooted at <em>mongo.&lt;stat_prefix&gt;.</em> with the
@@ -538,7 +501,7 @@ filter is used along with the <a class="reference internal" href="tcp_proxy_filt
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.5.0-data-plane-api-4c6922',
+            VERSION:'1.5.0-data-plane-api-cfe196',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
