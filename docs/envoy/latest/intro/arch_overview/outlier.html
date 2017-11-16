@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Outlier detection &mdash; envoy 1.5.0-data-plane-api-30b519 documentation</title>
+  <title>Outlier detection &mdash; envoy 1.5.0-data-plane-api-b5018b documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-30b519 documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-b5018b documentation" href="../../index.html"/>
         <link rel="up" title="Architecture overview" href="arch_overview.html"/>
         <link rel="next" title="Circuit breaking" href="circuit_breaking.html"/>
         <link rel="prev" title="Load balancing" href="load_balancing.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-30b519
+                1.5.0-data-plane-api-b5018b
               </div>
             
           
@@ -254,6 +254,14 @@ case a 5xx means an actual 5xx respond code, or an event that would cause the HT
 one on the upstream’s behalf (reset, connection failure, etc.). The number of consecutive 5xx
 required for ejection is controlled by the <a class="reference internal" href="../../configuration/cluster_manager/cluster_outlier_detection.html#config-cluster-manager-cluster-outlier-detection-consecutive-5xx"><span class="std std-ref">outlier_detection.consecutive_5xx</span></a> value.</p>
 </div>
+<div class="section" id="consecutive-gateway-failure">
+<h3>Consecutive Gateway Failure<a class="headerlink" href="#consecutive-gateway-failure" title="Permalink to this headline">¶</a></h3>
+<p>If an upstream host returns some number of consecutive “gateway errors” (502, 503 or 504 status
+code), it will be ejected. Note that this includes events that would cause the HTTP router to
+return one of these status codes on the upstream’s behalf (reset, connection failure, etc.). The
+number of consecutive gateway failures required for ejection is controlled by
+the <a class="reference internal" href="../../configuration/cluster_manager/cluster_outlier_detection.html#config-cluster-manager-cluster-outlier-detection-consecutive-gateway-failure"><span class="std std-ref">outlier_detection.consecutive_gateway_failure</span></a> value.</p>
+</div>
 <div class="section" id="success-rate">
 <h3>Success Rate<a class="headerlink" href="#success-rate" title="Permalink to this headline">¶</a></h3>
 <p>Success Rate based outlier ejection aggregates success rate data from every host in a cluster. Then at given
@@ -302,7 +310,7 @@ action before the first ejection.</dd>
 brought back into service.</dd>
 <dt>type</dt>
 <dd>If <code class="docutils literal"><span class="pre">action</span></code> is <code class="docutils literal"><span class="pre">eject</span></code>, specifies the type of ejection that took place. Currently type can
-be either <code class="docutils literal"><span class="pre">5xx</span></code> or <code class="docutils literal"><span class="pre">SuccessRate</span></code>.</dd>
+be one of <code class="docutils literal"><span class="pre">5xx</span></code>, <code class="docutils literal"><span class="pre">GatewayFailure</span></code> or <code class="docutils literal"><span class="pre">SuccessRate</span></code>.</dd>
 <dt>num_ejections</dt>
 <dd>If <code class="docutils literal"><span class="pre">action</span></code> is <code class="docutils literal"><span class="pre">eject</span></code>, specifies the number of times the host has been ejected
 (local to that Envoy and gets reset if the host gets removed from the upstream cluster for any
@@ -380,7 +388,7 @@ threshold at the time of the ejection event.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.5.0-data-plane-api-30b519',
+            VERSION:'1.5.0-data-plane-api-b5018b',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
