@@ -1,5 +1,5 @@
-Common configuration elements
-=============================
+Common types
+============
 
 
 .. _envoy_api_msg_Locality:
@@ -20,21 +20,24 @@ Identifies location of where either Envoy runs or where upstream hosts run.
 .. _envoy_api_field_Locality.region:
 
 region
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Region this zone belongs to.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Region this :ref:`zone <envoy_api_field_Locality.zone>` belongs to.
   
   
 .. _envoy_api_field_Locality.zone:
 
 zone
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Availability Zone (AZ) in AWS, Zone in GCP.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) `Availability Zone (AZ)
+  <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html>`_
+  on AWS, `Zone <https://cloud.google.com/compute/docs/regions-zones/>`_ on
+  GCP, etc.
   
   
 .. _envoy_api_field_Locality.sub_zone:
 
 sub_zone
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) When used for locality of upstream hosts, this field further splits zone
-  into smaller chunks of sub_zones so they can be load balanced
-  independently
+  into smaller chunks of sub-zones so they can be load balanced
+  independently.
   
   
 
@@ -44,7 +47,9 @@ sub_zone
 Node
 ----
 
-Identifies a specific Envoy instance. Remote server may have per Envoy configuration.
+Identifies a specific Envoy instance. The node identifier is presented to the
+management server, which may use this identifier to distinguish per Envoy
+configuration for serving.
 
 .. code-block:: json
 
@@ -59,30 +64,34 @@ Identifies a specific Envoy instance. Remote server may have per Envoy configura
 .. _envoy_api_field_Node.id:
 
 id
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) An opaque node identifier for the Envoy node. This must be set.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) An opaque node identifier for the Envoy node.
   
   
 .. _envoy_api_field_Node.cluster:
 
 cluster
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The cluster that the Envoy node belongs to. This must be set.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The cluster that the Envoy node belongs to.
   
   
 .. _envoy_api_field_Node.metadata:
 
 metadata
-  (`Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_) 
+  (`Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_) Opaque metadata extending the node identifier. Envoy will pass this
+  directly to the management server.
+  
   
 .. _envoy_api_field_Node.locality:
 
 locality
-  (:ref:`Locality <envoy_api_msg_Locality>`) 
+  (:ref:`Locality <envoy_api_msg_Locality>`) Locality specifying where the Envoy instance is running.
+  
   
 .. _envoy_api_field_Node.build_version:
 
 build_version
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) This is motivated by informing a management server during canary which
-  version of Envoy is being tested in a heterogeneous fleet.
+  version of Envoy is being tested in a heterogeneous fleet. This will be set
+  by Envoy in management server RPCs.
   
   
 
@@ -92,6 +101,7 @@ build_version
 Endpoint
 --------
 
+Upstream host identifier.
 
 .. code-block:: json
 
@@ -126,7 +136,7 @@ Endpoints have a Metadata object associated and routes contain a Metadata
 object to match against. There are some well defined metadata used today for
 this purpose:
 
-* {"envoy.lb": {"canary": <bool> }}. This indicates the canary status of an
+* ``{"envoy.lb": {"canary": <bool> }}`` This indicates the canary status of an
   endpoint and is also used during header processing
   (x-envoy-upstream-canary) and for stats purposes.
 
@@ -139,7 +149,8 @@ this purpose:
 .. _envoy_api_field_Metadata.filter_metadata:
 
 filter_metadata
-  (map<`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, `Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_>) Key is the reverse DNS filter name.
+  (map<`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, `Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_>) Key is the reverse DNS filter name, e.g. com.acme.widget. The envoy.*
+  namespace is reserved for Envoy's built-in filters.
   
   
 
@@ -197,6 +208,10 @@ key
 value
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Header value.
   
+  The same :ref:`format specifier <config_access_log_format>` as used for
+  :ref:`HTTP access logging <config_access_log>` applies here, however
+  unknown header values are replaced with the empty string instead of `-`.
+  
   
 
 
@@ -217,18 +232,14 @@ Header name/value pair plus option to control append behavior.
 .. _envoy_api_field_HeaderValueOption.header:
 
 header
-  (:ref:`HeaderValue <envoy_api_msg_HeaderValue>`) Header Name/Value pair that this option applies to.
-  
-  The same format specifier as used for HTTP access logging applies here,
-  however unknown header values are replaced with the empty string instead
-  of -. [V2-API-DIFF].
+  (:ref:`HeaderValue <envoy_api_msg_HeaderValue>`) Header name/value pair that this option applies to.
   
   
 .. _envoy_api_field_HeaderValueOption.append:
 
 append
   (`BoolValue <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue>`_) Should the value be appended? If true (default), the value is appended to
-  existing values [V2-API-DIFF].
+  existing values.
   
   
 
@@ -238,6 +249,8 @@ append
 ApiConfigSource
 ---------------
 
+API configuration source. This identifies the API type and cluster that Envoy
+will use to fetch an xDS API.
 
 .. code-block:: json
 
@@ -255,7 +268,7 @@ api_type
 .. _envoy_api_field_ApiConfigSource.cluster_name:
 
 cluster_name
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Multiple cluster names may be provided. If > 1 cluster is defined, clusters
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Multiple cluster names may be provided. If > 1 cluster is defined, clusters
   will be cycled through if any kind of failure occurs.
   
   
@@ -276,18 +289,22 @@ APIs may be fetched via either REST or gRPC.
 .. _envoy_api_enum_value_ApiConfigSource.ApiType.REST_LEGACY:
 
 REST_LEGACY
-  *(DEFAULT)* ⁣REST legacy corresponds to the v1 API.
+  *(DEFAULT)* ⁣REST-JSON legacy corresponds to the v1 API.
   
   
 .. _envoy_api_enum_value_ApiConfigSource.ApiType.REST:
 
 REST
-  ⁣
+  ⁣REST-JSON v2 API. The `canonical JSON encoding
+  <https://developers.google.com/protocol-buffers/docs/proto3#json>`_ for
+  the v2 protos is used.
+  
   
 .. _envoy_api_enum_value_ApiConfigSource.ApiType.GRPC:
 
 GRPC
-  ⁣
+  ⁣gRPC v2 API.
+  
   
 
 .. _envoy_api_msg_AggregatedConfigSource:
@@ -295,7 +312,9 @@ GRPC
 AggregatedConfigSource
 ----------------------
 
-ADS will be used to fetch resources.
+Aggregated Discovery Service (ADS) options. This is currently empty, but when
+set in :ref:`ConfigSource <envoy_api_msg_ConfigSource>` can be used to
+specify that ADS is to be used.
 
 .. code-block:: json
 
@@ -311,9 +330,12 @@ ADS will be used to fetch resources.
 ConfigSource
 ------------
 
-Configuration for listeners, clusters, routes, endpoints etc. may either be
-sourced from the filesystem or from an API source. Filesystem configs are
-watched with inotify for updates.
+Configuration for :ref:`listeners <config_listeners>`, :ref:`clusters
+<config_cluster_manager_cluster>`, :ref:`routes
+<config_http_conn_man_route_table>`, :ref:`endpoints
+<arch_overview_service_discovery>` etc. may either be sourced from the
+filesystem or from an xDS API source. Filesystem configs are watched with
+inotify for updates.
 
 .. code-block:: json
 
@@ -326,23 +348,27 @@ watched with inotify for updates.
 .. _envoy_api_field_ConfigSource.path:
 
 path
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Path on the filesystem to source and watch for configuration updates.
   
-  Only one of path, api_config_source, ads may be set.
+  
+  Precisely one of :ref:`path <envoy_api_field_ConfigSource.path>`, :ref:`api_config_source <envoy_api_field_ConfigSource.api_config_source>`, :ref:`ads <envoy_api_field_ConfigSource.ads>` must be set.
   
 .. _envoy_api_field_ConfigSource.api_config_source:
 
 api_config_source
-  (:ref:`ApiConfigSource <envoy_api_msg_ApiConfigSource>`) 
+  (:ref:`ApiConfigSource <envoy_api_msg_ApiConfigSource>`) API configuration source.
   
-  Only one of path, api_config_source, ads may be set.
+  
+  Precisely one of :ref:`path <envoy_api_field_ConfigSource.path>`, :ref:`api_config_source <envoy_api_field_ConfigSource.api_config_source>`, :ref:`ads <envoy_api_field_ConfigSource.ads>` must be set.
   
 .. _envoy_api_field_ConfigSource.ads:
 
 ads
-  (:ref:`AggregatedConfigSource <envoy_api_msg_AggregatedConfigSource>`) 
+  (:ref:`AggregatedConfigSource <envoy_api_msg_AggregatedConfigSource>`) When set, ADS will be used to fetch resources. The ADS API configuration
+  source in the bootstrap configuration is used.
   
-  Only one of path, api_config_source, ads may be set.
+  
+  Precisely one of :ref:`path <envoy_api_field_ConfigSource.path>`, :ref:`api_config_source <envoy_api_field_ConfigSource.api_config_source>`, :ref:`ads <envoy_api_field_ConfigSource.ads>` must be set.
   
 
 
@@ -351,9 +377,10 @@ ads
 TransportSocket
 ---------------
 
-Configuration for transport socket in listeners and clusters. If the configuration is empty,
-a default transport socket implementation and configuration will be chosen based on the
-platform and existence of tls_context.
+Configuration for transport socket in :ref:`listeners <config_listeners>` and
+:ref:`clusters <config_cluster_manager_cluster>`. If the configuration is
+empty, a default transport socket implementation and configuration will be
+chosen based on the platform and existence of tls_context.
 
 .. code-block:: json
 
@@ -365,7 +392,7 @@ platform and existence of tls_context.
 .. _envoy_api_field_TransportSocket.name:
 
 name
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The name of the transport socket to instantiate. The name must match a supported transport
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The name of the transport socket to instantiate. The name must match a supported transport
   socket implementation.
   
   
@@ -382,7 +409,8 @@ config
 Enum RoutingPriority
 --------------------
 
-Envoy supports upstream priority routing both at the route and the virtual
+Envoy supports :ref:`upstream priority routing
+<arch_overview_http_routing_priority>` both at the route and the virtual
 cluster level. The current priority implementation uses different connection
 pool and circuit breaking settings for each priority level. This means that
 even for HTTP/2 requests, two physical connections will be used to an
@@ -405,7 +433,7 @@ HIGH
 Enum RequestMethod
 ------------------
 
-HTTP request method
+HTTP request method.
 
 .. _envoy_api_enum_value_RequestMethod.METHOD_UNSPECIFIED:
 

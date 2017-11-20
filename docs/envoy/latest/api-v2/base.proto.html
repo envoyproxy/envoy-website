@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Common configuration elements &mdash; envoy 1.5.0-data-plane-api-e0c324 documentation</title>
+  <title>Common types &mdash; envoy 1.5.0-data-plane-api-8c1566 documentation</title>
   
 
   
@@ -37,10 +37,10 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-e0c324 documentation" href="../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-8c1566 documentation" href="../index.html"/>
         <link rel="up" title="Envoy v2 API reference" href="api.html"/>
         <link rel="next" title="api/protocol.proto" href="protocol.proto.html"/>
-        <link rel="prev" title="Network related configuration elements" href="address.proto.html"/> 
+        <link rel="prev" title="Network addresses" href="address.proto.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-e0c324
+                1.5.0-data-plane-api-8c1566
               </div>
             
           
@@ -102,8 +102,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../extending/extending.html">Extending Envoy for custom use cases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api-v1/api.html">Envoy v1 API reference</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="api.html">Envoy v2 API reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="address.proto.html">Network related configuration elements</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Common configuration elements</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="address.proto.html">Network addresses</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Common types</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#locality">Locality</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#node">Node</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#endpoint">Endpoint</a></li>
@@ -171,7 +171,7 @@
         
           <li><a href="api.html">Envoy v2 API reference</a> &raquo;</li>
         
-      <li>Common configuration elements</li>
+      <li>Common types</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -190,8 +190,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="common-configuration-elements">
-<h1>Common configuration elements<a class="headerlink" href="#common-configuration-elements" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="common-types">
+<h1>Common types<a class="headerlink" href="#common-types" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="locality">
 <span id="envoy-api-msg-locality"></span><h2>Locality<a class="headerlink" href="#locality" title="Permalink to this headline">¶</a></h2>
 <p>Identifies location of where either Envoy runs or where upstream hosts run.</p>
@@ -204,22 +204,26 @@
 </div>
 <dl class="docutils" id="envoy-api-field-locality-region">
 <dt>region</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Region this zone belongs to.</dd>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Region this <a class="reference internal" href="#envoy-api-field-locality-zone"><span class="std std-ref">zone</span></a> belongs to.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-locality-zone">
 <dt>zone</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Availability Zone (AZ) in AWS, Zone in GCP.</dd>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) <a class="reference external" href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html">Availability Zone (AZ)</a>
+on AWS, <a class="reference external" href="https://cloud.google.com/compute/docs/regions-zones/">Zone</a> on
+GCP, etc.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-locality-sub-zone">
 <dt>sub_zone</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) When used for locality of upstream hosts, this field further splits zone
-into smaller chunks of sub_zones so they can be load balanced
-independently</dd>
+into smaller chunks of sub-zones so they can be load balanced
+independently.</dd>
 </dl>
 </div>
 <div class="section" id="node">
 <span id="envoy-api-msg-node"></span><h2>Node<a class="headerlink" href="#node" title="Permalink to this headline">¶</a></h2>
-<p>Identifies a specific Envoy instance. Remote server may have per Envoy configuration.</p>
+<p>Identifies a specific Envoy instance. The node identifier is presented to the
+management server, which may use this identifier to distinguish per Envoy
+configuration for serving.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;cluster&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
@@ -231,28 +235,31 @@ independently</dd>
 </div>
 <dl class="docutils" id="envoy-api-field-node-id">
 <dt>id</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) An opaque node identifier for the Envoy node. This must be set.</dd>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) An opaque node identifier for the Envoy node.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-node-cluster">
 <dt>cluster</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The cluster that the Envoy node belongs to. This must be set.</dd>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) The cluster that the Envoy node belongs to.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-node-metadata">
 <dt>metadata</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct">Struct</a>)</dd>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct">Struct</a>) Opaque metadata extending the node identifier. Envoy will pass this
+directly to the management server.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-node-locality">
 <dt>locality</dt>
-<dd>(<a class="reference internal" href="#envoy-api-msg-locality"><span class="std std-ref">Locality</span></a>)</dd>
+<dd>(<a class="reference internal" href="#envoy-api-msg-locality"><span class="std std-ref">Locality</span></a>) Locality specifying where the Envoy instance is running.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-node-build-version">
 <dt>build_version</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) This is motivated by informing a management server during canary which
-version of Envoy is being tested in a heterogeneous fleet.</dd>
+version of Envoy is being tested in a heterogeneous fleet. This will be set
+by Envoy in management server RPCs.</dd>
 </dl>
 </div>
 <div class="section" id="endpoint">
 <span id="envoy-api-msg-endpoint"></span><h2>Endpoint<a class="headerlink" href="#endpoint" title="Permalink to this headline">¶</a></h2>
+<p>Upstream host identifier.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;address&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
@@ -278,7 +285,7 @@ Endpoints have a Metadata object associated and routes contain a Metadata
 object to match against. There are some well defined metadata used today for
 this purpose:</p>
 <ul class="simple">
-<li>{“envoy.lb”: {“canary”: &lt;bool&gt; }}. This indicates the canary status of an
+<li><code class="docutils literal"><span class="pre">{&quot;envoy.lb&quot;:</span> <span class="pre">{&quot;canary&quot;:</span> <span class="pre">&lt;bool&gt;</span> <span class="pre">}}</span></code> This indicates the canary status of an
 endpoint and is also used during header processing
 (x-envoy-upstream-canary) and for stats purposes.</li>
 </ul>
@@ -289,7 +296,8 @@ endpoint and is also used during header processing
 </div>
 <dl class="docutils" id="envoy-api-field-metadata-filter-metadata">
 <dt>filter_metadata</dt>
-<dd>(map&lt;<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct">Struct</a>&gt;) Key is the reverse DNS filter name.</dd>
+<dd>(map&lt;<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct">Struct</a>&gt;) Key is the reverse DNS filter name, e.g. com.acme.widget. The envoy.*
+namespace is reserved for Envoy’s built-in filters.</dd>
 </dl>
 </div>
 <div class="section" id="runtimeuint32">
@@ -325,7 +333,11 @@ endpoint and is also used during header processing
 </dl>
 <dl class="docutils" id="envoy-api-field-headervalue-value">
 <dt>value</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Header value.</dd>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Header value.</p>
+<p class="last">The same <a class="reference internal" href="../configuration/access_log.html#config-access-log-format"><span class="std std-ref">format specifier</span></a> as used for
+<a class="reference internal" href="../configuration/access_log.html#config-access-log"><span class="std std-ref">HTTP access logging</span></a> applies here, however
+unknown header values are replaced with the empty string instead of <cite>-</cite>.</p>
+</dd>
 </dl>
 </div>
 <div class="section" id="headervalueoption">
@@ -339,20 +351,18 @@ endpoint and is also used during header processing
 </div>
 <dl class="docutils" id="envoy-api-field-headervalueoption-header">
 <dt>header</dt>
-<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-headervalue"><span class="std std-ref">HeaderValue</span></a>) Header Name/Value pair that this option applies to.</p>
-<p class="last">The same format specifier as used for HTTP access logging applies here,
-however unknown header values are replaced with the empty string instead
-of -. [V2-API-DIFF].</p>
-</dd>
+<dd>(<a class="reference internal" href="#envoy-api-msg-headervalue"><span class="std std-ref">HeaderValue</span></a>) Header name/value pair that this option applies to.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-headervalueoption-append">
 <dt>append</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue">BoolValue</a>) Should the value be appended? If true (default), the value is appended to
-existing values [V2-API-DIFF].</dd>
+existing values.</dd>
 </dl>
 </div>
 <div class="section" id="apiconfigsource">
 <span id="envoy-api-msg-apiconfigsource"></span><h2>ApiConfigSource<a class="headerlink" href="#apiconfigsource" title="Permalink to this headline">¶</a></h2>
+<p>API configuration source. This identifies the API type and cluster that Envoy
+will use to fetch an xDS API.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;api_type&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;cluster_name&quot;</span><span class="p">:</span> <span class="p">[],</span>
@@ -366,7 +376,7 @@ existing values [V2-API-DIFF].</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-apiconfigsource-cluster-name">
 <dt>cluster_name</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Multiple cluster names may be provided. If &gt; 1 cluster is defined, clusters
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) Multiple cluster names may be provided. If &gt; 1 cluster is defined, clusters
 will be cycled through if any kind of failure occurs.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-apiconfigsource-refresh-delay">
@@ -379,20 +389,23 @@ will be cycled through if any kind of failure occurs.</dd>
 <p>APIs may be fetched via either REST or gRPC.</p>
 <dl class="docutils" id="envoy-api-enum-value-apiconfigsource-apitype-rest-legacy">
 <dt>REST_LEGACY</dt>
-<dd><em>(DEFAULT)</em> ⁣REST legacy corresponds to the v1 API.</dd>
+<dd><em>(DEFAULT)</em> ⁣REST-JSON legacy corresponds to the v1 API.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-enum-value-apiconfigsource-apitype-rest">
 <dt>REST</dt>
-<dd>⁣</dd>
+<dd>⁣REST-JSON v2 API. The <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto3#json">canonical JSON encoding</a> for
+the v2 protos is used.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-enum-value-apiconfigsource-apitype-grpc">
 <dt>GRPC</dt>
-<dd>⁣</dd>
+<dd>⁣gRPC v2 API.</dd>
 </dl>
 </div>
 <div class="section" id="aggregatedconfigsource">
 <span id="envoy-api-msg-aggregatedconfigsource"></span><h2>AggregatedConfigSource<a class="headerlink" href="#aggregatedconfigsource" title="Permalink to this headline">¶</a></h2>
-<p>ADS will be used to fetch resources.</p>
+<p>Aggregated Discovery Service (ADS) options. This is currently empty, but when
+set in <a class="reference internal" href="#envoy-api-msg-configsource"><span class="std std-ref">ConfigSource</span></a> can be used to
+specify that ADS is to be used.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
 
 <span class="p">}</span>
@@ -401,9 +414,9 @@ will be cycled through if any kind of failure occurs.</dd>
 </div>
 <div class="section" id="configsource">
 <span id="envoy-api-msg-configsource"></span><h2>ConfigSource<a class="headerlink" href="#configsource" title="Permalink to this headline">¶</a></h2>
-<p>Configuration for listeners, clusters, routes, endpoints etc. may either be
-sourced from the filesystem or from an API source. Filesystem configs are
-watched with inotify for updates.</p>
+<p>Configuration for <a class="reference internal" href="../configuration/listeners/listeners.html#config-listeners"><span class="std std-ref">listeners</span></a>, <a class="reference internal" href="../configuration/cluster_manager/cluster.html#config-cluster-manager-cluster"><span class="std std-ref">clusters</span></a>, <a class="reference internal" href="../configuration/http_conn_man/route_config/route_config.html#config-http-conn-man-route-table"><span class="std std-ref">routes</span></a>, <a class="reference internal" href="../intro/arch_overview/service_discovery.html#arch-overview-service-discovery"><span class="std std-ref">endpoints</span></a> etc. may either be sourced from the
+filesystem or from an xDS API source. Filesystem configs are watched with
+inotify for updates.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;api_config_source&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -413,28 +426,30 @@ watched with inotify for updates.</p>
 </div>
 <dl class="docutils" id="envoy-api-field-configsource-path">
 <dt>path</dt>
-<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>)</p>
-<p class="last">Only one of path, api_config_source, ads may be set.</p>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Path on the filesystem to source and watch for configuration updates.</p>
+<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-configsource-path"><span class="std std-ref">path</span></a>, <a class="reference internal" href="#envoy-api-field-configsource-api-config-source"><span class="std std-ref">api_config_source</span></a>, <a class="reference internal" href="#envoy-api-field-configsource-ads"><span class="std std-ref">ads</span></a> must be set.</p>
 </dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-configsource-api-config-source">
 <dt>api_config_source</dt>
-<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-apiconfigsource"><span class="std std-ref">ApiConfigSource</span></a>)</p>
-<p class="last">Only one of path, api_config_source, ads may be set.</p>
+<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-apiconfigsource"><span class="std std-ref">ApiConfigSource</span></a>) API configuration source.</p>
+<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-configsource-path"><span class="std std-ref">path</span></a>, <a class="reference internal" href="#envoy-api-field-configsource-api-config-source"><span class="std std-ref">api_config_source</span></a>, <a class="reference internal" href="#envoy-api-field-configsource-ads"><span class="std std-ref">ads</span></a> must be set.</p>
 </dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-configsource-ads">
 <dt>ads</dt>
-<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-aggregatedconfigsource"><span class="std std-ref">AggregatedConfigSource</span></a>)</p>
-<p class="last">Only one of path, api_config_source, ads may be set.</p>
+<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-aggregatedconfigsource"><span class="std std-ref">AggregatedConfigSource</span></a>) When set, ADS will be used to fetch resources. The ADS API configuration
+source in the bootstrap configuration is used.</p>
+<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-configsource-path"><span class="std std-ref">path</span></a>, <a class="reference internal" href="#envoy-api-field-configsource-api-config-source"><span class="std std-ref">api_config_source</span></a>, <a class="reference internal" href="#envoy-api-field-configsource-ads"><span class="std std-ref">ads</span></a> must be set.</p>
 </dd>
 </dl>
 </div>
 <div class="section" id="transportsocket">
 <span id="envoy-api-msg-transportsocket"></span><h2>TransportSocket<a class="headerlink" href="#transportsocket" title="Permalink to this headline">¶</a></h2>
-<p>Configuration for transport socket in listeners and clusters. If the configuration is empty,
-a default transport socket implementation and configuration will be chosen based on the
-platform and existence of tls_context.</p>
+<p>Configuration for transport socket in <a class="reference internal" href="../configuration/listeners/listeners.html#config-listeners"><span class="std std-ref">listeners</span></a> and
+<a class="reference internal" href="../configuration/cluster_manager/cluster.html#config-cluster-manager-cluster"><span class="std std-ref">clusters</span></a>. If the configuration is
+empty, a default transport socket implementation and configuration will be
+chosen based on the platform and existence of tls_context.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
@@ -443,7 +458,7 @@ platform and existence of tls_context.</p>
 </div>
 <dl class="docutils" id="envoy-api-field-transportsocket-name">
 <dt>name</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The name of the transport socket to instantiate. The name must match a supported transport
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) The name of the transport socket to instantiate. The name must match a supported transport
 socket implementation.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-transportsocket-config">
@@ -454,7 +469,7 @@ See the supported transport socket implementations for further documentation.</d
 </div>
 <div class="section" id="enum-routingpriority">
 <span id="envoy-api-enum-routingpriority"></span><h2>Enum RoutingPriority<a class="headerlink" href="#enum-routingpriority" title="Permalink to this headline">¶</a></h2>
-<p>Envoy supports upstream priority routing both at the route and the virtual
+<p>Envoy supports <a class="reference internal" href="../intro/arch_overview/http_routing.html#arch-overview-http-routing-priority"><span class="std std-ref">upstream priority routing</span></a> both at the route and the virtual
 cluster level. The current priority implementation uses different connection
 pool and circuit breaking settings for each priority level. This means that
 even for HTTP/2 requests, two physical connections will be used to an
@@ -471,7 +486,7 @@ over a single upstream connection.</p>
 </div>
 <div class="section" id="enum-requestmethod">
 <span id="envoy-api-enum-requestmethod"></span><h2>Enum RequestMethod<a class="headerlink" href="#enum-requestmethod" title="Permalink to this headline">¶</a></h2>
-<p>HTTP request method</p>
+<p>HTTP request method.</p>
 <dl class="docutils" id="envoy-api-enum-value-requestmethod-method-unspecified">
 <dt>METHOD_UNSPECIFIED</dt>
 <dd><em>(DEFAULT)</em> ⁣</dd>
@@ -524,7 +539,7 @@ over a single upstream connection.</p>
         <a href="protocol.proto.html" class="btn btn-neutral float-right" title="api/protocol.proto" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="address.proto.html" class="btn btn-neutral" title="Network related configuration elements" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="address.proto.html" class="btn btn-neutral" title="Network addresses" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -555,7 +570,7 @@ over a single upstream connection.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.5.0-data-plane-api-e0c324',
+            VERSION:'1.5.0-data-plane-api-8c1566',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

@@ -1,5 +1,5 @@
-Network related configuration elements
-======================================
+Network addresses
+=================
 
 
 
@@ -20,7 +20,8 @@ Pipe
 .. _envoy_api_field_Pipe.path:
 
 path
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Unix Domain Socket path.
+  
   
 
 
@@ -48,11 +49,14 @@ protocol
 .. _envoy_api_field_SocketAddress.address:
 
 address
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The address for this socket.  Listeners will bind to the address.  An empty
-  address implies a bind to 0.0.0.0 or ::. It's still possible to distinguish on
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The address for this socket. :ref:`Listeners <config_listeners>` will bind
+  to the address or outbound connections will be made. An empty address
+  implies a bind to 0.0.0.0 or ::. It's still possible to distinguish on an
   address via the prefix/suffix matching in FilterChainMatch after connection.
-  For clusters, an address may be either an IP or hostname to be resolved via
-  DNS.  If it is a hostname, resolver_name should be set.
+  For :ref:`clusters <config_cluster_manager_cluster>`, an address may be
+  either an IP or hostname to be resolved via DNS. If it is a hostname,
+  :ref:`resolver_name <envoy_api_field_SocketAddress.resolver_name>` should
+  be set unless default (i.e. DNS) resolution is expected.
   
   
 .. _envoy_api_field_SocketAddress.port_value:
@@ -60,23 +64,25 @@ address
 port_value
   (`uint32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
   
-  Only one of port_value, named_port may be set.
+  Precisely one of :ref:`port_value <envoy_api_field_SocketAddress.port_value>`, :ref:`named_port <envoy_api_field_SocketAddress.named_port>` must be set.
   
 .. _envoy_api_field_SocketAddress.named_port:
 
 named_port
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) This is only valid if DNS SRV or if resolver_name is specified below
-  and the named resolver is capable of named port resolution.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) This is only valid if :ref:`resolver_name
+  <envoy_api_field_SocketAddress.resolver_name>` is specified below and the
+  named resolver is capable of named port resolution.
   
   
-  Only one of port_value, named_port may be set.
+  Precisely one of :ref:`port_value <envoy_api_field_SocketAddress.port_value>`, :ref:`named_port <envoy_api_field_SocketAddress.named_port>` must be set.
   
 .. _envoy_api_field_SocketAddress.resolver_name:
 
 resolver_name
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The name of the resolver. This must have been registered with Envoy. If this is
   empty, a context dependent default applies. If address is a hostname this
-  should be set.  If the address is a concrete IP address, no resolution will occur.
+  should be set for resolution other than DNS. If the address is a concrete
+  IP address, no resolution will occur.
   
   
 
@@ -91,14 +97,7 @@ Enum SocketAddress.Protocol
 TCP
   *(DEFAULT)* ⁣
   
-.. _envoy_api_enum_value_SocketAddress.Protocol.UDP:
 
-UDP
-  ⁣
-  
-  .. WARNING::
-    Not implemented yet
-  
 
 .. _envoy_api_msg_BindConfig:
 
@@ -141,14 +140,14 @@ management servers.
 socket_address
   (:ref:`SocketAddress <envoy_api_msg_SocketAddress>`) 
   
-  Only one of socket_address, pipe may be set.
+  Precisely one of :ref:`socket_address <envoy_api_field_Address.socket_address>`, :ref:`pipe <envoy_api_field_Address.pipe>` must be set.
   
 .. _envoy_api_field_Address.pipe:
 
 pipe
   (:ref:`Pipe <envoy_api_msg_Pipe>`) 
   
-  Only one of socket_address, pipe may be set.
+  Precisely one of :ref:`socket_address <envoy_api_field_Address.socket_address>`, :ref:`pipe <envoy_api_field_Address.pipe>` must be set.
   
 
 
@@ -158,7 +157,7 @@ CidrRange
 ---------
 
 CidrRange specifies an IP Address and a prefix length to construct
-the subnet mask.
+the subnet mask for a `CIDR <https://tools.ietf.org/html/rfc4632>`_ range.
 
 .. code-block:: json
 
@@ -170,11 +169,13 @@ the subnet mask.
 .. _envoy_api_field_CidrRange.address_prefix:
 
 address_prefix
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) IPv4 or IPv6 address, e.g. 192.0.0.0 or 2001:db8::.
+  
   
 .. _envoy_api_field_CidrRange.prefix_len:
 
 prefix_len
-  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) 
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Length of prefix, e.g. 0, 32.
+  
   
 
