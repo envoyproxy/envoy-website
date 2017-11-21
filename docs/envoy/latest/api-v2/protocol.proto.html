@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>api/protocol.proto &mdash; envoy 1.5.0-data-plane-api-069ae5 documentation</title>
+  <title>Protocol options &mdash; envoy 1.5.0-data-plane-api-24792b documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-069ae5 documentation" href="../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-24792b documentation" href="../index.html"/>
         <link rel="up" title="Envoy v2 API reference" href="api.html"/>
         <link rel="next" title="api/rds.proto" href="rds.proto.html"/>
         <link rel="prev" title="Common types" href="base.proto.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-069ae5
+                1.5.0-data-plane-api-24792b
               </div>
             
           
@@ -104,11 +104,9 @@
 <li class="toctree-l1 current"><a class="reference internal" href="api.html">Envoy v2 API reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="address.proto.html">Network addresses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="base.proto.html">Common types</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">api/protocol.proto</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#tcpprotocoloptions">TcpProtocolOptions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Protocol options</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#http1protocoloptions">Http1ProtocolOptions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#http2protocoloptions">Http2ProtocolOptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#grpcprotocoloptions">GrpcProtocolOptions</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="rds.proto.html">api/rds.proto</a></li>
@@ -161,7 +159,7 @@
         
           <li><a href="api.html">Envoy v2 API reference</a> &raquo;</li>
         
-      <li>api/protocol.proto</li>
+      <li>Protocol options</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -180,16 +178,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="api-protocol-proto">
-<h1>api/protocol.proto<a class="headerlink" href="#api-protocol-proto" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="tcpprotocoloptions">
-<span id="envoy-api-msg-tcpprotocoloptions"></span><h2>TcpProtocolOptions<a class="headerlink" href="#tcpprotocoloptions" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-
-<span class="p">}</span>
-</pre></div>
-</div>
-</div>
+  <div class="section" id="protocol-options">
+<h1>Protocol options<a class="headerlink" href="#protocol-options" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="http1protocoloptions">
 <span id="envoy-api-msg-http1protocoloptions"></span><h2>Http1ProtocolOptions<a class="headerlink" href="#http1protocoloptions" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -199,7 +189,10 @@
 </div>
 <dl class="docutils" id="envoy-api-field-http1protocoloptions-allow-absolute-url">
 <dt>allow_absolute_url</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue">BoolValue</a>)</dd>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue">BoolValue</a>) Handle HTTP requests with absolute URLs in the requests. These requests
+are generally sent by clients to forward/explicit proxies. This allows clients to configure
+envoy as their HTTP proxy. In Unix, for example, this is typically done by setting the
+<em>http_proxy</em> environment variable.</dd>
 </dl>
 </div>
 <div class="section" id="http2protocoloptions">
@@ -214,31 +207,27 @@
 </div>
 <dl class="docutils" id="envoy-api-field-http2protocoloptions-hpack-table-size">
 <dt>hpack_table_size</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>)</dd>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) <a class="reference external" href="http://httpwg.org/specs/rfc7541.html#rfc.section.4.2">Maximum table size</a>
+(in octets) that the encoder is permitted to use for the dynamic HPACK table. Valid values
+range from 0 to 4294967295 (2^32 - 1) and defaults to 4096. 0 effectively disables header
+compression.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-http2protocoloptions-max-concurrent-streams">
 <dt>max_concurrent_streams</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>)</dd>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) <a class="reference external" href="http://httpwg.org/specs/rfc7540.html#rfc.section.5.1.2">Maximum concurrent streams</a>
+allowed for peer on one HTTP/2 connection. Valid values range from 1 to 2147483647 (2^31 - 1)
+and defaults to 2147483647.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-http2protocoloptions-initial-stream-window-size">
 <dt>initial_stream_window_size</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>)</dd>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) This field also acts as a soft limit on the number of bytes Envoy will buffer per-stream in the
+HTTP/2 codec buffers.  Once the buffer reaches this pointer, watermark callbacks will fire to
+stop the flow of data to the codec buffers.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-http2protocoloptions-initial-connection-window-size">
 <dt>initial_connection_window_size</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>)</dd>
-</dl>
-</div>
-<div class="section" id="grpcprotocoloptions">
-<span id="envoy-api-msg-grpcprotocoloptions"></span><h2>GrpcProtocolOptions<a class="headerlink" href="#grpcprotocoloptions" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;http2_protocol_options&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<dl class="docutils" id="envoy-api-field-grpcprotocoloptions-http2-protocol-options">
-<dt>http2_protocol_options</dt>
-<dd>(<a class="reference internal" href="#envoy-api-msg-http2protocoloptions"><span class="std std-ref">Http2ProtocolOptions</span></a>)</dd>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) Similar to <em>initial_stream_window_size</em>, but for connection-level flow-control
+window. Currently, this has the same minimum/maximum/default as <em>initial_stream_window_size</em>.</dd>
 </dl>
 </div>
 </div>
@@ -287,7 +276,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.5.0-data-plane-api-069ae5',
+            VERSION:'1.5.0-data-plane-api-24792b',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
