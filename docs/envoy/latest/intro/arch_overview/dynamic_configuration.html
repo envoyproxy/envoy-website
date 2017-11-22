@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Dynamic configuration &mdash; envoy 1.5.0-data-plane-api-dc483b documentation</title>
+  <title>Dynamic configuration &mdash; envoy 1.5.0-data-plane-api-781a02 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-dc483b documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-781a02 documentation" href="../../index.html"/>
         <link rel="up" title="Architecture overview" href="arch_overview.html"/>
         <link rel="next" title="Initialization" href="init.html"/>
         <link rel="prev" title="Hot restart" href="hot_restart.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-dc483b
+                1.5.0-data-plane-api-781a02
               </div>
             
           
@@ -127,10 +127,10 @@
 <li class="toctree-l3"><a class="reference internal" href="hot_restart.html">Hot restart</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Dynamic configuration</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#fully-static">Fully static</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#sds-only">SDS only</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#sds-and-cds">SDS and CDS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#sds-cds-and-rds">SDS, CDS, and RDS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#sds-cds-rds-and-lds">SDS, CDS, RDS, and LDS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sds-eds-only">SDS/EDS only</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sds-eds-and-cds">SDS/EDS and CDS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sds-eds-cds-and-rds">SDS/EDS, CDS, and RDS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sds-eds-cds-rds-and-lds">SDS/EDS, CDS, RDS, and LDS</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="init.html">Initialization</a></li>
@@ -228,6 +228,7 @@ of the options currently available.</p>
 <ul class="simple">
 <li>Top level configuration <a class="reference internal" href="../../configuration/configuration.html#config"><span class="std std-ref">reference</span></a>.</li>
 <li><a class="reference internal" href="../../install/ref_configs.html#install-ref-configs"><span class="std std-ref">Reference configurations</span></a>.</li>
+<li>Envoy <a class="reference internal" href="../../configuration/overview/v2_overview.html#config-overview-v2"><span class="std std-ref">v2 API overview</span></a>.</li>
 </ul>
 <div class="section" id="fully-static">
 <h2>Fully static<a class="headerlink" href="#fully-static" title="Permalink to this headline">¶</a></h2>
@@ -237,16 +238,17 @@ via the built in <a class="reference internal" href="hot_restart.html#arch-overv
 <p>Though simplistic, fairly complicated deployments can be created using static configurations and
 graceful hot restarts.</p>
 </div>
-<div class="section" id="sds-only">
-<span id="arch-overview-dynamic-config-sds"></span><h2>SDS only<a class="headerlink" href="#sds-only" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="sds-eds-only">
+<span id="arch-overview-dynamic-config-sds"></span><h2>SDS/EDS only<a class="headerlink" href="#sds-eds-only" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="../../configuration/cluster_manager/sds.html#config-cluster-manager-sds"><span class="std std-ref">service discovery service (SDS) API</span></a> provides a more advanced
-mechanism by which Envoy can discover members of an upstream cluster. Layered on top of a static
+mechanism by which Envoy can discover members of an upstream cluster. SDS has been renamed to Endpoint
+Discovery Service (EDS) in the <a class="reference internal" href="../../configuration/overview/v2_overview.html#config-overview-v2"><span class="std std-ref">v2 API</span></a>. Layered on top of a static
 configuration, SDS allows an Envoy deployment to circumvent the limitations of DNS (maximum records
 in a response, etc.) as well as consume more information used in load balancing and routing (e.g.,
 canary status, zone, etc.).</p>
 </div>
-<div class="section" id="sds-and-cds">
-<span id="arch-overview-dynamic-config-cds"></span><h2>SDS and CDS<a class="headerlink" href="#sds-and-cds" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="sds-eds-and-cds">
+<span id="arch-overview-dynamic-config-cds"></span><h2>SDS/EDS and CDS<a class="headerlink" href="#sds-eds-and-cds" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="../../configuration/cluster_manager/cds.html#config-cluster-manager-cds"><span class="std std-ref">cluster discovery service (CDS) API</span></a> layers on a mechanism by
 which Envoy can discover upstream clusters used during routing. Envoy will gracefully add, update,
 and remove clusters as specified by the API. This API allows implementors to build a topology in
@@ -254,24 +256,24 @@ which Envoy does not need to be aware of all upstream clusters at initial config
 Typically, when doing HTTP routing along with CDS (but without route discovery service),
 implementors will make use of the router’s ability to forward requests to a cluster specified in an
 <a class="reference internal" href="../../configuration/http_conn_man/route_config/route.html#config-http-conn-man-route-table-route-cluster-header"><span class="std std-ref">HTTP request header</span></a>.</p>
-<p>Although it is possible to use CDS without SDS by specifying fully static clusters, we recommend
-still using the SDS API for clusters specified via CDS. Internally, when a cluster definition is
+<p>Although it is possible to use CDS without SDS/EDS by specifying fully static clusters, we recommend
+still using the SDS/EDS API for clusters specified via CDS. Internally, when a cluster definition is
 updated, the operation is graceful. However, all existing connection pools will be drained and
-reconnected. SDS does not suffer from this limitation. When hosts are added and removed via SDS,
+reconnected. SDS/EDS does not suffer from this limitation. When hosts are added and removed via SDS/EDS,
 the existing hosts in the cluster are unaffected.</p>
 </div>
-<div class="section" id="sds-cds-and-rds">
-<span id="arch-overview-dynamic-config-rds"></span><h2>SDS, CDS, and RDS<a class="headerlink" href="#sds-cds-and-rds" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="sds-eds-cds-and-rds">
+<span id="arch-overview-dynamic-config-rds"></span><h2>SDS/EDS, CDS, and RDS<a class="headerlink" href="#sds-eds-cds-and-rds" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="../../configuration/http_conn_man/rds.html#config-http-conn-man-rds"><span class="std std-ref">route discovery service (RDS) API</span></a> layers on a mechanism by which
 Envoy can discover the entire route configuration for an HTTP connection manager filter at runtime.
 The route configuration will be gracefully swapped in without affecting existing requests. This API,
-when used alongside SDS and CDS, allows implementors to build a complex routing topology
+when used alongside SDS/EDS and CDS, allows implementors to build a complex routing topology
 (<a class="reference internal" href="../../configuration/http_conn_man/route_config/traffic_splitting.html#config-http-conn-man-route-table-traffic-splitting"><span class="std std-ref">traffic shifting</span></a>, blue/green
 deployment, etc.) that will not require any Envoy restarts other than to obtain a new Envoy binary.</p>
 </div>
-<div class="section" id="sds-cds-rds-and-lds">
-<span id="arch-overview-dynamic-config-lds"></span><h2>SDS, CDS, RDS, and LDS<a class="headerlink" href="#sds-cds-rds-and-lds" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="../../configuration/overview/overview.html#config-overview-lds"><span class="std std-ref">listener discovery service (LDS)</span></a> layers on a mechanism by which
+<div class="section" id="sds-eds-cds-rds-and-lds">
+<span id="arch-overview-dynamic-config-lds"></span><h2>SDS/EDS, CDS, RDS, and LDS<a class="headerlink" href="#sds-eds-cds-rds-and-lds" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="../../configuration/overview/v1_overview.html#config-overview-lds"><span class="std std-ref">listener discovery service (LDS)</span></a> layers on a mechanism by which
 Envoy can discover entire listeners at runtime. This includes all filter stacks, up to and including
 HTTP filters with embedded references to <a class="reference internal" href="../../configuration/http_conn_man/rds.html#config-http-conn-man-rds"><span class="std std-ref">RDS</span></a>. Adding LDS into
 the mix allows almost every aspect of Envoy to be dynamically configured. Hot restart should
@@ -324,7 +326,7 @@ updates.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.5.0-data-plane-api-dc483b',
+            VERSION:'1.5.0-data-plane-api-781a02',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

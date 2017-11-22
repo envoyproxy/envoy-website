@@ -1,0 +1,570 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>EDS &mdash; envoy 1.5.0-data-plane-api-781a02 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-781a02 documentation" href="../index.html"/>
+        <link rel="up" title="Envoy v2 API reference" href="api.html"/>
+        <link rel="next" title="Health check" href="health_check.proto.html"/>
+        <link rel="prev" title="api/discovery.proto" href="discovery.proto.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> envoy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.5.0-data-plane-api-781a02
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/install.html">Building and installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-v1/api.html">Envoy v1 API reference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">Envoy v2 API reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="address.proto.html">Network addresses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.proto.html">Common types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bootstrap.proto.html">Bootstrap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cds.proto.html">CDS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="discovery.proto.html">api/discovery.proto</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">EDS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#lbendpoint">LbEndpoint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#localitylbendpoints">LocalityLbEndpoints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#endpointloadmetricstats">EndpointLoadMetricStats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#upstreamlocalitystats">UpstreamLocalityStats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#clusterstats">ClusterStats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#loadstatsrequest">LoadStatsRequest</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#clusterloadassignment">ClusterLoadAssignment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#clusterloadassignment-policy">ClusterLoadAssignment.Policy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#loadstatsresponse">LoadStatsResponse</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="health_check.proto.html">Health check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lds.proto.html">LDS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocol.proto.html">Protocol options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rds.proto.html">RDS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sds.proto.html">SDS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filter/filter.html">Filters</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">envoy</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="api.html">Envoy v2 API reference</a> &raquo;</li>
+        
+      <li>EDS</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api-v2/eds.proto.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="eds">
+<span id="envoy-api-file-api-eds-proto"></span><h1>EDS<a class="headerlink" href="#eds" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="lbendpoint">
+<span id="envoy-api-msg-lbendpoint"></span><h2>LbEndpoint<a class="headerlink" href="#lbendpoint" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L62">[LbEndpoint proto]</a></p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;endpoint&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;health_status&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;metadata&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;load_balancing_weight&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-lbendpoint-endpoint">
+<dt>endpoint</dt>
+<dd>(<a class="reference internal" href="base.proto.html#envoy-api-msg-endpoint"><span class="std std-ref">Endpoint</span></a>)</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-lbendpoint-health-status">
+<dt>health_status</dt>
+<dd>(<a class="reference internal" href="health_check.proto.html#envoy-api-enum-healthstatus"><span class="std std-ref">HealthStatus</span></a>) Optional health status when known and supplied by EDS server.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-lbendpoint-metadata">
+<dt>metadata</dt>
+<dd>(<a class="reference internal" href="base.proto.html#envoy-api-msg-metadata"><span class="std std-ref">Metadata</span></a>) The endpoint metadata specifies values that may be used by the load
+balancer to select endpoints in a cluster for a given request. The filter
+name should be specified as “envoy.lb”. An example boolean key-value pair
+is “canary”, providing the optional canary status of the upstream host.
+This may be matched against in a route’s ForwardAction metadata_match field
+to subset the endpoints considered in cluster load balancing.
+TODO(htuch: [V2-API-DIFF] Need to plumb this through Envoy and have
+everywhere that canary is used be capable of working on metadata.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-lbendpoint-load-balancing-weight">
+<dt>load_balancing_weight</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The optional load balancing weight of the upstream host, in the range 1 -
+128. Envoy uses the load balancing weight in some of the built in load
+balancers. The load balancing weight for an endpoint is divided by the sum
+of the weights of all endpoints in the endpoint’s locality to produce a
+percentage of traffic for the endpoint. This percentage is then further
+weighted by the endpoint’s locality’s load balancing weight from
+LocalityLbEndpoints. If unspecified, each host is presumed to have equal
+weight in a locality.
+The limit of 128 is somewhat arbitrary, but is applied due to performance
+concerns with the current implementation and can be removed when
+<a class="reference external" href="https://github.com/envoyproxy/envoy/issues/1285">https://github.com/envoyproxy/envoy/issues/1285</a> is fixed.</dd>
+</dl>
+</div>
+<div class="section" id="localitylbendpoints">
+<span id="envoy-api-msg-localitylbendpoints"></span><h2>LocalityLbEndpoints<a class="headerlink" href="#localitylbendpoints" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L96">[LocalityLbEndpoints proto]</a></p>
+<p>A group of endpoints belonging to a Locality.
+One can have multiple LocalityLbEndpoints for a locality, but this is
+generally only done if the different groups need to have different load
+balancing weights or different priorities.</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;locality&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;lb_endpoints&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;load_balancing_weight&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;priority&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-localitylbendpoints-locality">
+<dt>locality</dt>
+<dd>(<a class="reference internal" href="base.proto.html#envoy-api-msg-locality"><span class="std std-ref">Locality</span></a>)</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-localitylbendpoints-lb-endpoints">
+<dt>lb_endpoints</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-lbendpoint"><span class="std std-ref">LbEndpoint</span></a>)</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-localitylbendpoints-load-balancing-weight">
+<dt>load_balancing_weight</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) Optional: Per priority/region/zone/sub_zone weight - range 1-128. The load balancing
+weight for a locality is divided by the sum of the weights of all
+localities  at the same priority level to produce the effective percentage of traffic
+for the locality.</p>
+<p>Weights must be specified for either all localities in a given priority
+level or none.</p>
+<p>If unspecified, each locality is presumed to have equal weight in a
+cluster.</p>
+<p class="last">The limit of 128 is somewhat arbitrary, but is applied due to performance
+concerns with the current implementation and can be removed when
+<a class="reference external" href="https://github.com/envoyproxy/envoy/issues/1285">https://github.com/envoyproxy/envoy/issues/1285</a> is fixed.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-localitylbendpoints-priority">
+<dt>priority</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) Optional: the priority for this LocalityLbEndpoints.  If unspecified this will
+default to the highest priority (0).</p>
+<p>Under usual circumstances, Envoy will only select endpoints for the highest
+priority (0).  In the event all endpoints for a particular priority are
+unavailable/unhealthy, Envoy will fail over to selecting endpoints for the
+next highest priority group.</p>
+<p class="last">Priorities should range from 0 (highest) to N (lowest) without skipping.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="endpointloadmetricstats">
+<span id="envoy-api-msg-endpointloadmetricstats"></span><h2>EndpointLoadMetricStats<a class="headerlink" href="#endpointloadmetricstats" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L141">[EndpointLoadMetricStats proto]</a></p>
+<p>Example load report from a single request:</p>
+<p>[metric name, metric value]
+* cpu_seconds, 0.7
+* flash_utilization, 75</p>
+<p>When aggregating Envoy needs to count how many request’s load reports
+included each metric type, so Envoy can account for requests that don’t
+include that metric type. e.g.:</p>
+<p>[name, count, sum of values]
+* cpu_seconds, 10, 17.5
+* flash_utilization, 5, 375</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;metric_name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;num_requests_finished_with_metric&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;total_metric_value&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-endpointloadmetricstats-metric-name">
+<dt>metric_name</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Name of the metric; may be empty.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-endpointloadmetricstats-num-requests-finished-with-metric">
+<dt>num_requests_finished_with_metric</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">uint64</a>) Number of calls that finished and included this metric.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-endpointloadmetricstats-total-metric-value">
+<dt>total_metric_value</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">double</a>) Sum of metric values across all calls that finished with this metric for
+load_reporting_interval.</dd>
+</dl>
+</div>
+<div class="section" id="upstreamlocalitystats">
+<span id="envoy-api-msg-upstreamlocalitystats"></span><h2>UpstreamLocalityStats<a class="headerlink" href="#upstreamlocalitystats" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L154">[UpstreamLocalityStats proto]</a></p>
+<p>These are stats Envoy reports to GLB every so often. Report frequency is
+defined by LoadAssignmentResponse.interval
+Stats per upstream region/zone and optionally per subzone</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;locality&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;total_successful_requests&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;total_requests_in_progress&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;total_error_requests&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;load_metric_stats&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-upstreamlocalitystats-locality">
+<dt>locality</dt>
+<dd>(<a class="reference internal" href="base.proto.html#envoy-api-msg-locality"><span class="std std-ref">Locality</span></a>) Name of zone, region and optionally endpoint group this metrics was
+collected from. Zone and region names could be empty if unknown.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-upstreamlocalitystats-total-successful-requests">
+<dt>total_successful_requests</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">uint64</a>) The total number of requests sent by this Envoy since the last report. A
+single HTTP or gRPC request or stream is counted as one request. A TCP
+connection is also treated as one request. There is no explicit
+total_requests field below for a locality, but it may be inferred from:</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>total_requests = total_successful_requests + total_requests_in_progress +
+  total_error_requests
+</pre></div>
+</div>
+<p class="last">The total number of requests successfully completed by the endpoints in the
+locality. These include non-5xx responses for HTTP, where errors
+originate at the client and the endpoint responded successfuly. For gRPC,
+the grpc-status values are those not covered by total_error_requests below.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-upstreamlocalitystats-total-requests-in-progress">
+<dt>total_requests_in_progress</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">uint64</a>) The total number of unfinished requests</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-upstreamlocalitystats-total-error-requests">
+<dt>total_error_requests</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">uint64</a>) The total number of requests that failed due to errors at the endpoint.
+For HTTP these are responses with 5xx status codes and for gRPC the
+grpc-status values {DeadlineExceeded, Unimplemented, Internal,
+Unavailable, Unknown, DataLoss}.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-upstreamlocalitystats-load-metric-stats">
+<dt>load_metric_stats</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-endpointloadmetricstats"><span class="std std-ref">EndpointLoadMetricStats</span></a>) Stats for multi-dimensional load balancing.</dd>
+</dl>
+</div>
+<div class="section" id="clusterstats">
+<span id="envoy-api-msg-clusterstats"></span><h2>ClusterStats<a class="headerlink" href="#clusterstats" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L187">[ClusterStats proto]</a></p>
+<p>Per cluster stats</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;cluster_name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;upstream_locality_stats&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;total_dropped_requests&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-clusterstats-cluster-name">
+<dt>cluster_name</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>)</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-clusterstats-upstream-locality-stats">
+<dt>upstream_locality_stats</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-upstreamlocalitystats"><span class="std std-ref">UpstreamLocalityStats</span></a>) Need at least one.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-clusterstats-total-dropped-requests">
+<dt>total_dropped_requests</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">uint64</a>) Cluster-level stats such as total_successful_requests may be computed by
+summing upstream_locality_stats. In addition, below there are additional
+cluster-wide stats. The following total_requests equality holds at the
+cluster-level:</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>sum_locality(total_successful_requests) + sum_locality(total_requests_in_progress) +
+  sum_locality(total_error_requests) + total_dropped_requests`
+</pre></div>
+</div>
+<p class="last">The total number of dropped requests. This covers requests
+deliberately dropped by the drop_overload policy and circuit breaking.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="loadstatsrequest">
+<span id="envoy-api-msg-loadstatsrequest"></span><h2>LoadStatsRequest<a class="headerlink" href="#loadstatsrequest" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L207">[LoadStatsRequest proto]</a></p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;node&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;cluster_stats&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-loadstatsrequest-node">
+<dt>node</dt>
+<dd>(<a class="reference internal" href="base.proto.html#envoy-api-msg-node"><span class="std std-ref">Node</span></a>)</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-loadstatsrequest-cluster-stats">
+<dt>cluster_stats</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-clusterstats"><span class="std std-ref">ClusterStats</span></a>)</dd>
+</dl>
+</div>
+<div class="section" id="clusterloadassignment">
+<span id="envoy-api-msg-clusterloadassignment"></span><h2>ClusterLoadAssignment<a class="headerlink" href="#clusterloadassignment" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L220">[ClusterLoadAssignment proto]</a></p>
+<p>Each route from RDS will map to a single cluster or traffic split across
+clusters using weights expressed in the RDS WeightedCluster.</p>
+<p>With EDS, each cluster is treated independently from a LB perspective, with
+LB taking place between the Localities within a cluster and at a finer
+granularity between the hosts within a locality. For a given cluster, the
+effective weight of a host is its load_balancing_weight multiplied by the
+load_balancing_weight of its Locality.</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;cluster_name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;endpoints&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;policy&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-clusterloadassignment-cluster-name">
+<dt>cluster_name</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>)</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-clusterloadassignment-endpoints">
+<dt>endpoints</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-localitylbendpoints"><span class="std std-ref">LocalityLbEndpoints</span></a>)</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-clusterloadassignment-policy">
+<dt>policy</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-clusterloadassignment-policy"><span class="std std-ref">ClusterLoadAssignment.Policy</span></a>)</dd>
+</dl>
+</div>
+<div class="section" id="clusterloadassignment-policy">
+<span id="envoy-api-msg-clusterloadassignment-policy"></span><h2>ClusterLoadAssignment.Policy<a class="headerlink" href="#clusterloadassignment-policy" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L223">[ClusterLoadAssignment.Policy proto]</a></p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;drop_overload&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-clusterloadassignment-policy-drop-overload">
+<dt>drop_overload</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">double</a>) Percentage of traffic (0-100) that should be dropped. This
+action allows protection of upstream hosts should they unable to
+recover from an outage or should they be unable to autoscale and hence
+overall incoming traffic volume need to be trimmed to protect them.
+[V2-API-DIFF] This is known as maintenance mode in v1.</dd>
+</dl>
+</div>
+<div class="section" id="loadstatsresponse">
+<span id="envoy-api-msg-loadstatsresponse"></span><h2>LoadStatsResponse<a class="headerlink" href="#loadstatsresponse" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L234">[LoadStatsResponse proto]</a></p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;clusters&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;load_reporting_interval&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-loadstatsresponse-clusters">
+<dt>clusters</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Clusters to report stats for.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-loadstatsresponse-load-reporting-interval">
+<dt>load_reporting_interval</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The default is 10 seconds.</dd>
+</dl>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="health_check.proto.html" class="btn btn-neutral float-right" title="Health check" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="discovery.proto.html" class="btn btn-neutral" title="api/discovery.proto" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2017, Envoy Project Authors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.5.0-data-plane-api-781a02',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,481 @@
+.. _envoy_api_file_api/sds.proto:
+
+SDS
+===
+
+
+.. _envoy_api_msg_DataSource:
+
+DataSource
+----------
+
+`[DataSource proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/sds.proto#L26>`_
+
+
+.. code-block:: json
+
+  {
+    "filename": "...",
+    "inline": "..."
+  }
+
+.. _envoy_api_field_DataSource.filename:
+
+filename
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
+  
+  Only one of :ref:`filename <envoy_api_field_DataSource.filename>`, :ref:`inline <envoy_api_field_DataSource.inline>` may be set.
+  
+.. _envoy_api_field_DataSource.inline:
+
+inline
+  (`bytes <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
+  
+  Only one of :ref:`filename <envoy_api_field_DataSource.filename>`, :ref:`inline <envoy_api_field_DataSource.inline>` may be set.
+  
+
+
+.. _envoy_api_msg_TlsParameters:
+
+TlsParameters
+-------------
+
+`[TlsParameters proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/sds.proto#L33>`_
+
+
+.. code-block:: json
+
+  {
+    "tls_minimum_protocol_version": "...",
+    "tls_maximum_protocol_version": "...",
+    "cipher_suites": [],
+    "ecdh_curves": []
+  }
+
+.. _envoy_api_field_TlsParameters.tls_minimum_protocol_version:
+
+tls_minimum_protocol_version
+  (:ref:`TlsParameters.TlsProtocol <envoy_api_enum_TlsParameters.TlsProtocol>`) Allowed TLS protocols.
+  
+  
+.. _envoy_api_field_TlsParameters.tls_maximum_protocol_version:
+
+tls_maximum_protocol_version
+  (:ref:`TlsParameters.TlsProtocol <envoy_api_enum_TlsParameters.TlsProtocol>`) 
+  
+.. _envoy_api_field_TlsParameters.cipher_suites:
+
+cipher_suites
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If specified, the TLS listener will only support the specified cipher list.
+  
+  
+.. _envoy_api_field_TlsParameters.ecdh_curves:
+
+ecdh_curves
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If specified, the TLS connection will only support the specified ECDH
+  curves. If not specified, the default curves (X25519, P-256) will be used.
+  
+  
+
+.. _envoy_api_enum_TlsParameters.TlsProtocol:
+
+Enum TlsParameters.TlsProtocol
+------------------------------
+
+`[TlsParameters.TlsProtocol proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/sds.proto#L34>`_
+
+
+.. _envoy_api_enum_value_TlsParameters.TlsProtocol.TLS_AUTO:
+
+TLS_AUTO
+  *(DEFAULT)* ⁣
+  
+.. _envoy_api_enum_value_TlsParameters.TlsProtocol.TLSv1_0:
+
+TLSv1_0
+  ⁣
+  
+.. _envoy_api_enum_value_TlsParameters.TlsProtocol.TLSv1_1:
+
+TLSv1_1
+  ⁣
+  
+.. _envoy_api_enum_value_TlsParameters.TlsProtocol.TLSv1_2:
+
+TLSv1_2
+  ⁣
+  
+.. _envoy_api_enum_value_TlsParameters.TlsProtocol.TLSv1_3:
+
+TLSv1_3
+  ⁣
+  
+
+.. _envoy_api_msg_TlsCertificate:
+
+TlsCertificate
+--------------
+
+`[TlsCertificate proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/sds.proto#L55>`_
+
+TLS certs can be loaded from file or delivered inline [V2-API-DIFF]. Individual fields may
+be loaded from either.
+
+.. code-block:: json
+
+  {
+    "certificate_chain": "{...}",
+    "private_key": "{...}",
+    "password": "{...}",
+    "ocsp_staple": "{...}",
+    "signed_certificate_timestamp": []
+  }
+
+.. _envoy_api_field_TlsCertificate.certificate_chain:
+
+certificate_chain
+  (:ref:`DataSource <envoy_api_msg_DataSource>`) 
+  
+.. _envoy_api_field_TlsCertificate.private_key:
+
+private_key
+  (:ref:`DataSource <envoy_api_msg_DataSource>`) 
+  
+.. _envoy_api_field_TlsCertificate.password:
+
+password
+  (:ref:`DataSource <envoy_api_msg_DataSource>`) 
+  
+.. _envoy_api_field_TlsCertificate.ocsp_staple:
+
+ocsp_staple
+  (:ref:`DataSource <envoy_api_msg_DataSource>`) 
+  
+.. _envoy_api_field_TlsCertificate.signed_certificate_timestamp:
+
+signed_certificate_timestamp
+  (:ref:`DataSource <envoy_api_msg_DataSource>`) 
+  
+
+
+.. _envoy_api_msg_TlsSessionTicketKeys:
+
+TlsSessionTicketKeys
+--------------------
+
+`[TlsSessionTicketKeys proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/sds.proto#L63>`_
+
+
+.. code-block:: json
+
+  {
+    "keys": []
+  }
+
+.. _envoy_api_field_TlsSessionTicketKeys.keys:
+
+keys
+  (:ref:`DataSource <envoy_api_msg_DataSource>`) Keys to encrypt/decrypt TLS session tickets for session resumption.  The first
+  key is used to encrypt new tickets that are created.  All keys are candidates
+  for decrypting received tickets.
+  
+  Each key must be exactly 80 bytes long, containing cryptographically-secure random
+  data.  For example, the output of "openssl rand 80".
+  
+  
+
+
+.. _envoy_api_msg_CertificateValidationContext:
+
+CertificateValidationContext
+----------------------------
+
+`[CertificateValidationContext proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/sds.proto#L73>`_
+
+
+.. code-block:: json
+
+  {
+    "trusted_ca": "{...}",
+    "verify_certificate_hash": [],
+    "verify_spki_sha256": [],
+    "verify_subject_alt_name": [],
+    "require_ocsp_staple": "{...}",
+    "require_signed_certificate_timestamp": "{...}"
+  }
+
+.. _envoy_api_field_CertificateValidationContext.trusted_ca:
+
+trusted_ca
+  (:ref:`DataSource <envoy_api_msg_DataSource>`) TLS certificate data containing certificate authority certificates to use
+  in verifying a presented certificate. If not specified and a certificate is
+  presented it will not be verified.
+  
+  
+.. _envoy_api_field_CertificateValidationContext.verify_certificate_hash:
+
+verify_certificate_hash
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If specified, Envoy will verify (pin) hex-encoded SHA-256 hash of
+  the presented certificate.
+  
+  
+.. _envoy_api_field_CertificateValidationContext.verify_spki_sha256:
+
+verify_spki_sha256
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If specified, Envoy will verify (pin) base64-encoded SHA-256 hash of
+  the Subject Public Key Information (SPKI) of the presented certificate.
+  This is the same format as used in HTTP Public Key Pinning.
+  
+  
+.. _envoy_api_field_CertificateValidationContext.verify_subject_alt_name:
+
+verify_subject_alt_name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) An optional list of subject alt names. If specified, Envoy will verify that
+  the certificate’s subject alt name matches one of the specified values.
+  
+  
+.. _envoy_api_field_CertificateValidationContext.require_ocsp_staple:
+
+require_ocsp_staple
+  (`BoolValue <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue>`_) Must present a signed time-stamped OCSP response.
+  
+  
+.. _envoy_api_field_CertificateValidationContext.require_signed_certificate_timestamp:
+
+require_signed_certificate_timestamp
+  (`BoolValue <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue>`_) Must present signed certificate time-stamp.
+  
+  
+
+
+.. _envoy_api_msg_CommonTlsContext:
+
+CommonTlsContext
+----------------
+
+`[CommonTlsContext proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/sds.proto#L100>`_
+
+TLS context shared by both client and server TLS contexts.
+
+.. code-block:: json
+
+  {
+    "tls_params": "{...}",
+    "tls_certificates": [],
+    "tls_certificate_sds_secret_configs": [],
+    "validation_context": "{...}",
+    "alpn_protocols": [],
+    "deprecated_v1": "{...}"
+  }
+
+.. _envoy_api_field_CommonTlsContext.tls_params:
+
+tls_params
+  (:ref:`TlsParameters <envoy_api_msg_TlsParameters>`) TLS protocol versions, cipher suites etc.
+  
+  
+.. _envoy_api_field_CommonTlsContext.tls_certificates:
+
+tls_certificates
+  (:ref:`TlsCertificate <envoy_api_msg_TlsCertificate>`) Multiple TLS certificates can be associated with the same context,
+  e.g. to allow both RSA and ECDSA certificates [V2-API-DIFF].
+  TLS certificates can be either configured locally or fetched from SDS.
+  
+  
+.. _envoy_api_field_CommonTlsContext.tls_certificate_sds_secret_configs:
+
+tls_certificate_sds_secret_configs
+  (:ref:`SdsSecretConfig <envoy_api_msg_SdsSecretConfig>`) 
+  
+.. _envoy_api_field_CommonTlsContext.validation_context:
+
+validation_context
+  (:ref:`CertificateValidationContext <envoy_api_msg_CertificateValidationContext>`) How to validate peer certificates.
+  
+  
+.. _envoy_api_field_CommonTlsContext.alpn_protocols:
+
+alpn_protocols
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Protocols to negotiate over ALPN
+  
+  
+.. _envoy_api_field_CommonTlsContext.deprecated_v1:
+
+deprecated_v1
+  (:ref:`CommonTlsContext.DeprecatedV1 <envoy_api_msg_CommonTlsContext.DeprecatedV1>`) 
+  
+.. _envoy_api_msg_CommonTlsContext.DeprecatedV1:
+
+CommonTlsContext.DeprecatedV1
+-----------------------------
+
+`[CommonTlsContext.DeprecatedV1 proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/sds.proto#L119>`_
+
+These fields are deprecated and only are used during the interim v1 -> v2
+transition period for internal purposes. They should not be used outside of
+the Envoy binary.
+
+.. code-block:: json
+
+  {
+    "alt_alpn_protocols": "..."
+  }
+
+.. _envoy_api_field_CommonTlsContext.DeprecatedV1.alt_alpn_protocols:
+
+alt_alpn_protocols
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
+  
+
+
+
+.. _envoy_api_msg_UpstreamTlsContext:
+
+UpstreamTlsContext
+------------------
+
+`[UpstreamTlsContext proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/sds.proto#L125>`_
+
+
+.. code-block:: json
+
+  {
+    "common_tls_context": "{...}",
+    "sni": "..."
+  }
+
+.. _envoy_api_field_UpstreamTlsContext.common_tls_context:
+
+common_tls_context
+  (:ref:`CommonTlsContext <envoy_api_msg_CommonTlsContext>`) 
+  
+.. _envoy_api_field_UpstreamTlsContext.sni:
+
+sni
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) SNI string to use when creating TLS backend connections.
+  
+  
+
+
+.. _envoy_api_msg_DownstreamTlsContext:
+
+DownstreamTlsContext
+--------------------
+
+`[DownstreamTlsContext proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/sds.proto#L135>`_
+
+[V2-API-DIFF] This has been reworked to support alternative modes of
+certificate/key delivery, for consistency with the upstream TLS context and
+to segregate the client/server aspects of the TLS context.
+
+.. code-block:: json
+
+  {
+    "common_tls_context": "{...}",
+    "require_client_certificate": "{...}",
+    "require_sni": "{...}",
+    "session_ticket_keys": "{...}",
+    "session_ticket_keys_sds_secret_config": "{...}"
+  }
+
+.. _envoy_api_field_DownstreamTlsContext.common_tls_context:
+
+common_tls_context
+  (:ref:`CommonTlsContext <envoy_api_msg_CommonTlsContext>`) 
+  
+.. _envoy_api_field_DownstreamTlsContext.require_client_certificate:
+
+require_client_certificate
+  (`BoolValue <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue>`_) If specified, Envoy will reject connections without a valid client
+  certificate.
+  
+  
+.. _envoy_api_field_DownstreamTlsContext.require_sni:
+
+require_sni
+  (`BoolValue <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue>`_) If specified, Envoy will reject connections without a valid and matching SNI.
+  
+  
+.. _envoy_api_field_DownstreamTlsContext.session_ticket_keys:
+
+session_ticket_keys
+  (:ref:`TlsSessionTicketKeys <envoy_api_msg_TlsSessionTicketKeys>`) 
+  
+  Only one of :ref:`session_ticket_keys <envoy_api_field_DownstreamTlsContext.session_ticket_keys>`, :ref:`session_ticket_keys_sds_secret_config <envoy_api_field_DownstreamTlsContext.session_ticket_keys_sds_secret_config>` may be set.
+  
+.. _envoy_api_field_DownstreamTlsContext.session_ticket_keys_sds_secret_config:
+
+session_ticket_keys_sds_secret_config
+  (:ref:`SdsSecretConfig <envoy_api_msg_SdsSecretConfig>`) 
+  
+  Only one of :ref:`session_ticket_keys <envoy_api_field_DownstreamTlsContext.session_ticket_keys>`, :ref:`session_ticket_keys_sds_secret_config <envoy_api_field_DownstreamTlsContext.session_ticket_keys_sds_secret_config>` may be set.
+  
+
+
+.. _envoy_api_msg_SdsSecretConfig:
+
+SdsSecretConfig
+---------------
+
+`[SdsSecretConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/sds.proto#L151>`_
+
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "sds_config": "{...}"
+  }
+
+.. _envoy_api_field_SdsSecretConfig.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Name (FQDN, UUID, SPKI, SHA256, etc.) by which the secret can be uniquely referred to.
+  When both name and config are specified, then secret can be fetched and/or reloaded via SDS.
+  When only name is specified, then secret will be loaded from static resources [V2-API-DIFF].
+  
+  
+.. _envoy_api_field_SdsSecretConfig.sds_config:
+
+sds_config
+  (:ref:`ConfigSource <envoy_api_msg_ConfigSource>`) 
+  
+
+
+.. _envoy_api_msg_Secret:
+
+Secret
+------
+
+`[Secret proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/sds.proto#L159>`_
+
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "tls_certificate": "{...}",
+    "session_ticket_keys": "{...}"
+  }
+
+.. _envoy_api_field_Secret.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Name (FQDN, UUID, SPKI, SHA256, etc.) by which the secret can be uniquely referred to.
+  
+  
+.. _envoy_api_field_Secret.tls_certificate:
+
+tls_certificate
+  (:ref:`TlsCertificate <envoy_api_msg_TlsCertificate>`) 
+  
+  Only one of :ref:`tls_certificate <envoy_api_field_Secret.tls_certificate>`, :ref:`session_ticket_keys <envoy_api_field_Secret.session_ticket_keys>` may be set.
+  
+.. _envoy_api_field_Secret.session_ticket_keys:
+
+session_ticket_keys
+  (:ref:`TlsSessionTicketKeys <envoy_api_msg_TlsSessionTicketKeys>`) 
+  
+  Only one of :ref:`tls_certificate <envoy_api_field_Secret.tls_certificate>`, :ref:`session_ticket_keys <envoy_api_field_Secret.session_ticket_keys>` may be set.
+  
+

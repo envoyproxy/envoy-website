@@ -1,0 +1,343 @@
+.. _envoy_api_file_api/lds.proto:
+
+LDS
+===
+
+This is heavily derived from
+https://lyft.github.io/envoy/docs/configuration/listeners/listeners.html
+The v2 gRPC API differences are tagged with [V2-API-DIFF].
+
+.. _envoy_api_msg_Filter:
+
+Filter
+------
+
+`[Filter proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L36>`_
+
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "config": "{...}",
+    "deprecated_v1": "{...}"
+  }
+
+.. _envoy_api_field_Filter.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The name of the filter to instantiate. The name must match a supported
+  filter.
+  
+  
+.. _envoy_api_field_Filter.config:
+
+config
+  (`Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_) Filter specific configuration which depends on the filter being
+  instantiated. See the supported filters for further documentation.
+  
+  
+.. _envoy_api_field_Filter.deprecated_v1:
+
+deprecated_v1
+  (:ref:`Filter.DeprecatedV1 <envoy_api_msg_Filter.DeprecatedV1>`) 
+  
+.. _envoy_api_msg_Filter.DeprecatedV1:
+
+Filter.DeprecatedV1
+-------------------
+
+`[Filter.DeprecatedV1 proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L44>`_
+
+
+.. code-block:: json
+
+  {
+    "type": "..."
+  }
+
+.. _envoy_api_field_Filter.DeprecatedV1.type:
+
+type
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
+  
+
+
+
+.. _envoy_api_msg_FilterChainMatch:
+
+FilterChainMatch
+----------------
+
+`[FilterChainMatch proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L52>`_
+
+Specifies the match criteria for selecting a specific filter chain for a
+listener [V2-API-DIFF].
+
+.. code-block:: json
+
+  {
+    "sni_domains": [],
+    "prefix_ranges": [],
+    "address_suffix": "...",
+    "suffix_len": "{...}",
+    "source_prefix_ranges": [],
+    "source_ports": [],
+    "destination_port": "{...}"
+  }
+
+.. _envoy_api_field_FilterChainMatch.sni_domains:
+
+sni_domains
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If non-empty, the SNI domains to consider. May contain a wildcard prefix,
+  e.g. ``*.example.com``.
+  
+  
+.. _envoy_api_field_FilterChainMatch.prefix_ranges:
+
+prefix_ranges
+  (:ref:`CidrRange <envoy_api_msg_CidrRange>`) If non-empty, an IP address and prefix length to match addresses when the
+  listener is bound to 0.0.0.0/:: or when use_original_dst is specified.
+  
+  
+.. _envoy_api_field_FilterChainMatch.address_suffix:
+
+address_suffix
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If non-empty, an IP address and suffix length to match addresses when the
+  listener is bound to 0.0.0.0/:: or when use_original_dst is specified.
+  
+  
+.. _envoy_api_field_FilterChainMatch.suffix_len:
+
+suffix_len
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) 
+  
+.. _envoy_api_field_FilterChainMatch.source_prefix_ranges:
+
+source_prefix_ranges
+  (:ref:`CidrRange <envoy_api_msg_CidrRange>`) The criteria is satisfied if the source IP address of the downstream
+  connection is contained in at least one of the specified subnets. If the
+  parameter is not specified or the list is empty, the source IP address is
+  ignored.
+  
+  
+.. _envoy_api_field_FilterChainMatch.source_ports:
+
+source_ports
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The criteria is satisfied if the source port of the downstream connection
+  is contained in at least one of the specified ports. If the parameter is
+  not specified, the source port is ignored.
+  
+  
+.. _envoy_api_field_FilterChainMatch.destination_port:
+
+destination_port
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Optional destination port to consider when use_original_dst is set on the
+  listener in determining a filter chain match.
+  
+  
+
+
+.. _envoy_api_msg_FilterChain:
+
+FilterChain
+-----------
+
+`[FilterChain proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L84>`_
+
+Grouping of FilterChainMatch criteria, DownstreamTlsContext, the actual filter chain
+and related parameters.
+
+.. code-block:: json
+
+  {
+    "filter_chain_match": "{...}",
+    "tls_context": "{...}",
+    "filters": [],
+    "use_proxy_proto": "{...}",
+    "metadata": "{...}",
+    "transport_socket": "{...}"
+  }
+
+.. _envoy_api_field_FilterChain.filter_chain_match:
+
+filter_chain_match
+  (:ref:`FilterChainMatch <envoy_api_msg_FilterChainMatch>`) 
+  
+.. _envoy_api_field_FilterChain.tls_context:
+
+tls_context
+  (:ref:`DownstreamTlsContext <envoy_api_msg_DownstreamTlsContext>`) 
+  
+.. _envoy_api_field_FilterChain.filters:
+
+filters
+  (:ref:`Filter <envoy_api_msg_Filter>`) A list of individual network filters that make up the filter chain for
+  connections established with the listener. Order matters as the filters are
+  processed sequentially as connection events happen.  Note: If the filter
+  list is empty, the connection will close by default.
+  
+  
+.. _envoy_api_field_FilterChain.use_proxy_proto:
+
+use_proxy_proto
+  (`BoolValue <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue>`_) Whether the listener should expect a PROXY protocol V1 header on new
+  connections. If this option is enabled, the listener will assume that that
+  remote address of the connection is the one specified in the header. Some
+  load balancers including the AWS ELB support this option. If the option is
+  absent or set to false, Envoy will use the physical peer address of the
+  connection as the remote address.
+  
+  
+.. _envoy_api_field_FilterChain.metadata:
+
+metadata
+  (:ref:`Metadata <envoy_api_msg_Metadata>`) See base.Metadata description.
+  
+  
+.. _envoy_api_field_FilterChain.transport_socket:
+
+transport_socket
+  (:ref:`TransportSocket <envoy_api_msg_TransportSocket>`) See base.TransportSocket description.
+  
+  
+
+
+.. _envoy_api_msg_Listener:
+
+Listener
+--------
+
+`[Listener proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L108>`_
+
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "address": "{...}",
+    "filter_chains": [],
+    "use_original_dst": "{...}",
+    "per_connection_buffer_limit_bytes": "{...}",
+    "metadata": "{...}",
+    "deprecated_v1": "{...}",
+    "drain_type": "..."
+  }
+
+.. _envoy_api_field_Listener.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The unique name of the listener. If no name is provided, Envoy will generate a
+  UUID for internal use. The name is used for dynamic listener update and removal
+  via the LDS APIs.
+  
+  
+.. _envoy_api_field_Listener.address:
+
+address
+  (:ref:`Address <envoy_api_msg_Address>`) The address that the listener should listen on.
+  
+  
+.. _envoy_api_field_Listener.filter_chains:
+
+filter_chains
+  (:ref:`FilterChain <envoy_api_msg_FilterChain>`) A list of filter chains to consider for this listener. The FilterChain with
+  the most specific FilterChainMatch criteria is used on a connection. The
+  algorithm works as follows:
+  
+  1. If SNI information is presented at connection time, only the
+     FilterChains matching the SNI are considered. Otherwise, only
+     FilterChains with no SNI domains are considered.
+  2. Of the FilterChains from step 1, the longest prefix match on the
+     bound destination address is used to select the next set of
+     FilterChains. This may be one FilterChain or multiple if there is
+     a tie.
+  3. The longest suffix match on the bound destination address is used to
+     select the FilterChain from step 2 that is used.
+  
+  
+.. _envoy_api_field_Listener.use_original_dst:
+
+use_original_dst
+  (`BoolValue <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue>`_) If a connection is redirected using iptables, the port on which the proxy
+  receives it might be different from the original destination port. When
+  this flag is set to true, the listener uses the original destination
+  address and port during FilterChain matching. Default is false.
+  
+  
+.. _envoy_api_field_Listener.per_connection_buffer_limit_bytes:
+
+per_connection_buffer_limit_bytes
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Soft limit on size of the listener’s new connection read and write buffers.
+  If unspecified, an implementation defined default is applied (1MiB).
+  
+  
+.. _envoy_api_field_Listener.metadata:
+
+metadata
+  (:ref:`Metadata <envoy_api_msg_Metadata>`) See base.Metadata description.
+  
+  
+.. _envoy_api_field_Listener.deprecated_v1:
+
+deprecated_v1
+  (:ref:`Listener.DeprecatedV1 <envoy_api_msg_Listener.DeprecatedV1>`) 
+  
+.. _envoy_api_field_Listener.drain_type:
+
+drain_type
+  (:ref:`Listener.DrainType <envoy_api_enum_Listener.DrainType>`) The type of draining to perform at a listener-wide level.
+  
+  
+.. _envoy_api_msg_Listener.DeprecatedV1:
+
+Listener.DeprecatedV1
+---------------------
+
+`[Listener.DeprecatedV1 proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L145>`_
+
+
+.. code-block:: json
+
+  {
+    "bind_to_port": "{...}"
+  }
+
+.. _envoy_api_field_Listener.DeprecatedV1.bind_to_port:
+
+bind_to_port
+  (`BoolValue <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue>`_) Whether the listener should bind to the port. A listener that doesn’t
+  bind can only receive connections redirected from other listeners that
+  set use_original_dst parameter to true. Default is true.
+  
+  [V2-API-DIFF] This is deprecated in v2, all Listeners will bind to their
+  port. An additional filter chain must be created for every original
+  destination port this listener may redirect to in v2, with the original
+  port specified in the FilterChainMatch destination_port field.
+  
+  
+
+
+.. _envoy_api_enum_Listener.DrainType:
+
+Enum Listener.DrainType
+-----------------------
+
+`[Listener.DrainType proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L158>`_
+
+
+.. _envoy_api_enum_value_Listener.DrainType.DEFAULT:
+
+DEFAULT
+  *(DEFAULT)* ⁣Drain in response to calling /healthcheck/fail admin endpoint (along with the health check
+  filter), listener removal/modification, and hot restart.
+  
+  
+.. _envoy_api_enum_value_Listener.DrainType.MODIFY_ONLY:
+
+MODIFY_ONLY
+  ⁣Drain in response to listener removal/modification and hot restart. This setting does not
+  include /healthcheck/fail. This setting may be desirable if Envoy is hosting both ingress
+  and egress listeners.
+  
+  
