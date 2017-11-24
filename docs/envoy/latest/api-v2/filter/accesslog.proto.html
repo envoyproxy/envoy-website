@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>api/filter/accesslog.proto &mdash; envoy 1.5.0-data-plane-api-fe6caf documentation</title>
+  <title>api/filter/accesslog.proto &mdash; envoy 1.5.0-data-plane-api-c73aac documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-fe6caf documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-c73aac documentation" href="../../index.html"/>
         <link rel="up" title="Filters" href="filter.html"/>
         <link rel="next" title="Common fault injection types" href="fault.proto.html"/>
         <link rel="prev" title="Filters" href="filter.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-fe6caf
+                1.5.0-data-plane-api-c73aac
               </div>
             
           
@@ -115,10 +115,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../sds.proto.html">SDS</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="filter.html">Filters</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">api/filter/accesslog.proto</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#filter-accesslogentry">filter.AccessLogEntry</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#enum-filter-accesslogentry-protocol">Enum filter.AccessLogEntry.Protocol</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#enum-filter-accesslogentry-responseflag">Enum filter.AccessLogEntry.ResponseFlag</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#enum-filter-accesslogentry-tlsversion">Enum filter.AccessLogEntry.TLSVersion</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#filter-accesslogcommon">filter.AccessLogCommon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#filter-responseflags">filter.ResponseFlags</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#filter-tlsproperties">filter.TLSProperties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#enum-filter-tlsproperties-tlsversion">Enum filter.TLSProperties.TLSVersion</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#filter-tcpaccesslogentry">filter.TCPAccessLogEntry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#filter-httprequestproperties">filter.HTTPRequestProperties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#filter-httpresponseproperties">filter.HTTPResponseProperties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#filter-httpaccesslogentry">filter.HTTPAccessLogEntry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#enum-filter-httpaccesslogentry-httpversion">Enum filter.HTTPAccessLogEntry.HTTPVersion</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#filter-comparisonfilter">filter.ComparisonFilter</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#enum-filter-comparisonfilter-op">Enum filter.ComparisonFilter.Op</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#filter-statuscodefilter">filter.StatusCodeFilter</a></li>
@@ -133,6 +138,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#filter-accesslogserviceconfig">filter.AccessLogServiceConfig</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#filter-streamaccesslogsmessage">filter.StreamAccessLogsMessage</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#filter-streamaccesslogsmessage-identifier">filter.StreamAccessLogsMessage.Identifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#filter-streamaccesslogsmessage-httpaccesslogentries">filter.StreamAccessLogsMessage.HTTPAccessLogEntries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#filter-streamaccesslogsmessage-tcpaccesslogentries">filter.StreamAccessLogsMessage.TCPAccessLogEntries</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#filter-streamaccesslogsresponse">filter.StreamAccessLogsResponse</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#filter-accesslog">filter.AccessLog</a></li>
 </ul>
@@ -213,156 +220,81 @@
             
   <div class="section" id="api-filter-accesslog-proto">
 <span id="envoy-api-file-api-filter-accesslog-proto"></span><h1>api/filter/accesslog.proto<a class="headerlink" href="#api-filter-accesslog-proto" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="filter-accesslogentry">
-<span id="envoy-api-msg-filter-accesslogentry"></span><h2>filter.AccessLogEntry<a class="headerlink" href="#filter-accesslogentry" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L11">[filter.AccessLogEntry proto]</a></p>
+<p>Envoy access logs describe incoming interaction with Envoy over a fixed
+period of time, and typically cover a single request/response exchange,
+(e.g. HTTP), stream (e.g. over HTTP/gRPC), or proxied connection (e.g. TCP).
+Access logs contain fields defined in protocol-specific protobuf messages.</p>
+<p>Except where explicitly declared otherwise, all fields describe
+<em>downstream</em> interaction between Envoy and a connected client.
+Fields describing <em>upstream</em> interaction will explicitly include <code class="docutils literal"><span class="pre">upstream</span></code>
+in their name.</p>
+<div class="section" id="filter-accesslogcommon">
+<span id="envoy-api-msg-filter-accesslogcommon"></span><h2>filter.AccessLogCommon<a class="headerlink" href="#filter-accesslogcommon" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L26">[filter.AccessLogCommon proto]</a></p>
+<p>Defines fields that are shared by all Envoy access logs.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;request_method&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;sample_rate&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;destination_host&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;tls_properties&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;start_time&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;protocol_variant&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;response_flags&quot;</span><span class="p">:</span> <span class="p">[],</span>
-  <span class="nt">&quot;upstream_host&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;time_to_last_rx_byte&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;time_to_first_upstream_rx_byte&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;time_to_last_upstream_rx_byte&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;upstream_host&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;upstream_cluster&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;destination_host&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;request_body_bytes&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;response_body_bytes&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;request_headers_bytes&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;response_headers_bytes&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;secure&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;health_check&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;response_code&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;user_agent&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;referer&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;forwarded_for&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;request_id&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;authority&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;response_duration&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;upstream_service_duration&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;original_path&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;metadata&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;request_headers&quot;</span><span class="p">:</span> <span class="p">[],</span>
-  <span class="nt">&quot;response_headers&quot;</span><span class="p">:</span> <span class="p">[],</span>
-  <span class="nt">&quot;tls_sni_hostname&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;tls_version&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;tls_cipher_suite&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;response_flags&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;metadata&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-request-method">
-<dt>request_method</dt>
-<dd>(<a class="reference internal" href="../base.proto.html#envoy-api-enum-requestmethod"><span class="std std-ref">RequestMethod</span></a>) The HTTP request method (RFC 7231/2616)</dd>
+<dl class="docutils" id="envoy-api-field-filter-accesslogcommon-sample-rate">
+<dt>sample_rate</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">double</a>) This field indicates the rate at which this log entry was sampled.
+Valid range is (0.0, 1.0].</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-start-time">
+<dl class="docutils" id="envoy-api-field-filter-accesslogcommon-destination-host">
+<dt>destination_host</dt>
+<dd>(<a class="reference internal" href="../address.proto.html#envoy-api-msg-socketaddress"><span class="std std-ref">SocketAddress</span></a>) This field is the IP and port on which the request from the user was
+received.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-accesslogcommon-tls-properties">
+<dt>tls_properties</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-filter-tlsproperties"><span class="std std-ref">filter.TLSProperties</span></a>) If the connection is secure, this field will contain TLS properties.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-accesslogcommon-start-time">
 <dt>start_time</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#timestamp">Timestamp</a>) The time that Envoy started servicing this request</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-protocol-variant">
-<dt>protocol_variant</dt>
-<dd>(<a class="reference internal" href="#envoy-api-enum-filter-accesslogentry-protocol"><span class="std std-ref">filter.AccessLogEntry.Protocol</span></a>)</dd>
+<dl class="docutils" id="envoy-api-field-filter-accesslogcommon-time-to-last-rx-byte">
+<dt>time_to_last_rx_byte</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) Interval between the first downstream byte received and the last
+downstream byte received (i.e. time it takes to receive a request).</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-response-flags">
-<dt>response_flags</dt>
-<dd>(<a class="reference internal" href="#envoy-api-enum-filter-accesslogentry-responseflag"><span class="std std-ref">filter.AccessLogEntry.ResponseFlag</span></a>) Status flags about the response.</dd>
+<dl class="docutils" id="envoy-api-field-filter-accesslogcommon-time-to-first-upstream-rx-byte">
+<dt>time_to_first_upstream_rx_byte</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) Interval between the first downstream byte received and the first upstream
+byte received (i.e. time it takes to start receiving a response).</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-upstream-host">
+<dl class="docutils" id="envoy-api-field-filter-accesslogcommon-time-to-last-upstream-rx-byte">
+<dt>time_to_last_upstream_rx_byte</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) Interval between the first downstream byte received and the last upstream
+byte received (i.e. time it takes to receive a complete response).</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-accesslogcommon-upstream-host">
 <dt>upstream_host</dt>
-<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The upstream host URL (Envoy connects to).</p>
-<p>For example, <a class="reference external" href="tcp://ip:port">tcp://ip:port</a> for TCP connections.</p>
-<p class="last">IPv6 addresses should be stored in canonical (compressed) format using
-[address]:port notation.</p>
-</dd>
+<dd>(<a class="reference internal" href="../address.proto.html#envoy-api-msg-socketaddress"><span class="std std-ref">SocketAddress</span></a>) The (primary) upstream host that handles this exchange.</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-upstream-cluster">
+<dl class="docutils" id="envoy-api-field-filter-accesslogcommon-upstream-cluster">
 <dt>upstream_cluster</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The Upstream Cluster that the upstream host belongs to.</dd>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The upstream cluster that <code class="docutils literal"><span class="pre">upstream_host</span></code> belongs to.</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-destination-host">
-<dt>destination_host</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) This field is the IP and port on which the request from the user was
-received, stored in ipv4:port or [ipv6]:port format.</dd>
+<dl class="docutils" id="envoy-api-field-filter-accesslogcommon-response-flags">
+<dt>response_flags</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-filter-responseflags"><span class="std std-ref">filter.ResponseFlags</span></a>) Flags indicating occurences during request/response processing.</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-request-body-bytes">
-<dt>request_body_bytes</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint64value">UInt64Value</a>) Size of the HTTP request body in bytes</dd>
-</dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-response-body-bytes">
-<dt>response_body_bytes</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint64value">UInt64Value</a>) Size of the HTTP response body in bytes</dd>
-</dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-request-headers-bytes">
-<dt>request_headers_bytes</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint64value">UInt64Value</a>) Size of the HTTP request headers in bytes</dd>
-</dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-response-headers-bytes">
-<dt>response_headers_bytes</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint64value">UInt64Value</a>) Size of the HTTP response headers in bytes</dd>
-</dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-secure">
-<dt>secure</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue">BoolValue</a>) Whether the request arrived via a secure (TLS) protocol</dd>
-</dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-health-check">
-<dt>health_check</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue">BoolValue</a>) Whether the request is a HealthCheck request</dd>
-</dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-response-code">
-<dt>response_code</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The HTTP response code</dd>
-</dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-user-agent">
-<dt>user_agent</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) User agent as sent by client HTTP</dd>
-</dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-path">
-<dt>path</dt>
-<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Path</p>
-<p class="last">This is the Path portion from the incoming request URI</p>
-</dd>
-</dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-referer">
-<dt>referer</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Referer header as sent by client HTTP
-(Referer is spelled to match the HTTP spec, not English).</dd>
-</dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-forwarded-for">
-<dt>forwarded_for</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) X-Forwarded-For request header</dd>
-</dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-request-id">
-<dt>request_id</dt>
-<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) X-Request-Id request header</p>
-<p class="last">This header is used by Envoy to uniquely identify a request.
-It will be generated for all external requests and internal requests that
-do not already have a request ID.  So this field can be guaranteed to exist
-and be unique for request tracing purposes.</p>
-</dd>
-</dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-authority">
-<dt>authority</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) HTTP2 :authority header value or HTTP1.1 Host header value</dd>
-</dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-response-duration">
-<dt>response_duration</dt>
-<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) Duration (milliseconds)</p>
-<p class="last">The total duration it took to service this request from the StartTime until
-the response was written to the user.</p>
-</dd>
-</dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-upstream-service-duration">
-<dt>upstream_service_duration</dt>
-<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) Upstream Service Time Duration</p>
-<p class="last">From the X-Envoy-Upstream-Service-Time response header. This is the amount it took
-the upstream server to service the request.</p>
-</dd>
-</dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-original-path">
-<dt>original_path</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Original Path from the X-Envoy-Original-Path header.</dd>
-</dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-metadata">
+<dl class="docutils" id="envoy-api-field-filter-accesslogcommon-metadata">
 <dt>metadata</dt>
-<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct">Struct</a>) All metadata encountered during request processing, including endpoint
+<dd><p class="first">(<a class="reference internal" href="../base.proto.html#envoy-api-msg-metadata"><span class="std std-ref">Metadata</span></a>) All metadata encountered during request processing, including endpoint
 selection.</p>
 <p class="last">This can be used to associate IDs attached to the various configurations
 used to process this request with the access log entry.  For example, a
@@ -371,134 +303,311 @@ that ID in this field and cross reference later. It can also be used to
 determine if a canary endpoint was used or not.</p>
 </dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-request-headers">
-<dt>request_headers</dt>
-<dd>(<a class="reference internal" href="../base.proto.html#envoy-api-msg-headervalue"><span class="std std-ref">HeaderValue</span></a>) Headers configured for logging but not covered by a specific field.</dd>
+</div>
+<div class="section" id="filter-responseflags">
+<span id="envoy-api-msg-filter-responseflags"></span><h2>filter.ResponseFlags<a class="headerlink" href="#filter-responseflags" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L74">[filter.ResponseFlags proto]</a></p>
+<p>Flags indicating occurences during request/response processing.</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;failed_local_healthcheck&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;no_healthy_upstream&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;upstream_request_timeout&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;local_reset&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;upstream_remote_reset&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;upstream_connection_failure&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;upstream_connection_termination&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;upstream_overflow&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;no_route_found&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;delay_injected&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;fault_injected&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;rate_limited&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-filter-responseflags-failed-local-healthcheck">
+<dt>failed_local_healthcheck</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Indicates local server healthcheck failed.</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-response-headers">
-<dt>response_headers</dt>
-<dd>(<a class="reference internal" href="../base.proto.html#envoy-api-msg-headervalue"><span class="std std-ref">HeaderValue</span></a>)</dd>
+<dl class="docutils" id="envoy-api-field-filter-responseflags-no-healthy-upstream">
+<dt>no_healthy_upstream</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Indicates there was no healthy upstream.</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-tls-sni-hostname">
+<dl class="docutils" id="envoy-api-field-filter-responseflags-upstream-request-timeout">
+<dt>upstream_request_timeout</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Indicates an there was an upstream request timeout.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-responseflags-local-reset">
+<dt>local_reset</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Indicates local codec level reset was sent on the stream.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-responseflags-upstream-remote-reset">
+<dt>upstream_remote_reset</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Indicates remote codec level reset was received on the stream.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-responseflags-upstream-connection-failure">
+<dt>upstream_connection_failure</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Indicates there was a local reset by a connection pool due to an initial connection failure.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-responseflags-upstream-connection-termination">
+<dt>upstream_connection_termination</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Indicates the stream was reset locally due to connection termination.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-responseflags-upstream-overflow">
+<dt>upstream_overflow</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Indicates the stream was reset because of a resource overflow.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-responseflags-no-route-found">
+<dt>no_route_found</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Indicates no route was found for the request.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-responseflags-delay-injected">
+<dt>delay_injected</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Indicates that the request was delayed before proxying.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-responseflags-fault-injected">
+<dt>fault_injected</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Indicates that the request was aborted with an injected error code.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-responseflags-rate-limited">
+<dt>rate_limited</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Indicates that the request was rate-limited locally.</dd>
+</dl>
+</div>
+<div class="section" id="filter-tlsproperties">
+<span id="envoy-api-msg-filter-tlsproperties"></span><h2>filter.TLSProperties<a class="headerlink" href="#filter-tlsproperties" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L113">[filter.TLSProperties proto]</a></p>
+<p>Properties of a negotiated TLS connection.</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;tls_version&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;tls_cipher_suite&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;tls_sni_hostname&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-filter-tlsproperties-tls-version">
+<dt>tls_version</dt>
+<dd>(<a class="reference internal" href="#envoy-api-enum-filter-tlsproperties-tlsversion"><span class="std std-ref">filter.TLSProperties.TLSVersion</span></a>) Version of TLS that was negotiated.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-tlsproperties-tls-cipher-suite">
+<dt>tls_cipher_suite</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) TLS cipher suite negotiated during handshake. The value is a
+four-digit hex code defined by the IANA TLS Cipher Suite Registry
+(e.g. <code class="docutils literal"><span class="pre">009C</span></code> for <code class="docutils literal"><span class="pre">TLS_RSA_WITH_AES_128_GCM_SHA256</span></code>).</p>
+<p class="last">Here it is expressed as an integer.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-tlsproperties-tls-sni-hostname">
 <dt>tls_sni_hostname</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) SNI hostname from handshake.</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-tls-version">
-<dt>tls_version</dt>
-<dd>(<a class="reference internal" href="#envoy-api-enum-filter-accesslogentry-tlsversion"><span class="std std-ref">filter.AccessLogEntry.TLSVersion</span></a>)</dd>
-</dl>
-<dl class="docutils" id="envoy-api-field-filter-accesslogentry-tls-cipher-suite">
-<dt>tls_cipher_suite</dt>
-<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) TLS Cipher suite negotiated during TLS handshake.
-The value is four hex digits defined by the IANA TLS Cipher Suite Registry,
-eg, “009C” for TLS_RSA_WITH_AES_128_GCM_SHA256.</p>
-<p class="last">Here is is expressed as an integer.</p>
-</dd>
-</dl>
 </div>
-<div class="section" id="enum-filter-accesslogentry-protocol">
-<span id="envoy-api-enum-filter-accesslogentry-protocol"></span><h2>Enum filter.AccessLogEntry.Protocol<a class="headerlink" href="#enum-filter-accesslogentry-protocol" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L19">[filter.AccessLogEntry.Protocol proto]</a></p>
-<p>Incoming protocol variation spoken</p>
-<dl class="docutils" id="envoy-api-enum-value-filter-accesslogentry-protocol-protocol-unspecified">
-<dt>PROTOCOL_UNSPECIFIED</dt>
-<dd><em>(DEFAULT)</em> ⁣</dd>
-</dl>
-<dl class="docutils" id="envoy-api-enum-value-filter-accesslogentry-protocol-http10">
-<dt>HTTP10</dt>
-<dd>⁣</dd>
-</dl>
-<dl class="docutils" id="envoy-api-enum-value-filter-accesslogentry-protocol-http11">
-<dt>HTTP11</dt>
-<dd>⁣</dd>
-</dl>
-<dl class="docutils" id="envoy-api-enum-value-filter-accesslogentry-protocol-http2">
-<dt>HTTP2</dt>
-<dd>⁣</dd>
-</dl>
-</div>
-<div class="section" id="enum-filter-accesslogentry-responseflag">
-<span id="envoy-api-enum-filter-accesslogentry-responseflag"></span><h2>Enum filter.AccessLogEntry.ResponseFlag<a class="headerlink" href="#enum-filter-accesslogentry-responseflag" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L29">[filter.AccessLogEntry.ResponseFlag proto]</a></p>
-<p>This enum defines the various things that may have occurred while
-processing a request.</p>
-<dl class="docutils" id="envoy-api-enum-value-filter-accesslogentry-responseflag-failed-local-healthcheck">
-<dt>FAILED_LOCAL_HEALTHCHECK</dt>
-<dd><em>(DEFAULT)</em> ⁣Local server healthcheck failed.</dd>
-</dl>
-<dl class="docutils" id="envoy-api-enum-value-filter-accesslogentry-responseflag-no-healthy-upstream">
-<dt>NO_HEALTHY_UPSTREAM</dt>
-<dd>⁣No healthy upstream.</dd>
-</dl>
-<dl class="docutils" id="envoy-api-enum-value-filter-accesslogentry-responseflag-upstream-request-timeout">
-<dt>UPSTREAM_REQUEST_TIMEOUT</dt>
-<dd>⁣Request timeout on upstream.</dd>
-</dl>
-<dl class="docutils" id="envoy-api-enum-value-filter-accesslogentry-responseflag-local-reset">
-<dt>LOCAL_RESET</dt>
-<dd>⁣Local codec level reset was sent on the stream.</dd>
-</dl>
-<dl class="docutils" id="envoy-api-enum-value-filter-accesslogentry-responseflag-upstream-remote-reset">
-<dt>UPSTREAM_REMOTE_RESET</dt>
-<dd>⁣Remote codec level reset was received on the stream.</dd>
-</dl>
-<dl class="docutils" id="envoy-api-enum-value-filter-accesslogentry-responseflag-upstream-connection-failure">
-<dt>UPSTREAM_CONNECTION_FAILURE</dt>
-<dd>⁣Local reset by a connection pool due to an initial connection failure.</dd>
-</dl>
-<dl class="docutils" id="envoy-api-enum-value-filter-accesslogentry-responseflag-upstream-connection-termination">
-<dt>UPSTREAM_CONNECTION_TERMINATION</dt>
-<dd>⁣If the stream was locally reset due to connection termination.</dd>
-</dl>
-<dl class="docutils" id="envoy-api-enum-value-filter-accesslogentry-responseflag-upstream-overflow">
-<dt>UPSTREAM_OVERFLOW</dt>
-<dd>⁣The stream was reset because of a resource overflow.</dd>
-</dl>
-<dl class="docutils" id="envoy-api-enum-value-filter-accesslogentry-responseflag-no-route-found">
-<dt>NO_ROUTE_FOUND</dt>
-<dd>⁣No route found for a given request.</dd>
-</dl>
-<dl class="docutils" id="envoy-api-enum-value-filter-accesslogentry-responseflag-delay-injected">
-<dt>DELAY_INJECTED</dt>
-<dd>⁣Request was delayed before proxying.</dd>
-</dl>
-<dl class="docutils" id="envoy-api-enum-value-filter-accesslogentry-responseflag-fault-injected">
-<dt>FAULT_INJECTED</dt>
-<dd>⁣Abort with error code was injected.</dd>
-</dl>
-<dl class="docutils" id="envoy-api-enum-value-filter-accesslogentry-responseflag-rate-limited">
-<dt>RATE_LIMITED</dt>
-<dd>⁣Request was ratelimited locally by rate limit filter.</dd>
-</dl>
-</div>
-<div class="section" id="enum-filter-accesslogentry-tlsversion">
-<span id="envoy-api-enum-filter-accesslogentry-tlsversion"></span><h2>Enum filter.AccessLogEntry.TLSVersion<a class="headerlink" href="#enum-filter-accesslogentry-tlsversion" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L154">[filter.AccessLogEntry.TLSVersion proto]</a></p>
-<p>TLS Version or VERSION_UNSPECIFIED if TLS was not used</p>
-<dl class="docutils" id="envoy-api-enum-value-filter-accesslogentry-tlsversion-version-unspecified">
+<div class="section" id="enum-filter-tlsproperties-tlsversion">
+<span id="envoy-api-enum-filter-tlsproperties-tlsversion"></span><h2>Enum filter.TLSProperties.TLSVersion<a class="headerlink" href="#enum-filter-tlsproperties-tlsversion" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L114">[filter.TLSProperties.TLSVersion proto]</a></p>
+<dl class="docutils" id="envoy-api-enum-value-filter-tlsproperties-tlsversion-version-unspecified">
 <dt>VERSION_UNSPECIFIED</dt>
 <dd><em>(DEFAULT)</em> ⁣</dd>
 </dl>
-<dl class="docutils" id="envoy-api-enum-value-filter-accesslogentry-tlsversion-tlsv1">
+<dl class="docutils" id="envoy-api-enum-value-filter-tlsproperties-tlsversion-tlsv1">
 <dt>TLSv1</dt>
 <dd>⁣</dd>
 </dl>
-<dl class="docutils" id="envoy-api-enum-value-filter-accesslogentry-tlsversion-tlsv1-1">
+<dl class="docutils" id="envoy-api-enum-value-filter-tlsproperties-tlsversion-tlsv1-1">
 <dt>TLSv1_1</dt>
 <dd>⁣</dd>
 </dl>
-<dl class="docutils" id="envoy-api-enum-value-filter-accesslogentry-tlsversion-tlsv1-2">
+<dl class="docutils" id="envoy-api-enum-value-filter-tlsproperties-tlsversion-tlsv1-2">
 <dt>TLSv1_2</dt>
 <dd>⁣</dd>
 </dl>
-<dl class="docutils" id="envoy-api-enum-value-filter-accesslogentry-tlsversion-tlsv1-3">
+<dl class="docutils" id="envoy-api-enum-value-filter-tlsproperties-tlsversion-tlsv1-3">
 <dt>TLSv1_3</dt>
+<dd>⁣</dd>
+</dl>
+</div>
+<div class="section" id="filter-tcpaccesslogentry">
+<span id="envoy-api-msg-filter-tcpaccesslogentry"></span><h2>filter.TCPAccessLogEntry<a class="headerlink" href="#filter-tcpaccesslogentry" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L135">[filter.TCPAccessLogEntry proto]</a></p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;common_properties&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-filter-tcpaccesslogentry-common-properties">
+<dt>common_properties</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-filter-accesslogcommon"><span class="std std-ref">filter.AccessLogCommon</span></a>) Common properties shared by all Envoy access logs.</dd>
+</dl>
+</div>
+<div class="section" id="filter-httprequestproperties">
+<span id="envoy-api-msg-filter-httprequestproperties"></span><h2>filter.HTTPRequestProperties<a class="headerlink" href="#filter-httprequestproperties" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L140">[filter.HTTPRequestProperties proto]</a></p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;request_method&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;scheme&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;authority&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;port&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;user_agent&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;referer&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;forwarded_for&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;request_id&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;original_path&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;request_headers_bytes&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;request_body_bytes&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;request_headers&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-filter-httprequestproperties-request-method">
+<dt>request_method</dt>
+<dd>(<a class="reference internal" href="../base.proto.html#envoy-api-enum-requestmethod"><span class="std std-ref">RequestMethod</span></a>) The request method (RFC 7231/2616).</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-httprequestproperties-scheme">
+<dt>scheme</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The scheme portion of the incoming request URI.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-httprequestproperties-authority">
+<dt>authority</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) HTTP/2 <code class="docutils literal"><span class="pre">:authority</span></code> or HTTP/1.1 <code class="docutils literal"><span class="pre">Host</span></code> header value.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-httprequestproperties-port">
+<dt>port</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The port of the incoming request URI
+(unused currently, as port is composed onto authority).</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-httprequestproperties-path">
+<dt>path</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The path portion from the incoming request URI.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-httprequestproperties-user-agent">
+<dt>user_agent</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Value of the <code class="docutils literal"><span class="pre">User-Agent</span></code> request header.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-httprequestproperties-referer">
+<dt>referer</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Value of the <code class="docutils literal"><span class="pre">Referer</span></code> request header.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-httprequestproperties-forwarded-for">
+<dt>forwarded_for</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Value of the <code class="docutils literal"><span class="pre">X-Forwarded-For</span></code> request header.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-httprequestproperties-request-id">
+<dt>request_id</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Value of the <code class="docutils literal"><span class="pre">X-Request-Id</span></code> request header</p>
+<p class="last">This header is used by Envoy to uniquely identify a request.
+It will be generated for all external requests and internal requests that
+do not already have a request ID.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-httprequestproperties-original-path">
+<dt>original_path</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Value of the <code class="docutils literal"><span class="pre">X-Envoy-Original-Path</span></code> request header.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-httprequestproperties-request-headers-bytes">
+<dt>request_headers_bytes</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">uint64</a>) Size of the HTTP request headers in bytes.</p>
+<p class="last">This value is captured from the OSI layer 7 perspective, i.e. it does not
+include overhead from framing or encoding at other networking layers.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-httprequestproperties-request-body-bytes">
+<dt>request_body_bytes</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">uint64</a>) Size of the HTTP request body in bytes.</p>
+<p class="last">This value is captured from the OSI layer 7 perspective, i.e. it does not
+include overhead from framing or encoding at other networking layers.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-httprequestproperties-request-headers">
+<dt>request_headers</dt>
+<dd>(map&lt;<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>&gt;) Map of additional headers that have been configured to be logged.</dd>
+</dl>
+</div>
+<div class="section" id="filter-httpresponseproperties">
+<span id="envoy-api-msg-filter-httpresponseproperties"></span><h2>filter.HTTPResponseProperties<a class="headerlink" href="#filter-httpresponseproperties" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L192">[filter.HTTPResponseProperties proto]</a></p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;response_code&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;response_headers_bytes&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;response_body_bytes&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;response_headers&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-filter-httpresponseproperties-response-code">
+<dt>response_code</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The HTTP response code returned by Envoy.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-httpresponseproperties-response-headers-bytes">
+<dt>response_headers_bytes</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">uint64</a>) Size of the HTTP response headers in bytes.</p>
+<p class="last">This value is captured from the OSI layer 7 perspective, i.e. it does not
+include overhead from framing or encoding at other networking layers.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-httpresponseproperties-response-body-bytes">
+<dt>response_body_bytes</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">uint64</a>) Size of the HTTP response body in bytes.</p>
+<p class="last">This value is captured from the OSI layer 7 perspective, i.e. it does not
+include overhead from framing or encoding at other networking layers.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-httpresponseproperties-response-headers">
+<dt>response_headers</dt>
+<dd>(map&lt;<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>&gt;) Map of additional headers configured to be logged.</dd>
+</dl>
+</div>
+<div class="section" id="filter-httpaccesslogentry">
+<span id="envoy-api-msg-filter-httpaccesslogentry"></span><h2>filter.HTTPAccessLogEntry<a class="headerlink" href="#filter-httpaccesslogentry" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L212">[filter.HTTPAccessLogEntry proto]</a></p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;common_properties&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;protocol_version&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;request&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;response&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-filter-httpaccesslogentry-common-properties">
+<dt>common_properties</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-filter-accesslogcommon"><span class="std std-ref">filter.AccessLogCommon</span></a>) Common properties shared by all Envoy access logs.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-httpaccesslogentry-protocol-version">
+<dt>protocol_version</dt>
+<dd>(<a class="reference internal" href="#envoy-api-enum-filter-httpaccesslogentry-httpversion"><span class="std std-ref">filter.HTTPAccessLogEntry.HTTPVersion</span></a>)</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-httpaccesslogentry-request">
+<dt>request</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-filter-httprequestproperties"><span class="std std-ref">filter.HTTPRequestProperties</span></a>) Description of the incoming HTTP request.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-httpaccesslogentry-response">
+<dt>response</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-filter-httpresponseproperties"><span class="std std-ref">filter.HTTPResponseProperties</span></a>) Description of the outgoing HTTP response.</dd>
+</dl>
+</div>
+<div class="section" id="enum-filter-httpaccesslogentry-httpversion">
+<span id="envoy-api-enum-filter-httpaccesslogentry-httpversion"></span><h2>Enum filter.HTTPAccessLogEntry.HTTPVersion<a class="headerlink" href="#enum-filter-httpaccesslogentry-httpversion" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L217">[filter.HTTPAccessLogEntry.HTTPVersion proto]</a></p>
+<p>HTTP version</p>
+<dl class="docutils" id="envoy-api-enum-value-filter-httpaccesslogentry-httpversion-protocol-unspecified">
+<dt>PROTOCOL_UNSPECIFIED</dt>
+<dd><em>(DEFAULT)</em> ⁣</dd>
+</dl>
+<dl class="docutils" id="envoy-api-enum-value-filter-httpaccesslogentry-httpversion-http10">
+<dt>HTTP10</dt>
+<dd>⁣</dd>
+</dl>
+<dl class="docutils" id="envoy-api-enum-value-filter-httpaccesslogentry-httpversion-http11">
+<dt>HTTP11</dt>
+<dd>⁣</dd>
+</dl>
+<dl class="docutils" id="envoy-api-enum-value-filter-httpaccesslogentry-httpversion-http2">
+<dt>HTTP2</dt>
 <dd>⁣</dd>
 </dl>
 </div>
 <div class="section" id="filter-comparisonfilter">
 <span id="envoy-api-msg-filter-comparisonfilter"></span><h2>filter.ComparisonFilter<a class="headerlink" href="#filter-comparisonfilter" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L172">[filter.ComparisonFilter proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L233">[filter.ComparisonFilter proto]</a></p>
 <p>Filter on some integer comparison.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;op&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
@@ -517,7 +626,7 @@ processing a request.</p>
 </div>
 <div class="section" id="enum-filter-comparisonfilter-op">
 <span id="envoy-api-enum-filter-comparisonfilter-op"></span><h2>Enum filter.ComparisonFilter.Op<a class="headerlink" href="#enum-filter-comparisonfilter-op" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L174">[filter.ComparisonFilter.Op proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L235">[filter.ComparisonFilter.Op proto]</a></p>
 <p>Comparison operator.</p>
 <dl class="docutils" id="envoy-api-enum-value-filter-comparisonfilter-op-eq">
 <dt>EQ</dt>
@@ -530,7 +639,7 @@ processing a request.</p>
 </div>
 <div class="section" id="filter-statuscodefilter">
 <span id="envoy-api-msg-filter-statuscodefilter"></span><h2>filter.StatusCodeFilter<a class="headerlink" href="#filter-statuscodefilter" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L185">[filter.StatusCodeFilter proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L246">[filter.StatusCodeFilter proto]</a></p>
 <p>Filters on HTTP response/status code.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;comparison&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
@@ -544,7 +653,7 @@ processing a request.</p>
 </div>
 <div class="section" id="filter-durationfilter">
 <span id="envoy-api-msg-filter-durationfilter"></span><h2>filter.DurationFilter<a class="headerlink" href="#filter-durationfilter" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L190">[filter.DurationFilter proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L251">[filter.DurationFilter proto]</a></p>
 <p>Filters on total request duration in milliseconds.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;comparison&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
@@ -558,7 +667,7 @@ processing a request.</p>
 </div>
 <div class="section" id="filter-nothealthcheckfilter">
 <span id="envoy-api-msg-filter-nothealthcheckfilter"></span><h2>filter.NotHealthCheckFilter<a class="headerlink" href="#filter-nothealthcheckfilter" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L196">[filter.NotHealthCheckFilter proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L257">[filter.NotHealthCheckFilter proto]</a></p>
 <p>Filters for requests that are not health check requests. A health check
 request is marked by the health check filter.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -569,7 +678,7 @@ request is marked by the health check filter.</p>
 </div>
 <div class="section" id="filter-traceablefilter">
 <span id="envoy-api-msg-filter-traceablefilter"></span><h2>filter.TraceableFilter<a class="headerlink" href="#filter-traceablefilter" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L201">[filter.TraceableFilter proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L262">[filter.TraceableFilter proto]</a></p>
 <p>Filters for requests that are traceable. See the tracing overview for more
 information on how a request becomes traceable.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -580,7 +689,7 @@ information on how a request becomes traceable.</p>
 </div>
 <div class="section" id="filter-runtimefilter">
 <span id="envoy-api-msg-filter-runtimefilter"></span><h2>filter.RuntimeFilter<a class="headerlink" href="#filter-runtimefilter" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L209">[filter.RuntimeFilter proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L270">[filter.RuntimeFilter proto]</a></p>
 <p>Filters for random sampling of requests. Sampling pivots on the header
 x-request-id being present. If x-request-id is present, the filter will
 consistently sample across multiple hosts based on the runtime key value and
@@ -599,7 +708,7 @@ control is specified in the range 0-100 and defaults to 0.</dd>
 </div>
 <div class="section" id="filter-andfilter">
 <span id="envoy-api-msg-filter-andfilter"></span><h2>filter.AndFilter<a class="headerlink" href="#filter-andfilter" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L218">[filter.AndFilter proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L279">[filter.AndFilter proto]</a></p>
 <p>Performs a logical “and” operation on the result of each filter in filters.
 Filters are evaluated sequentially and if one of them returns false, the
 filter returns false immediately.</p>
@@ -615,7 +724,7 @@ filter returns false immediately.</p>
 </div>
 <div class="section" id="filter-orfilter">
 <span id="envoy-api-msg-filter-orfilter"></span><h2>filter.OrFilter<a class="headerlink" href="#filter-orfilter" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L225">[filter.OrFilter proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L286">[filter.OrFilter proto]</a></p>
 <p>Performs a logical “or” operation on the result of each individual filter.
 Filters are evaluated sequentially and if one of them returns true, the
 filter returns true immediately.</p>
@@ -631,7 +740,7 @@ filter returns true immediately.</p>
 </div>
 <div class="section" id="filter-accesslogfilter">
 <span id="envoy-api-msg-filter-accesslogfilter"></span><h2>filter.AccessLogFilter<a class="headerlink" href="#filter-accesslogfilter" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L229">[filter.AccessLogFilter proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L290">[filter.AccessLogFilter proto]</a></p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;status_code_filter&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;duration_filter&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -688,7 +797,7 @@ filter returns true immediately.</p>
 </div>
 <div class="section" id="filter-fileaccesslog">
 <span id="envoy-api-msg-filter-fileaccesslog"></span><h2>filter.FileAccessLog<a class="headerlink" href="#filter-fileaccesslog" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L243">[filter.FileAccessLog proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L304">[filter.FileAccessLog proto]</a></p>
 <p>Custom configuration for an AccessLog that writes log entries directly to a file.
 Configures the built-in “envoy.file_access_log” AccessLog.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -716,7 +825,7 @@ can be accessed in the format specifier.</dd>
 </div>
 <div class="section" id="filter-accesslogserviceconfig">
 <span id="envoy-api-msg-filter-accesslogserviceconfig"></span><h2>filter.AccessLogServiceConfig<a class="headerlink" href="#filter-accesslogserviceconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L260">[filter.AccessLogServiceConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L321">[filter.AccessLogServiceConfig proto]</a></p>
 <p>Configuration for the built-in “envoy.grpc_access_log” access log type.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;log_name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
@@ -738,12 +847,13 @@ configured in the cluster manager.</dd>
 </div>
 <div class="section" id="filter-streamaccesslogsmessage">
 <span id="envoy-api-msg-filter-streamaccesslogsmessage"></span><h2>filter.StreamAccessLogsMessage<a class="headerlink" href="#filter-streamaccesslogsmessage" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L273">[filter.StreamAccessLogsMessage proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L334">[filter.StreamAccessLogsMessage proto]</a></p>
 <p>Stream message for the StreamAccessLogs API. Envoy will open a stream to the server and stream
 access logs without ever expecting a response.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;identifier&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;logs&quot;</span><span class="p">:</span> <span class="p">[]</span>
+  <span class="nt">&quot;http_logs&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;tcp_logs&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -752,14 +862,22 @@ access logs without ever expecting a response.</p>
 <dd>(<a class="reference internal" href="#envoy-api-msg-filter-streamaccesslogsmessage-identifier"><span class="std std-ref">filter.StreamAccessLogsMessage.Identifier</span></a>) Identifier data that will only be sent in the first message on the stream. This is effectively
 structured metadata and is a performance optimization.</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-filter-streamaccesslogsmessage-logs">
-<dt>logs</dt>
-<dd>(<a class="reference internal" href="#envoy-api-msg-filter-accesslogentry"><span class="std std-ref">filter.AccessLogEntry</span></a>) A list of access logs.</dd>
+<dl class="docutils" id="envoy-api-field-filter-streamaccesslogsmessage-http-logs">
+<dt>http_logs</dt>
+<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-filter-streamaccesslogsmessage-httpaccesslogentries"><span class="std std-ref">filter.StreamAccessLogsMessage.HTTPAccessLogEntries</span></a>)</p>
+<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-filter-streamaccesslogsmessage-http-logs"><span class="std std-ref">http_logs</span></a>, <a class="reference internal" href="#envoy-api-field-filter-streamaccesslogsmessage-tcp-logs"><span class="std std-ref">tcp_logs</span></a> may be set.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-streamaccesslogsmessage-tcp-logs">
+<dt>tcp_logs</dt>
+<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-filter-streamaccesslogsmessage-tcpaccesslogentries"><span class="std std-ref">filter.StreamAccessLogsMessage.TCPAccessLogEntries</span></a>)</p>
+<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-filter-streamaccesslogsmessage-http-logs"><span class="std std-ref">http_logs</span></a>, <a class="reference internal" href="#envoy-api-field-filter-streamaccesslogsmessage-tcp-logs"><span class="std std-ref">tcp_logs</span></a> may be set.</p>
+</dd>
 </dl>
 </div>
 <div class="section" id="filter-streamaccesslogsmessage-identifier">
 <span id="envoy-api-msg-filter-streamaccesslogsmessage-identifier"></span><h2>filter.StreamAccessLogsMessage.Identifier<a class="headerlink" href="#filter-streamaccesslogsmessage-identifier" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L274">[filter.StreamAccessLogsMessage.Identifier proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L335">[filter.StreamAccessLogsMessage.Identifier proto]</a></p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;node&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;log_name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
@@ -775,9 +893,37 @@ structured metadata and is a performance optimization.</dd>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The friendly name of the log configured in AccessLogServiceConfig.</dd>
 </dl>
 </div>
+<div class="section" id="filter-streamaccesslogsmessage-httpaccesslogentries">
+<span id="envoy-api-msg-filter-streamaccesslogsmessage-httpaccesslogentries"></span><h2>filter.StreamAccessLogsMessage.HTTPAccessLogEntries<a class="headerlink" href="#filter-streamaccesslogsmessage-httpaccesslogentries" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L348">[filter.StreamAccessLogsMessage.HTTPAccessLogEntries proto]</a></p>
+<p>Wrapper for batches of HTTP access log entries.</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;log_entry&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-filter-streamaccesslogsmessage-httpaccesslogentries-log-entry">
+<dt>log_entry</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-filter-httpaccesslogentry"><span class="std std-ref">filter.HTTPAccessLogEntry</span></a>)</dd>
+</dl>
+</div>
+<div class="section" id="filter-streamaccesslogsmessage-tcpaccesslogentries">
+<span id="envoy-api-msg-filter-streamaccesslogsmessage-tcpaccesslogentries"></span><h2>filter.StreamAccessLogsMessage.TCPAccessLogEntries<a class="headerlink" href="#filter-streamaccesslogsmessage-tcpaccesslogentries" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L353">[filter.StreamAccessLogsMessage.TCPAccessLogEntries proto]</a></p>
+<p>Wrapper for batches of TCP access log entries.</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;log_entry&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-filter-streamaccesslogsmessage-tcpaccesslogentries-log-entry">
+<dt>log_entry</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-filter-tcpaccesslogentry"><span class="std std-ref">filter.TCPAccessLogEntry</span></a>)</dd>
+</dl>
+</div>
 <div class="section" id="filter-streamaccesslogsresponse">
 <span id="envoy-api-msg-filter-streamaccesslogsresponse"></span><h2>filter.StreamAccessLogsResponse<a class="headerlink" href="#filter-streamaccesslogsresponse" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L291">[filter.StreamAccessLogsResponse proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L366">[filter.StreamAccessLogsResponse proto]</a></p>
 <p>Empty response for the StreamAccessLogs API. Will never be sent. See below.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
 
@@ -787,7 +933,7 @@ structured metadata and is a performance optimization.</dd>
 </div>
 <div class="section" id="filter-accesslog">
 <span id="envoy-api-msg-filter-accesslog"></span><h2>filter.AccessLog<a class="headerlink" href="#filter-accesslog" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L306">[filter.AccessLog proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L381">[filter.AccessLog proto]</a></p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;filter&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -860,7 +1006,7 @@ include:
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.5.0-data-plane-api-fe6caf',
+            VERSION:'1.5.0-data-plane-api-c73aac',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

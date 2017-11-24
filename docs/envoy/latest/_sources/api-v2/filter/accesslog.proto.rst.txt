@@ -3,209 +3,110 @@
 api/filter/accesslog.proto
 ==========================
 
-.. _envoy_api_msg_filter.AccessLogEntry:
+Envoy access logs describe incoming interaction with Envoy over a fixed
+period of time, and typically cover a single request/response exchange,
+(e.g. HTTP), stream (e.g. over HTTP/gRPC), or proxied connection (e.g. TCP).
+Access logs contain fields defined in protocol-specific protobuf messages.
 
-filter.AccessLogEntry
----------------------
+Except where explicitly declared otherwise, all fields describe
+*downstream* interaction between Envoy and a connected client.
+Fields describing *upstream* interaction will explicitly include ``upstream``
+in their name.
 
-`[filter.AccessLogEntry proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L11>`_
+.. _envoy_api_msg_filter.AccessLogCommon:
 
+filter.AccessLogCommon
+----------------------
+
+`[filter.AccessLogCommon proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L26>`_
+
+Defines fields that are shared by all Envoy access logs.
 
 .. code-block:: json
 
   {
-    "request_method": "...",
+    "sample_rate": "...",
+    "destination_host": "{...}",
+    "tls_properties": "{...}",
     "start_time": "{...}",
-    "protocol_variant": "...",
-    "response_flags": [],
-    "upstream_host": "...",
+    "time_to_last_rx_byte": "{...}",
+    "time_to_first_upstream_rx_byte": "{...}",
+    "time_to_last_upstream_rx_byte": "{...}",
+    "upstream_host": "{...}",
     "upstream_cluster": "...",
-    "destination_host": "...",
-    "request_body_bytes": "{...}",
-    "response_body_bytes": "{...}",
-    "request_headers_bytes": "{...}",
-    "response_headers_bytes": "{...}",
-    "secure": "{...}",
-    "health_check": "{...}",
-    "response_code": "{...}",
-    "user_agent": "...",
-    "path": "...",
-    "referer": "...",
-    "forwarded_for": "...",
-    "request_id": "...",
-    "authority": "...",
-    "response_duration": "{...}",
-    "upstream_service_duration": "{...}",
-    "original_path": "...",
-    "metadata": "{...}",
-    "request_headers": [],
-    "response_headers": [],
-    "tls_sni_hostname": "...",
-    "tls_version": "...",
-    "tls_cipher_suite": "{...}"
+    "response_flags": "{...}",
+    "metadata": "{...}"
   }
 
-.. _envoy_api_field_filter.AccessLogEntry.request_method:
+.. _envoy_api_field_filter.AccessLogCommon.sample_rate:
 
-request_method
-  (:ref:`RequestMethod <envoy_api_enum_RequestMethod>`) The HTTP request method (RFC 7231/2616)
+sample_rate
+  (`double <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) This field indicates the rate at which this log entry was sampled.
+  Valid range is (0.0, 1.0].
   
   
-.. _envoy_api_field_filter.AccessLogEntry.start_time:
+.. _envoy_api_field_filter.AccessLogCommon.destination_host:
+
+destination_host
+  (:ref:`SocketAddress <envoy_api_msg_SocketAddress>`) This field is the IP and port on which the request from the user was
+  received.
+  
+  
+.. _envoy_api_field_filter.AccessLogCommon.tls_properties:
+
+tls_properties
+  (:ref:`filter.TLSProperties <envoy_api_msg_filter.TLSProperties>`) If the connection is secure, this field will contain TLS properties.
+  
+  
+.. _envoy_api_field_filter.AccessLogCommon.start_time:
 
 start_time
   (`Timestamp <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#timestamp>`_) The time that Envoy started servicing this request
   
   
-.. _envoy_api_field_filter.AccessLogEntry.protocol_variant:
+.. _envoy_api_field_filter.AccessLogCommon.time_to_last_rx_byte:
 
-protocol_variant
-  (:ref:`filter.AccessLogEntry.Protocol <envoy_api_enum_filter.AccessLogEntry.Protocol>`) 
+time_to_last_rx_byte
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) Interval between the first downstream byte received and the last
+  downstream byte received (i.e. time it takes to receive a request).
   
-.. _envoy_api_field_filter.AccessLogEntry.response_flags:
+  
+.. _envoy_api_field_filter.AccessLogCommon.time_to_first_upstream_rx_byte:
 
-response_flags
-  (:ref:`filter.AccessLogEntry.ResponseFlag <envoy_api_enum_filter.AccessLogEntry.ResponseFlag>`) Status flags about the response.
+time_to_first_upstream_rx_byte
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) Interval between the first downstream byte received and the first upstream
+  byte received (i.e. time it takes to start receiving a response).
   
   
-.. _envoy_api_field_filter.AccessLogEntry.upstream_host:
+.. _envoy_api_field_filter.AccessLogCommon.time_to_last_upstream_rx_byte:
+
+time_to_last_upstream_rx_byte
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) Interval between the first downstream byte received and the last upstream
+  byte received (i.e. time it takes to receive a complete response).
+  
+  
+.. _envoy_api_field_filter.AccessLogCommon.upstream_host:
 
 upstream_host
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The upstream host URL (Envoy connects to).
-  
-  For example, tcp://ip:port for TCP connections.
-  
-  IPv6 addresses should be stored in canonical (compressed) format using
-  [address]:port notation.
+  (:ref:`SocketAddress <envoy_api_msg_SocketAddress>`) The (primary) upstream host that handles this exchange.
   
   
-.. _envoy_api_field_filter.AccessLogEntry.upstream_cluster:
+.. _envoy_api_field_filter.AccessLogCommon.upstream_cluster:
 
 upstream_cluster
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The Upstream Cluster that the upstream host belongs to.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The upstream cluster that ``upstream_host`` belongs to.
   
   
-.. _envoy_api_field_filter.AccessLogEntry.destination_host:
+.. _envoy_api_field_filter.AccessLogCommon.response_flags:
 
-destination_host
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) This field is the IP and port on which the request from the user was
-  received, stored in ipv4:port or [ipv6]:port format.
+response_flags
+  (:ref:`filter.ResponseFlags <envoy_api_msg_filter.ResponseFlags>`) Flags indicating occurences during request/response processing.
   
   
-.. _envoy_api_field_filter.AccessLogEntry.request_body_bytes:
-
-request_body_bytes
-  (`UInt64Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint64value>`_) Size of the HTTP request body in bytes
-  
-  
-.. _envoy_api_field_filter.AccessLogEntry.response_body_bytes:
-
-response_body_bytes
-  (`UInt64Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint64value>`_) Size of the HTTP response body in bytes
-  
-  
-.. _envoy_api_field_filter.AccessLogEntry.request_headers_bytes:
-
-request_headers_bytes
-  (`UInt64Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint64value>`_) Size of the HTTP request headers in bytes
-  
-  
-.. _envoy_api_field_filter.AccessLogEntry.response_headers_bytes:
-
-response_headers_bytes
-  (`UInt64Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint64value>`_) Size of the HTTP response headers in bytes
-  
-  
-.. _envoy_api_field_filter.AccessLogEntry.secure:
-
-secure
-  (`BoolValue <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue>`_) Whether the request arrived via a secure (TLS) protocol
-  
-  
-.. _envoy_api_field_filter.AccessLogEntry.health_check:
-
-health_check
-  (`BoolValue <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue>`_) Whether the request is a HealthCheck request
-  
-  
-.. _envoy_api_field_filter.AccessLogEntry.response_code:
-
-response_code
-  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The HTTP response code
-  
-  
-.. _envoy_api_field_filter.AccessLogEntry.user_agent:
-
-user_agent
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) User agent as sent by client HTTP
-  
-  
-.. _envoy_api_field_filter.AccessLogEntry.path:
-
-path
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Path
-  
-  This is the Path portion from the incoming request URI
-  
-  
-.. _envoy_api_field_filter.AccessLogEntry.referer:
-
-referer
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Referer header as sent by client HTTP
-  (Referer is spelled to match the HTTP spec, not English).
-  
-  
-.. _envoy_api_field_filter.AccessLogEntry.forwarded_for:
-
-forwarded_for
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) X-Forwarded-For request header
-  
-  
-.. _envoy_api_field_filter.AccessLogEntry.request_id:
-
-request_id
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) X-Request-Id request header
-  
-  This header is used by Envoy to uniquely identify a request.
-  It will be generated for all external requests and internal requests that
-  do not already have a request ID.  So this field can be guaranteed to exist
-  and be unique for request tracing purposes.
-  
-  
-.. _envoy_api_field_filter.AccessLogEntry.authority:
-
-authority
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) HTTP2 :authority header value or HTTP1.1 Host header value
-  
-  
-.. _envoy_api_field_filter.AccessLogEntry.response_duration:
-
-response_duration
-  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) Duration (milliseconds)
-  
-  The total duration it took to service this request from the StartTime until
-  the response was written to the user.
-  
-  
-.. _envoy_api_field_filter.AccessLogEntry.upstream_service_duration:
-
-upstream_service_duration
-  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) Upstream Service Time Duration
-  
-  From the X-Envoy-Upstream-Service-Time response header. This is the amount it took
-  the upstream server to service the request.
-  
-  
-.. _envoy_api_field_filter.AccessLogEntry.original_path:
-
-original_path
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Original Path from the X-Envoy-Original-Path header.
-  
-  
-.. _envoy_api_field_filter.AccessLogEntry.metadata:
+.. _envoy_api_field_filter.AccessLogCommon.metadata:
 
 metadata
-  (`Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_) All metadata encountered during request processing, including endpoint
+  (:ref:`Metadata <envoy_api_msg_Metadata>`) All metadata encountered during request processing, including endpoint
   selection.
   
   This can be used to associate IDs attached to the various configurations
@@ -215,184 +116,438 @@ metadata
   determine if a canary endpoint was used or not.
   
   
-.. _envoy_api_field_filter.AccessLogEntry.request_headers:
 
-request_headers
-  (:ref:`HeaderValue <envoy_api_msg_HeaderValue>`) Headers configured for logging but not covered by a specific field.
-  
-  
-.. _envoy_api_field_filter.AccessLogEntry.response_headers:
 
-response_headers
-  (:ref:`HeaderValue <envoy_api_msg_HeaderValue>`) 
+.. _envoy_api_msg_filter.ResponseFlags:
+
+filter.ResponseFlags
+--------------------
+
+`[filter.ResponseFlags proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L74>`_
+
+Flags indicating occurences during request/response processing.
+
+.. code-block:: json
+
+  {
+    "failed_local_healthcheck": "...",
+    "no_healthy_upstream": "...",
+    "upstream_request_timeout": "...",
+    "local_reset": "...",
+    "upstream_remote_reset": "...",
+    "upstream_connection_failure": "...",
+    "upstream_connection_termination": "...",
+    "upstream_overflow": "...",
+    "no_route_found": "...",
+    "delay_injected": "...",
+    "fault_injected": "...",
+    "rate_limited": "..."
+  }
+
+.. _envoy_api_field_filter.ResponseFlags.failed_local_healthcheck:
+
+failed_local_healthcheck
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Indicates local server healthcheck failed.
   
-.. _envoy_api_field_filter.AccessLogEntry.tls_sni_hostname:
+  
+.. _envoy_api_field_filter.ResponseFlags.no_healthy_upstream:
+
+no_healthy_upstream
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Indicates there was no healthy upstream.
+  
+  
+.. _envoy_api_field_filter.ResponseFlags.upstream_request_timeout:
+
+upstream_request_timeout
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Indicates an there was an upstream request timeout.
+  
+  
+.. _envoy_api_field_filter.ResponseFlags.local_reset:
+
+local_reset
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Indicates local codec level reset was sent on the stream.
+  
+  
+.. _envoy_api_field_filter.ResponseFlags.upstream_remote_reset:
+
+upstream_remote_reset
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Indicates remote codec level reset was received on the stream.
+  
+  
+.. _envoy_api_field_filter.ResponseFlags.upstream_connection_failure:
+
+upstream_connection_failure
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Indicates there was a local reset by a connection pool due to an initial connection failure.
+  
+  
+.. _envoy_api_field_filter.ResponseFlags.upstream_connection_termination:
+
+upstream_connection_termination
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Indicates the stream was reset locally due to connection termination.
+  
+  
+.. _envoy_api_field_filter.ResponseFlags.upstream_overflow:
+
+upstream_overflow
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Indicates the stream was reset because of a resource overflow.
+  
+  
+.. _envoy_api_field_filter.ResponseFlags.no_route_found:
+
+no_route_found
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Indicates no route was found for the request.
+  
+  
+.. _envoy_api_field_filter.ResponseFlags.delay_injected:
+
+delay_injected
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Indicates that the request was delayed before proxying.
+  
+  
+.. _envoy_api_field_filter.ResponseFlags.fault_injected:
+
+fault_injected
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Indicates that the request was aborted with an injected error code.
+  
+  
+.. _envoy_api_field_filter.ResponseFlags.rate_limited:
+
+rate_limited
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Indicates that the request was rate-limited locally.
+  
+  
+
+
+.. _envoy_api_msg_filter.TLSProperties:
+
+filter.TLSProperties
+--------------------
+
+`[filter.TLSProperties proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L113>`_
+
+Properties of a negotiated TLS connection.
+
+.. code-block:: json
+
+  {
+    "tls_version": "...",
+    "tls_cipher_suite": "{...}",
+    "tls_sni_hostname": "..."
+  }
+
+.. _envoy_api_field_filter.TLSProperties.tls_version:
+
+tls_version
+  (:ref:`filter.TLSProperties.TLSVersion <envoy_api_enum_filter.TLSProperties.TLSVersion>`) Version of TLS that was negotiated.
+  
+  
+.. _envoy_api_field_filter.TLSProperties.tls_cipher_suite:
+
+tls_cipher_suite
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) TLS cipher suite negotiated during handshake. The value is a
+  four-digit hex code defined by the IANA TLS Cipher Suite Registry
+  (e.g. ``009C`` for ``TLS_RSA_WITH_AES_128_GCM_SHA256``).
+  
+  Here it is expressed as an integer.
+  
+  
+.. _envoy_api_field_filter.TLSProperties.tls_sni_hostname:
 
 tls_sni_hostname
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) SNI hostname from handshake.
   
   
-.. _envoy_api_field_filter.AccessLogEntry.tls_version:
 
-tls_version
-  (:ref:`filter.AccessLogEntry.TLSVersion <envoy_api_enum_filter.AccessLogEntry.TLSVersion>`) 
-  
-.. _envoy_api_field_filter.AccessLogEntry.tls_cipher_suite:
+.. _envoy_api_enum_filter.TLSProperties.TLSVersion:
 
-tls_cipher_suite
-  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) TLS Cipher suite negotiated during TLS handshake.
-  The value is four hex digits defined by the IANA TLS Cipher Suite Registry,
-  eg, "009C" for TLS_RSA_WITH_AES_128_GCM_SHA256.
-  
-  Here is is expressed as an integer.
-  
-  
+Enum filter.TLSProperties.TLSVersion
+------------------------------------
 
-.. _envoy_api_enum_filter.AccessLogEntry.Protocol:
+`[filter.TLSProperties.TLSVersion proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L114>`_
 
-Enum filter.AccessLogEntry.Protocol
------------------------------------
 
-`[filter.AccessLogEntry.Protocol proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L19>`_
-
-Incoming protocol variation spoken
-
-.. _envoy_api_enum_value_filter.AccessLogEntry.Protocol.PROTOCOL_UNSPECIFIED:
-
-PROTOCOL_UNSPECIFIED
-  *(DEFAULT)* ⁣
-  
-.. _envoy_api_enum_value_filter.AccessLogEntry.Protocol.HTTP10:
-
-HTTP10
-  ⁣
-  
-.. _envoy_api_enum_value_filter.AccessLogEntry.Protocol.HTTP11:
-
-HTTP11
-  ⁣
-  
-.. _envoy_api_enum_value_filter.AccessLogEntry.Protocol.HTTP2:
-
-HTTP2
-  ⁣
-  
-
-.. _envoy_api_enum_filter.AccessLogEntry.ResponseFlag:
-
-Enum filter.AccessLogEntry.ResponseFlag
----------------------------------------
-
-`[filter.AccessLogEntry.ResponseFlag proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L29>`_
-
-This enum defines the various things that may have occurred while
-processing a request.
-
-.. _envoy_api_enum_value_filter.AccessLogEntry.ResponseFlag.FAILED_LOCAL_HEALTHCHECK:
-
-FAILED_LOCAL_HEALTHCHECK
-  *(DEFAULT)* ⁣Local server healthcheck failed.
-  
-  
-.. _envoy_api_enum_value_filter.AccessLogEntry.ResponseFlag.NO_HEALTHY_UPSTREAM:
-
-NO_HEALTHY_UPSTREAM
-  ⁣No healthy upstream.
-  
-  
-.. _envoy_api_enum_value_filter.AccessLogEntry.ResponseFlag.UPSTREAM_REQUEST_TIMEOUT:
-
-UPSTREAM_REQUEST_TIMEOUT
-  ⁣Request timeout on upstream.
-  
-  
-.. _envoy_api_enum_value_filter.AccessLogEntry.ResponseFlag.LOCAL_RESET:
-
-LOCAL_RESET
-  ⁣Local codec level reset was sent on the stream.
-  
-  
-.. _envoy_api_enum_value_filter.AccessLogEntry.ResponseFlag.UPSTREAM_REMOTE_RESET:
-
-UPSTREAM_REMOTE_RESET
-  ⁣Remote codec level reset was received on the stream.
-  
-  
-.. _envoy_api_enum_value_filter.AccessLogEntry.ResponseFlag.UPSTREAM_CONNECTION_FAILURE:
-
-UPSTREAM_CONNECTION_FAILURE
-  ⁣Local reset by a connection pool due to an initial connection failure.
-  
-  
-.. _envoy_api_enum_value_filter.AccessLogEntry.ResponseFlag.UPSTREAM_CONNECTION_TERMINATION:
-
-UPSTREAM_CONNECTION_TERMINATION
-  ⁣If the stream was locally reset due to connection termination.
-  
-  
-.. _envoy_api_enum_value_filter.AccessLogEntry.ResponseFlag.UPSTREAM_OVERFLOW:
-
-UPSTREAM_OVERFLOW
-  ⁣The stream was reset because of a resource overflow.
-  
-  
-.. _envoy_api_enum_value_filter.AccessLogEntry.ResponseFlag.NO_ROUTE_FOUND:
-
-NO_ROUTE_FOUND
-  ⁣No route found for a given request.
-  
-  
-.. _envoy_api_enum_value_filter.AccessLogEntry.ResponseFlag.DELAY_INJECTED:
-
-DELAY_INJECTED
-  ⁣Request was delayed before proxying.
-  
-  
-.. _envoy_api_enum_value_filter.AccessLogEntry.ResponseFlag.FAULT_INJECTED:
-
-FAULT_INJECTED
-  ⁣Abort with error code was injected.
-  
-  
-.. _envoy_api_enum_value_filter.AccessLogEntry.ResponseFlag.RATE_LIMITED:
-
-RATE_LIMITED
-  ⁣Request was ratelimited locally by rate limit filter.
-  
-  
-
-.. _envoy_api_enum_filter.AccessLogEntry.TLSVersion:
-
-Enum filter.AccessLogEntry.TLSVersion
--------------------------------------
-
-`[filter.AccessLogEntry.TLSVersion proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L154>`_
-
-TLS Version or VERSION_UNSPECIFIED if TLS was not used
-
-.. _envoy_api_enum_value_filter.AccessLogEntry.TLSVersion.VERSION_UNSPECIFIED:
+.. _envoy_api_enum_value_filter.TLSProperties.TLSVersion.VERSION_UNSPECIFIED:
 
 VERSION_UNSPECIFIED
   *(DEFAULT)* ⁣
   
-.. _envoy_api_enum_value_filter.AccessLogEntry.TLSVersion.TLSv1:
+.. _envoy_api_enum_value_filter.TLSProperties.TLSVersion.TLSv1:
 
 TLSv1
   ⁣
   
-.. _envoy_api_enum_value_filter.AccessLogEntry.TLSVersion.TLSv1_1:
+.. _envoy_api_enum_value_filter.TLSProperties.TLSVersion.TLSv1_1:
 
 TLSv1_1
   ⁣
   
-.. _envoy_api_enum_value_filter.AccessLogEntry.TLSVersion.TLSv1_2:
+.. _envoy_api_enum_value_filter.TLSProperties.TLSVersion.TLSv1_2:
 
 TLSv1_2
   ⁣
   
-.. _envoy_api_enum_value_filter.AccessLogEntry.TLSVersion.TLSv1_3:
+.. _envoy_api_enum_value_filter.TLSProperties.TLSVersion.TLSv1_3:
 
 TLSv1_3
+  ⁣
+  
+
+.. _envoy_api_msg_filter.TCPAccessLogEntry:
+
+filter.TCPAccessLogEntry
+------------------------
+
+`[filter.TCPAccessLogEntry proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L135>`_
+
+
+.. code-block:: json
+
+  {
+    "common_properties": "{...}"
+  }
+
+.. _envoy_api_field_filter.TCPAccessLogEntry.common_properties:
+
+common_properties
+  (:ref:`filter.AccessLogCommon <envoy_api_msg_filter.AccessLogCommon>`) Common properties shared by all Envoy access logs.
+  
+  
+
+
+.. _envoy_api_msg_filter.HTTPRequestProperties:
+
+filter.HTTPRequestProperties
+----------------------------
+
+`[filter.HTTPRequestProperties proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L140>`_
+
+
+.. code-block:: json
+
+  {
+    "request_method": "...",
+    "scheme": "...",
+    "authority": "...",
+    "port": "{...}",
+    "path": "...",
+    "user_agent": "...",
+    "referer": "...",
+    "forwarded_for": "...",
+    "request_id": "...",
+    "original_path": "...",
+    "request_headers_bytes": "...",
+    "request_body_bytes": "...",
+    "request_headers": "{...}"
+  }
+
+.. _envoy_api_field_filter.HTTPRequestProperties.request_method:
+
+request_method
+  (:ref:`RequestMethod <envoy_api_enum_RequestMethod>`) The request method (RFC 7231/2616).
+  
+  
+.. _envoy_api_field_filter.HTTPRequestProperties.scheme:
+
+scheme
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The scheme portion of the incoming request URI.
+  
+  
+.. _envoy_api_field_filter.HTTPRequestProperties.authority:
+
+authority
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) HTTP/2 ``:authority`` or HTTP/1.1 ``Host`` header value.
+  
+  
+.. _envoy_api_field_filter.HTTPRequestProperties.port:
+
+port
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The port of the incoming request URI
+  (unused currently, as port is composed onto authority).
+  
+  
+.. _envoy_api_field_filter.HTTPRequestProperties.path:
+
+path
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The path portion from the incoming request URI.
+  
+  
+.. _envoy_api_field_filter.HTTPRequestProperties.user_agent:
+
+user_agent
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Value of the ``User-Agent`` request header.
+  
+  
+.. _envoy_api_field_filter.HTTPRequestProperties.referer:
+
+referer
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Value of the ``Referer`` request header.
+  
+  
+.. _envoy_api_field_filter.HTTPRequestProperties.forwarded_for:
+
+forwarded_for
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Value of the ``X-Forwarded-For`` request header.
+  
+  
+.. _envoy_api_field_filter.HTTPRequestProperties.request_id:
+
+request_id
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Value of the ``X-Request-Id`` request header
+  
+  This header is used by Envoy to uniquely identify a request.
+  It will be generated for all external requests and internal requests that
+  do not already have a request ID.
+  
+  
+.. _envoy_api_field_filter.HTTPRequestProperties.original_path:
+
+original_path
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Value of the ``X-Envoy-Original-Path`` request header.
+  
+  
+.. _envoy_api_field_filter.HTTPRequestProperties.request_headers_bytes:
+
+request_headers_bytes
+  (`uint64 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Size of the HTTP request headers in bytes.
+  
+  This value is captured from the OSI layer 7 perspective, i.e. it does not
+  include overhead from framing or encoding at other networking layers.
+  
+  
+.. _envoy_api_field_filter.HTTPRequestProperties.request_body_bytes:
+
+request_body_bytes
+  (`uint64 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Size of the HTTP request body in bytes.
+  
+  This value is captured from the OSI layer 7 perspective, i.e. it does not
+  include overhead from framing or encoding at other networking layers.
+  
+  
+.. _envoy_api_field_filter.HTTPRequestProperties.request_headers:
+
+request_headers
+  (map<`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, `string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_>) Map of additional headers that have been configured to be logged.
+  
+  
+
+
+.. _envoy_api_msg_filter.HTTPResponseProperties:
+
+filter.HTTPResponseProperties
+-----------------------------
+
+`[filter.HTTPResponseProperties proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L192>`_
+
+
+.. code-block:: json
+
+  {
+    "response_code": "{...}",
+    "response_headers_bytes": "...",
+    "response_body_bytes": "...",
+    "response_headers": "{...}"
+  }
+
+.. _envoy_api_field_filter.HTTPResponseProperties.response_code:
+
+response_code
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The HTTP response code returned by Envoy.
+  
+  
+.. _envoy_api_field_filter.HTTPResponseProperties.response_headers_bytes:
+
+response_headers_bytes
+  (`uint64 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Size of the HTTP response headers in bytes.
+  
+  This value is captured from the OSI layer 7 perspective, i.e. it does not
+  include overhead from framing or encoding at other networking layers.
+  
+  
+.. _envoy_api_field_filter.HTTPResponseProperties.response_body_bytes:
+
+response_body_bytes
+  (`uint64 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Size of the HTTP response body in bytes.
+  
+  This value is captured from the OSI layer 7 perspective, i.e. it does not
+  include overhead from framing or encoding at other networking layers.
+  
+  
+.. _envoy_api_field_filter.HTTPResponseProperties.response_headers:
+
+response_headers
+  (map<`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, `string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_>) Map of additional headers configured to be logged.
+  
+  
+
+
+.. _envoy_api_msg_filter.HTTPAccessLogEntry:
+
+filter.HTTPAccessLogEntry
+-------------------------
+
+`[filter.HTTPAccessLogEntry proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L212>`_
+
+
+.. code-block:: json
+
+  {
+    "common_properties": "{...}",
+    "protocol_version": "...",
+    "request": "{...}",
+    "response": "{...}"
+  }
+
+.. _envoy_api_field_filter.HTTPAccessLogEntry.common_properties:
+
+common_properties
+  (:ref:`filter.AccessLogCommon <envoy_api_msg_filter.AccessLogCommon>`) Common properties shared by all Envoy access logs.
+  
+  
+.. _envoy_api_field_filter.HTTPAccessLogEntry.protocol_version:
+
+protocol_version
+  (:ref:`filter.HTTPAccessLogEntry.HTTPVersion <envoy_api_enum_filter.HTTPAccessLogEntry.HTTPVersion>`) 
+  
+.. _envoy_api_field_filter.HTTPAccessLogEntry.request:
+
+request
+  (:ref:`filter.HTTPRequestProperties <envoy_api_msg_filter.HTTPRequestProperties>`) Description of the incoming HTTP request.
+  
+  
+.. _envoy_api_field_filter.HTTPAccessLogEntry.response:
+
+response
+  (:ref:`filter.HTTPResponseProperties <envoy_api_msg_filter.HTTPResponseProperties>`) Description of the outgoing HTTP response.
+  
+  
+
+.. _envoy_api_enum_filter.HTTPAccessLogEntry.HTTPVersion:
+
+Enum filter.HTTPAccessLogEntry.HTTPVersion
+------------------------------------------
+
+`[filter.HTTPAccessLogEntry.HTTPVersion proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L217>`_
+
+HTTP version
+
+.. _envoy_api_enum_value_filter.HTTPAccessLogEntry.HTTPVersion.PROTOCOL_UNSPECIFIED:
+
+PROTOCOL_UNSPECIFIED
+  *(DEFAULT)* ⁣
+  
+.. _envoy_api_enum_value_filter.HTTPAccessLogEntry.HTTPVersion.HTTP10:
+
+HTTP10
+  ⁣
+  
+.. _envoy_api_enum_value_filter.HTTPAccessLogEntry.HTTPVersion.HTTP11:
+
+HTTP11
+  ⁣
+  
+.. _envoy_api_enum_value_filter.HTTPAccessLogEntry.HTTPVersion.HTTP2:
+
+HTTP2
   ⁣
   
 
@@ -401,7 +556,7 @@ TLSv1_3
 filter.ComparisonFilter
 -----------------------
 
-`[filter.ComparisonFilter proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L172>`_
+`[filter.ComparisonFilter proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L233>`_
 
 Filter on some integer comparison.
 
@@ -429,7 +584,7 @@ value
 Enum filter.ComparisonFilter.Op
 -------------------------------
 
-`[filter.ComparisonFilter.Op proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L174>`_
+`[filter.ComparisonFilter.Op proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L235>`_
 
 Comparison operator.
 
@@ -449,7 +604,7 @@ GE
 filter.StatusCodeFilter
 -----------------------
 
-`[filter.StatusCodeFilter proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L185>`_
+`[filter.StatusCodeFilter proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L246>`_
 
 Filters on HTTP response/status code.
 
@@ -471,7 +626,7 @@ comparison
 filter.DurationFilter
 ---------------------
 
-`[filter.DurationFilter proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L190>`_
+`[filter.DurationFilter proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L251>`_
 
 Filters on total request duration in milliseconds.
 
@@ -493,7 +648,7 @@ comparison
 filter.NotHealthCheckFilter
 ---------------------------
 
-`[filter.NotHealthCheckFilter proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L196>`_
+`[filter.NotHealthCheckFilter proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L257>`_
 
 Filters for requests that are not health check requests. A health check
 request is marked by the health check filter.
@@ -512,7 +667,7 @@ request is marked by the health check filter.
 filter.TraceableFilter
 ----------------------
 
-`[filter.TraceableFilter proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L201>`_
+`[filter.TraceableFilter proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L262>`_
 
 Filters for requests that are traceable. See the tracing overview for more
 information on how a request becomes traceable.
@@ -531,7 +686,7 @@ information on how a request becomes traceable.
 filter.RuntimeFilter
 --------------------
 
-`[filter.RuntimeFilter proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L209>`_
+`[filter.RuntimeFilter proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L270>`_
 
 Filters for random sampling of requests. Sampling pivots on the header
 x-request-id being present. If x-request-id is present, the filter will
@@ -559,7 +714,7 @@ runtime_key
 filter.AndFilter
 ----------------
 
-`[filter.AndFilter proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L218>`_
+`[filter.AndFilter proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L279>`_
 
 Performs a logical “and” operation on the result of each filter in filters.
 Filters are evaluated sequentially and if one of them returns false, the
@@ -583,7 +738,7 @@ filters
 filter.OrFilter
 ---------------
 
-`[filter.OrFilter proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L225>`_
+`[filter.OrFilter proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L286>`_
 
 Performs a logical “or” operation on the result of each individual filter.
 Filters are evaluated sequentially and if one of them returns true, the
@@ -607,7 +762,7 @@ filters
 filter.AccessLogFilter
 ----------------------
 
-`[filter.AccessLogFilter proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L229>`_
+`[filter.AccessLogFilter proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L290>`_
 
 
 .. code-block:: json
@@ -678,7 +833,7 @@ or_filter
 filter.FileAccessLog
 --------------------
 
-`[filter.FileAccessLog proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L243>`_
+`[filter.FileAccessLog proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L304>`_
 
 Custom configuration for an AccessLog that writes log entries directly to a file.
 Configures the built-in "envoy.file_access_log" AccessLog.
@@ -717,7 +872,7 @@ format
 filter.AccessLogServiceConfig
 -----------------------------
 
-`[filter.AccessLogServiceConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L260>`_
+`[filter.AccessLogServiceConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L321>`_
 
 Configuration for the built-in "envoy.grpc_access_log" access log type.
 
@@ -750,7 +905,7 @@ cluster_name
 filter.StreamAccessLogsMessage
 ------------------------------
 
-`[filter.StreamAccessLogsMessage proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L273>`_
+`[filter.StreamAccessLogsMessage proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L334>`_
 
 Stream message for the StreamAccessLogs API. Envoy will open a stream to the server and stream
 access logs without ever expecting a response.
@@ -759,7 +914,8 @@ access logs without ever expecting a response.
 
   {
     "identifier": "{...}",
-    "logs": []
+    "http_logs": "{...}",
+    "tcp_logs": "{...}"
   }
 
 .. _envoy_api_field_filter.StreamAccessLogsMessage.identifier:
@@ -769,18 +925,26 @@ identifier
   structured metadata and is a performance optimization.
   
   
-.. _envoy_api_field_filter.StreamAccessLogsMessage.logs:
+.. _envoy_api_field_filter.StreamAccessLogsMessage.http_logs:
 
-logs
-  (:ref:`filter.AccessLogEntry <envoy_api_msg_filter.AccessLogEntry>`) A list of access logs.
+http_logs
+  (:ref:`filter.StreamAccessLogsMessage.HTTPAccessLogEntries <envoy_api_msg_filter.StreamAccessLogsMessage.HTTPAccessLogEntries>`) 
   
+  Only one of :ref:`http_logs <envoy_api_field_filter.StreamAccessLogsMessage.http_logs>`, :ref:`tcp_logs <envoy_api_field_filter.StreamAccessLogsMessage.tcp_logs>` may be set.
+  
+.. _envoy_api_field_filter.StreamAccessLogsMessage.tcp_logs:
+
+tcp_logs
+  (:ref:`filter.StreamAccessLogsMessage.TCPAccessLogEntries <envoy_api_msg_filter.StreamAccessLogsMessage.TCPAccessLogEntries>`) 
+  
+  Only one of :ref:`http_logs <envoy_api_field_filter.StreamAccessLogsMessage.http_logs>`, :ref:`tcp_logs <envoy_api_field_filter.StreamAccessLogsMessage.tcp_logs>` may be set.
   
 .. _envoy_api_msg_filter.StreamAccessLogsMessage.Identifier:
 
 filter.StreamAccessLogsMessage.Identifier
 -----------------------------------------
 
-`[filter.StreamAccessLogsMessage.Identifier proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L274>`_
+`[filter.StreamAccessLogsMessage.Identifier proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L335>`_
 
 
 .. code-block:: json
@@ -804,13 +968,57 @@ log_name
   
 
 
+.. _envoy_api_msg_filter.StreamAccessLogsMessage.HTTPAccessLogEntries:
+
+filter.StreamAccessLogsMessage.HTTPAccessLogEntries
+---------------------------------------------------
+
+`[filter.StreamAccessLogsMessage.HTTPAccessLogEntries proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L348>`_
+
+Wrapper for batches of HTTP access log entries.
+
+.. code-block:: json
+
+  {
+    "log_entry": []
+  }
+
+.. _envoy_api_field_filter.StreamAccessLogsMessage.HTTPAccessLogEntries.log_entry:
+
+log_entry
+  (:ref:`filter.HTTPAccessLogEntry <envoy_api_msg_filter.HTTPAccessLogEntry>`) 
+  
+
+
+.. _envoy_api_msg_filter.StreamAccessLogsMessage.TCPAccessLogEntries:
+
+filter.StreamAccessLogsMessage.TCPAccessLogEntries
+--------------------------------------------------
+
+`[filter.StreamAccessLogsMessage.TCPAccessLogEntries proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L353>`_
+
+Wrapper for batches of TCP access log entries.
+
+.. code-block:: json
+
+  {
+    "log_entry": []
+  }
+
+.. _envoy_api_field_filter.StreamAccessLogsMessage.TCPAccessLogEntries.log_entry:
+
+log_entry
+  (:ref:`filter.TCPAccessLogEntry <envoy_api_msg_filter.TCPAccessLogEntry>`) 
+  
+
+
 
 .. _envoy_api_msg_filter.StreamAccessLogsResponse:
 
 filter.StreamAccessLogsResponse
 -------------------------------
 
-`[filter.StreamAccessLogsResponse proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L291>`_
+`[filter.StreamAccessLogsResponse proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L366>`_
 
 Empty response for the StreamAccessLogs API. Will never be sent. See below.
 
@@ -828,7 +1036,7 @@ Empty response for the StreamAccessLogs API. Will never be sent. See below.
 filter.AccessLog
 ----------------
 
-`[filter.AccessLog proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L306>`_
+`[filter.AccessLog proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/accesslog.proto#L381>`_
 
 
 .. code-block:: json
