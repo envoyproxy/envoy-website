@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>LDS &mdash; envoy 1.5.0-data-plane-api-ac1306 documentation</title>
+  <title>Listeners and LDS &mdash; envoy 1.5.0-data-plane-api-956ac5 documentation</title>
   
 
   
@@ -37,10 +37,10 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-ac1306 documentation" href="../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-956ac5 documentation" href="../index.html"/>
         <link rel="up" title="Envoy v2 API reference" href="api.html"/>
-        <link rel="next" title="Protocol options" href="protocol.proto.html"/>
-        <link rel="prev" title="Health check" href="health_check.proto.html"/> 
+        <link rel="next" title="Clusters and CDS" href="cds.proto.html"/>
+        <link rel="prev" title="Bootstrap" href="bootstrap.proto.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-ac1306
+                1.5.0-data-plane-api-956ac5
               </div>
             
           
@@ -102,14 +102,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../extending/extending.html">Extending Envoy for custom use cases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api-v1/api.html">Envoy v1 API reference</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="api.html">Envoy v2 API reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="address.proto.html">Network addresses</a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.proto.html">Common types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bootstrap.proto.html">Bootstrap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cds.proto.html">CDS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="discovery.proto.html">api/discovery.proto</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eds.proto.html">EDS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="health_check.proto.html">Health check</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">LDS</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Listeners and LDS</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#filter">Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#filter-deprecatedv1">Filter.DeprecatedV1</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#filterchainmatch">FilterChainMatch</a></li>
@@ -119,9 +113,15 @@
 <li class="toctree-l3"><a class="reference internal" href="#enum-listener-draintype">Enum Listener.DrainType</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="cds.proto.html">Clusters and CDS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eds.proto.html">Endpoints and EDS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="health_check.proto.html">Health check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rds.proto.html">HTTP route management and RDS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sds.proto.html">TLS configuration and Secret Discovery Service (SDS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.proto.html">Common types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="address.proto.html">Network addresses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="protocol.proto.html">Protocol options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.proto.html">RDS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sds.proto.html">SDS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="discovery.proto.html">Common discovery API components</a></li>
 <li class="toctree-l2"><a class="reference internal" href="filter/filter.html">Filters</a></li>
 </ul>
 </li>
@@ -171,7 +171,7 @@
         
           <li><a href="api.html">Envoy v2 API reference</a> &raquo;</li>
         
-      <li>LDS</li>
+      <li>Listeners and LDS</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -190,14 +190,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="lds">
-<span id="envoy-api-file-api-lds-proto"></span><h1>LDS<a class="headerlink" href="#lds" title="Permalink to this headline">¶</a></h1>
-<p>This is heavily derived from
-<a class="reference external" href="https://lyft.github.io/envoy/docs/configuration/listeners/listeners.html">https://lyft.github.io/envoy/docs/configuration/listeners/listeners.html</a>
-The v2 gRPC API differences are tagged with [V2-API-DIFF].</p>
+  <div class="section" id="listeners-and-lds">
+<span id="envoy-api-file-api-lds-proto"></span><h1>Listeners and LDS<a class="headerlink" href="#listeners-and-lds" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="filter">
 <span id="envoy-api-msg-filter"></span><h2>Filter<a class="headerlink" href="#filter" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L36">[Filter proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L33">[Filter proto]</a></p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -222,7 +219,7 @@ instantiated. See the supported filters for further documentation.</dd>
 </div>
 <div class="section" id="filter-deprecatedv1">
 <span id="envoy-api-msg-filter-deprecatedv1"></span><h2>Filter.DeprecatedV1<a class="headerlink" href="#filter-deprecatedv1" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L44">[Filter.DeprecatedV1 proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L41">[Filter.DeprecatedV1 proto]</a></p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
 <span class="p">}</span>
@@ -235,7 +232,7 @@ instantiated. See the supported filters for further documentation.</dd>
 </div>
 <div class="section" id="filterchainmatch">
 <span id="envoy-api-msg-filterchainmatch"></span><h2>FilterChainMatch<a class="headerlink" href="#filterchainmatch" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L52">[FilterChainMatch proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L49">[FilterChainMatch proto]</a></p>
 <p>Specifies the match criteria for selecting a specific filter chain for a
 listener [V2-API-DIFF].</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -289,7 +286,7 @@ listener in determining a filter chain match.</dd>
 </div>
 <div class="section" id="filterchain">
 <span id="envoy-api-msg-filterchain"></span><h2>FilterChain<a class="headerlink" href="#filterchain" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L84">[FilterChain proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L81">[FilterChain proto]</a></p>
 <p>Grouping of FilterChainMatch criteria, DownstreamTlsContext, the actual filter chain
 and related parameters.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -337,7 +334,7 @@ connection as the remote address.</dd>
 </div>
 <div class="section" id="listener">
 <span id="envoy-api-msg-listener"></span><h2>Listener<a class="headerlink" href="#listener" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L108">[Listener proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L105">[Listener proto]</a></p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;address&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -405,7 +402,7 @@ If unspecified, an implementation defined default is applied (1MiB).</dd>
 </div>
 <div class="section" id="listener-deprecatedv1">
 <span id="envoy-api-msg-listener-deprecatedv1"></span><h2>Listener.DeprecatedV1<a class="headerlink" href="#listener-deprecatedv1" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L145">[Listener.DeprecatedV1 proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L142">[Listener.DeprecatedV1 proto]</a></p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;bind_to_port&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
@@ -425,7 +422,7 @@ port specified in the FilterChainMatch destination_port field.</p>
 </div>
 <div class="section" id="enum-listener-draintype">
 <span id="envoy-api-enum-listener-draintype"></span><h2>Enum Listener.DrainType<a class="headerlink" href="#enum-listener-draintype" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L158">[Listener.DrainType proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L155">[Listener.DrainType proto]</a></p>
 <dl class="docutils" id="envoy-api-enum-value-listener-draintype-default">
 <dt>DEFAULT</dt>
 <dd><em>(DEFAULT)</em> ⁣Drain in response to calling /healthcheck/fail admin endpoint (along with the health check
@@ -450,10 +447,10 @@ and egress listeners.</dd>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="protocol.proto.html" class="btn btn-neutral float-right" title="Protocol options" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="cds.proto.html" class="btn btn-neutral float-right" title="Clusters and CDS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="health_check.proto.html" class="btn btn-neutral" title="Health check" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="bootstrap.proto.html" class="btn btn-neutral" title="Bootstrap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -484,7 +481,7 @@ and egress listeners.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.5.0-data-plane-api-ac1306',
+            VERSION:'1.5.0-data-plane-api-956ac5',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

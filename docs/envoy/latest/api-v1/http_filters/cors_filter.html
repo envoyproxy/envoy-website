@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Service to service plus front proxy &mdash; envoy 1.5.0-data-plane-api-956ac5 documentation</title>
+  <title>CORS filter &mdash; envoy 1.5.0-data-plane-api-956ac5 documentation</title>
   
 
   
@@ -38,9 +38,9 @@
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
     <link rel="top" title="envoy 1.5.0-data-plane-api-956ac5 documentation" href="../../index.html"/>
-        <link rel="up" title="Deployment types" href="deployment_types.html"/>
-        <link rel="next" title="Service to service, front proxy, and double proxy" href="double_proxy.html"/>
-        <link rel="prev" title="Service to service only" href="service_to_service.html"/> 
+        <link rel="up" title="HTTP filters" href="http_filters.html"/>
+        <link rel="next" title="HTTP connection manager" href="http_conn_man.html"/>
+        <link rel="prev" title="HTTP filters" href="http_filters.html"/> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -95,28 +95,21 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../intro.html">Introduction</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../what_is_envoy.html">What is Envoy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../arch_overview/arch_overview.html">Architecture overview</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="deployment_types.html">Deployment types</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="service_to_service.html">Service to service only</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Service to service plus front proxy</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#configuration-template">Configuration template</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="double_proxy.html">Service to service, front proxy, and double proxy</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../comparison.html">Comparison to similar systems</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../getting_help.html">Getting help</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../version_history.html">Version history</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../install/install.html">Building and installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api-v1/api.html">Envoy v1 API reference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Envoy v1 API reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../network_filters/network_filters.html">Network filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../route_config/route_config.html">HTTP Route configuration</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="http_filters.html">HTTP filters</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">CORS filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="http_conn_man.html">HTTP connection manager</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../api-v2/api.html">Envoy v2 API reference</a></li>
 </ul>
 
@@ -162,17 +155,17 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../intro.html">Introduction</a> &raquo;</li>
+          <li><a href="../api.html">Envoy v1 API reference</a> &raquo;</li>
         
-          <li><a href="deployment_types.html">Deployment types</a> &raquo;</li>
+          <li><a href="http_filters.html">HTTP filters</a> &raquo;</li>
         
-      <li>Service to service plus front proxy</li>
+      <li>CORS filter</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/intro/deployment_types/front_proxy.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/api-v1/http_filters/cors_filter.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -185,25 +178,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="service-to-service-plus-front-proxy">
-<span id="deployment-type-front-proxy"></span><h1>Service to service plus front proxy<a class="headerlink" href="#service-to-service-plus-front-proxy" title="Permalink to this headline">¶</a></h1>
-<img alt="../../_images/front_proxy.svg" src="../../_images/front_proxy.svg" /><p>The above diagram shows the <a class="reference internal" href="service_to_service.html#deployment-type-service-to-service"><span class="std std-ref">service to service</span></a>
-configuration sitting behind an Envoy cluster used as an HTTP L7 edge reverse proxy. The
-reverse proxy provides the following features:</p>
-<ul class="simple">
-<li>Terminates TLS.</li>
-<li>Supports both HTTP/1.1 and HTTP/2.</li>
-<li>Full HTTP L7 routing support.</li>
-<li>Talks to the service to service Envoy clusters via the standard <a class="reference internal" href="service_to_service.html#deployment-type-service-to-service-ingress"><span class="std std-ref">ingress port</span></a> and using the discovery service for host
-lookup. Thus, the front Envoy hosts work identically to any other Envoy host, other than the
-fact that they do not run collocated with another service. This means that are operated in the
-same way and emit the same statistics.</li>
-</ul>
-<div class="section" id="configuration-template">
-<h2>Configuration template<a class="headerlink" href="#configuration-template" title="Permalink to this headline">¶</a></h2>
-<p>The source distribution includes an example front proxy configuration that is very similar to
-the version that Lyft runs in production. See <a class="reference internal" href="../../install/ref_configs.html#install-ref-configs"><span class="std std-ref">here</span></a> for more
-information.</p>
+  <div class="section" id="cors-filter">
+<span id="config-http-filters-cors-v1"></span><h1>CORS filter<a class="headerlink" href="#cors-filter" title="Permalink to this headline">¶</a></h1>
+<p>Cors <a class="reference internal" href="../../configuration/http_filters/cors_filter.html#config-http-filters-cors"><span class="std std-ref">configuration overview</span></a>.</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;cors&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+</pre></div>
 </div>
 </div>
 
@@ -217,10 +199,10 @@ information.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="double_proxy.html" class="btn btn-neutral float-right" title="Service to service, front proxy, and double proxy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="http_conn_man.html" class="btn btn-neutral float-right" title="HTTP connection manager" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="service_to_service.html" class="btn btn-neutral" title="Service to service only" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="http_filters.html" class="btn btn-neutral" title="HTTP filters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
