@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Rate limit configuration &mdash; envoy 1.5.0-data-plane-api-8577f1 documentation</title>
+  <title>Rate limit configuration &mdash; envoy 1.5.0-data-plane-api-6928bd documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-8577f1 documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-6928bd documentation" href="../../index.html"/>
         <link rel="up" title="HTTP Route configuration" href="route_config.html"/>
         <link rel="next" title="HTTP filters" href="../http_filters/http_filters.html"/>
         <link rel="prev" title="Virtual cluster" href="vcluster.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-8577f1
+                1.5.0-data-plane-api-6928bd
               </div>
             
           
@@ -108,7 +108,6 @@
 <li class="toctree-l3"><a class="reference internal" href="vcluster.html">Virtual cluster</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Rate limit configuration</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#actions">Actions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#composing-actions">Composing Actions</a></li>
 </ul>
 </li>
 </ul>
@@ -207,7 +206,7 @@ only applies to filters with the same stage number. The default stage number is 
 <dd><em>(required, array)</em> A list of actions that are to be applied for this rate limit configuration.
 Order matters as the actions are processed sequentially and the descriptor is composed by
 appending descriptor entries in that sequence. If an action cannot append a descriptor entry,
-no descriptor is generated for the configuration. See <a class="reference internal" href="#config-http-conn-man-route-table-rate-limit-composing-actions"><span class="std std-ref">composing actions</span></a> for additional documentation.</dd>
+no descriptor is generated for the configuration. See <a class="reference internal" href="../../configuration/http_filters/rate_limit_filter.html#config-http-filters-rate-limit-composing-actions"><span class="std std-ref">composing actions</span></a> for additional documentation.</dd>
 </dl>
 <div class="section" id="actions">
 <span id="config-http-conn-man-route-table-rate-limit-actions"></span><h2>Actions<a class="headerlink" href="#actions" title="Permalink to this headline">¶</a></h2>
@@ -342,65 +341,6 @@ based on presence if the <code class="docutils literal"><span class="pre">value<
 <div>(“header_match”, “&lt;descriptor_value&gt;”)</div></blockquote>
 </div>
 </div>
-<div class="section" id="composing-actions">
-<span id="config-http-conn-man-route-table-rate-limit-composing-actions"></span><h2>Composing Actions<a class="headerlink" href="#composing-actions" title="Permalink to this headline">¶</a></h2>
-<p>Each action populates a descriptor entry. A vector of descriptor entries compose a descriptor. To
-create more complex rate limit descriptors, actions can be composed in any order. The descriptor
-will be populated in the order the actions are specified in the configuration.</p>
-<div class="section" id="example-1">
-<h3>Example 1<a class="headerlink" href="#example-1" title="Permalink to this headline">¶</a></h3>
-<p>For example, to generate the following descriptor:</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="p">(</span><span class="s">&quot;generic_key&quot;</span><span class="p">,</span> <span class="s">&quot;some_value&quot;</span><span class="p">)</span>
-<span class="p">(</span><span class="s">&quot;source_cluster&quot;</span><span class="p">,</span> <span class="s">&quot;from_cluster&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>The configuration would be:</p>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;actions&quot;</span> <span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;generic_key&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;descriptor_value&quot;</span> <span class="p">:</span> <span class="s2">&quot;some_value&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;source_cluster&quot;</span>
-    <span class="p">}</span>
-  <span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="example-2">
-<h3>Example 2<a class="headerlink" href="#example-2" title="Permalink to this headline">¶</a></h3>
-<p>If an action doesn’t append a descriptor entry, no descriptor is generated for
-the configuration.</p>
-<p>For the following configuration:</p>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;actions&quot;</span> <span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;generic_key&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;descriptor_value&quot;</span> <span class="p">:</span> <span class="s2">&quot;some_value&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;remote_address&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;souce_cluster&quot;</span>
-    <span class="p">}</span>
-  <span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>If a request did not set <a class="reference internal" href="../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a>,
-no descriptor is generated.</p>
-<p>If a request sets <a class="reference internal" href="../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a>, the
-the following descriptor is generated:</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="p">(</span><span class="s">&quot;generic_key&quot;</span><span class="p">,</span> <span class="s">&quot;some_value&quot;</span><span class="p">)</span>
-<span class="p">(</span><span class="s">&quot;remote_address&quot;</span><span class="p">,</span> <span class="s">&quot;&lt;trusted address from x-forwarded-for&gt;&quot;</span><span class="p">)</span>
-<span class="p">(</span><span class="s">&quot;source_cluster&quot;</span><span class="p">,</span> <span class="s">&quot;from_cluster&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
 </div>
 
 
@@ -447,7 +387,7 @@ the following descriptor is generated:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.5.0-data-plane-api-8577f1',
+            VERSION:'1.5.0-data-plane-api-6928bd',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

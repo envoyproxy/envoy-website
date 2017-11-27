@@ -382,6 +382,8 @@ request_headers_to_add
   (:ref:`HeaderValueOption <envoy_api_msg_HeaderValueOption>`) Specifies a set of headers that will be added to requests matching this
   route. Headers specified at this level are applied before headers from the
   enclosing :ref:`envoy_api_msg_VirtualHost` and :ref:`envoy_api_msg_RouteConfiguration`.
+  For more information see the documentation on :ref:`custom request headers
+  <config_http_conn_man_headers_custom_request_headers>`.
   
   
 .. _envoy_api_field_RouteAction.response_headers_to_add:
@@ -462,8 +464,9 @@ cors
 RouteAction.RetryPolicy
 -----------------------
 
-`[RouteAction.RetryPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L205>`_
+`[RouteAction.RetryPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L206>`_
 
+HTTP retry :ref:`architecture overview <arch_overview_http_routing_retry>`.
 
 .. code-block:: json
 
@@ -512,7 +515,7 @@ per_try_timeout
 RouteAction.RequestMirrorPolicy
 -------------------------------
 
-`[RouteAction.RequestMirrorPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L240>`_
+`[RouteAction.RequestMirrorPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L241>`_
 
 The router is capable of shadowing traffic from one cluster to another. The current
 implementation is "fire and forget," meaning Envoy will not wait for the shadow cluster to
@@ -554,8 +557,10 @@ runtime_key
 RouteAction.HashPolicy
 ----------------------
 
-`[RouteAction.HashPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L284>`_
+`[RouteAction.HashPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L289>`_
 
+Specifies the route's hashing policy if the upstream cluster uses a hashing :ref:`load balancer
+<arch_overview_load_balancing_types>`.
 
 .. code-block:: json
 
@@ -594,7 +599,7 @@ connection_properties
 RouteAction.HashPolicy.Header
 -----------------------------
 
-`[RouteAction.HashPolicy.Header proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L285>`_
+`[RouteAction.HashPolicy.Header proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L290>`_
 
 
 .. code-block:: json
@@ -617,7 +622,7 @@ header_name
 RouteAction.HashPolicy.Cookie
 -----------------------------
 
-`[RouteAction.HashPolicy.Cookie proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L305>`_
+`[RouteAction.HashPolicy.Cookie proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L310>`_
 
 Envoy supports two types of cookie affinity:
 
@@ -663,7 +668,7 @@ ttl
 RouteAction.HashPolicy.ConnectionProperties
 -------------------------------------------
 
-`[RouteAction.HashPolicy.ConnectionProperties proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L316>`_
+`[RouteAction.HashPolicy.ConnectionProperties proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L321>`_
 
 
 .. code-block:: json
@@ -687,7 +692,7 @@ source_ip
 RedirectAction
 --------------
 
-`[RedirectAction proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L369>`_
+`[RedirectAction proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L374>`_
 
 
 .. code-block:: json
@@ -723,7 +728,7 @@ response_code
 Enum RedirectAction.RedirectResponseCode
 ----------------------------------------
 
-`[RedirectAction.RedirectResponseCode proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L376>`_
+`[RedirectAction.RedirectResponseCode proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L381>`_
 
 
 .. _envoy_api_enum_value_RedirectAction.RedirectResponseCode.MOVED_PERMANENTLY:
@@ -762,7 +767,7 @@ PERMANENT_REDIRECT
 Decorator
 ---------
 
-`[Decorator proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L398>`_
+`[Decorator proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L403>`_
 
 
 .. code-block:: json
@@ -791,8 +796,15 @@ operation
 Route
 -----
 
-`[Route proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L410>`_
+`[Route proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L422>`_
 
+A route is both a specification of how to match a request as well as an indication of what to do
+next (e.g., redirect, forward, rewrite, etc.).
+
+.. attention::
+
+  Envoy supports routing on HTTP method via :ref:`header matching
+  <envoy_api_msg_HeaderMatcher>`.
 
 .. code-block:: json
 
@@ -850,7 +862,7 @@ decorator
 VirtualCluster
 --------------
 
-`[VirtualCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L462>`_
+`[VirtualCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L468>`_
 
 A virtual cluster is a way of specifying a regex matching rule against
 certain important endpoints such that statistics are generated explicitly for
@@ -861,12 +873,6 @@ emit per endpoint statistics. However, often systems have highly critical
 endpoints that they wish to get “perfect” statistics on. Virtual cluster
 statistics are perfect in the sense that they are emitted on the downstream
 side such that they include network level failures.
-
-Examples:
-
-* The regex */rides/\d+* matches the path */rides/0*
-* The regex */rides/\d+* matches the path */rides/123*
-* The regex */rides/\d+* does not match the path */rides/123/456*
 
 Documentation for :ref:`virtual cluster statistics <config_http_filters_router_stats>`.
 
@@ -891,6 +897,12 @@ pattern
   must match the regex. The regex grammar used is defined `here
   <http://en.cppreference.com/w/cpp/regex/ecmascript>`_.
   
+  Examples:
+  
+  * The regex */rides/\d+* matches the path */rides/0*
+  * The regex */rides/\d+* matches the path */rides/123*
+  * The regex */rides/\d+* does not match the path */rides/123/456*
+  
   
 .. _envoy_api_field_VirtualCluster.name:
 
@@ -914,8 +926,9 @@ method
 RateLimit
 ---------
 
-`[RateLimit proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L478>`_
+`[RateLimit proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L491>`_
 
+Global rate limiting :ref:`architecture overview <arch_overview_rate_limit>`.
 
 .. code-block:: json
 
@@ -946,11 +959,12 @@ disable_key
 .. _envoy_api_field_RateLimit.actions:
 
 actions
-  (:ref:`RateLimit.Action <envoy_api_msg_RateLimit.Action>`) A list of actions that are to be applied for this rate limit configuration.
+  (:ref:`RateLimit.Action <envoy_api_msg_RateLimit.Action>`, *REQUIRED*) A list of actions that are to be applied for this rate limit configuration.
   Order matters as the actions are processed sequentially and the descriptor
   is composed by appending descriptor entries in that sequence. If an action
   cannot append a descriptor entry, no descriptor is generated for the
-  configuration. See composing actions for additional documentation.
+  configuration. See :ref:`composing actions
+  <config_http_filters_rate_limit_composing_actions>` for additional documentation.
   
   
 .. _envoy_api_msg_RateLimit.Action:
@@ -958,7 +972,7 @@ actions
 RateLimit.Action
 ----------------
 
-`[RateLimit.Action proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L491>`_
+`[RateLimit.Action proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L504>`_
 
 
 .. code-block:: json
@@ -975,60 +989,69 @@ RateLimit.Action
 .. _envoy_api_field_RateLimit.Action.source_cluster:
 
 source_cluster
-  (:ref:`RateLimit.Action.SourceCluster <envoy_api_msg_RateLimit.Action.SourceCluster>`) 
+  (:ref:`RateLimit.Action.SourceCluster <envoy_api_msg_RateLimit.Action.SourceCluster>`) Rate limit on source cluster.
   
-  Only one of :ref:`source_cluster <envoy_api_field_RateLimit.Action.source_cluster>`, :ref:`destination_cluster <envoy_api_field_RateLimit.Action.destination_cluster>`, :ref:`request_headers <envoy_api_field_RateLimit.Action.request_headers>`, :ref:`remote_address <envoy_api_field_RateLimit.Action.remote_address>`, :ref:`generic_key <envoy_api_field_RateLimit.Action.generic_key>`, :ref:`header_value_match <envoy_api_field_RateLimit.Action.header_value_match>` may be set.
+  
+  Precisely one of :ref:`source_cluster <envoy_api_field_RateLimit.Action.source_cluster>`, :ref:`destination_cluster <envoy_api_field_RateLimit.Action.destination_cluster>`, :ref:`request_headers <envoy_api_field_RateLimit.Action.request_headers>`, :ref:`remote_address <envoy_api_field_RateLimit.Action.remote_address>`, :ref:`generic_key <envoy_api_field_RateLimit.Action.generic_key>`, :ref:`header_value_match <envoy_api_field_RateLimit.Action.header_value_match>` must be set.
   
 .. _envoy_api_field_RateLimit.Action.destination_cluster:
 
 destination_cluster
-  (:ref:`RateLimit.Action.DestinationCluster <envoy_api_msg_RateLimit.Action.DestinationCluster>`) 
+  (:ref:`RateLimit.Action.DestinationCluster <envoy_api_msg_RateLimit.Action.DestinationCluster>`) Rate limit on destination cluster.
   
-  Only one of :ref:`source_cluster <envoy_api_field_RateLimit.Action.source_cluster>`, :ref:`destination_cluster <envoy_api_field_RateLimit.Action.destination_cluster>`, :ref:`request_headers <envoy_api_field_RateLimit.Action.request_headers>`, :ref:`remote_address <envoy_api_field_RateLimit.Action.remote_address>`, :ref:`generic_key <envoy_api_field_RateLimit.Action.generic_key>`, :ref:`header_value_match <envoy_api_field_RateLimit.Action.header_value_match>` may be set.
+  
+  Precisely one of :ref:`source_cluster <envoy_api_field_RateLimit.Action.source_cluster>`, :ref:`destination_cluster <envoy_api_field_RateLimit.Action.destination_cluster>`, :ref:`request_headers <envoy_api_field_RateLimit.Action.request_headers>`, :ref:`remote_address <envoy_api_field_RateLimit.Action.remote_address>`, :ref:`generic_key <envoy_api_field_RateLimit.Action.generic_key>`, :ref:`header_value_match <envoy_api_field_RateLimit.Action.header_value_match>` must be set.
   
 .. _envoy_api_field_RateLimit.Action.request_headers:
 
 request_headers
-  (:ref:`RateLimit.Action.RequestHeaders <envoy_api_msg_RateLimit.Action.RequestHeaders>`) 
+  (:ref:`RateLimit.Action.RequestHeaders <envoy_api_msg_RateLimit.Action.RequestHeaders>`) Rate limit on request headers.
   
-  Only one of :ref:`source_cluster <envoy_api_field_RateLimit.Action.source_cluster>`, :ref:`destination_cluster <envoy_api_field_RateLimit.Action.destination_cluster>`, :ref:`request_headers <envoy_api_field_RateLimit.Action.request_headers>`, :ref:`remote_address <envoy_api_field_RateLimit.Action.remote_address>`, :ref:`generic_key <envoy_api_field_RateLimit.Action.generic_key>`, :ref:`header_value_match <envoy_api_field_RateLimit.Action.header_value_match>` may be set.
+  
+  Precisely one of :ref:`source_cluster <envoy_api_field_RateLimit.Action.source_cluster>`, :ref:`destination_cluster <envoy_api_field_RateLimit.Action.destination_cluster>`, :ref:`request_headers <envoy_api_field_RateLimit.Action.request_headers>`, :ref:`remote_address <envoy_api_field_RateLimit.Action.remote_address>`, :ref:`generic_key <envoy_api_field_RateLimit.Action.generic_key>`, :ref:`header_value_match <envoy_api_field_RateLimit.Action.header_value_match>` must be set.
   
 .. _envoy_api_field_RateLimit.Action.remote_address:
 
 remote_address
-  (:ref:`RateLimit.Action.RemoteAddress <envoy_api_msg_RateLimit.Action.RemoteAddress>`) 
+  (:ref:`RateLimit.Action.RemoteAddress <envoy_api_msg_RateLimit.Action.RemoteAddress>`) Rate limit on remote address.
   
-  Only one of :ref:`source_cluster <envoy_api_field_RateLimit.Action.source_cluster>`, :ref:`destination_cluster <envoy_api_field_RateLimit.Action.destination_cluster>`, :ref:`request_headers <envoy_api_field_RateLimit.Action.request_headers>`, :ref:`remote_address <envoy_api_field_RateLimit.Action.remote_address>`, :ref:`generic_key <envoy_api_field_RateLimit.Action.generic_key>`, :ref:`header_value_match <envoy_api_field_RateLimit.Action.header_value_match>` may be set.
+  
+  Precisely one of :ref:`source_cluster <envoy_api_field_RateLimit.Action.source_cluster>`, :ref:`destination_cluster <envoy_api_field_RateLimit.Action.destination_cluster>`, :ref:`request_headers <envoy_api_field_RateLimit.Action.request_headers>`, :ref:`remote_address <envoy_api_field_RateLimit.Action.remote_address>`, :ref:`generic_key <envoy_api_field_RateLimit.Action.generic_key>`, :ref:`header_value_match <envoy_api_field_RateLimit.Action.header_value_match>` must be set.
   
 .. _envoy_api_field_RateLimit.Action.generic_key:
 
 generic_key
-  (:ref:`RateLimit.Action.GenericKey <envoy_api_msg_RateLimit.Action.GenericKey>`) 
+  (:ref:`RateLimit.Action.GenericKey <envoy_api_msg_RateLimit.Action.GenericKey>`) Rate limit on a generic key.
   
-  Only one of :ref:`source_cluster <envoy_api_field_RateLimit.Action.source_cluster>`, :ref:`destination_cluster <envoy_api_field_RateLimit.Action.destination_cluster>`, :ref:`request_headers <envoy_api_field_RateLimit.Action.request_headers>`, :ref:`remote_address <envoy_api_field_RateLimit.Action.remote_address>`, :ref:`generic_key <envoy_api_field_RateLimit.Action.generic_key>`, :ref:`header_value_match <envoy_api_field_RateLimit.Action.header_value_match>` may be set.
+  
+  Precisely one of :ref:`source_cluster <envoy_api_field_RateLimit.Action.source_cluster>`, :ref:`destination_cluster <envoy_api_field_RateLimit.Action.destination_cluster>`, :ref:`request_headers <envoy_api_field_RateLimit.Action.request_headers>`, :ref:`remote_address <envoy_api_field_RateLimit.Action.remote_address>`, :ref:`generic_key <envoy_api_field_RateLimit.Action.generic_key>`, :ref:`header_value_match <envoy_api_field_RateLimit.Action.header_value_match>` must be set.
   
 .. _envoy_api_field_RateLimit.Action.header_value_match:
 
 header_value_match
-  (:ref:`RateLimit.Action.HeaderValueMatch <envoy_api_msg_RateLimit.Action.HeaderValueMatch>`) 
+  (:ref:`RateLimit.Action.HeaderValueMatch <envoy_api_msg_RateLimit.Action.HeaderValueMatch>`) Rate limit on the existence of request headers.
   
-  Only one of :ref:`source_cluster <envoy_api_field_RateLimit.Action.source_cluster>`, :ref:`destination_cluster <envoy_api_field_RateLimit.Action.destination_cluster>`, :ref:`request_headers <envoy_api_field_RateLimit.Action.request_headers>`, :ref:`remote_address <envoy_api_field_RateLimit.Action.remote_address>`, :ref:`generic_key <envoy_api_field_RateLimit.Action.generic_key>`, :ref:`header_value_match <envoy_api_field_RateLimit.Action.header_value_match>` may be set.
+  
+  Precisely one of :ref:`source_cluster <envoy_api_field_RateLimit.Action.source_cluster>`, :ref:`destination_cluster <envoy_api_field_RateLimit.Action.destination_cluster>`, :ref:`request_headers <envoy_api_field_RateLimit.Action.request_headers>`, :ref:`remote_address <envoy_api_field_RateLimit.Action.remote_address>`, :ref:`generic_key <envoy_api_field_RateLimit.Action.generic_key>`, :ref:`header_value_match <envoy_api_field_RateLimit.Action.header_value_match>` must be set.
   
 .. _envoy_api_msg_RateLimit.Action.SourceCluster:
 
 RateLimit.Action.SourceCluster
 ------------------------------
 
-`[RateLimit.Action.SourceCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L494>`_
+`[RateLimit.Action.SourceCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L512>`_
 
 The following descriptor entry is appended to the descriptor:
-("source_cluster", "<local service cluster>")
+
+.. code-block:: cpp
+
+  ("source_cluster", "<local service cluster>")
+
+<local service cluster> is derived from the :option:`--service-cluster` option.
 
 .. code-block:: json
 
-  {
-
-  }
+  {}
 
 
 
@@ -1038,16 +1061,28 @@ The following descriptor entry is appended to the descriptor:
 RateLimit.Action.DestinationCluster
 -----------------------------------
 
-`[RateLimit.Action.DestinationCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L499>`_
+`[RateLimit.Action.DestinationCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L530>`_
 
 The following descriptor entry is appended to the descriptor:
-("destination_cluster", "<routed target cluster>")
+
+.. code-block:: cpp
+
+  ("destination_cluster", "<routed target cluster>")
+
+Once a request matches against a route table rule, a routed cluster is determined by one of
+the following :ref:`route table configuration <envoy_api_msg_RouteConfiguration>`
+settings:
+
+* :ref:`cluster <envoy_api_field_RouteAction.cluster>` indicates the upstream cluster
+  to route to.
+* :ref:`weighted_clusters <envoy_api_field_RouteAction.weighted_clusters>`
+  chooses a cluster randomly from a set of clusters with attributed weight.
+* :ref:`cluster_header <envoy_api_field_RouteAction.cluster_header>` indicates which
+  header in the request contains the target cluster.
 
 .. code-block:: json
 
-  {
-
-  }
+  {}
 
 
 
@@ -1057,11 +1092,14 @@ The following descriptor entry is appended to the descriptor:
 RateLimit.Action.RequestHeaders
 -------------------------------
 
-`[RateLimit.Action.RequestHeaders proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L505>`_
+`[RateLimit.Action.RequestHeaders proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L538>`_
 
-The following descriptor entry is appended when a header contains a key
-that matches the header_name:
-("<descriptor_key>", "<header_value_queried_from_header>")
+The following descriptor entry is appended when a header contains a key that matches the
+*header_name*:
+
+.. code-block:: cpp
+
+  ("<descriptor_key>", "<header_value_queried_from_header>")
 
 .. code-block:: json
 
@@ -1073,7 +1111,7 @@ that matches the header_name:
 .. _envoy_api_field_RateLimit.Action.RequestHeaders.header_name:
 
 header_name
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The header name to be queried from the request headers. The header’s
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The header name to be queried from the request headers. The header’s
   value is used to populate the value of the descriptor entry for the
   descriptor_key.
   
@@ -1081,7 +1119,7 @@ header_name
 .. _envoy_api_field_RateLimit.Action.RequestHeaders.descriptor_key:
 
 descriptor_key
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The key to use in the descriptor entry.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The key to use in the descriptor entry.
   
   
 
@@ -1091,17 +1129,18 @@ descriptor_key
 RateLimit.Action.RemoteAddress
 ------------------------------
 
-`[RateLimit.Action.RemoteAddress proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L517>`_
+`[RateLimit.Action.RemoteAddress proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L554>`_
 
-The following descriptor entry is appended to the descriptor and is
-populated using the trusted address from x-forwarded-for:
-("remote_address", "<trusted address from x-forwarded-for>")
+The following descriptor entry is appended to the descriptor and is populated using the
+trusted address from :ref:`x-forwarded-for <config_http_conn_man_headers_x-forwarded-for>`:
+
+.. code-block:: cpp
+
+  ("remote_address", "<trusted address from x-forwarded-for>")
 
 .. code-block:: json
 
-  {
-
-  }
+  {}
 
 
 
@@ -1111,10 +1150,13 @@ populated using the trusted address from x-forwarded-for:
 RateLimit.Action.GenericKey
 ---------------------------
 
-`[RateLimit.Action.GenericKey proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L522>`_
+`[RateLimit.Action.GenericKey proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L561>`_
 
 The following descriptor entry is appended to the descriptor:
-("generic_key", "<descriptor_value>")
+
+.. code-block:: cpp
+
+  ("generic_key", "<descriptor_value>")
 
 .. code-block:: json
 
@@ -1125,7 +1167,7 @@ The following descriptor entry is appended to the descriptor:
 .. _envoy_api_field_RateLimit.Action.GenericKey.descriptor_value:
 
 descriptor_value
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The value to use in the descriptor entry.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The value to use in the descriptor entry.
   
   
 
@@ -1135,10 +1177,13 @@ descriptor_value
 RateLimit.Action.HeaderValueMatch
 ---------------------------------
 
-`[RateLimit.Action.HeaderValueMatch proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L529>`_
+`[RateLimit.Action.HeaderValueMatch proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L571>`_
 
 The following descriptor entry is appended to the descriptor:
-(“header_match”, “<descriptor_value>”)
+
+.. code-block:: cpp
+
+  ("header_match", "<descriptor_value>")
 
 .. code-block:: json
 
@@ -1151,7 +1196,7 @@ The following descriptor entry is appended to the descriptor:
 .. _envoy_api_field_RateLimit.Action.HeaderValueMatch.descriptor_value:
 
 descriptor_value
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The value to use in the descriptor entry.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The value to use in the descriptor entry.
   
   
 .. _envoy_api_field_RateLimit.Action.HeaderValueMatch.expect_match:
@@ -1166,7 +1211,7 @@ expect_match
 .. _envoy_api_field_RateLimit.Action.HeaderValueMatch.headers:
 
 headers
-  (:ref:`HeaderMatcher <envoy_api_msg_HeaderMatcher>`) Specifies a set of headers that the rate limit action should match
+  (:ref:`HeaderMatcher <envoy_api_msg_HeaderMatcher>`, *REQUIRED*) Specifies a set of headers that the rate limit action should match
   on. The action will check the request’s headers against all the
   specified headers in the config. A match will happen if all the
   headers in the config are present in the request with the same values
@@ -1182,7 +1227,7 @@ headers
 HeaderMatcher
 -------------
 
-`[HeaderMatcher proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L578>`_
+`[HeaderMatcher proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L637>`_
 
 .. attention::
 
@@ -1245,7 +1290,7 @@ regex
 VirtualHost
 -----------
 
-`[VirtualHost proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L605>`_
+`[VirtualHost proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L664>`_
 
 The top level element in the routing configuration is a virtual host. Each virtual host has
 a logical name as well as a set of domains that get routed to it based on the incoming request's
@@ -1326,7 +1371,8 @@ request_headers_to_add
   (:ref:`HeaderValueOption <envoy_api_msg_HeaderValueOption>`) Specifies a list of HTTP headers that should be added to each request
   handled by this virtual host. Headers specified at this level are applied
   after headers from enclosed :ref:`envoy_api_msg_RouteAction` and before headers from the
-  enclosing :ref:`envoy_api_msg_RouteConfiguration`.
+  enclosing :ref:`envoy_api_msg_RouteConfiguration`. For more information see the documentation
+  on :ref:`custom request headers <config_http_conn_man_headers_custom_request_headers>`.
   
   
 .. _envoy_api_field_VirtualHost.response_headers_to_add:
@@ -1358,7 +1404,7 @@ cors
 Enum VirtualHost.TlsRequirementType
 -----------------------------------
 
-`[VirtualHost.TlsRequirementType proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L628>`_
+`[VirtualHost.TlsRequirementType proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L687>`_
 
 
 .. _envoy_api_enum_value_VirtualHost.TlsRequirementType.NONE:
@@ -1387,7 +1433,7 @@ ALL
 RouteConfiguration
 ------------------
 
-`[RouteConfiguration proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L679>`_
+`[RouteConfiguration proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L739>`_
 
 * Routing :ref:`architecture overview <arch_overview_http_routing>`
 * HTTP :ref:`router filter <config_http_filters_router>`
@@ -1449,7 +1495,8 @@ request_headers_to_add
   (:ref:`HeaderValueOption <envoy_api_msg_HeaderValueOption>`) Specifies a list of HTTP headers that should be added to each request
   routed by the HTTP connection manager. Headers specified at this level are
   applied after headers from any enclosed :ref:`envoy_api_msg_VirtualHost` or
-  :ref:`envoy_api_msg_RouteAction`.
+  :ref:`envoy_api_msg_RouteAction`. For more information see the documentation on
+  :ref:`custom request headers <config_http_conn_man_headers_custom_request_headers>`.
   
   
 .. _envoy_api_field_RouteConfiguration.validate_clusters:
@@ -1461,8 +1508,10 @@ validate_clusters
   load. If set to false and a route refers to a non-existent cluster, the
   route table will load and the router filter will return a 404 if the route
   is selected at runtime. This setting defaults to true if the route table
-  is statically defined via the route_config option. This setting default to
-  false if the route table is loaded dynamically via the rds option. Users
+  is statically defined via the :ref:`route_config
+  <envoy_api_field_filter.network.HttpConnectionManager.route_config>` option. This setting
+  default to false if the route table is loaded dynamically via the :ref:`rds
+  <envoy_api_field_filter.network.HttpConnectionManager.rds>` option. Users
   may which to override the default behavior in certain cases (for example
   when using CDS with a static route table).
   

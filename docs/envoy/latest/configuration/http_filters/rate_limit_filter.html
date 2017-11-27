@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Rate limit &mdash; envoy 1.5.0-data-plane-api-8577f1 documentation</title>
+  <title>Rate limit &mdash; envoy 1.5.0-data-plane-api-6928bd documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-8577f1 documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-6928bd documentation" href="../../index.html"/>
         <link rel="up" title="HTTP filters" href="http_filters.html"/>
         <link rel="next" title="Router" href="router_filter.html"/>
         <link rel="prev" title="Ip tagging filter" href="ip_tagging_filter.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-8577f1
+                1.5.0-data-plane-api-6928bd
               </div>
             
           
@@ -114,6 +114,7 @@
 <li class="toctree-l3"><a class="reference internal" href="health_check_filter.html">Health check</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ip_tagging_filter.html">Ip tagging filter</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Rate limit</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#composing-actions">Composing Actions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#statistics">Statistics</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#runtime">Runtime</a></li>
 </ul>
@@ -239,6 +240,71 @@ types.</dd>
 <dd><em>(optional, integer)</em> The timeout in milliseconds for the rate limit service RPC. If not set,
 this defaults to 20ms.</dd>
 </dl>
+<div class="section" id="composing-actions">
+<span id="config-http-filters-rate-limit-composing-actions"></span><h2>Composing Actions<a class="headerlink" href="#composing-actions" title="Permalink to this headline">¶</a></h2>
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<p class="last">This section is written for the v1 API but the concepts also apply to the v2 API. It will be
+rewritten to target the v2 API in a future release.</p>
+</div>
+<p>Each <a class="reference internal" href="../../api-v1/route_config/rate_limits.html#config-http-conn-man-route-table-rate-limit-config"><span class="std std-ref">rate limit action</span></a> on the route or
+virtual host populates a descriptor entry. A vector of descriptor entries compose a descriptor. To
+create more complex rate limit descriptors, actions can be composed in any order. The descriptor
+will be populated in the order the actions are specified in the configuration.</p>
+<div class="section" id="example-1">
+<h3>Example 1<a class="headerlink" href="#example-1" title="Permalink to this headline">¶</a></h3>
+<p>For example, to generate the following descriptor:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="p">(</span><span class="s">&quot;generic_key&quot;</span><span class="p">,</span> <span class="s">&quot;some_value&quot;</span><span class="p">)</span>
+<span class="p">(</span><span class="s">&quot;source_cluster&quot;</span><span class="p">,</span> <span class="s">&quot;from_cluster&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The configuration would be:</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;actions&quot;</span> <span class="p">:</span> <span class="p">[</span>
+  <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;generic_key&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;descriptor_value&quot;</span> <span class="p">:</span> <span class="s2">&quot;some_value&quot;</span>
+  <span class="p">},</span>
+  <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;source_cluster&quot;</span>
+  <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-2">
+<h3>Example 2<a class="headerlink" href="#example-2" title="Permalink to this headline">¶</a></h3>
+<p>If an action doesn’t append a descriptor entry, no descriptor is generated for
+the configuration.</p>
+<p>For the following configuration:</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;actions&quot;</span> <span class="p">:</span> <span class="p">[</span>
+  <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;generic_key&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;descriptor_value&quot;</span> <span class="p">:</span> <span class="s2">&quot;some_value&quot;</span>
+  <span class="p">},</span>
+  <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;remote_address&quot;</span>
+  <span class="p">},</span>
+  <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;souce_cluster&quot;</span>
+  <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If a request did not set <a class="reference internal" href="../http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a>,
+no descriptor is generated.</p>
+<p>If a request sets <a class="reference internal" href="../http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a>, the
+the following descriptor is generated:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="p">(</span><span class="s">&quot;generic_key&quot;</span><span class="p">,</span> <span class="s">&quot;some_value&quot;</span><span class="p">)</span>
+<span class="p">(</span><span class="s">&quot;remote_address&quot;</span><span class="p">,</span> <span class="s">&quot;&lt;trusted address from x-forwarded-for&gt;&quot;</span><span class="p">)</span>
+<span class="p">(</span><span class="s">&quot;source_cluster&quot;</span><span class="p">,</span> <span class="s">&quot;from_cluster&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 <div class="section" id="statistics">
 <h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
 <p>The buffer filter outputs statistics in the <em>cluster.&lt;route target cluster&gt;.ratelimit.</em> namespace.
@@ -331,7 +397,7 @@ This can be used to test what would happen before fully enforcing the outcome.</
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.5.0-data-plane-api-8577f1',
+            VERSION:'1.5.0-data-plane-api-6928bd',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
