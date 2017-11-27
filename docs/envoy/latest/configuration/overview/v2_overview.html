@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Overview (v2 API) &mdash; envoy 1.5.0-data-plane-api-92225a documentation</title>
+  <title>Overview (v2 API) &mdash; envoy 1.5.0-data-plane-api-a35773 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-92225a documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-a35773 documentation" href="../../index.html"/>
         <link rel="up" title="Configuration reference" href="../configuration.html"/>
         <link rel="next" title="Listeners" href="../listeners/listeners.html"/>
         <link rel="prev" title="Runtime" href="runtime.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-92225a
+                1.5.0-data-plane-api-a35773
               </div>
             
           
@@ -321,6 +321,7 @@ on 127.0.0.3:5678 is provided below:</p>
     <span class="l l-Scalar l-Scalar-Plain">connect_timeout</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25s</span>
     <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">STATIC</span>
     <span class="l l-Scalar l-Scalar-Plain">lb_policy</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ROUND_ROBIN</span>
+    <span class="l l-Scalar l-Scalar-Plain">http2_protocol_options</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{}</span>
     <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[{</span> <span class="nv">socket_address</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">address</span><span class="p p-Indicator">:</span> <span class="nv">127.0.0.3</span><span class="p p-Indicator">,</span> <span class="nv">port_value</span><span class="p p-Indicator">:</span> <span class="nv">5678</span> <span class="p p-Indicator">}}]</span>
 </pre></div>
 </div>
@@ -372,6 +373,7 @@ below:</p>
     <span class="l l-Scalar l-Scalar-Plain">connect_timeout</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25s</span>
     <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">STATIC</span>
     <span class="l l-Scalar l-Scalar-Plain">lb_policy</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ROUND_ROBIN</span>
+    <span class="l l-Scalar l-Scalar-Plain">http2_protocol_options</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{}</span>
     <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[{</span> <span class="nv">socket_address</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">address</span><span class="p p-Indicator">:</span> <span class="nv">127.0.0.3</span><span class="p p-Indicator">,</span> <span class="nv">port_value</span><span class="p p-Indicator">:</span> <span class="nv">5678</span> <span class="p p-Indicator">}}]</span>
 </pre></div>
 </div>
@@ -625,10 +627,26 @@ be set to use the ADS channel. For example, a LDS config could be changed from</
 the shared ADS channel.</p>
 </div>
 <div class="section" id="status">
-<h2>Status<a class="headerlink" href="#status" title="Permalink to this headline">¶</a></h2>
-<p>The current API status is tracked <a class="reference external" href="https://github.com/envoyproxy/data-plane-api#status">here</a>. All features described
-in the <a class="reference internal" href="../../api-v2/api.html#envoy-api-reference"><span class="std std-ref">v2 API reference</span></a> are implemented unless
-otherwise noted.</p>
+<span id="config-overview-v2-status"></span><h2>Status<a class="headerlink" href="#status" title="Permalink to this headline">¶</a></h2>
+<p>All features described in the <a class="reference internal" href="../../api-v2/api.html#envoy-api-reference"><span class="std std-ref">v2 API reference</span></a> are
+implemented unless otherwise noted. In the v2 API reference and the
+<a class="reference external" href="https://github.com/envoyproxy/data-plane-api/tree/master/api">v2 API repository</a>, all protos are
+<em>frozen</em> unless they are tagged as <em>draft</em> or <em>experimental</em>. Here, <em>frozen</em>
+means that we will not break wire format compatibility.</p>
+<p><em>Frozen</em> protos may be further extended, e.g. by adding new fields, in a
+manner that does not break <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/overview#how-do-they-work">backwards compatibility</a>.
+Fields in the above protos may be later deprecated, subject to the
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master//CONTRIBUTING.md#breaking-change-policy">breaking change policy</a>,
+when their related functionality is no longer required. While frozen APIs
+have their wire format compatibility preserved, we reserve the right to change
+proto namespaces, file locations and nesting relationships, which may cause
+breaking code changes. We will aim to minimize the churn here.</p>
+<p>Protos tagged <em>draft</em>, meaning that they are near finalized, are
+likely to be at least partially implemented in Envoy but may have wire format
+breaking changes made prior to freezing.</p>
+<p>Protos tagged <em>experimental</em>, have the same caveats as draft protos
+and may have have major changes made prior to Envoy implementation and freezing.</p>
+<p>The current open v2 API issues are tracked <a class="reference external" href="https://github.com/envoyproxy/envoy/issues?q=is%3Aopen+is%3Aissue+label%3A%22v2+API%22">here</a>.</p>
 </div>
 </div>
 
@@ -676,7 +694,7 @@ otherwise noted.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.5.0-data-plane-api-92225a',
+            VERSION:'1.5.0-data-plane-api-a35773',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
