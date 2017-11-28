@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Runtime &mdash; envoy 1.5.0-data-plane-api-26fc77 documentation</title>
+  <title>Lua &mdash; envoy 1.5.0-data-plane-api-26fc77 documentation</title>
   
 
   
@@ -38,9 +38,9 @@
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
     <link rel="top" title="envoy 1.5.0-data-plane-api-26fc77 documentation" href="../../index.html"/>
-        <link rel="up" title="HTTP connection manager" href="http_conn_man.html"/>
-        <link rel="next" title="v1 Route discovery service (RDS)" href="rds.html"/>
-        <link rel="prev" title="Statistics" href="stats.html"/> 
+        <link rel="up" title="HTTP filters" href="http_filters.html"/>
+        <link rel="next" title="v2 API reference" href="../../api-v2/api.html"/>
+        <link rel="prev" title="CORS filter" href="cors_filter.html"/> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -97,30 +97,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../install/install.html">Building and installation</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../configuration.html">Configuration reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../overview/v1_overview.html">Overview (v1 API)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../overview/v2_overview.html">Overview (v2 API)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../listeners/listeners.html">Listeners</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../network_filters/network_filters.html">Network filters</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="http_conn_man.html">HTTP connection manager</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="route_matching.html">Route matching</a></li>
-<li class="toctree-l3"><a class="reference internal" href="traffic_splitting.html">Traffic Shifting/Splitting</a></li>
-<li class="toctree-l3"><a class="reference internal" href="headers.html">HTTP header manipulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="header_sanitizing.html">HTTP header sanitizing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stats.html">Statistics</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Runtime</a></li>
-<li class="toctree-l3"><a class="reference internal" href="rds.html">v1 Route discovery service (RDS)</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../http_filters/http_filters.html">HTTP filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cluster_manager/cluster_manager.html">Cluster manager</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../access_log.html">Access logging</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tools/router_check.html">Route table check tool</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api-v1/api.html">v1 API reference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">v1 API reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../cluster_manager/cluster_manager.html">Cluster manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../network_filters/network_filters.html">Network filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../route_config/route_config.html">HTTP Route configuration</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="http_filters.html">HTTP filters</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="cors_filter.html">CORS filter</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Lua</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../api-v2/api.html">v2 API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../faq/overview.html">FAQ</a></li>
 </ul>
@@ -167,17 +157,17 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../configuration.html">Configuration reference</a> &raquo;</li>
+          <li><a href="../api.html">v1 API reference</a> &raquo;</li>
         
-          <li><a href="http_conn_man.html">HTTP connection manager</a> &raquo;</li>
+          <li><a href="http_filters.html">HTTP filters</a> &raquo;</li>
         
-      <li>Runtime</li>
+      <li>Lua</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/configuration/http_conn_man/runtime.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/api-v1/http_filters/lua_filter.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -190,24 +180,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="runtime">
-<span id="config-http-conn-man-runtime"></span><h1>Runtime<a class="headerlink" href="#runtime" title="Permalink to this headline">¶</a></h1>
-<p>The HTTP connection manager supports the following runtime settings:</p>
-<dl class="docutils" id="config-http-conn-man-runtime-client-enabled">
-<dt>tracing.client_enabled</dt>
-<dd>% of requests that will be force traced if the
-<a class="reference internal" href="headers.html#config-http-conn-man-headers-x-client-trace-id"><span class="std std-ref">x-client-trace-id</span></a> header is set. Defaults to 100.</dd>
-</dl>
-<dl class="docutils" id="config-http-conn-man-runtime-global-enabled">
-<dt>tracing.global_enabled</dt>
-<dd>% of requests that will be traced after all other checks have been applied (force tracing,
-sampling, etc.). Defaults to 100.</dd>
-</dl>
-<dl class="docutils" id="config-http-conn-man-runtime-random-sampling">
-<dt>tracing.random_sampling</dt>
-<dd>% of requests that will be randomly traced. See <a class="reference internal" href="../../intro/arch_overview/tracing.html#arch-overview-tracing"><span class="std std-ref">here</span></a> for more
-information. This runtime control is specified in the range 0-10000 and defaults to 10000. Thus,
-trace sampling can be specified in 0.01% increments.</dd>
+  <div class="section" id="lua">
+<span id="config-http-filters-lua-v1"></span><h1>Lua<a class="headerlink" href="#lua" title="Permalink to this headline">¶</a></h1>
+<p>Lua <a class="reference internal" href="../../configuration/http_filters/lua_filter.html#config-http-filters-lua"><span class="std std-ref">configuration overview</span></a>.</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;lua&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;inline_code&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>inline_code</dt>
+<dd><em>(required, string)</em> The Lua code that Envoy will execute. This can be a very small script that
+further loads code from disk if desired. Note that if JSON configuration is used, the code must
+be properly escaped. YAML configuration may be easier to read since YAML supports multi-line
+strings so complex scripts can be easily expressed inline in the configuration.</dd>
 </dl>
 </div>
 
@@ -221,10 +210,10 @@ trace sampling can be specified in 0.01% increments.</dd>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="rds.html" class="btn btn-neutral float-right" title="v1 Route discovery service (RDS)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../../api-v2/api.html" class="btn btn-neutral float-right" title="v2 API reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="stats.html" class="btn btn-neutral" title="Statistics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="cors_filter.html" class="btn btn-neutral" title="CORS filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
