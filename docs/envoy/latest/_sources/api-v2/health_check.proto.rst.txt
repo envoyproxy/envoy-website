@@ -3,13 +3,16 @@
 Health check
 ============
 
+* Health checking :ref:`architecture overview <arch_overview_health_checking>`.
+* If health checking is configured for a cluster, additional statistics are emitted. They are
+  documented :ref:`here <config_cluster_manager_cluster_stats>`.
 
 .. _envoy_api_msg_HealthCheck:
 
 HealthCheck
 -----------
 
-`[HealthCheck proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/health_check.proto#L9>`_
+`[HealthCheck proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/health_check.proto#L14>`_
 
 
 .. code-block:: json
@@ -20,7 +23,6 @@ HealthCheck
     "interval_jitter": "{...}",
     "unhealthy_threshold": "{...}",
     "healthy_threshold": "{...}",
-    "alt_port": "{...}",
     "reuse_connection": "{...}",
     "http_health_check": "{...}",
     "tcp_health_check": "{...}",
@@ -51,7 +53,7 @@ interval_jitter
 
 unhealthy_threshold
   (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The number of unhealthy health checks required before a host is marked
-  unhealthy. Note that for http health checking if a host responds with 503
+  unhealthy. Note that for *http* health checking if a host responds with 503
   this threshold is ignored and the host is considered unhealthy immediately.
   
   
@@ -63,12 +65,7 @@ healthy_threshold
   required to mark a host healthy.
   
   
-.. _envoy_api_field_HealthCheck.alt_port:
 
-alt_port
-  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Non-serving port for health checking.
-  
-  
 .. _envoy_api_field_HealthCheck.reuse_connection:
 
 reuse_connection
@@ -78,54 +75,51 @@ reuse_connection
 .. _envoy_api_field_HealthCheck.http_health_check:
 
 http_health_check
-  (:ref:`HealthCheck.HttpHealthCheck <envoy_api_msg_HealthCheck.HttpHealthCheck>`) 
+  (:ref:`HealthCheck.HttpHealthCheck <envoy_api_msg_HealthCheck.HttpHealthCheck>`) HTTP health check.
   
-  Only one of :ref:`http_health_check <envoy_api_field_HealthCheck.http_health_check>`, :ref:`tcp_health_check <envoy_api_field_HealthCheck.tcp_health_check>`, :ref:`redis_health_check <envoy_api_field_HealthCheck.redis_health_check>` may be set.
+  
+  Precisely one of :ref:`http_health_check <envoy_api_field_HealthCheck.http_health_check>`, :ref:`tcp_health_check <envoy_api_field_HealthCheck.tcp_health_check>`, :ref:`redis_health_check <envoy_api_field_HealthCheck.redis_health_check>` must be set.
   
 .. _envoy_api_field_HealthCheck.tcp_health_check:
 
 tcp_health_check
-  (:ref:`HealthCheck.TcpHealthCheck <envoy_api_msg_HealthCheck.TcpHealthCheck>`) 
+  (:ref:`HealthCheck.TcpHealthCheck <envoy_api_msg_HealthCheck.TcpHealthCheck>`) TCP health check.
   
-  Only one of :ref:`http_health_check <envoy_api_field_HealthCheck.http_health_check>`, :ref:`tcp_health_check <envoy_api_field_HealthCheck.tcp_health_check>`, :ref:`redis_health_check <envoy_api_field_HealthCheck.redis_health_check>` may be set.
+  
+  Precisely one of :ref:`http_health_check <envoy_api_field_HealthCheck.http_health_check>`, :ref:`tcp_health_check <envoy_api_field_HealthCheck.tcp_health_check>`, :ref:`redis_health_check <envoy_api_field_HealthCheck.redis_health_check>` must be set.
   
 .. _envoy_api_field_HealthCheck.redis_health_check:
 
 redis_health_check
-  (:ref:`HealthCheck.RedisHealthCheck <envoy_api_msg_HealthCheck.RedisHealthCheck>`) 
+  (:ref:`HealthCheck.RedisHealthCheck <envoy_api_msg_HealthCheck.RedisHealthCheck>`) Redis health check.
   
-  Only one of :ref:`http_health_check <envoy_api_field_HealthCheck.http_health_check>`, :ref:`tcp_health_check <envoy_api_field_HealthCheck.tcp_health_check>`, :ref:`redis_health_check <envoy_api_field_HealthCheck.redis_health_check>` may be set.
+  
+  Precisely one of :ref:`http_health_check <envoy_api_field_HealthCheck.http_health_check>`, :ref:`tcp_health_check <envoy_api_field_HealthCheck.tcp_health_check>`, :ref:`redis_health_check <envoy_api_field_HealthCheck.redis_health_check>` must be set.
   
 .. _envoy_api_msg_HealthCheck.Payload:
 
 HealthCheck.Payload
 -------------------
 
-`[HealthCheck.Payload proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/health_check.proto#L34>`_
+`[HealthCheck.Payload proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/health_check.proto#L43>`_
 
-Describes the encoding of the payload bytes in the payload
+Describes the encoding of the payload bytes in the payload.
 
 .. code-block:: json
 
   {
-    "text": "...",
-    "binary": "..."
+    "text": "..."
   }
 
 .. _envoy_api_field_HealthCheck.Payload.text:
 
 text
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Hex encoded payload. E.g., "000000FF".
   
-  Only one of :ref:`text <envoy_api_field_HealthCheck.Payload.text>`, :ref:`binary <envoy_api_field_HealthCheck.Payload.binary>` may be set.
   
-.. _envoy_api_field_HealthCheck.Payload.binary:
+  Precisely one of :ref:`text <envoy_api_field_HealthCheck.Payload.text>` must be set.
+  
 
-binary
-  (`bytes <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
-  
-  Only one of :ref:`text <envoy_api_field_HealthCheck.Payload.text>`, :ref:`binary <envoy_api_field_HealthCheck.Payload.binary>` may be set.
-  
 
 
 .. _envoy_api_msg_HealthCheck.HttpHealthCheck:
@@ -133,54 +127,32 @@ binary
 HealthCheck.HttpHealthCheck
 ---------------------------
 
-`[HealthCheck.HttpHealthCheck proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/health_check.proto#L40>`_
+`[HealthCheck.HttpHealthCheck proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/health_check.proto#L55>`_
 
 
 .. code-block:: json
 
   {
-    "host": "...",
     "path": "...",
-    "send": "{...}",
-    "receive": "{...}",
     "service_name": "..."
   }
 
-.. _envoy_api_field_HealthCheck.HttpHealthCheck.host:
 
-host
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The value of the host header in the HTTPS health check request. If left
-  empty (default value), the IP on behalf of which this health check is
-  performed will be used.
-  
-  
 .. _envoy_api_field_HealthCheck.HttpHealthCheck.path:
 
 path
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) This parameter is required if the type is http. It species the HTTP path
-  that will be requested during health checking. For example /healthcheck.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Specifies the HTTP path that will be requested during health checking. For example
+  */healthcheck*.
   
   
-.. _envoy_api_field_HealthCheck.HttpHealthCheck.send:
 
-send
-  (:ref:`HealthCheck.Payload <envoy_api_msg_HealthCheck.Payload>`) 
-  
-.. _envoy_api_field_HealthCheck.HttpHealthCheck.receive:
 
-receive
-  (:ref:`HealthCheck.Payload <envoy_api_msg_HealthCheck.Payload>`) 
-  
 .. _envoy_api_field_HealthCheck.HttpHealthCheck.service_name:
 
 service_name
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The Envoy HTTP health checker supports the service_name option. If this
-  option is set, the health checker additionally compares the value of the
-  x-envoy-upstream-healthchecked-cluster response header to service_name. If
-  the values do not match, the health check does not pass. The upstream
-  health check filter appends x-envoy-upstream-healthchecked-cluster to the
-  response headers. The appended value is determined by the --service-cluster
-  command line option.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) An optional service name parameter which is used to validate the identity of
+  the health checked cluster. See the :ref:`architecture overview
+  <arch_overview_health_checking_identity>` for more information.
   
   
 
@@ -190,7 +162,7 @@ service_name
 HealthCheck.TcpHealthCheck
 --------------------------
 
-`[HealthCheck.TcpHealthCheck proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/health_check.proto#L59>`_
+`[HealthCheck.TcpHealthCheck proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/health_check.proto#L77>`_
 
 
 .. code-block:: json
@@ -211,7 +183,7 @@ send
 receive
   (:ref:`HealthCheck.Payload <envoy_api_msg_HealthCheck.Payload>`) When checking the response, “fuzzy” matching is performed such that each
   binary block must be found, and in the order specified, but not
-  necessarly contiguous.
+  necessarily contiguous.
   
   
 
@@ -221,7 +193,7 @@ receive
 HealthCheck.RedisHealthCheck
 ----------------------------
 
-`[HealthCheck.RedisHealthCheck proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/health_check.proto#L67>`_
+`[HealthCheck.RedisHealthCheck proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/health_check.proto#L87>`_
 
 
 .. code-block:: json
@@ -231,43 +203,3 @@ HealthCheck.RedisHealthCheck
 
 
 
-.. _envoy_api_enum_HealthStatus:
-
-Enum HealthStatus
------------------
-
-`[HealthStatus proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/health_check.proto#L76>`_
-
-
-.. _envoy_api_enum_value_HealthStatus.UNKNOWN:
-
-UNKNOWN
-  *(DEFAULT)* ⁣UNKNOWN should be treated by Envoy as HEALTHY.
-  
-  
-.. _envoy_api_enum_value_HealthStatus.HEALTHY:
-
-HEALTHY
-  ⁣
-  
-.. _envoy_api_enum_value_HealthStatus.UNHEALTHY:
-
-UNHEALTHY
-  ⁣
-  
-.. _envoy_api_enum_value_HealthStatus.DRAINING:
-
-DRAINING
-  ⁣Connection draining in progress -
-  https://aws.amazon.com/blogs/aws/elb-connection-draining-remove-instances-from-service-with-care/
-  and
-  https://cloud.google.com/compute/docs/load-balancing/enabling-connection-draining.
-  
-  
-.. _envoy_api_enum_value_HealthStatus.TIMEOUT:
-
-TIMEOUT
-  ⁣This value is used by HDS Remote server. From Envoy’s perspective
-  TIMEOUT = UNHEALTHY in case EDS returns HealthStatus.
-  
-  
