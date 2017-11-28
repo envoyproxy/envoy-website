@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TCP proxy &mdash; envoy 1.5.0-data-plane-api-92f825 documentation</title>
+  <title>TCP proxy &mdash; envoy 1.5.0-data-plane-api-c6451f documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-92f825 documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-c6451f documentation" href="../../index.html"/>
         <link rel="up" title="Network filters" href="network_filters.html"/>
         <link rel="next" title="HTTP connection manager" href="../http_conn_man/http_conn_man.html"/>
         <link rel="prev" title="Redis proxy" href="redis_proxy_filter.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-92f825
+                1.5.0-data-plane-api-c6451f
               </div>
             
           
@@ -108,8 +108,6 @@
 <li class="toctree-l3"><a class="reference internal" href="rate_limit_filter.html">Rate limit</a></li>
 <li class="toctree-l3"><a class="reference internal" href="redis_proxy_filter.html">Redis proxy</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">TCP proxy</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#route-configuration">Route Configuration</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#route">Route</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#statistics">Statistics</a></li>
 </ul>
 </li>
@@ -196,119 +194,11 @@
             
   <div class="section" id="tcp-proxy">
 <span id="config-network-filters-tcp-proxy"></span><h1>TCP proxy<a class="headerlink" href="#tcp-proxy" title="Permalink to this headline">¶</a></h1>
-<p>TCP proxy <a class="reference internal" href="../../intro/arch_overview/tcp_proxy.html#arch-overview-tcp-proxy"><span class="std std-ref">architecture overview</span></a>.</p>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;tcp_proxy&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;stat_prefix&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;route_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;access_log&quot;</span><span class="p">:</span> <span class="p">[]</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<dl class="docutils">
-<dt><a class="reference internal" href="#config-network-filters-tcp-proxy-route-config"><span class="std std-ref">route_config</span></a></dt>
-<dd><em>(required, object)</em> The route table for the filter.
-All filter instances must have a route table, even if it is empty.</dd>
-<dt>stat_prefix</dt>
-<dd><em>(required, string)</em> The prefix to use when emitting <a class="reference internal" href="#config-network-filters-tcp-proxy-stats"><span class="std std-ref">statistics</span></a>.</dd>
-<dt><a class="reference internal" href="../access_log.html#config-access-log"><span class="std std-ref">access_log</span></a></dt>
-<dd><em>(optional, array)</em> Configuration for <a class="reference internal" href="../../intro/arch_overview/access_logging.html#arch-overview-access-logs"><span class="std std-ref">access logs</span></a>
-emitted by the this tcp_proxy.</dd>
-</dl>
-<div class="section" id="route-configuration">
-<span id="config-network-filters-tcp-proxy-route-config"></span><h2>Route Configuration<a class="headerlink" href="#route-configuration" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;routes&quot;</span><span class="p">:</span> <span class="p">[]</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<dl class="docutils">
-<dt><a class="reference internal" href="#config-network-filters-tcp-proxy-route"><span class="std std-ref">routes</span></a></dt>
-<dd><em>(required, array)</em> An array of route entries that make up the route table.</dd>
-</dl>
-</div>
-<div class="section" id="route">
-<span id="config-network-filters-tcp-proxy-route"></span><h2>Route<a class="headerlink" href="#route" title="Permalink to this headline">¶</a></h2>
-<p>A TCP proxy route consists of a set of optional L4 criteria and the name of a
-<a class="reference internal" href="../cluster_manager/cluster.html#config-cluster-manager-cluster"><span class="std std-ref">cluster</span></a>. If a downstream connection matches
-all the specified criteria, the cluster in the route is used for the corresponding upstream
-connection. Routes are tried in the order specified until a match is found. If no match is
-found, the connection is closed. A route with no criteria is valid and always produces a match.</p>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;cluster&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;destination_ip_list&quot;</span><span class="p">:</span> <span class="p">[],</span>
-  <span class="nt">&quot;destination_ports&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;source_ip_list&quot;</span><span class="p">:</span> <span class="p">[],</span>
-  <span class="nt">&quot;source_ports&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<dl class="docutils">
-<dt>cluster</dt>
-<dd><em>(required, string)</em> The <a class="reference internal" href="../cluster_manager/cluster.html#config-cluster-manager-cluster"><span class="std std-ref">cluster</span></a> to connect
-to when a the downstream network connection matches the specified criteria.</dd>
-<dt>destination_ip_list</dt>
-<dd><blockquote class="first">
-<div><em>(optional, array)</em>  An optional list of IP address subnets in the form “ip_address/xx”.
-The criteria is satisfied if the destination IP address of the downstream connection is
-contained in at least one of the specified subnets.
-If the parameter is not specified or the list is empty, the destination IP address is ignored.
-The destination IP address of the downstream connection might be different from the addresses
-on which the proxy is listening if the connection has been redirected.  Example:</div></blockquote>
-<div class="last highlight-json"><div class="highlight"><pre><span></span><span class="p">[</span>
-  <span class="s2">&quot;192.168.3.0/24&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;50.1.2.3/32&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;10.15.0.0/16&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;2001:abcd::/64&quot;</span>
-<span class="p">]</span>
-</pre></div>
-</div>
-</dd>
-<dt>destination_ports</dt>
-<dd><blockquote class="first">
-<div><em>(optional, string)</em> An optional string containing a comma-separated list of port numbers or
-ranges. The criteria is satisfied if the destination port of the downstream connection
-is contained in at least one of the specified ranges.
-If the parameter is not specified, the destination port is ignored. The destination port address
-of the downstream connection might be different from the port on which the proxy is listening if
-the connection has been redirected. Example:</div></blockquote>
-<div class="last highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;destination_ports&quot;</span><span class="p">:</span> <span class="s2">&quot;1-1024,2048-4096,12345&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</dd>
-<dt>source_ip_list</dt>
-<dd><blockquote class="first">
-<div><em>(optional, array)</em>  An optional list of IP address subnets in the form “ip_address/xx”.
-The criteria is satisfied if the source IP address of the downstream connection is contained
-in at least one of the specified subnets. If the parameter is not specified or the list is empty,
-the source IP address is ignored. Example:</div></blockquote>
-<div class="last highlight-json"><div class="highlight"><pre><span></span><span class="p">[</span>
-  <span class="s2">&quot;192.168.3.0/24&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;50.1.2.3/32&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;10.15.0.0/16&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;2001:abcd::/64&quot;</span>
-<span class="p">]</span>
-</pre></div>
-</div>
-</dd>
-<dt>source_ports</dt>
-<dd><blockquote class="first">
-<div><em>(optional, string)</em> An optional string containing a comma-separated list of port numbers or
-ranges. The criteria is satisfied if the source port of the downstream connection is contained
-in at least one of the specified ranges. If the parameter is not specified, the source port is
-ignored.  Example:</div></blockquote>
-<div class="last highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;source_ports&quot;</span><span class="p">:</span> <span class="s2">&quot;1-1024,2048-4096,12345&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-</div>
+<ul class="simple">
+<li>TCP proxy <a class="reference internal" href="../../intro/arch_overview/tcp_proxy.html#arch-overview-tcp-proxy"><span class="std std-ref">architecture overview</span></a></li>
+<li><a class="reference internal" href="../../api-v1/network_filters/tcp_proxy_filter.html#config-network-filters-tcp-proxy-v1"><span class="std std-ref">v1 API reference</span></a></li>
+<li><a class="reference internal" href="../../api-v2/filter/network/tcp_proxy.proto.html#envoy-api-msg-filter-network-tcpproxy"><span class="std std-ref">v2 API reference</span></a></li>
+</ul>
 <div class="section" id="statistics">
 <span id="config-network-filters-tcp-proxy-stats"></span><h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
 <p>The TCP proxy filter emits both its own downstream statistics as well as many of the <a class="reference internal" href="../cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats"><span class="std std-ref">cluster
@@ -400,7 +290,7 @@ statistics are rooted at <em>tcp.&lt;stat_prefix&gt;.</em> with the following st
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.5.0-data-plane-api-92f825',
+            VERSION:'1.5.0-data-plane-api-c6451f',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
