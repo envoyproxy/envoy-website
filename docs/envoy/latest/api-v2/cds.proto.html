@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Clusters and CDS &mdash; envoy 1.5.0-data-plane-api-c2e8b6 documentation</title>
+  <title>Clusters and CDS &mdash; envoy 1.5.0-data-plane-api-1eae57 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-c2e8b6 documentation" href="../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-1eae57 documentation" href="../index.html"/>
         <link rel="up" title="v2 API reference" href="api.html"/>
         <link rel="next" title="Endpoints and EDS" href="eds.proto.html"/>
         <link rel="prev" title="Listeners and LDS" href="lds.proto.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-c2e8b6
+                1.5.0-data-plane-api-1eae57
               </div>
             
           
@@ -202,9 +202,9 @@
 <span id="envoy-api-file-api-cds-proto"></span><h1>Clusters and CDS<a class="headerlink" href="#clusters-and-cds" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="upstreambindconfig">
 <span id="envoy-api-msg-upstreambindconfig"></span><h2>UpstreamBindConfig<a class="headerlink" href="#upstreambindconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L35">[UpstreamBindConfig proto]</a></p>
-<p>An extensible structure containing the address Envoy should bind to when establishing upstream
-connections.</p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L37">[UpstreamBindConfig proto]</a></p>
+<p>An extensible structure containing the address Envoy should bind to when
+establishing upstream connections.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;source_address&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
@@ -217,9 +217,9 @@ connections.</p>
 </div>
 <div class="section" id="circuitbreakers">
 <span id="envoy-api-msg-circuitbreakers"></span><h2>CircuitBreakers<a class="headerlink" href="#circuitbreakers" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L42">[CircuitBreakers proto]</a></p>
-<p>Circuit breaking settings can be specified individually for each defined
-priority.</p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L44">[CircuitBreakers proto]</a></p>
+<p><a class="reference internal" href="../intro/arch_overview/circuit_breaking.html#arch-overview-circuit-break"><span class="std std-ref">Circuit breaking</span></a> settings can be
+specified individually for each defined priority.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;thresholds&quot;</span><span class="p">:</span> <span class="p">[]</span>
 <span class="p">}</span>
@@ -227,12 +227,18 @@ priority.</p>
 </div>
 <dl class="docutils" id="envoy-api-field-circuitbreakers-thresholds">
 <dt>thresholds</dt>
-<dd>(<a class="reference internal" href="#envoy-api-msg-circuitbreakers-thresholds"><span class="std std-ref">CircuitBreakers.Thresholds</span></a>)</dd>
+<dd>(<a class="reference internal" href="#envoy-api-msg-circuitbreakers-thresholds"><span class="std std-ref">CircuitBreakers.Thresholds</span></a>) If multiple <a class="reference internal" href="#envoy-api-msg-circuitbreakers-thresholds"><span class="std std-ref">Thresholds</span></a>
+are defined with the same <a class="reference internal" href="base.proto.html#envoy-api-enum-routingpriority"><span class="std std-ref">RoutingPriority</span></a>,
+the first one in the list is used. If no Thresholds is defined for a given
+<a class="reference internal" href="base.proto.html#envoy-api-enum-routingpriority"><span class="std std-ref">RoutingPriority</span></a>, the default values
+are used.</dd>
 </dl>
 </div>
 <div class="section" id="circuitbreakers-thresholds">
 <span id="envoy-api-msg-circuitbreakers-thresholds"></span><h2>CircuitBreakers.Thresholds<a class="headerlink" href="#circuitbreakers-thresholds" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L43">[CircuitBreakers.Thresholds proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L48">[CircuitBreakers.Thresholds proto]</a></p>
+<p>A Thresholds defines CircuitBreaker settings for a
+<a class="reference internal" href="base.proto.html#envoy-api-enum-routingpriority"><span class="std std-ref">RoutingPriority</span></a>.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;priority&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;max_connections&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -244,36 +250,33 @@ priority.</p>
 </div>
 <dl class="docutils" id="envoy-api-field-circuitbreakers-thresholds-priority">
 <dt>priority</dt>
-<dd>(<a class="reference internal" href="base.proto.html#envoy-api-enum-routingpriority"><span class="std std-ref">RoutingPriority</span></a>)</dd>
+<dd>(<a class="reference internal" href="base.proto.html#envoy-api-enum-routingpriority"><span class="std std-ref">RoutingPriority</span></a>) The <a class="reference internal" href="base.proto.html#envoy-api-enum-routingpriority"><span class="std std-ref">RoutingPriority</span></a>
+the specified CircuitBreaker settings apply to.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-circuitbreakers-thresholds-max-connections">
 <dt>max_connections</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The maximum number of connections that Envoy will make to the upstream
-cluster. If not specified, the default is 1024. See the circuit
-breaking overview for more information.</dd>
+cluster. If not specified, the default is 1024.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-circuitbreakers-thresholds-max-pending-requests">
 <dt>max_pending_requests</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The maximum number of pending requests that Envoy will allow to the
-upstream cluster. If not specified, the default is 1024. See the circuit
-breaking overview for more information.</dd>
+upstream cluster. If not specified, the default is 1024.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-circuitbreakers-thresholds-max-requests">
 <dt>max_requests</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The maximum number of parallel requests that Envoy will make to the
-upstream cluster. If not specified, the default is 1024. See the circuit
-breaking overview for more information.</dd>
+upstream cluster. If not specified, the default is 1024.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-circuitbreakers-thresholds-max-retries">
 <dt>max_retries</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The maximum number of parallel retries that Envoy will allow to the
-upstream cluster. If not specified, the default is 3. See the circuit
-breaking overview for more information.</dd>
+upstream cluster. If not specified, the default is 3.</dd>
 </dl>
 </div>
 <div class="section" id="cluster">
 <span id="envoy-api-msg-cluster"></span><h2>Cluster<a class="headerlink" href="#cluster" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L65">[Cluster proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L78">[Cluster proto]</a></p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
@@ -302,18 +305,22 @@ breaking overview for more information.</dd>
 </div>
 <dl class="docutils" id="envoy-api-field-cluster-name">
 <dt>name</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Supplies the name of the cluster which must be unique across all clusters.
-Any : in the cluster name will be converted to _ when emitting statistics.
-TODO(htuch): cross-link to
-<a class="reference external" href="https://www.envoyproxy.io/envoy/operations/cli#cmdoption-max-obj-name-len">https://www.envoyproxy.io/envoy/operations/cli#cmdoption-max-obj-name-len</a>.</dd>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) Supplies the name of the cluster which must be unique across all clusters.
+The cluster name is used when emitting
+<a class="reference internal" href="../configuration/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats"><span class="std std-ref">statistics</span></a>.
+Any <code class="docutils literal"><span class="pre">:</span></code> in the cluster name will be converted to <code class="docutils literal"><span class="pre">_</span></code> when emitting statistics.
+By default, the maximum length of a cluster name is limited to 60
+characters. This limit can be increased by setting the
+<a class="reference internal" href="../operations/cli.html#cmdoption-max-obj-name-len"><code class="xref std std-option docutils literal"><span class="pre">--max-obj-name-len</span></code></a> command line argument to the desired value.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-type">
 <dt>type</dt>
-<dd>(<a class="reference internal" href="#envoy-api-enum-cluster-discoverytype"><span class="std std-ref">Cluster.DiscoveryType</span></a>)</dd>
+<dd>(<a class="reference internal" href="#envoy-api-enum-cluster-discoverytype"><span class="std std-ref">Cluster.DiscoveryType</span></a>) The <a class="reference internal" href="../intro/arch_overview/service_discovery.html#arch-overview-service-discovery-types"><span class="std std-ref">service discovery type</span></a>
+to use for resolving the cluster.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-eds-cluster-config">
 <dt>eds_cluster_config</dt>
-<dd>(<a class="reference internal" href="#envoy-api-msg-cluster-edsclusterconfig"><span class="std std-ref">Cluster.EdsClusterConfig</span></a>)</dd>
+<dd>(<a class="reference internal" href="#envoy-api-msg-cluster-edsclusterconfig"><span class="std std-ref">Cluster.EdsClusterConfig</span></a>) Configuration to use for EDS updates for the Cluster.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-connect-timeout">
 <dt>connect_timeout</dt>
@@ -326,16 +333,21 @@ unspecified, an implementation defined default is applied (1MiB).</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-lb-policy">
 <dt>lb_policy</dt>
-<dd>(<a class="reference internal" href="#envoy-api-enum-cluster-lbpolicy"><span class="std std-ref">Cluster.LbPolicy</span></a>)</dd>
+<dd>(<a class="reference internal" href="#envoy-api-enum-cluster-lbpolicy"><span class="std std-ref">Cluster.LbPolicy</span></a>) The <a class="reference internal" href="../intro/arch_overview/load_balancing.html#arch-overview-load-balancing-types"><span class="std std-ref">load balancer type</span></a> to use
+when picking a host in the cluster.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-hosts">
 <dt>hosts</dt>
-<dd>(<a class="reference internal" href="address.proto.html#envoy-api-msg-address"><span class="std std-ref">Address</span></a>) If the service discovery type is STATIC, STRICT_DNS or LOGICAL_DNS, then
-hosts is required.</dd>
+<dd>(<a class="reference internal" href="address.proto.html#envoy-api-msg-address"><span class="std std-ref">Address</span></a>) If the service discovery type is
+<a class="reference internal" href="#envoy-api-enum-value-cluster-discoverytype-static"><span class="std std-ref">STATIC</span></a>,
+<a class="reference internal" href="#envoy-api-enum-value-cluster-discoverytype-strict-dns"><span class="std std-ref">STRICT_DNS</span></a>
+or <a class="reference internal" href="#envoy-api-enum-value-cluster-discoverytype-logical-dns"><span class="std std-ref">LOGICAL_DNS</span></a>,
+then hosts is required.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-health-checks">
 <dt>health_checks</dt>
-<dd>(<a class="reference internal" href="health_check.proto.html#envoy-api-msg-healthcheck"><span class="std std-ref">HealthCheck</span></a>) Optional active health checking configuration for the cluster. If no
+<dd>(<a class="reference internal" href="health_check.proto.html#envoy-api-msg-healthcheck"><span class="std std-ref">HealthCheck</span></a>) Optional <a class="reference internal" href="../intro/arch_overview/health_checking.html#arch-overview-health-checking"><span class="std std-ref">active health checking</span></a>
+configuration for the cluster. If no
 configuration is specified no health checking will be done and all cluster
 members will be considered healthy at all times.</dd>
 </dl>
@@ -348,7 +360,7 @@ parameter to 1 will effectively disable keep alive.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-circuit-breakers">
 <dt>circuit_breakers</dt>
-<dd>(<a class="reference internal" href="#envoy-api-msg-circuitbreakers"><span class="std std-ref">CircuitBreakers</span></a>) Optional circuit breaking settings for the cluster.</dd>
+<dd>(<a class="reference internal" href="#envoy-api-msg-circuitbreakers"><span class="std std-ref">CircuitBreakers</span></a>) Optional <a class="reference internal" href="../intro/arch_overview/circuit_breaking.html#arch-overview-circuit-break"><span class="std std-ref">circuit breaking</span></a> for the cluster.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-tls-context">
 <dt>tls_context</dt>
@@ -357,7 +369,7 @@ configuration is specified, TLS will not be used for new connections.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-http-protocol-options">
 <dt>http_protocol_options</dt>
-<dd><p class="first">(<a class="reference internal" href="protocol.proto.html#envoy-api-msg-http1protocoloptions"><span class="std std-ref">Http1ProtocolOptions</span></a>)</p>
+<dd><p class="first">(<a class="reference internal" href="protocol.proto.html#envoy-api-msg-http1protocoloptions"><span class="std std-ref">Http1ProtocolOptions</span></a>) Additional options when handling HTTP1 requests.</p>
 <p class="last">Only one of <a class="reference internal" href="#envoy-api-field-cluster-http-protocol-options"><span class="std std-ref">http_protocol_options</span></a>, <a class="reference internal" href="#envoy-api-field-cluster-http2-protocol-options"><span class="std std-ref">http2_protocol_options</span></a> may be set.</p>
 </dd>
 </dl>
@@ -367,39 +379,53 @@ configuration is specified, TLS will not be used for new connections.</dd>
 set so that Envoy will assume that the upstream supports HTTP/2 when
 making new HTTP connection pool connections. Currently, Envoy only
 supports prior knowledge for upstream connections. Even if TLS is used
-with ALPN, http2 must be specified. As an aside this allows HTTP/2
+with ALPN, <cite>http2_protocol_options</cite> must be specified. As an aside this allows HTTP/2
 connections to happen over plain text.</p>
 <p class="last">Only one of <a class="reference internal" href="#envoy-api-field-cluster-http-protocol-options"><span class="std std-ref">http_protocol_options</span></a>, <a class="reference internal" href="#envoy-api-field-cluster-http2-protocol-options"><span class="std std-ref">http2_protocol_options</span></a> may be set.</p>
 </dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-dns-refresh-rate">
 <dt>dns_refresh_rate</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) If the dns refresh rate is specified and the cluster type is either
-STRICT_DNS, or LOGICAL_DNS, this value is used as the cluster’s dns refresh
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) If the DNS refresh rate is specified and the cluster type is either
+<a class="reference internal" href="#envoy-api-enum-value-cluster-discoverytype-strict-dns"><span class="std std-ref">STRICT_DNS</span></a>,
+or <a class="reference internal" href="#envoy-api-enum-value-cluster-discoverytype-logical-dns"><span class="std std-ref">LOGICAL_DNS</span></a>,
+this value is used as the cluster’s DNS refresh
 rate. If this setting is not specified, the value defaults to 5000. For
-cluster types other than STRICT_DNS and LOGICAL_DNS this setting is
-ignored.</dd>
+cluster types other than
+<a class="reference internal" href="#envoy-api-enum-value-cluster-discoverytype-strict-dns"><span class="std std-ref">STRICT_DNS</span></a>
+and <a class="reference internal" href="#envoy-api-enum-value-cluster-discoverytype-logical-dns"><span class="std std-ref">LOGICAL_DNS</span></a>
+this setting is ignored.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-dns-lookup-family">
 <dt>dns_lookup_family</dt>
-<dd>(<a class="reference internal" href="#envoy-api-enum-cluster-dnslookupfamily"><span class="std std-ref">Cluster.DnsLookupFamily</span></a>)</dd>
+<dd>(<a class="reference internal" href="#envoy-api-enum-cluster-dnslookupfamily"><span class="std std-ref">Cluster.DnsLookupFamily</span></a>) The DNS IP address resolution policy. If this setting is not specified, the
+value defaults to
+<a class="reference internal" href="#envoy-api-enum-value-cluster-dnslookupfamily-v4-only"><span class="std std-ref">V4_ONLY</span></a>.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-dns-resolvers">
 <dt>dns_resolvers</dt>
-<dd>(<a class="reference internal" href="address.proto.html#envoy-api-msg-address"><span class="std std-ref">Address</span></a>) If DNS resolvers are specified and the cluster type is either STRICT_DNS,
-or LOGICAL_DNS, this value is used to specify the cluster’s dns resolvers.
+<dd>(<a class="reference internal" href="address.proto.html#envoy-api-msg-address"><span class="std std-ref">Address</span></a>) If DNS resolvers are specified and the cluster type is either
+<a class="reference internal" href="#envoy-api-enum-value-cluster-discoverytype-strict-dns"><span class="std std-ref">STRICT_DNS</span></a>,
+or <a class="reference internal" href="#envoy-api-enum-value-cluster-discoverytype-logical-dns"><span class="std std-ref">LOGICAL_DNS</span></a>,
+this value is used to specify the cluster’s dns resolvers.
 If this setting is not specified, the value defaults to the default
 resolver, which uses /etc/resolv.conf for configuration. For cluster types
-other than STRICT_DNS and LOGICAL_DNS this setting is ignored.</dd>
+other than
+<a class="reference internal" href="#envoy-api-enum-value-cluster-discoverytype-strict-dns"><span class="std std-ref">STRICT_DNS</span></a>
+and <a class="reference internal" href="#envoy-api-enum-value-cluster-discoverytype-logical-dns"><span class="std std-ref">LOGICAL_DNS</span></a>
+this setting is ignored.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-outlier-detection">
 <dt>outlier_detection</dt>
-<dd>(<a class="reference internal" href="#envoy-api-msg-cluster-outlierdetection"><span class="std std-ref">Cluster.OutlierDetection</span></a>)</dd>
+<dd>(<a class="reference internal" href="#envoy-api-msg-cluster-outlierdetection"><span class="std std-ref">Cluster.OutlierDetection</span></a>) If specified, outlier detection will be enabled for this upstream cluster.
+Each of the configuration values can be overridden via
+<a class="reference internal" href="../configuration/cluster_manager/cluster_runtime.html#config-cluster-manager-cluster-runtime-outlier-detection"><span class="std std-ref">runtime values</span></a>.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-cleanup-interval">
 <dt>cleanup_interval</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The interval for removing stale hosts from a cluster type
-ORIGINAL_DST.  Hosts are considered stale if they have not been used
+<a class="reference internal" href="#envoy-api-enum-value-cluster-discoverytype-original-dst"><span class="std std-ref">ORIGINAL_DST</span></a>.
+Hosts are considered stale if they have not been used
 as upstream destinations during this interval.  New hosts are added
 to original destination clusters on demand as new connections are
 redirected to Envoy, causing the number of hosts in the cluster to
@@ -407,7 +433,8 @@ grow over time.  Hosts that are not stale (they are actively used as
 destinations) are kept in the cluster, which allows connections to
 them remain open, saving the latency that would otherwise be spent
 on opening new connections.  If this setting is not specified, the
-value defaults to 5000ms. For cluster types other than ORIGINAL_DST
+value defaults to 5000ms. For cluster types other than
+<a class="reference internal" href="#envoy-api-enum-value-cluster-discoverytype-original-dst"><span class="std std-ref">ORIGINAL_DST</span></a>
 this setting is ignored.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-upstream-bind-config">
@@ -418,22 +445,22 @@ If the addres and port are empty, no bind will be performed.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-lb-subset-config">
 <dt>lb_subset_config</dt>
-<dd>(<a class="reference internal" href="#envoy-api-msg-cluster-lbsubsetconfig"><span class="std std-ref">Cluster.LbSubsetConfig</span></a>)</dd>
+<dd>(<a class="reference internal" href="#envoy-api-msg-cluster-lbsubsetconfig"><span class="std std-ref">Cluster.LbSubsetConfig</span></a>) Configuration for load balancing subsetting.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-ring-hash-lb-config">
 <dt>ring_hash_lb_config</dt>
-<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-cluster-ringhashlbconfig"><span class="std std-ref">Cluster.RingHashLbConfig</span></a>)</p>
+<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-cluster-ringhashlbconfig"><span class="std std-ref">Cluster.RingHashLbConfig</span></a>) Optional configuration for the Ring Hash load balancing policy.</p>
 <p class="last">Only one of <a class="reference internal" href="#envoy-api-field-cluster-ring-hash-lb-config"><span class="std std-ref">ring_hash_lb_config</span></a> may be set.</p>
 </dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-transport-socket">
 <dt>transport_socket</dt>
-<dd>(<a class="reference internal" href="base.proto.html#envoy-api-msg-transportsocket"><span class="std std-ref">TransportSocket</span></a>) See base.TransportSocket description.</dd>
+<dd>(<a class="reference internal" href="base.proto.html#envoy-api-msg-transportsocket"><span class="std std-ref">TransportSocket</span></a>) See <a class="reference internal" href="base.proto.html#envoy-api-msg-transportsocket"><span class="std std-ref">base.TransportSocket</span></a> description.</dd>
 </dl>
 </div>
 <div class="section" id="cluster-edsclusterconfig">
 <span id="envoy-api-msg-cluster-edsclusterconfig"></span><h2>Cluster.EdsClusterConfig<a class="headerlink" href="#cluster-edsclusterconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L83">[Cluster.EdsClusterConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L119">[Cluster.EdsClusterConfig proto]</a></p>
 <p>Only valid when discovery type is EDS.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;eds_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -443,19 +470,20 @@ If the addres and port are empty, no bind will be performed.</dd>
 </div>
 <dl class="docutils" id="envoy-api-field-cluster-edsclusterconfig-eds-config">
 <dt>eds_config</dt>
-<dd>(<a class="reference internal" href="base.proto.html#envoy-api-msg-configsource"><span class="std std-ref">ConfigSource</span></a>)</dd>
+<dd>(<a class="reference internal" href="base.proto.html#envoy-api-msg-configsource"><span class="std std-ref">ConfigSource</span></a>) Configuration for the source of EDS updates for this Cluster.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-edsclusterconfig-service-name">
 <dt>service_name</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Optional alternative to cluster name to present to EDS. This does not
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) Optional alternative to cluster name to present to EDS. This does not
 have the same restrictions as cluster name, i.e. it may be arbritary
 length.</dd>
 </dl>
 </div>
 <div class="section" id="cluster-outlierdetection">
 <span id="envoy-api-msg-cluster-outlierdetection"></span><h2>Cluster.OutlierDetection<a class="headerlink" href="#cluster-outlierdetection" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L176">[Cluster.OutlierDetection proto]</a></p>
-<p>If specified, outlier detection will be enabled for this upstream cluster.</p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L262">[Cluster.OutlierDetection proto]</a></p>
+<p>See the <a class="reference internal" href="../intro/arch_overview/outlier.html#arch-overview-outlier-detection"><span class="std std-ref">architecture overview</span></a> for
+more information on outlier detection.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;consecutive_5xx&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;interval&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -545,7 +573,7 @@ used to disable ejection or to ramp it up slowly. Defaults to 0.</dd>
 </div>
 <div class="section" id="cluster-lbsubsetconfig">
 <span id="envoy-api-msg-cluster-lbsubsetconfig"></span><h2>Cluster.LbSubsetConfig<a class="headerlink" href="#cluster-lbsubsetconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L249">[Cluster.LbSubsetConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L351">[Cluster.LbSubsetConfig proto]</a></p>
 <p>Optionally divide the endpoints in this cluster into subsets defined by
 endpoint metadata and selected by route and weighted cluster metadata.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -557,26 +585,25 @@ endpoint metadata and selected by route and weighted cluster metadata.</p>
 </div>
 <dl class="docutils" id="envoy-api-field-cluster-lbsubsetconfig-fallback-policy">
 <dt>fallback_policy</dt>
-<dd>(<a class="reference internal" href="#envoy-api-enum-cluster-lbsubsetconfig-lbsubsetfallbackpolicy"><span class="std std-ref">Cluster.LbSubsetConfig.LbSubsetFallbackPolicy</span></a>)</dd>
+<dd>(<a class="reference internal" href="#envoy-api-enum-cluster-lbsubsetconfig-lbsubsetfallbackpolicy"><span class="std std-ref">Cluster.LbSubsetConfig.LbSubsetFallbackPolicy</span></a>) The behavior used when no endpoint subset matches the selected route’s
+metadata. The value defaults to
+<a class="reference internal" href="#envoy-api-enum-value-cluster-lbsubsetconfig-lbsubsetfallbackpolicy-no-fallback"><span class="std std-ref">NO_FALLBACK</span></a>.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-lbsubsetconfig-default-subset">
 <dt>default_subset</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct">Struct</a>) Specifies the default subset of endpoints used during fallback if
-fallback_policy is DEFAULT_SUBSET. Each field in default_subset is
-compared to the matching LbEndpoint.Metadata under the “envoy.lb”
+fallback_policy is
+<a class="reference internal" href="#envoy-api-enum-value-cluster-lbsubsetconfig-lbsubsetfallbackpolicy-default-subset"><span class="std std-ref">DEFAULT_SUBSET</span></a>.
+Each field in default_subset is
+compared to the matching LbEndpoint.Metadata under the <em>envoy.lb</em>
 namespace. It is valid for no hosts to match, in which case the behavior
-is the same as a fallback_policy of NO_FALLBACK.</dd>
+is the same as a fallback_policy of
+<a class="reference internal" href="#envoy-api-enum-value-cluster-lbsubsetconfig-lbsubsetfallbackpolicy-no-fallback"><span class="std std-ref">NO_FALLBACK</span></a>.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-lbsubsetconfig-subset-selectors">
 <dt>subset_selectors</dt>
-<dd>(<a class="reference internal" href="#envoy-api-msg-cluster-lbsubsetconfig-lbsubsetselector"><span class="std std-ref">Cluster.LbSubsetConfig.LbSubsetSelector</span></a>)</dd>
-</dl>
-</div>
-<div class="section" id="cluster-lbsubsetconfig-lbsubsetselector">
-<span id="envoy-api-msg-cluster-lbsubsetconfig-lbsubsetselector"></span><h2>Cluster.LbSubsetConfig.LbSubsetSelector<a class="headerlink" href="#cluster-lbsubsetconfig-lbsubsetselector" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L285">[Cluster.LbSubsetConfig.LbSubsetSelector proto]</a></p>
-<p>Specifications for subsets. For each entry, LbEndpoint.Metadata’s
-“envoy.lb” namespace is traversed and a subset is created for each unique
+<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-cluster-lbsubsetconfig-lbsubsetselector"><span class="std std-ref">Cluster.LbSubsetConfig.LbSubsetSelector</span></a>) For each entry, LbEndpoint.Metadata’s
+<em>envoy.lb</em> namespace is traversed and a subset is created for each unique
 combination of key and value. For example:</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="nt">&quot;subset_selectors&quot;</span><span class="p">:</span> <span class="p">[</span>
     <span class="p">{</span> <span class="nt">&quot;keys&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s2">&quot;version&quot;</span> <span class="p">]</span> <span class="p">},</span>
@@ -584,9 +611,16 @@ combination of key and value. For example:</p>
 <span class="p">]}</span>
 </pre></div>
 </div>
-<p>A subset is matched when the metadata from the selected route and
+<p class="last">A subset is matched when the metadata from the selected route and
 weighted cluster contains the same keys and values as the subset’s
 metadata. The same host may appear in multiple subsets.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="cluster-lbsubsetconfig-lbsubsetselector">
+<span id="envoy-api-msg-cluster-lbsubsetconfig-lbsubsetselector"></span><h2>Cluster.LbSubsetConfig.LbSubsetSelector<a class="headerlink" href="#cluster-lbsubsetconfig-lbsubsetselector" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L380">[Cluster.LbSubsetConfig.LbSubsetSelector proto]</a></p>
+<p>Specifications for subsets.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;keys&quot;</span><span class="p">:</span> <span class="p">[]</span>
 <span class="p">}</span>
@@ -594,15 +628,13 @@ metadata. The same host may appear in multiple subsets.</p>
 </div>
 <dl class="docutils" id="envoy-api-field-cluster-lbsubsetconfig-lbsubsetselector-keys">
 <dt>keys</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>)</dd>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) List of keys to match with the weighted cluster metadata.</dd>
 </dl>
 </div>
 <div class="section" id="enum-cluster-lbsubsetconfig-lbsubsetfallbackpolicy">
 <span id="envoy-api-enum-cluster-lbsubsetconfig-lbsubsetfallbackpolicy"></span><h2>Enum Cluster.LbSubsetConfig.LbSubsetFallbackPolicy<a class="headerlink" href="#enum-cluster-lbsubsetconfig-lbsubsetfallbackpolicy" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L257">[Cluster.LbSubsetConfig.LbSubsetFallbackPolicy proto]</a></p>
-<p>The behavior used when no endpoint subset matches the selected route’s
-metadata. The options are NO_FALLBACK, ANY_ENDPOINT, or DEFAULT_SUBSET.
-The value defaults to NO_FALLBACK. If NO_FALLBACK is selected, a result
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L358">[Cluster.LbSubsetConfig.LbSubsetFallbackPolicy proto]</a></p>
+<p>If NO_FALLBACK is selected, a result
 equivalent to no healthy hosts is reported. If ANY_ENDPOINT is selected,
 any cluster endpoint may be returned (subject to policy, health checks,
 etc). If DEFAULT_SUBSET is selected, load balancing is performed over the
@@ -622,7 +654,9 @@ endpoints matching the values from the default_subset field.</p>
 </div>
 <div class="section" id="cluster-ringhashlbconfig">
 <span id="envoy-api-msg-cluster-ringhashlbconfig"></span><h2>Cluster.RingHashLbConfig<a class="headerlink" href="#cluster-ringhashlbconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L292">[Cluster.RingHashLbConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L407">[Cluster.RingHashLbConfig proto]</a></p>
+<p>Specific configuration for the <a class="reference internal" href="../intro/arch_overview/load_balancing.html#arch-overview-load-balancing-types-ring-hash"><span class="std std-ref">RingHash</span></a>
+load balancing policy.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;minimum_ring_size&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;deprecated_v1&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
@@ -639,12 +673,12 @@ be allocated a single virtual node.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-ringhashlbconfig-deprecated-v1">
 <dt>deprecated_v1</dt>
-<dd>(<a class="reference internal" href="#envoy-api-msg-cluster-ringhashlbconfig-deprecatedv1"><span class="std std-ref">Cluster.RingHashLbConfig.DeprecatedV1</span></a>)</dd>
+<dd>(<a class="reference internal" href="#envoy-api-msg-cluster-ringhashlbconfig-deprecatedv1"><span class="std std-ref">Cluster.RingHashLbConfig.DeprecatedV1</span></a>) Deprecated settings from v1 config.</dd>
 </dl>
 </div>
 <div class="section" id="cluster-ringhashlbconfig-deprecatedv1">
 <span id="envoy-api-msg-cluster-ringhashlbconfig-deprecatedv1"></span><h2>Cluster.RingHashLbConfig.DeprecatedV1<a class="headerlink" href="#cluster-ringhashlbconfig-deprecatedv1" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L300">[Cluster.RingHashLbConfig.DeprecatedV1 proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L415">[Cluster.RingHashLbConfig.DeprecatedV1 proto]</a></p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;use_std_hash&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
@@ -654,72 +688,94 @@ be allocated a single virtual node.</dd>
 <dt>use_std_hash</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue">BoolValue</a>) Defaults to true, meaning that std::hash is used to hash hosts onto
 the ketama ring. std::hash can vary by platform. For this reason,
-Envoy will eventually use xxHash by default. This field exists for
+Envoy will eventually use <a class="reference external" href="https://github.com/Cyan4973/xxHash">xxHash</a>
+by default. This field exists for
 migration purposes and will eventually be deprecated. Set it to false
-to use xxHash now.</dd>
+to use <a class="reference external" href="https://github.com/Cyan4973/xxHash">xxHash</a> now.</dd>
 </dl>
 </div>
 <div class="section" id="enum-cluster-discoverytype">
 <span id="envoy-api-enum-cluster-discoverytype"></span><h2>Enum Cluster.DiscoveryType<a class="headerlink" href="#enum-cluster-discoverytype" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L73">[Cluster.DiscoveryType proto]</a></p>
-<p>The service discovery type to use for resolving the cluster.</p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L90">[Cluster.DiscoveryType proto]</a></p>
+<p>Refer to <a class="reference internal" href="../intro/arch_overview/service_discovery.html#arch-overview-service-discovery-types"><span class="std std-ref">service discovery type</span></a>
+for an explanation on each type.</p>
 <dl class="docutils" id="envoy-api-enum-value-cluster-discoverytype-static">
 <dt>STATIC</dt>
-<dd><em>(DEFAULT)</em> ⁣</dd>
+<dd><em>(DEFAULT)</em> ⁣Refer to the <a class="reference internal" href="../intro/arch_overview/service_discovery.html#arch-overview-service-discovery-types-static"><span class="std std-ref">static discovery type</span></a>
+for an explanation.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-enum-value-cluster-discoverytype-strict-dns">
 <dt>STRICT_DNS</dt>
-<dd>⁣</dd>
+<dd>⁣Refer to the <a class="reference internal" href="../intro/arch_overview/service_discovery.html#arch-overview-service-discovery-types-strict-dns"><span class="std std-ref">strict DNS discovery
+type</span></a>
+for an explanation.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-enum-value-cluster-discoverytype-logical-dns">
 <dt>LOGICAL_DNS</dt>
-<dd>⁣</dd>
+<dd>⁣Refer to the <a class="reference internal" href="../intro/arch_overview/service_discovery.html#arch-overview-service-discovery-types-logical-dns"><span class="std std-ref">logical DNS discovery
+type</span></a>
+for an explanation.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-enum-value-cluster-discoverytype-eds">
 <dt>EDS</dt>
-<dd>⁣</dd>
+<dd>⁣Refer to the <a class="reference internal" href="../intro/arch_overview/service_discovery.html#arch-overview-service-discovery-types-sds"><span class="std std-ref">service discovery type</span></a>
+for an explanation.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-enum-value-cluster-discoverytype-original-dst">
 <dt>ORIGINAL_DST</dt>
-<dd>⁣</dd>
+<dd>⁣Refer to the <a class="reference internal" href="../intro/arch_overview/service_discovery.html#arch-overview-service-discovery-types-original-destination"><span class="std std-ref">original destination discovery
+type</span></a>
+for an explanation.</dd>
 </dl>
 </div>
 <div class="section" id="enum-cluster-lbpolicy">
 <span id="envoy-api-enum-cluster-lbpolicy"></span><h2>Enum Cluster.LbPolicy<a class="headerlink" href="#enum-cluster-lbpolicy" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L99">[Cluster.LbPolicy proto]</a></p>
-<p>The load balancer type to use when picking a host in the cluster.</p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L140">[Cluster.LbPolicy proto]</a></p>
+<p>Refer to <a class="reference internal" href="../intro/arch_overview/load_balancing.html#arch-overview-load-balancing-types"><span class="std std-ref">load balancer type</span></a> architecture
+overview section for information on each type.</p>
 <dl class="docutils" id="envoy-api-enum-value-cluster-lbpolicy-round-robin">
 <dt>ROUND_ROBIN</dt>
-<dd><em>(DEFAULT)</em> ⁣</dd>
+<dd><em>(DEFAULT)</em> ⁣Refer to the <a class="reference internal" href="../intro/arch_overview/load_balancing.html#arch-overview-load-balancing-types-round-robin"><span class="std std-ref">round robin load balancing
+policy</span></a>
+for an explanation.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-enum-value-cluster-lbpolicy-least-request">
 <dt>LEAST_REQUEST</dt>
-<dd>⁣</dd>
+<dd>⁣Refer to the <a class="reference internal" href="../intro/arch_overview/load_balancing.html#arch-overview-load-balancing-types-least-request"><span class="std std-ref">least request load balancing
+policy</span></a>
+for an explanation.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-enum-value-cluster-lbpolicy-ring-hash">
 <dt>RING_HASH</dt>
-<dd>⁣</dd>
+<dd>⁣Refer to the <a class="reference internal" href="../intro/arch_overview/load_balancing.html#arch-overview-load-balancing-types-ring-hash"><span class="std std-ref">ring hash load balancing
+policy</span></a>
+for an explanation.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-enum-value-cluster-lbpolicy-random">
 <dt>RANDOM</dt>
-<dd>⁣</dd>
+<dd>⁣Refer to the <a class="reference internal" href="../intro/arch_overview/load_balancing.html#arch-overview-load-balancing-types-random"><span class="std std-ref">random load balancing
+policy</span></a>
+for an explanation.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-enum-value-cluster-lbpolicy-original-dst-lb">
 <dt>ORIGINAL_DST_LB</dt>
-<dd>⁣</dd>
+<dd>⁣Refer to the <a class="reference internal" href="../intro/arch_overview/load_balancing.html#arch-overview-load-balancing-types-original-destination"><span class="std std-ref">original destination load balancing
+policy</span></a>
+for an explanation.</dd>
 </dl>
 </div>
 <div class="section" id="enum-cluster-dnslookupfamily">
 <span id="envoy-api-enum-cluster-dnslookupfamily"></span><h2>Enum Cluster.DnsLookupFamily<a class="headerlink" href="#enum-cluster-dnslookupfamily" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L161">[Cluster.DnsLookupFamily proto]</a></p>
-<p>The DNS IP address resolution policy. The options are V4_ONLY, V6_ONLY, and
-AUTO. If this setting is not specified, the value defaults to V4_ONLY. When
-V4_ONLY is selected, the DNS resolver will only perform a lookup for
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L237">[Cluster.DnsLookupFamily proto]</a></p>
+<p>When V4_ONLY is selected, the DNS resolver will only perform a lookup for
 addresses in the IPv4 family. If V6_ONLY is selected, the DNS resolver will
 only perform a lookup for addresses in the IPv6 family. If AUTO is
 specified, the DNS resolver will first perform a lookup for addresses in
 the IPv6 family and fallback to a lookup for addresses in the IPv4 family.
-For cluster types other than STRICT_DNS and LOGICAL_DNS, this setting is
+For cluster types other than
+<a class="reference internal" href="#envoy-api-enum-value-cluster-discoverytype-strict-dns"><span class="std std-ref">STRICT_DNS</span></a> and
+<a class="reference internal" href="#envoy-api-enum-value-cluster-discoverytype-logical-dns"><span class="std std-ref">LOGICAL_DNS</span></a>,
+this setting is
 ignored.</p>
 <dl class="docutils" id="envoy-api-enum-value-cluster-dnslookupfamily-auto">
 <dt>AUTO</dt>
@@ -780,7 +836,7 @@ ignored.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.5.0-data-plane-api-c2e8b6',
+            VERSION:'1.5.0-data-plane-api-1eae57',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

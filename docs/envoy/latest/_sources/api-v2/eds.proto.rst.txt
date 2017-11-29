@@ -9,8 +9,9 @@ Endpoints and EDS
 LbEndpoint
 ----------
 
-`[LbEndpoint proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L62>`_
+`[LbEndpoint proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L65>`_
 
+An Endpoint that Envoy can route traffic to.
 
 .. code-block:: json
 
@@ -23,7 +24,8 @@ LbEndpoint
 .. _envoy_api_field_LbEndpoint.endpoint:
 
 endpoint
-  (:ref:`Endpoint <envoy_api_msg_Endpoint>`) 
+  (:ref:`Endpoint <envoy_api_msg_Endpoint>`) Upstream host identifier
+  
   
 
 .. _envoy_api_field_LbEndpoint.metadata:
@@ -31,12 +33,10 @@ endpoint
 metadata
   (:ref:`Metadata <envoy_api_msg_Metadata>`) The endpoint metadata specifies values that may be used by the load
   balancer to select endpoints in a cluster for a given request. The filter
-  name should be specified as "envoy.lb". An example boolean key-value pair
-  is "canary", providing the optional canary status of the upstream host.
+  name should be specified as *envoy.lb*. An example boolean key-value pair
+  is *canary*, providing the optional canary status of the upstream host.
   This may be matched against in a route's ForwardAction metadata_match field
   to subset the endpoints considered in cluster load balancing.
-  TODO(htuch: [V2-API-DIFF] Need to plumb this through Envoy and have
-  everywhere that canary is used be capable of working on metadata.
   
   
 .. _envoy_api_field_LbEndpoint.load_balancing_weight:
@@ -50,9 +50,12 @@ load_balancing_weight
   weighted by the endpoint's locality's load balancing weight from
   LocalityLbEndpoints. If unspecified, each host is presumed to have equal
   weight in a locality.
-  The limit of 128 is somewhat arbitrary, but is applied due to performance
-  concerns with the current implementation and can be removed when
-  https://github.com/envoyproxy/envoy/issues/1285 is fixed.
+  
+  .. attention::
+  
+    The limit of 128 is somewhat arbitrary, but is applied due to performance
+    concerns with the current implementation and can be removed when
+    `this issue <https://github.com/envoyproxy/envoy/issues/1285>`_ is fixed.
   
   
 
@@ -62,7 +65,7 @@ load_balancing_weight
 LocalityLbEndpoints
 -------------------
 
-`[LocalityLbEndpoints proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L96>`_
+`[LocalityLbEndpoints proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L102>`_
 
 A group of endpoints belonging to a Locality.
 One can have multiple LocalityLbEndpoints for a locality, but this is
@@ -81,20 +84,22 @@ balancing weights or different priorities.
 .. _envoy_api_field_LocalityLbEndpoints.locality:
 
 locality
-  (:ref:`Locality <envoy_api_msg_Locality>`) 
+  (:ref:`Locality <envoy_api_msg_Locality>`) Identifies location of where the upstream hosts run.
+  
   
 .. _envoy_api_field_LocalityLbEndpoints.lb_endpoints:
 
 lb_endpoints
-  (:ref:`LbEndpoint <envoy_api_msg_LbEndpoint>`) 
+  (:ref:`LbEndpoint <envoy_api_msg_LbEndpoint>`) The group of endpoints belonging to the locality specified.
+  
   
 .. _envoy_api_field_LocalityLbEndpoints.load_balancing_weight:
 
 load_balancing_weight
-  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Optional: Per priority/region/zone/sub_zone weight - range 1-128. The load balancing
-  weight for a locality is divided by the sum of the weights of all
-  localities  at the same priority level to produce the effective percentage of traffic
-  for the locality.
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Optional: Per priority/region/zone/sub_zone weight - range 1-128. The load
+  balancing weight for a locality is divided by the sum of the weights of all
+  localities  at the same priority level to produce the effective percentage
+  of traffic for the locality.
   
   Weights must be specified for either all localities in a given priority
   level or none.
@@ -102,9 +107,11 @@ load_balancing_weight
   If unspecified, each locality is presumed to have equal weight in a
   cluster.
   
-  The limit of 128 is somewhat arbitrary, but is applied due to performance
-  concerns with the current implementation and can be removed when
-  https://github.com/envoyproxy/envoy/issues/1285 is fixed.
+  .. attention::
+  
+    The limit of 128 is somewhat arbitrary, but is applied due to performance
+    concerns with the current implementation and can be removed when
+    `this issue <https://github.com/envoyproxy/envoy/issues/1285>`_ is fixed.
   
   
 .. _envoy_api_field_LocalityLbEndpoints.priority:
@@ -128,21 +135,8 @@ priority
 EndpointLoadMetricStats
 -----------------------
 
-`[EndpointLoadMetricStats proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L141>`_
+`[EndpointLoadMetricStats proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L139>`_
 
-Example load report from a single request:
-
-[metric name, metric value]
-* cpu_seconds, 0.7
-* flash_utilization, 75
-
-When aggregating Envoy needs to count how many request's load reports
-included each metric type, so Envoy can account for requests that don't
-include that metric type. e.g.:
-
-[name, count, sum of values]
-* cpu_seconds, 10, 17.5
-* flash_utilization, 5, 375
 
 .. code-block:: json
 
@@ -178,11 +172,12 @@ total_metric_value
 UpstreamLocalityStats
 ---------------------
 
-`[UpstreamLocalityStats proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L154>`_
+`[UpstreamLocalityStats proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L155>`_
 
 These are stats Envoy reports to GLB every so often. Report frequency is
-defined by LoadAssignmentResponse.interval
-Stats per upstream region/zone and optionally per subzone
+defined by
+:ref:`LoadStatsResponse.load_reporting_interval<envoy_api_field_LoadStatsResponse.load_reporting_interval>`.
+Stats per upstream region/zone and optionally per subzone.
 
 .. code-block:: json
 
@@ -231,8 +226,14 @@ total_requests_in_progress
 total_error_requests
   (`uint64 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The total number of requests that failed due to errors at the endpoint.
   For HTTP these are responses with 5xx status codes and for gRPC the
-  grpc-status values {DeadlineExceeded, Unimplemented, Internal,
-  Unavailable, Unknown, DataLoss}.
+  grpc-status values:
+  
+    - DeadlineExceeded
+    - Unimplemented
+    - Internal
+    - Unavailable
+    - Unknown
+    - DataLoss
   
   
 .. _envoy_api_field_UpstreamLocalityStats.load_metric_stats:
@@ -248,9 +249,10 @@ load_metric_stats
 ClusterStats
 ------------
 
-`[ClusterStats proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L187>`_
+`[ClusterStats proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L197>`_
 
-Per cluster stats
+Per cluster load stats. Envoy reports these stats a management server in a
+:ref:`LoadStatsRequest<envoy_api_msg_LoadStatsRequest>`
 
 .. code-block:: json
 
@@ -263,12 +265,13 @@ Per cluster stats
 .. _envoy_api_field_ClusterStats.cluster_name:
 
 cluster_name
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The name of the cluster.
+  
   
 .. _envoy_api_field_ClusterStats.upstream_locality_stats:
 
 upstream_locality_stats
-  (:ref:`UpstreamLocalityStats <envoy_api_msg_UpstreamLocalityStats>`) Need at least one.
+  (:ref:`UpstreamLocalityStats <envoy_api_msg_UpstreamLocalityStats>`, *REQUIRED*) Need at least one.
   
   
 .. _envoy_api_field_ClusterStats.total_dropped_requests:
@@ -295,8 +298,9 @@ total_dropped_requests
 LoadStatsRequest
 ----------------
 
-`[LoadStatsRequest proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L207>`_
+`[LoadStatsRequest proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L220>`_
 
+A load report Envoy sends to the management server.
 
 .. code-block:: json
 
@@ -308,12 +312,14 @@ LoadStatsRequest
 .. _envoy_api_field_LoadStatsRequest.node:
 
 node
-  (:ref:`Node <envoy_api_msg_Node>`) 
+  (:ref:`Node <envoy_api_msg_Node>`) Node identifier for Envoy instance.
+  
   
 .. _envoy_api_field_LoadStatsRequest.cluster_stats:
 
 cluster_stats
-  (:ref:`ClusterStats <envoy_api_msg_ClusterStats>`) 
+  (:ref:`ClusterStats <envoy_api_msg_ClusterStats>`) A list of load stats to report.
+  
   
 
 
@@ -322,7 +328,7 @@ cluster_stats
 ClusterLoadAssignment
 ---------------------
 
-`[ClusterLoadAssignment proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L220>`_
+`[ClusterLoadAssignment proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L236>`_
 
 Each route from RDS will map to a single cluster or traffic split across
 clusters using weights expressed in the RDS WeightedCluster.
@@ -344,25 +350,29 @@ load_balancing_weight of its Locality.
 .. _envoy_api_field_ClusterLoadAssignment.cluster_name:
 
 cluster_name
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Name of the cluster.
+  
   
 .. _envoy_api_field_ClusterLoadAssignment.endpoints:
 
 endpoints
-  (:ref:`LocalityLbEndpoints <envoy_api_msg_LocalityLbEndpoints>`) 
+  (:ref:`LocalityLbEndpoints <envoy_api_msg_LocalityLbEndpoints>`) List of endpoints to load balance to.
+  
   
 .. _envoy_api_field_ClusterLoadAssignment.policy:
 
 policy
-  (:ref:`ClusterLoadAssignment.Policy <envoy_api_msg_ClusterLoadAssignment.Policy>`) 
+  (:ref:`ClusterLoadAssignment.Policy <envoy_api_msg_ClusterLoadAssignment.Policy>`) Load balancing policy settings.
+  
   
 .. _envoy_api_msg_ClusterLoadAssignment.Policy:
 
 ClusterLoadAssignment.Policy
 ----------------------------
 
-`[ClusterLoadAssignment.Policy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L223>`_
+`[ClusterLoadAssignment.Policy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L244>`_
 
+Load balancing policy settings.
 
 .. code-block:: json
 
@@ -377,8 +387,10 @@ drop_overload
   action allows protection of upstream hosts should they unable to
   recover from an outage or should they be unable to autoscale and hence
   overall incoming traffic volume need to be trimmed to protect them.
-  [V2-API-DIFF] This is known as maintenance mode in v1.
   
+  
+  .. NOTE::
+    **v2 API difference**: This is known as maintenance mode in v1.
   
 
 
@@ -388,8 +400,10 @@ drop_overload
 LoadStatsResponse
 -----------------
 
-`[LoadStatsResponse proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L234>`_
+`[LoadStatsResponse proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L259>`_
 
+The management server sends envoy a LoadStatsResponse with all clusters it
+is interested in learning load stats about.
 
 .. code-block:: json
 
@@ -401,13 +415,13 @@ LoadStatsResponse
 .. _envoy_api_field_LoadStatsResponse.clusters:
 
 clusters
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Clusters to report stats for.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Clusters to report stats for.
   
   
 .. _envoy_api_field_LoadStatsResponse.load_reporting_interval:
 
 load_reporting_interval
-  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The default is 10 seconds.
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The interval of time to collect stats. The default is 10 seconds.
   
   
 

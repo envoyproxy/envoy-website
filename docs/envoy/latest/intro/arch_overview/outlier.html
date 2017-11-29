@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Outlier detection &mdash; envoy 1.5.0-data-plane-api-c2e8b6 documentation</title>
+  <title>Outlier detection &mdash; envoy 1.5.0-data-plane-api-1eae57 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-c2e8b6 documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-1eae57 documentation" href="../../index.html"/>
         <link rel="up" title="Architecture overview" href="arch_overview.html"/>
         <link rel="next" title="Circuit breaking" href="circuit_breaking.html"/>
         <link rel="prev" title="Load balancing" href="load_balancing.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-c2e8b6
+                1.5.0-data-plane-api-1eae57
               </div>
             
           
@@ -233,12 +233,12 @@ ejection algorithm works as follows:</p>
 <ol class="arabic simple">
 <li>A host is determined to be an outlier.</li>
 <li>Envoy checks to make sure the number of ejected hosts is below the allowed threshold (specified
-via the <a class="reference internal" href="../../configuration/cluster_manager/cluster_outlier_detection.html#config-cluster-manager-cluster-outlier-detection"><span class="std std-ref">outlier_detection.max_ejection_percent</span></a> setting).
+via the <a class="reference internal" href="../../api-v1/cluster_manager/cluster_outlier_detection.html#config-cluster-manager-cluster-outlier-detection"><span class="std std-ref">outlier_detection.max_ejection_percent</span></a> setting).
 If the number of ejected hosts is above the threshold the host is not ejected.</li>
 <li>The host is ejected for some number of milliseconds. Ejection means that the host is marked
 unhealthy and will not be used during load balancing unless the load balancer is in a
 <a class="reference internal" href="load_balancing.html#arch-overview-load-balancing-panic-threshold"><span class="std std-ref">panic</span></a> scenario. The number of milliseconds
-is equal to the <a class="reference internal" href="../../configuration/cluster_manager/cluster_outlier_detection.html#config-cluster-manager-cluster-outlier-detection"><span class="std std-ref">outlier_detection.base_ejection_time_ms</span></a> value
+is equal to the <a class="reference internal" href="../../api-v1/cluster_manager/cluster_outlier_detection.html#config-cluster-manager-cluster-outlier-detection"><span class="std std-ref">outlier_detection.base_ejection_time_ms</span></a> value
 multiplied by the number of times the host has been ejected. This causes hosts to get ejected
 for longer and longer periods if they continue to fail.</li>
 <li>An ejected host will automatically be brought back into service after the ejection time has
@@ -253,7 +253,7 @@ been satisfied. Generally, outlier detection is used alongside <a class="referen
 <p>If an upstream host returns some number of consecutive 5xx, it will be ejected. Note that in this
 case a 5xx means an actual 5xx respond code, or an event that would cause the HTTP router to return
 one on the upstream’s behalf (reset, connection failure, etc.). The number of consecutive 5xx
-required for ejection is controlled by the <a class="reference internal" href="../../configuration/cluster_manager/cluster_outlier_detection.html#config-cluster-manager-cluster-outlier-detection-consecutive-5xx"><span class="std std-ref">outlier_detection.consecutive_5xx</span></a> value.</p>
+required for ejection is controlled by the <a class="reference internal" href="../../api-v1/cluster_manager/cluster_outlier_detection.html#config-cluster-manager-cluster-outlier-detection-consecutive-5xx"><span class="std std-ref">outlier_detection.consecutive_5xx</span></a> value.</p>
 </div>
 <div class="section" id="consecutive-gateway-failure">
 <h3>Consecutive Gateway Failure<a class="headerlink" href="#consecutive-gateway-failure" title="Permalink to this headline">¶</a></h3>
@@ -261,17 +261,17 @@ required for ejection is controlled by the <a class="reference internal" href=".
 code), it will be ejected. Note that this includes events that would cause the HTTP router to
 return one of these status codes on the upstream’s behalf (reset, connection failure, etc.). The
 number of consecutive gateway failures required for ejection is controlled by
-the <a class="reference internal" href="../../configuration/cluster_manager/cluster_outlier_detection.html#config-cluster-manager-cluster-outlier-detection-consecutive-gateway-failure"><span class="std std-ref">outlier_detection.consecutive_gateway_failure</span></a> value.</p>
+the <a class="reference internal" href="../../api-v1/cluster_manager/cluster_outlier_detection.html#config-cluster-manager-cluster-outlier-detection-consecutive-gateway-failure"><span class="std std-ref">outlier_detection.consecutive_gateway_failure</span></a> value.</p>
 </div>
 <div class="section" id="success-rate">
 <h3>Success Rate<a class="headerlink" href="#success-rate" title="Permalink to this headline">¶</a></h3>
 <p>Success Rate based outlier ejection aggregates success rate data from every host in a cluster. Then at given
 intervals ejects hosts based on statistical outlier detection. Success Rate outlier ejection will not be
 calculated for a host if its request volume over the aggregation interval is less than the
-<a class="reference internal" href="../../configuration/cluster_manager/cluster_outlier_detection.html#config-cluster-manager-cluster-outlier-detection-success-rate-request-volume"><span class="std std-ref">outlier_detection.success_rate_request_volume</span></a>
+<a class="reference internal" href="../../api-v1/cluster_manager/cluster_outlier_detection.html#config-cluster-manager-cluster-outlier-detection-success-rate-request-volume"><span class="std std-ref">outlier_detection.success_rate_request_volume</span></a>
 value. Moreover, detection will not be performed for a cluster if the number of hosts
 with the minimum required request volume in an interval is less than the
-<a class="reference internal" href="../../configuration/cluster_manager/cluster_outlier_detection.html#config-cluster-manager-cluster-outlier-detection-success-rate-minimum-hosts"><span class="std std-ref">outlier_detection.success_rate_minimum_hosts</span></a>
+<a class="reference internal" href="../../api-v1/cluster_manager/cluster_outlier_detection.html#config-cluster-manager-cluster-outlier-detection-success-rate-minimum-hosts"><span class="std std-ref">outlier_detection.success_rate_minimum_hosts</span></a>
 value.</p>
 </div>
 </div>
@@ -303,7 +303,7 @@ being ejected and for what reasons. The log uses a JSON format with one object p
 took place. This value will be <code class="docutils literal"><span class="pre">-1</span></code> for the first ejection given there is no
 action before the first ejection.</dd>
 <dt>cluster</dt>
-<dd>The <a class="reference internal" href="../../configuration/cluster_manager/cluster.html#config-cluster-manager-cluster"><span class="std std-ref">cluster</span></a> that owns the ejected host.</dd>
+<dd>The <a class="reference internal" href="../../api-v1/cluster_manager/cluster.html#config-cluster-manager-cluster"><span class="std std-ref">cluster</span></a> that owns the ejected host.</dd>
 <dt>upstream_url</dt>
 <dd>The URL of the ejected host. E.g., <code class="docutils literal"><span class="pre">tcp://1.2.3.4:80</span></code>.</dd>
 <dt>action</dt>
@@ -337,8 +337,8 @@ threshold at the time of the ejection event.</dd>
 <div class="section" id="configuration-reference">
 <h2>Configuration reference<a class="headerlink" href="#configuration-reference" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Cluster manager <a class="reference internal" href="../../configuration/cluster_manager/outlier.html#config-cluster-manager-outlier-detection"><span class="std std-ref">global configuration</span></a></li>
-<li>Per cluster <a class="reference internal" href="../../configuration/cluster_manager/cluster_outlier_detection.html#config-cluster-manager-cluster-outlier-detection"><span class="std std-ref">configuration</span></a></li>
+<li>Cluster manager <a class="reference internal" href="../../api-v1/cluster_manager/outlier.html#config-cluster-manager-outlier-detection"><span class="std std-ref">global configuration</span></a></li>
+<li>Per cluster <a class="reference internal" href="../../api-v1/cluster_manager/cluster_outlier_detection.html#config-cluster-manager-cluster-outlier-detection"><span class="std std-ref">configuration</span></a></li>
 <li>Runtime <a class="reference internal" href="../../configuration/cluster_manager/cluster_runtime.html#config-cluster-manager-cluster-runtime-outlier-detection"><span class="std std-ref">settings</span></a></li>
 <li>Statistics <a class="reference internal" href="../../configuration/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats-outlier-detection"><span class="std std-ref">reference</span></a></li>
 </ul>
@@ -389,7 +389,7 @@ threshold at the time of the ejection event.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.5.0-data-plane-api-c2e8b6',
+            VERSION:'1.5.0-data-plane-api-1eae57',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
