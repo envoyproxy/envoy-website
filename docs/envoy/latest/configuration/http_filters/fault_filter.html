@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Fault Injection &mdash; envoy 1.5.0-data-plane-api-1eae57 documentation</title>
+  <title>Fault Injection &mdash; envoy 1.5.0-data-plane-api-ec38af documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-1eae57 documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-ec38af documentation" href="../../index.html"/>
         <link rel="up" title="HTTP filters" href="http_filters.html"/>
         <link rel="next" title="DynamoDB" href="dynamodb_filter.html"/>
         <link rel="prev" title="CORS filter" href="cors_filter.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-1eae57
+                1.5.0-data-plane-api-ec38af
               </div>
             
           
@@ -108,8 +108,6 @@
 <li class="toctree-l3"><a class="reference internal" href="cors_filter.html">CORS filter</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Fault Injection</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#configuration">Configuration</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#abort">Abort</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#delay">Delay</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#runtime">Runtime</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#statistics">Statistics</a></li>
 </ul>
@@ -224,88 +222,15 @@ routes, injecting <em>gRPC</em> and <em>HTTP/2</em> specific error codes and del
 durations based on distributions.</p>
 <div class="section" id="configuration">
 <h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
-<p><em>Note: The fault injection filter must be inserted before any other filter,
-including the router filter.</em></p>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;name&quot;</span> <span class="p">:</span> <span class="s2">&quot;fault&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;config&quot;</span> <span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;abort&quot;</span> <span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;delay&quot;</span> <span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;upstream_cluster&quot;</span> <span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;headers&quot;</span> <span class="p">:</span> <span class="p">[],</span>
-    <span class="nt">&quot;downstream_nodes&quot;</span><span class="p">:</span> <span class="p">[]</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The fault injection filter must be inserted before any other filter,
+including the router filter.</p>
 </div>
-<dl class="docutils">
-<dt><a class="reference internal" href="#config-http-filters-fault-injection-abort"><span class="std std-ref">abort</span></a></dt>
-<dd><em>(sometimes required, object)</em> If specified, the filter will abort requests based on
-the values in the object. At least <em>abort</em> or <em>delay</em> must be specified.</dd>
-<dt><a class="reference internal" href="#config-http-filters-fault-injection-delay"><span class="std std-ref">delay</span></a></dt>
-<dd><em>(sometimes required, object)</em> If specified, the filter will inject delays based on the values
-in the object. At least <em>abort</em> or <em>delay</em> must be specified.</dd>
-<dt>upstream_cluster:</dt>
-<dd><em>(optional, string)</em> Specifies the name of the (destination) upstream
-cluster that the filter should match on. Fault injection will be
-restricted to requests bound to the specific upstream cluster.</dd>
-<dt><a class="reference internal" href="../../api-v1/route_config/route.html#config-http-conn-man-route-table-route-headers"><span class="std std-ref">headers</span></a></dt>
-<dd><em>(optional, array)</em> Specifies a set of headers that the filter should match on. The fault
-injection filter can be applied selectively to requests that match a set of headers specified in
-the fault filter config. The chances of actual fault injection further depend on the values of
-<em>abort_percent</em> and <em>fixed_delay_percent</em> parameters.The filter will check the request’s headers
-against all the specified headers in the filter config. A match will happen if all the headers in
-the config are present in the request with the same values (or based on presence if the <code class="docutils literal"><span class="pre">value</span></code>
-field is not in the config).
-TODO: allow runtime configuration on per entry basis for headers match.</dd>
-<dt>downstream_nodes:</dt>
-<dd><em>(optional, array)</em> Faults are injected for the specified list of downstream hosts. If this setting is
-not set, faults are injected for all downstream nodes. Downstream node name is taken from
-<a class="reference internal" href="../http_conn_man/headers.html#config-http-conn-man-headers-downstream-service-node"><span class="std std-ref">the HTTP x-envoy-downstream-service-node</span></a>
-header and compared against downstream_nodes list.</dd>
-</dl>
-<p>The abort and delay blocks can be omitted. If they are not specified in the
-configuration file, their respective values will be obtained from the
-runtime.</p>
-</div>
-<div class="section" id="abort">
-<span id="config-http-filters-fault-injection-abort"></span><h2>Abort<a class="headerlink" href="#abort" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;abort_percent&quot;</span> <span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;http_status&quot;</span> <span class="p">:</span> <span class="s2">&quot;...&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<dl class="docutils">
-<dt>abort_percent</dt>
-<dd><em>(required, integer)</em> The percentage of requests that
-should be aborted with the specified <em>http_status</em> code. Valid values
-range from 0 to 100.</dd>
-<dt>http_status</dt>
-<dd><em>(required, integer)</em> The HTTP status code that will be used as the
-response code for the request being aborted.</dd>
-</dl>
-</div>
-<div class="section" id="delay">
-<span id="config-http-filters-fault-injection-delay"></span><h2>Delay<a class="headerlink" href="#delay" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;fixed_delay_percent&quot;</span> <span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;fixed_duration_ms&quot;</span> <span class="p">:</span> <span class="s2">&quot;...&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<dl class="docutils">
-<dt>type:</dt>
-<dd><em>(required, string)</em> Specifies the type of delay being
-injected. Currently only <em>fixed</em> delay type (step function) is supported.</dd>
-<dt>fixed_delay_percent:</dt>
-<dd><em>(required, integer)</em> The percentage of requests that will
-be delayed for the duration specified by <em>fixed_duration_ms</em>. Valid
-values range from 0 to 100.</dd>
-<dt>fixed_duration_ms:</dt>
-<dd><em>(required, integer)</em> The delay duration in milliseconds. Must be greater than 0.</dd>
-</dl>
+<ul class="simple">
+<li><a class="reference internal" href="../../api-v1/http_filters/fault_filter.html#config-http-filters-fault-injection-v1"><span class="std std-ref">v1 API reference</span></a></li>
+<li><a class="reference internal" href="../../api-v2/filter/http/fault.proto.html#envoy-api-msg-filter-http-httpfault"><span class="std std-ref">v2 API reference</span></a></li>
+</ul>
 </div>
 <div class="section" id="runtime">
 <h2>Runtime<a class="headerlink" href="#runtime" title="Permalink to this headline">¶</a></h2>
@@ -425,7 +350,7 @@ prefix</span></a> comes from the owning HTTP connection manager.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.5.0-data-plane-api-1eae57',
+            VERSION:'1.5.0-data-plane-api-ec38af',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
