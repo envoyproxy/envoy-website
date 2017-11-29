@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Service discovery service &mdash; envoy 1.5.0-data-plane-api-6bcca9 documentation</title>
+  <title>Health check &mdash; envoy 1.5.0-data-plane-api-6bcca9 documentation</title>
   
 
   
@@ -38,9 +38,9 @@
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
     <link rel="top" title="envoy 1.5.0-data-plane-api-6bcca9 documentation" href="../../index.html"/>
-        <link rel="up" title="Cluster manager" href="cluster_manager.html"/>
-        <link rel="next" title="Service discovery service REST API" href="sds_api.html"/>
-        <link rel="prev" title="Ring hash load balancer configuration" href="cluster_ring_hash_lb_config.html"/> 
+        <link rel="up" title="HTTP filters" href="http_filters.html"/>
+        <link rel="next" title="Lua" href="lua_filter.html"/>
+        <link rel="prev" title="gRPC-JSON transcoder filter" href="grpc_json_transcoder_filter.html"/> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -97,29 +97,24 @@
 <li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../install/install.html">Building and installation</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../configuration.html">Configuration reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../overview/v1_overview.html">Overview (v1 API)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../overview/v2_overview.html">Overview (v2 API)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../listeners/listeners.html">Listeners</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../network_filters/network_filters.html">Network filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../http_conn_man/http_conn_man.html">HTTP connection manager</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../http_filters/http_filters.html">HTTP filters</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="cluster_manager.html">Cluster manager</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="cluster.html">Cluster</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Service discovery service</a></li>
-<li class="toctree-l3"><a class="reference internal" href="sds_api.html">Service discovery service REST API</a></li>
-<li class="toctree-l3"><a class="reference internal" href="outlier.html">Outlier detection</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cds.html">Cluster discovery service</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cluster_manager.html#statistics">Statistics</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../access_log.html">Access logging</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tools/router_check.html">Route table check tool</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api-v1/api.html">v1 API reference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">v1 API reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../cluster_manager/cluster_manager.html">Cluster manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../network_filters/network_filters.html">Network filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../route_config/route_config.html">HTTP Route configuration</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="http_filters.html">HTTP filters</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="buffer_filter.html">Buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cors_filter.html">CORS filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_json_transcoder_filter.html">gRPC-JSON transcoder filter</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Health check</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lua_filter.html">Lua</a></li>
+<li class="toctree-l3"><a class="reference internal" href="router_filter.html">Router</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../api-v2/api.html">v2 API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../faq/overview.html">FAQ</a></li>
 </ul>
@@ -166,17 +161,17 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../configuration.html">Configuration reference</a> &raquo;</li>
+          <li><a href="../api.html">v1 API reference</a> &raquo;</li>
         
-          <li><a href="cluster_manager.html">Cluster manager</a> &raquo;</li>
+          <li><a href="http_filters.html">HTTP filters</a> &raquo;</li>
         
-      <li>Service discovery service</li>
+      <li>Health check</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/configuration/cluster_manager/sds.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/api-v1/http_filters/health_check_filter.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -189,24 +184,28 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="service-discovery-service">
-<span id="config-cluster-manager-sds"></span><h1>Service discovery service<a class="headerlink" href="#service-discovery-service" title="Permalink to this headline">¶</a></h1>
-<p>Service discovery service <a class="reference internal" href="../../intro/arch_overview/service_discovery.html#arch-overview-service-discovery-sds"><span class="std std-ref">architecture overview</span></a>.</p>
+  <div class="section" id="health-check">
+<span id="config-http-filters-health-check-v1"></span><h1>Health check<a class="headerlink" href="#health-check" title="Permalink to this headline">¶</a></h1>
+<p>Health check <a class="reference internal" href="../../configuration/http_filters/health_check_filter.html#config-http-filters-health-check"><span class="std std-ref">configuration overview</span></a>.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;cluster&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;refresh_delay_ms&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;health_check&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;pass_through_mode&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;endpoint&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;cache_time_ms&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <dl class="docutils">
-<dt><a class="reference internal" href="cluster.html#config-cluster-manager-cluster"><span class="std std-ref">cluster</span></a></dt>
-<dd><em>(required, object)</em> A standard definition of an upstream cluster that hosts the service
-discovery service. The cluster must run a REST service that implements the <a class="reference internal" href="sds_api.html#config-cluster-manager-sds-api"><span class="std std-ref">SDS HTTP API</span></a>.</dd>
-<dt>refresh_delay_ms</dt>
-<dd><em>(required, integer)</em> The delay, in milliseconds, between fetches to the SDS API for each
-configured SDS cluster. Envoy will add an additional random jitter to the delay that is between
-zero and <em>refresh_delay_ms</em> milliseconds. Thus the longest possible refresh delay is
-2 * <em>refresh_delay_ms</em>.</dd>
+<dt>pass_through_mode</dt>
+<dd><em>(required, boolean)</em> Specifies whether the filter operates in pass through mode or not.</dd>
+<dt>endpoint</dt>
+<dd><em>(required, string)</em> Specifies the incoming HTTP endpoint that should be considered the
+health check endpoint. For example <em>/healthcheck</em>.</dd>
+<dt>cache_time_ms</dt>
+<dd><em>(optional, integer)</em> If operating in pass through mode, the amount of time in milliseconds that
+the filter should cache the upstream response.</dd>
 </dl>
 </div>
 
@@ -220,10 +219,10 @@ zero and <em>refresh_delay_ms</em> milliseconds. Thus the longest possible refre
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="sds_api.html" class="btn btn-neutral float-right" title="Service discovery service REST API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="lua_filter.html" class="btn btn-neutral float-right" title="Lua" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="cluster_ring_hash_lb_config.html" class="btn btn-neutral" title="Ring hash load balancer configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="grpc_json_transcoder_filter.html" class="btn btn-neutral" title="gRPC-JSON transcoder filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
