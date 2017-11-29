@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>gRPC-JSON transcoder filter &mdash; envoy 1.5.0-data-plane-api-2ad4af documentation</title>
+  <title>gRPC-JSON transcoder filter &mdash; envoy 1.5.0-data-plane-api-3a63fc documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-2ad4af documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-3a63fc documentation" href="../../index.html"/>
         <link rel="up" title="HTTP filters" href="http_filters.html"/>
         <link rel="next" title="gRPC-Web filter" href="grpc_web_filter.html"/>
         <link rel="prev" title="gRPC HTTP/1.1 bridge" href="grpc_http1_bridge_filter.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-2ad4af
+                1.5.0-data-plane-api-3a63fc
               </div>
             
           
@@ -109,10 +109,7 @@
 <li class="toctree-l3"><a class="reference internal" href="fault_filter.html">Fault Injection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dynamodb_filter.html">DynamoDB</a></li>
 <li class="toctree-l3"><a class="reference internal" href="grpc_http1_bridge_filter.html">gRPC HTTP/1.1 bridge</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">gRPC-JSON transcoder filter</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#configure-grpc-json-transcoder">Configure gRPC-JSON transcoder</a></li>
-</ul>
-</li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">gRPC-JSON transcoder filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="grpc_web_filter.html">gRPC-Web filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="health_check_filter.html">Health check</a></li>
 <li class="toctree-l3"><a class="reference internal" href="rate_limit_filter.html">Rate limit</a></li>
@@ -203,72 +200,10 @@
 <p>This is a filter which allows a RESTful JSON API client to send requests to Envoy over HTTP
 and get proxied to a gRPC service. The HTTP mapping for the gRPC service has to be defined by
 <a class="reference external" href="https://cloud.google.com/service-management/reference/rpc/google.api#http">custom options</a>.</p>
-<div class="section" id="configure-grpc-json-transcoder">
-<h2>Configure gRPC-JSON transcoder<a class="headerlink" href="#configure-grpc-json-transcoder" title="Permalink to this headline">¶</a></h2>
-<p>The filter config for the filter requires the descriptor file as well as a list of the gRPC
-services to be transcoded.</p>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;grpc_json_transcoder&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;proto_descriptor&quot;</span><span class="p">:</span> <span class="s2">&quot;proto.pb&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;services&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;grpc.service.Service&quot;</span><span class="p">],</span>
-    <span class="nt">&quot;print_options&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;add_whitespace&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-      <span class="nt">&quot;always_print_primitive_fields&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-      <span class="nt">&quot;always_print_enums_as_ints&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-      <span class="nt">&quot;preserve_proto_field_names&quot;</span><span class="p">:</span> <span class="kc">false</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<dl class="docutils">
-<dt>proto_descriptor</dt>
-<dd><p class="first"><em>(required, string)</em> Supplies the binary protobuf descriptor set for the gRPC services.
-The descriptor set has to include all of the types that are used in the services. Make sure
-to use the <code class="docutils literal"><span class="pre">--include_import</span></code> option for <code class="docutils literal"><span class="pre">protoc</span></code>.</p>
-<p>To generate a protobuf descriptor set for the gRPC service, you’ll also need to clone the
-googleapis repository from Github before running protoc, as you’ll need annotations.proto
-in your include path.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>git clone https://github.com/googleapis/googleapis
-<span class="nv">GOOGLEAPIS_DIR</span><span class="o">=</span>&lt;your-local-googleapis-folder&gt;
-</pre></div>
-</div>
-<p>Then run protoc to generate the descriptor set from bookstore.proto:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>protoc -I<span class="k">$(</span>GOOGLEAPIS_DIR<span class="k">)</span> -I. --include_imports --include_source_info <span class="se">\</span>
-  --descriptor_set_out<span class="o">=</span>proto.pb test/proto/bookstore.proto
-</pre></div>
-</div>
-<p class="last">If you have more than one proto source files, you can pass all of them in one command.</p>
-</dd>
-<dt>services</dt>
-<dd><em>(required, array)</em> A list of strings that supplies the service names that the
-transcoder will translate. If the service name doesn’t exist in <code class="docutils literal"><span class="pre">proto_descriptor</span></code>, Envoy
-will fail at startup. The <code class="docutils literal"><span class="pre">proto_descriptor</span></code> may contain more services than the service names
-specified here, but they won’t be translated.</dd>
-<dt>print_options</dt>
-<dd><p class="first"><em>(optional, object)</em> Control options for response json. These options are passed directly to
-<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/cpp/google.protobuf.util.json_util#JsonPrintOptions">JsonPrintOptions</a>. Valid options are:</p>
-<dl class="last docutils">
-<dt>add_whitespace</dt>
-<dd><em>(optional, boolean)</em> Whether to add spaces, line breaks and indentation to make the JSON
-output easy to read. Default to false.</dd>
-<dt>always_print_primitive_fields</dt>
-<dd><em>(optional, boolean)</em> Whether to always print primitive fields. By default primitive fields
-with default values will be omitted in JSON output. For example, an int32 field set to 0
-will be omitted. Set this flag to true will override the default behavior and print primitive
-fields regardless of their values. Default to false.</dd>
-<dt>always_print_enums_as_ints</dt>
-<dd><em>(optional, boolean)</em> Whether to always print enums as ints. By default they are rendered as
-strings. Default to false.</dd>
-<dt>preserve_proto_field_names</dt>
-<dd><em>(optional, boolean)</em> Whether to preserve proto field names. By default protobuf will generate
-JSON field names use <code class="docutils literal"><span class="pre">json_name</span></code> option, or lower camel case, in that order. Set this flag
-will preserve original field names. Default to false.</dd>
-</dl>
-</dd>
-</dl>
-</div>
+<ul class="simple">
+<li><a class="reference internal" href="../../api-v1/http_filters/grpc_json_transcoder_filter.html#config-http-filters-grpc-json-transcoder-v1"><span class="std std-ref">v1 configuration</span></a></li>
+<li><a class="reference internal" href="../../api-v2/filter/http/transcoder.proto.html#envoy-api-msg-filter-http-grpcjsontranscoder"><span class="std std-ref">v2 configuration</span></a></li>
+</ul>
 </div>
 
 
@@ -315,7 +250,7 @@ will preserve original field names. Default to false.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.5.0-data-plane-api-2ad4af',
+            VERSION:'1.5.0-data-plane-api-3a63fc',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
