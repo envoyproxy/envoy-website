@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>CORS filter &mdash; envoy 1.5.0-data-plane-api-30e483 documentation</title>
+  <title>Circuit breaking &mdash; envoy 1.5.0-data-plane-api-30e483 documentation</title>
   
 
   
@@ -38,9 +38,9 @@
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
     <link rel="top" title="envoy 1.5.0-data-plane-api-30e483 documentation" href="../../index.html"/>
-        <link rel="up" title="HTTP filters" href="http_filters.html"/>
-        <link rel="next" title="Fault Injection" href="fault_filter.html"/>
-        <link rel="prev" title="Buffer" href="buffer_filter.html"/> 
+        <link rel="up" title="Cluster manager" href="cluster_manager.html"/>
+        <link rel="next" title="Access logging" href="../access_log.html"/>
+        <link rel="prev" title="Health checking" href="cluster_hc.html"/> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -97,25 +97,31 @@
 <li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../install/install.html">Building and installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../configuration.html">Configuration reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../overview/v1_overview.html">Overview (v1 API)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview/v2_overview.html">Overview (v2 API)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../network_filters/network_filters.html">Network filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../http_conn_man/http_conn_man.html">HTTP connection manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../http_filters/http_filters.html">HTTP filters</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="cluster_manager.html">Cluster manager</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="cluster_stats.html">Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster_runtime.html">Runtime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cds.html">Cluster discovery service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster_hc.html">Health checking</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Circuit breaking</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#runtime">Runtime</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../access_log.html">Access logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools/router_check.html">Route table check tool</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../api.html">v1 API reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../network_filters/network_filters.html">Network filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../route_config/route_config.html">HTTP Route configuration</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="http_filters.html">HTTP filters</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="buffer_filter.html">Buffer</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">CORS filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="fault_filter.html">Fault Injection</a></li>
-<li class="toctree-l3"><a class="reference internal" href="grpc_json_transcoder_filter.html">gRPC-JSON transcoder filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="health_check_filter.html">Health check</a></li>
-<li class="toctree-l3"><a class="reference internal" href="lua_filter.html">Lua</a></li>
-<li class="toctree-l3"><a class="reference internal" href="router_filter.html">Router</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../cluster_manager/cluster_manager.html">Cluster manager</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api-v1/api.html">v1 API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api-v2/api.html">v2 API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../faq/overview.html">FAQ</a></li>
 </ul>
@@ -162,17 +168,17 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../api.html">v1 API reference</a> &raquo;</li>
+          <li><a href="../configuration.html">Configuration reference</a> &raquo;</li>
         
-          <li><a href="http_filters.html">HTTP filters</a> &raquo;</li>
+          <li><a href="cluster_manager.html">Cluster manager</a> &raquo;</li>
         
-      <li>CORS filter</li>
+      <li>Circuit breaking</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/api-v1/http_filters/cors_filter.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/configuration/cluster_manager/cluster_circuit_breakers.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -185,14 +191,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="cors-filter">
-<span id="config-http-filters-cors-v1"></span><h1>CORS filter<a class="headerlink" href="#cors-filter" title="Permalink to this headline">¶</a></h1>
-<p>Cors <a class="reference internal" href="../../configuration/http_filters/cors_filter.html#config-http-filters-cors"><span class="std std-ref">configuration overview</span></a>.</p>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;cors&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="p">{}</span>
-<span class="p">}</span>
-</pre></div>
+  <div class="section" id="circuit-breaking">
+<span id="config-cluster-manager-cluster-circuit-breakers"></span><h1>Circuit breaking<a class="headerlink" href="#circuit-breaking" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Circuit Breaking <a class="reference internal" href="../../intro/arch_overview/circuit_breaking.html#arch-overview-circuit-break"><span class="std std-ref">architecture overview</span></a>.</li>
+<li><a class="reference internal" href="../../api-v1/cluster_manager/cluster_circuit_breakers.html#config-cluster-manager-cluster-circuit-breakers-v1"><span class="std std-ref">v1 API documentation</span></a>.</li>
+<li><a class="reference internal" href="../../api-v2/cds.proto.html#envoy-api-msg-circuitbreakers"><span class="std std-ref">v2 API documentation</span></a>.</li>
+</ul>
+<div class="section" id="runtime">
+<h2>Runtime<a class="headerlink" href="#runtime" title="Permalink to this headline">¶</a></h2>
+<p>All circuit breaking settings are runtime configurable for all defined priorities based on cluster
+name. They follow the following naming scheme <code class="docutils literal"><span class="pre">circuit_breakers.&lt;cluster_name&gt;.&lt;priority&gt;.&lt;setting&gt;</span></code>.
+<code class="docutils literal"><span class="pre">cluster_name</span></code> is the name field in each cluster’s configuration, which is set in the envoy
+<a class="reference internal" href="../../api-v1/cluster_manager/cluster.html#config-cluster-manager-cluster-name"><span class="std std-ref">config file</span></a>. Available runtime settings will override
+settings set in the envoy config file.</p>
 </div>
 </div>
 
@@ -206,10 +218,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="fault_filter.html" class="btn btn-neutral float-right" title="Fault Injection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../access_log.html" class="btn btn-neutral float-right" title="Access logging" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="buffer_filter.html" class="btn btn-neutral" title="Buffer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="cluster_hc.html" class="btn btn-neutral" title="Health checking" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
