@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Access logging &mdash; envoy 1.5.0-data-plane-api-5cdd72 documentation</title>
+  <title>Access logging &mdash; envoy 1.5.0-data-plane-api-b22751 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-5cdd72 documentation" href="../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-b22751 documentation" href="../index.html"/>
         <link rel="up" title="Configuration reference" href="configuration.html"/>
         <link rel="next" title="Rate limit service" href="rate_limit.html"/>
         <link rel="prev" title="Circuit breaking" href="cluster_manager/cluster_circuit_breakers.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-5cdd72
+                1.5.0-data-plane-api-b22751
               </div>
             
           
@@ -109,16 +109,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#configuration">Configuration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#format-rules">Format rules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#default-format">Default format</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#filters">Filters</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#status-code">Status code</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#duration">Duration</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#not-health-check">Not health check</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#traceable">Traceable</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#runtime">Runtime</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#and">And</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#or">Or</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="rate_limit.html">Rate limit service</a></li>
@@ -201,30 +191,10 @@
 <div class="section" id="configuration">
 <h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
 <p>Access logs are configured as part of the <a class="reference internal" href="http_conn_man/http_conn_man.html#config-http-conn-man"><span class="std std-ref">HTTP connection manager config</span></a> or <a class="reference internal" href="network_filters/tcp_proxy_filter.html#config-network-filters-tcp-proxy"><span class="std std-ref">TCP Proxy</span></a>.</p>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;access_log&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;filter&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-    <span class="p">},</span>
-  <span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<dl class="docutils" id="config-access-log-path-param">
-<dt>path</dt>
-<dd><em>(required, string)</em> Path the access log is written to.</dd>
-</dl>
-<dl class="docutils" id="config-access-log-format-param">
-<dt>format</dt>
-<dd><em>(optional, string)</em> Access log format. Envoy supports <a class="reference internal" href="#config-access-log-format"><span class="std std-ref">custom access log formats</span></a> as well as a <a class="reference internal" href="#config-access-log-default-format"><span class="std std-ref">default format</span></a>.</dd>
-</dl>
-<dl class="docutils" id="config-access-log-filter-param">
-<dt>filter</dt>
-<dd><em>(optional, object)</em> <a class="reference internal" href="#config-http-con-manager-access-log-filters"><span class="std std-ref">Filter</span></a> which is used to
-determine if the access log needs to be written.</dd>
-</dl>
+<ul class="simple">
+<li><a class="reference internal" href="../api-v1/access_log.html#config-access-log-v1"><span class="std std-ref">v1 API reference</span></a></li>
+<li><a class="reference internal" href="../api-v2/filter/accesslog/accesslog.proto.html#envoy-api-msg-filter-accesslog-accesslog"><span class="std std-ref">v2 API reference</span></a></li>
+</ul>
 </div>
 <div class="section" id="format-rules">
 <span id="config-access-log-format"></span><h2>Format rules<a class="headerlink" href="#format-rules" title="Permalink to this headline">¶</a></h2>
@@ -357,137 +327,6 @@ none of the headers are present ‘-‘ symbol will be in the log.</dd>
 </pre></div>
 </div>
 </div>
-<div class="section" id="filters">
-<span id="config-http-con-manager-access-log-filters"></span><h2>Filters<a class="headerlink" href="#filters" title="Permalink to this headline">¶</a></h2>
-<p>Envoy supports the following access log filters:</p>
-<div class="contents local topic" id="contents">
-<ul class="simple">
-<li><a class="reference internal" href="#status-code" id="id1">Status code</a></li>
-<li><a class="reference internal" href="#duration" id="id2">Duration</a></li>
-<li><a class="reference internal" href="#not-health-check" id="id3">Not health check</a></li>
-<li><a class="reference internal" href="#traceable" id="id4">Traceable</a></li>
-<li><a class="reference internal" href="#runtime" id="id5">Runtime</a></li>
-<li><a class="reference internal" href="#and" id="id6">And</a></li>
-<li><a class="reference internal" href="#or" id="id7">Or</a></li>
-</ul>
-</div>
-<div class="section" id="status-code">
-<h3><a class="toc-backref" href="#id1">Status code</a><a class="headerlink" href="#status-code" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;filter&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;status_code&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;op&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;runtime_key&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>Filters on HTTP response/status code.</p>
-<dl class="docutils">
-<dt>op</dt>
-<dd><em>(required, string)</em> Comparison operator. Currently <em>&gt;=</em>  and <em>=</em> are the only supported operators.</dd>
-<dt>value</dt>
-<dd><em>(required, integer)</em> Default value to compare against if runtime value is not available.</dd>
-<dt>runtime_key</dt>
-<dd><em>(optional, string)</em> Runtime key to get value for comparision. This value is used if defined.</dd>
-</dl>
-</div>
-<div class="section" id="duration">
-<h3><a class="toc-backref" href="#id2">Duration</a><a class="headerlink" href="#duration" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;filter&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;duration&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;op&quot;</span><span class="p">:</span> <span class="s2">&quot;..&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;runtime_key&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>Filters on total request duration in milliseconds.</p>
-<dl class="docutils">
-<dt>op</dt>
-<dd><em>(required, string)</em> Comparison operator. Currently <em>&gt;=</em> and <em>=</em> are the only supported operators.</dd>
-<dt>value</dt>
-<dd><em>(required, integer)</em> Default value to compare against if runtime values is not available.</dd>
-<dt>runtime_key</dt>
-<dd><em>(optional, string)</em> Runtime key to get value for comparision. This value is used if defined.</dd>
-</dl>
-</div>
-<div class="section" id="not-health-check">
-<h3><a class="toc-backref" href="#id3">Not health check</a><a class="headerlink" href="#not-health-check" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;filter&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;not_healthcheck&quot;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>Filters for requests that are not health check requests. A health check request is marked by
-the <a class="reference internal" href="http_filters/health_check_filter.html#config-http-filters-health-check"><span class="std std-ref">health check filter</span></a>.</p>
-</div>
-<div class="section" id="traceable">
-<h3><a class="toc-backref" href="#id4">Traceable</a><a class="headerlink" href="#traceable" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;filter&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;traceable_request&quot;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>Filters for requests that are traceable. See the <a class="reference internal" href="../intro/arch_overview/tracing.html#arch-overview-tracing"><span class="std std-ref">tracing overview</span></a> for
-more information on how a request becomes traceable.</p>
-</div>
-<div class="section" id="runtime">
-<span id="config-http-con-manager-access-log-filters-runtime"></span><h3><a class="toc-backref" href="#id5">Runtime</a><a class="headerlink" href="#runtime" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;filter&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;runtime&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;key&quot;</span> <span class="p">:</span> <span class="s2">&quot;...&quot;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>Filters for random sampling of requests. Sampling pivots on the header
-<a class="reference internal" href="http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a> being present. If
-<a class="reference internal" href="http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a> is present, the filter will
-consistently sample across multiple hosts based on the runtime key value and the value extracted
-from <a class="reference internal" href="http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a>. If it is missing, the
-filter will randomly sample based on the runtime key value.</p>
-<dl class="docutils">
-<dt>key</dt>
-<dd><em>(required, string)</em> Runtime key to get the percentage of requests to be sampled.
-This runtime control is specified in the range 0-100 and defaults to 0.</dd>
-</dl>
-</div>
-<div class="section" id="and">
-<h3><a class="toc-backref" href="#id6">And</a><a class="headerlink" href="#and" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;filter&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;logical_and&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;filters&quot;</span><span class="p">:</span> <span class="p">[]</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>Performs a logical “and” operation on the result of each filter in <em>filters</em>. Filters are evaluated
-sequentially and if one of them returns false, the filter returns false immediately.</p>
-</div>
-<div class="section" id="or">
-<h3><a class="toc-backref" href="#id7">Or</a><a class="headerlink" href="#or" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;filter&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;logical_or&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;filters&quot;</span><span class="p">:</span> <span class="p">[]</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>Performs a logical “or” operation on the result of each individual filter. Filters are evaluated
-sequentially and if one of them returns true, the filter returns true immediately.</p>
-</div>
-</div>
 </div>
 
 
@@ -534,7 +373,7 @@ sequentially and if one of them returns true, the filter returns true immediatel
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.5.0-data-plane-api-5cdd72',
+            VERSION:'1.5.0-data-plane-api-b22751',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
