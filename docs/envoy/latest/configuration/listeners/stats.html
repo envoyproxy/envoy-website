@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Statistics &mdash; envoy 1.5.0-data-plane-api-30e483 documentation</title>
+  <title>Statistics &mdash; envoy 1.5.0-data-plane-api-dd4cd0 documentation</title>
   
 
   
@@ -37,10 +37,10 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-30e483 documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-dd4cd0 documentation" href="../../index.html"/>
         <link rel="up" title="Listeners" href="listeners.html"/>
         <link rel="next" title="Runtime" href="runtime.html"/>
-        <link rel="prev" title="TLS context" href="ssl.html"/> 
+        <link rel="prev" title="Listeners" href="listeners.html"/> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-30e483
+                1.5.0-data-plane-api-dd4cd0
               </div>
             
           
@@ -101,12 +101,13 @@
 <li class="toctree-l2"><a class="reference internal" href="../overview/v1_overview.html">Overview (v1 API)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../overview/v2_overview.html">Overview (v2 API)</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="listeners.html">Listeners</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="filters.html">Filters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ssl.html">TLS context</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Statistics</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Statistics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#listener">Listener</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#listener-manager">Listener manager</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="runtime.html">Runtime</a></li>
-<li class="toctree-l3"><a class="reference internal" href="lds.html">Listener discovery service</a></li>
-<li class="toctree-l3"><a class="reference internal" href="listeners.html#statistics">Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lds.html">Listener discovery service (LDS)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../network_filters/network_filters.html">Network filters</a></li>
@@ -191,6 +192,8 @@
             
   <div class="section" id="statistics">
 <span id="config-listener-stats"></span><h1>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="listener">
+<h2>Listener<a class="headerlink" href="#listener" title="Permalink to this headline">¶</a></h2>
 <p>Every listener has a statistics tree rooted at <em>listener.&lt;address&gt;.</em> with the following statistics:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -264,6 +267,59 @@
 </tbody>
 </table>
 </div>
+<div class="section" id="listener-manager">
+<h2>Listener manager<a class="headerlink" href="#listener-manager" title="Permalink to this headline">¶</a></h2>
+<p>The listener manager has a statistics tree rooted at <em>listener_manager.</em> with the following
+statistics. Any <code class="docutils literal"><span class="pre">:</span></code> character in the stats name is replaced with <code class="docutils literal"><span class="pre">_</span></code>.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>listener_added</td>
+<td>Counter</td>
+<td>Total listeners added (either via static config or LDS)</td>
+</tr>
+<tr class="row-odd"><td>listener_modified</td>
+<td>Counter</td>
+<td>Total listeners modified (via LDS)</td>
+</tr>
+<tr class="row-even"><td>listener_removed</td>
+<td>Counter</td>
+<td>Total listeners removed (via LDS)</td>
+</tr>
+<tr class="row-odd"><td>listener_create_success</td>
+<td>Counter</td>
+<td>Total listener objects successfully added to workers.</td>
+</tr>
+<tr class="row-even"><td>listener_create_failure</td>
+<td>Counter</td>
+<td>Total failed listener object additions to workers.</td>
+</tr>
+<tr class="row-odd"><td>total_listeners_warming</td>
+<td>Gauge</td>
+<td>Number of currently warming listeners</td>
+</tr>
+<tr class="row-even"><td>total_listeners_active</td>
+<td>Gauge</td>
+<td>Number of currently active listeners</td>
+</tr>
+<tr class="row-odd"><td>total_listeners_draining</td>
+<td>Gauge</td>
+<td>Number of currently draining listeners</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 
 
            </div>
@@ -278,7 +334,7 @@
         <a href="runtime.html" class="btn btn-neutral float-right" title="Runtime" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="ssl.html" class="btn btn-neutral" title="TLS context" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="listeners.html" class="btn btn-neutral" title="Listeners" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -309,7 +365,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.5.0-data-plane-api-30e483',
+            VERSION:'1.5.0-data-plane-api-dd4cd0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
