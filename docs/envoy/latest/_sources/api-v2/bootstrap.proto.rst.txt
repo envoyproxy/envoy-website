@@ -3,17 +3,18 @@
 Bootstrap
 =========
 
-This proto is expected to be provided on disk or via the command-line to
-Envoy. It provides sufficient information for Envoy to fetch the rest of
-its configuration from either disk or management server(s).
+This proto is supplied via the :option:`-c` CLI flag and acts as the root
+of the Envoy v2 configuration. See the :ref:`v2 configuration overview
+<config_overview_v2_bootstrap>` for more detail.
 
 .. _envoy_api_msg_LightstepConfig:
 
 LightstepConfig
 ---------------
 
-`[LightstepConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L19>`_
+`[LightstepConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L22>`_
 
+Configuration for the LightStep tracer.
 
 .. code-block:: json
 
@@ -25,13 +26,14 @@ LightstepConfig
 .. _envoy_api_field_LightstepConfig.collector_cluster:
 
 collector_cluster
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The cluster manager cluster that hosts the LightStep collectors.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The cluster manager cluster that hosts the LightStep collectors.
   
   
 .. _envoy_api_field_LightstepConfig.access_token_file:
 
 access_token_file
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) File containing the access token to the LightStep API.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) File containing the access token to the `LightStep
+  <http://lightstep.com/>`_ API.
   
   
 
@@ -41,7 +43,7 @@ access_token_file
 ZipkinConfig
 ------------
 
-`[ZipkinConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L26>`_
+`[ZipkinConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L31>`_
 
 
 .. code-block:: json
@@ -54,15 +56,15 @@ ZipkinConfig
 .. _envoy_api_field_ZipkinConfig.collector_cluster:
 
 collector_cluster
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The cluster manager cluster that hosts the Zipkin collectors. Note that the
-  Zipkin cluster must be defined under clusters in the cluster manager
-  configuration section.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The cluster manager cluster that hosts the Zipkin collectors. Note that the
+  Zipkin cluster must be defined in the :ref:`Bootstrap static cluster
+  resources <envoy_api_field_Bootstrap.StaticResources.clusters>`.
   
   
 .. _envoy_api_field_ZipkinConfig.collector_endpoint:
 
 collector_endpoint
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The API endpoint of the Zipkin service where the spans will be sent. When
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The API endpoint of the Zipkin service where the spans will be sent. When
   using a standard Zipkin installation, the API endpoint is typically
   /api/v1/spans, which is the default value.
   
@@ -74,8 +76,13 @@ collector_endpoint
 Tracing
 -------
 
-`[Tracing proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L37>`_
+`[Tracing proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L48>`_
 
+The :ref:`tracing <arch_overview_tracing>` configuration specifies global
+settings for the HTTP tracer used by Envoy. The configuration is defined by
+the :ref:`Bootstrap <envoy_api_msg_Bootstrap>` :ref:`tracing
+<envoy_api_field_Bootstrap.tracing>` field. Envoy may support other tracers
+in the future, but right now the HTTP tracer is the only one supported.
 
 .. code-block:: json
 
@@ -86,16 +93,16 @@ Tracing
 .. _envoy_api_field_Tracing.http:
 
 http
-  (:ref:`Tracing.Http <envoy_api_msg_Tracing.Http>`) 
+  (:ref:`Tracing.Http <envoy_api_msg_Tracing.Http>`) Provides configuration for the HTTP tracer.
+  
   
 .. _envoy_api_msg_Tracing.Http:
 
 Tracing.Http
 ------------
 
-`[Tracing.Http proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L39>`_
+`[Tracing.Http proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L49>`_
 
-Provides configuration for the HTTP tracer.
 
 .. code-block:: json
 
@@ -107,16 +114,18 @@ Provides configuration for the HTTP tracer.
 .. _envoy_api_field_Tracing.Http.name:
 
 name
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The name of the HTTP trace driver to instantiate. The name must match a
-  supported HTTP trace driver. "envoy.lightstep" and "envoy.zipkin" are built-in
-  trace drivers.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The name of the HTTP trace driver to instantiate. The name must match a
+  supported HTTP trace driver. *envoy.lightstep* and *envoy.zipkin* are
+  built-in trace drivers.
   
   
 .. _envoy_api_field_Tracing.Http.config:
 
 config
   (`Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_) Trace driver specific configuration which depends on the driver being
-  instantiated. See the trace drivers for further documentation.
+  instantiated. See the :ref:`LightstepConfig
+  <envoy_api_msg_LightstepConfig>` and :ref:`ZipkinConfig
+  <envoy_api_msg_ZipkinConfig>` trace drivers for examples.
   
   
 
@@ -127,8 +136,10 @@ config
 Admin
 -----
 
-`[Admin proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L51>`_
+`[Admin proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L67>`_
 
+Administration interface :ref:`operations documentation
+<operations_admin_interface>`.
 
 .. code-block:: json
 
@@ -141,7 +152,7 @@ Admin
 .. _envoy_api_field_Admin.access_log_path:
 
 access_log_path
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The path to write the access log for the administration server. If no
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The path to write the access log for the administration server. If no
   access log is desired specify ‘/dev/null’.
   
   
@@ -155,7 +166,7 @@ profile_path
 .. _envoy_api_field_Admin.address:
 
 address
-  (:ref:`Address <envoy_api_msg_Address>`) The TCP address that the administration server will listen on.
+  (:ref:`Address <envoy_api_msg_Address>`, *REQUIRED*) The TCP address that the administration server will listen on.
   
   
 
@@ -165,8 +176,9 @@ address
 ClusterManager
 --------------
 
-`[ClusterManager proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L62>`_
+`[ClusterManager proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L81>`_
 
+Cluster manager :ref:`architecture overview <arch_overview_cluster_manager>`.
 
 .. code-block:: json
 
@@ -181,15 +193,21 @@ ClusterManager
 
 local_cluster_name
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Name of the local cluster (i.e., the cluster that owns the Envoy running
-  this configuration). In order to enable zone aware routing this option must
-  be set. If local_cluster_name is defined then clusters must contain a
-  definition of a cluster with the same name.
+  this configuration). In order to enable :ref:`zone aware routing
+  <arch_overview_load_balancing_zone_aware_routing>` this option must be set.
+  If *local_cluster_name* is defined then :ref:`clusters
+  <config_cluster_manager_clusters>` must be defined in the :ref:`Bootstrap
+  static cluster resources
+  <envoy_api_field_Bootstrap.StaticResources.clusters>`. This is unrelated to
+  the :option:`--service-cluster` option which does not `affect zone aware
+  routing <https://github.com/envoyproxy/envoy/issues/774>`_.
   
   
 .. _envoy_api_field_ClusterManager.outlier_detection:
 
 outlier_detection
-  (:ref:`ClusterManager.OutlierDetection <envoy_api_msg_ClusterManager.OutlierDetection>`) 
+  (:ref:`ClusterManager.OutlierDetection <envoy_api_msg_ClusterManager.OutlierDetection>`) Optional global configuration for outlier detection.
+  
   
 .. _envoy_api_field_ClusterManager.upstream_bind_config:
 
@@ -201,8 +219,10 @@ upstream_bind_config
 .. _envoy_api_field_ClusterManager.load_stats_config:
 
 load_stats_config
-  (:ref:`ApiConfigSource <envoy_api_msg_ApiConfigSource>`) A management server endpoint to stream load stats to, as per
-  StreamLoadStats in eds.proto. This must have api_type GRPC.
+  (:ref:`ApiConfigSource <envoy_api_msg_ApiConfigSource>`) A management server endpoint to stream load stats to via
+  :ref:`StreamLoadStats <envoy_api_msg_LoadStatsRequest>`. This must have
+  :ref:`api_type <envoy_api_field_ApiConfigSource.api_type>` :ref:`GRPC
+  <envoy_api_enum_value_ApiConfigSource.ApiType.GRPC>`.
   
   
 .. _envoy_api_msg_ClusterManager.OutlierDetection:
@@ -210,9 +230,8 @@ load_stats_config
 ClusterManager.OutlierDetection
 -------------------------------
 
-`[ClusterManager.OutlierDetection proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L70>`_
+`[ClusterManager.OutlierDetection proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L93>`_
 
-Optional global configuration for outlier detection.
 
 .. code-block:: json
 
@@ -223,7 +242,8 @@ Optional global configuration for outlier detection.
 .. _envoy_api_field_ClusterManager.OutlierDetection.event_log_path:
 
 event_log_path
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies the path to the outlier event log.
+  
   
 
 
@@ -233,9 +253,9 @@ event_log_path
 StatsdSink
 ----------
 
-`[StatsdSink proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L85>`_
+`[StatsdSink proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L112>`_
 
-Stats proto for built-in "envoy.statsd" sink.
+Stats configuration proto schema for built-in *envoy.statsd* sink.
 
 .. code-block:: json
 
@@ -247,21 +267,22 @@ Stats proto for built-in "envoy.statsd" sink.
 .. _envoy_api_field_StatsdSink.address:
 
 address
-  (:ref:`Address <envoy_api_msg_Address>`) The UDP address of a running statsd compliant listener. If specified,
-  statistics will be flushed to this address.
+  (:ref:`Address <envoy_api_msg_Address>`) The UDP address of a running `statsd <https://github.com/etsy/statsd>`_
+  compliant listener. If specified, statistics will be flushed to this
+  address.
   
   
-  Only one of :ref:`address <envoy_api_field_StatsdSink.address>`, :ref:`tcp_cluster_name <envoy_api_field_StatsdSink.tcp_cluster_name>` may be set.
+  Precisely one of :ref:`address <envoy_api_field_StatsdSink.address>`, :ref:`tcp_cluster_name <envoy_api_field_StatsdSink.tcp_cluster_name>` must be set.
   
 .. _envoy_api_field_StatsdSink.tcp_cluster_name:
 
 tcp_cluster_name
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The name of a cluster manager cluster that is running a TCP statsd
-  compliant listener. If specified, Envoy will connect to this cluster to
-  flush statistics.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The name of a cluster that is running a TCP `statsd
+  <https://github.com/etsy/statsd>`_ compliant listener. If specified,
+  Envoy will connect to this cluster to flush statistics.
   
   
-  Only one of :ref:`address <envoy_api_field_StatsdSink.address>`, :ref:`tcp_cluster_name <envoy_api_field_StatsdSink.tcp_cluster_name>` may be set.
+  Precisely one of :ref:`address <envoy_api_field_StatsdSink.address>`, :ref:`tcp_cluster_name <envoy_api_field_StatsdSink.tcp_cluster_name>` must be set.
   
 
 
@@ -270,8 +291,9 @@ tcp_cluster_name
 StatsSink
 ---------
 
-`[StatsSink proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L97>`_
+`[StatsSink proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L129>`_
 
+Configuration for pluggable stats sinks.
 
 .. code-block:: json
 
@@ -284,15 +306,16 @@ StatsSink
 
 name
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The name of the stats sink to instantiate. The name must match a supported
-  stats sink. "envoy.statsd" is a built-in sink suitable for emitting to
-  statsd.
+  stats sink. *envoy.statsd* is a built-in sink suitable for emitting to
+  `statsd <https://github.com/etsy/statsd>`_.
   
   
 .. _envoy_api_field_StatsSink.config:
 
 config
   (`Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_) Stats sink specific configuration which depends on the sink being
-  instantiated. See the supported sinks for further documentation.
+  instantiated. See :ref:`StatsdSink <envoy_api_msg_StatsdSink>` for an
+  example.
   
   
 
@@ -302,7 +325,7 @@ config
 TagSpecifier
 ------------
 
-`[TagSpecifier proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L110>`_
+`[TagSpecifier proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L144>`_
 
 Designates a tag to strip from the tag extracted name and provide as a named
 tag value for all statistics. This will only occur if any part of the name
@@ -320,54 +343,69 @@ matches the regex provided with one or more capture groups.
 tag_name
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Attaches an identifier to the tag values to identify the tag being in the
   sink. Envoy has a set of default names and regexes to extract dynamic
-  portions of existing stats, which can be found in
-  source/common/config/well_known_names.h in the Envoy repository. If a
-  tag_name is provided in the config with an empty regex, Envoy will attempt
-  to find that name in its set of defaults and use the accompanying regex.
-  Note: if any default tags are specified twice, the config will be
-  considered invalid.
+  portions of existing stats, which can be found in `well_known_names.h
+  <https://github.com/envoyproxy/envoy/blob/master/source/common/config/well_known_names.h>`_
+  in the Envoy repository. If a :ref:`tag_name
+  <envoy_api_field_TagSpecifier.tag_name>` is provided in the config with an
+  empty regex, Envoy will attempt to find that name in its set of defaults
+  and use the accompanying regex.
+  
+  .. note::
+  
+    If any default tags are specified twice, the config will be considered
+    invalid.
   
   
 .. _envoy_api_field_TagSpecifier.regex:
 
 regex
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The first capture group identifies the portion of the name to remove. The
-  second capture group (which will normally be nested inside the first)
-  will designate the value of the tag for the statistic. If no second 
-  capture group is provided, the first will also be used to set the value of
-  the tag. All other capture groups will be ignored.
+  second capture group (which will normally be nested inside the first) will
+  designate the value of the tag for the statistic. If no second capture
+  group is provided, the first will also be used to set the value of the tag.
+  All other capture groups will be ignored.
   
-  For example:
+  Take for example, with a stat name ``cluster.foo_cluster.upstream_rq_timeout``
+  and
   
-  stat name: "cluster.foo_cluster.upstream_rq_timeout"
+  .. code-block:: json
   
-  tag name: "envoy.cluster_name" (one of many default stat regexes provided
-  in Envoy)
+    {
+      "tag_name": "envoy.cluster_name",
+      "regex": "^cluster\.((.+?)\.)"
+    }
   
-  regex: "^cluster\.((.+?)\.)"
+  Note that the regex will remove ``foo_cluster.`` making the tag extracted
+  name ``cluster.upstream_rq_timeout`` and the tag value for
+  ``envoy.cluster_name`` will be ``foo_cluster`` (note: there will be no
+  ``.`` character because of the second capture group).
   
-  Notice the regex will remove "foo_cluster." making the tag extracted name
-  "cluster.upstream_rq_timeout" and the tag value for "envoy.cluster_name"
-  "foo_cluster" (note: no '.' character because of the second capture group).
+  An example with two regexes and stat name
+  ``http.connection_manager_1.user_agent.ios.downstream_cx_total``:
   
-  An example with two regexes:
+  .. code-block:: json
   
-  First tag name: "envoy.http_user_agent"
-  First regex: "^http(?=\.).*?\.user_agent\.((.+?)\.)\w+?$"
-  Second tag name: "envoy.http_conn_manager_prefix"
-  Second regex: "^http\.((.*?)\.)"
-  Stat name: "http.connection_manager_1.user_agent.ios.downstream_cx_total"
+    [
+      {
+        "tag_name": "envoy.http_user_agent",
+        "regex": "^http(?=\.).*?\.user_agent\.((.+?)\.)\w+?$"
+      },
+      {
+        "tag_name": "envoy.http_conn_manager_prefix",
+        "regex": "^http\.((.*?)\.)"
+      }
+    ]
   
-  The first regex will remove "ios." leaving the tag extracted name:
-  "http.connection_manager_1.user_agent.downstream_cx_total".
-  The tag "envoy.http_user_agent" will be added with tag value "ios".
+  The first regex will remove ``ios.``, leaving the tag extracted name
+  ``http.connection_manager_1.user_agent.downstream_cx_total``. The tag
+  ``envoy.http_user_agent`` will be added with tag value ``ios``.
   
-  The second regex will remove "connection_manager_1." from the tag extracted
-  name produced by the first regex
-  ("http.connection_manager_1.user_agent.downstream_cx_total"), leaving
-  "http.user_agent.downstream_cx_total" as the tag extracted name.  The tag
-  "envoy.http_conn_manager_prefix" will be added with the tag value
-  "connection_manager_1".
+  The second regex will remove ``connection_manager_1.`` from the tag
+  extracted name produced by the first regex
+  ``http.connection_manager_1.user_agent.downstream_cx_total``, leaving
+  ``http.user_agent.downstream_cx_total`` as the tag extracted name. The tag
+  ``envoy.http_conn_manager_prefix`` will be added with the tag value
+  ``connection_manager_1``.
   
   
 
@@ -377,8 +415,9 @@ regex
 StatsConfig
 -----------
 
-`[StatsConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L161>`_
+`[StatsConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L211>`_
 
+Statistics :ref:`architecture overview <arch_overview_statistics>`.
 
 .. code-block:: json
 
@@ -392,18 +431,28 @@ StatsConfig
 stats_tags
   (:ref:`TagSpecifier <envoy_api_msg_TagSpecifier>`) Each stat name is iteratively processed through these tag specifiers.
   When a tag is matched, the first capture group is removed from the name so
-  later TagSpecifiers cannot match that same portion of the match.
+  later :ref:`TagSpecifiers <envoy_api_msg_TagSpecifier>` cannot match that
+  same portion of the match.
   
   
 .. _envoy_api_field_StatsConfig.use_all_default_tags:
 
 use_all_default_tags
   (`BoolValue <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue>`_) Use all default tag regexes specified in Envoy. These can be combined with
-  custom tags specified in stats_tags. They will be processed before the
-  custom tags. Note: if any default tags are specified twice, the config will
-  be considered invalid. See source/common/config/well_known_names.h for a
-  a list of the default tags in Envoy. If not provided, the value is assumed
-  to be true.
+  custom tags specified in :ref:`stats_tags
+  <envoy_api_field_StatsConfig.stats_tags>`. They will be processed before
+  the custom tags.
+  
+  .. note::
+  
+    If any default tags are specified twice, the config will be considered
+    invalid.
+  
+  See `well_known_names.h
+  <https://github.com/envoyproxy/envoy/blob/master/source/common/config/well_known_names.h>`_
+  for a list of the default tags in Envoy.
+  
+  If not provided, the value is assumed to be true.
   
   
 
@@ -413,8 +462,10 @@ use_all_default_tags
 Watchdog
 --------
 
-`[Watchdog proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L176>`_
+`[Watchdog proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L238>`_
 
+Envoy process watchdog configuration. When configured, this monitors for
+nonresponsive threads and kills the process after the configured thresholds.
 
 .. code-block:: json
 
@@ -429,14 +480,14 @@ Watchdog
 
 miss_timeout
   (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The duration after which Envoy counts a nonresponsive thread in the
-  “server.watchdog_miss” statistic. If not specified the default is 200ms.
+  *server.watchdog_miss* statistic. If not specified the default is 200ms.
   
   
 .. _envoy_api_field_Watchdog.megamiss_timeout:
 
 megamiss_timeout
   (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The duration after which Envoy counts a nonresponsive thread in the
-  “server.watchdog_mega_miss” statistic. If not specified the default is
+  *server.watchdog_mega_miss* statistic. If not specified the default is
   1000ms.
   
   
@@ -463,8 +514,9 @@ multikill_timeout
 Runtime
 -------
 
-`[Runtime proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L194>`_
+`[Runtime proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L261>`_
 
+Runtime :ref:`configuration overview <config_runtime>`.
 
 .. code-block:: json
 
@@ -477,7 +529,7 @@ Runtime
 .. _envoy_api_field_Runtime.symlink_root:
 
 symlink_root
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The implementation assumes that the file system tree is accessed via a
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The implementation assumes that the file system tree is accessed via a
   symbolic link. An atomic link swap is used when a new tree should be
   switched to. This parameter specifies the path to the symbolic link. Envoy
   will watch the location for changes and reload the file system tree when
@@ -487,7 +539,7 @@ symlink_root
 .. _envoy_api_field_Runtime.subdirectory:
 
 subdirectory
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies the subdirectory to load within the root directory. This is
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Specifies the subdirectory to load within the root directory. This is
   useful if multiple systems share the same delivery mechanism. Envoy
   configuration elements can be contained in a dedicated subdirectory.
   
@@ -510,8 +562,9 @@ override_subdirectory
 RateLimitServiceConfig
 ----------------------
 
-`[RateLimitServiceConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L214>`_
+`[RateLimitServiceConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L284>`_
 
+Rate limit :ref:`configuration overview <config_rate_limit_service>`.
 
 .. code-block:: json
 
@@ -522,7 +575,7 @@ RateLimitServiceConfig
 .. _envoy_api_field_RateLimitServiceConfig.cluster_name:
 
 cluster_name
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies the cluster manager cluster name that hosts the rate limit
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Specifies the cluster manager cluster name that hosts the rate limit
   service. The client will connect to this cluster when it needs to make rate
   limit service requests.
   
@@ -534,8 +587,9 @@ cluster_name
 Bootstrap
 ---------
 
-`[Bootstrap proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L221>`_
+`[Bootstrap proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L292>`_
 
+Bootstrap :ref:`configuration overview <config_overview_v2_bootstrap>`.
 
 .. code-block:: json
 
@@ -558,24 +612,26 @@ Bootstrap
 .. _envoy_api_field_Bootstrap.node:
 
 node
-  (:ref:`Node <envoy_api_msg_Node>`) Node identity to present to the management server and for instance
+  (:ref:`Node <envoy_api_msg_Node>`, *REQUIRED*) Node identity to present to the management server and for instance
   identification purposes (e.g. in generated headers).
   
   
 .. _envoy_api_field_Bootstrap.static_resources:
 
 static_resources
-  (:ref:`Bootstrap.StaticResources <envoy_api_msg_Bootstrap.StaticResources>`) 
+  (:ref:`Bootstrap.StaticResources <envoy_api_msg_Bootstrap.StaticResources>`) Statically specified resources.
+  
   
 .. _envoy_api_field_Bootstrap.dynamic_resources:
 
 dynamic_resources
-  (:ref:`Bootstrap.DynamicResources <envoy_api_msg_Bootstrap.DynamicResources>`) 
+  (:ref:`Bootstrap.DynamicResources <envoy_api_msg_Bootstrap.DynamicResources>`) xDS configuration sources.
+  
   
 .. _envoy_api_field_Bootstrap.cluster_manager:
 
 cluster_manager
-  (:ref:`ClusterManager <envoy_api_msg_ClusterManager>`) Configuration for the cluster manager which owns all upstream clusters
+  (:ref:`ClusterManager <envoy_api_msg_ClusterManager>`, *REQUIRED*) Configuration for the cluster manager which owns all upstream clusters
   within the server.
   
   
@@ -637,7 +693,7 @@ runtime
 .. _envoy_api_field_Bootstrap.admin:
 
 admin
-  (:ref:`Admin <envoy_api_msg_Admin>`) Configuration for the local administration HTTP server.
+  (:ref:`Admin <envoy_api_msg_Admin>`, *REQUIRED*) Configuration for the local administration HTTP server.
   
   
 .. _envoy_api_msg_Bootstrap.StaticResources:
@@ -645,9 +701,8 @@ admin
 Bootstrap.StaticResources
 -------------------------
 
-`[Bootstrap.StaticResources proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L227>`_
+`[Bootstrap.StaticResources proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L297>`_
 
-Statically specified resources.
 
 .. code-block:: json
 
@@ -659,15 +714,19 @@ Statically specified resources.
 .. _envoy_api_field_Bootstrap.StaticResources.listeners:
 
 listeners
-  (:ref:`Listener <envoy_api_msg_Listener>`) 
+  (:ref:`Listener <envoy_api_msg_Listener>`) Static :ref:`Listeners <envoy_api_msg_Listener>`. These listeners are
+  available regardless of LDS configuration.
+  
   
 .. _envoy_api_field_Bootstrap.StaticResources.clusters:
 
 clusters
-  (:ref:`Cluster <envoy_api_msg_Cluster>`) If a network based configuration source is specified for cds_config, it's
-  necessary to have some initial cluster definitions available to allow Envoy
-  to know how to speak to the management server. These cluster definitions
-  may not use EDS (i.e. they should be static IP or DNS-based).
+  (:ref:`Cluster <envoy_api_msg_Cluster>`) If a network based configuration source is specified for :ref:`cds_config
+  <envoy_api_field_Bootstrap.DynamicResources.cds_config>`, it's necessary
+  to have some initial cluster definitions available to allow Envoy to know
+  how to speak to the management server. These cluster definitions may not
+  use :ref:`EDS <arch_overview_dynamic_config_sds>` (i.e. they should be static
+  IP or DNS-based).
   
   
 
@@ -678,9 +737,8 @@ clusters
 Bootstrap.DynamicResources
 --------------------------
 
-`[Bootstrap.DynamicResources proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L241>`_
+`[Bootstrap.DynamicResources proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L316>`_
 
-xDS configuration sources.
 
 .. code-block:: json
 
@@ -694,20 +752,28 @@ xDS configuration sources.
 .. _envoy_api_field_Bootstrap.DynamicResources.lds_config:
 
 lds_config
-  (:ref:`ConfigSource <envoy_api_msg_ConfigSource>`) All Listeners are provided by a single LDS configuration source.
+  (:ref:`ConfigSource <envoy_api_msg_ConfigSource>`) All :ref:`Listeners <envoy_api_msg_Listener>` are provided by a single
+  :ref:`LDS <arch_overview_dynamic_config_lds>` configuration source.
   
   
 .. _envoy_api_field_Bootstrap.DynamicResources.cds_config:
 
 cds_config
-  (:ref:`ConfigSource <envoy_api_msg_ConfigSource>`) All post-bootstrap Cluster definitions are provided by a single CDS
+  (:ref:`ConfigSource <envoy_api_msg_ConfigSource>`) All post-bootstrap :ref:`Cluster <envoy_api_msg_Cluster>` definitions are
+  provided by a single :ref:`CDS <arch_overview_dynamic_config_cds>`
   configuration source.
   
   
 .. _envoy_api_field_Bootstrap.DynamicResources.ads_config:
 
 ads_config
-  (:ref:`ApiConfigSource <envoy_api_msg_ApiConfigSource>`) A single ADS source may be optionally specified. This must have api_type GRPC.
+  (:ref:`ApiConfigSource <envoy_api_msg_ApiConfigSource>`) A single :ref:`ADS <config_overview_v2_ads>` source may be optionally
+  specified. This must have :ref:`api_type
+  <envoy_api_field_ApiConfigSource.api_type>` :ref:`GRPC
+  <envoy_api_enum_value_ApiConfigSource.ApiType.GRPC>`. Only
+  :ref:`ConfigSources <envoy_api_msg_ConfigSource>` that have
+  the :ref:`ads <envoy_api_field_ConfigSource.ads>` field set will be
+  streamed on the ADS channel.
   
   
 .. _envoy_api_field_Bootstrap.DynamicResources.deprecated_v1:
@@ -720,7 +786,7 @@ deprecated_v1
 Bootstrap.DynamicResources.DeprecatedV1
 ---------------------------------------
 
-`[Bootstrap.DynamicResources.DeprecatedV1 proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L250>`_
+`[Bootstrap.DynamicResources.DeprecatedV1 proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L335>`_
 
 
 .. code-block:: json
@@ -732,7 +798,10 @@ Bootstrap.DynamicResources.DeprecatedV1
 .. _envoy_api_field_Bootstrap.DynamicResources.DeprecatedV1.sds_config:
 
 sds_config
-  (:ref:`ConfigSource <envoy_api_msg_ConfigSource>`) This is the global SDS config when using v1 REST for CDS/EDS.
+  (:ref:`ConfigSource <envoy_api_msg_ConfigSource>`) This is the global :ref:`SDS <arch_overview_dynamic_config_sds>` config
+  when using v1 REST for :ref:`CDS
+  <arch_overview_dynamic_config_cds>`/:ref:`EDS
+  <arch_overview_dynamic_config_sds>`.
   
   
 
