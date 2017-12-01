@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Overview (v2 API) &mdash; envoy 1.5.0-data-plane-api-60c79a documentation</title>
+  <title>Overview (v2 API) &mdash; envoy 1.5.0-data-plane-api-35d1af documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-60c79a documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-35d1af documentation" href="../../index.html"/>
         <link rel="up" title="Configuration reference" href="../configuration.html"/>
         <link rel="next" title="Listeners" href="../listeners/listeners.html"/>
         <link rel="prev" title="Overview (v1 API)" href="v1_overview.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-60c79a
+                1.5.0-data-plane-api-35d1af
               </div>
             
           
@@ -201,10 +201,10 @@
 <span id="config-overview-v2"></span><h1>Overview (v2 API)<a class="headerlink" href="#overview-v2-api" title="Permalink to this headline">¶</a></h1>
 <p>The Envoy v2 APIs are defined as <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto3">proto3</a> <a class="reference external" href="https://developers.google.com/protocol-buffers/">Protocol Buffers</a> in the <a class="reference external" href="https://github.com/envoyproxy/data-plane-api/tree/master/api">data plane API
 repository</a>. They evolve the
-existing <a class="reference internal" href="v1_overview.html#config-overview-v1"><span class="std std-ref">v1 xDS APIs and concepts</span></a> to support:</p>
+existing <a class="reference internal" href="v1_overview.html#config-overview-v1"><span class="std std-ref">v1 APIs and concepts</span></a> to support:</p>
 <ul class="simple">
-<li>Streaming delivery of xDS API updates via gRPC. This reduces resource requirements and can
-lower the update latency.</li>
+<li>Streaming delivery of <a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/XDS_PROTOCOL.md">xDS</a>
+API updates via gRPC. This reduces resource requirements and can lower the update latency.</li>
 <li>A new REST-JSON API in which the JSON/YAML formats are derived mechanically via the <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto3#json">proto3
 canonical JSON mapping</a>.</li>
 <li>Delivery of updates via the filesystem, REST-JSON or gRPC endpoints.</li>
@@ -232,9 +232,9 @@ debug experience when configuration parsing fails.</p>
 <p>The <a class="reference internal" href="../../api-v2/bootstrap.proto.html#envoy-api-msg-bootstrap"><span class="std std-ref">Bootstrap</span></a> message is the root of the
 configuration. A key concept in the <a class="reference internal" href="../../api-v2/bootstrap.proto.html#envoy-api-msg-bootstrap"><span class="std std-ref">Bootstrap</span></a>
 message is the distinction between static and dynamic resouces.  Resources such
-as a <a class="reference internal" href="../listeners/listeners.html#config-listeners"><span class="std std-ref">Listener</span></a> or <a class="reference internal" href="../../api-v1/cluster_manager/cluster.html#config-cluster-manager-cluster"><span class="std std-ref">Cluster</span></a> may be supplied either statically in
+as a <a class="reference internal" href="../../api-v2/lds.proto.html#envoy-api-msg-listener"><span class="std std-ref">Listener</span></a> or <a class="reference internal" href="../../api-v2/cds.proto.html#envoy-api-msg-cluster"><span class="std std-ref">Cluster</span></a> may be supplied either statically in
 <a class="reference internal" href="../../api-v2/bootstrap.proto.html#envoy-api-field-bootstrap-static-resources"><span class="std std-ref">static_resources</span></a> or have
-an xDS service such as <a class="reference internal" href="v1_overview.html#config-overview-lds"><span class="std std-ref">LDS</span></a> or <a class="reference internal" href="../cluster_manager/cds.html#config-cluster-manager-cds"><span class="std std-ref">CDS</span></a> configured in
+an xDS service such as <a class="reference internal" href="../listeners/lds.html#config-listeners-lds"><span class="std std-ref">LDS</span></a> or <a class="reference internal" href="../cluster_manager/cds.html#config-cluster-manager-cds"><span class="std std-ref">CDS</span></a> configured in
 <a class="reference internal" href="../../api-v2/bootstrap.proto.html#envoy-api-field-bootstrap-dynamic-resources"><span class="std std-ref">dynamic_resources</span></a>.</p>
 </div>
 <div class="section" id="example">
@@ -464,7 +464,7 @@ REST-JSON cases, a <a class="reference internal" href="../../api-v2/discovery.pr
 <code class="descname">POST </code><code class="descname">/envoy.api.v2.ClusterDiscoveryService/StreamClusters</code><a class="headerlink" href="#post--envoy.api.v2.ClusterDiscoveryService-StreamClusters" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L18">cds.proto</a>
+<p>See <a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto">cds.proto</a>
 for the service definition. This is used by Envoy as a client when</p>
 <div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">cds_config</span><span class="p p-Indicator">:</span>
   <span class="l l-Scalar l-Scalar-Plain">api_config_source</span><span class="p p-Indicator">:</span>
@@ -478,7 +478,7 @@ for the service definition. This is used by Envoy as a client when</p>
 <code class="descname">POST </code><code class="descname">/envoy.api.v2.EndpointDiscoveryService/StreamEndpoints</code><a class="headerlink" href="#post--envoy.api.v2.EndpointDiscoveryService-StreamEndpoints" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L13">eds.proto</a>
+<p>See <a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto">eds.proto</a>
 for the service definition. This is used by Envoy as a client when</p>
 <div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">eds_config</span><span class="p p-Indicator">:</span>
   <span class="l l-Scalar l-Scalar-Plain">api_config_source</span><span class="p p-Indicator">:</span>
@@ -492,7 +492,7 @@ for the service definition. This is used by Envoy as a client when</p>
 <code class="descname">POST </code><code class="descname">/envoy.api.v2.ListenerDiscoveryService/StreamListeners</code><a class="headerlink" href="#post--envoy.api.v2.ListenerDiscoveryService-StreamListeners" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L22">lds.proto</a>
+<p>See <a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto">lds.proto</a>
 for the service definition. This is used by Envoy as a client when</p>
 <div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">lds_config</span><span class="p p-Indicator">:</span>
   <span class="l l-Scalar l-Scalar-Plain">api_config_source</span><span class="p p-Indicator">:</span>
@@ -506,7 +506,7 @@ for the service definition. This is used by Envoy as a client when</p>
 <code class="descname">POST </code><code class="descname">/envoy.api.v2.RouteDiscoveryService/StreamRoutes</code><a class="headerlink" href="#post--envoy.api.v2.RouteDiscoveryService-StreamRoutes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L22">rds.proto</a>
+<p>See <a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto">rds.proto</a>
 for the service definition. This is used by Envoy as a client when</p>
 <div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">route_config_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">some_route_name</span>
 <span class="l l-Scalar l-Scalar-Plain">config_source</span><span class="p p-Indicator">:</span>
@@ -524,7 +524,7 @@ for the service definition. This is used by Envoy as a client when</p>
 <code class="descname">POST </code><code class="descname">/v2/discovery:clusters</code><a class="headerlink" href="#post--v2-discovery-clusters" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L18">cds.proto</a>
+<p>See <a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto">cds.proto</a>
 for the service definition. This is used by Envoy as a client when</p>
 <div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">cds_config</span><span class="p p-Indicator">:</span>
   <span class="l l-Scalar l-Scalar-Plain">api_config_source</span><span class="p p-Indicator">:</span>
@@ -538,7 +538,7 @@ for the service definition. This is used by Envoy as a client when</p>
 <code class="descname">POST </code><code class="descname">/v2/discovery:endpoints</code><a class="headerlink" href="#post--v2-discovery-endpoints" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto#L13">eds.proto</a>
+<p>See <a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/eds.proto">eds.proto</a>
 for the service definition. This is used by Envoy as a client when</p>
 <div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">eds_config</span><span class="p p-Indicator">:</span>
   <span class="l l-Scalar l-Scalar-Plain">api_config_source</span><span class="p p-Indicator">:</span>
@@ -552,7 +552,7 @@ for the service definition. This is used by Envoy as a client when</p>
 <code class="descname">POST </code><code class="descname">/v2/discovery:listeners</code><a class="headerlink" href="#post--v2-discovery-listeners" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L22">lds.proto</a>
+<p>See <a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto">lds.proto</a>
 for the service definition. This is used by Envoy as a client when</p>
 <div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">lds_config</span><span class="p p-Indicator">:</span>
   <span class="l l-Scalar l-Scalar-Plain">api_config_source</span><span class="p p-Indicator">:</span>
@@ -566,7 +566,7 @@ for the service definition. This is used by Envoy as a client when</p>
 <code class="descname">POST </code><code class="descname">/v2/discovery:routes</code><a class="headerlink" href="#post--v2-discovery-routes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L22">rds.proto</a>
+<p>See <a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto">rds.proto</a>
 for the service definition. This is used by Envoy as a client when</p>
 <div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">route_config_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">some_route_name</span>
 <span class="l l-Scalar l-Scalar-Plain">config_source</span><span class="p p-Indicator">:</span>
@@ -580,13 +580,13 @@ for the service definition. This is used by Envoy as a client when</p>
 </div>
 <div class="section" id="aggregated-discovery-service">
 <span id="config-overview-v2-ads"></span><h2>Aggregated Discovery Service<a class="headerlink" href="#aggregated-discovery-service" title="Permalink to this headline">¶</a></h2>
-<p>While fundamentally Envoy employs an eventual consistency model, ADS provides an
+<p>While Envoy fundamentally employs an eventual consistency model, ADS provides an
 opportunity to sequence API update pushes and ensure affinity of a single
 management server for an Envoy node for API updates. ADS allows one or more APIs
-to be delivered on a single gRPC bidi stream by the management server, and
-within an API to have all resources aggregated onto a single stream. Without
-this, some APIs such as RDS and EDS may require the management of multiple
-streams and connections to distinct management servers.</p>
+and their resources to be delivered on a single, bidirectional gRPC stream by
+the management server. Without this, some APIs such as RDS and EDS may require
+the management of multiple streams and connections to distinct management
+servers.</p>
 <p>ADS will allow for hitless updates of configuration by appropriate sequencing.
 For example, suppose <em>foo.com</em> was mappped to cluster <em>X</em>. We wish to change the
 mapping in the route table to point <em>foo.com</em> at cluster <em>Y</em>. In order to do
@@ -607,7 +607,7 @@ document.  The gRPC endpoint is:</p>
 <code class="descname">POST </code><code class="descname">/envoy.api.v2.AggregatedDiscoveryService/StreamAggregatedResources</code><a class="headerlink" href="#post--envoy.api.v2.AggregatedDiscoveryService-StreamAggregatedResources" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/discovery.proto#L15">discovery.proto</a>
+<p>See <a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/discovery.proto">discovery.proto</a>
 for the service definition. This is used by Envoy as a client when</p>
 <div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">ads_config</span><span class="p p-Indicator">:</span>
   <span class="l l-Scalar l-Scalar-Plain">api_type</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">GRPC</span>
@@ -698,7 +698,7 @@ and may have have major changes made prior to Envoy implementation and freezing.
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.5.0-data-plane-api-60c79a',
+            VERSION:'1.5.0-data-plane-api-35d1af',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
