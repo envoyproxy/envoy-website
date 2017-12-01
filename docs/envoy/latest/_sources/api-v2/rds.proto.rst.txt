@@ -4,12 +4,311 @@ HTTP route management and RDS
 =============================
 
 
+.. _envoy_api_msg_RouteConfiguration:
+
+RouteConfiguration
+------------------
+
+`[RouteConfiguration proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L35>`_
+
+* Routing :ref:`architecture overview <arch_overview_http_routing>`
+* HTTP :ref:`router filter <config_http_filters_router>`
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "virtual_hosts": [],
+    "internal_only_headers": [],
+    "response_headers_to_add": [],
+    "response_headers_to_remove": [],
+    "request_headers_to_add": [],
+    "validate_clusters": "{...}"
+  }
+
+.. _envoy_api_field_RouteConfiguration.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The name of the route configuration. For example, it might match
+  :ref:`route_config_name <envoy_api_field_filter.network.Rds.route_config_name>` in
+  :ref:`envoy_api_msg_filter.network.Rds`.
+  
+  
+.. _envoy_api_field_RouteConfiguration.virtual_hosts:
+
+virtual_hosts
+  (:ref:`VirtualHost <envoy_api_msg_VirtualHost>`) An array of virtual hosts that make up the route table.
+  
+  
+.. _envoy_api_field_RouteConfiguration.internal_only_headers:
+
+internal_only_headers
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Optionally specifies a list of HTTP headers that the connection manager
+  will consider to be internal only. If they are found on external requests they will be cleaned
+  prior to filter invocation. See :ref:`config_http_conn_man_headers_x-envoy-internal` for more
+  information.
+  
+  
+.. _envoy_api_field_RouteConfiguration.response_headers_to_add:
+
+response_headers_to_add
+  (:ref:`HeaderValueOption <envoy_api_msg_HeaderValueOption>`) Specifies a list of HTTP headers that should be added to each response that
+  the connection manager encodes. Headers specified at this level are applied
+  after headers from any enclosed :ref:`envoy_api_msg_VirtualHost` or
+  :ref:`envoy_api_msg_RouteAction`.
+  
+  
+.. _envoy_api_field_RouteConfiguration.response_headers_to_remove:
+
+response_headers_to_remove
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies a list of HTTP headers that should be removed from each response
+  that the connection manager encodes.
+  
+  
+.. _envoy_api_field_RouteConfiguration.request_headers_to_add:
+
+request_headers_to_add
+  (:ref:`HeaderValueOption <envoy_api_msg_HeaderValueOption>`) Specifies a list of HTTP headers that should be added to each request
+  routed by the HTTP connection manager. Headers specified at this level are
+  applied after headers from any enclosed :ref:`envoy_api_msg_VirtualHost` or
+  :ref:`envoy_api_msg_RouteAction`. For more information see the documentation on
+  :ref:`custom request headers <config_http_conn_man_headers_custom_request_headers>`.
+  
+  
+.. _envoy_api_field_RouteConfiguration.validate_clusters:
+
+validate_clusters
+  (`BoolValue <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue>`_) An optional boolean that specifies whether the clusters that the route
+  table refers to will be validated by the cluster manager. If set to true
+  and a route refers to a non-existent cluster, the route table will not
+  load. If set to false and a route refers to a non-existent cluster, the
+  route table will load and the router filter will return a 404 if the route
+  is selected at runtime. This setting defaults to true if the route table
+  is statically defined via the :ref:`route_config
+  <envoy_api_field_filter.network.HttpConnectionManager.route_config>` option. This setting
+  default to false if the route table is loaded dynamically via the :ref:`rds
+  <envoy_api_field_filter.network.HttpConnectionManager.rds>` option. Users
+  may which to override the default behavior in certain cases (for example
+  when using CDS with a static route table).
+  
+  
+
+
+.. _envoy_api_msg_VirtualHost:
+
+VirtualHost
+-----------
+
+`[VirtualHost proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L87>`_
+
+The top level element in the routing configuration is a virtual host. Each virtual host has
+a logical name as well as a set of domains that get routed to it based on the incoming request's
+host header. This allows a single listener to service multiple top level domain path trees. Once
+a virtual host is selected based on the domain, the routes are processed in order to see which
+upstream cluster to route to or whether to perform a redirect.
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "domains": [],
+    "routes": [],
+    "require_tls": "...",
+    "virtual_clusters": [],
+    "rate_limits": [],
+    "request_headers_to_add": [],
+    "response_headers_to_add": [],
+    "response_headers_to_remove": [],
+    "cors": "{...}"
+  }
+
+.. _envoy_api_field_VirtualHost.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The logical name of the virtual host. This is used when emitting certain
+  statistics but is not relevant for routing.
+  
+  
+.. _envoy_api_field_VirtualHost.domains:
+
+domains
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) A list of domains (host/authority header) that will be matched to this
+  virtual host. Wildcard hosts are supported in the form of “*.foo.com” or
+  “*-bar.foo.com”.
+  
+  .. note::
+  
+    The wildcard will not match the empty string.
+    e.g. “*-bar.foo.com” will match “baz-bar.foo.com” but not “-bar.foo.com”.
+    Additionally, a special entry “*” is allowed which will match any
+    host/authority header. Only a single virtual host in the entire route
+    configuration can match on “*”. A domain must be unique across all virtual
+    hosts or the config will fail to load.
+  
+  
+.. _envoy_api_field_VirtualHost.routes:
+
+routes
+  (:ref:`Route <envoy_api_msg_Route>`) The list of routes that will be matched, in order, for incoming requests.
+  The first route that matches will be used.
+  
+  
+.. _envoy_api_field_VirtualHost.require_tls:
+
+require_tls
+  (:ref:`VirtualHost.TlsRequirementType <envoy_api_enum_VirtualHost.TlsRequirementType>`) Specifies the type of TLS enforcement the virtual host expects. If this option is not
+  specified, there is no TLS requirement for the virtual host.
+  
+  
+.. _envoy_api_field_VirtualHost.virtual_clusters:
+
+virtual_clusters
+  (:ref:`VirtualCluster <envoy_api_msg_VirtualCluster>`) A list of virtual clusters defined for this virtual host. Virtual clusters
+  are used for additional statistics gathering.
+  
+  
+.. _envoy_api_field_VirtualHost.rate_limits:
+
+rate_limits
+  (:ref:`RateLimit <envoy_api_msg_RateLimit>`) Specifies a set of rate limit configurations that will be applied to the
+  virtual host.
+  
+  
+.. _envoy_api_field_VirtualHost.request_headers_to_add:
+
+request_headers_to_add
+  (:ref:`HeaderValueOption <envoy_api_msg_HeaderValueOption>`) Specifies a list of HTTP headers that should be added to each request
+  handled by this virtual host. Headers specified at this level are applied
+  after headers from enclosed :ref:`envoy_api_msg_RouteAction` and before headers from the
+  enclosing :ref:`envoy_api_msg_RouteConfiguration`. For more information see the documentation
+  on :ref:`custom request headers <config_http_conn_man_headers_custom_request_headers>`.
+  
+  
+.. _envoy_api_field_VirtualHost.response_headers_to_add:
+
+response_headers_to_add
+  (:ref:`HeaderValueOption <envoy_api_msg_HeaderValueOption>`) Specifies a list of HTTP headers that should be added to each response
+  handled by this virtual host. Headers specified at this level are applied
+  after headers from enclosed :ref:`envoy_api_msg_RouteAction` and before headers from the
+  enclosing :ref:`envoy_api_msg_RouteConfiguration`.
+  
+  
+.. _envoy_api_field_VirtualHost.response_headers_to_remove:
+
+response_headers_to_remove
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies a list of HTTP headers that should be removed from each response
+  handle by this virtual host.
+  
+  
+.. _envoy_api_field_VirtualHost.cors:
+
+cors
+  (:ref:`CorsPolicy <envoy_api_msg_CorsPolicy>`) Indicates that the virtual host has a CORS policy.
+  
+  
+
+
+.. _envoy_api_enum_VirtualHost.TlsRequirementType:
+
+Enum VirtualHost.TlsRequirementType
+-----------------------------------
+
+`[VirtualHost.TlsRequirementType proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L110>`_
+
+
+.. _envoy_api_enum_value_VirtualHost.TlsRequirementType.NONE:
+
+NONE
+  *(DEFAULT)* ⁣No TLS requirement for the virtual host.
+  
+  
+.. _envoy_api_enum_value_VirtualHost.TlsRequirementType.EXTERNAL_ONLY:
+
+EXTERNAL_ONLY
+  ⁣External requests must use TLS. If a request is external and it is not
+  using TLS, a 301 redirect will be sent telling the client to use HTTPS.
+  
+  
+.. _envoy_api_enum_value_VirtualHost.TlsRequirementType.ALL:
+
+ALL
+  ⁣All requests must use TLS. If a request is not using TLS, a 301 redirect
+  will be sent telling the client to use HTTPS.
+  
+  
+
+.. _envoy_api_msg_Route:
+
+Route
+-----
+
+`[Route proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L167>`_
+
+A route is both a specification of how to match a request as well as an indication of what to do
+next (e.g., redirect, forward, rewrite, etc.).
+
+.. attention::
+
+  Envoy supports routing on HTTP method via :ref:`header matching
+  <envoy_api_msg_HeaderMatcher>`.
+
+.. code-block:: json
+
+  {
+    "match": "{...}",
+    "route": "{...}",
+    "redirect": "{...}",
+    "metadata": "{...}",
+    "decorator": "{...}"
+  }
+
+.. _envoy_api_field_Route.match:
+
+match
+  (:ref:`RouteMatch <envoy_api_msg_RouteMatch>`, *REQUIRED*) Route matching parameters.
+  
+  
+.. _envoy_api_field_Route.route:
+
+route
+  (:ref:`RouteAction <envoy_api_msg_RouteAction>`) Route request to some upstream cluster.
+  
+  
+  Precisely one of :ref:`route <envoy_api_field_Route.route>`, :ref:`redirect <envoy_api_field_Route.redirect>` must be set.
+  
+.. _envoy_api_field_Route.redirect:
+
+redirect
+  (:ref:`RedirectAction <envoy_api_msg_RedirectAction>`) Return a redirect.
+  
+  
+  Precisely one of :ref:`route <envoy_api_field_Route.route>`, :ref:`redirect <envoy_api_field_Route.redirect>` must be set.
+  
+.. _envoy_api_field_Route.metadata:
+
+metadata
+  (:ref:`Metadata <envoy_api_msg_Metadata>`) The Metadata field can be used to provide additional information
+  about the route. It can be used for configuration, stats, and logging.
+  The metadata should go under the filter namespace that will need it.
+  For instance, if the metadata is intended for the Router filter,
+  the filter name should be specified as *envoy.router*.
+  
+  
+.. _envoy_api_field_Route.decorator:
+
+decorator
+  (:ref:`Decorator <envoy_api_msg_Decorator>`) Decorator for the matched route.
+  
+  
+
+
+
 .. _envoy_api_msg_WeightedCluster:
 
 WeightedCluster
 ---------------
 
-`[WeightedCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L39>`_
+`[WeightedCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L202>`_
 
 Compared to the :ref:`cluster <envoy_api_field_RouteAction.cluster>` field that specifies a
 single upstream cluster as the target of a request, the :ref:`weighted_clusters
@@ -49,7 +348,7 @@ runtime_key_prefix
 WeightedCluster.ClusterWeight
 -----------------------------
 
-`[WeightedCluster.ClusterWeight proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L40>`_
+`[WeightedCluster.ClusterWeight proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L203>`_
 
 
 .. code-block:: json
@@ -91,7 +390,7 @@ metadata_match
 RouteMatch
 ----------
 
-`[RouteMatch proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L70>`_
+`[RouteMatch proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L233>`_
 
 
 .. code-block:: json
@@ -180,7 +479,7 @@ headers
 CorsPolicy
 ----------
 
-`[CorsPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L120>`_
+`[CorsPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L283>`_
 
 
 .. code-block:: json
@@ -244,7 +543,7 @@ enabled
 RouteAction
 -----------
 
-`[RouteAction proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L143>`_
+`[RouteAction proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L306>`_
 
 
 .. code-block:: json
@@ -472,7 +771,7 @@ cors
 RouteAction.RetryPolicy
 -----------------------
 
-`[RouteAction.RetryPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L217>`_
+`[RouteAction.RetryPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L380>`_
 
 HTTP retry :ref:`architecture overview <arch_overview_http_routing_retry>`.
 
@@ -523,7 +822,7 @@ per_try_timeout
 RouteAction.RequestMirrorPolicy
 -------------------------------
 
-`[RouteAction.RequestMirrorPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L252>`_
+`[RouteAction.RequestMirrorPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L415>`_
 
 The router is capable of shadowing traffic from one cluster to another. The current
 implementation is "fire and forget," meaning Envoy will not wait for the shadow cluster to
@@ -565,7 +864,7 @@ runtime_key
 RouteAction.HashPolicy
 ----------------------
 
-`[RouteAction.HashPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L300>`_
+`[RouteAction.HashPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L463>`_
 
 Specifies the route's hashing policy if the upstream cluster uses a hashing :ref:`load balancer
 <arch_overview_load_balancing_types>`.
@@ -607,7 +906,7 @@ connection_properties
 RouteAction.HashPolicy.Header
 -----------------------------
 
-`[RouteAction.HashPolicy.Header proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L301>`_
+`[RouteAction.HashPolicy.Header proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L464>`_
 
 
 .. code-block:: json
@@ -630,7 +929,7 @@ header_name
 RouteAction.HashPolicy.Cookie
 -----------------------------
 
-`[RouteAction.HashPolicy.Cookie proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L321>`_
+`[RouteAction.HashPolicy.Cookie proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L484>`_
 
 Envoy supports two types of cookie affinity:
 
@@ -676,7 +975,7 @@ ttl
 RouteAction.HashPolicy.ConnectionProperties
 -------------------------------------------
 
-`[RouteAction.HashPolicy.ConnectionProperties proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L332>`_
+`[RouteAction.HashPolicy.ConnectionProperties proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L495>`_
 
 
 .. code-block:: json
@@ -699,7 +998,7 @@ source_ip
 Enum RouteAction.ClusterNotFoundResponseCode
 --------------------------------------------
 
-`[RouteAction.ClusterNotFoundResponseCode proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L170>`_
+`[RouteAction.ClusterNotFoundResponseCode proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L333>`_
 
 
 .. _envoy_api_enum_value_RouteAction.ClusterNotFoundResponseCode.SERVICE_UNAVAILABLE:
@@ -720,7 +1019,7 @@ NOT_FOUND
 RedirectAction
 --------------
 
-`[RedirectAction proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L385>`_
+`[RedirectAction proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L548>`_
 
 
 .. code-block:: json
@@ -756,7 +1055,7 @@ response_code
 Enum RedirectAction.RedirectResponseCode
 ----------------------------------------
 
-`[RedirectAction.RedirectResponseCode proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L392>`_
+`[RedirectAction.RedirectResponseCode proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L555>`_
 
 
 .. _envoy_api_enum_value_RedirectAction.RedirectResponseCode.MOVED_PERMANENTLY:
@@ -795,7 +1094,7 @@ PERMANENT_REDIRECT
 Decorator
 ---------
 
-`[Decorator proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L414>`_
+`[Decorator proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L577>`_
 
 
 .. code-block:: json
@@ -819,78 +1118,12 @@ operation
   
 
 
-.. _envoy_api_msg_Route:
-
-Route
------
-
-`[Route proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L433>`_
-
-A route is both a specification of how to match a request as well as an indication of what to do
-next (e.g., redirect, forward, rewrite, etc.).
-
-.. attention::
-
-  Envoy supports routing on HTTP method via :ref:`header matching
-  <envoy_api_msg_HeaderMatcher>`.
-
-.. code-block:: json
-
-  {
-    "match": "{...}",
-    "route": "{...}",
-    "redirect": "{...}",
-    "metadata": "{...}",
-    "decorator": "{...}"
-  }
-
-.. _envoy_api_field_Route.match:
-
-match
-  (:ref:`RouteMatch <envoy_api_msg_RouteMatch>`, *REQUIRED*) Route matching parameters.
-  
-  
-.. _envoy_api_field_Route.route:
-
-route
-  (:ref:`RouteAction <envoy_api_msg_RouteAction>`) Route request to some upstream cluster.
-  
-  
-  Precisely one of :ref:`route <envoy_api_field_Route.route>`, :ref:`redirect <envoy_api_field_Route.redirect>` must be set.
-  
-.. _envoy_api_field_Route.redirect:
-
-redirect
-  (:ref:`RedirectAction <envoy_api_msg_RedirectAction>`) Return a redirect.
-  
-  
-  Precisely one of :ref:`route <envoy_api_field_Route.route>`, :ref:`redirect <envoy_api_field_Route.redirect>` must be set.
-  
-.. _envoy_api_field_Route.metadata:
-
-metadata
-  (:ref:`Metadata <envoy_api_msg_Metadata>`) The Metadata field can be used to provide additional information
-  about the route. It can be used for configuration, stats, and logging.
-  The metadata should go under the filter namespace that will need it.
-  For instance, if the metadata is intended for the Router filter,
-  the filter name should be specified as *envoy.router*.
-  
-  
-.. _envoy_api_field_Route.decorator:
-
-decorator
-  (:ref:`Decorator <envoy_api_msg_Decorator>`) Decorator for the matched route.
-  
-  
-
-
-
 .. _envoy_api_msg_VirtualCluster:
 
 VirtualCluster
 --------------
 
-`[VirtualCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L479>`_
+`[VirtualCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L606>`_
 
 A virtual cluster is a way of specifying a regex matching rule against
 certain important endpoints such that statistics are generated explicitly for
@@ -954,7 +1187,7 @@ method
 RateLimit
 ---------
 
-`[RateLimit proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L502>`_
+`[RateLimit proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L629>`_
 
 Global rate limiting :ref:`architecture overview <arch_overview_rate_limit>`.
 
@@ -1000,7 +1233,7 @@ actions
 RateLimit.Action
 ----------------
 
-`[RateLimit.Action proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L515>`_
+`[RateLimit.Action proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L642>`_
 
 
 .. code-block:: json
@@ -1067,7 +1300,7 @@ header_value_match
 RateLimit.Action.SourceCluster
 ------------------------------
 
-`[RateLimit.Action.SourceCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L523>`_
+`[RateLimit.Action.SourceCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L650>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1089,7 +1322,7 @@ The following descriptor entry is appended to the descriptor:
 RateLimit.Action.DestinationCluster
 -----------------------------------
 
-`[RateLimit.Action.DestinationCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L542>`_
+`[RateLimit.Action.DestinationCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L669>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1120,7 +1353,7 @@ settings:
 RateLimit.Action.RequestHeaders
 -------------------------------
 
-`[RateLimit.Action.RequestHeaders proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L551>`_
+`[RateLimit.Action.RequestHeaders proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L678>`_
 
 The following descriptor entry is appended when a header contains a key that matches the
 *header_name*:
@@ -1157,7 +1390,7 @@ descriptor_key
 RateLimit.Action.RemoteAddress
 ------------------------------
 
-`[RateLimit.Action.RemoteAddress proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L567>`_
+`[RateLimit.Action.RemoteAddress proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L694>`_
 
 The following descriptor entry is appended to the descriptor and is populated using the
 trusted address from :ref:`x-forwarded-for <config_http_conn_man_headers_x-forwarded-for>`:
@@ -1178,7 +1411,7 @@ trusted address from :ref:`x-forwarded-for <config_http_conn_man_headers_x-forwa
 RateLimit.Action.GenericKey
 ---------------------------
 
-`[RateLimit.Action.GenericKey proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L575>`_
+`[RateLimit.Action.GenericKey proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L702>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1205,7 +1438,7 @@ descriptor_value
 RateLimit.Action.HeaderValueMatch
 ---------------------------------
 
-`[RateLimit.Action.HeaderValueMatch proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L585>`_
+`[RateLimit.Action.HeaderValueMatch proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L712>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1255,7 +1488,7 @@ headers
 HeaderMatcher
 -------------
 
-`[HeaderMatcher proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L651>`_
+`[HeaderMatcher proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L778>`_
 
 .. attention::
 
@@ -1309,239 +1542,6 @@ regex
   * The regex *\d{3}* matches the value *123*
   * The regex *\d{3}* does not match the value *1234*
   * The regex *\d{3}* does not match the value *123.456*
-  
-  
-
-
-.. _envoy_api_msg_VirtualHost:
-
-VirtualHost
------------
-
-`[VirtualHost proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L678>`_
-
-The top level element in the routing configuration is a virtual host. Each virtual host has
-a logical name as well as a set of domains that get routed to it based on the incoming request's
-host header. This allows a single listener to service multiple top level domain path trees. Once
-a virtual host is selected based on the domain, the routes are processed in order to see which
-upstream cluster to route to or whether to perform a redirect.
-
-.. code-block:: json
-
-  {
-    "name": "...",
-    "domains": [],
-    "routes": [],
-    "require_tls": "...",
-    "virtual_clusters": [],
-    "rate_limits": [],
-    "request_headers_to_add": [],
-    "response_headers_to_add": [],
-    "response_headers_to_remove": [],
-    "cors": "{...}"
-  }
-
-.. _envoy_api_field_VirtualHost.name:
-
-name
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The logical name of the virtual host. This is used when emitting certain
-  statistics but is not relevant for routing.
-  
-  
-.. _envoy_api_field_VirtualHost.domains:
-
-domains
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) A list of domains (host/authority header) that will be matched to this
-  virtual host. Wildcard hosts are supported in the form of “*.foo.com” or
-  “*-bar.foo.com”.
-  
-  .. note::
-  
-    The wildcard will not match the empty string.
-    e.g. “*-bar.foo.com” will match “baz-bar.foo.com” but not “-bar.foo.com”.
-    Additionally, a special entry “*” is allowed which will match any
-    host/authority header. Only a single virtual host in the entire route
-    configuration can match on “*”. A domain must be unique across all virtual
-    hosts or the config will fail to load.
-  
-  
-.. _envoy_api_field_VirtualHost.routes:
-
-routes
-  (:ref:`Route <envoy_api_msg_Route>`) The list of routes that will be matched, in order, for incoming requests.
-  The first route that matches will be used.
-  
-  
-.. _envoy_api_field_VirtualHost.require_tls:
-
-require_tls
-  (:ref:`VirtualHost.TlsRequirementType <envoy_api_enum_VirtualHost.TlsRequirementType>`) Specifies the type of TLS enforcement the virtual host expects. If this option is not
-  specified, there is no TLS requirement for the virtual host.
-  
-  
-.. _envoy_api_field_VirtualHost.virtual_clusters:
-
-virtual_clusters
-  (:ref:`VirtualCluster <envoy_api_msg_VirtualCluster>`) A list of virtual clusters defined for this virtual host. Virtual clusters
-  are used for additional statistics gathering.
-  
-  
-.. _envoy_api_field_VirtualHost.rate_limits:
-
-rate_limits
-  (:ref:`RateLimit <envoy_api_msg_RateLimit>`) Specifies a set of rate limit configurations that will be applied to the
-  virtual host.
-  
-  
-.. _envoy_api_field_VirtualHost.request_headers_to_add:
-
-request_headers_to_add
-  (:ref:`HeaderValueOption <envoy_api_msg_HeaderValueOption>`) Specifies a list of HTTP headers that should be added to each request
-  handled by this virtual host. Headers specified at this level are applied
-  after headers from enclosed :ref:`envoy_api_msg_RouteAction` and before headers from the
-  enclosing :ref:`envoy_api_msg_RouteConfiguration`. For more information see the documentation
-  on :ref:`custom request headers <config_http_conn_man_headers_custom_request_headers>`.
-  
-  
-.. _envoy_api_field_VirtualHost.response_headers_to_add:
-
-response_headers_to_add
-  (:ref:`HeaderValueOption <envoy_api_msg_HeaderValueOption>`) Specifies a list of HTTP headers that should be added to each response
-  handled by this virtual host. Headers specified at this level are applied
-  after headers from enclosed :ref:`envoy_api_msg_RouteAction` and before headers from the
-  enclosing :ref:`envoy_api_msg_RouteConfiguration`.
-  
-  
-.. _envoy_api_field_VirtualHost.response_headers_to_remove:
-
-response_headers_to_remove
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies a list of HTTP headers that should be removed from each response
-  handle by this virtual host.
-  
-  
-.. _envoy_api_field_VirtualHost.cors:
-
-cors
-  (:ref:`CorsPolicy <envoy_api_msg_CorsPolicy>`) Indicates that the virtual host has a CORS policy.
-  
-  
-
-
-.. _envoy_api_enum_VirtualHost.TlsRequirementType:
-
-Enum VirtualHost.TlsRequirementType
------------------------------------
-
-`[VirtualHost.TlsRequirementType proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L701>`_
-
-
-.. _envoy_api_enum_value_VirtualHost.TlsRequirementType.NONE:
-
-NONE
-  *(DEFAULT)* ⁣No TLS requirement for the virtual host.
-  
-  
-.. _envoy_api_enum_value_VirtualHost.TlsRequirementType.EXTERNAL_ONLY:
-
-EXTERNAL_ONLY
-  ⁣External requests must use TLS. If a request is external and it is not
-  using TLS, a 301 redirect will be sent telling the client to use HTTPS.
-  
-  
-.. _envoy_api_enum_value_VirtualHost.TlsRequirementType.ALL:
-
-ALL
-  ⁣All requests must use TLS. If a request is not using TLS, a 301 redirect
-  will be sent telling the client to use HTTPS.
-  
-  
-
-.. _envoy_api_msg_RouteConfiguration:
-
-RouteConfiguration
-------------------
-
-`[RouteConfiguration proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L753>`_
-
-* Routing :ref:`architecture overview <arch_overview_http_routing>`
-* HTTP :ref:`router filter <config_http_filters_router>`
-
-.. code-block:: json
-
-  {
-    "name": "...",
-    "virtual_hosts": [],
-    "internal_only_headers": [],
-    "response_headers_to_add": [],
-    "response_headers_to_remove": [],
-    "request_headers_to_add": [],
-    "validate_clusters": "{...}"
-  }
-
-.. _envoy_api_field_RouteConfiguration.name:
-
-name
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The name of the route configuration. For example, it might match
-  :ref:`route_config_name <envoy_api_field_filter.network.Rds.route_config_name>` in
-  :ref:`envoy_api_msg_filter.network.Rds`.
-  
-  
-.. _envoy_api_field_RouteConfiguration.virtual_hosts:
-
-virtual_hosts
-  (:ref:`VirtualHost <envoy_api_msg_VirtualHost>`) An array of virtual hosts that make up the route table.
-  
-  
-.. _envoy_api_field_RouteConfiguration.internal_only_headers:
-
-internal_only_headers
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Optionally specifies a list of HTTP headers that the connection manager
-  will consider to be internal only. If they are found on external requests they will be cleaned
-  prior to filter invocation. See :ref:`config_http_conn_man_headers_x-envoy-internal` for more
-  information.
-  
-  
-.. _envoy_api_field_RouteConfiguration.response_headers_to_add:
-
-response_headers_to_add
-  (:ref:`HeaderValueOption <envoy_api_msg_HeaderValueOption>`) Specifies a list of HTTP headers that should be added to each response that
-  the connection manager encodes. Headers specified at this level are applied
-  after headers from any enclosed :ref:`envoy_api_msg_VirtualHost` or
-  :ref:`envoy_api_msg_RouteAction`.
-  
-  
-.. _envoy_api_field_RouteConfiguration.response_headers_to_remove:
-
-response_headers_to_remove
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies a list of HTTP headers that should be removed from each response
-  that the connection manager encodes.
-  
-  
-.. _envoy_api_field_RouteConfiguration.request_headers_to_add:
-
-request_headers_to_add
-  (:ref:`HeaderValueOption <envoy_api_msg_HeaderValueOption>`) Specifies a list of HTTP headers that should be added to each request
-  routed by the HTTP connection manager. Headers specified at this level are
-  applied after headers from any enclosed :ref:`envoy_api_msg_VirtualHost` or
-  :ref:`envoy_api_msg_RouteAction`. For more information see the documentation on
-  :ref:`custom request headers <config_http_conn_man_headers_custom_request_headers>`.
-  
-  
-.. _envoy_api_field_RouteConfiguration.validate_clusters:
-
-validate_clusters
-  (`BoolValue <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue>`_) An optional boolean that specifies whether the clusters that the route
-  table refers to will be validated by the cluster manager. If set to true
-  and a route refers to a non-existent cluster, the route table will not
-  load. If set to false and a route refers to a non-existent cluster, the
-  route table will load and the router filter will return a 404 if the route
-  is selected at runtime. This setting defaults to true if the route table
-  is statically defined via the :ref:`route_config
-  <envoy_api_field_filter.network.HttpConnectionManager.route_config>` option. This setting
-  default to false if the route table is loaded dynamically via the :ref:`rds
-  <envoy_api_field_filter.network.HttpConnectionManager.rds>` option. Users
-  may which to override the default behavior in certain cases (for example
-  when using CDS with a static route table).
   
   
 
