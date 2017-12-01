@@ -253,6 +253,7 @@ RouteAction
     "cluster": "...",
     "cluster_header": "...",
     "weighted_clusters": "{...}",
+    "cluster_not_found_response_code": "...",
     "metadata_match": "{...}",
     "prefix_rewrite": "...",
     "host_rewrite": "...",
@@ -307,6 +308,13 @@ weighted_clusters
   
   
   Precisely one of :ref:`cluster <envoy_api_field_RouteAction.cluster>`, :ref:`cluster_header <envoy_api_field_RouteAction.cluster_header>`, :ref:`weighted_clusters <envoy_api_field_RouteAction.weighted_clusters>` must be set.
+  
+.. _envoy_api_field_RouteAction.cluster_not_found_response_code:
+
+cluster_not_found_response_code
+  (:ref:`RouteAction.ClusterNotFoundResponseCode <envoy_api_enum_RouteAction.ClusterNotFoundResponseCode>`) The HTTP status code to use when configured cluster is not found.
+  The default response code is 503 Service Unavailable.
+  
   
 .. _envoy_api_field_RouteAction.metadata_match:
 
@@ -464,7 +472,7 @@ cors
 RouteAction.RetryPolicy
 -----------------------
 
-`[RouteAction.RetryPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L204>`_
+`[RouteAction.RetryPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L217>`_
 
 HTTP retry :ref:`architecture overview <arch_overview_http_routing_retry>`.
 
@@ -515,7 +523,7 @@ per_try_timeout
 RouteAction.RequestMirrorPolicy
 -------------------------------
 
-`[RouteAction.RequestMirrorPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L239>`_
+`[RouteAction.RequestMirrorPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L252>`_
 
 The router is capable of shadowing traffic from one cluster to another. The current
 implementation is "fire and forget," meaning Envoy will not wait for the shadow cluster to
@@ -557,7 +565,7 @@ runtime_key
 RouteAction.HashPolicy
 ----------------------
 
-`[RouteAction.HashPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L287>`_
+`[RouteAction.HashPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L300>`_
 
 Specifies the route's hashing policy if the upstream cluster uses a hashing :ref:`load balancer
 <arch_overview_load_balancing_types>`.
@@ -599,7 +607,7 @@ connection_properties
 RouteAction.HashPolicy.Header
 -----------------------------
 
-`[RouteAction.HashPolicy.Header proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L288>`_
+`[RouteAction.HashPolicy.Header proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L301>`_
 
 
 .. code-block:: json
@@ -622,7 +630,7 @@ header_name
 RouteAction.HashPolicy.Cookie
 -----------------------------
 
-`[RouteAction.HashPolicy.Cookie proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L308>`_
+`[RouteAction.HashPolicy.Cookie proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L321>`_
 
 Envoy supports two types of cookie affinity:
 
@@ -668,7 +676,7 @@ ttl
 RouteAction.HashPolicy.ConnectionProperties
 -------------------------------------------
 
-`[RouteAction.HashPolicy.ConnectionProperties proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L319>`_
+`[RouteAction.HashPolicy.ConnectionProperties proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L332>`_
 
 
 .. code-block:: json
@@ -686,13 +694,33 @@ source_ip
 
 
 
+.. _envoy_api_enum_RouteAction.ClusterNotFoundResponseCode:
+
+Enum RouteAction.ClusterNotFoundResponseCode
+--------------------------------------------
+
+`[RouteAction.ClusterNotFoundResponseCode proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L170>`_
+
+
+.. _envoy_api_enum_value_RouteAction.ClusterNotFoundResponseCode.SERVICE_UNAVAILABLE:
+
+SERVICE_UNAVAILABLE
+  *(DEFAULT)* ⁣HTTP status code - 503 Service Unavailable.
+  
+  
+.. _envoy_api_enum_value_RouteAction.ClusterNotFoundResponseCode.NOT_FOUND:
+
+NOT_FOUND
+  ⁣HTTP status code - 404 Not Found.
+  
+  
 
 .. _envoy_api_msg_RedirectAction:
 
 RedirectAction
 --------------
 
-`[RedirectAction proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L372>`_
+`[RedirectAction proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L385>`_
 
 
 .. code-block:: json
@@ -728,7 +756,7 @@ response_code
 Enum RedirectAction.RedirectResponseCode
 ----------------------------------------
 
-`[RedirectAction.RedirectResponseCode proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L379>`_
+`[RedirectAction.RedirectResponseCode proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L392>`_
 
 
 .. _envoy_api_enum_value_RedirectAction.RedirectResponseCode.MOVED_PERMANENTLY:
@@ -767,7 +795,7 @@ PERMANENT_REDIRECT
 Decorator
 ---------
 
-`[Decorator proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L401>`_
+`[Decorator proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L414>`_
 
 
 .. code-block:: json
@@ -796,7 +824,7 @@ operation
 Route
 -----
 
-`[Route proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L420>`_
+`[Route proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L433>`_
 
 A route is both a specification of how to match a request as well as an indication of what to do
 next (e.g., redirect, forward, rewrite, etc.).
@@ -862,7 +890,7 @@ decorator
 VirtualCluster
 --------------
 
-`[VirtualCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L466>`_
+`[VirtualCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L479>`_
 
 A virtual cluster is a way of specifying a regex matching rule against
 certain important endpoints such that statistics are generated explicitly for
@@ -926,7 +954,7 @@ method
 RateLimit
 ---------
 
-`[RateLimit proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L489>`_
+`[RateLimit proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L502>`_
 
 Global rate limiting :ref:`architecture overview <arch_overview_rate_limit>`.
 
@@ -972,7 +1000,7 @@ actions
 RateLimit.Action
 ----------------
 
-`[RateLimit.Action proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L502>`_
+`[RateLimit.Action proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L515>`_
 
 
 .. code-block:: json
@@ -1039,7 +1067,7 @@ header_value_match
 RateLimit.Action.SourceCluster
 ------------------------------
 
-`[RateLimit.Action.SourceCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L510>`_
+`[RateLimit.Action.SourceCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L523>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1061,7 +1089,7 @@ The following descriptor entry is appended to the descriptor:
 RateLimit.Action.DestinationCluster
 -----------------------------------
 
-`[RateLimit.Action.DestinationCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L529>`_
+`[RateLimit.Action.DestinationCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L542>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1092,7 +1120,7 @@ settings:
 RateLimit.Action.RequestHeaders
 -------------------------------
 
-`[RateLimit.Action.RequestHeaders proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L538>`_
+`[RateLimit.Action.RequestHeaders proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L551>`_
 
 The following descriptor entry is appended when a header contains a key that matches the
 *header_name*:
@@ -1129,7 +1157,7 @@ descriptor_key
 RateLimit.Action.RemoteAddress
 ------------------------------
 
-`[RateLimit.Action.RemoteAddress proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L554>`_
+`[RateLimit.Action.RemoteAddress proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L567>`_
 
 The following descriptor entry is appended to the descriptor and is populated using the
 trusted address from :ref:`x-forwarded-for <config_http_conn_man_headers_x-forwarded-for>`:
@@ -1150,7 +1178,7 @@ trusted address from :ref:`x-forwarded-for <config_http_conn_man_headers_x-forwa
 RateLimit.Action.GenericKey
 ---------------------------
 
-`[RateLimit.Action.GenericKey proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L562>`_
+`[RateLimit.Action.GenericKey proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L575>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1177,7 +1205,7 @@ descriptor_value
 RateLimit.Action.HeaderValueMatch
 ---------------------------------
 
-`[RateLimit.Action.HeaderValueMatch proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L572>`_
+`[RateLimit.Action.HeaderValueMatch proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L585>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1227,7 +1255,7 @@ headers
 HeaderMatcher
 -------------
 
-`[HeaderMatcher proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L638>`_
+`[HeaderMatcher proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L651>`_
 
 .. attention::
 
@@ -1290,7 +1318,7 @@ regex
 VirtualHost
 -----------
 
-`[VirtualHost proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L665>`_
+`[VirtualHost proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L678>`_
 
 The top level element in the routing configuration is a virtual host. Each virtual host has
 a logical name as well as a set of domains that get routed to it based on the incoming request's
@@ -1404,7 +1432,7 @@ cors
 Enum VirtualHost.TlsRequirementType
 -----------------------------------
 
-`[VirtualHost.TlsRequirementType proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L688>`_
+`[VirtualHost.TlsRequirementType proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L701>`_
 
 
 .. _envoy_api_enum_value_VirtualHost.TlsRequirementType.NONE:
@@ -1433,7 +1461,7 @@ ALL
 RouteConfiguration
 ------------------
 
-`[RouteConfiguration proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L740>`_
+`[RouteConfiguration proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/rds.proto#L753>`_
 
 * Routing :ref:`architecture overview <arch_overview_http_routing>`
 * HTTP :ref:`router filter <config_http_filters_router>`
