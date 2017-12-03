@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Common discovery API components &mdash; envoy 1.5.0-data-plane-api-44d270 documentation</title>
+  <title>Common discovery API components &mdash; envoy 1.5.0-data-plane-api-479d85 documentation</title>
   
 
   
@@ -37,9 +37,9 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-44d270 documentation" href="../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-479d85 documentation" href="../index.html"/>
         <link rel="up" title="v2 API reference" href="api.html"/>
-        <link rel="next" title="Filters" href="filter/filter.html"/>
+        <link rel="next" title="Common rate limit components" href="rls.proto.html"/>
         <link rel="prev" title="Protocol options" href="protocol.proto.html"/> 
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-44d270
+                1.5.0-data-plane-api-479d85
               </div>
             
           
@@ -117,6 +117,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#discoveryresponse">DiscoveryResponse</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="rls.proto.html">Common rate limit components</a></li>
 <li class="toctree-l2"><a class="reference internal" href="filter/filter.html">Filters</a></li>
 </ul>
 </li>
@@ -214,7 +215,7 @@ as applied or the previous API config version respectively. Each type_url
 </dl>
 <dl class="docutils" id="envoy-api-field-discoveryrequest-node">
 <dt>node</dt>
-<dd>(<a class="reference internal" href="base.proto.html#envoy-api-msg-node"><span class="std std-ref">Node</span></a>)</dd>
+<dd>(<a class="reference internal" href="base.proto.html#envoy-api-msg-node"><span class="std std-ref">Node</span></a>) The node making the request.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-discoveryrequest-resource-names">
 <dt>resource_names</dt>
@@ -242,11 +243,10 @@ xDS implementations.</dd>
 </div>
 <div class="section" id="discoveryresponse">
 <span id="envoy-api-msg-discoveryresponse"></span><h2>DiscoveryResponse<a class="headerlink" href="#discoveryresponse" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/discovery.proto#L53">[DiscoveryResponse proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/discovery.proto#L58">[DiscoveryResponse proto]</a></p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;version_info&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;resources&quot;</span><span class="p">:</span> <span class="p">[],</span>
-  <span class="nt">&quot;canary&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;type_url&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;nonce&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
 <span class="p">}</span>
@@ -254,29 +254,11 @@ xDS implementations.</dd>
 </div>
 <dl class="docutils" id="envoy-api-field-discoveryresponse-version-info">
 <dt>version_info</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>)</dd>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The version of the response data.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-discoveryresponse-resources">
 <dt>resources</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any">Any</a>)</dd>
-</dl>
-<dl class="docutils" id="envoy-api-field-discoveryresponse-canary">
-<dt>canary</dt>
-<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Canary is used to support two Envoy command line flags:</p>
-<ul class="last simple">
-<li>–terminate-on-canary-transition-failure. When set, Envoy is able to
-terminate if it detects that configuration is stuck at canary. Consider
-this example sequence of updates:
-- Management server applies a canary config successfully.
-- Management server rolls back to a production config.
-- Envoy rejects the new production config.
-Since there is no sensible way to continue receiving configuration
-updates, Envoy will then terminate and apply production config from a
-clean slate.</li>
-<li>–dry-run-canary. When set, a canary response will never be applied, only
-validated via a dry run.</li>
-</ul>
-</dd>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any">Any</a>) The response resources. These resources are typed and depend on the API being called.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-discoveryresponse-type-url">
 <dt>type_url</dt>
@@ -308,7 +290,7 @@ required for non-stream based xDS implementations.</dd>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="filter/filter.html" class="btn btn-neutral float-right" title="Filters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="rls.proto.html" class="btn btn-neutral float-right" title="Common rate limit components" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="protocol.proto.html" class="btn btn-neutral" title="Protocol options" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -342,7 +324,7 @@ required for non-stream based xDS implementations.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.5.0-data-plane-api-44d270',
+            VERSION:'1.5.0-data-plane-api-479d85',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
