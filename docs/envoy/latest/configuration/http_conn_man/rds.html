@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>v1 Route discovery service (RDS) &mdash; envoy 1.5.0-data-plane-api-13e9b4 documentation</title>
+  <title>Route discovery service (RDS) &mdash; envoy 1.5.0-data-plane-api-c73bf4 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-13e9b4 documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-c73bf4 documentation" href="../../index.html"/>
         <link rel="up" title="HTTP connection manager" href="http_conn_man.html"/>
         <link rel="next" title="HTTP filters" href="../http_filters/http_filters.html"/>
         <link rel="prev" title="Runtime" href="runtime.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-13e9b4
+                1.5.0-data-plane-api-c73bf4
               </div>
             
           
@@ -109,8 +109,7 @@
 <li class="toctree-l3"><a class="reference internal" href="header_sanitizing.html">HTTP header sanitizing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="stats.html">Statistics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="runtime.html">Runtime</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">v1 Route discovery service (RDS)</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#rest-api">REST API</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Route discovery service (RDS)</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#statistics">Statistics</a></li>
 </ul>
 </li>
@@ -177,7 +176,7 @@
         
           <li><a href="http_conn_man.html">HTTP connection manager</a> &raquo;</li>
         
-      <li>v1 Route discovery service (RDS)</li>
+      <li>Route discovery service (RDS)</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -196,68 +195,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="v1-route-discovery-service-rds">
-<span id="config-http-conn-man-rds"></span><h1>v1 Route discovery service (RDS)<a class="headerlink" href="#v1-route-discovery-service-rds" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="route-discovery-service-rds">
+<span id="config-http-conn-man-rds"></span><h1>Route discovery service (RDS)<a class="headerlink" href="#route-discovery-service-rds" title="Permalink to this headline">¶</a></h1>
 <p>The route discovery service (RDS) API is an optional API that Envoy will call to dynamically fetch
 <a class="reference internal" href="../../api-v1/route_config/route_config.html#config-http-conn-man-route-table"><span class="std std-ref">route configurations</span></a>. A route configuration includes both
 HTTP header modifications, virtual hosts, and the individual route entries contained within each
 virtual host. Each <a class="reference internal" href="http_conn_man.html#config-http-conn-man"><span class="std std-ref">HTTP connection manager filter</span></a> can independently
 fetch its own route configuration via the API.</p>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;cluster&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;route_config_name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;refresh_delay_ms&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<dl class="docutils">
-<dt>cluster</dt>
-<dd><em>(required, string)</em> The name of an upstream <a class="reference internal" href="../../api-v1/cluster_manager/cluster.html#config-cluster-manager-cluster"><span class="std std-ref">cluster</span></a> that
-hosts the route discovery service. The cluster must run a REST service that implements the
-<a class="reference internal" href="#config-http-conn-man-rds-api"><span class="std std-ref">RDS HTTP API</span></a>. NOTE: This is the <em>name</em> of a cluster defined
-in the <a class="reference internal" href="../cluster_manager/cluster_manager.html#config-cluster-manager"><span class="std std-ref">cluster manager</span></a> configuration, not the full definition of
-a cluster as in the case of SDS and CDS.</dd>
-<dt>route_config_name</dt>
-<dd><em>(required, string)</em> The name of the route configuration. This name will be passed to the
-<a class="reference internal" href="#config-http-conn-man-rds-api"><span class="std std-ref">RDS HTTP API</span></a>. This allows an Envoy configuration with
-multiple HTTP listeners (and associated HTTP connection manager filters) to use different route
-configurations. By default, the maximum length of the name is limited to 60 characters. This
-limit can be increased by setting the <a class="reference internal" href="../../operations/cli.html#cmdoption-max-obj-name-len"><code class="xref std std-option docutils literal"><span class="pre">--max-obj-name-len</span></code></a> command line argument to the
-desired value.</dd>
-<dt>refresh_delay_ms</dt>
-<dd><em>(optional, integer)</em> The delay, in milliseconds, between fetches to the RDS API. Envoy will add
-an additional random jitter to the delay that is between zero and <em>refresh_delay_ms</em>
-milliseconds. Thus the longest possible refresh delay is 2 * <em>refresh_delay_ms</em>. Default
-value is 30000ms (30 seconds).</dd>
-</dl>
-<div class="section" id="rest-api">
-<span id="config-http-conn-man-rds-api"></span><h2>REST API<a class="headerlink" href="#rest-api" title="Permalink to this headline">¶</a></h2>
-<dl class="get">
-<dt id="get--v1-routes-(string- route_config_name)-(string- service_cluster)-(string- service_node)">
-<code class="descname">GET </code><code class="descname">/v1/routes/(string: route_config_name)/(string: service_cluster)/(string: service_node)</code><a class="headerlink" href="#get--v1-routes-(string- route_config_name)-(string- service_cluster)-(string- service_node)" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<p>Asks the route discovery service to return the route configuration for a particular
-<cite>route_config_name</cite>, <cite>service_cluster</cite>, and <cite>service_node</cite>. <cite>route_config_name</cite> corresponds to the
-RDS configuration parameter above. <cite>service_cluster</cite> corresponds to the <a class="reference internal" href="../../operations/cli.html#cmdoption-service-cluster"><code class="xref std std-option docutils literal"><span class="pre">--service-cluster</span></code></a>
-CLI option. <cite>service_node</cite> corresponds to the <a class="reference internal" href="../../operations/cli.html#cmdoption-service-node"><code class="xref std std-option docutils literal"><span class="pre">--service-node</span></code></a> CLI option. Responses are a
-single JSON object that contains a route configuration as defined in the <a class="reference internal" href="../../api-v1/route_config/route_config.html#config-http-conn-man-route-table"><span class="std std-ref">route configuration
-documentation</span></a>.</p>
-<p>A new route configuration will be gracefully swapped in such that existing requests are not
-affected. This means that when a request starts, it sees a consistent snapshot of the route
-configuration that does not change for the duration of the request. Thus, if an update changes a
-timeout for example, only new requests will use the updated timeout value.</p>
-<p>As a performance optimization, Envoy hashes the route configuration it receives from the RDS API and
-will only perform a full reload if the hash value changes.</p>
-<div class="admonition attention">
-<p class="first admonition-title">Attention</p>
-<p class="last">Route configurations that are loaded via RDS are <em>not</em> checked to see if referenced clusters are
-known to the <a class="reference internal" href="../cluster_manager/cluster_manager.html#config-cluster-manager"><span class="std std-ref">cluster manager</span></a>. The RDS API has been designed to
-work alongside the <a class="reference internal" href="../cluster_manager/cds.html#config-cluster-manager-cds"><span class="std std-ref">CDS API</span></a> such that Envoy assumes eventually
-consistent updates. If a route references an unknown cluster a 404 response will be returned by
-the router filter.</p>
-</div>
-</div>
+<ul class="simple">
+<li><a class="reference internal" href="../../api-v1/route_config/rds.html#config-http-conn-man-rds-v1"><span class="std std-ref">v1 API reference</span></a></li>
+<li><a class="reference internal" href="../overview/v2_overview.html#v2-grpc-streaming-endpoints"><span class="std std-ref">v2 API reference</span></a></li>
+</ul>
 <div class="section" id="statistics">
 <h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
 <p>RDS has a statistics tree rooted at <em>http.&lt;stat_prefix&gt;.rds.&lt;route_config_name&gt;.</em>.
@@ -345,7 +293,7 @@ stats tree. The stats tree contains the following statistics:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.5.0-data-plane-api-13e9b4',
+            VERSION:'1.5.0-data-plane-api-c73bf4',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
