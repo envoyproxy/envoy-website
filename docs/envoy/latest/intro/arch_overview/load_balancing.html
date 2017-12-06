@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Load balancing &mdash; envoy 1.5.0-data-plane-api-ddf6b6 documentation</title>
+  <title>Load balancing &mdash; envoy 1.5.0-data-plane-api-e7e2f8 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-ddf6b6 documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-e7e2f8 documentation" href="../../index.html"/>
         <link rel="up" title="Architecture overview" href="arch_overview.html"/>
         <link rel="next" title="Outlier detection" href="outlier.html"/>
         <link rel="prev" title="Connection pooling" href="connection_pooling.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-ddf6b6
+                1.5.0-data-plane-api-e7e2f8
               </div>
             
           
@@ -114,6 +114,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Load balancing</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#supported-load-balancers">Supported load balancers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#panic-threshold">Panic threshold</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#priority-levels">Priority levels</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#zone-aware-routing">Zone aware routing</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#load-balancer-subsets">Load Balancer Subsets</a></li>
 </ul>
@@ -279,6 +280,14 @@ health status and balance amongst all hosts. This is known as the <em>panic thre
 panic threshold is 50%. This is <a class="reference internal" href="../../configuration/cluster_manager/cluster_runtime.html#config-cluster-manager-cluster-runtime"><span class="std std-ref">configurable</span></a> via
 runtime. The panic threshold is used to avoid a situation in which host failures cascade throughout
 the cluster as load increases.</p>
+</div>
+<div class="section" id="priority-levels">
+<span id="arch-overview-load-balancing-priority-levels"></span><h2>Priority levels<a class="headerlink" href="#priority-levels" title="Permalink to this headline">¶</a></h2>
+<p>During load balancing, Envoy will generally only consider hosts configured at the highest priority
+level. For each EDS <a class="reference internal" href="../../api-v2/eds.proto.html#envoy-api-msg-localitylbendpoints"><span class="std std-ref">LocalityLbEndpoints</span></a> an optional priority
+may also be specified. Currently the failover mechanics for routing from one priority level to
+another are fairly simplistic: a given priority level will be used until it has zero healthy hosts,
+at which point it will hard fail to the next highest priority level.</p>
 </div>
 <div class="section" id="zone-aware-routing">
 <span id="arch-overview-load-balancing-zone-aware-routing"></span><h2>Zone aware routing<a class="headerlink" href="#zone-aware-routing" title="Permalink to this headline">¶</a></h2>
@@ -571,7 +580,7 @@ route:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.5.0-data-plane-api-ddf6b6',
+            VERSION:'1.5.0-data-plane-api-e7e2f8',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
