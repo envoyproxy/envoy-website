@@ -17,6 +17,7 @@ filter.http.GrpcJsonTranscoder
 
   {
     "proto_descriptor": "...",
+    "proto_descriptor_bin": "...",
     "services": [],
     "print_options": "{...}"
   }
@@ -24,28 +25,22 @@ filter.http.GrpcJsonTranscoder
 .. _envoy_api_field_filter.http.GrpcJsonTranscoder.proto_descriptor:
 
 proto_descriptor
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Supplies the binary protobuf descriptor set for the gRPC services.
-  The descriptor set has to include all of the types that are used in the services. Make sure
-  to use the ``--include_import`` option for ``protoc``.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Supplies the filename of
+  :ref:`the proto descriptor set <config_grpc_json_generate_proto_descriptor_set>` for the gRPC
+  services.
   
-  To generate a protobuf descriptor set for the gRPC service, you'll also need to clone the
-  googleapis repository from Github before running protoc, as you'll need annotations.proto
-  in your include path.
   
-  .. code-block:: bash
+  Precisely one of :ref:`proto_descriptor <envoy_api_field_filter.http.GrpcJsonTranscoder.proto_descriptor>`, :ref:`proto_descriptor_bin <envoy_api_field_filter.http.GrpcJsonTranscoder.proto_descriptor_bin>` must be set.
   
-    git clone https://github.com/googleapis/googleapis
-    GOOGLEAPIS_DIR=<your-local-googleapis-folder>
+.. _envoy_api_field_filter.http.GrpcJsonTranscoder.proto_descriptor_bin:
+
+proto_descriptor_bin
+  (`bytes <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Supplies the binary content of
+  :ref:`the proto descriptor set <config_grpc_json_generate_proto_descriptor_set>` for the gRPC
+  services.
   
-  Then run protoc to generate the descriptor set from bookstore.proto:
   
-  .. code-block:: bash
-  
-    protoc -I$(GOOGLEAPIS_DIR) -I. --include_imports --include_source_info \
-    --descriptor_set_out=proto.pb test/proto/bookstore.proto
-  
-  If you have more than one proto source files, you can pass all of them in one command.
-  
+  Precisely one of :ref:`proto_descriptor <envoy_api_field_filter.http.GrpcJsonTranscoder.proto_descriptor>`, :ref:`proto_descriptor_bin <envoy_api_field_filter.http.GrpcJsonTranscoder.proto_descriptor_bin>` must be set.
   
 .. _envoy_api_field_filter.http.GrpcJsonTranscoder.services:
 
@@ -69,7 +64,7 @@ print_options
 filter.http.GrpcJsonTranscoder.PrintOptions
 -------------------------------------------
 
-`[filter.http.GrpcJsonTranscoder.PrintOptions proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/http/transcoder.proto#L39>`_
+`[filter.http.GrpcJsonTranscoder.PrintOptions proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/filter/http/transcoder.proto#L30>`_
 
 
 .. code-block:: json

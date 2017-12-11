@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>gRPC-JSON transcoder filter &mdash; envoy 1.5.0-data-plane-api-1d80e4 documentation</title>
+  <title>gRPC-JSON transcoder filter &mdash; envoy 1.5.0-data-plane-api-ca8355 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.5.0-data-plane-api-1d80e4 documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.5.0-data-plane-api-ca8355 documentation" href="../../index.html"/>
         <link rel="up" title="HTTP filters" href="http_filters.html"/>
         <link rel="next" title="gRPC-Web filter" href="grpc_web_filter.html"/>
         <link rel="prev" title="gRPC HTTP/1.1 bridge" href="grpc_http1_bridge_filter.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.5.0-data-plane-api-1d80e4
+                1.5.0-data-plane-api-ca8355
               </div>
             
           
@@ -109,7 +109,10 @@
 <li class="toctree-l3"><a class="reference internal" href="fault_filter.html">Fault Injection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dynamodb_filter.html">DynamoDB</a></li>
 <li class="toctree-l3"><a class="reference internal" href="grpc_http1_bridge_filter.html">gRPC HTTP/1.1 bridge</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">gRPC-JSON transcoder filter</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">gRPC-JSON transcoder filter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#how-to-generate-proto-descriptor-set">How to generate proto descriptor set</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="grpc_web_filter.html">gRPC-Web filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="health_check_filter.html">Health check</a></li>
 <li class="toctree-l3"><a class="reference internal" href="rate_limit_filter.html">Rate limit</a></li>
@@ -206,6 +209,23 @@
 <p>This is a filter which allows a RESTful JSON API client to send requests to Envoy over HTTP
 and get proxied to a gRPC service. The HTTP mapping for the gRPC service has to be defined by
 <a class="reference external" href="https://cloud.google.com/service-management/reference/rpc/google.api#http">custom options</a>.</p>
+<div class="section" id="how-to-generate-proto-descriptor-set">
+<span id="config-grpc-json-generate-proto-descriptor-set"></span><h2>How to generate proto descriptor set<a class="headerlink" href="#how-to-generate-proto-descriptor-set" title="Permalink to this headline">¶</a></h2>
+<p>Envoy has to know the proto descriptor of your gRPC service in order to do the transcoding.</p>
+<p>To generate a protobuf descriptor set for the gRPC service, you’ll also need to clone the
+googleapis repository from GitHub before running protoc, as you’ll need annotations.proto
+in your include path, to define the HTTP mapping.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>git clone https://github.com/googleapis/googleapis
+<span class="nv">GOOGLEAPIS_DIR</span><span class="o">=</span>&lt;your-local-googleapis-folder&gt;
+</pre></div>
+</div>
+<p>Then run protoc to generate the descriptor set from bookstore.proto:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>protoc -I<span class="k">$(</span>GOOGLEAPIS_DIR<span class="k">)</span> -I. --include_imports --include_source_info <span class="se">\</span>
+  --descriptor_set_out<span class="o">=</span>proto.pb test/proto/bookstore.proto
+</pre></div>
+</div>
+<p>If you have more than one proto source files, you can pass all of them in one command.</p>
+</div>
 </div>
 
 
@@ -252,7 +272,7 @@ and get proxied to a gRPC service. The HTTP mapping for the gRPC service has to 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.5.0-data-plane-api-1d80e4',
+            VERSION:'1.5.0-data-plane-api-ca8355',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
