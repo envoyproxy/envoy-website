@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TLS &mdash; envoy 1.6.0-data-plane-api-3deffb documentation</title>
+  <title>TLS &mdash; envoy 1.6.0-data-plane-api-54b1cb documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.6.0-data-plane-api-3deffb documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.6.0-data-plane-api-54b1cb documentation" href="../../index.html"/>
         <link rel="up" title="Architecture overview" href="arch_overview.html"/>
         <link rel="next" title="Statistics" href="statistics.html"/>
         <link rel="prev" title="Global rate limiting" href="global_rate_limiting.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.6.0-data-plane-api-3deffb
+                1.6.0-data-plane-api-54b1cb
               </div>
             
           
@@ -117,6 +117,7 @@
 <li class="toctree-l3"><a class="reference internal" href="global_rate_limiting.html">Global rate limiting</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">TLS</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#underlying-implementation">Underlying implementation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#enabling-certificate-verification">Enabling certificate verification</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#authentication-filter">Authentication filter</a></li>
 </ul>
 </li>
@@ -242,6 +243,53 @@ configuration).</li>
 <p>Currently Envoy is written to use <a class="reference external" href="https://boringssl.googlesource.com/boringssl">BoringSSL</a> as the
 TLS provider.</p>
 </div>
+<div class="section" id="enabling-certificate-verification">
+<span id="arch-overview-ssl-enabling-verification"></span><h2>Enabling certificate verification<a class="headerlink" href="#enabling-certificate-verification" title="Permalink to this headline">¶</a></h2>
+<p>Certificate verification of both upstream and downstream connections is not enabled unless the
+validation context specifies one or more trusted authority certificates.</p>
+<div class="section" id="example-configuration">
+<h3>Example configuration<a class="headerlink" href="#example-configuration" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">static_resources</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">listeners</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">listener_0</span>
+    <span class="l l-Scalar l-Scalar-Plain">address</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">socket_address</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">address</span><span class="p p-Indicator">:</span> <span class="nv">127.0.0.1</span><span class="p p-Indicator">,</span> <span class="nv">port_value</span><span class="p p-Indicator">:</span> <span class="nv">10000</span> <span class="p p-Indicator">}</span> <span class="p p-Indicator">}</span>
+    <span class="l l-Scalar l-Scalar-Plain">filter_chains</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">filters</span><span class="p p-Indicator">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.http_connection_manager</span>
+        <span class="c1"># ...</span>
+      <span class="l l-Scalar l-Scalar-Plain">tls_context</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">common_tls_context</span><span class="p p-Indicator">:</span>
+          <span class="l l-Scalar l-Scalar-Plain">validation_context</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">trusted_ca</span><span class="p p-Indicator">:</span>
+              <span class="l l-Scalar l-Scalar-Plain">filename</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/usr/local/my-client-ca.crt</span>
+  <span class="l l-Scalar l-Scalar-Plain">clusters</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">some_service</span>
+    <span class="l l-Scalar l-Scalar-Plain">connect_timeout</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25s</span>
+    <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">STATIC</span>
+    <span class="l l-Scalar l-Scalar-Plain">lb_policy</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ROUND_ROBIN</span>
+    <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[{</span> <span class="nv">socket_address</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">address</span><span class="p p-Indicator">:</span> <span class="nv">127.0.0.2</span><span class="p p-Indicator">,</span> <span class="nv">port_value</span><span class="p p-Indicator">:</span> <span class="nv">1234</span> <span class="p p-Indicator">}}]</span>
+    <span class="l l-Scalar l-Scalar-Plain">tls_context</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">common_tls_context</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">validation_context</span><span class="p p-Indicator">:</span>
+          <span class="l l-Scalar l-Scalar-Plain">trusted_ca</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">filename</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/etc/ssl/certs/ca-certificates.crt</span>
+</pre></div>
+</div>
+<p><em>/etc/ssl/certs/ca-certificates.crt</em> is the default path for the system CA bundle on Debian systems.
+This makes Envoy verify the server identity of <em>127.0.0.2:1234</em> in the same way as e.g. cURL does on
+standard Debian installations. Common paths for system CA bundles on Linux and BSD are</p>
+<ul class="simple">
+<li>/etc/ssl/certs/ca-certificates.crt (Debian/Ubuntu/Gentoo etc.)</li>
+<li>/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem (CentOS/RHEL 7)</li>
+<li>/etc/pki/tls/certs/ca-bundle.crt (Fedora/RHEL 6)</li>
+<li>/etc/ssl/ca-bundle.pem (OpenSUSE)</li>
+<li>/usr/local/etc/ssl/cert.pem (FreeBSD)</li>
+<li>/etc/ssl/cert.pem (OpenBSD)</li>
+</ul>
+<p>See the reference for <a class="reference internal" href="../../api-v2/sds.proto.html#envoy-api-msg-upstreamtlscontext"><span class="std std-ref">UpstreamTlsContexts</span></a> and
+<a class="reference internal" href="../../api-v2/sds.proto.html#envoy-api-msg-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContexts</span></a> for other TLS options.</p>
+</div>
+</div>
 <div class="section" id="authentication-filter">
 <span id="arch-overview-ssl-auth-filter"></span><h2>Authentication filter<a class="headerlink" href="#authentication-filter" title="Permalink to this headline">¶</a></h2>
 <p>Envoy provides a network filter that performs TLS client authentication via principals fetched from
@@ -297,7 +345,7 @@ infrastructure.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.6.0-data-plane-api-3deffb',
+            VERSION:'1.6.0-data-plane-api-54b1cb',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
