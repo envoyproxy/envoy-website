@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Load balancing &mdash; envoy 1.6.0-data-plane-api-48688e documentation</title>
+  <title>Load balancing &mdash; envoy 1.6.0-data-plane-api-a1f2fe documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.6.0-data-plane-api-48688e documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.6.0-data-plane-api-a1f2fe documentation" href="../../index.html"/>
         <link rel="up" title="Architecture overview" href="arch_overview.html"/>
         <link rel="next" title="Outlier detection" href="outlier.html"/>
         <link rel="prev" title="Connection pooling" href="connection_pooling.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.6.0-data-plane-api-48688e
+                1.6.0-data-plane-api-a1f2fe
               </div>
             
           
@@ -253,6 +253,8 @@ specified in <a class="reference internal" href="../../configuration/cluster_man
 size governs the replication factor for each host in the ring. For example, if the minimum ring
 size is 1024 and there are 16 hosts, each host will be replicated 64 times. The ring hash load
 balancer does not currently support weighting.</p>
+<p>When priority based load balancing is in use, the priority level is also chosen by hash, so the
+endpoint selected will still be consistent when the set of backends is stable.</p>
 </div>
 <div class="section" id="random">
 <span id="arch-overview-load-balancing-types-random"></span><h3>Random<a class="headerlink" href="#random" title="Permalink to this headline">¶</a></h3>
@@ -284,10 +286,177 @@ the cluster as load increases.</p>
 <div class="section" id="priority-levels">
 <span id="arch-overview-load-balancing-priority-levels"></span><h2>Priority levels<a class="headerlink" href="#priority-levels" title="Permalink to this headline">¶</a></h2>
 <p>During load balancing, Envoy will generally only consider hosts configured at the highest priority
-level. For each EDS <a class="reference internal" href="../../api-v2/eds.proto.html#envoy-api-msg-localitylbendpoints"><span class="std std-ref">LocalityLbEndpoints</span></a> an optional priority
-may also be specified. Currently the failover mechanics for routing from one priority level to
-another are fairly simplistic: a given priority level will be used until it has zero healthy hosts,
-at which point it will hard fail to the next highest priority level.</p>
+level. For each EDS <a class="reference internal" href="../../api-v2/eds.proto.html#envoy-api-msg-localitylbendpoints"><span class="std std-ref">LocalityLbEndpoints</span></a> an optional
+priority may also be specified. When endpoints at the highest priority level (P=0) are healthy, all
+traffic will land on endpoints in that priority level. As endpoints for the highest priority level
+become unhealthy, traffic will begin to trickle to lower priority levels.</p>
+<p>Currently, it is assumed that each priority level is over-provisioned by a (hard-coded) factor of
+1.4. So if 80% of the endpoints are healthy, the priority level is still considered healthy because
+80*1.4 &gt; 100. As the number of healthy endpoints dips below 72%, the health of the priority level
+goes below 100. At that point the percent of traffic equivalent to the health of P=0 will go to P=0
+and remaining traffic will flow to P=1.</p>
+<p>Assume a simple set-up with 2 priority levels, P=1 100% healthy.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="34%" />
+<col width="33%" />
+<col width="34%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">P=0 healthy endpoints</th>
+<th class="head">Percent of traffic to P=0</th>
+<th class="head">Percent of traffic to P=1</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>100%</td>
+<td>100%</td>
+<td>0%</td>
+</tr>
+<tr class="row-odd"><td>72%</td>
+<td>100%</td>
+<td>0%</td>
+</tr>
+<tr class="row-even"><td>71%</td>
+<td>99%</td>
+<td>1%</td>
+</tr>
+<tr class="row-odd"><td>50%</td>
+<td>70%</td>
+<td>30%</td>
+</tr>
+<tr class="row-even"><td>25%</td>
+<td>35%</td>
+<td>65%</td>
+</tr>
+<tr class="row-odd"><td>0%</td>
+<td>0%</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table>
+<p>If P=1 becomes unhealthy, it will continue to take spilled load from P=0 until the sum of the health
+P=0 + P=1 goes below 100. At this point the healths will be scaled up to an “effective” health of
+100%.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="30%" />
+<col width="20%" />
+<col width="20%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">P=0 healthy endpoints</th>
+<th class="head">P=1 healthy endpoints</th>
+<th class="head">Traffic to  P=0</th>
+<th class="head">Traffic to P=1</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>100%</td>
+<td>100%</td>
+<td>100%</td>
+<td>0%</td>
+</tr>
+<tr class="row-odd"><td>72%</td>
+<td>72%</td>
+<td>100%</td>
+<td>0%</td>
+</tr>
+<tr class="row-even"><td>71%</td>
+<td>71%</td>
+<td>99%</td>
+<td>1%</td>
+</tr>
+<tr class="row-odd"><td>50%</td>
+<td>50%</td>
+<td>70%</td>
+<td>30%</td>
+</tr>
+<tr class="row-even"><td>25%</td>
+<td>100%</td>
+<td>35%</td>
+<td>65%</td>
+</tr>
+<tr class="row-odd"><td>25%</td>
+<td>25%</td>
+<td>50%</td>
+<td>50%</td>
+</tr>
+</tbody>
+</table>
+<p>As more priorities are added, each level consumes load equal to its “scaled” effective health, so
+P=2 would only receive traffic if the combined health of P=0 + P=1 was less than 100.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">P=0 healthy endpoints</th>
+<th class="head">P=1 healthy endpoints</th>
+<th class="head">P=2 healthy endpoints</th>
+<th class="head">Traffic to P=0</th>
+<th class="head">Traffic to P=1</th>
+<th class="head">Traffic to P=2</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>100%</td>
+<td>100%</td>
+<td>100%</td>
+<td>100%</td>
+<td>0%</td>
+<td>0%</td>
+</tr>
+<tr class="row-odd"><td>72%</td>
+<td>72%</td>
+<td>100%</td>
+<td>100%</td>
+<td>0%</td>
+<td>0%</td>
+</tr>
+<tr class="row-even"><td>71%</td>
+<td>71%</td>
+<td>100%</td>
+<td>99%</td>
+<td>1%</td>
+<td>0%</td>
+</tr>
+<tr class="row-odd"><td>50%</td>
+<td>50%</td>
+<td>100%</td>
+<td>70%</td>
+<td>30%</td>
+<td>0%</td>
+</tr>
+<tr class="row-even"><td>25%</td>
+<td>100%</td>
+<td>100%</td>
+<td>35%</td>
+<td>65%</td>
+<td>0%</td>
+</tr>
+<tr class="row-odd"><td>25%</td>
+<td>25%</td>
+<td>100%</td>
+<td>25%</td>
+<td>25%</td>
+<td>50%</td>
+</tr>
+</tbody>
+</table>
+<p>To sum this up in pseudo algorithms:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">load</span> <span class="n">to</span> <span class="n">P_0</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">health</span><span class="p">(</span><span class="n">P_0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">/</span> <span class="n">total_health</span><span class="p">)</span>
+<span class="n">health</span><span class="p">(</span><span class="n">P_X</span><span class="p">)</span> <span class="o">=</span> <span class="mi">140</span> <span class="o">*</span> <span class="n">healthy_P_X_backends</span> <span class="o">/</span> <span class="n">total_P_X_backends</span>
+<span class="n">total_health</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">Σ</span><span class="p">(</span><span class="n">health</span><span class="p">(</span><span class="n">P_0</span><span class="p">)</span><span class="o">...</span><span class="n">health</span><span class="p">(</span><span class="n">P_X</span><span class="p">))</span>
+<span class="n">load</span> <span class="n">to</span> <span class="n">P_X</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">-</span> <span class="n">Σ</span><span class="p">(</span><span class="n">percent_load</span><span class="p">(</span><span class="n">P_0</span><span class="p">)</span><span class="o">..</span><span class="n">percent_load</span><span class="p">(</span><span class="n">P_X</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="zone-aware-routing">
 <span id="arch-overview-load-balancing-zone-aware-routing"></span><h2>Zone aware routing<a class="headerlink" href="#zone-aware-routing" title="Permalink to this headline">¶</a></h2>
@@ -332,6 +501,7 @@ In this case the local zone of the upstream cluster can get all of the requests 
 local zone of the originating cluster and also have some space to allow traffic from other zones
 in the originating cluster (if needed).</li>
 </ul>
+<p>Note that when using multiple priorities, zone aware routing is currently only supported for P=0.</p>
 </div>
 <div class="section" id="load-balancer-subsets">
 <span id="arch-overview-load-balancer-subsets"></span><h2>Load Balancer Subsets<a class="headerlink" href="#load-balancer-subsets" title="Permalink to this headline">¶</a></h2>
@@ -580,7 +750,7 @@ route:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.6.0-data-plane-api-48688e',
+            VERSION:'1.6.0-data-plane-api-a1f2fe',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
