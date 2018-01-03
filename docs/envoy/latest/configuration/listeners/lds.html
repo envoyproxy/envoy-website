@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Listener discovery service (LDS) &mdash; envoy 1.6.0-data-plane-api-c028b8 documentation</title>
+  <title>Listener discovery service (LDS) &mdash; envoy 1.6.0-data-plane-api-931aaa documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.6.0-data-plane-api-c028b8 documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.6.0-data-plane-api-931aaa documentation" href="../../index.html"/>
         <link rel="up" title="Listeners" href="listeners.html"/>
         <link rel="next" title="Network filters" href="../network_filters/network_filters.html"/>
         <link rel="prev" title="Runtime" href="runtime.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.6.0-data-plane-api-c028b8
+                1.6.0-data-plane-api-931aaa
               </div>
             
           
@@ -198,20 +198,29 @@
 listeners. Envoy will reconcile the API response and add, modify, or remove known listeners
 depending on what is required.</p>
 <p>The semantics of listener updates are as follows:</p>
-<ul class="simple">
-<li>Every listener must have a unique <a class="reference internal" href="../../api-v1/listeners/listeners.html#config-listeners-name"><span class="std std-ref">name</span></a>. If a name is not
+<ul>
+<li><p class="first">Every listener must have a unique <a class="reference internal" href="../../api-v1/listeners/listeners.html#config-listeners-name"><span class="std std-ref">name</span></a>. If a name is not
 provided, Envoy will create a UUID. Listeners that are to be dynamically updated should have a
-unique name supplied by the management server.</li>
-<li>When a listener is added, it will be “warmed” before taking traffic. For example, if the listener
+unique name supplied by the management server.</p>
+</li>
+<li><p class="first">When a listener is added, it will be “warmed” before taking traffic. For example, if the listener
 references an <a class="reference internal" href="../http_conn_man/rds.html#config-http-conn-man-rds"><span class="std std-ref">RDS</span></a> configuration, that configuration will be
-resolved and fetched before the listener is moved to “active.”</li>
-<li>Listeners are effectively constant once created. Thus, when a listener is updated, an entirely
+resolved and fetched before the listener is moved to “active.”</p>
+</li>
+<li><p class="first">Listeners are effectively constant once created. Thus, when a listener is updated, an entirely
 new listener is created (with the same listen socket). This listener goes through the same
-warming process described above for a newly added listener.</li>
-<li>When a listener is updated or removed, the old listener will be placed into a “draining” state
+warming process described above for a newly added listener.</p>
+</li>
+<li><p class="first">When a listener is updated or removed, the old listener will be placed into a “draining” state
 much like when the entire server is drained for restart. Connections owned by the listener will
 be gracefully closed (if possible) for some period of time before the listener is removed and any
-remaining connections are closed. The drain time is set via the <a class="reference internal" href="../../operations/cli.html#cmdoption-drain-time-s"><code class="xref std std-option docutils literal"><span class="pre">--drain-time-s</span></code></a> option.</li>
+remaining connections are closed. The drain time is set via the <a class="reference internal" href="../../operations/cli.html#cmdoption-drain-time-s"><code class="xref std std-option docutils literal"><span class="pre">--drain-time-s</span></code></a> option.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Any listeners that are statically defined within the Envoy configuration cannot be modified or
+removed via the LDS API.</p>
+</div>
+</li>
 </ul>
 <div class="section" id="configuration">
 <h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
@@ -305,7 +314,7 @@ remaining connections are closed. The drain time is set via the <a class="refere
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.6.0-data-plane-api-c028b8',
+            VERSION:'1.6.0-data-plane-api-931aaa',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
