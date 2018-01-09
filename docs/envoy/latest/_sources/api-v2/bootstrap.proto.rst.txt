@@ -12,7 +12,7 @@ of the Envoy v2 configuration. See the :ref:`v2 configuration overview
 Bootstrap
 ---------
 
-`[Bootstrap proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L23>`_
+`[Bootstrap proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L25>`_
 
 Bootstrap :ref:`configuration overview <config_overview_v2_bootstrap>`.
 
@@ -126,7 +126,7 @@ admin
 Bootstrap.StaticResources
 -------------------------
 
-`[Bootstrap.StaticResources proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L28>`_
+`[Bootstrap.StaticResources proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L30>`_
 
 
 .. code-block:: json
@@ -162,7 +162,7 @@ clusters
 Bootstrap.DynamicResources
 --------------------------
 
-`[Bootstrap.DynamicResources proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L47>`_
+`[Bootstrap.DynamicResources proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L49>`_
 
 
 .. code-block:: json
@@ -211,7 +211,7 @@ deprecated_v1
 Bootstrap.DynamicResources.DeprecatedV1
 ---------------------------------------
 
-`[Bootstrap.DynamicResources.DeprecatedV1 proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L66>`_
+`[Bootstrap.DynamicResources.DeprecatedV1 proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L68>`_
 
 
 .. code-block:: json
@@ -238,7 +238,7 @@ sds_config
 Admin
 -----
 
-`[Admin proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L119>`_
+`[Admin proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L121>`_
 
 Administration interface :ref:`operations documentation
 <operations_admin_interface>`.
@@ -278,7 +278,7 @@ address
 ClusterManager
 --------------
 
-`[ClusterManager proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L133>`_
+`[ClusterManager proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L135>`_
 
 Cluster manager :ref:`architecture overview <arch_overview_cluster_manager>`.
 
@@ -331,7 +331,7 @@ load_stats_config
 ClusterManager.OutlierDetection
 -------------------------------
 
-`[ClusterManager.OutlierDetection proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L145>`_
+`[ClusterManager.OutlierDetection proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L147>`_
 
 
 .. code-block:: json
@@ -354,7 +354,7 @@ event_log_path
 Watchdog
 --------
 
-`[Watchdog proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L164>`_
+`[Watchdog proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L166>`_
 
 Envoy process watchdog configuration. When configured, this monitors for
 nonresponsive threads and kills the process after the configured thresholds.
@@ -406,7 +406,7 @@ multikill_timeout
 Runtime
 -------
 
-`[Runtime proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L186>`_
+`[Runtime proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L188>`_
 
 Runtime :ref:`configuration overview <config_runtime>`.
 
@@ -454,22 +454,38 @@ override_subdirectory
 RateLimitServiceConfig
 ----------------------
 
-`[RateLimitServiceConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L209>`_
+`[RateLimitServiceConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/bootstrap.proto#L211>`_
 
 Rate limit :ref:`configuration overview <config_rate_limit_service>`.
 
 .. code-block:: json
 
   {
-    "cluster_name": "..."
+    "cluster_name": "...",
+    "grpc_service": "{...}"
   }
 
 .. _envoy_api_field_RateLimitServiceConfig.cluster_name:
 
 cluster_name
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Specifies the cluster manager cluster name that hosts the rate limit
-  service. The client will connect to this cluster when it needs to make rate
-  limit service requests.
+  service. The client will connect to this cluster when it needs to make
+  rate limit service requests. This field is deprecated and `grpc_service`
+  should be used instead. The :ref:`Envoy gRPC client
+  <envoy_api_field_GrpcService.envoy_grpc>` will be used when this field is
+  specified.
   
+  
+  Precisely one of :ref:`cluster_name <envoy_api_field_RateLimitServiceConfig.cluster_name>`, :ref:`grpc_service <envoy_api_field_RateLimitServiceConfig.grpc_service>` must be set.
+  
+.. _envoy_api_field_RateLimitServiceConfig.grpc_service:
+
+grpc_service
+  (:ref:`GrpcService <envoy_api_msg_GrpcService>`) Specifies the gRPC service that hosts the rate limit service. The client
+  will connect to this cluster when it needs to make rate limit service
+  requests.
+  
+  
+  Precisely one of :ref:`cluster_name <envoy_api_field_RateLimitServiceConfig.cluster_name>`, :ref:`grpc_service <envoy_api_field_RateLimitServiceConfig.grpc_service>` must be set.
   
 
