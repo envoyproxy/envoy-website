@@ -36,7 +36,8 @@ Cluster
     "upstream_bind_config": "{...}",
     "lb_subset_config": "{...}",
     "ring_hash_lb_config": "{...}",
-    "transport_socket": "{...}"
+    "transport_socket": "{...}",
+    "protocol_selection": "..."
   }
 
 .. _envoy_api_field_Cluster.name:
@@ -131,14 +132,11 @@ tls_context
     verification.
   
   
-
 .. _envoy_api_field_Cluster.http_protocol_options:
 
 http_protocol_options
   (:ref:`Http1ProtocolOptions <envoy_api_msg_Http1ProtocolOptions>`) Additional options when handling HTTP1 requests.
   
-  
-  Only one of :ref:`http_protocol_options <envoy_api_field_Cluster.http_protocol_options>`, :ref:`http2_protocol_options <envoy_api_field_Cluster.http2_protocol_options>` may be set.
   
 .. _envoy_api_field_Cluster.http2_protocol_options:
 
@@ -151,9 +149,6 @@ http2_protocol_options
   connections to happen over plain text.
   
   
-  Only one of :ref:`http_protocol_options <envoy_api_field_Cluster.http_protocol_options>`, :ref:`http2_protocol_options <envoy_api_field_Cluster.http2_protocol_options>` may be set.
-  
-
 .. _envoy_api_field_Cluster.dns_refresh_rate:
 
 dns_refresh_rate
@@ -246,6 +241,11 @@ transport_socket
   
   
 
+.. _envoy_api_field_Cluster.protocol_selection:
+
+protocol_selection
+  (:ref:`Cluster.ClusterProtocolSelection <envoy_api_enum_Cluster.ClusterProtocolSelection>`) 
+  
 .. _envoy_api_msg_Cluster.EdsClusterConfig:
 
 Cluster.EdsClusterConfig
@@ -283,7 +283,7 @@ service_name
 Cluster.OutlierDetection
 ------------------------
 
-`[Cluster.OutlierDetection proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L230>`_
+`[Cluster.OutlierDetection proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L226>`_
 
 See the :ref:`architecture overview <arch_overview_outlier_detection>` for
 more information on outlier detection.
@@ -404,7 +404,7 @@ enforcing_consecutive_gateway_failure
 Cluster.LbSubsetConfig
 ----------------------
 
-`[Cluster.LbSubsetConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L321>`_
+`[Cluster.LbSubsetConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L317>`_
 
 Optionally divide the endpoints in this cluster into subsets defined by
 endpoint metadata and selected by route and weighted cluster metadata.
@@ -462,7 +462,7 @@ subset_selectors
 Cluster.LbSubsetConfig.LbSubsetSelector
 ---------------------------------------
 
-`[Cluster.LbSubsetConfig.LbSubsetSelector proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L350>`_
+`[Cluster.LbSubsetConfig.LbSubsetSelector proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L346>`_
 
 Specifications for subsets.
 
@@ -485,7 +485,7 @@ keys
 Enum Cluster.LbSubsetConfig.LbSubsetFallbackPolicy
 --------------------------------------------------
 
-`[Cluster.LbSubsetConfig.LbSubsetFallbackPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L328>`_
+`[Cluster.LbSubsetConfig.LbSubsetFallbackPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L324>`_
 
 If NO_FALLBACK is selected, a result
 equivalent to no healthy hosts is reported. If ANY_ENDPOINT is selected,
@@ -514,7 +514,7 @@ DEFAULT_SUBSET
 Cluster.RingHashLbConfig
 ------------------------
 
-`[Cluster.RingHashLbConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L377>`_
+`[Cluster.RingHashLbConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L373>`_
 
 Specific configuration for the :ref:`RingHash<arch_overview_load_balancing_types_ring_hash>`
 load balancing policy.
@@ -547,7 +547,7 @@ deprecated_v1
 Cluster.RingHashLbConfig.DeprecatedV1
 -------------------------------------
 
-`[Cluster.RingHashLbConfig.DeprecatedV1 proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L385>`_
+`[Cluster.RingHashLbConfig.DeprecatedV1 proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L381>`_
 
 
 .. code-block:: json
@@ -675,7 +675,7 @@ ORIGINAL_DST_LB
 Enum Cluster.DnsLookupFamily
 ----------------------------
 
-`[Cluster.DnsLookupFamily proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L205>`_
+`[Cluster.DnsLookupFamily proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L201>`_
 
 When V4_ONLY is selected, the DNS resolver will only perform a lookup for
 addresses in the IPv4 family. If V6_ONLY is selected, the DNS resolver will
@@ -704,12 +704,35 @@ V6_ONLY
   ⁣
   
 
+.. _envoy_api_enum_Cluster.ClusterProtocolSelection:
+
+Enum Cluster.ClusterProtocolSelection
+-------------------------------------
+
+`[Cluster.ClusterProtocolSelection proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L417>`_
+
+
+.. _envoy_api_enum_value_Cluster.ClusterProtocolSelection.USE_CONFIGURED_PROTOCOL:
+
+USE_CONFIGURED_PROTOCOL
+  *(DEFAULT)* ⁣Cluster can only operate on one of the possible upstream protocols (HTTP1.1, HTTP2).
+  If :ref:`http2_protocol_options <envoy_api_field_Cluster.http2_protocol_options>` are
+  present, HTTP2 will be used, otherwise HTTP1.1 will be used.
+  
+  
+.. _envoy_api_enum_value_Cluster.ClusterProtocolSelection.USE_DOWNSTREAM_PROTOCOL:
+
+USE_DOWNSTREAM_PROTOCOL
+  ⁣Use HTTP1.1 or HTTP2, depending on which one is used on the downstream connection.
+  
+  
+
 .. _envoy_api_msg_UpstreamBindConfig:
 
 UpstreamBindConfig
 ------------------
 
-`[UpstreamBindConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L424>`_
+`[UpstreamBindConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L430>`_
 
 An extensible structure containing the address Envoy should bind to when
 establishing upstream connections.
@@ -733,7 +756,7 @@ source_address
 CircuitBreakers
 ---------------
 
-`[CircuitBreakers proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L431>`_
+`[CircuitBreakers proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L437>`_
 
 :ref:`Circuit breaking<arch_overview_circuit_break>` settings can be
 specified individually for each defined priority.
@@ -759,7 +782,7 @@ thresholds
 CircuitBreakers.Thresholds
 --------------------------
 
-`[CircuitBreakers.Thresholds proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L435>`_
+`[CircuitBreakers.Thresholds proto] <https://github.com/envoyproxy/data-plane-api/blob/master/api/cds.proto#L441>`_
 
 A Thresholds defines CircuitBreaker settings for a
 :ref:`RoutingPriority<envoy_api_enum_RoutingPriority>`.
