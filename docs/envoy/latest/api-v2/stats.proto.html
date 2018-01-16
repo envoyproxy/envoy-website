@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Stats &mdash; envoy 1.6.0-dev-data-plane-api-cc0e23 documentation</title>
+  <title>Stats &mdash; envoy 1.6.0-dev-data-plane-api-081137 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-cc0e23 documentation" href="../index.html"/>
+    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-081137 documentation" href="../index.html"/>
         <link rel="up" title="v2 API reference" href="api.html"/>
         <link rel="next" title="Metrics Service" href="metrics_service.proto.html"/>
         <link rel="prev" title="Common TLS configuration" href="sds.proto.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.6.0-dev-data-plane-api-cc0e23
+                1.6.0-dev-data-plane-api-081137
               </div>
             
           
@@ -261,13 +261,15 @@ for a list of the default tags in Envoy.</p>
 </div>
 <div class="section" id="tagspecifier">
 <span id="envoy-api-msg-tagspecifier"></span><h2>TagSpecifier<a class="headerlink" href="#tagspecifier" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/stats.proto#L59">[TagSpecifier proto]</a></p>
-<p>Designates a tag to strip from the tag extracted name and provide as a named
-tag value for all statistics. This will only occur if any part of the name
-matches the regex provided with one or more capture groups.</p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/stats.proto#L60">[TagSpecifier proto]</a></p>
+<p>Designates a tag name and value pair. The value may be either a fixed value
+or a regex providing the value via capture groups. The specified tag will be
+unconditionally set if a fixed value, otherwise it will only be set if one
+or more capture groups in the regex match.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;tag_name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;regex&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+  <span class="nt">&quot;regex&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;fixed_value&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -276,25 +278,28 @@ matches the regex provided with one or more capture groups.</p>
 <dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Attaches an identifier to the tag values to identify the tag being in the
 sink. Envoy has a set of default names and regexes to extract dynamic
 portions of existing stats, which can be found in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/source/common/config/well_known_names.h">well_known_names.h</a>
-in the Envoy repository. If a <a class="reference internal" href="#envoy-api-field-tagspecifier-tag-name"><span class="std std-ref">tag_name</span></a> is provided in the config with an
-empty regex, Envoy will attempt to find that name in its set of defaults
-and use the accompanying regex.</p>
+in the Envoy repository. If a <a class="reference internal" href="#envoy-api-field-tagspecifier-tag-name"><span class="std std-ref">tag_name</span></a> is provided in the config and neither
+<a class="reference internal" href="#envoy-api-field-tagspecifier-regex"><span class="std std-ref">regex</span></a> or
+<a class="reference internal" href="#envoy-api-field-tagspecifier-fixed-value"><span class="std std-ref">fixed_value</span></a> were specified,
+Envoy will attempt to find that name in its set of defaults and use the accompanying regex.</p>
 <div class="last admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">If any default tags are specified twice, the config will be considered
-invalid.</p>
+<p class="last">It is invalid to specify the same tag name twice in a config.</p>
 </div>
 </dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-tagspecifier-regex">
 <dt>regex</dt>
-<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The first capture group identifies the portion of the name to remove. The
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Designates a tag to strip from the tag extracted name and provide as a named
+tag value for all statistics. This will only occur if any part of the name
+matches the regex provided with one or more capture groups.</p>
+<p>The first capture group identifies the portion of the name to remove. The
 second capture group (which will normally be nested inside the first) will
 designate the value of the tag for the statistic. If no second capture
 group is provided, the first will also be used to set the value of the tag.
 All other capture groups will be ignored.</p>
-<p>Take for example, with a stat name <code class="docutils literal"><span class="pre">cluster.foo_cluster.upstream_rq_timeout</span></code>
-and</p>
+<p>Example 1. a stat name <code class="docutils literal"><span class="pre">cluster.foo_cluster.upstream_rq_timeout</span></code> and
+one tag specifier:</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;tag_name&quot;</span><span class="p">:</span> <span class="s2">&quot;envoy.cluster_name&quot;</span><span class="p">,</span>
   <span class="nt">&quot;regex&quot;</span><span class="p">:</span> <span class="s2">&quot;^cluster\.((.+?)\.)&quot;</span>
@@ -305,8 +310,9 @@ and</p>
 name <code class="docutils literal"><span class="pre">cluster.upstream_rq_timeout</span></code> and the tag value for
 <code class="docutils literal"><span class="pre">envoy.cluster_name</span></code> will be <code class="docutils literal"><span class="pre">foo_cluster</span></code> (note: there will be no
 <code class="docutils literal"><span class="pre">.</span></code> character because of the second capture group).</p>
-<p>An example with two regexes and stat name
-<code class="docutils literal"><span class="pre">http.connection_manager_1.user_agent.ios.downstream_cx_total</span></code>:</p>
+<p>Example 2. a stat name
+<code class="docutils literal"><span class="pre">http.connection_manager_1.user_agent.ios.downstream_cx_total</span></code> and two
+tag specifiers:</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">[</span>
   <span class="p">{</span>
     <span class="nt">&quot;tag_name&quot;</span><span class="p">:</span> <span class="s2">&quot;envoy.http_user_agent&quot;</span><span class="p">,</span>
@@ -319,21 +325,29 @@ name <code class="docutils literal"><span class="pre">cluster.upstream_rq_timeou
 <span class="p">]</span>
 </pre></div>
 </div>
+<p>The two regexes of the specifiers will be processed in the definition order.</p>
 <p>The first regex will remove <code class="docutils literal"><span class="pre">ios.</span></code>, leaving the tag extracted name
 <code class="docutils literal"><span class="pre">http.connection_manager_1.user_agent.downstream_cx_total</span></code>. The tag
 <code class="docutils literal"><span class="pre">envoy.http_user_agent</span></code> will be added with tag value <code class="docutils literal"><span class="pre">ios</span></code>.</p>
-<p class="last">The second regex will remove <code class="docutils literal"><span class="pre">connection_manager_1.</span></code> from the tag
+<p>The second regex will remove <code class="docutils literal"><span class="pre">connection_manager_1.</span></code> from the tag
 extracted name produced by the first regex
 <code class="docutils literal"><span class="pre">http.connection_manager_1.user_agent.downstream_cx_total</span></code>, leaving
 <code class="docutils literal"><span class="pre">http.user_agent.downstream_cx_total</span></code> as the tag extracted name. The tag
 <code class="docutils literal"><span class="pre">envoy.http_conn_manager_prefix</span></code> will be added with the tag value
 <code class="docutils literal"><span class="pre">connection_manager_1</span></code>.</p>
+<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-tagspecifier-regex"><span class="std std-ref">regex</span></a>, <a class="reference internal" href="#envoy-api-field-tagspecifier-fixed-value"><span class="std std-ref">fixed_value</span></a> may be set.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-tagspecifier-fixed-value">
+<dt>fixed_value</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Specifies a fixed tag value for the <code class="docutils literal"><span class="pre">tag_name</span></code>.</p>
+<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-tagspecifier-regex"><span class="std std-ref">regex</span></a>, <a class="reference internal" href="#envoy-api-field-tagspecifier-fixed-value"><span class="std std-ref">fixed_value</span></a> may be set.</p>
 </dd>
 </dl>
 </div>
 <div class="section" id="statsdsink">
 <span id="envoy-api-msg-statsdsink"></span><h2>StatsdSink<a class="headerlink" href="#statsdsink" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/stats.proto#L126">[StatsdSink proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/stats.proto#L139">[StatsdSink proto]</a></p>
 <p>Stats configuration proto schema for built-in <em>envoy.statsd</em> sink.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;address&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -359,7 +373,7 @@ Envoy will connect to this cluster to flush statistics.</p>
 </div>
 <div class="section" id="dogstatsdsink">
 <span id="envoy-api-msg-dogstatsdsink"></span><h2>DogStatsdSink<a class="headerlink" href="#dogstatsdsink" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/stats.proto#L145">[DogStatsdSink proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/stats.proto#L158">[DogStatsdSink proto]</a></p>
 <p>Stats configuration proto schema for built-in <em>envoy.dog_statsd</em> sink.
 The sink emits stats with <a class="reference external" href="https://docs.datadoghq.com/guides/dogstatsd/">DogStatsD</a>
 compatible tags. Tags are configurable via <a class="reference internal" href="#envoy-api-msg-statsconfig"><span class="std std-ref">StatsConfig</span></a>.</p>
@@ -430,7 +444,7 @@ Envoy will connect to this cluster to flush statistics.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.6.0-dev-data-plane-api-cc0e23',
+            VERSION:'1.6.0-dev-data-plane-api-081137',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
