@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Listeners and LDS &mdash; envoy 1.6.0-dev-data-plane-api-bbac15 documentation</title>
+  <title>Listeners and LDS &mdash; envoy 1.6.0-dev-data-plane-api-fd1a8c documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-bbac15 documentation" href="../index.html"/>
+    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-fd1a8c documentation" href="../index.html"/>
         <link rel="up" title="v2 API reference" href="api.html"/>
         <link rel="next" title="Clusters and CDS" href="cds.proto.html"/>
         <link rel="prev" title="gRPC services" href="grpc_service.proto.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.6.0-dev-data-plane-api-bbac15
+                1.6.0-dev-data-plane-api-fd1a8c
               </div>
             
           
@@ -111,6 +111,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#filter">Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#filterchainmatch">FilterChainMatch</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#filterchain">FilterChain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#listenerfilter">ListenerFilter</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="cds.proto.html">Clusters and CDS</a></li>
@@ -207,7 +208,8 @@
   <span class="nt">&quot;filter_chains&quot;</span><span class="p">:</span> <span class="p">[],</span>
   <span class="nt">&quot;use_original_dst&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;per_connection_buffer_limit_bytes&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;drain_type&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+  <span class="nt">&quot;drain_type&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;listener_filters&quot;</span><span class="p">:</span> <span class="p">[]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -244,11 +246,21 @@ or some other parameter).</p>
 </dl>
 <dl class="docutils" id="envoy-api-field-listener-use-original-dst">
 <dt>use_original_dst</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue">BoolValue</a>) If a connection is redirected using <em>iptables</em>, the port on which the proxy
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue">BoolValue</a>) If a connection is redirected using <em>iptables</em>, the port on which the proxy
 receives it might be different from the original destination address. When this flag is set to
 true, the listener hands off redirected connections to the listener associated with the
 original destination address. If there is no listener associated with the original destination
-address, the connection is handled by the listener that receives it. Defaults to false.</dd>
+address, the connection is handled by the listener that receives it. Defaults to false.</p>
+<div class="last admonition attention">
+<p class="first admonition-title">Attention</p>
+<p>This field is deprecated. Use <a class="reference internal" href="../configuration/listener_filters/original_dst_filter.html#config-listener-filters-original-dst"><span class="std std-ref">an original_dst</span></a>
+<a class="reference internal" href="#envoy-api-field-listener-listener-filters"><span class="std std-ref">listener filter</span></a> instead.</p>
+<p class="last">Note that hand off to another listener is <em>NOT</em> performed without this flag. Once
+<a class="reference internal" href="#envoy-api-msg-filterchainmatch"><span class="std std-ref">FilterChainMatch</span></a> is implemented this flag will be
+removed, as filter chain matching can be used to select a filter chain based on the restored
+destination address.</p>
+</div>
+</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-listener-per-connection-buffer-limit-bytes">
 <dt>per_connection_buffer_limit_bytes</dt>
@@ -259,10 +271,18 @@ If unspecified, an implementation defined default is applied (1MiB).</dd>
 <dt>drain_type</dt>
 <dd>(<a class="reference internal" href="#envoy-api-enum-listener-draintype"><span class="std std-ref">Listener.DrainType</span></a>) The type of draining to perform at a listener-wide level.</dd>
 </dl>
+<dl class="docutils" id="envoy-api-field-listener-listener-filters">
+<dt>listener_filters</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-listenerfilter"><span class="std std-ref">ListenerFilter</span></a>) Listener filters have the opportunity to manipulate and augment the connection metadata that
+is used in connection filter chain matching, for example. These filters are run before any in
+<a class="reference internal" href="#envoy-api-field-listener-filter-chains"><span class="std std-ref">filter_chains</span></a>. Order matters as the filters
+are processed sequentially right after a socket has been accepted by the listener, and before
+a connection is created.</dd>
+</dl>
 </div>
 <div class="section" id="enum-listener-draintype">
 <span id="envoy-api-enum-listener-draintype"></span><h2>Enum Listener.DrainType<a class="headerlink" href="#enum-listener-draintype" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L93">[Listener.DrainType proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L103">[Listener.DrainType proto]</a></p>
 <dl class="docutils" id="envoy-api-enum-value-listener-draintype-default">
 <dt>DEFAULT</dt>
 <dd><em>(DEFAULT)</em> ⁣Drain in response to calling /healthcheck/fail admin endpoint (along with the health check
@@ -277,7 +297,7 @@ and egress listeners.</dd>
 </div>
 <div class="section" id="filter">
 <span id="envoy-api-msg-filter"></span><h2>Filter<a class="headerlink" href="#filter" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L107">[Filter proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L124">[Filter proto]</a></p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
@@ -307,7 +327,7 @@ instantiated. See the supported filters for further documentation.</dd>
 </div>
 <div class="section" id="filterchainmatch">
 <span id="envoy-api-msg-filterchainmatch"></span><h2>FilterChainMatch<a class="headerlink" href="#filterchainmatch" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L136">[FilterChainMatch proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L153">[FilterChainMatch proto]</a></p>
 <p>Specifies the match criteria for selecting a specific filter chain for a
 listener.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -329,7 +349,7 @@ information.</p>
 </div>
 <div class="section" id="filterchain">
 <span id="envoy-api-msg-filterchain"></span><h2>FilterChain<a class="headerlink" href="#filterchain" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L180">[FilterChain proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L197">[FilterChain proto]</a></p>
 <p>A filter chain wraps a set of match criteria, an option TLS context, a set of filters, and
 various other parameters.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -363,6 +383,30 @@ remote address of the connection is the one specified in the header. Some
 load balancers including the AWS ELB support this option. If the option is
 absent or set to false, Envoy will use the physical peer address of the
 connection as the remote address.</dd>
+</dl>
+</div>
+<div class="section" id="listenerfilter">
+<span id="envoy-api-msg-listenerfilter"></span><h2>ListenerFilter<a class="headerlink" href="#listenerfilter" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/api/lds.proto#L225">[ListenerFilter proto]</a></p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-listenerfilter-name">
+<dt>name</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) The name of the filter to instantiate. The name must match a supported
+filter. The built-in filters are:</p>
+<ul class="last simple">
+<li><a class="reference internal" href="../configuration/listener_filters/original_dst_filter.html#config-listener-filters-original-dst"><span class="std std-ref">envoy.listener.original_dst</span></a></li>
+</ul>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-listenerfilter-config">
+<dt>config</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct">Struct</a>) Filter specific configuration which depends on the filter being
+instantiated. See the supported filters for further documentation.</dd>
 </dl>
 </div>
 </div>
@@ -411,7 +455,7 @@ connection as the remote address.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.6.0-dev-data-plane-api-bbac15',
+            VERSION:'1.6.0-dev-data-plane-api-fd1a8c',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
