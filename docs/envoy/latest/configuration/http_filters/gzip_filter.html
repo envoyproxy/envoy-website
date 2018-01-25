@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP connection manager &mdash; envoy 1.6.0-dev-data-plane-api-5aa020 documentation</title>
+  <title>Gzip &mdash; envoy 1.6.0-dev-data-plane-api-5aa020 documentation</title>
   
 
   
@@ -38,9 +38,9 @@
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
     <link rel="top" title="envoy 1.6.0-dev-data-plane-api-5aa020 documentation" href="../../index.html"/>
-        <link rel="up" title="Configuration reference" href="../configuration.html"/>
-        <link rel="next" title="Route matching" href="route_matching.html"/>
-        <link rel="prev" title="TCP proxy" href="../network_filters/tcp_proxy_filter.html"/> 
+        <link rel="up" title="HTTP filters" href="http_filters.html"/>
+        <link rel="next" title="DynamoDB" href="dynamodb_filter.html"/>
+        <link rel="prev" title="Fault Injection" href="fault_filter.html"/> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -103,17 +103,27 @@
 <li class="toctree-l2"><a class="reference internal" href="../listeners/listeners.html">Listeners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../listener_filters/listener_filters.html">Listener filters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../network_filters/network_filters.html">Network filters</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">HTTP connection manager</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="route_matching.html">Route matching</a></li>
-<li class="toctree-l3"><a class="reference internal" href="traffic_splitting.html">Traffic Shifting/Splitting</a></li>
-<li class="toctree-l3"><a class="reference internal" href="headers.html">HTTP header manipulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="header_sanitizing.html">HTTP header sanitizing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stats.html">Statistics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="runtime.html">Runtime</a></li>
-<li class="toctree-l3"><a class="reference internal" href="rds.html">Route discovery service (RDS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../http_conn_man/http_conn_man.html">HTTP connection manager</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="http_filters.html">HTTP filters</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="buffer_filter.html">Buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cors_filter.html">CORS filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fault_filter.html">Fault Injection</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Gzip</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-it-works">How it works</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../http_filters/http_filters.html">HTTP filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamodb_filter.html">DynamoDB</a></li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_http1_bridge_filter.html">gRPC HTTP/1.1 bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_json_transcoder_filter.html">gRPC-JSON transcoder filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_web_filter.html">gRPC-Web filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="health_check_filter.html">Health check</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rate_limit_filter.html">Rate limit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="router_filter.html">Router</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lua_filter.html">Lua</a></li>
+<li class="toctree-l3"><a class="reference internal" href="squash_filter.html">Squash</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../cluster_manager/cluster_manager.html">Cluster manager</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../access_log.html">Access logging</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../rate_limit.html">Rate limit service</a></li>
@@ -172,13 +182,15 @@
         
           <li><a href="../configuration.html">Configuration reference</a> &raquo;</li>
         
-      <li>HTTP connection manager</li>
+          <li><a href="http_filters.html">HTTP filters</a> &raquo;</li>
+        
+      <li>Gzip</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/configuration/http_conn_man/http_conn_man.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/configuration/http_filters/gzip_filter.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -191,15 +203,56 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="http-connection-manager">
-<span id="config-http-conn-man"></span><h1>HTTP connection manager<a class="headerlink" href="#http-connection-manager" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="gzip">
+<span id="config-http-filters-gzip"></span><h1>Gzip<a class="headerlink" href="#gzip" title="Permalink to this headline">¶</a></h1>
+<p>Gzip is an HTTP filter which enables Envoy to compress dispatched data
+from an upstream service upon client request. Compression is useful in
+situations where large payloads need to be transmitted without
+compromising the response time.</p>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>HTTP connection manager <a class="reference internal" href="../../intro/arch_overview/http_connection_management.html#arch-overview-http-conn-man"><span class="std std-ref">architecture overview</span></a></li>
-<li>HTTP protocols <a class="reference internal" href="../../intro/arch_overview/http_connection_management.html#arch-overview-http-protocols"><span class="std std-ref">architecture overview</span></a></li>
-<li><a class="reference internal" href="../../api-v1/network_filters/http_conn_man.html#config-network-filters-http-conn-man-v1"><span class="std std-ref">v1 API reference</span></a></li>
-<li><a class="reference internal" href="../../api-v2/filter/network/http_connection_manager.proto.html#envoy-api-msg-filter-network-httpconnectionmanager"><span class="std std-ref">v2 API reference</span></a></li>
+<li><a class="reference internal" href="../../api-v2/filter/http/gzip.proto.html#envoy-api-msg-filter-http-gzip"><span class="std std-ref">v2 API reference</span></a></li>
 </ul>
-<div class="toctree-wrapper compound">
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<p class="last">The <em>window bits</em> is a number that tells the compressor how far ahead in the
+text the algorithm should be looking for repeated sequence of characters.
+Due to a known bug in the underlying zlib library, <em>window bits</em> with value
+eight does not work as expected. Therefore any number below that will be
+automatically set to 9. This issue might be solved in future releases of
+the library.</p>
+</div>
+</div>
+<div class="section" id="how-it-works">
+<h2>How it works<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h2>
+<p>When gzip filter is enabled, request and response headers are inspected to
+determine whether or not the content should be compressed. The content is
+compressed and then sent to the client with the appropriate headers if either
+response and request allow.</p>
+<p>By <em>default</em> compression will be <em>skipped</em> when:</p>
+<ul class="simple">
+<li>A request does NOT contain <em>accept-encoding</em> header.</li>
+<li>A request includes <em>accept-encoding</em> header, but it does not contain “gzip”.</li>
+<li>A response contains a <em>content-encoding</em> header.</li>
+<li>A Response contains a <em>cache-control</em> header whose value includes “no-transform”.</li>
+<li>A response contains a <em>transfer-encoding</em> header whose value includes “gzip”.</li>
+<li>A response does not contain a <em>content-type</em> value that matches one of the selected
+mime-types, which default to <em>application/javascript</em>, <em>application/json</em>,
+<em>application/xhtml+xml</em>, <em>image/svg+xml</em>, <em>text/css</em>, <em>text/html</em>, <em>text/plain</em>,
+<em>text/xml</em>.</li>
+<li>Neither <em>content-length</em> nor <em>transfer-encoding</em> headers are present in
+the response.</li>
+<li>Response size is smaller than 30 bytes (only applicable when <em>transfer-encoding</em>
+is not chuncked).</li>
+</ul>
+<p>When compression is <em>applied</em>:</p>
+<ul class="simple">
+<li>The <em>content-length</em> is removed from response headers.</li>
+<li>Response headers contain “<em>transfer-encoding: chunked</em>” and
+“<em>content-encoding: gzip</em>”.</li>
+<li>The “<em>vary: accept-encoding</em>” header is inserted on every response.</li>
+</ul>
 </div>
 </div>
 
@@ -213,10 +266,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="route_matching.html" class="btn btn-neutral float-right" title="Route matching" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="dynamodb_filter.html" class="btn btn-neutral float-right" title="DynamoDB" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../network_filters/tcp_proxy_filter.html" class="btn btn-neutral" title="TCP proxy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="fault_filter.html" class="btn btn-neutral" title="Fault Injection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
