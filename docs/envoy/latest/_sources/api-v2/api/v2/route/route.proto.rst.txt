@@ -328,6 +328,7 @@ weights.
 
   {
     "clusters": [],
+    "total_weight": "{...}",
     "runtime_key_prefix": "..."
   }
 
@@ -337,7 +338,13 @@ clusters
   (:ref:`route.WeightedCluster.ClusterWeight <envoy_api_msg_route.WeightedCluster.ClusterWeight>`, *REQUIRED*) Specifies one or more upstream clusters associated with the route.
   
   
+.. _envoy_api_field_route.WeightedCluster.total_weight:
 
+total_weight
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Specifies the total weight across all clusters. The sum of all cluster weights must equal this
+  value, which must be greater than 0. Defaults to 100.
+  
+  
 .. _envoy_api_field_route.WeightedCluster.runtime_key_prefix:
 
 runtime_key_prefix
@@ -377,9 +384,10 @@ name
 .. _envoy_api_field_route.WeightedCluster.ClusterWeight.weight:
 
 weight
-  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) An integer between 0-100. When a request matches the route, the choice of
-  an upstream cluster is determined by its weight. The sum of weights
-  across all entries in the clusters array must add up to 100.
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) An integer between 0 and :ref:`total_weight
+  <envoy_api_field_route.WeightedCluster.total_weight>`. When a request matches the route,
+  the choice of an upstream cluster is determined by its weight. The sum of weights across all
+  entries in the clusters array must add up to the total_weight, which defaults to 100.
   
   
 .. _envoy_api_field_route.WeightedCluster.ClusterWeight.metadata_match:
