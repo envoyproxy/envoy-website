@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP routing &mdash; envoy 1.6.0-dev-data-plane-api-bc02e9 documentation</title>
+  <title>HTTP routing &mdash; envoy 1.6.0-dev-data-plane-api-9582b4 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-bc02e9 documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-9582b4 documentation" href="../../index.html"/>
         <link rel="up" title="Architecture overview" href="arch_overview.html"/>
         <link rel="next" title="gRPC" href="grpc.html"/>
         <link rel="prev" title="HTTP filters" href="http_filters.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.6.0-dev-data-plane-api-bc02e9
+                1.6.0-dev-data-plane-api-9582b4
               </div>
             
           
@@ -109,6 +109,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#route-table">Route table</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#retry-semantics">Retry semantics</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#priority-routing">Priority routing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#direct-responses">Direct responses</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="grpc.html">gRPC</a></li>
@@ -238,6 +239,8 @@ future depending on demand.</li>
 <li><a class="reference internal" href="../../api-v1/route_config/vhost.html#config-http-conn-man-route-table-vhost-require-ssl"><span class="std std-ref">TLS redirection</span></a> at the virtual host
 level.</li>
 <li><a class="reference internal" href="../../api-v1/route_config/route.html#config-http-conn-man-route-table-route-path-redirect"><span class="std std-ref">Path</span></a>/<a class="reference internal" href="../../api-v1/route_config/route.html#config-http-conn-man-route-table-route-host-redirect"><span class="std std-ref">host</span></a> redirection at the route level.</li>
+<li><a class="reference internal" href="#arch-overview-http-routing-direct-response"><span class="std std-ref">Direct (non-proxied) HTTP responses</span></a>
+at the route level.</li>
 <li><a class="reference internal" href="../../api-v1/route_config/route.html#config-http-conn-man-route-table-route-host-rewrite"><span class="std std-ref">Explicit host rewriting</span></a>.</li>
 <li><a class="reference internal" href="../../api-v1/route_config/route.html#config-http-conn-man-route-table-route-auto-host-rewrite"><span class="std std-ref">Automatic host rewriting</span></a> based on
 the DNS name of the selected upstream host.</li>
@@ -292,6 +295,31 @@ an upstream host. In the future Envoy will likely support true HTTP/2 priority o
 connection.</p>
 <p>The currently supported priorities are <em>default</em> and <em>high</em>.</p>
 </div>
+<div class="section" id="direct-responses">
+<span id="arch-overview-http-routing-direct-response"></span><h2>Direct responses<a class="headerlink" href="#direct-responses" title="Permalink to this headline">¶</a></h2>
+<p>Envoy supports the sending of “direct” responses. These are preconfigured HTTP responses
+that do not require proxying to an upstream server.</p>
+<p>There are two ways to specify a direct response in a Route:</p>
+<ul class="simple">
+<li>Set the <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-route-direct-response"><span class="std std-ref">direct_response</span></a> field.
+This works for all HTTP response statuses.</li>
+<li>Set the <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-route-redirect"><span class="std std-ref">redirect</span></a> field. This works for
+redirect response statuses only, but it simplifies the setting of the <em>Location</em> header.</li>
+</ul>
+<p>A direct response has an HTTP status code and an optional body. The Route configuration
+can specify the response body inline or specify the pathname of a file containing the
+body. If the Route configuration specifies a file pathname, Envoy will read the file
+upon configuration load and cache the contents.</p>
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<p class="last">If a response body is specified, it must be no more than 4KB in size, regardless of
+whether it is provided inline or in a file. Envoy currently holds the entirety of the
+body in memory, so the 4KB limit is intended to keep the proxy’s memory footprint
+from growing too large.</p>
+</div>
+<p>If <strong>response_headers_to_add</strong> has been set for the Route or the enclosing Virtual Host,
+Envoy will include the specified headers in the direct HTTP response.</p>
+</div>
 </div>
 
 
@@ -338,7 +366,7 @@ connection.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.6.0-dev-data-plane-api-bc02e9',
+            VERSION:'1.6.0-dev-data-plane-api-9582b4',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
