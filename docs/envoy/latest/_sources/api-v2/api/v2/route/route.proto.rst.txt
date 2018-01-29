@@ -3,106 +3,15 @@
 HTTP route management
 =====================
 
-
-.. _envoy_api_msg_route.RouteConfiguration:
-
-route.RouteConfiguration
-------------------------
-
-`[route.RouteConfiguration proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L18>`_
-
 * Routing :ref:`architecture overview <arch_overview_http_routing>`
 * HTTP :ref:`router filter <config_http_filters_router>`
-
-.. code-block:: json
-
-  {
-    "name": "...",
-    "virtual_hosts": [],
-    "internal_only_headers": [],
-    "response_headers_to_add": [],
-    "response_headers_to_remove": [],
-    "request_headers_to_add": [],
-    "validate_clusters": "{...}"
-  }
-
-.. _envoy_api_field_route.RouteConfiguration.name:
-
-name
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The name of the route configuration. For example, it might match
-  :ref:`route_config_name <envoy_api_field_filter.network.Rds.route_config_name>` in
-  :ref:`envoy_api_msg_filter.network.Rds`.
-  
-  
-.. _envoy_api_field_route.RouteConfiguration.virtual_hosts:
-
-virtual_hosts
-  (:ref:`route.VirtualHost <envoy_api_msg_route.VirtualHost>`) An array of virtual hosts that make up the route table.
-  
-  
-.. _envoy_api_field_route.RouteConfiguration.internal_only_headers:
-
-internal_only_headers
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Optionally specifies a list of HTTP headers that the connection manager
-  will consider to be internal only. If they are found on external requests they will be cleaned
-  prior to filter invocation. See :ref:`config_http_conn_man_headers_x-envoy-internal` for more
-  information.
-  
-  
-.. _envoy_api_field_route.RouteConfiguration.response_headers_to_add:
-
-response_headers_to_add
-  (:ref:`HeaderValueOption <envoy_api_msg_HeaderValueOption>`) Specifies a list of HTTP headers that should be added to each response that
-  the connection manager encodes. Headers specified at this level are applied
-  after headers from any enclosed :ref:`envoy_api_msg_route.VirtualHost` or
-  :ref:`envoy_api_msg_route.RouteAction`. For more information, including details on
-  header value syntax, see the documentation on :ref:`custom request headers
-  <config_http_conn_man_headers_custom_request_headers>`.
-  
-  
-.. _envoy_api_field_route.RouteConfiguration.response_headers_to_remove:
-
-response_headers_to_remove
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies a list of HTTP headers that should be removed from each response
-  that the connection manager encodes.
-  
-  
-.. _envoy_api_field_route.RouteConfiguration.request_headers_to_add:
-
-request_headers_to_add
-  (:ref:`HeaderValueOption <envoy_api_msg_HeaderValueOption>`) Specifies a list of HTTP headers that should be added to each request
-  routed by the HTTP connection manager. Headers specified at this level are
-  applied after headers from any enclosed :ref:`envoy_api_msg_route.VirtualHost` or
-  :ref:`envoy_api_msg_route.RouteAction`. For more information, including details on
-  header value syntax, see the documentation on :ref:`custom request headers
-  <config_http_conn_man_headers_custom_request_headers>`.
-  
-  
-.. _envoy_api_field_route.RouteConfiguration.validate_clusters:
-
-validate_clusters
-  (`BoolValue <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue>`_) An optional boolean that specifies whether the clusters that the route
-  table refers to will be validated by the cluster manager. If set to true
-  and a route refers to a non-existent cluster, the route table will not
-  load. If set to false and a route refers to a non-existent cluster, the
-  route table will load and the router filter will return a 404 if the route
-  is selected at runtime. This setting defaults to true if the route table
-  is statically defined via the :ref:`route_config
-  <envoy_api_field_filter.network.HttpConnectionManager.route_config>` option. This setting
-  default to false if the route table is loaded dynamically via the :ref:`rds
-  <envoy_api_field_filter.network.HttpConnectionManager.rds>` option. Users
-  may which to override the default behavior in certain cases (for example
-  when using CDS with a static route table).
-  
-  
-
 
 .. _envoy_api_msg_route.VirtualHost:
 
 route.VirtualHost
 -----------------
 
-`[route.VirtualHost proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L73>`_
+`[route.VirtualHost proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L24>`_
 
 The top level element in the routing configuration is a virtual host. Each virtual host has
 a logical name as well as a set of domains that get routed to it based on the incoming request's
@@ -183,7 +92,7 @@ request_headers_to_add
   (:ref:`HeaderValueOption <envoy_api_msg_HeaderValueOption>`) Specifies a list of HTTP headers that should be added to each request
   handled by this virtual host. Headers specified at this level are applied
   after headers from enclosed :ref:`envoy_api_msg_route.RouteAction` and before headers from the
-  enclosing :ref:`envoy_api_msg_route.RouteConfiguration`. For more information, including
+  enclosing :ref:`envoy_api_msg_RouteConfiguration`. For more information, including
   details on header value syntax, see the documentation on :ref:`custom request headers
   <config_http_conn_man_headers_custom_request_headers>`.
   
@@ -194,7 +103,7 @@ response_headers_to_add
   (:ref:`HeaderValueOption <envoy_api_msg_HeaderValueOption>`) Specifies a list of HTTP headers that should be added to each response
   handled by this virtual host. Headers specified at this level are applied
   after headers from enclosed :ref:`envoy_api_msg_route.RouteAction` and before headers from the
-  enclosing :ref:`envoy_api_msg_route.RouteConfiguration`. For more information, including
+  enclosing :ref:`envoy_api_msg_RouteConfiguration`. For more information, including
   details on header value syntax, see the documentation on :ref:`custom request headers
   <config_http_conn_man_headers_custom_request_headers>`.
   
@@ -219,7 +128,7 @@ cors
 Enum route.VirtualHost.TlsRequirementType
 -----------------------------------------
 
-`[route.VirtualHost.TlsRequirementType proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L96>`_
+`[route.VirtualHost.TlsRequirementType proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L47>`_
 
 
 .. _envoy_api_enum_value_route.VirtualHost.TlsRequirementType.NONE:
@@ -248,7 +157,7 @@ ALL
 route.Route
 -----------
 
-`[route.Route proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L156>`_
+`[route.Route proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L107>`_
 
 A route is both a specification of how to match a request as well as an indication of what to do
 next (e.g., redirect, forward, rewrite, etc.).
@@ -323,7 +232,7 @@ decorator
 route.WeightedCluster
 ---------------------
 
-`[route.WeightedCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L194>`_
+`[route.WeightedCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L145>`_
 
 Compared to the :ref:`cluster <envoy_api_field_route.RouteAction.cluster>` field that specifies a
 single upstream cluster as the target of a request, the :ref:`weighted_clusters
@@ -371,7 +280,7 @@ runtime_key_prefix
 route.WeightedCluster.ClusterWeight
 -----------------------------------
 
-`[route.WeightedCluster.ClusterWeight proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L195>`_
+`[route.WeightedCluster.ClusterWeight proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L146>`_
 
 
 .. code-block:: json
@@ -414,7 +323,7 @@ metadata_match
 route.RouteMatch
 ----------------
 
-`[route.RouteMatch proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L230>`_
+`[route.RouteMatch proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L181>`_
 
 
 .. code-block:: json
@@ -514,7 +423,7 @@ query_parameters
 route.CorsPolicy
 ----------------
 
-`[route.CorsPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L287>`_
+`[route.CorsPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L238>`_
 
 
 .. code-block:: json
@@ -578,7 +487,7 @@ enabled
 route.RouteAction
 -----------------
 
-`[route.RouteAction proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L310>`_
+`[route.RouteAction proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L261>`_
 
 
 .. code-block:: json
@@ -724,7 +633,7 @@ request_headers_to_add
   (:ref:`HeaderValueOption <envoy_api_msg_HeaderValueOption>`) Specifies a set of headers that will be added to requests matching this
   route. Headers specified at this level are applied before headers from the
   enclosing :ref:`envoy_api_msg_route.VirtualHost` and
-  :ref:`envoy_api_msg_route.RouteConfiguration`. For more information, including details on
+  :ref:`envoy_api_msg_RouteConfiguration`. For more information, including details on
   header value syntax, see the documentation on :ref:`custom request headers
   <config_http_conn_man_headers_custom_request_headers>`.
   
@@ -735,7 +644,7 @@ response_headers_to_add
   (:ref:`HeaderValueOption <envoy_api_msg_HeaderValueOption>`) Specifies a set of headers that will be added to responses to requests
   matching this route. Headers specified at this level are applied before
   headers from the enclosing :ref:`envoy_api_msg_route.VirtualHost` and
-  :ref:`envoy_api_msg_route.RouteConfiguration`. For more information, including
+  :ref:`envoy_api_msg_RouteConfiguration`. For more information, including
   details on header value syntax, see the documentation on
   :ref:`custom request headers <config_http_conn_man_headers_custom_request_headers>`.
   
@@ -810,7 +719,7 @@ cors
 route.RouteAction.RetryPolicy
 -----------------------------
 
-`[route.RouteAction.RetryPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L384>`_
+`[route.RouteAction.RetryPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L335>`_
 
 HTTP retry :ref:`architecture overview <arch_overview_http_routing_retry>`.
 
@@ -861,7 +770,7 @@ per_try_timeout
 route.RouteAction.RequestMirrorPolicy
 -------------------------------------
 
-`[route.RouteAction.RequestMirrorPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L419>`_
+`[route.RouteAction.RequestMirrorPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L370>`_
 
 The router is capable of shadowing traffic from one cluster to another. The current
 implementation is "fire and forget," meaning Envoy will not wait for the shadow cluster to
@@ -903,7 +812,7 @@ runtime_key
 route.RouteAction.HashPolicy
 ----------------------------
 
-`[route.RouteAction.HashPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L473>`_
+`[route.RouteAction.HashPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L424>`_
 
 Specifies the route's hashing policy if the upstream cluster uses a hashing :ref:`load balancer
 <arch_overview_load_balancing_types>`.
@@ -945,7 +854,7 @@ connection_properties
 route.RouteAction.HashPolicy.Header
 -----------------------------------
 
-`[route.RouteAction.HashPolicy.Header proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L474>`_
+`[route.RouteAction.HashPolicy.Header proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L425>`_
 
 
 .. code-block:: json
@@ -968,7 +877,7 @@ header_name
 route.RouteAction.HashPolicy.Cookie
 -----------------------------------
 
-`[route.RouteAction.HashPolicy.Cookie proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L494>`_
+`[route.RouteAction.HashPolicy.Cookie proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L445>`_
 
 Envoy supports two types of cookie affinity:
 
@@ -1014,7 +923,7 @@ ttl
 route.RouteAction.HashPolicy.ConnectionProperties
 -------------------------------------------------
 
-`[route.RouteAction.HashPolicy.ConnectionProperties proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L505>`_
+`[route.RouteAction.HashPolicy.ConnectionProperties proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L456>`_
 
 
 .. code-block:: json
@@ -1037,7 +946,7 @@ source_ip
 Enum route.RouteAction.ClusterNotFoundResponseCode
 --------------------------------------------------
 
-`[route.RouteAction.ClusterNotFoundResponseCode proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L337>`_
+`[route.RouteAction.ClusterNotFoundResponseCode proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L288>`_
 
 
 .. _envoy_api_enum_value_route.RouteAction.ClusterNotFoundResponseCode.SERVICE_UNAVAILABLE:
@@ -1058,7 +967,7 @@ NOT_FOUND
 route.RedirectAction
 --------------------
 
-`[route.RedirectAction proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L558>`_
+`[route.RedirectAction proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L509>`_
 
 
 .. code-block:: json
@@ -1095,7 +1004,7 @@ response_code
 Enum route.RedirectAction.RedirectResponseCode
 ----------------------------------------------
 
-`[route.RedirectAction.RedirectResponseCode proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L565>`_
+`[route.RedirectAction.RedirectResponseCode proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L516>`_
 
 
 .. _envoy_api_enum_value_route.RedirectAction.RedirectResponseCode.MOVED_PERMANENTLY:
@@ -1134,7 +1043,7 @@ PERMANENT_REDIRECT
 route.DirectResponseAction
 --------------------------
 
-`[route.DirectResponseAction proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L590>`_
+`[route.DirectResponseAction proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L541>`_
 
 
 .. code-block:: json
@@ -1159,7 +1068,7 @@ body
   .. note::
   
     Headers can be specified using *response_headers_to_add* in
-    :ref:`envoy_api_msg_route.RouteConfiguration`.
+    :ref:`envoy_api_msg_RouteConfiguration`.
   
   
 
@@ -1169,7 +1078,7 @@ body
 route.Decorator
 ---------------
 
-`[route.Decorator proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L604>`_
+`[route.Decorator proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L555>`_
 
 
 .. code-block:: json
@@ -1198,7 +1107,7 @@ operation
 route.VirtualCluster
 --------------------
 
-`[route.VirtualCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L633>`_
+`[route.VirtualCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L584>`_
 
 A virtual cluster is a way of specifying a regex matching rule against
 certain important endpoints such that statistics are generated explicitly for
@@ -1262,7 +1171,7 @@ method
 route.RateLimit
 ---------------
 
-`[route.RateLimit proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L658>`_
+`[route.RateLimit proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L609>`_
 
 Global rate limiting :ref:`architecture overview <arch_overview_rate_limit>`.
 
@@ -1308,7 +1217,7 @@ actions
 route.RateLimit.Action
 ----------------------
 
-`[route.RateLimit.Action proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L671>`_
+`[route.RateLimit.Action proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L622>`_
 
 
 .. code-block:: json
@@ -1375,7 +1284,7 @@ header_value_match
 route.RateLimit.Action.SourceCluster
 ------------------------------------
 
-`[route.RateLimit.Action.SourceCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L679>`_
+`[route.RateLimit.Action.SourceCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L630>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1397,7 +1306,7 @@ The following descriptor entry is appended to the descriptor:
 route.RateLimit.Action.DestinationCluster
 -----------------------------------------
 
-`[route.RateLimit.Action.DestinationCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L698>`_
+`[route.RateLimit.Action.DestinationCluster proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L649>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1406,7 +1315,7 @@ The following descriptor entry is appended to the descriptor:
   ("destination_cluster", "<routed target cluster>")
 
 Once a request matches against a route table rule, a routed cluster is determined by one of
-the following :ref:`route table configuration <envoy_api_msg_route.RouteConfiguration>`
+the following :ref:`route table configuration <envoy_api_msg_RouteConfiguration>`
 settings:
 
 * :ref:`cluster <envoy_api_field_route.RouteAction.cluster>` indicates the upstream cluster
@@ -1428,7 +1337,7 @@ settings:
 route.RateLimit.Action.RequestHeaders
 -------------------------------------
 
-`[route.RateLimit.Action.RequestHeaders proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L707>`_
+`[route.RateLimit.Action.RequestHeaders proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L658>`_
 
 The following descriptor entry is appended when a header contains a key that matches the
 *header_name*:
@@ -1465,7 +1374,7 @@ descriptor_key
 route.RateLimit.Action.RemoteAddress
 ------------------------------------
 
-`[route.RateLimit.Action.RemoteAddress proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L723>`_
+`[route.RateLimit.Action.RemoteAddress proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L674>`_
 
 The following descriptor entry is appended to the descriptor and is populated using the
 trusted address from :ref:`x-forwarded-for <config_http_conn_man_headers_x-forwarded-for>`:
@@ -1486,7 +1395,7 @@ trusted address from :ref:`x-forwarded-for <config_http_conn_man_headers_x-forwa
 route.RateLimit.Action.GenericKey
 ---------------------------------
 
-`[route.RateLimit.Action.GenericKey proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L731>`_
+`[route.RateLimit.Action.GenericKey proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L682>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1513,7 +1422,7 @@ descriptor_value
 route.RateLimit.Action.HeaderValueMatch
 ---------------------------------------
 
-`[route.RateLimit.Action.HeaderValueMatch proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L741>`_
+`[route.RateLimit.Action.HeaderValueMatch proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L692>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1563,7 +1472,7 @@ headers
 route.HeaderMatcher
 -------------------
 
-`[route.HeaderMatcher proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L807>`_
+`[route.HeaderMatcher proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L758>`_
 
 .. attention::
 
@@ -1626,7 +1535,7 @@ regex
 route.QueryParameterMatcher
 ---------------------------
 
-`[route.QueryParameterMatcher proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L831>`_
+`[route.QueryParameterMatcher proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L782>`_
 
 Query parameter matching treats the query string of a request's :path header
 as an ampersand-separated list of keys and/or key=value elements.
