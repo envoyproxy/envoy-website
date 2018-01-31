@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP connection manager &mdash; envoy 1.6.0-dev-data-plane-api-d5dcea documentation</title>
+  <title>HTTP connection manager &mdash; envoy 1.6.0-dev-data-plane-api-3ab669 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../../../search.html"/>
-    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-d5dcea documentation" href="../../../../../index.html"/>
+    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-3ab669 documentation" href="../../../../../index.html"/>
         <link rel="up" title="Network filters" href="network.html"/>
         <link rel="next" title="Mongo proxy" href="mongo_proxy.proto.html"/>
         <link rel="prev" title="Client TLS authentication" href="client_ssl_auth.proto.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.6.0-dev-data-plane-api-d5dcea
+                1.6.0-dev-data-plane-api-3ab669
               </div>
             
           
@@ -217,7 +217,7 @@
 <p>HTTP connection manager <a class="reference internal" href="../../../../../configuration/http_conn_man/http_conn_man.html#config-http-conn-man"><span class="std std-ref">configuration overview</span></a>.</p>
 <div class="section" id="filter-network-httpconnectionmanager">
 <span id="envoy-api-msg-filter-network-httpconnectionmanager"></span><h2>filter.network.HttpConnectionManager<a class="headerlink" href="#filter-network-httpconnectionmanager" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L20">[filter.network.HttpConnectionManager proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L21">[filter.network.HttpConnectionManager proto]</a></p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;codec_type&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;stat_prefix&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
@@ -349,10 +349,13 @@ the client certificate to be forwarded. Note that in the
 </div>
 <div class="section" id="filter-network-httpconnectionmanager-tracing">
 <span id="envoy-api-msg-filter-network-httpconnectionmanager-tracing"></span><h2>filter.network.HttpConnectionManager.Tracing<a class="headerlink" href="#filter-network-httpconnectionmanager-tracing" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L66">[filter.network.HttpConnectionManager.Tracing proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L67">[filter.network.HttpConnectionManager.Tracing proto]</a></p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;operation_name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;request_headers_for_tags&quot;</span><span class="p">:</span> <span class="p">[]</span>
+  <span class="nt">&quot;request_headers_for_tags&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;client_sampling&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;random_sampling&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;overall_sampling&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -366,10 +369,37 @@ the client certificate to be forwarded. Note that in the
 populate the tag name, and the header value is used to populate the tag value. The tag is
 created if the specified header name is present in the request’s headers.</dd>
 </dl>
+<dl class="docutils" id="envoy-api-field-filter-network-httpconnectionmanager-tracing-client-sampling">
+<dt>client_sampling</dt>
+<dd>(<a class="reference internal" href="../../base.proto.html#envoy-api-msg-percent"><span class="std std-ref">Percent</span></a>) Target percentage of requests managed by this HTTP connection manager that will be force
+traced if the <a class="reference internal" href="../../../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-client-trace-id"><span class="std std-ref">x-client-trace-id</span></a>
+header is set. This field is a direct analog for the runtime variable
+‘tracing.client_sampling’ in the <a class="reference internal" href="../../../../../configuration/http_conn_man/runtime.html#config-http-conn-man-runtime"><span class="std std-ref">HTTP Connection Manager</span></a>.
+Default: 100%</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-network-httpconnectionmanager-tracing-random-sampling">
+<dt>random_sampling</dt>
+<dd>(<a class="reference internal" href="../../base.proto.html#envoy-api-msg-percent"><span class="std std-ref">Percent</span></a>) Target percentage of requests managed by this HTTP connection manager that will be randomly
+selected for trace generation, if not requested by the client or not forced. This field is
+a direct analog for the runtime variable ‘tracing.random_sampling’ in the
+<a class="reference internal" href="../../../../../configuration/http_conn_man/runtime.html#config-http-conn-man-runtime"><span class="std std-ref">HTTP Connection Manager</span></a>.
+Default: 100%</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-filter-network-httpconnectionmanager-tracing-overall-sampling">
+<dt>overall_sampling</dt>
+<dd>(<a class="reference internal" href="../../base.proto.html#envoy-api-msg-percent"><span class="std std-ref">Percent</span></a>) Target percentage of requests managed by this HTTP connection manager that will be traced
+after all other sampling checks have been applied (client-directed, force tracing, random
+sampling). This field functions as an upper limit on the total configured sampling rate. For
+instance, setting client_sampling to 100% but overall_sampling to 1% will result in only 1%
+of client requests with the appropriate headers to be force traced. This field is a direct
+analog for the runtime variable ‘tracing.global_enabled’ in the
+<a class="reference internal" href="../../../../../configuration/http_conn_man/runtime.html#config-http-conn-man-runtime"><span class="std std-ref">HTTP Connection Manager</span></a>.
+Default: 100%</dd>
+</dl>
 </div>
 <div class="section" id="enum-filter-network-httpconnectionmanager-tracing-operationname">
 <span id="envoy-api-enum-filter-network-httpconnectionmanager-tracing-operationname"></span><h2>Enum filter.network.HttpConnectionManager.Tracing.OperationName<a class="headerlink" href="#enum-filter-network-httpconnectionmanager-tracing-operationname" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L67">[filter.network.HttpConnectionManager.Tracing.OperationName proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L68">[filter.network.HttpConnectionManager.Tracing.OperationName proto]</a></p>
 <dl class="docutils" id="envoy-api-enum-value-filter-network-httpconnectionmanager-tracing-operationname-ingress">
 <dt>INGRESS</dt>
 <dd><em>(DEFAULT)</em> ⁣The HTTP listener is used for ingress/incoming requests.</dd>
@@ -381,7 +411,7 @@ created if the specified header name is present in the request’s headers.</dd>
 </div>
 <div class="section" id="filter-network-httpconnectionmanager-setcurrentclientcertdetails">
 <span id="envoy-api-msg-filter-network-httpconnectionmanager-setcurrentclientcertdetails"></span><h2>filter.network.HttpConnectionManager.SetCurrentClientCertDetails<a class="headerlink" href="#filter-network-httpconnectionmanager-setcurrentclientcertdetails" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L165">[filter.network.HttpConnectionManager.SetCurrentClientCertDetails proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L191">[filter.network.HttpConnectionManager.SetCurrentClientCertDetails proto]</a></p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;subject&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;san&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
@@ -399,7 +429,7 @@ created if the specified header name is present in the request’s headers.</dd>
 </div>
 <div class="section" id="enum-filter-network-httpconnectionmanager-codectype">
 <span id="envoy-api-enum-filter-network-httpconnectionmanager-codectype"></span><h2>Enum filter.network.HttpConnectionManager.CodecType<a class="headerlink" href="#enum-filter-network-httpconnectionmanager-codectype" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L21">[filter.network.HttpConnectionManager.CodecType proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L22">[filter.network.HttpConnectionManager.CodecType proto]</a></p>
 <dl class="docutils" id="envoy-api-enum-value-filter-network-httpconnectionmanager-codectype-auto">
 <dt>AUTO</dt>
 <dd><em>(DEFAULT)</em> ⁣For every new connection, the connection manager will determine which
@@ -421,7 +451,7 @@ Prior knowledge is allowed).</dd>
 </div>
 <div class="section" id="enum-filter-network-httpconnectionmanager-forwardclientcertdetails">
 <span id="envoy-api-enum-filter-network-httpconnectionmanager-forwardclientcertdetails"></span><h2>Enum filter.network.HttpConnectionManager.ForwardClientCertDetails<a class="headerlink" href="#enum-filter-network-httpconnectionmanager-forwardclientcertdetails" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L139">[filter.network.HttpConnectionManager.ForwardClientCertDetails proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L165">[filter.network.HttpConnectionManager.ForwardClientCertDetails proto]</a></p>
 <p>How to handle the <a class="reference internal" href="../../../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-client-cert"><span class="std std-ref">x-forwarded-client-cert</span></a> (XFCC) HTTP
 header.</p>
 <dl class="docutils" id="envoy-api-enum-value-filter-network-httpconnectionmanager-forwardclientcertdetails-sanitize">
@@ -451,7 +481,7 @@ client connection is mTLS.</dd>
 </div>
 <div class="section" id="filter-network-rds">
 <span id="envoy-api-msg-filter-network-rds"></span><h2>filter.network.Rds<a class="headerlink" href="#filter-network-rds" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L193">[filter.network.Rds proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L219">[filter.network.Rds proto]</a></p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;config_source&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;route_config_name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
@@ -472,7 +502,7 @@ configurations.</dd>
 </div>
 <div class="section" id="filter-network-httpfilter">
 <span id="envoy-api-msg-filter-network-httpfilter"></span><h2>filter.network.HttpFilter<a class="headerlink" href="#filter-network-httpfilter" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L205">[filter.network.HttpFilter proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L231">[filter.network.HttpFilter proto]</a></p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
@@ -552,7 +582,7 @@ instantiated. See the supported filters for further documentation.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../../',
-            VERSION:'1.6.0-dev-data-plane-api-d5dcea',
+            VERSION:'1.6.0-dev-data-plane-api-3ab669',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

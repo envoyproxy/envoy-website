@@ -10,7 +10,7 @@ HTTP connection manager :ref:`configuration overview <config_http_conn_man>`.
 filter.network.HttpConnectionManager
 ------------------------------------
 
-`[filter.network.HttpConnectionManager proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L20>`_
+`[filter.network.HttpConnectionManager proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L21>`_
 
 
 .. code-block:: json
@@ -185,14 +185,17 @@ set_current_client_cert_details
 filter.network.HttpConnectionManager.Tracing
 --------------------------------------------
 
-`[filter.network.HttpConnectionManager.Tracing proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L66>`_
+`[filter.network.HttpConnectionManager.Tracing proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L67>`_
 
 
 .. code-block:: json
 
   {
     "operation_name": "...",
-    "request_headers_for_tags": []
+    "request_headers_for_tags": [],
+    "client_sampling": "{...}",
+    "random_sampling": "{...}",
+    "overall_sampling": "{...}"
   }
 
 .. _envoy_api_field_filter.network.HttpConnectionManager.Tracing.operation_name:
@@ -209,13 +212,47 @@ request_headers_for_tags
   created if the specified header name is present in the request's headers.
   
   
+.. _envoy_api_field_filter.network.HttpConnectionManager.Tracing.client_sampling:
+
+client_sampling
+  (:ref:`Percent <envoy_api_msg_Percent>`) Target percentage of requests managed by this HTTP connection manager that will be force
+  traced if the :ref:`x-client-trace-id <config_http_conn_man_headers_x-client-trace-id>`
+  header is set. This field is a direct analog for the runtime variable
+  'tracing.client_sampling' in the :ref:`HTTP Connection Manager
+  <config_http_conn_man_runtime>`.
+  Default: 100%
+  
+  
+.. _envoy_api_field_filter.network.HttpConnectionManager.Tracing.random_sampling:
+
+random_sampling
+  (:ref:`Percent <envoy_api_msg_Percent>`) Target percentage of requests managed by this HTTP connection manager that will be randomly
+  selected for trace generation, if not requested by the client or not forced. This field is
+  a direct analog for the runtime variable 'tracing.random_sampling' in the
+  :ref:`HTTP Connection Manager <config_http_conn_man_runtime>`.
+  Default: 100%
+  
+  
+.. _envoy_api_field_filter.network.HttpConnectionManager.Tracing.overall_sampling:
+
+overall_sampling
+  (:ref:`Percent <envoy_api_msg_Percent>`) Target percentage of requests managed by this HTTP connection manager that will be traced
+  after all other sampling checks have been applied (client-directed, force tracing, random
+  sampling). This field functions as an upper limit on the total configured sampling rate. For
+  instance, setting client_sampling to 100% but overall_sampling to 1% will result in only 1%
+  of client requests with the appropriate headers to be force traced. This field is a direct
+  analog for the runtime variable 'tracing.global_enabled' in the
+  :ref:`HTTP Connection Manager <config_http_conn_man_runtime>`.
+  Default: 100%
+  
+  
 
 .. _envoy_api_enum_filter.network.HttpConnectionManager.Tracing.OperationName:
 
 Enum filter.network.HttpConnectionManager.Tracing.OperationName
 ---------------------------------------------------------------
 
-`[filter.network.HttpConnectionManager.Tracing.OperationName proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L67>`_
+`[filter.network.HttpConnectionManager.Tracing.OperationName proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L68>`_
 
 
 .. _envoy_api_enum_value_filter.network.HttpConnectionManager.Tracing.OperationName.INGRESS:
@@ -236,7 +273,7 @@ EGRESS
 filter.network.HttpConnectionManager.SetCurrentClientCertDetails
 ----------------------------------------------------------------
 
-`[filter.network.HttpConnectionManager.SetCurrentClientCertDetails proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L165>`_
+`[filter.network.HttpConnectionManager.SetCurrentClientCertDetails proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L191>`_
 
 
 .. code-block:: json
@@ -266,7 +303,7 @@ san
 Enum filter.network.HttpConnectionManager.CodecType
 ---------------------------------------------------
 
-`[filter.network.HttpConnectionManager.CodecType proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L21>`_
+`[filter.network.HttpConnectionManager.CodecType proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L22>`_
 
 
 .. _envoy_api_enum_value_filter.network.HttpConnectionManager.CodecType.AUTO:
@@ -299,7 +336,7 @@ HTTP2
 Enum filter.network.HttpConnectionManager.ForwardClientCertDetails
 ------------------------------------------------------------------
 
-`[filter.network.HttpConnectionManager.ForwardClientCertDetails proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L139>`_
+`[filter.network.HttpConnectionManager.ForwardClientCertDetails proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L165>`_
 
 How to handle the :ref:`config_http_conn_man_headers_x-forwarded-client-cert` (XFCC) HTTP
 header.
@@ -344,7 +381,7 @@ ALWAYS_FORWARD_ONLY
 filter.network.Rds
 ------------------
 
-`[filter.network.Rds proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L193>`_
+`[filter.network.Rds proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L219>`_
 
 
 .. code-block:: json
@@ -376,7 +413,7 @@ route_config_name
 filter.network.HttpFilter
 -------------------------
 
-`[filter.network.HttpFilter proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L205>`_
+`[filter.network.HttpFilter proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/filter/network/http_connection_manager.proto#L231>`_
 
 
 .. code-block:: json
