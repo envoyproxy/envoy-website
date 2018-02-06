@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP header manipulation &mdash; envoy 1.6.0-dev-data-plane-api-724c6c documentation</title>
+  <title>HTTP header manipulation &mdash; envoy 1.6.0-dev-data-plane-api-05c063 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-724c6c documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-05c063 documentation" href="../../index.html"/>
         <link rel="up" title="HTTP connection manager" href="http_conn_man.html"/>
         <link rel="next" title="HTTP header sanitizing" href="header_sanitizing.html"/>
         <link rel="prev" title="Traffic Shifting/Splitting" href="traffic_splitting.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.6.0-dev-data-plane-api-724c6c
+                1.6.0-dev-data-plane-api-05c063
               </div>
             
           
@@ -344,22 +344,41 @@ address of the nearest client to the XFF list before proxying the request. Some 
 <li><code class="docutils literal"><span class="pre">x-forwarded-for:</span> <span class="pre">50.0.0.1,</span> <span class="pre">40.0.0.1</span></code> (external proxy hop)</li>
 <li><code class="docutils literal"><span class="pre">x-forwarded-for:</span> <span class="pre">50.0.0.1,</span> <span class="pre">10.0.0.1</span></code> (internal proxy hop)</li>
 </ol>
-<p>Envoy will only append to XFF if the <a class="reference internal" href="../../api-v1/network_filters/http_conn_man.html#config-http-conn-man-use-remote-address"><span class="std std-ref">use_remote_address</span></a> HTTP connection manager option is set to true. This means
-that if <em>use_remote_address</em> is false, the connection manager operates in a transparent mode where
-it does not modify XFF. This is needed for certain types of mesh deployments depending on whether
-the Envoy in question is an edge node or an internal service node.</p>
-<p>Envoy uses the final XFF contents to determine whether a request originated externally or
-internally. This influences whether the <a class="reference internal" href="#config-http-conn-man-headers-x-envoy-internal"><span class="std std-ref">x-envoy-internal</span></a> header
-is set.</p>
+<p>Envoy will only append to XFF if the <a class="reference internal" href="../../api-v1/network_filters/http_conn_man.html#config-http-conn-man-use-remote-address"><span class="std std-ref">use_remote_address</span></a> HTTP connection manager option is set to true.
+This means that if <em>use_remote_address</em> is false (which is the default), the connection manager
+operates in a transparent mode where it does not modify XFF.</p>
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<p class="last">In general, <em>use_remote_address</em> should be set to true when Envoy is deployed as an edge
+node, whereas it may need to be set to false when Envoy is used as an internal service node
+in a mesh deployment.</p>
+</div>
+<p>The value of <em>use_remote_address</em> controls how Envoy determines the <em>trusted client address</em>.
+Given an HTTP request that has traveled through a series of zero or more proxies to reach
+Envoy, the trusted client address is the earliest source IP address that is known to be
+accurate. The source IP address of the immediate downstream node’s connection to Envoy is
+trusted. XFF <em>sometimes</em> can be trusted. Malicious clients can forge XFF, but the last
+address in XFF can be trusted if it was put there by a trusted proxy.</p>
+<p>Envoy’s rules for determining the trusted client address are:</p>
+<ul class="simple">
+<li>If <em>use_remote_address</em> is false and an XFF containing at least one IP address is
+present in the request, the trusted client address is the <em>last</em> (rightmost) IP address in XFF.</li>
+<li>Otherwise, the trusted client address is the source IP address of the immediate downstream
+node’s connection to Envoy.</li>
+</ul>
+<p>Envoy uses the trusted client address contents to determine whether a request originated
+externally or internally. This influences whether the
+<a class="reference internal" href="#config-http-conn-man-headers-x-envoy-internal"><span class="std std-ref">x-envoy-internal</span></a> header is set.</p>
 <p>A few very important notes about XFF:</p>
 <ol class="arabic simple">
-<li>Since IP addresses are appended to XFF, only the last address (furthest to the right) can be
-trusted. More specifically, the first external (non RFC1918) address from <em>the right</em> is the only
-trustable addresses. Anything to the left of that can be spoofed. To make this easier to deal
-with for analytics, etc., front Envoy will also set the
-<a class="reference internal" href="#config-http-conn-man-headers-x-envoy-external-address"><span class="std std-ref">x-envoy-external-address</span></a> header.</li>
-<li>XFF is what Envoy uses to determine whether a request is internal origin or external origin. It
-does this by checking to see if XFF contains a <em>single</em> IP address which is an RFC1918 address.<ul>
+<li>If <em>use_remote_address</em> is set to true, Envoy sets the
+<a class="reference internal" href="#config-http-conn-man-headers-x-envoy-external-address"><span class="std std-ref">x-envoy-external-address</span></a> header to the trusted
+client address.</li>
+<li>XFF is what Envoy uses to determine whether a request is internal origin or external origin.
+If <em>use_remote_address</em> is set to true, the request is internal if and only if the
+request contains no XFF and the immediate downstream node’s connection to Envoy has
+an internal (RFC1918 or RFC4193) source address. If <em>use_remote_address</em> is false, the
+request is internal if and only if XFF contains a single RFC1918 or RFC4193 address.<ul>
 <li><strong>NOTE</strong>: If an internal service proxies an external request to another internal service, and
 includes the original XFF header, Envoy will append to it on egress if
 <a class="reference internal" href="../../api-v1/network_filters/http_conn_man.html#config-http-conn-man-use-remote-address"><span class="std std-ref">use_remote_address</span></a> is set. This will cause
@@ -549,7 +568,7 @@ parameters <strong>do not</strong> need to be escaped by doubling them.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.6.0-dev-data-plane-api-724c6c',
+            VERSION:'1.6.0-dev-data-plane-api-05c063',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
