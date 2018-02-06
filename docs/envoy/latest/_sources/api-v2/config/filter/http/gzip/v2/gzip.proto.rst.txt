@@ -22,7 +22,7 @@ config.filter.http.gzip.v2.Gzip
     "compression_strategy": "...",
     "content_type": [],
     "disable_on_etag_header": "...",
-    "disable_on_last_modified_header": "...",
+    "remove_accept_encoding_header": "...",
     "window_bits": "{...}"
   }
 
@@ -30,29 +30,29 @@ config.filter.http.gzip.v2.Gzip
 
 memory_level
   (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Value from 1 to 9 that controls the amount of internal memory used by zlib. Higher values
-  use more memory, but are faster and produce better compression results. Default value is 5.
+  use more memory, but are faster and produce better compression results. The default value is 5.
   
   
 .. _envoy_api_field_config.filter.http.gzip.v2.Gzip.content_length:
 
 content_length
-  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Minimum response length, in bytes, which will trigger compression. Default value is 30.
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Minimum response length, in bytes, which will trigger compression. The default value is 30.
   
   
 .. _envoy_api_field_config.filter.http.gzip.v2.Gzip.compression_level:
 
 compression_level
-  (:ref:`config.filter.http.gzip.v2.Gzip.CompressionLevel.Enum <envoy_api_enum_config.filter.http.gzip.v2.Gzip.CompressionLevel.Enum>`) A value used for selecting zlib's compression level. This setting will affect speed and amount
-  of compression applied to the content. "BEST" provides higher compression at the cost of higher
-  latency, "SPEED" provides lower compression with minimum impact on response time. "DEFAULT"
-  provides an optimal result between speed and compression. This field will be set to "DEFAULT"
-  if not specified.
+  (:ref:`config.filter.http.gzip.v2.Gzip.CompressionLevel.Enum <envoy_api_enum_config.filter.http.gzip.v2.Gzip.CompressionLevel.Enum>`) A value used for selecting the zlib compression level. This setting will affect speed and
+  amount of compression applied to the content. "BEST" provides higher compression at the cost of
+  higher latency, "SPEED" provides lower compression with minimum impact on response time.
+  "DEFAULT" provides an optimal result between speed and compression. This field will be set to
+  "DEFAULT" if not specified.
   
   
 .. _envoy_api_field_config.filter.http.gzip.v2.Gzip.compression_strategy:
 
 compression_strategy
-  (:ref:`config.filter.http.gzip.v2.Gzip.CompressionStrategy <envoy_api_enum_config.filter.http.gzip.v2.Gzip.CompressionStrategy>`) A value used for selecting zlib's compression strategy which is directly related to the
+  (:ref:`config.filter.http.gzip.v2.Gzip.CompressionStrategy <envoy_api_enum_config.filter.http.gzip.v2.Gzip.CompressionStrategy>`) A value used for selecting the zlib compression strategy which is directly related to the
   characteristics of the content. Most of the time "DEFAULT" will be the best choice, though
   there are situations which changing this parameter might produce better results. For example,
   run-length encoding (RLE) is typically used when the content is known for having sequences
@@ -72,17 +72,15 @@ content_type
 .. _envoy_api_field_config.filter.http.gzip.v2.Gzip.disable_on_etag_header:
 
 disable_on_etag_header
-  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If true, disables compression when the response contains Etag header. When it is false, the
-  filter will preserve weak Etags and remove the ones that require strong validation. Note that
-  if any of these options fit the specific scenario, an alternative solution is to disabled Etag
-  at the origin and use *last-modified* header instead.
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If true, disables compression when the response contains an etag header. When it is false, the
+  filter will preserve weak etags and remove the ones that require strong validation.
   
   
-.. _envoy_api_field_config.filter.http.gzip.v2.Gzip.disable_on_last_modified_header:
+.. _envoy_api_field_config.filter.http.gzip.v2.Gzip.remove_accept_encoding_header:
 
-disable_on_last_modified_header
-  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If true, disables compression when response contains *last-modified*
-  header.
+remove_accept_encoding_header
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If true, removes accept-encoding from the request headers before dispatching it to the upstream
+  so that responses do not get compressed before reaching the filter.
   
   
 .. _envoy_api_field_config.filter.http.gzip.v2.Gzip.window_bits:

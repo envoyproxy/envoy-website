@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Gzip &mdash; envoy 1.6.0-dev-data-plane-api-f74df7 documentation</title>
+  <title>Gzip &mdash; envoy 1.6.0-dev-data-plane-api-d62b65 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../../../../search.html"/>
-    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-f74df7 documentation" href="../../../../../../index.html"/>
+    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-d62b65 documentation" href="../../../../../../index.html"/>
         <link rel="up" title="HTTP filters" href="../../http.html"/>
         <link rel="next" title="Health check" href="../../health_check/v2/health_check.proto.html"/>
         <link rel="prev" title="Fault Injection" href="../../fault/v2/fault.proto.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.6.0-dev-data-plane-api-f74df7
+                1.6.0-dev-data-plane-api-d62b65
               </div>
             
           
@@ -210,7 +210,7 @@
   <span class="nt">&quot;compression_strategy&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;content_type&quot;</span><span class="p">:</span> <span class="p">[],</span>
   <span class="nt">&quot;disable_on_etag_header&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;disable_on_last_modified_header&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;remove_accept_encoding_header&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;window_bits&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
@@ -218,23 +218,23 @@
 <dl class="docutils" id="envoy-api-field-config-filter-http-gzip-v2-gzip-memory-level">
 <dt>memory_level</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) Value from 1 to 9 that controls the amount of internal memory used by zlib. Higher values
-use more memory, but are faster and produce better compression results. Default value is 5.</dd>
+use more memory, but are faster and produce better compression results. The default value is 5.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-config-filter-http-gzip-v2-gzip-content-length">
 <dt>content_length</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) Minimum response length, in bytes, which will trigger compression. Default value is 30.</dd>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) Minimum response length, in bytes, which will trigger compression. The default value is 30.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-config-filter-http-gzip-v2-gzip-compression-level">
 <dt>compression_level</dt>
-<dd>(<a class="reference internal" href="#envoy-api-enum-config-filter-http-gzip-v2-gzip-compressionlevel-enum"><span class="std std-ref">config.filter.http.gzip.v2.Gzip.CompressionLevel.Enum</span></a>) A value used for selecting zlib’s compression level. This setting will affect speed and amount
-of compression applied to the content. “BEST” provides higher compression at the cost of higher
-latency, “SPEED” provides lower compression with minimum impact on response time. “DEFAULT”
-provides an optimal result between speed and compression. This field will be set to “DEFAULT”
-if not specified.</dd>
+<dd>(<a class="reference internal" href="#envoy-api-enum-config-filter-http-gzip-v2-gzip-compressionlevel-enum"><span class="std std-ref">config.filter.http.gzip.v2.Gzip.CompressionLevel.Enum</span></a>) A value used for selecting the zlib compression level. This setting will affect speed and
+amount of compression applied to the content. “BEST” provides higher compression at the cost of
+higher latency, “SPEED” provides lower compression with minimum impact on response time.
+“DEFAULT” provides an optimal result between speed and compression. This field will be set to
+“DEFAULT” if not specified.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-config-filter-http-gzip-v2-gzip-compression-strategy">
 <dt>compression_strategy</dt>
-<dd>(<a class="reference internal" href="#envoy-api-enum-config-filter-http-gzip-v2-gzip-compressionstrategy"><span class="std std-ref">config.filter.http.gzip.v2.Gzip.CompressionStrategy</span></a>) A value used for selecting zlib’s compression strategy which is directly related to the
+<dd>(<a class="reference internal" href="#envoy-api-enum-config-filter-http-gzip-v2-gzip-compressionstrategy"><span class="std std-ref">config.filter.http.gzip.v2.Gzip.CompressionStrategy</span></a>) A value used for selecting the zlib compression strategy which is directly related to the
 characteristics of the content. Most of the time “DEFAULT” will be the best choice, though
 there are situations which changing this parameter might produce better results. For example,
 run-length encoding (RLE) is typically used when the content is known for having sequences
@@ -250,15 +250,13 @@ to the following mime-types: “application/javascript”, “application/json�
 </dl>
 <dl class="docutils" id="envoy-api-field-config-filter-http-gzip-v2-gzip-disable-on-etag-header">
 <dt>disable_on_etag_header</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) If true, disables compression when the response contains Etag header. When it is false, the
-filter will preserve weak Etags and remove the ones that require strong validation. Note that
-if any of these options fit the specific scenario, an alternative solution is to disabled Etag
-at the origin and use <em>last-modified</em> header instead.</dd>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) If true, disables compression when the response contains an etag header. When it is false, the
+filter will preserve weak etags and remove the ones that require strong validation.</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-config-filter-http-gzip-v2-gzip-disable-on-last-modified-header">
-<dt>disable_on_last_modified_header</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) If true, disables compression when response contains <em>last-modified</em>
-header.</dd>
+<dl class="docutils" id="envoy-api-field-config-filter-http-gzip-v2-gzip-remove-accept-encoding-header">
+<dt>remove_accept_encoding_header</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) If true, removes accept-encoding from the request headers before dispatching it to the upstream
+so that responses do not get compressed before reaching the filter.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-config-filter-http-gzip-v2-gzip-window-bits">
 <dt>window_bits</dt>
@@ -357,7 +355,7 @@ zlib manual &gt; deflateInit2.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../../../',
-            VERSION:'1.6.0-dev-data-plane-api-f74df7',
+            VERSION:'1.6.0-dev-data-plane-api-d62b65',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
