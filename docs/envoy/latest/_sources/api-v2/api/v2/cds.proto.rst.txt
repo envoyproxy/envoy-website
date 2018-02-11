@@ -17,6 +17,7 @@ Configuration for a single upstream cluster.
 
   {
     "name": "...",
+    "alt_stat_name": "...",
     "type": "...",
     "eds_cluster_config": "{...}",
     "connect_timeout": "{...}",
@@ -48,11 +49,19 @@ Configuration for a single upstream cluster.
 name
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Supplies the name of the cluster which must be unique across all clusters.
   The cluster name is used when emitting
-  :ref:`statistics <config_cluster_manager_cluster_stats>`.
+  :ref:`statistics <config_cluster_manager_cluster_stats>` if :ref:`alt_stat_name
+  <envoy_api_field_Cluster.alt_stat_name>` is not provided.
   Any ``:`` in the cluster name will be converted to ``_`` when emitting statistics.
   By default, the maximum length of a cluster name is limited to 60
   characters. This limit can be increased by setting the
   :option:`--max-obj-name-len` command line argument to the desired value.
+  
+  
+.. _envoy_api_field_Cluster.alt_stat_name:
+
+alt_stat_name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) An optional alternative to the cluster name to be used while emitting stats.
+  Any ``:`` in the name will be converted to ``_`` when emitting statistics.
   
   
 .. _envoy_api_field_Cluster.type:
@@ -270,7 +279,7 @@ protocol_selection
 Cluster.EdsClusterConfig
 ------------------------
 
-`[Cluster.EdsClusterConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L82>`_
+`[Cluster.EdsClusterConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L87>`_
 
 Only valid when discovery type is EDS.
 
@@ -302,7 +311,7 @@ service_name
 Cluster.LbSubsetConfig
 ----------------------
 
-`[Cluster.LbSubsetConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L258>`_
+`[Cluster.LbSubsetConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L263>`_
 
 Optionally divide the endpoints in this cluster into subsets defined by
 endpoint metadata and selected by route and weighted cluster metadata.
@@ -360,7 +369,7 @@ subset_selectors
 Cluster.LbSubsetConfig.LbSubsetSelector
 ---------------------------------------
 
-`[Cluster.LbSubsetConfig.LbSubsetSelector proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L287>`_
+`[Cluster.LbSubsetConfig.LbSubsetSelector proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L292>`_
 
 Specifications for subsets.
 
@@ -383,7 +392,7 @@ keys
 Enum Cluster.LbSubsetConfig.LbSubsetFallbackPolicy
 --------------------------------------------------
 
-`[Cluster.LbSubsetConfig.LbSubsetFallbackPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L265>`_
+`[Cluster.LbSubsetConfig.LbSubsetFallbackPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L270>`_
 
 If NO_FALLBACK is selected, a result
 equivalent to no healthy hosts is reported. If ANY_ENDPOINT is selected,
@@ -412,7 +421,7 @@ DEFAULT_SUBSET
 Cluster.RingHashLbConfig
 ------------------------
 
-`[Cluster.RingHashLbConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L314>`_
+`[Cluster.RingHashLbConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L319>`_
 
 Specific configuration for the :ref:`RingHash<arch_overview_load_balancing_types_ring_hash>`
 load balancing policy.
@@ -441,7 +450,7 @@ minimum_ring_size
 Cluster.CommonLbConfig
 ----------------------
 
-`[Cluster.CommonLbConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L351>`_
+`[Cluster.CommonLbConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L356>`_
 
 Common configuration for all load balancer implementations.
 
@@ -468,7 +477,7 @@ healthy_panic_threshold
 Enum Cluster.DiscoveryType
 --------------------------
 
-`[Cluster.DiscoveryType proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L53>`_
+`[Cluster.DiscoveryType proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L58>`_
 
 Refer to :ref:`service discovery type <arch_overview_service_discovery_types>`
 for an explanation on each type.
@@ -517,7 +526,7 @@ ORIGINAL_DST
 Enum Cluster.LbPolicy
 ---------------------
 
-`[Cluster.LbPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L107>`_
+`[Cluster.LbPolicy proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L112>`_
 
 Refer to :ref:`load balancer type <arch_overview_load_balancing_types>` architecture
 overview section for information on each type.
@@ -568,7 +577,7 @@ ORIGINAL_DST_LB
 Enum Cluster.DnsLookupFamily
 ----------------------------
 
-`[Cluster.DnsLookupFamily proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L207>`_
+`[Cluster.DnsLookupFamily proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L212>`_
 
 When V4_ONLY is selected, the DNS resolver will only perform a lookup for
 addresses in the IPv4 family. If V6_ONLY is selected, the DNS resolver will
@@ -602,7 +611,7 @@ V6_ONLY
 Enum Cluster.ClusterProtocolSelection
 -------------------------------------
 
-`[Cluster.ClusterProtocolSelection proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L373>`_
+`[Cluster.ClusterProtocolSelection proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L378>`_
 
 
 .. _envoy_api_enum_value_Cluster.ClusterProtocolSelection.USE_CONFIGURED_PROTOCOL:
@@ -625,7 +634,7 @@ USE_DOWNSTREAM_PROTOCOL
 UpstreamBindConfig
 ------------------
 
-`[UpstreamBindConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L388>`_
+`[UpstreamBindConfig proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/cds.proto#L393>`_
 
 An extensible structure containing the address Envoy should bind to when
 establishing upstream connections.
