@@ -26,7 +26,8 @@ core.HealthCheck
     "reuse_connection": "{...}",
     "http_health_check": "{...}",
     "tcp_health_check": "{...}",
-    "redis_health_check": "{...}"
+    "redis_health_check": "{...}",
+    "grpc_health_check": "{...}"
   }
 
 .. _envoy_api_field_core.HealthCheck.timeout:
@@ -78,7 +79,7 @@ http_health_check
   (:ref:`core.HealthCheck.HttpHealthCheck <envoy_api_msg_core.HealthCheck.HttpHealthCheck>`) HTTP health check.
   
   
-  Precisely one of :ref:`http_health_check <envoy_api_field_core.HealthCheck.http_health_check>`, :ref:`tcp_health_check <envoy_api_field_core.HealthCheck.tcp_health_check>`, :ref:`redis_health_check <envoy_api_field_core.HealthCheck.redis_health_check>` must be set.
+  Precisely one of :ref:`http_health_check <envoy_api_field_core.HealthCheck.http_health_check>`, :ref:`tcp_health_check <envoy_api_field_core.HealthCheck.tcp_health_check>`, :ref:`redis_health_check <envoy_api_field_core.HealthCheck.redis_health_check>`, :ref:`grpc_health_check <envoy_api_field_core.HealthCheck.grpc_health_check>` must be set.
   
 .. _envoy_api_field_core.HealthCheck.tcp_health_check:
 
@@ -86,7 +87,7 @@ tcp_health_check
   (:ref:`core.HealthCheck.TcpHealthCheck <envoy_api_msg_core.HealthCheck.TcpHealthCheck>`) TCP health check.
   
   
-  Precisely one of :ref:`http_health_check <envoy_api_field_core.HealthCheck.http_health_check>`, :ref:`tcp_health_check <envoy_api_field_core.HealthCheck.tcp_health_check>`, :ref:`redis_health_check <envoy_api_field_core.HealthCheck.redis_health_check>` must be set.
+  Precisely one of :ref:`http_health_check <envoy_api_field_core.HealthCheck.http_health_check>`, :ref:`tcp_health_check <envoy_api_field_core.HealthCheck.tcp_health_check>`, :ref:`redis_health_check <envoy_api_field_core.HealthCheck.redis_health_check>`, :ref:`grpc_health_check <envoy_api_field_core.HealthCheck.grpc_health_check>` must be set.
   
 .. _envoy_api_field_core.HealthCheck.redis_health_check:
 
@@ -94,9 +95,16 @@ redis_health_check
   (:ref:`core.HealthCheck.RedisHealthCheck <envoy_api_msg_core.HealthCheck.RedisHealthCheck>`) Redis health check.
   
   
-  Precisely one of :ref:`http_health_check <envoy_api_field_core.HealthCheck.http_health_check>`, :ref:`tcp_health_check <envoy_api_field_core.HealthCheck.tcp_health_check>`, :ref:`redis_health_check <envoy_api_field_core.HealthCheck.redis_health_check>` must be set.
+  Precisely one of :ref:`http_health_check <envoy_api_field_core.HealthCheck.http_health_check>`, :ref:`tcp_health_check <envoy_api_field_core.HealthCheck.tcp_health_check>`, :ref:`redis_health_check <envoy_api_field_core.HealthCheck.redis_health_check>`, :ref:`grpc_health_check <envoy_api_field_core.HealthCheck.grpc_health_check>` must be set.
   
+.. _envoy_api_field_core.HealthCheck.grpc_health_check:
 
+grpc_health_check
+  (:ref:`core.HealthCheck.GrpcHealthCheck <envoy_api_msg_core.HealthCheck.GrpcHealthCheck>`) gRPC health check.
+  
+  
+  Precisely one of :ref:`http_health_check <envoy_api_field_core.HealthCheck.http_health_check>`, :ref:`tcp_health_check <envoy_api_field_core.HealthCheck.tcp_health_check>`, :ref:`redis_health_check <envoy_api_field_core.HealthCheck.redis_health_check>`, :ref:`grpc_health_check <envoy_api_field_core.HealthCheck.grpc_health_check>` must be set.
+  
 .. _envoy_api_msg_core.HealthCheck.Payload:
 
 core.HealthCheck.Payload
@@ -211,5 +219,34 @@ core.HealthCheck.RedisHealthCheck
 
 
 
+
+.. _envoy_api_msg_core.HealthCheck.GrpcHealthCheck:
+
+core.HealthCheck.GrpcHealthCheck
+--------------------------------
+
+`[core.HealthCheck.GrpcHealthCheck proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/core/health_check.proto#L97>`_
+
+`grpc.health.v1.Health
+<https://github.com/grpc/grpc/blob/master/src/proto/grpc/health/v1/health.proto>`_-based
+healthcheck. See `gRPC doc <https://github.com/grpc/grpc/blob/master/doc/health-checking.md>`_
+for details.
+
+.. code-block:: json
+
+  {
+    "service_name": "..."
+  }
+
+.. _envoy_api_field_core.HealthCheck.GrpcHealthCheck.service_name:
+
+service_name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) An optional service name parameter which will be sent to gRPC service in
+  `grpc.health.v1.HealthCheckRequest
+  <https://github.com/grpc/grpc/blob/master/src/proto/grpc/health/v1/health.proto#L20>`_.
+  message. See `gRPC health-checking overview
+  <https://github.com/grpc/grpc/blob/master/doc/health-checking.md>`_ for more information.
+  
+  
 
 
