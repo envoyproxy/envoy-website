@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Statistics &mdash; envoy 1.6.0-dev-data-plane-api-96289b documentation</title>
+  <title>Statistics &mdash; envoy 1.6.0-dev-data-plane-api-e14a95 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-96289b documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-e14a95 documentation" href="../../index.html"/>
         <link rel="up" title="HTTP connection manager" href="http_conn_man.html"/>
         <link rel="next" title="Runtime" href="runtime.html"/>
         <link rel="prev" title="HTTP header sanitizing" href="header_sanitizing.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.6.0-dev-data-plane-api-96289b
+                1.6.0-dev-data-plane-api-e14a95
               </div>
             
           
@@ -111,6 +111,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Statistics</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#per-user-agent-statistics">Per user agent statistics</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#per-listener-statistics">Per listener statistics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#per-codec-statistics">Per codec statistics</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="runtime.html">Runtime</a></li>
@@ -461,6 +462,53 @@ following statistics:</p>
 </tbody>
 </table>
 </div>
+<div class="section" id="per-codec-statistics">
+<span id="config-http-conn-man-stats-per-codec"></span><h2>Per codec statistics<a class="headerlink" href="#per-codec-statistics" title="Permalink to this headline">¶</a></h2>
+<p>Each codec has the option of adding per-codec statistics. Currently only http2 has codec stats.</p>
+<div class="section" id="http2-codec-statistics">
+<h3>Http2 codec statistics<a class="headerlink" href="#http2-codec-statistics" title="Permalink to this headline">¶</a></h3>
+<p>All http2 statistics are rooted at <em>http2.</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>rx_reset</td>
+<td>Counter</td>
+<td>Total number of reset stream frames received by Envoy.</td>
+</tr>
+<tr class="row-odd"><td>tx_reset</td>
+<td>Counter</td>
+<td>Total number of reset stream frames transmitted by Envoy.</td>
+</tr>
+<tr class="row-even"><td>header_overflow</td>
+<td>Counter</td>
+<td>Total number of connections reset due to the headers being larger than <cite>Envoy::Http::Http2::ConnectionImpl::StreamImpl::MAX_HEADER_SIZE</cite> (63k).</td>
+</tr>
+<tr class="row-odd"><td>trailers</td>
+<td>Counter</td>
+<td>Total number of trailers seen on requests coming from downstream.</td>
+</tr>
+<tr class="row-even"><td>headers_cb_no_stream</td>
+<td>Counter</td>
+<td>Total number of errors where a header callback is called without an associated stream. This tracks an unexpected occurance due to an as yet undiagnosed bug.</td>
+</tr>
+<tr class="row-odd"><td>too_many_header_frames</td>
+<td>Counter</td>
+<td>Total number of times an HTTP2 connection is reset due to receiving too many headers frames. Envoy currently supports proxying at most one header frame for 100-Continue one non-100 response code header frame and one frame with trailers.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 
 
@@ -507,7 +555,7 @@ following statistics:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.6.0-dev-data-plane-api-96289b',
+            VERSION:'1.6.0-dev-data-plane-api-e14a95',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
