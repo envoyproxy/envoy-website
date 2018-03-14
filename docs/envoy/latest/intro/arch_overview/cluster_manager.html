@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Cluster manager &mdash; envoy 1.6.0-dev-data-plane-api-e19104 documentation</title>
+  <title>Cluster manager &mdash; envoy 1.6.0-dev-data-plane-api-78dab2 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-e19104 documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-78dab2 documentation" href="../../index.html"/>
         <link rel="up" title="Architecture overview" href="arch_overview.html"/>
         <link rel="next" title="Service discovery" href="service_discovery.html"/>
         <link rel="prev" title="WebSocket support" href="websocket.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.6.0-dev-data-plane-api-e19104
+                1.6.0-dev-data-plane-api-78dab2
               </div>
             
           
@@ -108,7 +108,10 @@
 <li class="toctree-l3"><a class="reference internal" href="http_routing.html">HTTP routing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="grpc.html">gRPC</a></li>
 <li class="toctree-l3"><a class="reference internal" href="websocket.html">WebSocket support</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Cluster manager</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Cluster manager</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#cluster-warming">Cluster warming</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="service_discovery.html">Service discovery</a></li>
 <li class="toctree-l3"><a class="reference internal" href="health_checking.html">Health checking</a></li>
 <li class="toctree-l3"><a class="reference internal" href="connection_pooling.html">Connection pooling</a></li>
@@ -235,6 +238,28 @@ distribution.</p>
 <li>Cluster manager <a class="reference internal" href="../../configuration/cluster_manager/cluster_manager.html#config-cluster-manager"><span class="std std-ref">configuration</span></a>.</li>
 <li>CDS <a class="reference internal" href="../../configuration/cluster_manager/cds.html#config-cluster-manager-cds"><span class="std std-ref">configuration</span></a>.</li>
 </ul>
+<div class="section" id="cluster-warming">
+<h2>Cluster warming<a class="headerlink" href="#cluster-warming" title="Permalink to this headline">¶</a></h2>
+<p>When clusters are initialized both at server boot as well as via CDS, they are “warmed.” This means
+that clusters do not become available until the following operations have taken place.</p>
+<ul class="simple">
+<li>Initial service discovery load (e.g., DNS resolution, EDS update, etc.).</li>
+<li>Initial active <a class="reference internal" href="health_checking.html#arch-overview-health-checking"><span class="std std-ref">health check</span></a> pass if active health checking
+is configured. Envoy will send a health check request to each discovered host to determine its
+initial health status.</li>
+</ul>
+<p>The previous items ensure that Envoy has an accurate view of a cluster before it begins using it
+for traffic serving.</p>
+<p>When discussing cluster warming, the cluster “becoming available” means:</p>
+<ul class="simple">
+<li>For newly added clusters, the cluster will not appear to exist to the rest of Envoy until it has
+been warmed. I.e., HTTP routes that reference the cluster will result in either a 404 or 503
+(depending on configuration).</li>
+<li>For updated clusters, the old cluster will continue to exist and serve traffic. When the new
+cluster has been warmed, it will be atomically swapped with the old cluster such that no
+traffic interruptions take place.</li>
+</ul>
+</div>
 </div>
 
 
@@ -281,7 +306,7 @@ distribution.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.6.0-dev-data-plane-api-e19104',
+            VERSION:'1.6.0-dev-data-plane-api-78dab2',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
