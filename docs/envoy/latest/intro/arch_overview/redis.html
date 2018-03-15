@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Redis &mdash; envoy 1.6.0-dev-data-plane-api-f1c7a9 documentation</title>
+  <title>Redis &mdash; envoy 1.6.0-dev-data-plane-api-47e118 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-f1c7a9 documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-47e118 documentation" href="../../index.html"/>
         <link rel="up" title="Architecture overview" href="arch_overview.html"/>
         <link rel="next" title="Hot restart" href="hot_restart.html"/>
         <link rel="prev" title="DynamoDB" href="dynamo.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.6.0-dev-data-plane-api-f1c7a9
+                1.6.0-dev-data-plane-api-47e118
               </div>
             
           
@@ -262,9 +262,10 @@ close map to 5xx. All other responses from Redis are counted as a success.</p>
 <h2>Supported commands<a class="headerlink" href="#supported-commands" title="Permalink to this headline">¶</a></h2>
 <p>At the protocol level, pipelines are supported. MULTI (transaction block) is not.
 Use pipelining wherever possible for the best performance.</p>
-<p>At the command level, Envoy only supports commands that can be reliably hashed to a server.
-Therefore, all supported commands contain a key. Supported commands are functionally identical to
-the original Redis command except possibly in failure scenarios.</p>
+<p>At the command level, Envoy only supports commands that can be reliably hashed to a server. PING
+is the only exception, which Envoy responds to immediately with PONG. Arguments to PING are not
+allowed. All other supported commands must contain a key. Supported commands are functionally
+identical to the original Redis command except possibly in failure scenarios.</p>
 <p>For details on each command’s usage see the official
 <a class="reference external" href="https://redis.io/commands">Redis command reference</a>.</p>
 <table border="1" class="docutils">
@@ -278,301 +279,304 @@ the original Redis command except possibly in failure scenarios.</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>DEL</td>
+<tr class="row-even"><td>PING</td>
+<td>Connection</td>
+</tr>
+<tr class="row-odd"><td>DEL</td>
 <td>Generic</td>
 </tr>
-<tr class="row-odd"><td>DUMP</td>
+<tr class="row-even"><td>DUMP</td>
 <td>Generic</td>
 </tr>
-<tr class="row-even"><td>EXISTS</td>
+<tr class="row-odd"><td>EXISTS</td>
 <td>Generic</td>
 </tr>
-<tr class="row-odd"><td>EXPIRE</td>
+<tr class="row-even"><td>EXPIRE</td>
 <td>Generic</td>
 </tr>
-<tr class="row-even"><td>EXPIREAT</td>
+<tr class="row-odd"><td>EXPIREAT</td>
 <td>Generic</td>
 </tr>
-<tr class="row-odd"><td>PERSIST</td>
+<tr class="row-even"><td>PERSIST</td>
 <td>Generic</td>
 </tr>
-<tr class="row-even"><td>PEXPIRE</td>
+<tr class="row-odd"><td>PEXPIRE</td>
 <td>Generic</td>
 </tr>
-<tr class="row-odd"><td>PEXPIREAT</td>
+<tr class="row-even"><td>PEXPIREAT</td>
 <td>Generic</td>
 </tr>
-<tr class="row-even"><td>PTTL</td>
+<tr class="row-odd"><td>PTTL</td>
 <td>Generic</td>
 </tr>
-<tr class="row-odd"><td>RESTORE</td>
+<tr class="row-even"><td>RESTORE</td>
 <td>Generic</td>
 </tr>
-<tr class="row-even"><td>TOUCH</td>
+<tr class="row-odd"><td>TOUCH</td>
 <td>Generic</td>
 </tr>
-<tr class="row-odd"><td>TTL</td>
+<tr class="row-even"><td>TTL</td>
 <td>Generic</td>
 </tr>
-<tr class="row-even"><td>TYPE</td>
+<tr class="row-odd"><td>TYPE</td>
 <td>Generic</td>
 </tr>
-<tr class="row-odd"><td>UNLINK</td>
+<tr class="row-even"><td>UNLINK</td>
 <td>Generic</td>
 </tr>
-<tr class="row-even"><td>GEOADD</td>
+<tr class="row-odd"><td>GEOADD</td>
 <td>Geo</td>
 </tr>
-<tr class="row-odd"><td>GEODIST</td>
+<tr class="row-even"><td>GEODIST</td>
 <td>Geo</td>
 </tr>
-<tr class="row-even"><td>GEOHASH</td>
+<tr class="row-odd"><td>GEOHASH</td>
 <td>Geo</td>
 </tr>
-<tr class="row-odd"><td>GEOPOS</td>
+<tr class="row-even"><td>GEOPOS</td>
 <td>Geo</td>
 </tr>
-<tr class="row-even"><td>GEORADIUS_RO</td>
+<tr class="row-odd"><td>GEORADIUS_RO</td>
 <td>Geo</td>
 </tr>
-<tr class="row-odd"><td>GEORADIUSBYMEMBER_RO</td>
+<tr class="row-even"><td>GEORADIUSBYMEMBER_RO</td>
 <td>Geo</td>
 </tr>
-<tr class="row-even"><td>HDEL</td>
+<tr class="row-odd"><td>HDEL</td>
 <td>Hash</td>
 </tr>
-<tr class="row-odd"><td>HEXISTS</td>
+<tr class="row-even"><td>HEXISTS</td>
 <td>Hash</td>
 </tr>
-<tr class="row-even"><td>HGET</td>
+<tr class="row-odd"><td>HGET</td>
 <td>Hash</td>
 </tr>
-<tr class="row-odd"><td>HGETALL</td>
+<tr class="row-even"><td>HGETALL</td>
 <td>Hash</td>
 </tr>
-<tr class="row-even"><td>HINCRBY</td>
+<tr class="row-odd"><td>HINCRBY</td>
 <td>Hash</td>
 </tr>
-<tr class="row-odd"><td>HINCRBYFLOAT</td>
+<tr class="row-even"><td>HINCRBYFLOAT</td>
 <td>Hash</td>
 </tr>
-<tr class="row-even"><td>HKEYS</td>
+<tr class="row-odd"><td>HKEYS</td>
 <td>Hash</td>
 </tr>
-<tr class="row-odd"><td>HLEN</td>
+<tr class="row-even"><td>HLEN</td>
 <td>Hash</td>
 </tr>
-<tr class="row-even"><td>HMGET</td>
+<tr class="row-odd"><td>HMGET</td>
 <td>Hash</td>
 </tr>
-<tr class="row-odd"><td>HMSET</td>
+<tr class="row-even"><td>HMSET</td>
 <td>Hash</td>
 </tr>
-<tr class="row-even"><td>HSCAN</td>
+<tr class="row-odd"><td>HSCAN</td>
 <td>Hash</td>
 </tr>
-<tr class="row-odd"><td>HSET</td>
+<tr class="row-even"><td>HSET</td>
 <td>Hash</td>
 </tr>
-<tr class="row-even"><td>HSETNX</td>
+<tr class="row-odd"><td>HSETNX</td>
 <td>Hash</td>
 </tr>
-<tr class="row-odd"><td>HSTRLEN</td>
+<tr class="row-even"><td>HSTRLEN</td>
 <td>Hash</td>
 </tr>
-<tr class="row-even"><td>HVALS</td>
+<tr class="row-odd"><td>HVALS</td>
 <td>Hash</td>
 </tr>
-<tr class="row-odd"><td>LINDEX</td>
+<tr class="row-even"><td>LINDEX</td>
 <td>List</td>
 </tr>
-<tr class="row-even"><td>LINSERT</td>
+<tr class="row-odd"><td>LINSERT</td>
 <td>List</td>
 </tr>
-<tr class="row-odd"><td>LLEN</td>
+<tr class="row-even"><td>LLEN</td>
 <td>List</td>
 </tr>
-<tr class="row-even"><td>LPOP</td>
+<tr class="row-odd"><td>LPOP</td>
 <td>List</td>
 </tr>
-<tr class="row-odd"><td>LPUSH</td>
+<tr class="row-even"><td>LPUSH</td>
 <td>List</td>
 </tr>
-<tr class="row-even"><td>LPUSHX</td>
+<tr class="row-odd"><td>LPUSHX</td>
 <td>List</td>
 </tr>
-<tr class="row-odd"><td>LRANGE</td>
+<tr class="row-even"><td>LRANGE</td>
 <td>List</td>
 </tr>
-<tr class="row-even"><td>LREM</td>
+<tr class="row-odd"><td>LREM</td>
 <td>List</td>
 </tr>
-<tr class="row-odd"><td>LSET</td>
+<tr class="row-even"><td>LSET</td>
 <td>List</td>
 </tr>
-<tr class="row-even"><td>LTRIM</td>
+<tr class="row-odd"><td>LTRIM</td>
 <td>List</td>
 </tr>
-<tr class="row-odd"><td>RPOP</td>
+<tr class="row-even"><td>RPOP</td>
 <td>List</td>
 </tr>
-<tr class="row-even"><td>RPUSH</td>
+<tr class="row-odd"><td>RPUSH</td>
 <td>List</td>
 </tr>
-<tr class="row-odd"><td>RPUSHX</td>
+<tr class="row-even"><td>RPUSHX</td>
 <td>List</td>
 </tr>
-<tr class="row-even"><td>EVAL</td>
+<tr class="row-odd"><td>EVAL</td>
 <td>Scripting</td>
 </tr>
-<tr class="row-odd"><td>EVALSHA</td>
+<tr class="row-even"><td>EVALSHA</td>
 <td>Scripting</td>
 </tr>
-<tr class="row-even"><td>SADD</td>
+<tr class="row-odd"><td>SADD</td>
 <td>Set</td>
 </tr>
-<tr class="row-odd"><td>SCARD</td>
+<tr class="row-even"><td>SCARD</td>
 <td>Set</td>
 </tr>
-<tr class="row-even"><td>SISMEMBER</td>
+<tr class="row-odd"><td>SISMEMBER</td>
 <td>Set</td>
 </tr>
-<tr class="row-odd"><td>SMEMBERS</td>
+<tr class="row-even"><td>SMEMBERS</td>
 <td>Set</td>
 </tr>
-<tr class="row-even"><td>SPOP</td>
+<tr class="row-odd"><td>SPOP</td>
 <td>Set</td>
 </tr>
-<tr class="row-odd"><td>SRANDMEMBER</td>
+<tr class="row-even"><td>SRANDMEMBER</td>
 <td>Set</td>
 </tr>
-<tr class="row-even"><td>SREM</td>
+<tr class="row-odd"><td>SREM</td>
 <td>Set</td>
 </tr>
-<tr class="row-odd"><td>SSCAN</td>
+<tr class="row-even"><td>SSCAN</td>
 <td>Set</td>
 </tr>
-<tr class="row-even"><td>ZADD</td>
+<tr class="row-odd"><td>ZADD</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-odd"><td>ZCARD</td>
+<tr class="row-even"><td>ZCARD</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-even"><td>ZCOUNT</td>
+<tr class="row-odd"><td>ZCOUNT</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-odd"><td>ZINCRBY</td>
+<tr class="row-even"><td>ZINCRBY</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-even"><td>ZLEXCOUNT</td>
+<tr class="row-odd"><td>ZLEXCOUNT</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-odd"><td>ZRANGE</td>
+<tr class="row-even"><td>ZRANGE</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-even"><td>ZRANGEBYLEX</td>
+<tr class="row-odd"><td>ZRANGEBYLEX</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-odd"><td>ZRANGEBYSCORE</td>
+<tr class="row-even"><td>ZRANGEBYSCORE</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-even"><td>ZRANK</td>
+<tr class="row-odd"><td>ZRANK</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-odd"><td>ZREM</td>
+<tr class="row-even"><td>ZREM</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-even"><td>ZREMRANGEBYLEX</td>
+<tr class="row-odd"><td>ZREMRANGEBYLEX</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-odd"><td>ZREMRANGEBYRANK</td>
+<tr class="row-even"><td>ZREMRANGEBYRANK</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-even"><td>ZREMRANGEBYSCORE</td>
+<tr class="row-odd"><td>ZREMRANGEBYSCORE</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-odd"><td>ZREVRANGE</td>
+<tr class="row-even"><td>ZREVRANGE</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-even"><td>ZREVRANGEBYLEX</td>
+<tr class="row-odd"><td>ZREVRANGEBYLEX</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-odd"><td>ZREVRANGEBYSCORE</td>
+<tr class="row-even"><td>ZREVRANGEBYSCORE</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-even"><td>ZREVRANK</td>
+<tr class="row-odd"><td>ZREVRANK</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-odd"><td>ZSCAN</td>
+<tr class="row-even"><td>ZSCAN</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-even"><td>ZSCORE</td>
+<tr class="row-odd"><td>ZSCORE</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-odd"><td>APPEND</td>
+<tr class="row-even"><td>APPEND</td>
 <td>String</td>
 </tr>
-<tr class="row-even"><td>BITCOUNT</td>
+<tr class="row-odd"><td>BITCOUNT</td>
 <td>String</td>
 </tr>
-<tr class="row-odd"><td>BITFIELD</td>
+<tr class="row-even"><td>BITFIELD</td>
 <td>String</td>
 </tr>
-<tr class="row-even"><td>BITPOS</td>
+<tr class="row-odd"><td>BITPOS</td>
 <td>String</td>
 </tr>
-<tr class="row-odd"><td>DECR</td>
+<tr class="row-even"><td>DECR</td>
 <td>String</td>
 </tr>
-<tr class="row-even"><td>DECRBY</td>
+<tr class="row-odd"><td>DECRBY</td>
 <td>String</td>
 </tr>
-<tr class="row-odd"><td>GET</td>
+<tr class="row-even"><td>GET</td>
 <td>String</td>
 </tr>
-<tr class="row-even"><td>GETBIT</td>
+<tr class="row-odd"><td>GETBIT</td>
 <td>String</td>
 </tr>
-<tr class="row-odd"><td>GETRANGE</td>
+<tr class="row-even"><td>GETRANGE</td>
 <td>String</td>
 </tr>
-<tr class="row-even"><td>GETSET</td>
+<tr class="row-odd"><td>GETSET</td>
 <td>String</td>
 </tr>
-<tr class="row-odd"><td>INCR</td>
+<tr class="row-even"><td>INCR</td>
 <td>String</td>
 </tr>
-<tr class="row-even"><td>INCRBY</td>
+<tr class="row-odd"><td>INCRBY</td>
 <td>String</td>
 </tr>
-<tr class="row-odd"><td>INCRBYFLOAT</td>
+<tr class="row-even"><td>INCRBYFLOAT</td>
 <td>String</td>
 </tr>
-<tr class="row-even"><td>MGET</td>
+<tr class="row-odd"><td>MGET</td>
 <td>String</td>
 </tr>
-<tr class="row-odd"><td>MSET</td>
+<tr class="row-even"><td>MSET</td>
 <td>String</td>
 </tr>
-<tr class="row-even"><td>PSETEX</td>
+<tr class="row-odd"><td>PSETEX</td>
 <td>String</td>
 </tr>
-<tr class="row-odd"><td>SET</td>
+<tr class="row-even"><td>SET</td>
 <td>String</td>
 </tr>
-<tr class="row-even"><td>SETBIT</td>
+<tr class="row-odd"><td>SETBIT</td>
 <td>String</td>
 </tr>
-<tr class="row-odd"><td>SETEX</td>
+<tr class="row-even"><td>SETEX</td>
 <td>String</td>
 </tr>
-<tr class="row-even"><td>SETNX</td>
+<tr class="row-odd"><td>SETNX</td>
 <td>String</td>
 </tr>
-<tr class="row-odd"><td>SETRANGE</td>
+<tr class="row-even"><td>SETRANGE</td>
 <td>String</td>
 </tr>
-<tr class="row-even"><td>STRLEN</td>
+<tr class="row-odd"><td>STRLEN</td>
 <td>String</td>
 </tr>
 </tbody>
@@ -683,7 +687,7 @@ response for each in place of the value.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.6.0-dev-data-plane-api-f1c7a9',
+            VERSION:'1.6.0-dev-data-plane-api-47e118',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
