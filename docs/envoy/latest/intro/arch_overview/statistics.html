@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Statistics &mdash; envoy 1.6.0-dev-data-plane-api-165396 documentation</title>
+  <title>Statistics &mdash; envoy 1.6.0-dev-data-plane-api-247d92 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-165396 documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-247d92 documentation" href="../../index.html"/>
         <link rel="up" title="Architecture overview" href="arch_overview.html"/>
         <link rel="next" title="Runtime configuration" href="runtime.html"/>
         <link rel="prev" title="TLS" href="ssl.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.6.0-dev-data-plane-api-165396
+                1.6.0-dev-data-plane-api-247d92
               </div>
             
           
@@ -216,22 +216,36 @@
   <div class="section" id="statistics">
 <span id="arch-overview-statistics"></span><h1>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h1>
 <p>One of the primary goals of Envoy is to make the network understandable. Envoy emits a large number
-of statistics depending on how it is configured. Generally the statistics fall into two categories:</p>
+of statistics depending on how it is configured. Generally the statistics fall into three categories:</p>
 <ul class="simple">
 <li><strong>Downstream</strong>: Downstream statistics relate to incoming connections/requests. They are emitted by
 listeners, the HTTP connection manager, the TCP proxy filter, etc.</li>
 <li><strong>Upstream</strong>: Upstream statistics relate to outgoing connections/requests. They are emitted by
 connection pools, the router filter, the TCP proxy filter, etc.</li>
+<li><strong>Server</strong>: Server statistics describe how the Envoy server instance is working. Statistics like
+server uptime or amount of allocated memory are categorized here.</li>
 </ul>
 <p>A single proxy scenario typically involves both downstream and upstream statistics. The two types
 can be used to get a detailed picture of that particular network hop. Statistics from the entire
 mesh give a very detailed picture of each hop and overall network health. The statistics emitted are
 documented in detail in the operations guide.</p>
-<p>Envoy uses statsd as the statistics output format, though plugging in a different statistics sink
-would not be difficult. Both TCP and UDP statsd is supported. Internally, counters and gauges are
-batched and periodically flushed to improve performance. Histograms are written as they are
-received. Note: what were previously referred to as timers have become histograms as the only
-difference between the two representations was the units.</p>
+<p>In the v1 API, Envoy only supports statsd as the statistics output format. Both TCP and UDP statsd
+are supported. As of the v2 API, Envoy has the ability to support custom, pluggable sinks. <a class="reference internal" href="../../api-v2/config/metrics/v2/stats.proto.html#envoy-api-msg-config-metrics-v2-statssink"><span class="std std-ref">A
+few standard sink implementations</span></a> are included in Envoy.
+Some sinks also support emitting statistics with tags/dimensions.</p>
+<p>Within Envoy and throughout the documentation, statistics are identified by a canonical string
+representation. The dynamic portions of these strings are stripped to become tags. Users can
+configure this behavior via <a class="reference internal" href="../../api-v2/config/metrics/v2/stats.proto.html#envoy-api-msg-config-metrics-v2-tagspecifier"><span class="std std-ref">the Tag Specifier configuration</span></a>.</p>
+<p>Envoy emits three types of values as statistics:</p>
+<ul class="simple">
+<li><strong>Counters</strong>: Unsigned integers that only increase and never decrease. E.g., total requests.</li>
+<li><strong>Gauges</strong>: Unsigned integers that both increase and decrease. E.g., currently active requests.</li>
+<li><strong>Histograms</strong>: Unsigned integers that are part of a stream of values that are then aggregated by
+the collector to ultimately yield summarized percentile values. E.g., upstream request time.</li>
+</ul>
+<p>Internally, counters and gauges are batched and periodically flushed to improve performance.
+Histograms are written as they are received. Note: what were previously referred to as timers have
+become histograms as the only difference between the two representations was the units.</p>
 <ul class="simple">
 <li><a class="reference internal" href="../../configuration/overview/v1_overview.html#config-overview-v1"><span class="std std-ref">v1 API reference</span></a>.</li>
 <li><a class="reference internal" href="../../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-field-config-bootstrap-v2-bootstrap-stats-sinks"><span class="std std-ref">v2 API reference</span></a>.</li>
@@ -282,7 +296,7 @@ difference between the two representations was the units.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.6.0-dev-data-plane-api-165396',
+            VERSION:'1.6.0-dev-data-plane-api-247d92',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
