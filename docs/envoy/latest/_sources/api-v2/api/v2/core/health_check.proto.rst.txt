@@ -27,7 +27,8 @@ core.HealthCheck
     "http_health_check": "{...}",
     "tcp_health_check": "{...}",
     "redis_health_check": "{...}",
-    "grpc_health_check": "{...}"
+    "grpc_health_check": "{...}",
+    "no_traffic_interval": "{...}"
   }
 
 .. _envoy_api_field_core.HealthCheck.timeout:
@@ -105,7 +106,18 @@ grpc_health_check
   
   Precisely one of :ref:`http_health_check <envoy_api_field_core.HealthCheck.http_health_check>`, :ref:`tcp_health_check <envoy_api_field_core.HealthCheck.tcp_health_check>`, :ref:`redis_health_check <envoy_api_field_core.HealthCheck.redis_health_check>`, :ref:`grpc_health_check <envoy_api_field_core.HealthCheck.grpc_health_check>` must be set.
   
+.. _envoy_api_field_core.HealthCheck.no_traffic_interval:
 
+no_traffic_interval
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The "no traffic interval" is a special health check interval that is used when a cluster has
+  never had traffic routed to it. This lower interval allows cluster information to be kept up to
+  date, without sending a potentially large amount of active health checking traffic for no
+  reason. Once a cluster has been used for traffic routing, Envoy will shift back to using the
+  standard health check interval that is defined.
+  
+  The default value for "no traffic interval" is 60 seconds.
+  
+  
 .. _envoy_api_msg_core.HealthCheck.Payload:
 
 core.HealthCheck.Payload
