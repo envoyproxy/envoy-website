@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Tracing &mdash; envoy 1.6.0-dev-data-plane-api-a3e495 documentation</title>
+  <title>Statistics &mdash; envoy 1.6.0-dev-data-plane-api-a3e495 documentation</title>
   
 
   
@@ -38,8 +38,8 @@
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="envoy 1.6.0-dev-data-plane-api-a3e495 documentation" href="../index.html"/>
-        <link rel="up" title="v1 API reference" href="api.html"/>
-        <link rel="next" title="v2 API reference" href="../api-v2/api.html"/>
+        <link rel="up" title="Configuration reference" href="configuration.html"/>
+        <link rel="next" title="Route table check tool" href="tools/router_check.html"/>
         <link rel="prev" title="Runtime" href="runtime.html"/> 
 
   
@@ -98,26 +98,29 @@
 <li class="toctree-l1"><a class="reference internal" href="../intro/intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../start/start.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install/install.html">Building and installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../configuration/configuration.html">Configuration reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../operations/operations.html">Operations and administration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../extending/extending.html">Extending Envoy for custom use cases</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="api.html">v1 API reference</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="configuration.html">Configuration reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="overview/v1_overview.html">Overview (v1 API)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview/v2_overview.html">Overview (v2 API)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="listener_filters/listener_filters.html">Listener filters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="network_filters/network_filters.html">Network filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="route_config/route_config.html">HTTP Route configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http_conn_man/http_conn_man.html">HTTP connection manager</a></li>
 <li class="toctree-l2"><a class="reference internal" href="http_filters/http_filters.html">HTTP filters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cluster_manager/cluster_manager.html">Cluster manager</a></li>
 <li class="toctree-l2"><a class="reference internal" href="access_log.html">Access logging</a></li>
-<li class="toctree-l2"><a class="reference internal" href="admin.html">Administration interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rate_limit.html">Rate limit service</a></li>
 <li class="toctree-l2"><a class="reference internal" href="runtime.html">Runtime</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Tracing</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#lightstep-driver">LightStep driver</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#zipkin-driver">Zipkin driver</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Statistics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#server">Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#file-system">File system</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="tools/router_check.html">Route table check tool</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-v1/api.html">v1 API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api-v2/api.html">v2 API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq/overview.html">FAQ</a></li>
 </ul>
@@ -164,15 +167,15 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="api.html">v1 API reference</a> &raquo;</li>
+          <li><a href="configuration.html">Configuration reference</a> &raquo;</li>
         
-      <li>Tracing</li>
+      <li>Statistics</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/api-v1/tracing.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/configuration/statistics.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -185,64 +188,117 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="tracing">
-<span id="config-tracing-v1"></span><h1>Tracing<a class="headerlink" href="#tracing" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="../intro/arch_overview/tracing.html#arch-overview-tracing"><span class="std std-ref">tracing</span></a> configuration specifies global settings for the HTTP
-tracer used by Envoy. The configuration is defined on the <a class="reference internal" href="../configuration/overview/v1_overview.html#config-overview-v1"><span class="std std-ref">server’s top level configuration</span></a>. Envoy may support other tracers in the future, but right now the HTTP tracer is
-the only one supported.</p>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;http&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;driver&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
+  <div class="section" id="statistics">
+<span id="id1"></span><h1>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h1>
+<p>A few statistics are emitted to report statistics system behavior:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>stats.overflow</td>
+<td>Counter</td>
+<td>Total number of times Envoy cannot allocate a statistic due to a shortage of shared memory</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="server">
+<h2>Server<a class="headerlink" href="#server" title="Permalink to this headline">¶</a></h2>
+<p>Server related statistics are rooted at <em>server.</em> with following statistics:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>uptime</td>
+<td>Gauge</td>
+<td>Current server uptime in seconds</td>
+</tr>
+<tr class="row-odd"><td>memory_allocated</td>
+<td>Gauge</td>
+<td>Current amount of allocated memory in bytes</td>
+</tr>
+<tr class="row-even"><td>memory_heap_size</td>
+<td>Gauge</td>
+<td>Current reserved heap size in bytes</td>
+</tr>
+<tr class="row-odd"><td>live</td>
+<td>Gauge</td>
+<td>1 if the server is not currently draining, 0 otherwise</td>
+</tr>
+<tr class="row-even"><td>parent_connections</td>
+<td>Gauge</td>
+<td>Total connections of the old Envoy process on hot restart</td>
+</tr>
+<tr class="row-odd"><td>total_connections</td>
+<td>Gauge</td>
+<td>Total connections of both new and old Envoy processes</td>
+</tr>
+<tr class="row-even"><td>version</td>
+<td>Gauge</td>
+<td>Integer represented version number based on SCM revision</td>
+</tr>
+<tr class="row-odd"><td>days_until_first_cert_expiring</td>
+<td>Gauge</td>
+<td>Number of days until the next certificate being managed will expire</td>
+</tr>
+</tbody>
+</table>
 </div>
-<dl class="docutils">
-<dt>http</dt>
-<dd><em>(optional, object)</em> Provides configuration for the HTTP tracer.</dd>
-<dt>driver</dt>
-<dd><em>(optional, object)</em> Provides the driver that handles trace and span creation.</dd>
-</dl>
-<p>Currently <a class="reference external" href="http://lightstep.com/">LightStep</a>  and <a class="reference external" href="http://zipkin.io">Zipkin</a> drivers are supported.</p>
-<div class="section" id="lightstep-driver">
-<h2>LightStep driver<a class="headerlink" href="#lightstep-driver" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;lightstep&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;access_token_file&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;collector_cluster&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<dl class="docutils">
-<dt>access_token_file</dt>
-<dd><em>(required, string)</em> File containing the access token to the <a class="reference external" href="http://lightstep.com/">LightStep</a>
-API.</dd>
-<dt>collector_cluster</dt>
-<dd><em>(required, string)</em> The cluster manager cluster that hosts the LightStep collectors.</dd>
-</dl>
-</div>
-<div class="section" id="zipkin-driver">
-<h2>Zipkin driver<a class="headerlink" href="#zipkin-driver" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;zipkin&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;collector_cluster&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;collector_endpoint&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<dl class="docutils">
-<dt>collector_cluster</dt>
-<dd><em>(required, string)</em> The cluster manager cluster that hosts the Zipkin collectors. Note that the
-Zipkin cluster must be defined under <cite>clusters</cite> in the cluster manager configuration section.</dd>
-<dt>collector_endpoint</dt>
-<dd><em>(optional, string)</em> The API endpoint of the Zipkin service where the
-spans will be sent. When using a standard Zipkin installation, the
-API endpoint is typically <cite>/api/v1/spans</cite>, which is the default value.</dd>
-</dl>
+<div class="section" id="file-system">
+<h2>File system<a class="headerlink" href="#file-system" title="Permalink to this headline">¶</a></h2>
+<p>Statistics related to file system are emitted in the <em>filesystem.</em> namespace.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>write_buffered</td>
+<td>Counter</td>
+<td>Total number of times file data is moved to Envoy’s internal flush buffer</td>
+</tr>
+<tr class="row-odd"><td>write_completed</td>
+<td>Counter</td>
+<td>Total number of times a file was written</td>
+</tr>
+<tr class="row-even"><td>flushed_by_timer</td>
+<td>Counter</td>
+<td>Total number of times internal flush buffers are written to a file due to flush timeout</td>
+</tr>
+<tr class="row-odd"><td>reopen_failed</td>
+<td>Counter</td>
+<td>Total number of times a file was failed to be opened</td>
+</tr>
+<tr class="row-even"><td>write_total_buffered</td>
+<td>Gauge</td>
+<td>Current total size of internal flush buffer in bytes</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 
@@ -256,7 +312,7 @@ API endpoint is typically <cite>/api/v1/spans</cite>, which is the default value
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../api-v2/api.html" class="btn btn-neutral float-right" title="v2 API reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="tools/router_check.html" class="btn btn-neutral float-right" title="Route table check tool" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="runtime.html" class="btn btn-neutral" title="Runtime" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
