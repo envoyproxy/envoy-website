@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP route &mdash; envoy 1.6.0-dev-data-plane-api-61f4a5 documentation</title>
+  <title>HTTP route &mdash; envoy 1.6.0-dev-data-plane-api-2998e1 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../../search.html"/>
-    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-61f4a5 documentation" href="../../../../index.html"/>
+    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-2998e1 documentation" href="../../../../index.html"/>
         <link rel="up" title="HTTP route management" href="../../../http_routes/http_routes.html"/>
         <link rel="next" title="Filters" href="../../../config/filter/filter.html"/>
         <link rel="prev" title="HTTP route configuration" href="../rds.proto.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.6.0-dev-data-plane-api-61f4a5
+                1.6.0-dev-data-plane-api-2998e1
               </div>
             
           
@@ -1351,7 +1351,8 @@ HTTP/1 and HTTP/2 as Envoy normalizes headers. E.g.,</p>
   <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;regex&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;exact_match&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;regex_match&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+  <span class="nt">&quot;regex_match&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;range_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -1382,7 +1383,7 @@ regex grammar used in the value field is defined
 <dl class="docutils" id="envoy-api-field-route-headermatcher-exact-match">
 <dt>exact_match</dt>
 <dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) If specified, header match will be performed based on the value of the header.</p>
-<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-regex-match"><span class="std std-ref">regex_match</span></a> may be set.</p>
+<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-regex-match"><span class="std std-ref">regex_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-range-match"><span class="std std-ref">range_match</span></a> may be set.</p>
 </dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-route-headermatcher-regex-match">
@@ -1397,13 +1398,29 @@ request header value matches the regex. The regex grammar used in the value fiel
 <li>The regex <em>d{3}</em> does not match the value <em>1234</em></li>
 <li>The regex <em>d{3}</em> does not match the value <em>123.456</em></li>
 </ul>
-<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-regex-match"><span class="std std-ref">regex_match</span></a> may be set.</p>
+<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-regex-match"><span class="std std-ref">regex_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-range-match"><span class="std std-ref">range_match</span></a> may be set.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-route-headermatcher-range-match">
+<dt>range_match</dt>
+<dd><p class="first">(<a class="reference internal" href="../../../type/range.proto.html#envoy-api-msg-type-int64range"><span class="std std-ref">type.Int64Range</span></a>) If specified, header match will be performed based on range.
+The rule will match if the request header value is within this range.
+The entire request header value must represent an integer in base 10 notation: consisting of
+an optional plus or minus sign followed by a sequence of digits. The rule will not match if
+the header value does not represent an integer. Match will fail for empty values, floating
+point numbers or if only a subsequence of the header value is an integer.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li>For range [-10,0), route will match for header value -1, but not for 0, “somestring”, 10.9,
+“-1somestring”</li>
+</ul>
+<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-regex-match"><span class="std std-ref">regex_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-range-match"><span class="std std-ref">range_match</span></a> may be set.</p>
 </dd>
 </dl>
 </div>
 <div class="section" id="route-queryparametermatcher">
 <span id="envoy-api-msg-route-queryparametermatcher"></span><h2>route.QueryParameterMatcher<a class="headerlink" href="#route-queryparametermatcher" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L856">[route.QueryParameterMatcher proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L854">[route.QueryParameterMatcher proto]</a></p>
 <p>Query parameter matching treats the query string of a request’s :path header
 as an ampersand-separated list of keys and/or key=value elements.</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -1478,7 +1495,7 @@ E.g., the regex “d+$” will match “123” but not “a123” or “123a”.
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../',
-            VERSION:'1.6.0-dev-data-plane-api-61f4a5',
+            VERSION:'1.6.0-dev-data-plane-api-2998e1',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

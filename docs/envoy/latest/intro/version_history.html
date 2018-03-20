@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Version history &mdash; envoy 1.6.0-dev-data-plane-api-61f4a5 documentation</title>
+  <title>Version history &mdash; envoy 1.6.0-dev-data-plane-api-2998e1 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-61f4a5 documentation" href="../index.html"/>
+    <link rel="top" title="envoy 1.6.0-dev-data-plane-api-2998e1 documentation" href="../index.html"/>
         <link rel="up" title="Introduction" href="intro.html"/>
         <link rel="next" title="Getting Started" href="../start/start.html"/>
         <link rel="prev" title="Getting help" href="getting_help.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.6.0-dev-data-plane-api-61f4a5
+                1.6.0-dev-data-plane-api-2998e1
               </div>
             
           
@@ -191,16 +191,97 @@
 <div class="section" id="id1">
 <h2>1.6.0<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>http : added idle timeout for <a class="reference internal" href="../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-httpprotocoloptions-idle-timeout"><span class="std std-ref">upstream http connections</span></a>.</li>
+<li>access log: added DOWNSTREAM_REMOTE_ADDRESS, DOWNSTREAM_REMOTE_ADDRESS_WITHOUT_PORT, and
+DOWNSTREAM_LOCAL_ADDRESS <a class="reference internal" href="../configuration/access_log.html#config-access-log-format"><span class="std std-ref">access log formatters</span></a>.
+DOWNSTREAM_ADDRESS access log formatter has been deprecated.</li>
+<li>access log: added less than or equal (LE) <a class="reference internal" href="../api-v2/config/filter/accesslog/v2/accesslog.proto.html#envoy-api-msg-config-filter-accesslog-v2-comparisonfilter"><span class="std std-ref">comparison filter</span></a>.</li>
+<li>access log: added configuration to <a class="reference internal" href="../api-v2/config/filter/accesslog/v2/accesslog.proto.html#envoy-api-msg-config-filter-accesslog-v2-runtimefilter"><span class="std std-ref">runtime filter</span></a> to set default sampling rate, divisor,
+and whether to use independent randomness or not.</li>
+<li>admin: added <a class="reference internal" href="../operations/admin.html#operations-admin-interface-runtime"><span class="std std-ref">/runtime</span></a> admin endpoint to read the
+current runtime values.</li>
+<li>build: added support for <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/bazel#enabling-optional-features">building Envoy with exported symbols</a>. This change allows scripts loaded with the Lua filter to
+load shared object libraries such as those installed via <a class="reference external" href="https://luarocks.org/">LuaRocks</a>.</li>
+<li>config: added support for sending error details as
+<a class="reference external" href="https://github.com/googleapis/googleapis/blob/master/google/rpc/status.proto">grpc.rpc.Status</a>
+in <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryrequest"><span class="std std-ref">DiscoveryRequest</span></a>.</li>
+<li>config: added support for <a class="reference internal" href="../api-v2/api/v2/core/base.proto.html#envoy-api-msg-core-datasource"><span class="std std-ref">inline delivery</span></a> of TLS
+certificates and private keys.</li>
+<li>config: added restrictions for the backing <a class="reference internal" href="../api-v2/api/v2/core/config_source.proto.html#envoy-api-msg-core-configsource"><span class="std std-ref">config sources</span></a>
+of xDS resources. For filesystem based xDS the file must exist at configuration time. For cluster
+based xDS the backing cluster must be statically defined and be of non-EDS type.</li>
+<li>grpc: the Google gRPC C++ library client is now supported as specified in the <a class="reference internal" href="arch_overview/grpc.html#arch-overview-grpc-services"><span class="std std-ref">gRPC services
+overview</span></a> and <a class="reference internal" href="../api-v2/api/v2/core/grpc_service.proto.html#envoy-api-msg-core-grpcservice"><span class="std std-ref">GrpcService</span></a>.</li>
+<li>grpc-json: Added support for <a class="reference internal" href="../api-v2/config/filter/http/transcoder/v2/transcoder.proto.html#envoy-api-field-config-filter-http-transcoder-v2-grpcjsontranscoder-proto-descriptor-bin"><span class="std std-ref">inline descriptors</span></a>.</li>
+<li>health check: added <a class="reference internal" href="../api-v2/api/v2/core/health_check.proto.html#envoy-api-field-core-healthcheck-grpc-health-check"><span class="std std-ref">gRPC health check</span></a>
+based on <a class="reference external" href="https://github.com/grpc/grpc/blob/master/src/proto/grpc/health/v1/health.proto">grpc.health.v1.Health</a>
+service.</li>
+<li>health check: added ability to set <a class="reference internal" href="../api-v2/api/v2/core/health_check.proto.html#envoy-api-field-core-healthcheck-httphealthcheck-host"><span class="std std-ref">host header value</span></a> for http health check.</li>
+<li>health check: extended the health check filter to support computation of the health check response
+based on the <a class="reference internal" href="../api-v2/config/filter/http/health_check/v2/health_check.proto.html#envoy-api-field-config-filter-http-health-check-v2-healthcheck-cluster-min-healthy-percentages"><span class="std std-ref">percentage of healthy servers in upstream clusters</span></a>.</li>
 <li>health check: added setting for <a class="reference internal" href="../api-v2/api/v2/core/health_check.proto.html#envoy-api-field-core-healthcheck-no-traffic-interval"><span class="std std-ref">no-traffic
 interval</span></a>.</li>
-<li>tracing: when using the zipkin tracer, it is now possible for clients to specify the sampling decision (using
-the <a class="reference internal" href="../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-b3-sampled"><span class="std std-ref">x-b3-sampled</span></a> header) and have the decision
-propagated through to subsequently invoked services.</li>
-<li>tracing: when using the zipkin tracer, it is no longer necessary to propagate the
+<li>http : added idle timeout for <a class="reference internal" href="../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-httpprotocoloptions-idle-timeout"><span class="std std-ref">upstream http connections</span></a>.</li>
+<li>http: added support for <a class="reference internal" href="../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-proxy-100-continue"><span class="std std-ref">proxying 100-Continue responses</span></a>.</li>
+<li>http: added the ability to pass a URL encoded PEM encoded peer certificate in the
+<a class="reference internal" href="../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-client-cert"><span class="std std-ref">x-forwarded-client-cert</span></a> header.</li>
+<li>http: added support for trusting additional hops in the
+<a class="reference internal" href="../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a> request header.</li>
+<li>http: added support for <a class="reference internal" href="../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-http1protocoloptions-accept-http-10"><span class="std std-ref">incoming HTTP/1.0</span></a>.</li>
+<li>hot restart: added SIGTERM propagation to children to <a class="reference internal" href="../operations/hot_restarter.html#operations-hot-restarter"><span class="std std-ref">hot-restarter.py</span></a>, which enables using it as a parent of containers.</li>
+<li>ip tagging: added <a class="reference internal" href="../configuration/http_filters/ip_tagging_filter.html#config-http-filters-ip-tagging"><span class="std std-ref">HTTP IP Tagging filter</span></a>.</li>
+<li>listeners: added support for <a class="reference internal" href="../api-v2/api/v2/core/address.proto.html#envoy-api-field-core-socketaddress-ipv4-compat"><span class="std std-ref">listening for both IPv4 and IPv6</span></a> when binding to ::.</li>
+<li>listeners: added support for listening on <a class="reference internal" href="../api-v2/api/v2/core/address.proto.html#envoy-api-field-core-address-pipe"><span class="std std-ref">UNIX domain sockets</span></a>.</li>
+<li>listeners: added support for <a class="reference internal" href="../api-v2/api/v2/core/address.proto.html#envoy-api-msg-core-pipe"><span class="std std-ref">abstract unix domain sockets</span></a> on
+Linux. The abstract namespace can be used by prepending ‘&#64;’ to a socket path.</li>
+<li>listeners: added <a class="reference internal" href="../api-v2/api/v2/lds.proto.html#envoy-api-field-listener-transparent"><span class="std std-ref">transparent</span></a> option.</li>
+<li>load balancer: added cluster configuration for <a class="reference internal" href="../api-v2/api/v2/cds.proto.html#envoy-api-field-cluster-commonlbconfig-healthy-panic-threshold"><span class="std std-ref">healthy panic threshold</span></a> percentage.</li>
+<li>load balancer: added <a class="reference internal" href="arch_overview/load_balancing.html#arch-overview-load-balancing-types-maglev"><span class="std std-ref">Maglev</span></a> consistent hash
+load balancer.</li>
+<li>load balancer: added support for
+<a class="reference internal" href="../api-v2/api/v2/endpoint/endpoint.proto.html#envoy-api-msg-endpoint-localitylbendpoints"><span class="std std-ref">LocalityLbEndpoints</span></a> priorities.</li>
+<li>lua: added headers <a class="reference internal" href="../configuration/http_filters/lua_filter.html#config-http-filters-lua-header-wrapper"><span class="std std-ref">replace()</span></a> API.</li>
+<li>redis: added local <cite>PING</cite> support to the <a class="reference internal" href="arch_overview/redis.html#arch-overview-redis"><span class="std std-ref">Redis filter</span></a>.</li>
+<li>redis: added <cite>GEORADIUS_RO</cite> and <cite>GEORADIUSBYMEMBER_RO</cite> to the <a class="reference internal" href="arch_overview/redis.html#arch-overview-redis"><span class="std std-ref">Redis command splitter</span></a> whitelist.</li>
+<li>router: added DOWNSTREAM_REMOTE_ADDRESS_WITHOUT_PORT, DOWNSTREAM_LOCAL_ADDRESS,
+DOWNSTREAM_LOCAL_ADDRESS_WITHOUT_PORT, PROTOCOL, and UPSTREAM_METADATA <a class="reference internal" href="../configuration/http_conn_man/headers.html#config-http-conn-man-headers-custom-request-headers"><span class="std std-ref">header
+formatters</span></a>. The CLIENT_IP header formatter
+has been deprecated.</li>
+<li>router: added gateway-error <a class="reference internal" href="../configuration/http_filters/router_filter.html#config-http-filters-router-x-envoy-retry-on"><span class="std std-ref">retry-on</span></a> policy.</li>
+<li>router: added support for route matching based on <a class="reference internal" href="../api-v2/api/v2/route/route.proto.html#envoy-api-msg-route-queryparametermatcher"><span class="std std-ref">URL query string parameters</span></a>.</li>
+<li>router: added support for more granular weighted cluster routing by allowing the <a class="reference internal" href="../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-weightedcluster-total-weight"><span class="std std-ref">total_weight</span></a> to be specified in configuration.</li>
+<li>router: added support for <a class="reference internal" href="../configuration/http_conn_man/headers.html#config-http-conn-man-headers-custom-request-headers"><span class="std std-ref">custom request/response headers</span></a> with mixed static and dynamic values.</li>
+<li>router: added support for <a class="reference internal" href="../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-route-direct-response"><span class="std std-ref">direct responses</span></a>.
+I.e., sending a preconfigured HTTP response without proxying anywhere.</li>
+<li>router: added support for <a class="reference internal" href="../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-redirectaction-https-redirect"><span class="std std-ref">HTTPS redirects</span></a> on specific routes.</li>
+<li>router: added support for <a class="reference internal" href="../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-redirectaction-prefix-rewrite"><span class="std std-ref">prefix_rewrite</span></a> for redirects.</li>
+<li>router: added support for <a class="reference internal" href="../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-redirectaction-strip-query"><span class="std std-ref">stripping the query string</span></a> for redirects.</li>
+<li>router: added support for downstream request/upstream response
+<a class="reference internal" href="../configuration/http_conn_man/headers.html#config-http-conn-man-headers-custom-request-headers"><span class="std std-ref">header manipulation</span></a> in <a class="reference internal" href="../api-v2/api/v2/route/route.proto.html#envoy-api-msg-route-weightedcluster"><span class="std std-ref">weighted
+cluster</span></a>.</li>
+<li>router: added support for <a class="reference internal" href="../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-headermatcher-range-match"><span class="std std-ref">range based header matching</span></a> for request routing.</li>
+<li>squash: added support for the <a class="reference internal" href="../configuration/http_filters/squash_filter.html#config-http-filters-squash"><span class="std std-ref">Squash microservices debugger</span></a>.
+Allows debugging an incoming request to a microservice in the mesh.</li>
+<li>stats: added metrics service API implementation.</li>
+<li>stats: added native <a class="reference internal" href="../api-v2/config/metrics/v2/stats.proto.html#envoy-api-msg-config-metrics-v2-dogstatsdsink"><span class="std std-ref">DogStatsd</span></a> support.</li>
+<li>stats: added support for <a class="reference internal" href="../api-v2/config/metrics/v2/stats.proto.html#envoy-api-field-config-metrics-v2-tagspecifier-fixed-value"><span class="std std-ref">fixed stats tag values</span></a> which will be added to all metrics.</li>
+<li>tcp proxy: added support for specifying a <a class="reference internal" href="../api-v2/config/filter/network/tcp_proxy/v2/tcp_proxy.proto.html#envoy-api-field-config-filter-network-tcp-proxy-v2-tcpproxy-metadata-match"><span class="std std-ref">metadata matcher</span></a> for upstream
+clusters in the tcp filter.</li>
+<li>tcp proxy: improved TCP proxy to correctly proxy TCP half-close.</li>
+<li>tcp proxy: added <a class="reference internal" href="../api-v2/config/filter/network/tcp_proxy/v2/tcp_proxy.proto.html#envoy-api-field-config-filter-network-tcp-proxy-v2-tcpproxy-idle-timeout"><span class="std std-ref">idle timeout</span></a>.</li>
+<li>tcp proxy: access logs now bring an IP address without a port when using DOWNSTREAM_ADDRESS.
+Use <a class="reference internal" href="../configuration/access_log.html#config-access-log-format"><span class="std std-ref">DOWNSTREAM_REMOTE_ADDRESS</span></a> instead.</li>
+<li>tracing: added support for dynamically loading an <a class="reference internal" href="../api-v2/config/trace/v2/trace.proto.html#envoy-api-msg-config-trace-v2-dynamicotconfig"><span class="std std-ref">OpenTracing tracer</span></a>.</li>
+<li>tracing: when using the Zipkin tracer, it is now possible for clients to specify the sampling
+decision (using the <a class="reference internal" href="../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-b3-sampled"><span class="std std-ref">x-b3-sampled</span></a> header) and
+have the decision propagated through to subsequently invoked services.</li>
+<li>tracing: when using the Zipkin tracer, it is no longer necessary to propagate the
 <a class="reference internal" href="../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-ot-span-context"><span class="std std-ref">x-ot-span-context</span></a> header.
 See more on trace context propagation <a class="reference internal" href="arch_overview/tracing.html#arch-overview-tracing"><span class="std std-ref">here</span></a>.</li>
-<li>listeners: added <a class="reference internal" href="../api-v2/api/v2/lds.proto.html#envoy-api-field-listener-transparent"><span class="std std-ref">transparent</span></a> option.</li>
+<li>transport sockets: added transport socket interface to allow custom implementations of transport
+sockets. A transport socket provides read and write logic with buffer encryption and decryption
+(if applicable). The existing TLS implementation has been refactored with the interface.</li>
+<li>upstream: added support for specifying an <a class="reference internal" href="../api-v2/api/v2/cds.proto.html#envoy-api-field-cluster-alt-stat-name"><span class="std std-ref">alternate stats name</span></a> while emitting stats for clusters.</li>
+<li>Many small bug fixes and performance improvements not listed.</li>
 </ul>
 </div>
 <div class="section" id="id2">
@@ -484,7 +565,7 @@ few new configuration flags to allow disabling expensive features if they are no
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.6.0-dev-data-plane-api-61f4a5',
+            VERSION:'1.6.0-dev-data-plane-api-2998e1',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

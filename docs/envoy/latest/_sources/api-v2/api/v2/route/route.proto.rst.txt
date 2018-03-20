@@ -1561,7 +1561,8 @@ route.HeaderMatcher
     "value": "...",
     "regex": "{...}",
     "exact_match": "...",
-    "regex_match": "..."
+    "regex_match": "...",
+    "range_match": "{...}"
   }
 
 .. _envoy_api_field_route.HeaderMatcher.name:
@@ -1599,7 +1600,7 @@ exact_match
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If specified, header match will be performed based on the value of the header.
   
   
-  Only one of :ref:`exact_match <envoy_api_field_route.HeaderMatcher.exact_match>`, :ref:`regex_match <envoy_api_field_route.HeaderMatcher.regex_match>` may be set.
+  Only one of :ref:`exact_match <envoy_api_field_route.HeaderMatcher.exact_match>`, :ref:`regex_match <envoy_api_field_route.HeaderMatcher.regex_match>`, :ref:`range_match <envoy_api_field_route.HeaderMatcher.range_match>` may be set.
   
 .. _envoy_api_field_route.HeaderMatcher.regex_match:
 
@@ -1616,9 +1617,26 @@ regex_match
   * The regex *\d{3}* does not match the value *123.456*
   
   
-  Only one of :ref:`exact_match <envoy_api_field_route.HeaderMatcher.exact_match>`, :ref:`regex_match <envoy_api_field_route.HeaderMatcher.regex_match>` may be set.
+  Only one of :ref:`exact_match <envoy_api_field_route.HeaderMatcher.exact_match>`, :ref:`regex_match <envoy_api_field_route.HeaderMatcher.regex_match>`, :ref:`range_match <envoy_api_field_route.HeaderMatcher.range_match>` may be set.
   
+.. _envoy_api_field_route.HeaderMatcher.range_match:
 
+range_match
+  (:ref:`type.Int64Range <envoy_api_msg_type.Int64Range>`) If specified, header match will be performed based on range.
+  The rule will match if the request header value is within this range.
+  The entire request header value must represent an integer in base 10 notation: consisting of
+  an optional plus or minus sign followed by a sequence of digits. The rule will not match if
+  the header value does not represent an integer. Match will fail for empty values, floating
+  point numbers or if only a subsequence of the header value is an integer.
+  
+  Examples:
+  
+  * For range [-10,0), route will match for header value -1, but not for 0, "somestring", 10.9,
+    "-1somestring"
+  
+  
+  Only one of :ref:`exact_match <envoy_api_field_route.HeaderMatcher.exact_match>`, :ref:`regex_match <envoy_api_field_route.HeaderMatcher.regex_match>`, :ref:`range_match <envoy_api_field_route.HeaderMatcher.range_match>` may be set.
+  
 
 
 .. _envoy_api_msg_route.QueryParameterMatcher:
@@ -1626,7 +1644,7 @@ regex_match
 route.QueryParameterMatcher
 ---------------------------
 
-`[route.QueryParameterMatcher proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L856>`_
+`[route.QueryParameterMatcher proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/route/route.proto#L854>`_
 
 Query parameter matching treats the query string of a request's :path header
 as an ampersand-separated list of keys and/or key=value elements.
