@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Load balancing &mdash; envoy 1.7.0-dev-data-plane-api-627b03 documentation</title>
+  <title>Load balancing &mdash; envoy 1.7.0-dev-data-plane-api-c27ffa documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.7.0-dev-data-plane-api-627b03 documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.7.0-dev-data-plane-api-c27ffa documentation" href="../../index.html"/>
         <link rel="up" title="Architecture overview" href="arch_overview.html"/>
         <link rel="next" title="Outlier detection" href="outlier.html"/>
         <link rel="prev" title="Connection pooling" href="connection_pooling.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.7.0-dev-data-plane-api-627b03
+                1.7.0-dev-data-plane-api-c27ffa
               </div>
             
           
@@ -117,6 +117,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#panic-threshold">Panic threshold</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#priority-levels">Priority levels</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#zone-aware-routing">Zone aware routing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#locality-weighted-load-balancing">Locality weighted load balancing</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#load-balancer-subsets">Load Balancer Subsets</a></li>
 </ul>
 </li>
@@ -522,6 +523,76 @@ in the originating cluster (if needed).</li>
 </ul>
 <p>Note that when using multiple priorities, zone aware routing is currently only supported for P=0.</p>
 </div>
+<div class="section" id="locality-weighted-load-balancing">
+<span id="arch-overview-load-balancing-locality-weighted-lb"></span><h2>Locality weighted load balancing<a class="headerlink" href="#locality-weighted-load-balancing" title="Permalink to this headline">¶</a></h2>
+<p>Another approach to determining how to weight assignments across different zones
+and geographical locations is by using explicit weights supplied via EDS in the
+<a class="reference internal" href="../../api-v2/api/v2/endpoint/endpoint.proto.html#envoy-api-msg-endpoint-localitylbendpoints"><span class="std std-ref">LocalityLbEndpoints</span></a> message.
+This approach is mutually exclusive with the above zone aware routing, since in
+the case of locality aware LB, we rely on the management server to provide the
+locality weighting, rather than the Envoy-side heuristics used in zone aware
+routing.</p>
+<p>When all endpoints are healthy, the locality is picked using a weighted
+round-robin schedule, where the locality weight is used for weighting. When some
+endpoints in a locality are unhealthy, we adjust the locality weight to reflect
+this. As with <a class="reference internal" href="#arch-overview-load-balancing-priority-levels"><span class="std std-ref">priority levels</span></a>, we assume an over-provision
+factor (currently hardcoded at 1.4), which means we do not perform any weight
+adjustment when only a small number of endpoints in a locality are unhealthy.</p>
+<p>Assume a simple set-up with 2 localities X and Y, where X has a locality weight
+of 1 and Y has a locality weight of 2, L=Y 100% healthy.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="34%" />
+<col width="33%" />
+<col width="34%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">L=X healthy endpoints</th>
+<th class="head">Percent of traffic to L=X</th>
+<th class="head">Percent of traffic to L=Y</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>100%</td>
+<td>33%</td>
+<td>67%</td>
+</tr>
+<tr class="row-odd"><td>70%</td>
+<td>33%</td>
+<td>67%</td>
+</tr>
+<tr class="row-even"><td>69%</td>
+<td>32%</td>
+<td>68%</td>
+</tr>
+<tr class="row-odd"><td>50%</td>
+<td>26%</td>
+<td>74%</td>
+</tr>
+<tr class="row-even"><td>25%</td>
+<td>15%</td>
+<td>85%</td>
+</tr>
+<tr class="row-odd"><td>0%</td>
+<td>0%</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table>
+<p>To sum this up in pseudo algorithms:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">health</span><span class="p">(</span><span class="n">L_X</span><span class="p">)</span> <span class="o">=</span> <span class="mi">140</span> <span class="o">*</span> <span class="n">healthy_X_backends</span> <span class="o">/</span> <span class="n">total_X_backends</span>
+<span class="n">effective_weight</span><span class="p">(</span><span class="n">L_X</span><span class="p">)</span> <span class="o">=</span> <span class="n">locality_weight_X</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">health</span><span class="p">(</span><span class="n">L_X</span><span class="p">))</span>
+<span class="n">load</span> <span class="n">to</span> <span class="n">L_X</span> <span class="o">=</span> <span class="n">effective_weight</span><span class="p">(</span><span class="n">L_X</span><span class="p">)</span> <span class="o">/</span> <span class="n">Σ_c</span><span class="p">(</span><span class="n">effective_weight</span><span class="p">(</span><span class="n">L_c</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Note that the locality weighted pick takes place after the priority level is
+picked. The load balancer follows these steps:</p>
+<ol class="arabic simple">
+<li>Pick <a class="reference internal" href="#arch-overview-load-balancing-priority-levels"><span class="std std-ref">priority level</span></a>.</li>
+<li>Pick locality (as described in this section) within priority level from (1).</li>
+<li>Pick endpoint using cluster specified load balancer within locality from (2).</li>
+</ol>
+</div>
 <div class="section" id="load-balancer-subsets">
 <span id="arch-overview-load-balancer-subsets"></span><h2>Load Balancer Subsets<a class="headerlink" href="#load-balancer-subsets" title="Permalink to this headline">¶</a></h2>
 <p>Envoy may be configured to divide hosts within an upstream cluster into subsets based on metadata
@@ -769,7 +840,7 @@ route:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.7.0-dev-data-plane-api-627b03',
+            VERSION:'1.7.0-dev-data-plane-api-c27ffa',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
