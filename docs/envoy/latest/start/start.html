@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Getting Started &mdash; envoy 1.7.0-dev-data-plane-api-dd1cbe documentation</title>
+  <title>Getting Started &mdash; envoy 1.7.0-dev-data-plane-api-8e72d6 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="envoy 1.7.0-dev-data-plane-api-dd1cbe documentation" href="../index.html"/>
+    <link rel="top" title="envoy 1.7.0-dev-data-plane-api-8e72d6 documentation" href="../index.html"/>
         <link rel="next" title="Front Proxy" href="sandboxes/front_proxy.html"/>
         <link rel="prev" title="Version history" href="../intro/version_history.html"/> 
 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                1.7.0-dev-data-plane-api-dd1cbe
+                1.7.0-dev-data-plane-api-8e72d6
               </div>
             
           
@@ -199,18 +199,13 @@ the same configuration.</p>
 <p>A very minimal Envoy configuration that can be used to validate basic plain HTTP
 proxying is available in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/configs/google_com_proxy.v2.yaml">configs/google_com_proxy.v2.yaml</a>. This is not
 intended to represent a realistic Envoy deployment.</p>
-<p>Copy both <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/configs/Dockerfile">configs/Dockerfile</a> and
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/configs/google_com_proxy.v2.yaml">configs/google_com_proxy.v2.yaml</a> to the same directory on your local
-disk. Then, build and run the Dockerfile, and test out Envoy by sending a
-request to port 10000:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ docker build -t envoy-google-test:v1 .
-$ docker run -d -p 10000:10000 envoy-google-test:v1
-$ curl -v localhost:10000
-</pre></div>
-</div>
-<p>The Dockerfile will build a container containing the latest version of Envoy,
-and copy a basic Envoy configuration into the container. This basic
-configuration tells Envoy to route incoming requests to *.google.com.</p>
+<blockquote>
+<div>$ docker pull envoyproxy/envoy:latest
+$ docker run –rm -d -p 10000:10000 envoyproxy/envoy:latest
+$ curl -v localhost:10000</div></blockquote>
+<p>The Docker image used will contain the latest version of Envoy
+and a basic Envoy configuration. This basic configuration tells
+Envoy to route incoming requests to *.google.com.</p>
 </div>
 <div class="section" id="simple-configuration">
 <h2>Simple Configuration<a class="headerlink" href="#simple-configuration" title="Permalink to this headline">¶</a></h2>
@@ -272,9 +267,7 @@ The <a class="reference internal" href="../configuration/overview/v2_overview.ht
 <p>Create a simple Dockerfile to execute Envoy, which assumes that envoy.yaml (described above) is in your local directory.
 You can refer to the <a class="reference internal" href="../operations/cli.html#operations-cli"><span class="std std-ref">Command line options</span></a>.</p>
 <div class="highlight-none"><div class="highlight"><pre><span></span>FROM envoyproxy/envoy:latest
-RUN apt-get update
-COPY envoy.yaml /etc/envoy.yaml
-CMD /usr/local/bin/envoy -c /etc/envoy.yaml
+COPY envoy.yaml /etc/envoy/envoy.yaml
 </pre></div>
 </div>
 <p>Build the Docker image that runs your configuration using:</p>
@@ -289,6 +282,8 @@ CMD /usr/local/bin/envoy -c /etc/envoy.yaml
 <div class="highlight-default"><div class="highlight"><pre><span></span>$ curl -v localhost:10000
 </pre></div>
 </div>
+<p>If you would like to use envoy with docker-compose you can overwrite the provided configuration file
+by using a volume.</p>
 </div>
 <div class="section" id="sandboxes">
 <h2>Sandboxes<a class="headerlink" href="#sandboxes" title="Permalink to this headline">¶</a></h2>
@@ -361,7 +356,7 @@ source distributions that target specific use cases.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.7.0-dev-data-plane-api-dd1cbe',
+            VERSION:'1.7.0-dev-data-plane-api-8e72d6',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
