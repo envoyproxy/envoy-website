@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Administration interface &mdash; envoy 1.7.0-dev-data-plane-api-22d98c documentation</title>
+  <title>Administration interface &mdash; envoy 1.7.0-dev-data-plane-api-dd1cbe documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="envoy 1.7.0-dev-data-plane-api-22d98c documentation" href="../index.html"/>
+    <link rel="top" title="envoy 1.7.0-dev-data-plane-api-dd1cbe documentation" href="../index.html"/>
         <link rel="up" title="Operations and administration" href="operations.html"/>
         <link rel="next" title="Statistics overview" href="stats_overview.html"/>
         <link rel="prev" title="Hot restart Python wrapper" href="hot_restarter.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.7.0-dev-data-plane-api-22d98c
+                1.7.0-dev-data-plane-api-dd1cbe
               </div>
             
           
@@ -185,7 +185,7 @@ modify different aspects of the server:</p>
 <li><a class="reference internal" href="../api-v1/admin.html#config-admin-v1"><span class="std std-ref">v1 API reference</span></a></li>
 <li><a class="reference internal" href="../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-msg-config-bootstrap-v2-admin"><span class="std std-ref">v2 API reference</span></a></li>
 </ul>
-<div class="admonition attention">
+<div class="admonition attention" id="operations-admin-interface-security">
 <p class="first admonition-title">Attention</p>
 <p>The administration interface in its current form both allows destructive operations to be
 performed (e.g., shutting down the server) as well as potentially exposes private information
@@ -440,17 +440,53 @@ gauges are output. Histograms will be output in a future update.</p>
 <span class="target" id="operations-admin-interface-runtime"></span><dl class="get">
 <dt id="get--runtime">
 <code class="descname">GET </code><code class="descname">/runtime</code><a class="headerlink" href="#get--runtime" title="Permalink to this definition">¶</a></dt>
-<dd><p>Outputs all runtime values on demand in a human-readable format. See
-<a class="reference internal" href="../intro/arch_overview/runtime.html#arch-overview-runtime"><span class="std std-ref">here</span></a> for more information on how these values are configured
-and utilized.</p>
-<dl class="get">
-<dt id="get--runtime?format=json">
-<code class="descname">GET </code><code class="descname">/runtime?format=json</code><a class="headerlink" href="#get--runtime?format=json" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<p>Outputs /runtime in JSON format. This can be used for programmatic access of runtime values.</p>
+<dd><p>Outputs all runtime values on demand in JSON format. See <a class="reference internal" href="../intro/arch_overview/runtime.html#arch-overview-runtime"><span class="std std-ref">here</span></a> for
+more information on how these values are configured and utilized. The output include the list of
+the active runtime override layers and the stack of layer values for each key. Empty strings
+indicate no value, and the final active value from the stack also is included in a separate key.
+Example output:</p>
 </dd></dl>
 
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;layers&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;disk&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;override&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+  <span class="p">],</span>
+  <span class="nt">&quot;entries&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;my_key&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;layer_values&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;my_disk_value&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;&quot;</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;final_value&quot;</span><span class="p">:</span> <span class="s2">&quot;my_disk_value&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;my_second_key&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;layer_values&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;my_second_disk_value&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;my_disk_override_value&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;my_admin_override_value&quot;</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;final_value&quot;</span><span class="p">:</span> <span class="s2">&quot;my_admin_override_value&quot;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<span class="target" id="operations-admin-interface-runtime-modify"></span><dl class="post">
+<dt id="post--runtime_modify?key1=value1&amp;key2=value2&amp;keyN=valueN">
+<code class="descname">POST </code><code class="descname">/runtime_modify?key1=value1&amp;key2=value2&amp;keyN=valueN</code><a class="headerlink" href="#post--runtime_modify?key1=value1&key2=value2&keyN=valueN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds or modifies runtime values as passed in query parameters. To delete a previously added key,
+use an empty string as the value. Note that deletion only applies to overrides added via this
+endpoint; values loaded from disk can be modified via override but not deleted.</p>
+</dd></dl>
+
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<p class="last">Use the /runtime_modify endpoint with care. Changes are effectively immediately. It is
+<strong>critical</strong> that the admin interface is <a class="reference internal" href="#operations-admin-interface-security"><span class="std std-ref">properly secured</span></a>.</p>
+</div>
 </div>
 
 
@@ -497,7 +533,7 @@ and utilized.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.7.0-dev-data-plane-api-22d98c',
+            VERSION:'1.7.0-dev-data-plane-api-dd1cbe',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
