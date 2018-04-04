@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Administration interface &mdash; envoy 1.7.0-dev-data-plane-api-4af506 documentation</title>
+  <title>Administration interface &mdash; envoy 1.7.0-dev-data-plane-api-b9ab70 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="envoy 1.7.0-dev-data-plane-api-4af506 documentation" href="../index.html"/>
+    <link rel="top" title="envoy 1.7.0-dev-data-plane-api-b9ab70 documentation" href="../index.html"/>
         <link rel="up" title="Operations and administration" href="operations.html"/>
         <link rel="next" title="Statistics overview" href="stats_overview.html"/>
         <link rel="prev" title="Hot restart Python wrapper" href="hot_restarter.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.7.0-dev-data-plane-api-4af506
+                1.7.0-dev-data-plane-api-b9ab70
               </div>
             
           
@@ -201,8 +201,10 @@ configuration like the following:</p>
     <span class="l l-Scalar l-Scalar-Plain">socket_address</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">address</span><span class="p p-Indicator">:</span> <span class="nv">127.0.0.1</span><span class="p p-Indicator">,</span> <span class="nv">port_value</span><span class="p p-Indicator">:</span> <span class="nv">9901</span> <span class="p p-Indicator">}</span>
 </pre></div>
 </div>
-<p class="last">In the future additional security options will be added to the administration interface. This
+<p>In the future additional security options will be added to the administration interface. This
 work is tracked in <a class="reference external" href="https://github.com/envoyproxy/envoy/issues/2763">this</a> issue.</p>
+<p class="last">All mutations should be sent as HTTP POST operations. For a limited time, they will continue
+to work with HTTP GET, with a warning logged.</p>
 </div>
 <dl class="get">
 <dt id="get--">
@@ -342,24 +344,24 @@ messages. Currently, only route configs are available but more are on the way. S
 subject to change.</p>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--cpuprofiler">
-<code class="descname">GET </code><code class="descname">/cpuprofiler</code><a class="headerlink" href="#get--cpuprofiler" title="Permalink to this definition">¶</a></dt>
+<dl class="post">
+<dt id="post--cpuprofiler">
+<code class="descname">POST </code><code class="descname">/cpuprofiler</code><a class="headerlink" href="#post--cpuprofiler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enable or disable the CPU profiler. Requires compiling with gperftools.</p>
 </dd></dl>
 
-<span class="target" id="operations-admin-interface-healthcheck-fail"></span><dl class="get">
-<dt id="get--healthcheck-fail">
-<code class="descname">GET </code><code class="descname">/healthcheck/fail</code><a class="headerlink" href="#get--healthcheck-fail" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="operations-admin-interface-healthcheck-fail"></span><dl class="post">
+<dt id="post--healthcheck-fail">
+<code class="descname">POST </code><code class="descname">/healthcheck/fail</code><a class="headerlink" href="#post--healthcheck-fail" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fail inbound health checks. This requires the use of the HTTP <a class="reference internal" href="../configuration/http_filters/health_check_filter.html#config-http-filters-health-check"><span class="std std-ref">health check filter</span></a>. This is useful for draining a server prior to shutting it
 down or doing a full restart. Invoking this command will universally fail health check requests
 regardless of how the filter is configured (pass through, etc.).</p>
 </dd></dl>
 
-<span class="target" id="operations-admin-interface-healthcheck-ok"></span><dl class="get">
-<dt id="get--healthcheck-ok">
-<code class="descname">GET </code><code class="descname">/healthcheck/ok</code><a class="headerlink" href="#get--healthcheck-ok" title="Permalink to this definition">¶</a></dt>
-<dd><p>Negate the effect of <a class="reference internal" href="#get--healthcheck-fail" title="GET /healthcheck/fail"><code class="xref http http-get docutils literal"><span class="pre">GET</span> <span class="pre">/healthcheck/fail</span></code></a>. This requires the use of the HTTP
+<span class="target" id="operations-admin-interface-healthcheck-ok"></span><dl class="post">
+<dt id="post--healthcheck-ok">
+<code class="descname">POST </code><code class="descname">/healthcheck/ok</code><a class="headerlink" href="#post--healthcheck-ok" title="Permalink to this definition">¶</a></dt>
+<dd><p>Negate the effect of <a class="reference internal" href="#post--healthcheck-fail" title="POST /healthcheck/fail"><code class="xref http http-post docutils literal"><span class="pre">POST</span> <span class="pre">/healthcheck/fail</span></code></a>. This requires the use of the HTTP
 <a class="reference internal" href="../configuration/http_filters/health_check_filter.html#config-http-filters-health-check"><span class="std std-ref">health check filter</span></a>.</p>
 </dd></dl>
 
@@ -369,22 +371,22 @@ regardless of how the filter is configured (pass through, etc.).</p>
 <dd><p>See <a class="reference internal" href="cli.html#cmdoption-hot-restart-version"><code class="xref std std-option docutils literal"><span class="pre">--hot-restart-version</span></code></a>.</p>
 </dd></dl>
 
-<span class="target" id="operations-admin-interface-logging"></span><dl class="get">
-<dt id="get--logging">
-<code class="descname">GET </code><code class="descname">/logging</code><a class="headerlink" href="#get--logging" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="operations-admin-interface-logging"></span><dl class="post">
+<dt id="post--logging">
+<code class="descname">POST </code><code class="descname">/logging</code><a class="headerlink" href="#post--logging" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enable/disable different logging levels on different subcomponents. Generally only used during
 development.</p>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--quitquitquit">
-<code class="descname">GET </code><code class="descname">/quitquitquit</code><a class="headerlink" href="#get--quitquitquit" title="Permalink to this definition">¶</a></dt>
+<dl class="post">
+<dt id="post--quitquitquit">
+<code class="descname">POST </code><code class="descname">/quitquitquit</code><a class="headerlink" href="#post--quitquitquit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cleanly exit the server.</p>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--reset_counters">
-<code class="descname">GET </code><code class="descname">/reset_counters</code><a class="headerlink" href="#get--reset_counters" title="Permalink to this definition">¶</a></dt>
+<dl class="post">
+<dt id="post--reset_counters">
+<code class="descname">POST </code><code class="descname">/reset_counters</code><a class="headerlink" href="#post--reset_counters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset all counters to zero. This is useful along with <a class="reference internal" href="#get--stats" title="GET /stats"><code class="xref http http-get docutils literal"><span class="pre">GET</span> <span class="pre">/stats</span></code></a> during debugging. Note
 that this does not drop any data sent to statsd. It just effects local output of the
 <a class="reference internal" href="#get--stats" title="GET /stats"><code class="xref http http-get docutils literal"><span class="pre">GET</span> <span class="pre">/stats</span></code></a> command.</p>
@@ -533,7 +535,7 @@ endpoint; values loaded from disk can be modified via override but not deleted.<
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.7.0-dev-data-plane-api-4af506',
+            VERSION:'1.7.0-dev-data-plane-api-b9ab70',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
