@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Access logging &mdash; envoy 1.7.0-dev-data-plane-api-c15104 documentation</title>
+  <title>Access logging &mdash; envoy 1.7.0-dev-data-plane-api-a32c7f documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="envoy 1.7.0-dev-data-plane-api-c15104 documentation" href="../index.html"/>
+    <link rel="top" title="envoy 1.7.0-dev-data-plane-api-a32c7f documentation" href="../index.html"/>
         <link rel="up" title="Configuration reference" href="configuration.html"/>
         <link rel="next" title="Rate limit service" href="rate_limit.html"/>
         <link rel="prev" title="Circuit breaking" href="cluster_manager/cluster_circuit_breakers.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.7.0-dev-data-plane-api-c15104
+                1.7.0-dev-data-plane-api-a32c7f
               </div>
             
           
@@ -354,6 +354,30 @@ none of the headers are present ‘-‘ symbol will be in the log.</dd>
 <dd>Not implemented (“-“).</dd>
 </dl>
 </dd>
+<dt>%DYNAMIC_METADATA(NAMESPACE:KEY*):Z%</dt>
+<dd><dl class="first last docutils">
+<dt>HTTP</dt>
+<dd><p class="first"><a class="reference internal" href="../api-v2/api/v2/core/base.proto.html#envoy-api-msg-core-metadata"><span class="std std-ref">Dynamic Metadata</span></a> info,
+where NAMESPACE is the the filter namespace used when setting the metadata, KEY is an optional
+lookup up key in the namespace with the option of specifying nested keys separated by ‘:’,
+and Z is an optional parameter denoting string truncation up to Z characters long. Dynamic Metadata
+can be set by filters using the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/include/envoy/request_info/request_info.h">RequestInfo</a> API:
+<em>setDynamicMetadata</em>. The data will be logged as a JSON string. For example, for the following dynamic metadata:</p>
+<p><code class="docutils literal"><span class="pre">com.test.my_filter:</span> <span class="pre">{&quot;test_key&quot;:</span> <span class="pre">&quot;foo&quot;,</span> <span class="pre">&quot;test_object&quot;:</span> <span class="pre">{&quot;inner_key&quot;:</span> <span class="pre">&quot;bar&quot;}}</span></code></p>
+<ul class="last simple">
+<li>%DYNAMIC_METADATA(com.test.my_filter)% will log: <code class="docutils literal"><span class="pre">{&quot;test_key&quot;:</span> <span class="pre">&quot;foo&quot;,</span> <span class="pre">&quot;test_object&quot;:</span> <span class="pre">{&quot;inner_key&quot;:</span> <span class="pre">&quot;bar&quot;}}</span></code></li>
+<li>%DYNAMIC_METADATA(com.test.my_filter:test_key)% will log: <code class="docutils literal"><span class="pre">&quot;foo&quot;</span></code></li>
+<li>%DYNAMIC_METADATA(com.test.my_filter:test_object)% will log: <code class="docutils literal"><span class="pre">{&quot;inner_key&quot;:</span> <span class="pre">&quot;bar&quot;}</span></code></li>
+<li>%DYNAMIC_METADATA(com.test.my_filter:test_object:inner_key)% will log: <code class="docutils literal"><span class="pre">&quot;bar&quot;</span></code></li>
+<li>%DYNAMIC_METADATA(com.unknown_filter)% will log: <code class="docutils literal"><span class="pre">-</span></code></li>
+<li>%DYNAMIC_METADATA(com.test.my_filter:unknown_key)% will log: <code class="docutils literal"><span class="pre">-</span></code></li>
+<li>%DYNAMIC_METADATA(com.test.my_filter):25% will log (truncation at 25 characters): <code class="docutils literal"><span class="pre">{&quot;test_key&quot;:</span> <span class="pre">&quot;foo&quot;,</span> <span class="pre">&quot;test</span></code></li>
+</ul>
+</dd>
+<dt>TCP</dt>
+<dd>Not implemented (“-“).</dd>
+</dl>
+</dd>
 </dl>
 </div>
 <div class="section" id="default-format">
@@ -417,7 +441,7 @@ none of the headers are present ‘-‘ symbol will be in the log.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.7.0-dev-data-plane-api-c15104',
+            VERSION:'1.7.0-dev-data-plane-api-a32c7f',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
