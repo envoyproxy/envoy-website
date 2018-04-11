@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP header manipulation &mdash; envoy 1.7.0-dev-data-plane-api-922ec7 documentation</title>
+  <title>HTTP header manipulation &mdash; envoy 1.7.0-dev-data-plane-api-c40deb documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.7.0-dev-data-plane-api-922ec7 documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.7.0-dev-data-plane-api-c40deb documentation" href="../../index.html"/>
         <link rel="up" title="HTTP connection manager" href="http_conn_man.html"/>
         <link rel="next" title="HTTP header sanitizing" href="header_sanitizing.html"/>
         <link rel="prev" title="Traffic Shifting/Splitting" href="traffic_splitting.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.7.0-dev-data-plane-api-922ec7
+                1.7.0-dev-data-plane-api-c40deb
               </div>
             
           
@@ -319,15 +319,19 @@ together by an equals (“=”) sign. The keys are case-insensitive, the values 
 should be replaced by backslash-double-quote (“).</p>
 <p>The following keys are supported:</p>
 <ol class="arabic simple">
-<li><code class="docutils literal"><span class="pre">By</span></code> The Subject Alternative Name (SAN) of the current proxy’s certificate.</li>
+<li><code class="docutils literal"><span class="pre">By</span></code> The Subject Alternative Name (URI type) of the current proxy’s certificate.</li>
 <li><code class="docutils literal"><span class="pre">Hash</span></code> The SHA 256 diguest of the current client certificate.</li>
-<li><code class="docutils literal"><span class="pre">SAN</span></code> The SAN field (URI type) of the current client certificate.</li>
+<li><code class="docutils literal"><span class="pre">Cert</span></code> The entire client certificate in URL encoded PEM format.</li>
 <li><code class="docutils literal"><span class="pre">Subject</span></code> The Subject field of the current client certificate. The value is always double-quoted.</li>
+<li><code class="docutils literal"><span class="pre">URI</span></code> The URI type Subject Alternative Name field of the current client certificate.</li>
+<li><code class="docutils literal"><span class="pre">DNS</span></code> The DNS type Subject Alternative Name field of the current client certificate. A client certificate may contain multiple DNS type Subject Alternative Names, each will be a separate key-value pair.</li>
 </ol>
+<p>A client certificate may contain multiple Subject Alternative Name types. For details on different Subject Alternative Name types, please refer <a class="reference external" href="https://tools.ietf.org/html/rfc2459#section-4.2.1.7">RFC 2459</a>.</p>
 <p>Some examples of the XFCC header are:</p>
 <ol class="arabic simple">
-<li><code class="docutils literal"><span class="pre">x-forwarded-client-cert:</span> <span class="pre">By=http://frontend.lyft.com;Hash=468ed33be74eee6556d90c0149c1309e9ba61d6425303443c0748a02dd8de688;Subject=&quot;/C=US/ST=CA/L=San</span> <span class="pre">Francisco/OU=Lyft/CN=Test</span> <span class="pre">Client&quot;;SAN=http://testclient.lyft.com</span></code></li>
-<li><code class="docutils literal"><span class="pre">x-forwarded-client-cert:</span> <span class="pre">By=http://frontend.lyft.com;Hash=468ed33be74eee6556d90c0149c1309e9ba61d6425303443c0748a02dd8de688;SAN=http://testclient.lyft.com,By=http://backend.lyft.com;Hash=9ba61d6425303443c0748a02dd8de688468ed33be74eee6556d90c0149c1309e;SAN=http://frontend.lyft.com</span></code></li>
+<li>For one client certificate with only URI type Subject Alternative Name: <code class="docutils literal"><span class="pre">x-forwarded-client-cert:</span> <span class="pre">By=http://frontend.lyft.com;Hash=468ed33be74eee6556d90c0149c1309e9ba61d6425303443c0748a02dd8de688;Subject=&quot;/C=US/ST=CA/L=San</span> <span class="pre">Francisco/OU=Lyft/CN=Test</span> <span class="pre">Client&quot;;URI=http://testclient.lyft.com</span></code></li>
+<li>For two client certificates with only URI type Subject Alternative Name: <code class="docutils literal"><span class="pre">x-forwarded-client-cert:</span> <span class="pre">By=http://frontend.lyft.com;Hash=468ed33be74eee6556d90c0149c1309e9ba61d6425303443c0748a02dd8de688;URI=http://testclient.lyft.com,By=http://backend.lyft.com;Hash=9ba61d6425303443c0748a02dd8de688468ed33be74eee6556d90c0149c1309e;URI=http://frontend.lyft.com</span></code></li>
+<li>For one client certificate with both URI type and DNS type Subject Alternative Name: <code class="docutils literal"><span class="pre">x-forwarded-client-cert:</span> <span class="pre">By=http://frontend.lyft.com;Hash=468ed33be74eee6556d90c0149c1309e9ba61d6425303443c0748a02dd8de688;Subject=&quot;/C=US/ST=CA/L=San</span> <span class="pre">Francisco/OU=Lyft/CN=Test</span> <span class="pre">Client&quot;;URI=http://testclient.lyft.com;DNS=lyft.com;DNS=www.lyft.com</span></code></li>
 </ol>
 <p>How Envoy processes XFCC is specified by the
 <a class="reference internal" href="../../api-v1/network_filters/http_conn_man.html#config-http-conn-man-forward-client-cert"><span class="std std-ref">forward_client_cert</span></a> and the
@@ -735,7 +739,7 @@ parameters <strong>do not</strong> need to be escaped by doubling them.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.7.0-dev-data-plane-api-922ec7',
+            VERSION:'1.7.0-dev-data-plane-api-c40deb',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
