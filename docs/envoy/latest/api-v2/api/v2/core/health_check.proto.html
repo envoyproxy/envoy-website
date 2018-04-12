@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Health check &mdash; envoy 1.7.0-dev-data-plane-api-c40deb documentation</title>
+  <title>Health check &mdash; envoy 1.7.0-dev-data-plane-api-a33e17 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../../search.html"/>
-    <link rel="top" title="envoy 1.7.0-dev-data-plane-api-c40deb documentation" href="../../../../index.html"/>
+    <link rel="top" title="envoy 1.7.0-dev-data-plane-api-a33e17 documentation" href="../../../../index.html"/>
         <link rel="up" title="Clusters" href="../../../clusters/clusters.html"/>
         <link rel="next" title="HTTP route management" href="../../../http_routes/http_routes.html"/>
         <link rel="prev" title="EDS" href="../eds.proto.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.7.0-dev-data-plane-api-c40deb
+                1.7.0-dev-data-plane-api-a33e17
               </div>
             
           
@@ -218,7 +218,10 @@ documented <a class="reference internal" href="../../../../configuration/cluster
   <span class="nt">&quot;tcp_health_check&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;redis_health_check&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;grpc_health_check&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;no_traffic_interval&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;no_traffic_interval&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;unhealthy_interval&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;unhealthy_edge_interval&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;healthy_edge_interval&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -282,8 +285,34 @@ required to mark a host healthy.</dd>
 never had traffic routed to it. This lower interval allows cluster information to be kept up to
 date, without sending a potentially large amount of active health checking traffic for no
 reason. Once a cluster has been used for traffic routing, Envoy will shift back to using the
-standard health check interval that is defined.</p>
+standard health check interval that is defined. Note that this interval takes precedence over
+any other.</p>
 <p class="last">The default value for “no traffic interval” is 60 seconds.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-core-healthcheck-unhealthy-interval">
+<dt>unhealthy_interval</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The “unhealthy interval” is a health check interval that is used for hosts that are marked as
+unhealthy. As soon as the host is marked as healthy, Envoy will shift back to using the
+standard health check interval that is defined.</p>
+<p class="last">The default value for “unhealthy interval” is the same as “interval”.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-core-healthcheck-unhealthy-edge-interval">
+<dt>unhealthy_edge_interval</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The “unhealthy edge interval” is a special health check interval that is used for the first
+health check right after a host is marked as unhealthy. For subsequent health checks
+Envoy will shift back to using either “unhealthy interval” if present or the standard health
+check interval that is defined.</p>
+<p class="last">The default value for “unhealthy edge interval” is the same as “unhealthy interval”.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-core-healthcheck-healthy-edge-interval">
+<dt>healthy_edge_interval</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The “healthy edge interval” is a special health check interval that is used for the first
+health check right after a host is marked as healthy. For subsequent health checks
+Envoy will shift back to using the standard health check interval that is defined.</p>
+<p class="last">The default value for “healthy edge interval” is the same as the default interval.</p>
 </dd>
 </dl>
 </div>
@@ -392,7 +421,7 @@ message. See <a class="reference external" href="https://github.com/grpc/grpc/bl
 </div>
 <div class="section" id="enum-core-healthstatus">
 <span id="envoy-api-enum-core-healthstatus"></span><h2>Enum core.HealthStatus<a class="headerlink" href="#enum-core-healthstatus" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/core/health_check.proto#L158">[core.HealthStatus proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/core/health_check.proto#L181">[core.HealthStatus proto]</a></p>
 <p>Endpoint health status.</p>
 <dl class="docutils" id="envoy-api-enum-value-core-healthstatus-unknown">
 <dt>UNKNOWN</dt>
@@ -466,7 +495,7 @@ This is interpreted by Envoy as <em>UNHEALTHY</em>.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../',
-            VERSION:'1.7.0-dev-data-plane-api-c40deb',
+            VERSION:'1.7.0-dev-data-plane-api-a33e17',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

@@ -28,7 +28,10 @@ core.HealthCheck
     "tcp_health_check": "{...}",
     "redis_health_check": "{...}",
     "grpc_health_check": "{...}",
-    "no_traffic_interval": "{...}"
+    "no_traffic_interval": "{...}",
+    "unhealthy_interval": "{...}",
+    "unhealthy_edge_interval": "{...}",
+    "healthy_edge_interval": "{...}"
   }
 
 .. _envoy_api_field_core.HealthCheck.timeout:
@@ -114,9 +117,41 @@ no_traffic_interval
   never had traffic routed to it. This lower interval allows cluster information to be kept up to
   date, without sending a potentially large amount of active health checking traffic for no
   reason. Once a cluster has been used for traffic routing, Envoy will shift back to using the
-  standard health check interval that is defined.
+  standard health check interval that is defined. Note that this interval takes precedence over
+  any other.
   
   The default value for "no traffic interval" is 60 seconds.
+  
+  
+.. _envoy_api_field_core.HealthCheck.unhealthy_interval:
+
+unhealthy_interval
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The "unhealthy interval" is a health check interval that is used for hosts that are marked as
+  unhealthy. As soon as the host is marked as healthy, Envoy will shift back to using the
+  standard health check interval that is defined.
+  
+  The default value for "unhealthy interval" is the same as "interval".
+  
+  
+.. _envoy_api_field_core.HealthCheck.unhealthy_edge_interval:
+
+unhealthy_edge_interval
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The "unhealthy edge interval" is a special health check interval that is used for the first
+  health check right after a host is marked as unhealthy. For subsequent health checks
+  Envoy will shift back to using either "unhealthy interval" if present or the standard health
+  check interval that is defined.
+  
+  The default value for "unhealthy edge interval" is the same as "unhealthy interval".
+  
+  
+.. _envoy_api_field_core.HealthCheck.healthy_edge_interval:
+
+healthy_edge_interval
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The "healthy edge interval" is a special health check interval that is used for the first
+  health check right after a host is marked as healthy. For subsequent health checks
+  Envoy will shift back to using the standard health check interval that is defined.
+  
+  The default value for "healthy edge interval" is the same as the default interval.
   
   
 .. _envoy_api_msg_core.HealthCheck.Payload:
@@ -288,7 +323,7 @@ service_name
 Enum core.HealthStatus
 ----------------------
 
-`[core.HealthStatus proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/core/health_check.proto#L158>`_
+`[core.HealthStatus proto] <https://github.com/envoyproxy/data-plane-api/blob/master/envoy/api/v2/core/health_check.proto#L181>`_
 
 Endpoint health status.
 
