@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Statistics &mdash; envoy 1.7.0-dev-data-plane-api-f0af99 documentation</title>
+  <title>Statistics &mdash; envoy 1.7.0-dev-data-plane-api-167c62 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.7.0-dev-data-plane-api-f0af99 documentation" href="../../index.html"/>
+    <link rel="top" title="envoy 1.7.0-dev-data-plane-api-167c62 documentation" href="../../index.html"/>
         <link rel="up" title="HTTP connection manager" href="http_conn_man.html"/>
         <link rel="next" title="Runtime" href="runtime.html"/>
         <link rel="prev" title="HTTP header sanitizing" href="header_sanitizing.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.7.0-dev-data-plane-api-f0af99
+                1.7.0-dev-data-plane-api-167c62
               </div>
             
           
@@ -485,29 +485,33 @@ following statistics:</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>rx_reset</td>
-<td>Counter</td>
-<td>Total number of reset stream frames received by Envoy</td>
-</tr>
-<tr class="row-odd"><td>tx_reset</td>
-<td>Counter</td>
-<td>Total number of reset stream frames transmitted by Envoy</td>
-</tr>
 <tr class="row-even"><td>header_overflow</td>
 <td>Counter</td>
 <td>Total number of connections reset due to the headers being larger than <cite>Envoy::Http::Http2::ConnectionImpl::StreamImpl::MAX_HEADER_SIZE</cite> (63k)</td>
+</tr>
+<tr class="row-odd"><td>headers_cb_no_stream</td>
+<td>Counter</td>
+<td>Total number of errors where a header callback is called without an associated stream. This tracks an unexpected occurrence due to an as yet undiagnosed bug</td>
+</tr>
+<tr class="row-even"><td>rx_messaging_error</td>
+<td>Counter</td>
+<td>Total number of invalid received frames that violated <a class="reference external" href="https://tools.ietf.org/html/rfc7540#section-8">section 8</a> of the HTTP/2 spec. This will result in a <em>tx_reset</em></td>
+</tr>
+<tr class="row-odd"><td>rx_reset</td>
+<td>Counter</td>
+<td>Total number of reset stream frames received by Envoy</td>
+</tr>
+<tr class="row-even"><td>too_many_header_frames</td>
+<td>Counter</td>
+<td>Total number of times an HTTP2 connection is reset due to receiving too many headers frames. Envoy currently supports proxying at most one header frame for 100-Continue one non-100 response code header frame and one frame with trailers</td>
 </tr>
 <tr class="row-odd"><td>trailers</td>
 <td>Counter</td>
 <td>Total number of trailers seen on requests coming from downstream</td>
 </tr>
-<tr class="row-even"><td>headers_cb_no_stream</td>
+<tr class="row-even"><td>tx_reset</td>
 <td>Counter</td>
-<td>Total number of errors where a header callback is called without an associated stream. This tracks an unexpected occurrence due to an as yet undiagnosed bug</td>
-</tr>
-<tr class="row-odd"><td>too_many_header_frames</td>
-<td>Counter</td>
-<td>Total number of times an HTTP2 connection is reset due to receiving too many headers frames. Envoy currently supports proxying at most one header frame for 100-Continue one non-100 response code header frame and one frame with trailers</td>
+<td>Total number of reset stream frames transmitted by Envoy</td>
 </tr>
 </tbody>
 </table>
@@ -598,7 +602,7 @@ following statistics:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.7.0-dev-data-plane-api-f0af99',
+            VERSION:'1.7.0-dev-data-plane-api-167c62',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
