@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Jaeger Tracing &mdash; envoy 1.7.0-dev-f95269 documentation</title>
+  <title>Jaeger Native Tracing &mdash; envoy 1.7.0-dev-f95269 documentation</title>
   
 
   
@@ -39,8 +39,8 @@
         <link rel="search" title="Search" href="../../search.html"/>
     <link rel="top" title="envoy 1.7.0-dev-f95269 documentation" href="../../index.html"/>
         <link rel="up" title="Getting Started" href="../start.html"/>
-        <link rel="next" title="Jaeger Native Tracing" href="jaeger_native_tracing.html"/>
-        <link rel="prev" title="Zipkin Tracing" href="zipkin_tracing.html"/> 
+        <link rel="next" title="gRPC Bridge" href="grpc_bridge.html"/>
+        <link rel="prev" title="Jaeger Tracing" href="jaeger_tracing.html"/> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -103,11 +103,11 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../start.html#sandboxes">Sandboxes</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front Proxy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">Zipkin Tracing</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Jaeger Tracing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_tracing.html">Jaeger Tracing</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Jaeger Native Tracing</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#running-the-sandbox">Running the Sandbox</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger Native Tracing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC Bridge</a></li>
 </ul>
 </li>
@@ -167,13 +167,13 @@
         
           <li><a href="../start.html">Getting Started</a> &raquo;</li>
         
-      <li>Jaeger Tracing</li>
+      <li>Jaeger Native Tracing</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/start/sandboxes/jaeger_tracing.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/start/sandboxes/jaeger_native_tracing.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -186,20 +186,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="jaeger-tracing">
-<span id="install-sandboxes-jaeger-tracing"></span><h1>Jaeger Tracing<a class="headerlink" href="#jaeger-tracing" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="jaeger-native-tracing">
+<span id="install-sandboxes-jaeger-native-tracing"></span><h1>Jaeger Native Tracing<a class="headerlink" href="#jaeger-native-tracing" title="Permalink to this headline">¶</a></h1>
 <p>The Jaeger tracing sandbox demonstrates Envoy’s <a class="reference internal" href="../../intro/arch_overview/tracing.html#arch-overview-tracing"><span class="std std-ref">request tracing</span></a>
-capabilities using <a class="reference external" href="http://jaegertracing.io/">Jaeger</a> as the tracing provider. This sandbox
-is very similar to the front proxy architecture described above, with one difference:
+capabilities using <a class="reference external" href="http://jaegertracing.io/">Jaeger</a> as the tracing provider and Jaeger’s native
+<a class="reference external" href="https://github.com/jaegertracing/jaeger-client-cpp">C++ client</a> as a plugin. Using Jaeger with its
+native client instead of with Envoy’s builtin Zipkin client has the following advantages:</p>
+<ul class="simple">
+<li>Trace propagation will work with other other services using Jaeger without needing to make
+configuration <a class="reference external" href="https://github.com/jaegertracing/jaeger-client-go#zipkin-http-b3-compatible-header-propagation">changes</a>.</li>
+<li>A variety of different <a class="reference external" href="https://www.jaegertracing.io/docs/sampling/#client-sampling-configuration">sampling strategies</a>
+can be used, including probabilistic or remote where sampling can be centrally controlled from Jaeger’s backend.</li>
+<li>Spans are sent to the collector in a more efficient binary encoding.</li>
+</ul>
+<p>This sandbox is very similar to the front proxy architecture described above, with one difference:
 service1 makes an API call to service2 before returning a response.
-The three containers will be deployed inside a virtual network called <code class="docutils literal"><span class="pre">envoymesh</span></code>.</p>
+The three containers will be deployed inside a virtual network called <code class="docutils literal"><span class="pre">envoymesh</span></code>. (Note: the sandbox
+only works on x86-64).</p>
 <p>All incoming requests are routed via the front envoy, which is acting as a reverse proxy
 sitting on the edge of the <code class="docutils literal"><span class="pre">envoymesh</span></code> network. Port <code class="docutils literal"><span class="pre">80</span></code> is mapped to  port <code class="docutils literal"><span class="pre">8000</span></code>
-by docker compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master//examples/jaeger-tracing/docker-compose.yml">/examples/jaeger-tracing/docker-compose.yml</a>). Notice that
+by docker compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master//examples/jaeger-native-tracing/docker-compose.yml">/examples/jaeger-native-tracing/docker-compose.yml</a>). Notice that
 all envoys are configured to collect request traces (e.g., http_connection_manager/config/tracing setup in
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master//examples/jaeger-tracing/front-envoy-jaeger.yaml">/examples/jaeger-tracing/front-envoy-jaeger.yaml</a>) and setup to propagate the spans generated
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master//examples/jaeger-native-tracing/front-envoy-jaeger.yaml">/examples/jaeger-native-tracing/front-envoy-jaeger.yaml</a>) and setup to propagate the spans generated
 by the Jaeger tracer to a Jaeger cluster (trace driver setup
-in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master//examples/jaeger-tracing/front-envoy-jaeger.yaml">/examples/jaeger-tracing/front-envoy-jaeger.yaml</a>).</p>
+in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master//examples/jaeger-native-tracing/front-envoy-jaeger.yaml">/examples/jaeger-native-tracing/front-envoy-jaeger.yaml</a>).</p>
 <p>Before routing a request to the appropriate service envoy or the application, Envoy will take
 care of generating the appropriate spans for tracing (parent/child context spans).
 At a high-level, each span records the latency of upstream API calls as well as information
@@ -217,7 +227,7 @@ as is described in the image above.</p>
 <p><strong>Step 1: Build the sandbox</strong></p>
 <p>To build this sandbox example, and start the example apps run the following commands:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>$ pwd
-envoy/examples/jaeger-tracing
+envoy/examples/jaeger-native-tracing
 $ docker-compose up --build -d
 $ docker-compose ps
         Name                       Command               State      Ports
@@ -267,10 +277,10 @@ to service2, as well as the latency incurred at each hop.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="jaeger_native_tracing.html" class="btn btn-neutral float-right" title="Jaeger Native Tracing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="grpc_bridge.html" class="btn btn-neutral float-right" title="gRPC Bridge" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="zipkin_tracing.html" class="btn btn-neutral" title="Zipkin Tracing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="jaeger_tracing.html" class="btn btn-neutral" title="Jaeger Tracing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
