@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Administration interface &mdash; envoy 1.7.0-dev-fdb033 documentation</title>
+  <title>Administration interface &mdash; envoy 1.7.0-dev-64d50a documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="envoy 1.7.0-dev-fdb033 documentation" href="../index.html"/>
+    <link rel="top" title="envoy 1.7.0-dev-64d50a documentation" href="../index.html"/>
         <link rel="up" title="Operations and administration" href="operations.html"/>
         <link rel="next" title="Statistics overview" href="stats_overview.html"/>
         <link rel="prev" title="Hot restart Python wrapper" href="hot_restarter.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                1.7.0-dev-fdb033
+                1.7.0-dev-64d50a
               </div>
             
           
@@ -426,13 +426,57 @@ See <a class="reference internal" href="stats_overview.html#operations-stats"><s
 <code class="descname">GET </code><code class="descname">/stats?format=json</code><a class="headerlink" href="#get--stats?format=json" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>Outputs /stats in JSON format. This can be used for programmatic access of stats.</p>
+<p>Outputs /stats in JSON format. This can be used for programmatic access of stats. Counters and Gauges
+will be in the form of a set of (name,value) pairs. Histograms will be under the element “histograms”,
+that contains “supported_quantiles” which lists the quantiles supported and an array of computed_quantiles
+that has the computed quantile for each histogram. Only histograms with recorded values will be exported.</p>
+<p>If a histogram is not updated during an interval, the ouput will have null for all the quantiles.</p>
+<p>Example histogram output:</p>
+</dd></dl>
+
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;histograms&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;supported_quantiles&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mf">99.9</span><span class="p">,</span> <span class="mi">100</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;computed_quantiles&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;cluster.external_auth_cluster.upstream_cx_length_ms&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{</span><span class="nt">&quot;interval&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nt">&quot;cumulative&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+          <span class="p">{</span><span class="nt">&quot;interval&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nt">&quot;cumulative&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+          <span class="p">{</span><span class="nt">&quot;interval&quot;</span><span class="p">:</span> <span class="mf">1.0435787</span><span class="p">,</span> <span class="nt">&quot;cumulative&quot;</span><span class="p">:</span> <span class="mf">1.0435787</span><span class="p">},</span>
+          <span class="p">{</span><span class="nt">&quot;interval&quot;</span><span class="p">:</span> <span class="mf">1.0941565</span><span class="p">,</span> <span class="nt">&quot;cumulative&quot;</span><span class="p">:</span> <span class="mf">1.0941565</span><span class="p">},</span>
+          <span class="p">{</span><span class="nt">&quot;interval&quot;</span><span class="p">:</span> <span class="mf">2.0860023</span><span class="p">,</span> <span class="nt">&quot;cumulative&quot;</span><span class="p">:</span> <span class="mf">2.0860023</span><span class="p">},</span>
+          <span class="p">{</span><span class="nt">&quot;interval&quot;</span><span class="p">:</span> <span class="mf">3.0665233</span><span class="p">,</span> <span class="nt">&quot;cumulative&quot;</span><span class="p">:</span> <span class="mf">3.0665233</span><span class="p">},</span>
+          <span class="p">{</span><span class="nt">&quot;interval&quot;</span><span class="p">:</span> <span class="mf">6.046609</span><span class="p">,</span> <span class="nt">&quot;cumulative&quot;</span><span class="p">:</span> <span class="mf">6.046609</span><span class="p">},</span>
+          <span class="p">{</span><span class="nt">&quot;interval&quot;</span><span class="p">:</span> <span class="mf">229.57333</span><span class="p">,</span><span class="nt">&quot;cumulative&quot;</span><span class="p">:</span> <span class="mf">229.57333</span><span class="p">},</span>
+          <span class="p">{</span><span class="nt">&quot;interval&quot;</span><span class="p">:</span> <span class="mi">260</span><span class="p">,</span><span class="nt">&quot;cumulative&quot;</span><span class="p">:</span> <span class="mi">260</span><span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;http.admin.downstream_rq_time&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{</span><span class="nt">&quot;interval&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span> <span class="nt">&quot;cumulative&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+          <span class="p">{</span><span class="nt">&quot;interval&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span> <span class="nt">&quot;cumulative&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+          <span class="p">{</span><span class="nt">&quot;interval&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span> <span class="nt">&quot;cumulative&quot;</span><span class="p">:</span> <span class="mf">1.0435787</span><span class="p">},</span>
+          <span class="p">{</span><span class="nt">&quot;interval&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span> <span class="nt">&quot;cumulative&quot;</span><span class="p">:</span> <span class="mf">1.0941565</span><span class="p">},</span>
+          <span class="p">{</span><span class="nt">&quot;interval&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span> <span class="nt">&quot;cumulative&quot;</span><span class="p">:</span> <span class="mf">2.0860023</span><span class="p">},</span>
+          <span class="p">{</span><span class="nt">&quot;interval&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span> <span class="nt">&quot;cumulative&quot;</span><span class="p">:</span> <span class="mf">3.0665233</span><span class="p">},</span>
+          <span class="p">{</span><span class="nt">&quot;interval&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span> <span class="nt">&quot;cumulative&quot;</span><span class="p">:</span> <span class="mf">6.046609</span><span class="p">},</span>
+          <span class="p">{</span><span class="nt">&quot;interval&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span> <span class="nt">&quot;cumulative&quot;</span><span class="p">:</span> <span class="mf">229.57333</span><span class="p">},</span>
+          <span class="p">{</span><span class="nt">&quot;interval&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span> <span class="nt">&quot;cumulative&quot;</span><span class="p">:</span> <span class="mi">260</span><span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">}</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 <dl class="get">
 <dt id="get--stats?format=prometheus">
 <code class="descname">GET </code><code class="descname">/stats?format=prometheus</code><a class="headerlink" href="#get--stats?format=prometheus" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<p>or alternatively,</p>
+<dd><p>or alternatively,</p>
 <dl class="get">
 <dt id="get--stats-prometheus">
 <code class="descname">GET </code><code class="descname">/stats/prometheus</code><a class="headerlink" href="#get--stats-prometheus" title="Permalink to this definition">¶</a></dt>
@@ -539,7 +583,7 @@ endpoint; values loaded from disk can be modified via override but not deleted.<
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.7.0-dev-fdb033',
+            VERSION:'1.7.0-dev-64d50a',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
