@@ -9,7 +9,7 @@ gRPC services
 core.GrpcService
 ----------------
 
-`[core.GrpcService proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/grpc_service.proto#L19>`_
+`[core.GrpcService proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/grpc_service.proto#L20>`_
 
 gRPC service configuration. This is used by :ref:`ApiConfigSource
 <envoy_api_msg_core.ApiConfigSource>` and filter configurations.
@@ -23,7 +23,6 @@ gRPC service configuration. This is used by :ref:`ApiConfigSource
     "envoy_grpc": "{...}",
     "google_grpc": "{...}",
     "timeout": "{...}",
-    "credentials": [],
     "initial_metadata": []
   }
 
@@ -54,13 +53,6 @@ timeout
   request.
   
   
-.. _envoy_api_field_core.GrpcService.credentials:
-
-credentials
-  (:ref:`core.GrpcService.Credentials <envoy_api_msg_core.GrpcService.Credentials>`) A set of credentials that will be composed to form the `channel credentials
-  <https://grpc.io/docs/guides/auth.html#credential-types>`_.
-  
-  
 .. _envoy_api_field_core.GrpcService.initial_metadata:
 
 initial_metadata
@@ -74,7 +66,7 @@ initial_metadata
 core.GrpcService.EnvoyGrpc
 --------------------------
 
-`[core.GrpcService.EnvoyGrpc proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/grpc_service.proto#L20>`_
+`[core.GrpcService.EnvoyGrpc proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/grpc_service.proto#L21>`_
 
 
 
@@ -101,7 +93,7 @@ cluster_name
 core.GrpcService.GoogleGrpc
 ---------------------------
 
-`[core.GrpcService.GoogleGrpc proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/grpc_service.proto#L27>`_
+`[core.GrpcService.GoogleGrpc proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/grpc_service.proto#L28>`_
 
 
 
@@ -111,8 +103,10 @@ core.GrpcService.GoogleGrpc
 
   {
     "target_uri": "...",
-    "ssl_credentials": "{...}",
+    "channel_credentials": "{...}",
+    "call_credentials": [],
     "stat_prefix": "...",
+    "credentials_factory_name": "...",
     "config": "{...}"
   }
 
@@ -121,13 +115,20 @@ core.GrpcService.GoogleGrpc
 target_uri
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The target URI when using the `Google C++ gRPC client
   <https://github.com/grpc/grpc>`_. SSL credentials will be supplied in
-  :ref:`credentials <envoy_api_field_core.GrpcService.credentials>`.
+  :ref:`channel_credentials <envoy_api_field_core.GrpcService.GoogleGrpc.channel_credentials>`.
   
   
-.. _envoy_api_field_core.GrpcService.GoogleGrpc.ssl_credentials:
+.. _envoy_api_field_core.GrpcService.GoogleGrpc.channel_credentials:
 
-ssl_credentials
-  (:ref:`core.GrpcService.GoogleGrpc.SslCredentials <envoy_api_msg_core.GrpcService.GoogleGrpc.SslCredentials>`) 
+channel_credentials
+  (:ref:`core.GrpcService.GoogleGrpc.ChannelCredentials <envoy_api_msg_core.GrpcService.GoogleGrpc.ChannelCredentials>`) 
+  
+.. _envoy_api_field_core.GrpcService.GoogleGrpc.call_credentials:
+
+call_credentials
+  (:ref:`core.GrpcService.GoogleGrpc.CallCredentials <envoy_api_msg_core.GrpcService.GoogleGrpc.CallCredentials>`) A set of call credentials that can be composed with `channel credentials
+  <https://grpc.io/docs/guides/auth.html#credential-types>`_.
+  
   
 .. _envoy_api_field_core.GrpcService.GoogleGrpc.stat_prefix:
 
@@ -143,6 +144,14 @@ stat_prefix
      streams_closed_<gRPC status code>, Counter, Total streams closed with <gRPC status code>
   
   
+.. _envoy_api_field_core.GrpcService.GoogleGrpc.credentials_factory_name:
+
+credentials_factory_name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The name of the Google gRPC credentials factory to use. This must have been registered with
+  Envoy. If this is empty, a default credentials factory will be used that sets up channel
+  credentials based on other configuration parameters.
+  
+  
 .. _envoy_api_field_core.GrpcService.GoogleGrpc.config:
 
 config
@@ -155,7 +164,7 @@ config
 core.GrpcService.GoogleGrpc.SslCredentials
 ------------------------------------------
 
-`[core.GrpcService.GoogleGrpc.SslCredentials proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/grpc_service.proto#L34>`_
+`[core.GrpcService.GoogleGrpc.SslCredentials proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/grpc_service.proto#L35>`_
 
 See https://grpc.io/grpc/cpp/structgrpc_1_1_ssl_credentials_options.html.
 
@@ -190,20 +199,50 @@ cert_chain
   
 
 
+.. _envoy_api_msg_core.GrpcService.GoogleGrpc.ChannelCredentials:
 
-.. _envoy_api_msg_core.GrpcService.Credentials:
+core.GrpcService.GoogleGrpc.ChannelCredentials
+----------------------------------------------
 
-core.GrpcService.Credentials
-----------------------------
+`[core.GrpcService.GoogleGrpc.ChannelCredentials proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/grpc_service.proto#L48>`_
 
-`[core.GrpcService.Credentials proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/grpc_service.proto#L86>`_
+See https://grpc.io/docs/guides/auth.html#credential-types to understand Channel and Call
+credential types.
 
-gRPC credentials as described at
-https://grpc.io/docs/guides/auth.html#credential-types.
 
-.. note::
+.. WARNING::
+ This message type has :ref:`draft <config_overview_v2_status>` status.
+.. code-block:: json
 
-  Credentials are only currently implemented for the Google gRPC client.
+  {
+    "ssl_credentials": "{...}",
+    "google_default": "{...}"
+  }
+
+.. _envoy_api_field_core.GrpcService.GoogleGrpc.ChannelCredentials.ssl_credentials:
+
+ssl_credentials
+  (:ref:`core.GrpcService.GoogleGrpc.SslCredentials <envoy_api_msg_core.GrpcService.GoogleGrpc.SslCredentials>`) 
+  
+  Precisely one of :ref:`ssl_credentials <envoy_api_field_core.GrpcService.GoogleGrpc.ChannelCredentials.ssl_credentials>`, :ref:`google_default <envoy_api_field_core.GrpcService.GoogleGrpc.ChannelCredentials.google_default>` must be set.
+  
+.. _envoy_api_field_core.GrpcService.GoogleGrpc.ChannelCredentials.google_default:
+
+google_default
+  (`Empty <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty>`_) https://grpc.io/grpc/cpp/namespacegrpc.html#a6beb3ac70ff94bd2ebbd89b8f21d1f61
+  
+  
+  Precisely one of :ref:`ssl_credentials <envoy_api_field_core.GrpcService.GoogleGrpc.ChannelCredentials.ssl_credentials>`, :ref:`google_default <envoy_api_field_core.GrpcService.GoogleGrpc.ChannelCredentials.google_default>` must be set.
+  
+
+
+.. _envoy_api_msg_core.GrpcService.GoogleGrpc.CallCredentials:
+
+core.GrpcService.GoogleGrpc.CallCredentials
+-------------------------------------------
+
+`[core.GrpcService.GoogleGrpc.CallCredentials proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/grpc_service.proto#L60>`_
+
 
 
 .. WARNING::
@@ -214,14 +253,109 @@ https://grpc.io/docs/guides/auth.html#credential-types.
     "access_token": "..."
   }
 
-.. _envoy_api_field_core.GrpcService.Credentials.access_token:
+.. _envoy_api_field_core.GrpcService.GoogleGrpc.CallCredentials.access_token:
 
 access_token
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) OAuth2 access token, see
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Access token credentials.
   https://grpc.io/grpc/cpp/namespacegrpc.html#ad3a80da696ffdaea943f0f858d7a360d.
   
   
-  Precisely one of :ref:`access_token <envoy_api_field_core.GrpcService.Credentials.access_token>` must be set.
+  Precisely one of :ref:`access_token <envoy_api_field_core.GrpcService.GoogleGrpc.CallCredentials.access_token>` must be set.
   
+
+
+
+
+
+.. _envoy_api_msg_core.GrpcService.GoogleGrpc.CallCredentials.ServiceAccountJWTAccessCredentials:
+
+core.GrpcService.GoogleGrpc.CallCredentials.ServiceAccountJWTAccessCredentials
+------------------------------------------------------------------------------
+
+`[core.GrpcService.GoogleGrpc.CallCredentials.ServiceAccountJWTAccessCredentials proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/grpc_service.proto#L61>`_
+
+
+
+.. WARNING::
+ This message type has :ref:`draft <config_overview_v2_status>` status.
+.. code-block:: json
+
+  {
+    "json_key": "...",
+    "token_lifetime_seconds": "..."
+  }
+
+.. _envoy_api_field_core.GrpcService.GoogleGrpc.CallCredentials.ServiceAccountJWTAccessCredentials.json_key:
+
+json_key
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
+  
+.. _envoy_api_field_core.GrpcService.GoogleGrpc.CallCredentials.ServiceAccountJWTAccessCredentials.token_lifetime_seconds:
+
+token_lifetime_seconds
+  (`uint64 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
+  
+
+
+.. _envoy_api_msg_core.GrpcService.GoogleGrpc.CallCredentials.GoogleIAMCredentials:
+
+core.GrpcService.GoogleGrpc.CallCredentials.GoogleIAMCredentials
+----------------------------------------------------------------
+
+`[core.GrpcService.GoogleGrpc.CallCredentials.GoogleIAMCredentials proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/grpc_service.proto#L66>`_
+
+
+
+.. WARNING::
+ This message type has :ref:`draft <config_overview_v2_status>` status.
+.. code-block:: json
+
+  {
+    "authorization_token": "...",
+    "authority_selector": "..."
+  }
+
+.. _envoy_api_field_core.GrpcService.GoogleGrpc.CallCredentials.GoogleIAMCredentials.authorization_token:
+
+authorization_token
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
+  
+.. _envoy_api_field_core.GrpcService.GoogleGrpc.CallCredentials.GoogleIAMCredentials.authority_selector:
+
+authority_selector
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
+  
+
+
+.. _envoy_api_msg_core.GrpcService.GoogleGrpc.CallCredentials.MetadataCredentialsFromPlugin:
+
+core.GrpcService.GoogleGrpc.CallCredentials.MetadataCredentialsFromPlugin
+-------------------------------------------------------------------------
+
+`[core.GrpcService.GoogleGrpc.CallCredentials.MetadataCredentialsFromPlugin proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/grpc_service.proto#L71>`_
+
+
+
+.. WARNING::
+ This message type has :ref:`draft <config_overview_v2_status>` status.
+.. code-block:: json
+
+  {
+    "name": "...",
+    "config": "{...}"
+  }
+
+.. _envoy_api_field_core.GrpcService.GoogleGrpc.CallCredentials.MetadataCredentialsFromPlugin.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
+  
+.. _envoy_api_field_core.GrpcService.GoogleGrpc.CallCredentials.MetadataCredentialsFromPlugin.config:
+
+config
+  (`Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_) 
+  
+
+
 
 
