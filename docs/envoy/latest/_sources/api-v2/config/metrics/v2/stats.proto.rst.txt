@@ -214,7 +214,8 @@ tagged metrics.
 
   {
     "address": "{...}",
-    "tcp_cluster_name": "..."
+    "tcp_cluster_name": "...",
+    "prefix": "..."
   }
 
 .. _envoy_api_field_config.metrics.v2.StatsdSink.address:
@@ -237,7 +238,37 @@ tcp_cluster_name
   
   Precisely one of :ref:`address <envoy_api_field_config.metrics.v2.StatsdSink.address>`, :ref:`tcp_cluster_name <envoy_api_field_config.metrics.v2.StatsdSink.tcp_cluster_name>` must be set.
   
+.. _envoy_api_field_config.metrics.v2.StatsdSink.prefix:
 
+prefix
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Optional custom prefix for StatsdSink. If
+  specified, this will override the default prefix.
+  For example:
+  
+  .. code-block:: json
+  
+    {
+      "prefix" : "envoy-prod"
+    }
+  
+  will change emitted stats to
+  
+  .. code-block:: cpp
+  
+    envoy-prod.test_counter:1|c
+    envoy-prod.test_timer:5|ms
+  
+  Note that the default prefix, "envoy", will be used if a prefix is not
+  specified.
+  
+  Stats with default prefix:
+  
+  .. code-block:: cpp
+  
+    envoy.test_counter:1|c
+    envoy.test_timer:5|ms
+  
+  
 
 
 .. _envoy_api_msg_config.metrics.v2.DogStatsdSink:
