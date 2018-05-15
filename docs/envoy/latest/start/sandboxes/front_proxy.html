@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Front Proxy &mdash; envoy 1.7.0-dev-71c0fd documentation</title>
+  <title>Front Proxy &mdash; envoy 1.7.0-dev-44bfc0 documentation</title>
   
 
   
@@ -27,27 +27,19 @@
   
 
   
-  
     <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-        <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.7.0-dev-71c0fd documentation" href="../../index.html"/>
-        <link rel="up" title="Getting Started" href="../start.html"/>
-        <link rel="next" title="Zipkin Tracing" href="zipkin_tracing.html"/>
-        <link rel="prev" title="Getting Started" href="../start.html"/> 
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Zipkin Tracing" href="zipkin_tracing.html" />
+    <link rel="prev" title="Getting Started" href="../start.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -69,7 +61,7 @@
             
             
               <div class="version">
-                1.7.0-dev-71c0fd
+                1.7.0-dev-44bfc0
               </div>
             
           
@@ -132,7 +124,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">envoy</a>
@@ -140,9 +132,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -192,11 +185,11 @@
 <a class="reference external" href="https://docs.docker.com/compose/">docker compose</a> sandbox that deploys a front
 envoy and a couple of services (simple flask apps) colocated with a running
 service envoy. The three containers will be deployed inside a virtual network
-called <code class="docutils literal"><span class="pre">envoymesh</span></code>.</p>
+called <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code>.</p>
 <p>Below you can see a graphic showing the docker compose deployment:</p>
 <a class="reference internal image-reference" href="../../_images/docker_compose_v0.1.svg"><img alt="../../_images/docker_compose_v0.1.svg" src="../../_images/docker_compose_v0.1.svg" width="100%" /></a>
 <p>All incoming requests are routed via the front envoy, which is acting as a reverse proxy sitting on
-the edge of the <code class="docutils literal"><span class="pre">envoymesh</span></code> network. Port <code class="docutils literal"><span class="pre">80</span></code> is mapped to  port <code class="docutils literal"><span class="pre">8000</span></code> by docker compose
+the edge of the <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code> network. Port <code class="docutils literal notranslate"><span class="pre">80</span></code> is mapped to  port <code class="docutils literal notranslate"><span class="pre">8000</span></code> by docker compose
 (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master//examples/front-proxy/docker-compose.yml">/examples/front-proxy/docker-compose.yml</a>). Moreover, notice
 that all  traffic routed by the front envoy to the service containers is actually routed to the
 service envoys (routes setup in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master//examples/front-proxy/front-envoy.yaml">/examples/front-proxy/front-envoy.yaml</a>). In turn the service
@@ -209,19 +202,19 @@ handled by the service envoy, and efficiently routed to your services.</p>
 <p>The following documentation runs through the setup of an envoy cluster organized
 as is described in the image above.</p>
 <p><strong>Step 1: Install Docker</strong></p>
-<p>Ensure that you have a recent versions of <code class="docutils literal"><span class="pre">docker,</span> <span class="pre">docker-compose</span></code> and
-<code class="docutils literal"><span class="pre">docker-machine</span></code> installed.</p>
+<p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker,</span> <span class="pre">docker-compose</span></code> and
+<code class="docutils literal notranslate"><span class="pre">docker-machine</span></code> installed.</p>
 <p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-toolbox">Docker Toolbox</a>.</p>
 <p><strong>Step 2: Docker Machine setup</strong></p>
 <p>First let’s create a new machine which will hold the containers:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ docker-machine create --driver virtualbox default
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker-machine create --driver virtualbox default
 $ eval $(docker-machine env default)
 </pre></div>
 </div>
 <p><strong>Step 4: Clone the Envoy repo, and start all of our containers</strong></p>
-<p>If you have not cloned the envoy repo, clone it with <code class="docutils literal"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:envoyproxy/envoy</span></code>
-or <code class="docutils literal"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/envoyproxy/envoy.git</span></code>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ pwd
+<p>If you have not cloned the envoy repo, clone it with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:envoyproxy/envoy</span></code>
+or <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/envoyproxy/envoy.git</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pwd
 envoy/examples/front-proxy
 $ docker-compose up --build -d
 $ docker-compose ps
@@ -235,7 +228,7 @@ example_front-envoy_1   /bin/sh -c /usr/local/bin/ ... Up       0.0.0.0:8000-&gt
 <p><strong>Step 5: Test Envoy’s routing capabilities</strong></p>
 <p>You can now send a request to both services via the front-envoy.</p>
 <p>For service1:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ curl -v $(docker-machine ip default):8000/service/1
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl -v $(docker-machine ip default):8000/service/1
 *   Trying 192.168.99.100...
 * Connected to 192.168.99.100 (192.168.99.100) port 8000 (#0)
 &gt; GET /service/1 HTTP/1.1
@@ -256,7 +249,7 @@ Hello from behind Envoy (service 1)! hostname: f26027f1ce28 resolvedhostname: 17
 </pre></div>
 </div>
 <p>For service2:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ curl -v $(docker-machine ip default):8000/service/2
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl -v $(docker-machine ip default):8000/service/2
 *   Trying 192.168.99.100...
 * Connected to 192.168.99.100 (192.168.99.100) port 8000 (#0)
 &gt; GET /service/2 HTTP/1.1
@@ -281,14 +274,14 @@ to the respective application.</p>
 <p><strong>Step 6: Test Envoy’s load balancing capabilities</strong></p>
 <p>Now let’s scale up our service1 nodes to demonstrate the clustering abilities
 of envoy.:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ docker-compose scale service1=3
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker-compose scale service1=3
 Creating and starting example_service1_2 ... done
 Creating and starting example_service1_3 ... done
 </pre></div>
 </div>
 <p>Now if we send a request to service1 multiple times, the front envoy will load balance the
 requests by doing a round robin of the three service1 machines:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ curl -v $(docker-machine ip default):8000/service/1
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl -v $(docker-machine ip default):8000/service/1
 *   Trying 192.168.99.100...
 * Connected to 192.168.99.100 (192.168.99.100) port 8000 (#0)
 &gt; GET /service/1 HTTP/1.1
@@ -345,11 +338,11 @@ Hello from behind Envoy (service 1)! hostname: f26027f1ce28 resolvedhostname: 17
 </pre></div>
 </div>
 <p><strong>Step 7: enter containers and curl services</strong></p>
-<p>In addition of using <code class="docutils literal"><span class="pre">curl</span></code> from your host machine, you can also enter the
-containers themselves and <code class="docutils literal"><span class="pre">curl</span></code> from inside them. To enter a container you
-can use <code class="docutils literal"><span class="pre">docker-compose</span> <span class="pre">exec</span> <span class="pre">&lt;container_name&gt;</span> <span class="pre">/bin/bash</span></code>. For example we can
-enter the <code class="docutils literal"><span class="pre">front-envoy</span></code> container, and <code class="docutils literal"><span class="pre">curl</span></code> for services locally:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ docker-compose exec front-envoy /bin/bash
+<p>In addition of using <code class="docutils literal notranslate"><span class="pre">curl</span></code> from your host machine, you can also enter the
+containers themselves and <code class="docutils literal notranslate"><span class="pre">curl</span></code> from inside them. To enter a container you
+can use <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">exec</span> <span class="pre">&lt;container_name&gt;</span> <span class="pre">/bin/bash</span></code>. For example we can
+enter the <code class="docutils literal notranslate"><span class="pre">front-envoy</span></code> container, and <code class="docutils literal notranslate"><span class="pre">curl</span></code> for services locally:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker-compose exec front-envoy /bin/bash
 root@81288499f9d7:/# curl localhost:80/service/1
 Hello from behind Envoy (service 1)! hostname: 85ac151715c6 resolvedhostname: 172.19.0.3
 root@81288499f9d7:/# curl localhost:80/service/1
@@ -361,12 +354,12 @@ Hello from behind Envoy (service 2)! hostname: 92f4a3737bbc resolvedhostname: 17
 </pre></div>
 </div>
 <p><strong>Step 8: enter containers and curl admin</strong></p>
-<p>When envoy runs it also attaches an <code class="docutils literal"><span class="pre">admin</span></code> to your desired port. In the example
-configs the admin is bound to port <code class="docutils literal"><span class="pre">8001</span></code>. We can <code class="docutils literal"><span class="pre">curl</span></code> it to gain useful information.
-For example you can <code class="docutils literal"><span class="pre">curl</span></code> <code class="docutils literal"><span class="pre">/server_info</span></code> to get information about the
-envoy version you are running. Additionally you can <code class="docutils literal"><span class="pre">curl</span></code> <code class="docutils literal"><span class="pre">/stats</span></code> to get
-statistics. For example inside <code class="docutils literal"><span class="pre">frontenvoy</span></code> we can get:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ docker-compose exec front-envoy /bin/bash
+<p>When envoy runs it also attaches an <code class="docutils literal notranslate"><span class="pre">admin</span></code> to your desired port. In the example
+configs the admin is bound to port <code class="docutils literal notranslate"><span class="pre">8001</span></code>. We can <code class="docutils literal notranslate"><span class="pre">curl</span></code> it to gain useful information.
+For example you can <code class="docutils literal notranslate"><span class="pre">curl</span></code> <code class="docutils literal notranslate"><span class="pre">/server_info</span></code> to get information about the
+envoy version you are running. Additionally you can <code class="docutils literal notranslate"><span class="pre">curl</span></code> <code class="docutils literal notranslate"><span class="pre">/stats</span></code> to get
+statistics. For example inside <code class="docutils literal notranslate"><span class="pre">frontenvoy</span></code> we can get:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker-compose exec front-envoy /bin/bash
 root@e654c2c83277:/# curl localhost:8001/server_info
 envoy 10e00b/RELEASE live 142 142 0
 root@e654c2c83277:/# curl localhost:8001/stats
@@ -398,9 +391,7 @@ stats.</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -422,7 +413,7 @@ stats.</p>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -440,7 +431,7 @@ stats.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.7.0-dev-71c0fd',
+            VERSION:'1.7.0-dev-44bfc0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -459,14 +450,11 @@ stats.</p>
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
   
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

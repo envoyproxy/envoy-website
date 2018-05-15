@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Lua &mdash; envoy 1.7.0-dev-71c0fd documentation</title>
+  <title>Lua &mdash; envoy 1.7.0-dev-44bfc0 documentation</title>
   
 
   
@@ -27,27 +27,19 @@
   
 
   
-  
     <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-        <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="envoy 1.7.0-dev-71c0fd documentation" href="../../index.html"/>
-        <link rel="up" title="HTTP filters" href="http_filters.html"/>
-        <link rel="next" title="Rate limit" href="rate_limit_filter.html"/>
-        <link rel="prev" title="IP Tagging" href="ip_tagging_filter.html"/> 
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Rate limit" href="rate_limit_filter.html" />
+    <link rel="prev" title="IP Tagging" href="ip_tagging_filter.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -69,7 +61,7 @@
             
             
               <div class="version">
-                1.7.0-dev-71c0fd
+                1.7.0-dev-44bfc0
               </div>
             
           
@@ -157,7 +149,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">envoy</a>
@@ -165,9 +157,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -272,7 +265,7 @@ response code.</li>
 <p>This section provides some concrete examples of Lua scripts as a more gentle introduction and quick
 start. Please refer to the <a class="reference internal" href="#config-http-filters-lua-stream-handle-api"><span class="std std-ref">stream handle API</span></a> for
 more details on the supported API.</p>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="c1">-- Called on the request path.</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Called on the request path.</span>
 <span class="kr">function</span> <span class="nf">envoy_on_request</span><span class="p">(</span><span class="n">request_handle</span><span class="p">)</span>
   <span class="c1">-- Wait for the entire request body and add a request header with the body size.</span>
   <span class="n">request_handle</span><span class="p">:</span><span class="n">headers</span><span class="p">():</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;request_body_size&quot;</span><span class="p">,</span> <span class="n">request_handle</span><span class="p">:</span><span class="n">body</span><span class="p">():</span><span class="n">length</span><span class="p">())</span>
@@ -287,7 +280,7 @@ more details on the supported API.</p>
 <span class="kr">end</span>
 </pre></div>
 </div>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">envoy_on_request</span><span class="p">(</span><span class="n">request_handle</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">envoy_on_request</span><span class="p">(</span><span class="n">request_handle</span><span class="p">)</span>
   <span class="c1">-- Make an HTTP call to an upstream host with the following headers, body, and timeout.</span>
   <span class="kd">local</span> <span class="n">headers</span><span class="p">,</span> <span class="n">body</span> <span class="o">=</span> <span class="n">request_handle</span><span class="p">:</span><span class="n">httpCall</span><span class="p">(</span>
   <span class="s2">&quot;lua_cluster&quot;</span><span class="p">,</span>
@@ -306,7 +299,7 @@ more details on the supported API.</p>
 <span class="kr">end</span>
 </pre></div>
 </div>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">envoy_on_request</span><span class="p">(</span><span class="n">request_handle</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">envoy_on_request</span><span class="p">(</span><span class="n">request_handle</span><span class="p">)</span>
   <span class="c1">-- Make an HTTP call.</span>
   <span class="kd">local</span> <span class="n">headers</span><span class="p">,</span> <span class="n">body</span> <span class="o">=</span> <span class="n">request_handle</span><span class="p">:</span><span class="n">httpCall</span><span class="p">(</span>
   <span class="s2">&quot;lua_cluster&quot;</span><span class="p">,</span>
@@ -332,7 +325,7 @@ more details on the supported API.</p>
 <span id="config-http-filters-lua-stream-handle-api"></span><h2>Stream handle API<a class="headerlink" href="#stream-handle-api" title="Permalink to this headline">¶</a></h2>
 <p>When Envoy loads the script in the configuration, it looks for two global functions that the
 script defines:</p>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">envoy_on_request</span><span class="p">(</span><span class="n">request_handle</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">envoy_on_request</span><span class="p">(</span><span class="n">request_handle</span><span class="p">)</span>
 <span class="kr">end</span>
 
 <span class="kr">function</span> <span class="nf">envoy_on_response</span><span class="p">(</span><span class="n">response_handle</span><span class="p">)</span>
@@ -351,7 +344,7 @@ coroutine. Envoy will fail your script if the handle is used incorrectly.</p>
 <p>The following methods on the stream handle are supported:</p>
 <div class="section" id="headers">
 <h3>headers()<a class="headerlink" href="#headers" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="n">headers</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">headers</span><span class="p">()</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">headers</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">headers</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Returns the stream’s headers. The headers can be modified as long as they have not been sent to
@@ -362,7 +355,7 @@ situation.</p>
 </div>
 <div class="section" id="body">
 <h3>body()<a class="headerlink" href="#body" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="n">body</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">body</span><span class="p">()</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">body</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">body</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Returns the stream’s body. This call will cause Envoy to yield the script until the entire body
@@ -372,13 +365,13 @@ Envoy will not buffer more data than is allowed by the connection manager.</p>
 </div>
 <div class="section" id="bodychunks">
 <h3>bodyChunks()<a class="headerlink" href="#bodychunks" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="n">iterator</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">bodyChunks</span><span class="p">()</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">iterator</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">bodyChunks</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Returns an iterator that can be used to iterate through all received body chunks as they arrive.
 Envoy will yield the script in between chunks, but <em>will not buffer</em> them. This can be used by
 a script to inspect data as it is streaming by.</p>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="kr">for</span> <span class="n">chunk</span> <span class="kr">in</span> <span class="n">request_handle</span><span class="p">:</span><span class="n">bodyChunks</span><span class="p">()</span> <span class="kr">do</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">for</span> <span class="n">chunk</span> <span class="kr">in</span> <span class="n">request_handle</span><span class="p">:</span><span class="n">bodyChunks</span><span class="p">()</span> <span class="kr">do</span>
   <span class="n">request_handle</span><span class="p">:</span><span class="n">log</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">chunk</span><span class="p">:</span><span class="n">length</span><span class="p">())</span>
 <span class="kr">end</span>
 </pre></div>
@@ -387,7 +380,7 @@ a script to inspect data as it is streaming by.</p>
 </div>
 <div class="section" id="trailers">
 <h3>trailers()<a class="headerlink" href="#trailers" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="n">trailers</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">trailers</span><span class="p">()</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">trailers</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">trailers</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Returns the stream’s trailers. May return nil if there are no trailers. The trailers may be
@@ -396,7 +389,7 @@ modified before they are sent to the next filter.</p>
 </div>
 <div class="section" id="log">
 <h3>log*()<a class="headerlink" href="#log" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="n">handle</span><span class="p">:</span><span class="n">logTrace</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">handle</span><span class="p">:</span><span class="n">logTrace</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 <span class="n">handle</span><span class="p">:</span><span class="n">logDebug</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 <span class="n">handle</span><span class="p">:</span><span class="n">logInfo</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 <span class="n">handle</span><span class="p">:</span><span class="n">logWarn</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
@@ -408,7 +401,7 @@ modified before they are sent to the next filter.</p>
 </div>
 <div class="section" id="httpcall">
 <h3>httpCall()<a class="headerlink" href="#httpcall" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="n">headers</span><span class="p">,</span> <span class="n">body</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">httpCall</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">headers</span><span class="p">,</span> <span class="n">body</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">httpCall</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Makes an HTTP call to an upstream host. Envoy will yield the script until the call completes or
@@ -421,13 +414,13 @@ body. May be nil if there is no body.</p>
 </div>
 <div class="section" id="respond">
 <h3>respond()<a class="headerlink" href="#respond" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="n">handle</span><span class="p">:</span><span class="n">respond</span><span class="p">(</span><span class="n">headers</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">handle</span><span class="p">:</span><span class="n">respond</span><span class="p">(</span><span class="n">headers</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Respond immediately and do not continue further filter iteration. This call is <em>only valid in
 the request flow</em>. Additionally, a response is only possible if request headers have not yet been
 passed to subsequent filters. Meaning, the following Lua code is invalid:</p>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">envoy_on_request</span><span class="p">(</span><span class="n">request_handle</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">envoy_on_request</span><span class="p">(</span><span class="n">request_handle</span><span class="p">)</span>
   <span class="kr">for</span> <span class="n">chunk</span> <span class="kr">in</span> <span class="n">request_handle</span><span class="p">:</span><span class="n">bodyChunks</span><span class="p">()</span> <span class="kr">do</span>
     <span class="n">request_handle</span><span class="p">:</span><span class="n">respond</span><span class="p">(</span>
       <span class="p">{[</span><span class="s2">&quot;:status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;100&quot;</span><span class="p">},</span>
@@ -441,13 +434,13 @@ must be set. <em>body</em> is a string and supplies the optional response body. 
 </div>
 <div class="section" id="metadata">
 <h3>metadata()<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="n">metadata</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">metadata</span><span class="p">()</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">metadata</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">metadata</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Returns the current route entry metadata. Note that the metadata should be specified
 under the filter name i.e. <em>envoy.lua</em>. Below is an example of a <em>metadata</em> in a
 <a class="reference internal" href="../../api-v1/route_config/route.html#config-http-conn-man-route-table-route"><span class="std std-ref">route entry</span></a>.</p>
-<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">metadata</span><span class="p p-Indicator">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">metadata</span><span class="p p-Indicator">:</span>
   <span class="l l-Scalar l-Scalar-Plain">filter_metadata</span><span class="p p-Indicator">:</span>
     <span class="l l-Scalar l-Scalar-Plain">envoy.lua</span><span class="p p-Indicator">:</span>
       <span class="l l-Scalar l-Scalar-Plain">foo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">bar</span>
@@ -463,7 +456,7 @@ under the filter name i.e. <em>envoy.lua</em>. Below is an example of a <em>meta
 <span id="config-http-filters-lua-header-wrapper"></span><h2>Header object API<a class="headerlink" href="#header-object-api" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="add">
 <h3>add()<a class="headerlink" href="#add" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="n">headers</span><span class="p">:</span><span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">headers</span><span class="p">:</span><span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Adds a header. <em>key</em> is a string that supplies the header key. <em>value</em> is a string that supplies
@@ -481,7 +474,7 @@ understand this behavior is confusing and we may change it in a future release.<
 </div>
 <div class="section" id="get">
 <h3>get()<a class="headerlink" href="#get" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="n">headers</span><span class="p">:</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">headers</span><span class="p">:</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Gets a header. <em>key</em> is a string that supplies the header key. Returns a string that is the header
@@ -489,7 +482,7 @@ value or nil if there is no such header.</p>
 </div>
 <div class="section" id="pairs">
 <h3>__pairs()<a class="headerlink" href="#pairs" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="kr">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="kr">in</span> <span class="nb">pairs</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span> <span class="kr">do</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="kr">in</span> <span class="nb">pairs</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span> <span class="kr">do</span>
 <span class="kr">end</span>
 </pre></div>
 </div>
@@ -504,14 +497,14 @@ not use <cite>break</cite> or any other mechanism to exit the loop early. This m
 </div>
 <div class="section" id="remove">
 <h3>remove()<a class="headerlink" href="#remove" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="n">headers</span><span class="p">:</span><span class="n">remove</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">headers</span><span class="p">:</span><span class="n">remove</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Removes a header. <em>key</em> supplies the header key to remove.</p>
 </div>
 <div class="section" id="replace">
 <h3>replace()<a class="headerlink" href="#replace" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="n">headers</span><span class="p">:</span><span class="n">replace</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">headers</span><span class="p">:</span><span class="n">replace</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Replaces a header. <em>key</em> is a string that supplies the header key. <em>value</em> is a string that supplies
@@ -522,14 +515,14 @@ the header value. If the header does not exist, it is added as per the <em>add()
 <span id="config-http-filters-lua-buffer-wrapper"></span><h2>Buffer API<a class="headerlink" href="#buffer-api" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="length">
 <h3>length()<a class="headerlink" href="#length" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="n">size</span> <span class="o">=</span> <span class="n">buffer</span><span class="p">:</span><span class="n">length</span><span class="p">()</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">size</span> <span class="o">=</span> <span class="n">buffer</span><span class="p">:</span><span class="n">length</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Gets the size of the buffer in bytes. Returns an integer.</p>
 </div>
 <div class="section" id="getbytes">
 <h3>getBytes()<a class="headerlink" href="#getbytes" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="n">buffer</span><span class="p">:</span><span class="n">getBytes</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">buffer</span><span class="p">:</span><span class="n">getBytes</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Get bytes from the buffer. By default Envoy will not copy all buffer bytes to Lua. This will
@@ -542,7 +535,7 @@ less than the buffer length.</p>
 <span id="config-http-filters-lua-metadata-wrapper"></span><h2>Metadata object API<a class="headerlink" href="#metadata-object-api" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id2">
 <h3>get()<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="n">metadata</span><span class="p">:</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">metadata</span><span class="p">:</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Gets a metadata. <em>key</em> is a string that supplies the metadata key. Returns the corresponding
@@ -551,7 +544,7 @@ value of the given metadata key. The type of the value can be: <em>null</em>, <e
 </div>
 <div class="section" id="id3">
 <h3>__pairs()<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="kr">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="kr">in</span> <span class="nb">pairs</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span> <span class="kr">do</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="kr">in</span> <span class="nb">pairs</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span> <span class="kr">do</span>
 <span class="kr">end</span>
 </pre></div>
 </div>
@@ -563,9 +556,7 @@ key. <em>value</em> is <em>metadata</em> entry value.</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -587,7 +578,7 @@ key. <em>value</em> is <em>metadata</em> entry value.</p>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -605,7 +596,7 @@ key. <em>value</em> is <em>metadata</em> entry value.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.7.0-dev-71c0fd',
+            VERSION:'1.7.0-dev-44bfc0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -624,14 +615,11 @@ key. <em>value</em> is <em>metadata</em> entry value.</p>
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
   
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>
