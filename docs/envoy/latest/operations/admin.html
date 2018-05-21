@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Administration interface &mdash; envoy 1.7.0-dev-791609 documentation</title>
+  <title>Administration interface &mdash; envoy 1.7.0-dev-6dad7b documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.7.0-dev-791609
+                1.7.0-dev-6dad7b
               </div>
             
           
@@ -411,21 +411,27 @@ that this does not drop any data sent to statsd. It just effects local output of
 Histograms will output the computed quantiles i.e P0,P25,P50,P75,P90,P99,P99.9 and P100.
 The output for each quantile will be in the form of (interval,cumulative) where interval value
 represents the summary since last flush interval and cumulative value represents the
-summary since the start of envoy instance.
+summary since the start of envoy instance. “No recorded values” in the histogram output indicates
+that it has not been updated with a value.
 See <a class="reference internal" href="stats_overview.html#operations-stats"><span class="std std-ref">here</span></a> for more information.</p>
+<dl class="get">
+<dt id="get--stats?usedonly">
+<code class="descname">GET </code><code class="descname">/stats?usedonly</code><a class="headerlink" href="#get--stats?usedonly" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Outputs statistics that Envoy has updated (counters incremented at least once, gauges changed at
+least once, and histograms added to at least once).</p>
+</dd></dl>
+
 <dl class="get">
 <dt id="get--stats?format=json">
 <code class="descname">GET </code><code class="descname">/stats?format=json</code><a class="headerlink" href="#get--stats?format=json" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<p>Outputs /stats in JSON format. This can be used for programmatic access of stats. Counters and Gauges
+<dd><p>Outputs /stats in JSON format. This can be used for programmatic access of stats. Counters and Gauges
 will be in the form of a set of (name,value) pairs. Histograms will be under the element “histograms”,
 that contains “supported_quantiles” which lists the quantiles supported and an array of computed_quantiles
-that has the computed quantile for each histogram. Only histograms with recorded values will be exported.</p>
+that has the computed quantile for each histogram.</p>
 <p>If a histogram is not updated during an interval, the ouput will have null for all the quantiles.</p>
 <p>Example histogram output:</p>
-</dd></dl>
-
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;histograms&quot;</span><span class="p">:</span> <span class="p">{</span>
     <span class="nt">&quot;supported_quantiles&quot;</span><span class="p">:</span> <span class="p">[</span>
@@ -465,6 +471,15 @@ that has the computed quantile for each histogram. Only histograms with recorded
 <span class="p">}</span>
 </pre></div>
 </div>
+<dl class="get">
+<dt id="get--stats?format=json&amp;usedonly">
+<code class="descname">GET </code><code class="descname">/stats?format=json&amp;usedonly</code><a class="headerlink" href="#get--stats?format=json&usedonly" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Outputs statistics that Envoy has updated (counters incremented at least once,
+gauges changed at least once, and histograms added to at least once) in JSON format.</p>
+</dd></dl>
+
 <dl class="get">
 <dt id="get--stats?format=prometheus">
 <code class="descname">GET </code><code class="descname">/stats?format=prometheus</code><a class="headerlink" href="#get--stats?format=prometheus" title="Permalink to this definition">¶</a></dt>
@@ -573,7 +588,7 @@ endpoint; values loaded from disk can be modified via override but not deleted.<
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.7.0-dev-791609',
+            VERSION:'1.7.0-dev-6dad7b',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
