@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>gRPC-JSON transcoder &mdash; envoy 1.7.0-dev-7c75ca documentation</title>
+  <title>gRPC-JSON transcoder &mdash; envoy 1.7.0-dev-e06d2f documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.7.0-dev-7c75ca
+                1.7.0-dev-e06d2f
               </div>
             
           
@@ -105,6 +105,7 @@
 <li class="toctree-l3"><a class="reference internal" href="grpc_http1_bridge_filter.html">gRPC HTTP/1.1 bridge</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">gRPC-JSON transcoder</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#how-to-generate-proto-descriptor-set">How to generate proto descriptor set</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#route-configs-for-transcoded-requests">Route configs for transcoded requests</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="grpc_web_filter.html">gRPC-Web</a></li>
@@ -226,6 +227,30 @@ in your include path, to define the HTTP mapping.</p>
 </div>
 <p>If you have more than one proto source files, you can pass all of them in one command.</p>
 </div>
+<div class="section" id="route-configs-for-transcoded-requests">
+<h2>Route configs for transcoded requests<a class="headerlink" href="#route-configs-for-transcoded-requests" title="Permalink to this headline">¶</a></h2>
+<p>The route configs to be used with the gRPC-JSON transcoder should be identical to the gRPC route.
+The requests processed by the transcoder filter will have <cite>/&lt;package&gt;.&lt;service&gt;/&lt;method&gt;</cite> path and
+<cite>POST</cite> method. The route configs for those requests should match on <cite>/&lt;package&gt;.&lt;service&gt;/&lt;method&gt;</cite>,
+not the incoming request path. This allows the routes to be used for both gRPC requests and
+gRPC-JSON transcoded requests.</p>
+<p>For example, with the following proto example, the router will process <cite>/helloworld.Greeter/SayHello</cite>
+as the path, so the route config prefix <cite>/say</cite> won’t match requests to <cite>SayHello</cite>. If you want to
+match the incoming request path, set <cite>match_incoming_request_route</cite> to true.</p>
+<div class="highlight-proto notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">helloworld</span><span class="p">;</span>
+
+<span class="c1">// The greeting service definition.</span>
+<span class="kd">service</span> <span class="n">Greeter</span> <span class="p">{</span>
+  <span class="c1">// Sends a greeting</span>
+  <span class="k">rpc</span> <span class="n">SayHello</span> <span class="p">(</span><span class="n">HelloRequest</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="n">HelloReply</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">option</span> <span class="p">(</span><span class="n">google.api.http</span><span class="p">)</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="n">get</span><span class="o">:</span> <span class="s">&quot;/say&quot;</span>
+    <span class="p">};</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
 </div>
 
 
@@ -270,7 +295,7 @@ in your include path, to define the HTTP mapping.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.7.0-dev-7c75ca',
+            VERSION:'1.7.0-dev-e06d2f',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
