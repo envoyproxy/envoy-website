@@ -68,8 +68,8 @@ The following order applies:
 For criterias that allow ranges or wildcards, the most specific value in any
 of the configured filter chains that matches the incoming connection is going
 to be used (e.g. for SNI ``www.example.com`` the most specific match would be
-``www.example.com``, then ``*.example.com``, then any filter chain without
-``server_names`` requirements).
+``www.example.com``, then ``*.example.com``, then ``*.com``, then any filter
+chain without ``server_names`` requirements).
 
 
 .. code-block:: json
@@ -94,12 +94,10 @@ server_names
   a filter chain match. Those values will be compared against the server names of a new connection,
   when detected by one of the listener filters.
   
-  The values may contain a wildcard prefix for the bottom-level domain of a domain name,
-  e.g. ``*.example.com``.
+  The server name will be matched against all wildcard domains, i.e. ``www.example.com``
+  will be first matched against ``www.example.com``, then ``*.example.com``, then ``*.com``.
   
-  Note that ``foo.example.com`` will be matched by ``foo.example.com`` and ``*.example.com``
-  server names, but **not** by ``*foo.example.com``, ``*oo.example.com``, ``*example.com``,
-  ``*.com`` or ``*``.
+  Note that partial wildcards are not supported, and values like ``*w.example.com`` are invalid.
   
   .. attention::
   
@@ -151,12 +149,10 @@ sni_domains
   a filter chain match. Those values will be compared against the server names of a new connection,
   when detected by one of the listener filters.
   
-  The values may contain a wildcard prefix for the bottom-level domain of a domain name,
-  e.g. ``*.example.com``.
+  The server name will be matched against all wildcard domains, i.e. ``www.example.com``
+  will be first matched against ``www.example.com``, then ``*.example.com``, then ``*.com``.
   
-  Note that ``foo.example.com`` will be matched by ``foo.example.com`` and ``*.example.com``
-  server names, but **not** by ``*foo.example.com``, ``*oo.example.com``, ``*example.com``,
-  ``*.com`` or ``*``.
+  Note that partial wildcards are not supported, and values like ``*w.example.com`` are invalid.
   
   .. attention::
   
@@ -170,7 +166,7 @@ sni_domains
 listener.FilterChain
 --------------------
 
-`[listener.FilterChain proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/listener/listener.proto#L170>`_
+`[listener.FilterChain proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/listener/listener.proto#L166>`_
 
 A filter chain wraps a set of match criteria, an option TLS context, a set of filters, and
 various other parameters.
@@ -231,7 +227,7 @@ transport_socket
 listener.ListenerFilter
 -----------------------
 
-`[listener.ListenerFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/listener/listener.proto#L198>`_
+`[listener.ListenerFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/listener/listener.proto#L194>`_
 
 
 .. code-block:: json

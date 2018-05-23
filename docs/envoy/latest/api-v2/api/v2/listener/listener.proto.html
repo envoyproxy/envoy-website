@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Listener components &mdash; envoy 1.7.0-dev-396f52 documentation</title>
+  <title>Listener components &mdash; envoy 1.7.0-dev-8fe5a0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.7.0-dev-396f52
+                1.7.0-dev-8fe5a0
               </div>
             
           
@@ -236,8 +236,8 @@ networking stack and/or listener filters.</p>
 <p>For criterias that allow ranges or wildcards, the most specific value in any
 of the configured filter chains that matches the incoming connection is going
 to be used (e.g. for SNI <code class="docutils literal notranslate"><span class="pre">www.example.com</span></code> the most specific match would be
-<code class="docutils literal notranslate"><span class="pre">www.example.com</span></code>, then <code class="docutils literal notranslate"><span class="pre">*.example.com</span></code>, then any filter chain without
-<code class="docutils literal notranslate"><span class="pre">server_names</span></code> requirements).</p>
+<code class="docutils literal notranslate"><span class="pre">www.example.com</span></code>, then <code class="docutils literal notranslate"><span class="pre">*.example.com</span></code>, then <code class="docutils literal notranslate"><span class="pre">*.com</span></code>, then any filter
+chain without <code class="docutils literal notranslate"><span class="pre">server_names</span></code> requirements).</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;server_names&quot;</span><span class="p">:</span> <span class="p">[],</span>
   <span class="nt">&quot;transport_protocol&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
@@ -251,11 +251,9 @@ to be used (e.g. for SNI <code class="docutils literal notranslate"><span class=
 <dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) If non-empty, a list of server names (e.g. SNI for TLS protocol) to consider when determining
 a filter chain match. Those values will be compared against the server names of a new connection,
 when detected by one of the listener filters.</p>
-<p>The values may contain a wildcard prefix for the bottom-level domain of a domain name,
-e.g. <code class="docutils literal notranslate"><span class="pre">*.example.com</span></code>.</p>
-<p>Note that <code class="docutils literal notranslate"><span class="pre">foo.example.com</span></code> will be matched by <code class="docutils literal notranslate"><span class="pre">foo.example.com</span></code> and <code class="docutils literal notranslate"><span class="pre">*.example.com</span></code>
-server names, but <strong>not</strong> by <code class="docutils literal notranslate"><span class="pre">*foo.example.com</span></code>, <code class="docutils literal notranslate"><span class="pre">*oo.example.com</span></code>, <code class="docutils literal notranslate"><span class="pre">*example.com</span></code>,
-<code class="docutils literal notranslate"><span class="pre">*.com</span></code> or <code class="docutils literal notranslate"><span class="pre">*</span></code>.</p>
+<p>The server name will be matched against all wildcard domains, i.e. <code class="docutils literal notranslate"><span class="pre">www.example.com</span></code>
+will be first matched against <code class="docutils literal notranslate"><span class="pre">www.example.com</span></code>, then <code class="docutils literal notranslate"><span class="pre">*.example.com</span></code>, then <code class="docutils literal notranslate"><span class="pre">*.com</span></code>.</p>
+<p>Note that partial wildcards are not supported, and values like <code class="docutils literal notranslate"><span class="pre">*w.example.com</span></code> are invalid.</p>
 <div class="last admonition attention">
 <p class="first admonition-title">Attention</p>
 <p class="last">See the <a class="reference internal" href="../../../../faq/sni.html#faq-how-to-setup-sni"><span class="std std-ref">FAQ entry</span></a> on how to configure SNI for more
@@ -302,11 +300,9 @@ unless all connecting clients are known to use ALPN.</p>
 <dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) If non-empty, a list of server names (e.g. SNI for TLS protocol) to consider when determining
 a filter chain match. Those values will be compared against the server names of a new connection,
 when detected by one of the listener filters.</p>
-<p>The values may contain a wildcard prefix for the bottom-level domain of a domain name,
-e.g. <code class="docutils literal notranslate"><span class="pre">*.example.com</span></code>.</p>
-<p>Note that <code class="docutils literal notranslate"><span class="pre">foo.example.com</span></code> will be matched by <code class="docutils literal notranslate"><span class="pre">foo.example.com</span></code> and <code class="docutils literal notranslate"><span class="pre">*.example.com</span></code>
-server names, but <strong>not</strong> by <code class="docutils literal notranslate"><span class="pre">*foo.example.com</span></code>, <code class="docutils literal notranslate"><span class="pre">*oo.example.com</span></code>, <code class="docutils literal notranslate"><span class="pre">*example.com</span></code>,
-<code class="docutils literal notranslate"><span class="pre">*.com</span></code> or <code class="docutils literal notranslate"><span class="pre">*</span></code>.</p>
+<p>The server name will be matched against all wildcard domains, i.e. <code class="docutils literal notranslate"><span class="pre">www.example.com</span></code>
+will be first matched against <code class="docutils literal notranslate"><span class="pre">www.example.com</span></code>, then <code class="docutils literal notranslate"><span class="pre">*.example.com</span></code>, then <code class="docutils literal notranslate"><span class="pre">*.com</span></code>.</p>
+<p>Note that partial wildcards are not supported, and values like <code class="docutils literal notranslate"><span class="pre">*w.example.com</span></code> are invalid.</p>
 <div class="last admonition attention">
 <p class="first admonition-title">Attention</p>
 <p class="last">Deprecated. Use <a class="reference internal" href="#envoy-api-field-listener-filterchainmatch-server-names"><span class="std std-ref">server_names</span></a> instead.</p>
@@ -316,7 +312,7 @@ server names, but <strong>not</strong> by <code class="docutils literal notransl
 </div>
 <div class="section" id="listener-filterchain">
 <span id="envoy-api-msg-listener-filterchain"></span><h2>listener.FilterChain<a class="headerlink" href="#listener-filterchain" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/listener/listener.proto#L170">[listener.FilterChain proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/listener/listener.proto#L166">[listener.FilterChain proto]</a></p>
 <p>A filter chain wraps a set of match criteria, an option TLS context, a set of filters, and
 various other parameters.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -359,7 +355,7 @@ connection as the remote address.</dd>
 </div>
 <div class="section" id="listener-listenerfilter">
 <span id="envoy-api-msg-listener-listenerfilter"></span><h2>listener.ListenerFilter<a class="headerlink" href="#listener-listenerfilter" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/listener/listener.proto#L198">[listener.ListenerFilter proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/listener/listener.proto#L194">[listener.ListenerFilter proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
@@ -426,7 +422,7 @@ instantiated. See the supported filters for further documentation.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../',
-            VERSION:'1.7.0-dev-396f52',
+            VERSION:'1.7.0-dev-8fe5a0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
