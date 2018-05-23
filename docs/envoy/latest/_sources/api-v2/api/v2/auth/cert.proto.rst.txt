@@ -220,23 +220,33 @@ trusted_ca
 .. _envoy_api_field_auth.CertificateValidationContext.verify_certificate_hash:
 
 verify_certificate_hash
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If specified, Envoy will verify (pin) the hex-encoded SHA-256 fingerprint of
-  the presented certificate.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) An optional list of hex-encoded SHA-256 hashes. If specified, Envoy will verify that
+  the SHA-256 of the DER-encoded presented certificate matches one of the specified values.
   
-  For example, ``openssl`` can produce a SHA-256 fingerprint of an x509 certificate
-  with the following command:
+  A hex-encoded SHA-256 of the certificate can be generated with the following command:
   
   .. code-block:: bash
   
-    $ openssl x509 -in path/to/client.crt -noout -fingerprint -sha256
+    $ openssl x509 -in path/to/client.crt -outform DER | openssl dgst -sha256 | cut -d" " -f2
+    df6ff72fe9116521268f6f2dd4966f51df479883fe7037b39f75916ac3049d1a
+  
+  A long hex-encoded and colon-separated SHA-256 (a.k.a. "fingerprint") of the certificate
+  can be generated with the following command:
+  
+  .. code-block:: bash
+  
+    $ openssl x509 -in path/to/client.crt -noout -fingerprint -sha256 | cut -d"=" -f2
+    DF:6F:F7:2F:E9:11:65:21:26:8F:6F:2D:D4:96:6F:51:DF:47:98:83:FE:70:37:B3:9F:75:91:6A:C3:04:9D:1A
+  
+  Both of those formats are acceptable.
   
   
 
 .. _envoy_api_field_auth.CertificateValidationContext.verify_subject_alt_name:
 
 verify_subject_alt_name
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) An optional list of subject alternative names. If specified, Envoy will verify that
-  the certificate’s subject alternative name matches one of the specified values.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) An optional list of Subject Alternative Names. If specified, Envoy will verify that the
+  Subject Alternative Name of the presented certificate matches one of the specified values.
   
   
 
@@ -258,7 +268,7 @@ crl
 auth.CommonTlsContext
 ---------------------
 
-`[auth.CommonTlsContext proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L165>`_
+`[auth.CommonTlsContext proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L176>`_
 
 TLS context shared by both client and server TLS contexts.
 
@@ -318,7 +328,7 @@ alpn_protocols
 auth.UpstreamTlsContext
 -----------------------
 
-`[auth.UpstreamTlsContext proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L206>`_
+`[auth.UpstreamTlsContext proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L217>`_
 
 
 .. code-block:: json
@@ -347,7 +357,7 @@ sni
 auth.DownstreamTlsContext
 -------------------------
 
-`[auth.DownstreamTlsContext proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L214>`_
+`[auth.DownstreamTlsContext proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L225>`_
 
 
 .. code-block:: json
