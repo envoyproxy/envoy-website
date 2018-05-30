@@ -3,29 +3,13 @@
 Common access log types
 =======================
 
-Envoy access logs describe incoming interaction with Envoy over a fixed
-period of time, and typically cover a single request/response exchange,
-(e.g. HTTP), stream (e.g. over HTTP/gRPC), or proxied connection (e.g. TCP).
-Access logs contain fields defined in protocol-specific protobuf messages.
-
-Except where explicitly declared otherwise, all fields describe
-*downstream* interaction between Envoy and a connected client.
-Fields describing *upstream* interaction will explicitly include ``upstream``
-in their name.
-
-
-
-
-
-
-
 
 .. _envoy_api_msg_config.filter.accesslog.v2.AccessLog:
 
 config.filter.accesslog.v2.AccessLog
 ------------------------------------
 
-`[config.filter.accesslog.v2.AccessLog proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L297>`_
+`[config.filter.accesslog.v2.AccessLog proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L15>`_
 
 
 .. code-block:: json
@@ -41,7 +25,9 @@ config.filter.accesslog.v2.AccessLog
 name
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The name of the access log implementation to instantiate. The name must
   match a statically registered access log. Current built-in loggers include:
-  1) "envoy.file_access_log"
+  
+  #. "envoy.file_access_log"
+  #. "envoy.http_grpc_access_log"
   
   
 .. _envoy_api_field_config.filter.accesslog.v2.AccessLog.filter:
@@ -53,10 +39,13 @@ filter
 .. _envoy_api_field_config.filter.accesslog.v2.AccessLog.config:
 
 config
-  (`Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_) Custom configuration that depends on the access log being instantiated. built-in configurations
+  (`Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_) Custom configuration that depends on the access log being instantiated. Built-in configurations
   include:
-  1) "envoy.file_access_log": :ref:`FileAccessLog
-  <envoy_api_msg_config.filter.accesslog.v2.FileAccessLog>`
+  
+  #. "envoy.file_access_log": :ref:`FileAccessLog
+     <envoy_api_msg_config.accesslog.v2.FileAccessLog>`
+  #. "envoy.http_grpc_access_log": :ref:`HttpGrpcAccessLogConfig
+     <envoy_api_msg_config.accesslog.v2.HttpGrpcAccessLogConfig>`
   
   
 
@@ -66,7 +55,7 @@ config
 config.filter.accesslog.v2.AccessLogFilter
 ------------------------------------------
 
-`[config.filter.accesslog.v2.AccessLogFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L313>`_
+`[config.filter.accesslog.v2.AccessLogFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L36>`_
 
 
 .. code-block:: json
@@ -153,7 +142,7 @@ header_filter
 config.filter.accesslog.v2.ComparisonFilter
 -------------------------------------------
 
-`[config.filter.accesslog.v2.ComparisonFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L344>`_
+`[config.filter.accesslog.v2.ComparisonFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L67>`_
 
 Filter on an integer comparison.
 
@@ -182,7 +171,7 @@ value
 Enum config.filter.accesslog.v2.ComparisonFilter.Op
 ---------------------------------------------------
 
-`[config.filter.accesslog.v2.ComparisonFilter.Op proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L345>`_
+`[config.filter.accesslog.v2.ComparisonFilter.Op proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L68>`_
 
 
 .. _envoy_api_enum_value_config.filter.accesslog.v2.ComparisonFilter.Op.EQ:
@@ -209,7 +198,7 @@ LE
 config.filter.accesslog.v2.StatusCodeFilter
 -------------------------------------------
 
-`[config.filter.accesslog.v2.StatusCodeFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L364>`_
+`[config.filter.accesslog.v2.StatusCodeFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L87>`_
 
 Filters on HTTP response/status code.
 
@@ -232,7 +221,7 @@ comparison
 config.filter.accesslog.v2.DurationFilter
 -----------------------------------------
 
-`[config.filter.accesslog.v2.DurationFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L370>`_
+`[config.filter.accesslog.v2.DurationFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L93>`_
 
 Filters on total request duration in milliseconds.
 
@@ -255,7 +244,7 @@ comparison
 config.filter.accesslog.v2.NotHealthCheckFilter
 -----------------------------------------------
 
-`[config.filter.accesslog.v2.NotHealthCheckFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L377>`_
+`[config.filter.accesslog.v2.NotHealthCheckFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L100>`_
 
 Filters for requests that are not health check requests. A health check
 request is marked by the health check filter.
@@ -272,7 +261,7 @@ request is marked by the health check filter.
 config.filter.accesslog.v2.TraceableFilter
 ------------------------------------------
 
-`[config.filter.accesslog.v2.TraceableFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L382>`_
+`[config.filter.accesslog.v2.TraceableFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L105>`_
 
 Filters for requests that are traceable. See the tracing overview for more
 information on how a request becomes traceable.
@@ -289,7 +278,7 @@ information on how a request becomes traceable.
 config.filter.accesslog.v2.RuntimeFilter
 ----------------------------------------
 
-`[config.filter.accesslog.v2.RuntimeFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L386>`_
+`[config.filter.accesslog.v2.RuntimeFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L109>`_
 
 Filters for random sampling of requests.
 
@@ -338,7 +327,7 @@ use_independent_randomness
 config.filter.accesslog.v2.AndFilter
 ------------------------------------
 
-`[config.filter.accesslog.v2.AndFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L412>`_
+`[config.filter.accesslog.v2.AndFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L135>`_
 
 Performs a logical “and” operation on the result of each filter in filters.
 Filters are evaluated sequentially and if one of them returns false, the
@@ -362,7 +351,7 @@ filters
 config.filter.accesslog.v2.OrFilter
 -----------------------------------
 
-`[config.filter.accesslog.v2.OrFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L419>`_
+`[config.filter.accesslog.v2.OrFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L142>`_
 
 Performs a logical “or” operation on the result of each individual filter.
 Filters are evaluated sequentially and if one of them returns true, the
@@ -386,7 +375,7 @@ filters
 config.filter.accesslog.v2.HeaderFilter
 ---------------------------------------
 
-`[config.filter.accesslog.v2.HeaderFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L424>`_
+`[config.filter.accesslog.v2.HeaderFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L147>`_
 
 Filters requests based on the presence or value of a request header.
 
@@ -401,39 +390,6 @@ Filters requests based on the presence or value of a request header.
 header
   (:ref:`route.HeaderMatcher <envoy_api_msg_route.HeaderMatcher>`, *REQUIRED*) Only requests with a header which matches the specified HeaderMatcher will pass the filter
   check.
-  
-  
-
-
-.. _envoy_api_msg_config.filter.accesslog.v2.FileAccessLog:
-
-config.filter.accesslog.v2.FileAccessLog
-----------------------------------------
-
-`[config.filter.accesslog.v2.FileAccessLog proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/accesslog/v2/accesslog.proto#L432>`_
-
-Custom configuration for an AccessLog that writes log entries directly to a file.
-Configures the built-in *envoy.file_access_log* AccessLog.
-
-.. code-block:: json
-
-  {
-    "path": "...",
-    "format": "..."
-  }
-
-.. _envoy_api_field_config.filter.accesslog.v2.FileAccessLog.path:
-
-path
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) A path to a local file to which to write the access log entries.
-  
-  
-.. _envoy_api_field_config.filter.accesslog.v2.FileAccessLog.format:
-
-format
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Access log format. Envoy supports :ref:`custom access log formats
-  <config_access_log_format>` as well as a :ref:`default format
-  <config_access_log_default_format>`.
   
   
 
