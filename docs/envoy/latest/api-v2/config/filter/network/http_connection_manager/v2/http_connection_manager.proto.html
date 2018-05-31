@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP connection manager &mdash; envoy 1.7.0-dev-a2fc6f documentation</title>
+  <title>HTTP connection manager &mdash; envoy 1.7.0-dev-2f5544 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.7.0-dev-a2fc6f
+                1.7.0-dev-2f5544
               </div>
             
           
@@ -215,6 +215,8 @@
   <span class="nt">&quot;access_log&quot;</span><span class="p">:</span> <span class="p">[],</span>
   <span class="nt">&quot;use_remote_address&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;xff_num_trusted_hops&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;skip_xff_append&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;via&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;generate_request_id&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;forward_client_cert_details&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;set_current_client_cert_details&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -319,6 +321,20 @@ determining the origin client’s IP address. The default is zero if this option
 is not specified. See the documentation for
 <a class="reference internal" href="../../../../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a> for more information.</dd>
 </dl>
+<dl class="docutils" id="envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-skip-xff-append">
+<dt>skip_xff_append</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) If set, Envoy will not append the remote address to the
+<a class="reference internal" href="../../../../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a> HTTP header. This may be used in
+conjunction with HTTP filters that explicitly manipulate XFF after the HTTP connection manager
+has mutated the request headers. While <a class="reference internal" href="../../../../../../api-v1/network_filters/http_conn_man.html#config-http-conn-man-use-remote-address"><span class="std std-ref">use_remote_address</span></a> will also suppress XFF addition, it has consequences
+for logging and other Envoy uses of the remote address, so <em>skip_xff_append</em> should be used
+when only an elision of XFF addition is intended.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-via">
+<dt>via</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Via header value to append to request and response headers. If this is
+empty, no via header will be appended.</dd>
+</dl>
 <dl class="docutils" id="envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-generate-request-id">
 <dt>generate_request_id</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue">BoolValue</a>) Whether the connection manager will generate the <a class="reference internal" href="../../../../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a> header if it does not exist. This defaults to
@@ -393,7 +409,7 @@ created if the specified header name is present in the request’s headers.</dd>
 </div>
 <div class="section" id="config-filter-network-http-connection-manager-v2-httpconnectionmanager-setcurrentclientcertdetails">
 <span id="envoy-api-msg-config-filter-network-http-connection-manager-v2-httpconnectionmanager-setcurrentclientcertdetails"></span><h2>config.filter.network.http_connection_manager.v2.HttpConnectionManager.SetCurrentClientCertDetails<a class="headerlink" href="#config-filter-network-http-connection-manager-v2-httpconnectionmanager-setcurrentclientcertdetails" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L209">[config.filter.network.http_connection_manager.v2.HttpConnectionManager.SetCurrentClientCertDetails proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L222">[config.filter.network.http_connection_manager.v2.HttpConnectionManager.SetCurrentClientCertDetails proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;subject&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;san&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -453,7 +469,7 @@ Prior knowledge is allowed).</dd>
 </div>
 <div class="section" id="enum-config-filter-network-http-connection-manager-v2-httpconnectionmanager-forwardclientcertdetails">
 <span id="envoy-api-enum-config-filter-network-http-connection-manager-v2-httpconnectionmanager-forwardclientcertdetails"></span><h2>Enum config.filter.network.http_connection_manager.v2.HttpConnectionManager.ForwardClientCertDetails<a class="headerlink" href="#enum-config-filter-network-http-connection-manager-v2-httpconnectionmanager-forwardclientcertdetails" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L181">[config.filter.network.http_connection_manager.v2.HttpConnectionManager.ForwardClientCertDetails proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L194">[config.filter.network.http_connection_manager.v2.HttpConnectionManager.ForwardClientCertDetails proto]</a></p>
 <p>How to handle the <a class="reference internal" href="../../../../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-client-cert"><span class="std std-ref">x-forwarded-client-cert</span></a> (XFCC) HTTP
 header.</p>
 <dl class="docutils" id="envoy-api-enum-value-config-filter-network-http-connection-manager-v2-httpconnectionmanager-forwardclientcertdetails-sanitize">
@@ -483,7 +499,7 @@ client connection is mTLS.</dd>
 </div>
 <div class="section" id="config-filter-network-http-connection-manager-v2-rds">
 <span id="envoy-api-msg-config-filter-network-http-connection-manager-v2-rds"></span><h2>config.filter.network.http_connection_manager.v2.Rds<a class="headerlink" href="#config-filter-network-http-connection-manager-v2-rds" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L261">[config.filter.network.http_connection_manager.v2.Rds proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L274">[config.filter.network.http_connection_manager.v2.Rds proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;config_source&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;route_config_name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
@@ -504,7 +520,7 @@ configurations.</dd>
 </div>
 <div class="section" id="config-filter-network-http-connection-manager-v2-httpfilter">
 <span id="envoy-api-msg-config-filter-network-http-connection-manager-v2-httpfilter"></span><h2>config.filter.network.http_connection_manager.v2.HttpFilter<a class="headerlink" href="#config-filter-network-http-connection-manager-v2-httpfilter" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L273">[config.filter.network.http_connection_manager.v2.HttpFilter proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L286">[config.filter.network.http_connection_manager.v2.HttpFilter proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
@@ -583,7 +599,7 @@ instantiated. See the supported filters for further documentation.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../../../',
-            VERSION:'1.7.0-dev-a2fc6f',
+            VERSION:'1.7.0-dev-2f5544',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

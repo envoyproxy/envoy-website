@@ -31,6 +31,8 @@ config.filter.network.http_connection_manager.v2.HttpConnectionManager
     "access_log": [],
     "use_remote_address": "{...}",
     "xff_num_trusted_hops": "...",
+    "skip_xff_append": "...",
+    "via": "...",
     "generate_request_id": "{...}",
     "forward_client_cert_details": "...",
     "set_current_client_cert_details": "{...}",
@@ -166,6 +168,25 @@ xff_num_trusted_hops
   :ref:`config_http_conn_man_headers_x-forwarded-for` for more information.
   
   
+.. _envoy_api_field_config.filter.network.http_connection_manager.v2.HttpConnectionManager.skip_xff_append:
+
+skip_xff_append
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If set, Envoy will not append the remote address to the
+  :ref:`config_http_conn_man_headers_x-forwarded-for` HTTP header. This may be used in
+  conjunction with HTTP filters that explicitly manipulate XFF after the HTTP connection manager
+  has mutated the request headers. While :ref:`use_remote_address
+  <config_http_conn_man_use_remote_address>` will also suppress XFF addition, it has consequences
+  for logging and other Envoy uses of the remote address, so *skip_xff_append* should be used
+  when only an elision of XFF addition is intended.
+  
+  
+.. _envoy_api_field_config.filter.network.http_connection_manager.v2.HttpConnectionManager.via:
+
+via
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Via header value to append to request and response headers. If this is
+  empty, no via header will be appended.
+  
+  
 .. _envoy_api_field_config.filter.network.http_connection_manager.v2.HttpConnectionManager.generate_request_id:
 
 generate_request_id
@@ -279,7 +300,7 @@ EGRESS
 config.filter.network.http_connection_manager.v2.HttpConnectionManager.SetCurrentClientCertDetails
 --------------------------------------------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.SetCurrentClientCertDetails proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L209>`_
+`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.SetCurrentClientCertDetails proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L222>`_
 
 
 .. code-block:: json
@@ -367,7 +388,7 @@ HTTP2
 Enum config.filter.network.http_connection_manager.v2.HttpConnectionManager.ForwardClientCertDetails
 ----------------------------------------------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.ForwardClientCertDetails proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L181>`_
+`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.ForwardClientCertDetails proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L194>`_
 
 How to handle the :ref:`config_http_conn_man_headers_x-forwarded-client-cert` (XFCC) HTTP
 header.
@@ -412,7 +433,7 @@ ALWAYS_FORWARD_ONLY
 config.filter.network.http_connection_manager.v2.Rds
 ----------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.Rds proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L261>`_
+`[config.filter.network.http_connection_manager.v2.Rds proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L274>`_
 
 
 .. code-block:: json
@@ -444,7 +465,7 @@ route_config_name
 config.filter.network.http_connection_manager.v2.HttpFilter
 -----------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.HttpFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L273>`_
+`[config.filter.network.http_connection_manager.v2.HttpFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L286>`_
 
 
 .. code-block:: json
