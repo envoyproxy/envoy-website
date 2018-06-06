@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Access logging &mdash; envoy 1.7.0-dev-79bce5 documentation</title>
+  <title>Access logging &mdash; envoy 1.7.0-dev-bc1b39 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.7.0-dev-79bce5
+                1.7.0-dev-bc1b39
               </div>
             
           
@@ -204,7 +204,7 @@ Note that the access log line will contain a ‘-‘ character for every not set
 fields may have slightly different meanings, depending on what type of log it is. Differences
 are noted.</p>
 <p>The following command operators are supported:</p>
-<dl class="docutils">
+<dl class="docutils" id="config-access-log-format-start-time">
 <dt>%START_TIME%</dt>
 <dd><dl class="first docutils">
 <dt>HTTP</dt>
@@ -212,13 +212,46 @@ are noted.</p>
 <dt>TCP</dt>
 <dd>Downstream connection start time including milliseconds.</dd>
 </dl>
-<p class="last">START_TIME can be customized using a <a class="reference external" href="http://en.cppreference.com/w/cpp/io/manip/put_time">format string</a>, for example:</p>
-</dd>
-</dl>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%START_TIME(%Y/%m/%dT%H:%M:%S%z %s)%
+<p>START_TIME can be customized using a <a class="reference external" href="http://en.cppreference.com/w/cpp/io/manip/put_time">format string</a>.
+In addition to that, START_TIME also accepts following specifiers:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="72%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Specifier</th>
+<th class="head">Explanation</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">%s</span></code></td>
+<td>The number of seconds since the Epoch</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><code class="docutils literal notranslate"><span class="pre">%f</span></code>, <code class="docutils literal notranslate"><span class="pre">%[1-9]f</span></code></td>
+<td>Fractional seconds digits, default is 9 digits (nanosecond)</td>
+</tr>
+<tr class="row-even"><td><ul class="first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">%3f</span></code> millisecond (3 digits)</li>
+<li><code class="docutils literal notranslate"><span class="pre">%6f</span></code> microsecond (6 digits)</li>
+<li><code class="docutils literal notranslate"><span class="pre">%9f</span></code> nanosecond (9 digits)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Examples of formatting START_TIME is as follows:</p>
+<div class="last highlight-none notranslate"><div class="highlight"><pre><span></span>%START_TIME(%Y/%m/%dT%H:%M:%S%z %s)%
+
+# To include millisecond fraction of the second (.000 ... .999). E.g. 1527590590.528.
+%START_TIME(%s.%3f)%
+
+%START_TIME(%s.%6f)%
+
+%START_TIME(%s.%9f)%
 </pre></div>
 </div>
-<dl class="docutils">
+</dd>
 <dt>%BYTES_RECEIVED%</dt>
 <dd><dl class="first last docutils">
 <dt>HTTP</dt>
@@ -433,7 +466,7 @@ can be set by filters using the <a class="reference external" href="https://gith
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.7.0-dev-79bce5',
+            VERSION:'1.7.0-dev-bc1b39',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
