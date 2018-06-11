@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP route &mdash; envoy 1.7.0-dev-f49720 documentation</title>
+  <title>HTTP route &mdash; envoy 1.7.0-dev-1b4899 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.7.0-dev-f49720
+                1.7.0-dev-1b4899
               </div>
             
           
@@ -1447,6 +1447,8 @@ HTTP/1 and HTTP/2 as Envoy normalizes headers. E.g.,</p>
   <span class="nt">&quot;regex_match&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;range_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;present_match&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;prefix_match&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;suffix_match&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;invert_match&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
 <span class="p">}</span>
 </pre></div>
@@ -1487,7 +1489,7 @@ regex grammar used in the value field is defined
 <dl class="docutils" id="envoy-api-field-route-headermatcher-exact-match">
 <dt>exact_match</dt>
 <dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) If specified, header match will be performed based on the value of the header.</p>
-<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-regex-match"><span class="std std-ref">regex_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-range-match"><span class="std std-ref">range_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-present-match"><span class="std std-ref">present_match</span></a> may be set.</p>
+<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-regex-match"><span class="std std-ref">regex_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-range-match"><span class="std std-ref">range_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-present-match"><span class="std std-ref">present_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-prefix-match"><span class="std std-ref">prefix_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-suffix-match"><span class="std std-ref">suffix_match</span></a> may be set.</p>
 </dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-route-headermatcher-regex-match">
@@ -1502,7 +1504,7 @@ request header value matches the regex. The regex grammar used in the value fiel
 <li>The regex <em>d{3}</em> does not match the value <em>1234</em></li>
 <li>The regex <em>d{3}</em> does not match the value <em>123.456</em></li>
 </ul>
-<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-regex-match"><span class="std std-ref">regex_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-range-match"><span class="std std-ref">range_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-present-match"><span class="std std-ref">present_match</span></a> may be set.</p>
+<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-regex-match"><span class="std std-ref">regex_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-range-match"><span class="std std-ref">range_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-present-match"><span class="std std-ref">present_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-prefix-match"><span class="std std-ref">prefix_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-suffix-match"><span class="std std-ref">suffix_match</span></a> may be set.</p>
 </dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-route-headermatcher-range-match">
@@ -1518,14 +1520,36 @@ point numbers or if only a subsequence of the header value is an integer.</p>
 <li>For range [-10,0), route will match for header value -1, but not for 0, “somestring”, 10.9,
 “-1somestring”</li>
 </ul>
-<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-regex-match"><span class="std std-ref">regex_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-range-match"><span class="std std-ref">range_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-present-match"><span class="std std-ref">present_match</span></a> may be set.</p>
+<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-regex-match"><span class="std std-ref">regex_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-range-match"><span class="std std-ref">range_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-present-match"><span class="std std-ref">present_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-prefix-match"><span class="std std-ref">prefix_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-suffix-match"><span class="std std-ref">suffix_match</span></a> may be set.</p>
 </dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-route-headermatcher-present-match">
 <dt>present_match</dt>
 <dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) If specified, header match will be be performed based on whether the header is in the
 request.</p>
-<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-regex-match"><span class="std std-ref">regex_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-range-match"><span class="std std-ref">range_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-present-match"><span class="std std-ref">present_match</span></a> may be set.</p>
+<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-regex-match"><span class="std std-ref">regex_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-range-match"><span class="std std-ref">range_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-present-match"><span class="std std-ref">present_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-prefix-match"><span class="std std-ref">prefix_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-suffix-match"><span class="std std-ref">suffix_match</span></a> may be set.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-route-headermatcher-prefix-match">
+<dt>prefix_match</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) If specified, header match will be performed based on the prefix of the header value.
+Note: empty prefix is not allowed, please use present_match instead.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li>The prefix <em>abcd</em> matches the value <em>abcdxyz</em>, but not for <em>abcxyz</em>.</li>
+</ul>
+<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-regex-match"><span class="std std-ref">regex_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-range-match"><span class="std std-ref">range_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-present-match"><span class="std std-ref">present_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-prefix-match"><span class="std std-ref">prefix_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-suffix-match"><span class="std std-ref">suffix_match</span></a> may be set.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-route-headermatcher-suffix-match">
+<dt>suffix_match</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) If specified, header match will be performed based on the suffix of the header value.
+Note: empty suffix is not allowed, please use present_match instead.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li>The suffix <em>abcd</em> matches the value <em>xyzabcd</em>, but not for <em>xyzbcd</em>.</li>
+</ul>
+<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-regex-match"><span class="std std-ref">regex_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-range-match"><span class="std std-ref">range_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-present-match"><span class="std std-ref">present_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-prefix-match"><span class="std std-ref">prefix_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-suffix-match"><span class="std std-ref">suffix_match</span></a> may be set.</p>
 </dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-route-headermatcher-invert-match">
@@ -1541,7 +1565,7 @@ request.</p>
 </div>
 <div class="section" id="route-queryparametermatcher">
 <span id="envoy-api-msg-route-queryparametermatcher"></span><h2>route.QueryParameterMatcher<a class="headerlink" href="#route-queryparametermatcher" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L954">[route.QueryParameterMatcher proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L970">[route.QueryParameterMatcher proto]</a></p>
 <p>Query parameter matching treats the query string of a request’s :path header
 as an ampersand-separated list of keys and/or key=value elements.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -1614,7 +1638,7 @@ E.g., the regex “d+$” will match “123” but not “a123” or “123a”.
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../',
-            VERSION:'1.7.0-dev-f49720',
+            VERSION:'1.7.0-dev-1b4899',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
