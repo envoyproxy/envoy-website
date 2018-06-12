@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Load balancing &mdash; envoy 1.7.0-dev-d5947b documentation</title>
+  <title>Load balancing &mdash; envoy 1.7.0-dev-6a4b55 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.7.0-dev-d5947b
+                1.7.0-dev-6a4b55
               </div>
             
           
@@ -106,6 +106,7 @@
 <li class="toctree-l3"><a class="reference internal" href="connection_pooling.html">Connection pooling</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Load balancing</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#supported-load-balancers">Supported load balancers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#original-destination">Original destination</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#panic-threshold">Panic threshold</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#priority-levels">Priority levels</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#zone-aware-routing">Zone aware routing</a></li>
@@ -299,8 +300,9 @@ versus Maglev with different parameters.</p>
 better than round robin if no health checking policy is configured. Random selection avoids bias
 towards the host in the set that comes after a failed host.</p>
 </div>
+</div>
 <div class="section" id="original-destination">
-<span id="arch-overview-load-balancing-types-original-destination"></span><h3>Original destination<a class="headerlink" href="#original-destination" title="Permalink to this headline">¶</a></h3>
+<span id="arch-overview-load-balancing-types-original-destination"></span><h2>Original destination<a class="headerlink" href="#original-destination" title="Permalink to this headline">¶</a></h2>
 <p>This is a special purpose load balancer that can only be used with <a class="reference internal" href="service_discovery.html#arch-overview-service-discovery-types-original-destination"><span class="std std-ref">an original destination
 cluster</span></a>. Upstream host is selected
 based on the downstream connection metadata, i.e., connections are opened to the same address as the
@@ -309,6 +311,12 @@ Envoy. New destinations are added to the cluster by the load balancer on-demand,
 <a class="reference internal" href="../../api-v1/cluster_manager/cluster.html#config-cluster-manager-cluster-cleanup-interval-ms"><span class="std std-ref">periodically</span></a> cleans out unused hosts
 from the cluster. No other <a class="reference internal" href="../../api-v1/cluster_manager/cluster.html#config-cluster-manager-cluster-lb-type"><span class="std std-ref">load balancing type</span></a> can
 be used with original destination clusters.</p>
+<div class="section" id="original-destination-host-request-header">
+<span id="arch-overview-load-balancing-types-original-destination-request-header"></span><h3>Original destination host request header<a class="headerlink" href="#original-destination-host-request-header" title="Permalink to this headline">¶</a></h3>
+<p>Envoy can also pick up the original destination from a HTTP header called <code class="docutils literal notranslate"><span class="pre">x-envoy-original-destination-host</span></code>.
+Please note that fully resolved IP address should be passed in this header. For example if a request has to be
+routed to a host with IP address 10.195.16.237 at port 8888, the request header value should be set as
+<code class="docutils literal notranslate"><span class="pre">10.195.16.237:8888</span></code>.</p>
 </div>
 </div>
 <div class="section" id="panic-threshold">
@@ -866,7 +874,7 @@ route:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.7.0-dev-d5947b',
+            VERSION:'1.7.0-dev-6a4b55',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
