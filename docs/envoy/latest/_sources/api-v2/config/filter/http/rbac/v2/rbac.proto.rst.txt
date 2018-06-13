@@ -10,19 +10,30 @@ Role-Based Access Control :ref:`configuration overview <config_http_filters_rbac
 config.filter.http.rbac.v2.RBAC
 -------------------------------
 
-`[config.filter.http.rbac.v2.RBAC proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/rbac/v2/rbac.proto#L13>`_
+`[config.filter.http.rbac.v2.RBAC proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/rbac/v2/rbac.proto#L14>`_
 
+RBAC filter config.
 
 .. code-block:: json
 
   {
-    "rules": "{...}"
+    "rules": "{...}",
+    "shadow_rules": "{...}"
   }
 
 .. _envoy_api_field_config.filter.http.rbac.v2.RBAC.rules:
 
 rules
-  (:ref:`config.rbac.v2alpha.RBAC <envoy_api_msg_config.rbac.v2alpha.RBAC>`, *REQUIRED*) Specify the RBAC rules to be applied globally
+  (:ref:`config.rbac.v2alpha.RBAC <envoy_api_msg_config.rbac.v2alpha.RBAC>`) Specify the RBAC rules to be applied globally.
+  If absent, no enforcing RBAC policy will be applied.
+  
+  
+.. _envoy_api_field_config.filter.http.rbac.v2.RBAC.shadow_rules:
+
+shadow_rules
+  (:ref:`config.rbac.v2alpha.RBAC <envoy_api_msg_config.rbac.v2alpha.RBAC>`) Shadow rules are not enforced by the filter (i.e., returning a 403)
+  but will emit stats and logs and can be used for rule testing.
+  If absent, no shadow RBAC policy with be applied.
   
   
 
@@ -32,30 +43,20 @@ rules
 config.filter.http.rbac.v2.RBACPerRoute
 ---------------------------------------
 
-`[config.filter.http.rbac.v2.RBACPerRoute proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/rbac/v2/rbac.proto#L18>`_
+`[config.filter.http.rbac.v2.RBACPerRoute proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/rbac/v2/rbac.proto#L25>`_
 
 
 .. code-block:: json
 
   {
-    "disabled": "...",
     "rbac": "{...}"
   }
 
-.. _envoy_api_field_config.filter.http.rbac.v2.RBACPerRoute.disabled:
-
-disabled
-  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Disable the filter for this particular vhost or route.
-  
-  
-  Precisely one of :ref:`disabled <envoy_api_field_config.filter.http.rbac.v2.RBACPerRoute.disabled>`, :ref:`rbac <envoy_api_field_config.filter.http.rbac.v2.RBACPerRoute.rbac>` must be set.
-  
 .. _envoy_api_field_config.filter.http.rbac.v2.RBACPerRoute.rbac:
 
 rbac
-  (:ref:`config.filter.http.rbac.v2.RBAC <envoy_api_msg_config.filter.http.rbac.v2.RBAC>`, *REQUIRED*) Override the global configuration of the filter with this new config.
+  (:ref:`config.filter.http.rbac.v2.RBAC <envoy_api_msg_config.filter.http.rbac.v2.RBAC>`) Override the global configuration of the filter with this new config.
+  If absent, the global RBAC policy will be disabled for this route.
   
-  
-  Precisely one of :ref:`disabled <envoy_api_field_config.filter.http.rbac.v2.RBACPerRoute.disabled>`, :ref:`rbac <envoy_api_field_config.filter.http.rbac.v2.RBACPerRoute.rbac>` must be set.
   
 

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>RBAC &mdash; envoy 1.7.0-dev-6d3d5d documentation</title>
+  <title>RBAC &mdash; envoy 1.7.0-dev-4b4193 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.7.0-dev-6d3d5d
+                1.7.0-dev-4b4193
               </div>
             
           
@@ -198,37 +198,38 @@
 <p>Role-Based Access Control <a class="reference internal" href="../../../../../../configuration/http_filters/rbac_filter.html#config-http-filters-rbac"><span class="std std-ref">configuration overview</span></a>.</p>
 <div class="section" id="config-filter-http-rbac-v2-rbac">
 <span id="envoy-api-msg-config-filter-http-rbac-v2-rbac"></span><h2>config.filter.http.rbac.v2.RBAC<a class="headerlink" href="#config-filter-http-rbac-v2-rbac" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/rbac/v2/rbac.proto#L13">[config.filter.http.rbac.v2.RBAC proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/rbac/v2/rbac.proto#L14">[config.filter.http.rbac.v2.RBAC proto]</a></p>
+<p>RBAC filter config.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;rules&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;rules&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;shadow_rules&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <dl class="docutils" id="envoy-api-field-config-filter-http-rbac-v2-rbac-rules">
 <dt>rules</dt>
-<dd>(<a class="reference internal" href="../../../../rbac/v2alpha/rbac.proto.html#envoy-api-msg-config-rbac-v2alpha-rbac"><span class="std std-ref">config.rbac.v2alpha.RBAC</span></a>, <em>REQUIRED</em>) Specify the RBAC rules to be applied globally</dd>
+<dd>(<a class="reference internal" href="../../../../rbac/v2alpha/rbac.proto.html#envoy-api-msg-config-rbac-v2alpha-rbac"><span class="std std-ref">config.rbac.v2alpha.RBAC</span></a>) Specify the RBAC rules to be applied globally.
+If absent, no enforcing RBAC policy will be applied.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-config-filter-http-rbac-v2-rbac-shadow-rules">
+<dt>shadow_rules</dt>
+<dd>(<a class="reference internal" href="../../../../rbac/v2alpha/rbac.proto.html#envoy-api-msg-config-rbac-v2alpha-rbac"><span class="std std-ref">config.rbac.v2alpha.RBAC</span></a>) Shadow rules are not enforced by the filter (i.e., returning a 403)
+but will emit stats and logs and can be used for rule testing.
+If absent, no shadow RBAC policy with be applied.</dd>
 </dl>
 </div>
 <div class="section" id="config-filter-http-rbac-v2-rbacperroute">
 <span id="envoy-api-msg-config-filter-http-rbac-v2-rbacperroute"></span><h2>config.filter.http.rbac.v2.RBACPerRoute<a class="headerlink" href="#config-filter-http-rbac-v2-rbacperroute" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/rbac/v2/rbac.proto#L18">[config.filter.http.rbac.v2.RBACPerRoute proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/rbac/v2/rbac.proto#L25">[config.filter.http.rbac.v2.RBACPerRoute proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;disabled&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;rbac&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<dl class="docutils" id="envoy-api-field-config-filter-http-rbac-v2-rbacperroute-disabled">
-<dt>disabled</dt>
-<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Disable the filter for this particular vhost or route.</p>
-<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-config-filter-http-rbac-v2-rbacperroute-disabled"><span class="std std-ref">disabled</span></a>, <a class="reference internal" href="#envoy-api-field-config-filter-http-rbac-v2-rbacperroute-rbac"><span class="std std-ref">rbac</span></a> must be set.</p>
-</dd>
-</dl>
 <dl class="docutils" id="envoy-api-field-config-filter-http-rbac-v2-rbacperroute-rbac">
 <dt>rbac</dt>
-<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-config-filter-http-rbac-v2-rbac"><span class="std std-ref">config.filter.http.rbac.v2.RBAC</span></a>, <em>REQUIRED</em>) Override the global configuration of the filter with this new config.</p>
-<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-config-filter-http-rbac-v2-rbacperroute-disabled"><span class="std std-ref">disabled</span></a>, <a class="reference internal" href="#envoy-api-field-config-filter-http-rbac-v2-rbacperroute-rbac"><span class="std std-ref">rbac</span></a> must be set.</p>
-</dd>
+<dd>(<a class="reference internal" href="#envoy-api-msg-config-filter-http-rbac-v2-rbac"><span class="std std-ref">config.filter.http.rbac.v2.RBAC</span></a>) Override the global configuration of the filter with this new config.
+If absent, the global RBAC policy will be disabled for this route.</dd>
 </dl>
 </div>
 </div>
@@ -275,7 +276,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../../../',
-            VERSION:'1.7.0-dev-6d3d5d',
+            VERSION:'1.7.0-dev-4b4193',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
