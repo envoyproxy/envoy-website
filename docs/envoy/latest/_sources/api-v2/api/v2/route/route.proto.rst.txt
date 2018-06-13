@@ -580,7 +580,8 @@ route.RouteAction
     "hash_policy": [],
     "use_websocket": "{...}",
     "websocket_config": "{...}",
-    "cors": "{...}"
+    "cors": "{...}",
+    "max_grpc_timeout": "{...}"
   }
 
 .. _envoy_api_field_route.RouteAction.cluster:
@@ -807,6 +808,21 @@ websocket_config
 
 cors
   (:ref:`route.CorsPolicy <envoy_api_msg_route.CorsPolicy>`) Indicates that the route has a CORS policy.
+  
+  
+.. _envoy_api_field_route.RouteAction.max_grpc_timeout:
+
+max_grpc_timeout
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) If present, and the request is a gRPC request, use the
+  `grpc-timeout header <https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md>`_,
+  or its default value (infinity) instead of
+  :ref:`timeout <envoy_api_field_route.RouteAction.timeout>`, but limit the applied timeout
+  to the maximum value specified here. If configured as 0, the maximum allowed timeout for
+  gRPC requests is infinity. If not configured at all, the `grpc-timeout` header is not used
+  and gRPC requests time out like any other requests using
+  :ref:`timeout <envoy_api_field_route.RouteAction.timeout>` or its default.
+  This can be used to prevent unexpected upstream request timeouts due to potentially long
+  time gaps between gRPC request and response in gRPC streaming mode.
   
   
 .. _envoy_api_msg_route.RouteAction.RetryPolicy:
@@ -1121,7 +1137,7 @@ NOT_FOUND
 route.RedirectAction
 --------------------
 
-`[route.RedirectAction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L613>`_
+`[route.RedirectAction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L625>`_
 
 
 .. code-block:: json
@@ -1190,7 +1206,7 @@ strip_query
 Enum route.RedirectAction.RedirectResponseCode
 ----------------------------------------------
 
-`[route.RedirectAction.RedirectResponseCode proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L632>`_
+`[route.RedirectAction.RedirectResponseCode proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L644>`_
 
 
 .. _envoy_api_enum_value_route.RedirectAction.RedirectResponseCode.MOVED_PERMANENTLY:
@@ -1229,7 +1245,7 @@ PERMANENT_REDIRECT
 route.DirectResponseAction
 --------------------------
 
-`[route.DirectResponseAction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L661>`_
+`[route.DirectResponseAction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L673>`_
 
 
 .. code-block:: json
@@ -1264,7 +1280,7 @@ body
 route.Decorator
 ---------------
 
-`[route.Decorator proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L675>`_
+`[route.Decorator proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L687>`_
 
 
 .. code-block:: json
@@ -1293,7 +1309,7 @@ operation
 route.VirtualCluster
 --------------------
 
-`[route.VirtualCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L704>`_
+`[route.VirtualCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L716>`_
 
 A virtual cluster is a way of specifying a regex matching rule against
 certain important endpoints such that statistics are generated explicitly for
@@ -1357,7 +1373,7 @@ method
 route.RateLimit
 ---------------
 
-`[route.RateLimit proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L729>`_
+`[route.RateLimit proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L741>`_
 
 Global rate limiting :ref:`architecture overview <arch_overview_rate_limit>`.
 
@@ -1403,7 +1419,7 @@ actions
 route.RateLimit.Action
 ----------------------
 
-`[route.RateLimit.Action proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L742>`_
+`[route.RateLimit.Action proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L754>`_
 
 
 .. code-block:: json
@@ -1470,7 +1486,7 @@ header_value_match
 route.RateLimit.Action.SourceCluster
 ------------------------------------
 
-`[route.RateLimit.Action.SourceCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L750>`_
+`[route.RateLimit.Action.SourceCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L762>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1492,7 +1508,7 @@ The following descriptor entry is appended to the descriptor:
 route.RateLimit.Action.DestinationCluster
 -----------------------------------------
 
-`[route.RateLimit.Action.DestinationCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L769>`_
+`[route.RateLimit.Action.DestinationCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L781>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1523,7 +1539,7 @@ settings:
 route.RateLimit.Action.RequestHeaders
 -------------------------------------
 
-`[route.RateLimit.Action.RequestHeaders proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L778>`_
+`[route.RateLimit.Action.RequestHeaders proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L790>`_
 
 The following descriptor entry is appended when a header contains a key that matches the
 *header_name*:
@@ -1560,7 +1576,7 @@ descriptor_key
 route.RateLimit.Action.RemoteAddress
 ------------------------------------
 
-`[route.RateLimit.Action.RemoteAddress proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L794>`_
+`[route.RateLimit.Action.RemoteAddress proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L806>`_
 
 The following descriptor entry is appended to the descriptor and is populated using the
 trusted address from :ref:`x-forwarded-for <config_http_conn_man_headers_x-forwarded-for>`:
@@ -1581,7 +1597,7 @@ trusted address from :ref:`x-forwarded-for <config_http_conn_man_headers_x-forwa
 route.RateLimit.Action.GenericKey
 ---------------------------------
 
-`[route.RateLimit.Action.GenericKey proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L802>`_
+`[route.RateLimit.Action.GenericKey proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L814>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1608,7 +1624,7 @@ descriptor_value
 route.RateLimit.Action.HeaderValueMatch
 ---------------------------------------
 
-`[route.RateLimit.Action.HeaderValueMatch proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L812>`_
+`[route.RateLimit.Action.HeaderValueMatch proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L824>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1658,7 +1674,7 @@ headers
 route.HeaderMatcher
 -------------------
 
-`[route.HeaderMatcher proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L878>`_
+`[route.HeaderMatcher proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L890>`_
 
 .. attention::
 
@@ -1823,7 +1839,7 @@ invert_match
 route.QueryParameterMatcher
 ---------------------------
 
-`[route.QueryParameterMatcher proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L970>`_
+`[route.QueryParameterMatcher proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L982>`_
 
 Query parameter matching treats the query string of a request's :path header
 as an ampersand-separated list of keys and/or key=value elements.
