@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Gzip &mdash; envoy 1.7.0-dev-4521e8 documentation</title>
+  <title>Gzip &mdash; envoy 1.7.0-dev-08ba24 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.7.0-dev-4521e8
+                1.7.0-dev-08ba24
               </div>
             
           
@@ -110,6 +110,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#configuration">Configuration</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#runtime">Runtime</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#how-it-works">How it works</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#statistics">Statistics</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="health_check_filter.html">Health check</a></li>
@@ -241,9 +242,14 @@ response and request allow.</p>
 <p>By <em>default</em> compression will be <em>skipped</em> when:</p>
 <ul class="simple">
 <li>A request does NOT contain <em>accept-encoding</em> header.</li>
-<li>A request includes <em>accept-encoding</em> header, but it does not contain “gzip”.</li>
+<li>A request includes <em>accept-encoding</em> header, but it does not contain “gzip” or “*”.</li>
+<li>A request includes <em>accept-encoding</em> with “gzip” or “*” with the weight “q=0”. Note
+that the “gzip” will have a higher weight then “*”. For example, if <em>accept-encoding</em>
+is “gzip;q=0,*;q=1”, the filter will not compress. But if the header is set to
+“*;q=0,gzip;q=1”, the filter will compress.</li>
+<li>A request whose <em>accept-encoding</em> header includes “identity”.</li>
 <li>A response contains a <em>content-encoding</em> header.</li>
-<li>A Response contains a <em>cache-control</em> header whose value includes “no-transform”.</li>
+<li>A response contains a <em>cache-control</em> header whose value includes “no-transform”.</li>
 <li>A response contains a <em>transfer-encoding</em> header whose value includes “gzip”.</li>
 <li>A response does not contain a <em>content-type</em> value that matches one of the selected
 mime-types, which default to <em>application/javascript</em>, <em>application/json</em>,
@@ -261,6 +267,69 @@ is not chuncked).</li>
 “<em>content-encoding: gzip</em>”.</li>
 <li>The “<em>vary: accept-encoding</em>” header is inserted on every response.</li>
 </ul>
+</div>
+<div class="section" id="statistics">
+<span id="gzip-statistics"></span><h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
+<p>Every configured Gzip filter has statistics rooted at &lt;stat_prefix&gt;.gzip.* with the following:</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>compressed</td>
+<td>Counter</td>
+<td>Number of requests compressed.</td>
+</tr>
+<tr class="row-odd"><td>not_compressed</td>
+<td>Counter</td>
+<td>Number of requests not compressed.</td>
+</tr>
+<tr class="row-even"><td>no_accept_header</td>
+<td>Counter</td>
+<td>Number of requests with no accept header sent.</td>
+</tr>
+<tr class="row-odd"><td>header_identity</td>
+<td>Counter</td>
+<td>Number of requests sent with “identity” set as the <em>accept-encoding</em>.</td>
+</tr>
+<tr class="row-even"><td>header_gzip</td>
+<td>Counter</td>
+<td>Number of requests sent with “gzip” set as the <em>accept-encoding</em>.</td>
+</tr>
+<tr class="row-odd"><td>header_wildcard</td>
+<td>Counter</td>
+<td>Number of requests sent with “*” set as the <em>accept-encoding</em>.</td>
+</tr>
+<tr class="row-even"><td>header_not_valid</td>
+<td>Counter</td>
+<td>Number of requests sent with a not valid <em>accept-encoding</em> header (aka “q=0” or an unsupported encoding type).</td>
+</tr>
+<tr class="row-odd"><td>total_uncompressed_bytes</td>
+<td>Counter</td>
+<td>The total uncompressed bytes of all the requests that were marked for compression.</td>
+</tr>
+<tr class="row-even"><td>total_compressed_bytes</td>
+<td>Counter</td>
+<td>The total compressed bytes of all the requests that were marked for compression.</td>
+</tr>
+<tr class="row-odd"><td>content_length_too_small</td>
+<td>Counter</td>
+<td>Number of requests that accepted gzip encoding but did not compress because the payload was too small.</td>
+</tr>
+<tr class="row-even"><td>not_compressed_etag</td>
+<td>Counter</td>
+<td>Number of requests that were not compressed due to the etag header. <em>disable_on_etag_header</em> must be turned on for this to happen.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 
@@ -306,7 +375,7 @@ is not chuncked).</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.7.0-dev-4521e8',
+            VERSION:'1.7.0-dev-08ba24',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
