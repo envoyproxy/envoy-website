@@ -9,7 +9,7 @@ ConfigDump
 admin.v2alpha.ConfigDump
 ------------------------
 
-`[admin.v2alpha.ConfigDump proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/admin/v2alpha/config_dump.proto#L17>`_
+`[admin.v2alpha.ConfigDump proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/admin/v2alpha/config_dump.proto#L18>`_
 
 The :ref:`/config_dump <operations_admin_interface_config_dump>` admin endpoint uses this wrapper
 message to maintain and serve arbitrary configuration information from any component in Envoy.
@@ -42,7 +42,7 @@ configs
 admin.v2alpha.BootstrapConfigDump
 ---------------------------------
 
-`[admin.v2alpha.BootstrapConfigDump proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/admin/v2alpha/config_dump.proto#L35>`_
+`[admin.v2alpha.BootstrapConfigDump proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/admin/v2alpha/config_dump.proto#L36>`_
 
 This message describes the bootstrap configuration that Envoy was started with. This includes
 any CLI overrides that were merged. Bootstrap configuration information can be used to recreate
@@ -52,13 +52,20 @@ configuration for another Envoy.
 .. code-block:: json
 
   {
-    "bootstrap": "{...}"
+    "bootstrap": "{...}",
+    "last_updated": "{...}"
   }
 
 .. _envoy_api_field_admin.v2alpha.BootstrapConfigDump.bootstrap:
 
 bootstrap
   (:ref:`config.bootstrap.v2.Bootstrap <envoy_api_msg_config.bootstrap.v2.Bootstrap>`) 
+  
+.. _envoy_api_field_admin.v2alpha.BootstrapConfigDump.last_updated:
+
+last_updated
+  (`Timestamp <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#timestamp>`_) The timestamp when the BootstrapConfig was last updated.
+  
   
 
 
@@ -67,7 +74,7 @@ bootstrap
 admin.v2alpha.ListenersConfigDump
 ---------------------------------
 
-`[admin.v2alpha.ListenersConfigDump proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/admin/v2alpha/config_dump.proto#L42>`_
+`[admin.v2alpha.ListenersConfigDump proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/admin/v2alpha/config_dump.proto#L46>`_
 
 Envoy's listener manager fills this message with all currently known listeners. Listener
 configuration information can be used to recreate an Envoy configuration by populating all
@@ -94,7 +101,7 @@ version_info
 .. _envoy_api_field_admin.v2alpha.ListenersConfigDump.static_listeners:
 
 static_listeners
-  (:ref:`Listener <envoy_api_msg_Listener>`) The statically loaded listener configs.
+  (:ref:`admin.v2alpha.ListenersConfigDump.StaticListener <envoy_api_msg_admin.v2alpha.ListenersConfigDump.StaticListener>`) The statically loaded listener configs.
   
   
 .. _envoy_api_field_admin.v2alpha.ListenersConfigDump.dynamic_active_listeners:
@@ -122,12 +129,42 @@ dynamic_draining_listeners
   generally be discarded.
   
   
+.. _envoy_api_msg_admin.v2alpha.ListenersConfigDump.StaticListener:
+
+admin.v2alpha.ListenersConfigDump.StaticListener
+------------------------------------------------
+
+`[admin.v2alpha.ListenersConfigDump.StaticListener proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/admin/v2alpha/config_dump.proto#L53>`_
+
+Describes a statically loaded cluster.
+
+.. code-block:: json
+
+  {
+    "listener": "{...}",
+    "last_updated": "{...}"
+  }
+
+.. _envoy_api_field_admin.v2alpha.ListenersConfigDump.StaticListener.listener:
+
+listener
+  (:ref:`Listener <envoy_api_msg_Listener>`) The listener config.
+  
+  
+.. _envoy_api_field_admin.v2alpha.ListenersConfigDump.StaticListener.last_updated:
+
+last_updated
+  (`Timestamp <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#timestamp>`_) The timestamp when the Listener was last updated.
+  
+  
+
+
 .. _envoy_api_msg_admin.v2alpha.ListenersConfigDump.DynamicListener:
 
 admin.v2alpha.ListenersConfigDump.DynamicListener
 -------------------------------------------------
 
-`[admin.v2alpha.ListenersConfigDump.DynamicListener proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/admin/v2alpha/config_dump.proto#L49>`_
+`[admin.v2alpha.ListenersConfigDump.DynamicListener proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/admin/v2alpha/config_dump.proto#L62>`_
 
 Describes a dynamically loaded cluster via the LDS API.
 
@@ -135,7 +172,8 @@ Describes a dynamically loaded cluster via the LDS API.
 
   {
     "version_info": "...",
-    "listener": "{...}"
+    "listener": "{...}",
+    "last_updated": "{...}"
   }
 
 .. _envoy_api_field_admin.v2alpha.ListenersConfigDump.DynamicListener.version_info:
@@ -153,6 +191,12 @@ listener
   (:ref:`Listener <envoy_api_msg_Listener>`) The listener config.
   
   
+.. _envoy_api_field_admin.v2alpha.ListenersConfigDump.DynamicListener.last_updated:
+
+last_updated
+  (`Timestamp <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#timestamp>`_) The timestamp when the Listener was last updated.
+  
+  
 
 
 
@@ -161,7 +205,7 @@ listener
 admin.v2alpha.ClustersConfigDump
 --------------------------------
 
-`[admin.v2alpha.ClustersConfigDump proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/admin/v2alpha/config_dump.proto#L83>`_
+`[admin.v2alpha.ClustersConfigDump proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/admin/v2alpha/config_dump.proto#L99>`_
 
 Envoy's cluster manager fills this message with all currently known clusters. Cluster
 configuration information can be used to recreate an Envoy configuration by populating all
@@ -187,7 +231,7 @@ version_info
 .. _envoy_api_field_admin.v2alpha.ClustersConfigDump.static_clusters:
 
 static_clusters
-  (:ref:`Cluster <envoy_api_msg_Cluster>`) The statically loaded cluster configs.
+  (:ref:`admin.v2alpha.ClustersConfigDump.StaticCluster <envoy_api_msg_admin.v2alpha.ClustersConfigDump.StaticCluster>`) The statically loaded cluster configs.
   
   
 .. _envoy_api_field_admin.v2alpha.ClustersConfigDump.dynamic_active_clusters:
@@ -206,12 +250,42 @@ dynamic_warming_clusters
   discarded.
   
   
+.. _envoy_api_msg_admin.v2alpha.ClustersConfigDump.StaticCluster:
+
+admin.v2alpha.ClustersConfigDump.StaticCluster
+----------------------------------------------
+
+`[admin.v2alpha.ClustersConfigDump.StaticCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/admin/v2alpha/config_dump.proto#L106>`_
+
+Describes a statically loaded cluster.
+
+.. code-block:: json
+
+  {
+    "cluster": "{...}",
+    "last_updated": "{...}"
+  }
+
+.. _envoy_api_field_admin.v2alpha.ClustersConfigDump.StaticCluster.cluster:
+
+cluster
+  (:ref:`Cluster <envoy_api_msg_Cluster>`) The cluster config.
+  
+  
+.. _envoy_api_field_admin.v2alpha.ClustersConfigDump.StaticCluster.last_updated:
+
+last_updated
+  (`Timestamp <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#timestamp>`_) The timestamp when the Cluster was last updated.
+  
+  
+
+
 .. _envoy_api_msg_admin.v2alpha.ClustersConfigDump.DynamicCluster:
 
 admin.v2alpha.ClustersConfigDump.DynamicCluster
 -----------------------------------------------
 
-`[admin.v2alpha.ClustersConfigDump.DynamicCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/admin/v2alpha/config_dump.proto#L90>`_
+`[admin.v2alpha.ClustersConfigDump.DynamicCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/admin/v2alpha/config_dump.proto#L115>`_
 
 Describes a dynamically loaded cluster via the CDS API.
 
@@ -219,7 +293,8 @@ Describes a dynamically loaded cluster via the CDS API.
 
   {
     "version_info": "...",
-    "cluster": "{...}"
+    "cluster": "{...}",
+    "last_updated": "{...}"
   }
 
 .. _envoy_api_field_admin.v2alpha.ClustersConfigDump.DynamicCluster.version_info:
@@ -237,6 +312,12 @@ cluster
   (:ref:`Cluster <envoy_api_msg_Cluster>`) The cluster config.
   
   
+.. _envoy_api_field_admin.v2alpha.ClustersConfigDump.DynamicCluster.last_updated:
+
+last_updated
+  (`Timestamp <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#timestamp>`_) The timestamp when the Cluster was last updated.
+  
+  
 
 
 
@@ -245,7 +326,7 @@ cluster
 admin.v2alpha.RoutesConfigDump
 ------------------------------
 
-`[admin.v2alpha.RoutesConfigDump proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/admin/v2alpha/config_dump.proto#L120>`_
+`[admin.v2alpha.RoutesConfigDump proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/admin/v2alpha/config_dump.proto#L148>`_
 
 Envoy's RDS implementation fills this message with all currently loaded routes, as described by
 their RouteConfiguration objects. Static routes configured in the bootstrap configuration are
@@ -263,7 +344,7 @@ in RDS responses.
 .. _envoy_api_field_admin.v2alpha.RoutesConfigDump.static_route_configs:
 
 static_route_configs
-  (:ref:`RouteConfiguration <envoy_api_msg_RouteConfiguration>`) The statically loaded route configs.
+  (:ref:`admin.v2alpha.RoutesConfigDump.StaticRouteConfig <envoy_api_msg_admin.v2alpha.RoutesConfigDump.StaticRouteConfig>`) The statically loaded route configs.
   
   
 .. _envoy_api_field_admin.v2alpha.RoutesConfigDump.dynamic_route_configs:
@@ -272,19 +353,49 @@ dynamic_route_configs
   (:ref:`admin.v2alpha.RoutesConfigDump.DynamicRouteConfig <envoy_api_msg_admin.v2alpha.RoutesConfigDump.DynamicRouteConfig>`) The dynamically loaded route configs.
   
   
+.. _envoy_api_msg_admin.v2alpha.RoutesConfigDump.StaticRouteConfig:
+
+admin.v2alpha.RoutesConfigDump.StaticRouteConfig
+------------------------------------------------
+
+`[admin.v2alpha.RoutesConfigDump.StaticRouteConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/admin/v2alpha/config_dump.proto#L149>`_
+
+
+.. code-block:: json
+
+  {
+    "route_config": "{...}",
+    "last_updated": "{...}"
+  }
+
+.. _envoy_api_field_admin.v2alpha.RoutesConfigDump.StaticRouteConfig.route_config:
+
+route_config
+  (:ref:`RouteConfiguration <envoy_api_msg_RouteConfiguration>`) The route config.
+  
+  
+.. _envoy_api_field_admin.v2alpha.RoutesConfigDump.StaticRouteConfig.last_updated:
+
+last_updated
+  (`Timestamp <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#timestamp>`_) The timestamp when the Route was last updated.
+  
+  
+
+
 .. _envoy_api_msg_admin.v2alpha.RoutesConfigDump.DynamicRouteConfig:
 
 admin.v2alpha.RoutesConfigDump.DynamicRouteConfig
 -------------------------------------------------
 
-`[admin.v2alpha.RoutesConfigDump.DynamicRouteConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/admin/v2alpha/config_dump.proto#L121>`_
+`[admin.v2alpha.RoutesConfigDump.DynamicRouteConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/admin/v2alpha/config_dump.proto#L157>`_
 
 
 .. code-block:: json
 
   {
     "version_info": "...",
-    "route_config": "{...}"
+    "route_config": "{...}",
+    "last_updated": "{...}"
   }
 
 .. _envoy_api_field_admin.v2alpha.RoutesConfigDump.DynamicRouteConfig.version_info:
@@ -299,6 +410,12 @@ version_info
 
 route_config
   (:ref:`RouteConfiguration <envoy_api_msg_RouteConfiguration>`) The route config.
+  
+  
+.. _envoy_api_field_admin.v2alpha.RoutesConfigDump.DynamicRouteConfig.last_updated:
+
+last_updated
+  (`Timestamp <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#timestamp>`_) The timestamp when the Route was last updated.
   
   
 
