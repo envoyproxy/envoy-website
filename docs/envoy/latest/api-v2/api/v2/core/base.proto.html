@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Common types &mdash; envoy 1.8.0-dev-2eede2 documentation</title>
+  <title>Common types &mdash; envoy 1.8.0-dev-20c045 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.8.0-dev-2eede2
+                1.8.0-dev-20c045
               </div>
             
           
@@ -113,6 +113,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#core-headervalueoption">core.HeaderValueOption</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#core-datasource">core.DataSource</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#core-transportsocket">core.TransportSocket</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#core-socketoption">core.SocketOption</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#enum-core-socketoption-socketstate">Enum core.SocketOption.SocketState</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#enum-core-routingpriority">Enum core.RoutingPriority</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#enum-core-requestmethod">Enum core.RequestMethod</a></li>
 </ul>
@@ -430,6 +432,68 @@ socket implementation.</dd>
 See the supported transport socket implementations for further documentation.</dd>
 </dl>
 </div>
+<div class="section" id="core-socketoption">
+<span id="envoy-api-msg-core-socketoption"></span><h2>core.SocketOption<a class="headerlink" href="#core-socketoption" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L187">[core.SocketOption proto]</a></p>
+<p>Generic socket option message. This would be used to set socket options that
+might not exist in upstream kernels or precompiled Envoy binaries.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;level&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;int_value&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;buf_value&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;state&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-core-socketoption-description">
+<dt>description</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) An optional name to give this socket option for debugging, etc.
+Uniqueness is not required and no special meaning is assumed.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-core-socketoption-level">
+<dt>level</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">int64</a>) Corresponding to the level value passed to setsockopt, such as IPPROTO_TCP</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-core-socketoption-name">
+<dt>name</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">int64</a>) The numeric name as passed to setsockopt</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-core-socketoption-int-value">
+<dt>int_value</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">int64</a>) Because many sockopts take an int value.</p>
+<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-core-socketoption-int-value"><span class="std std-ref">int_value</span></a>, <a class="reference internal" href="#envoy-api-field-core-socketoption-buf-value"><span class="std std-ref">buf_value</span></a> must be set.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-core-socketoption-buf-value">
+<dt>buf_value</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bytes</a>) Otherwise it’s a byte buffer.</p>
+<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-core-socketoption-int-value"><span class="std std-ref">int_value</span></a>, <a class="reference internal" href="#envoy-api-field-core-socketoption-buf-value"><span class="std std-ref">buf_value</span></a> must be set.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-core-socketoption-state">
+<dt>state</dt>
+<dd>(<a class="reference internal" href="#envoy-api-enum-core-socketoption-socketstate"><span class="std std-ref">core.SocketOption.SocketState</span></a>) The state in which the option will be applied. When used in BindConfig
+STATE_PREBIND is currently the only valid value.</dd>
+</dl>
+</div>
+<div class="section" id="enum-core-socketoption-socketstate">
+<span id="envoy-api-enum-core-socketoption-socketstate"></span><h2>Enum core.SocketOption.SocketState<a class="headerlink" href="#enum-core-socketoption-socketstate" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L203">[core.SocketOption.SocketState proto]</a></p>
+<dl class="docutils" id="envoy-api-enum-value-core-socketoption-socketstate-state-prebind">
+<dt>STATE_PREBIND</dt>
+<dd><em>(DEFAULT)</em> ⁣Socket options are applied after socket creation but before binding the socket to a port</dd>
+</dl>
+<dl class="docutils" id="envoy-api-enum-value-core-socketoption-socketstate-state-bound">
+<dt>STATE_BOUND</dt>
+<dd>⁣Socket options are applied after binding the socket to a port but before calling listen()</dd>
+</dl>
+<dl class="docutils" id="envoy-api-enum-value-core-socketoption-socketstate-state-listening">
+<dt>STATE_LISTENING</dt>
+<dd>⁣Socket options are applied after calling listen()</dd>
+</dl>
+</div>
 <div class="section" id="enum-core-routingpriority">
 <span id="envoy-api-enum-core-routingpriority"></span><h2>Enum core.RoutingPriority<a class="headerlink" href="#enum-core-routingpriority" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L113">[core.RoutingPriority proto]</a></p>
@@ -533,7 +597,7 @@ over a single upstream connection.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../',
-            VERSION:'1.8.0-dev-2eede2',
+            VERSION:'1.8.0-dev-20c045',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
