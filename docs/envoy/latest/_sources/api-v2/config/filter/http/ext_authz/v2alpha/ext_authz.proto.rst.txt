@@ -1,28 +1,31 @@
 .. _envoy_api_file_envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto:
 
-HTTP External Authorization 
-============================
+External Authorization 
+=======================
 
-The external authorization HTTP service configuration
+The external authorization service configuration
 :ref:`configuration overview <config_http_filters_ext_authz>`.
-
 
 .. _envoy_api_msg_config.filter.http.ext_authz.v2alpha.ExtAuthz:
 
 config.filter.http.ext_authz.v2alpha.ExtAuthz
 ---------------------------------------------
 
-`[config.filter.http.ext_authz.v2alpha.ExtAuthz proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L26>`_
+`[config.filter.http.ext_authz.v2alpha.ExtAuthz proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L19>`_
 
-External Authorization filter calls out to an external service over the
-gRPC Authorization API defined by
-:ref:`CheckRequest <envoy_api_msg_service.auth.v2alpha.CheckRequest>`.
-A failed check will cause this filter to close the HTTP request with 403(Forbidden).
+External Authorization filter calls out to an external service over either:
+
+ 1. gRPC Authorization API defined by :ref:`CheckRequest <envoy_api_msg_service.auth.v2alpha.CheckRequest>`.
+ 2. Raw HTTP Authorization server by passing the request headers to the service.
+
+A failed check will cause this filter to close the HTTP request normally with 403 (Forbidden), unless
+a different status code has been indicated in the authorization response.
 
 .. code-block:: json
 
   {
     "grpc_service": "{...}",
+    "http_service": "{...}",
     "failure_mode_allow": "..."
   }
 
@@ -33,9 +36,17 @@ grpc_service
   The default timeout is set to 200ms by this filter.
   
   
-  Only one of :ref:`grpc_service <envoy_api_field_config.filter.http.ext_authz.v2alpha.ExtAuthz.grpc_service>` may be set.
+  Only one of :ref:`grpc_service <envoy_api_field_config.filter.http.ext_authz.v2alpha.ExtAuthz.grpc_service>`, :ref:`http_service <envoy_api_field_config.filter.http.ext_authz.v2alpha.ExtAuthz.http_service>` may be set.
   
+.. _envoy_api_field_config.filter.http.ext_authz.v2alpha.ExtAuthz.http_service:
 
+http_service
+  (:ref:`config.filter.http.ext_authz.v2alpha.HttpService <envoy_api_msg_config.filter.http.ext_authz.v2alpha.HttpService>`) The external authorization HTTP service configuration.
+  The default timeout is set to 200ms by this filter.
+  
+  
+  Only one of :ref:`grpc_service <envoy_api_field_config.filter.http.ext_authz.v2alpha.ExtAuthz.grpc_service>`, :ref:`http_service <envoy_api_field_config.filter.http.ext_authz.v2alpha.ExtAuthz.http_service>` may be set.
+  
 .. _envoy_api_field_config.filter.http.ext_authz.v2alpha.ExtAuthz.failure_mode_allow:
 
 failure_mode_allow
@@ -43,6 +54,56 @@ failure_mode_allow
   not respond back. When it is set to true, Envoy will also allow traffic in case of
   communication failure between authorization service and the proxy.
   Defaults to false.
+  
+  
+
+
+.. _envoy_api_msg_config.filter.http.ext_authz.v2alpha.HttpService:
+
+config.filter.http.ext_authz.v2alpha.HttpService
+------------------------------------------------
+
+`[config.filter.http.ext_authz.v2alpha.HttpService proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L52>`_
+
+External Authorization filter calls out to an upstream authorization server by passing the raw HTTP
+request headers to the server. This allows the authorization service to take a decision whether the
+request is authorized or not.
+
+A successful check allows the authorization service adding or overriding headers from the original 
+request before dispatching it to the upstream. This is done by including the headers in the response 
+sent back from the authorization service to the filter. Note that `Status`, `Method`, `Path` and 
+`Content Length` response headers are automatically removed from this response by the filter. If other 
+headers need be deleted, they should be specified in `response_headers_to_remove` field.
+
+A failed check will cause this filter to close the HTTP request normally with 403 (Forbidden), unless 
+a different status code has been indicated by the authorization service via response headers. The HTTP
+service also allows the authorization filter to also pass data from the response body to the downstream 
+client in case of a denied request.
+
+.. code-block:: json
+
+  {
+    "server_uri": "{...}",
+    "path_prefix": "...",
+    "response_headers_to_remove": []
+  }
+
+.. _envoy_api_field_config.filter.http.ext_authz.v2alpha.HttpService.server_uri:
+
+server_uri
+  (:ref:`core.HttpUri <envoy_api_msg_core.HttpUri>`) Sets the HTTP server URI which the authorization requests must be sent to.
+  
+  
+.. _envoy_api_field_config.filter.http.ext_authz.v2alpha.HttpService.path_prefix:
+
+path_prefix
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Sets an optional prefix to the value of authorization request header `path`.
+  
+  
+.. _envoy_api_field_config.filter.http.ext_authz.v2alpha.HttpService.response_headers_to_remove:
+
+response_headers_to_remove
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Sets a list of headers that should be not be sent *from the authorization server* to the upstream.
   
   
 
