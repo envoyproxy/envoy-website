@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Administration interface &mdash; envoy 1.8.0-dev-299591 documentation</title>
+  <title>Administration interface &mdash; envoy 1.8.0-dev-9c2733 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.8.0-dev-299591
+                1.8.0-dev-9c2733
               </div>
             
           
@@ -555,7 +555,39 @@ endpoint; values loaded from disk can be modified via override but not deleted.<
 <p class="first admonition-title">Attention</p>
 <p class="last">Use the /runtime_modify endpoint with care. Changes are effectively immediately. It is
 <strong>critical</strong> that the admin interface is <a class="reference internal" href="#operations-admin-interface-security"><span class="std std-ref">properly secured</span></a>.</p>
-</div>
+<span class="target" id="operations-admin-interface-hystrix-event-stream"></span></div>
+<dl class="get">
+<dt id="get--hystrix_event_stream">
+<code class="descname">GET </code><code class="descname">/hystrix_event_stream</code><a class="headerlink" href="#get--hystrix_event_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>This endpoint is intended to be used as the stream source for
+<a class="reference external" href="https://github.com/Netflix-Skunkworks/hystrix-dashboard/wiki">Hystrix dashboard</a>.
+a GET to this endpoint will trriger a stream of statistics from envoy in
+<a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events">text/event-stream</a>
+format, as expected by the Hystrix dashboard.</p>
+<p>If invoked from a browser or a terminal, the response will be shown as a continous stream,
+sent in intervals defined by the <a class="reference internal" href="../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-msg-config-bootstrap-v2-bootstrap"><span class="std std-ref">Bootstrap</span></a>
+<a class="reference internal" href="../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-field-config-bootstrap-v2-bootstrap-stats-flush-interval"><span class="std std-ref">stats_flush_interval</span></a></p>
+<p>This handler is enabled only when a Hystrix sink is enabled in the config file as documented
+<a class="reference internal" href="../api-v2/config/metrics/v2/stats.proto.html#envoy-api-msg-config-metrics-v2-hystrixsink"><span class="std std-ref">here</span></a>.</p>
+<p>As Envoy’s and Hystrix resiliency mechanisms differ, some of the statistics shown in the dashboard
+had to be adapted:</p>
+<ul class="simple">
+<li><strong>Thread pool rejections</strong> - Generally similar to what’s called short circuited in Envoy,
+and counted by <em>upstream_rq_pending_overflow</em>, although the term thread pool is not accurate for
+Envoy. Both in Hystrix and Envoy, the result is rejected requests which are not passed upstream.</li>
+<li><strong>circuit breaker status (closed or open)</strong> - Since in Envoy, a circuit is opened based on the
+current number of connections/requests in queue, there is no sleeping window for circuit breaker,
+circuit open/closed is momentary. Hence, we set the circuit breaker status to “forced closed”.</li>
+<li><strong>Short-circuited (rejected)</strong> - The term exists in Envoy but refers to requests not sent because
+of passing a limit (queue or connections), while in Hystrix it refers to requests not sent because
+of high percentage of service unavailable responses during some time frame.
+In Envoy, service unavailable response will cause <strong>outlier detection</strong> - removing a node off the
+load balancer pool, but requests are not rejected as a result. Therefore, this counter is always
+set to ‘0’.</li>
+<li>Latency information is currently unavailable.</li>
+</ul>
+</dd></dl>
+
 </div>
 
 
@@ -600,7 +632,7 @@ endpoint; values loaded from disk can be modified via override but not deleted.<
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.8.0-dev-299591',
+            VERSION:'1.8.0-dev-9c2733',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
