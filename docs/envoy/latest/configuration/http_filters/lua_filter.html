@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Lua &mdash; envoy 1.8.0-dev-a5da07 documentation</title>
+  <title>Lua &mdash; envoy 1.8.0-dev-fe9452 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.8.0-dev-a5da07
+                1.8.0-dev-fe9452
               </div>
             
           
@@ -121,6 +121,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#buffer-api">Buffer API</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#metadata-object-api">Metadata object API</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#request-info-object-api">Request info object API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#connection-object-api">Connection object API</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="rate_limit_filter.html">Rate limit</a></li>
@@ -468,6 +469,14 @@ under the filter name i.e. <em>envoy.lua</em>. Below is an example of a <em>meta
 <p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/include/request_info/request_info.h">information</a> related to the current request.</p>
 <p>Returns a <a class="reference internal" href="#config-http-filters-lua-request-info-wrapper"><span class="std std-ref">request info object</span></a>.</p>
 </div>
+<div class="section" id="connection">
+<h3>connection()<a class="headerlink" href="#connection" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">connection</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">connection</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Returns the current request’s underlying <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/include/envoy/network/connection.h">connection</a>.</p>
+<p>Returns a <a class="reference internal" href="#config-http-filters-lua-connection-wrapper"><span class="std std-ref">connection object</span></a>.</p>
+</div>
 </div>
 <div class="section" id="header-object-api">
 <span id="config-http-filters-lua-header-wrapper"></span><h2>Header object API<a class="headerlink" href="#header-object-api" title="Permalink to this headline">¶</a></h2>
@@ -546,7 +555,7 @@ less than the buffer length.</p>
 </pre></div>
 </div>
 <p>Gets a metadata. <em>key</em> is a string that supplies the metadata key. Returns the corresponding
-value of the given metadata key. The type of the value can be: <em>null</em>, <em>boolean</em>, <em>number</em>,
+value of the given metadata key. The type of the value can be: <em>nil</em>, <em>boolean</em>, <em>number</em>,
 <em>string</em> and <em>table</em>.</p>
 </div>
 <div class="section" id="id3">
@@ -568,6 +577,25 @@ key. <em>value</em> is <em>metadata</em> entry value.</p>
 </div>
 <p>Returns the string representation of <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/include/envoy/http/protocol.h">HTTP protocol</a>
 used by the current request. The possible values are: <em>HTTP/1.0</em>, <em>HTTP/1.1</em>, and <em>HTTP/2</em>.</p>
+</div>
+</div>
+<div class="section" id="connection-object-api">
+<span id="config-http-filters-lua-connection-wrapper"></span><h2>Connection object API<a class="headerlink" href="#connection-object-api" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="ssl">
+<h3>ssl()<a class="headerlink" href="#ssl" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">if</span> <span class="n">connection</span><span class="p">:</span><span class="n">ssl</span><span class="p">()</span> <span class="o">==</span> <span class="kc">nil</span> <span class="kr">then</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;plain&quot;</span><span class="p">)</span>
+<span class="kr">else</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;secure&quot;</span><span class="p">)</span>
+<span class="kr">end</span>
+</pre></div>
+</div>
+<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/include/envoy/ssl/connection.h">SSL connection</a> object when the connection is
+secured and <em>nil</em> when it is not.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Currently the SSL connection object has no exposed APIs.</p>
+</div>
 </div>
 </div>
 </div>
@@ -614,7 +642,7 @@ used by the current request. The possible values are: <em>HTTP/1.0</em>, <em>HTT
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.8.0-dev-a5da07',
+            VERSION:'1.8.0-dev-fe9452',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
