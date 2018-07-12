@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Health checkers &mdash; envoy 1.8.0-dev-218d11 documentation</title>
+  <title>Proxy Protocol &mdash; envoy 1.8.0-dev-218d11 documentation</title>
   
 
   
@@ -31,8 +31,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Redis" href="redis.html" />
-    <link rel="prev" title="Circuit breaking" href="../cluster_manager/cluster_circuit_breakers.html" /> 
+    <link rel="next" title="TLS Inspector" href="tls_inspector.html" />
+    <link rel="prev" title="Original Destination" href="original_dst_filter.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -94,15 +94,17 @@
 <li class="toctree-l2"><a class="reference internal" href="../overview/v1_overview.html">Overview (v1 API)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../overview/v2_overview.html">Overview (v2 API)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../listeners/listeners.html">Listeners</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../listener_filters/listener_filters.html">Listener filters</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="listener_filters.html">Listener filters</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="original_dst_filter.html">Original Destination</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Proxy Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls_inspector.html">TLS Inspector</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../network_filters/network_filters.html">Network filters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../http_conn_man/http_conn_man.html">HTTP connection manager</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../http_filters/http_filters.html">HTTP filters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cluster_manager/cluster_manager.html">Cluster manager</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Health checkers</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="../health_checkers/health_checkers.html">Health checkers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../access_log.html">Access logging</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../rate_limit.html">Rate limit service</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../runtime.html">Runtime</a></li>
@@ -162,13 +164,15 @@
         
           <li><a href="../configuration.html">Configuration reference</a> &raquo;</li>
         
-      <li>Health checkers</li>
+          <li><a href="listener_filters.html">Listener filters</a> &raquo;</li>
+        
+      <li>Proxy Protocol</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/configuration/health_checkers/health_checkers.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/configuration/listener_filters/proxy_protocol.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -181,13 +185,26 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="health-checkers">
-<span id="config-health-checkers"></span><h1>Health checkers<a class="headerlink" href="#health-checkers" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="redis.html">Redis</a></li>
+  <div class="section" id="proxy-protocol">
+<span id="config-listener-filters-proxy-protocol"></span><h1>Proxy Protocol<a class="headerlink" href="#proxy-protocol" title="Permalink to this headline">¶</a></h1>
+<p>This listener filter adds support for
+<a class="reference external" href="http://www.haproxy.org/download/1.9/doc/proxy-protocol.txt">HAProxy Proxy Protocol</a>.</p>
+<p>In this mode, the upstream connection is assumed to come from a proxy
+which places the original coordinates (IP, PORT) into a connection-string.
+Envoy then extracts these and uses them as the remote address.</p>
+<p>In Proxy Protocol v2 there exists the concept of extensions (TLV)
+tags that are optional. This implementation skips over these without
+using them.</p>
+<p>This implementation supports both version 1 and version 2, it
+automatically determines on a per-connection basis which of the two
+versions is present. Note: if the filter is enabled, the Proxy Protocol
+must be present on the connection (either version 1 or version 2),
+the standard does not allow parsing to determine if it is present or not.</p>
+<p>If there is a protocol error or an unsupported address family
+(e.g. AF_UNIX) the connection will be closed and an error thrown.</p>
+<ul class="simple">
+<li><a class="reference internal" href="../../api-v2/api/v2/listener/listener.proto.html#envoy-api-field-listener-filter-name"><span class="std std-ref">v2 API reference</span></a></li>
 </ul>
-</div>
 </div>
 
 
@@ -198,10 +215,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="redis.html" class="btn btn-neutral float-right" title="Redis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="tls_inspector.html" class="btn btn-neutral float-right" title="TLS Inspector" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../cluster_manager/cluster_circuit_breakers.html" class="btn btn-neutral" title="Circuit breaking" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="original_dst_filter.html" class="btn btn-neutral" title="Original Destination" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
