@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>WebSocket support &mdash; envoy 1.8.0-dev-6a5786 documentation</title>
+  <title>New style Upgrade support &mdash; envoy 1.8.0-dev-95c3e1 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.8.0-dev-6a5786
+                1.8.0-dev-95c3e1
               </div>
             
           
@@ -99,8 +99,9 @@
 <li class="toctree-l3"><a class="reference internal" href="http_filters.html">HTTP filters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="http_routing.html">HTTP routing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="grpc.html">gRPC</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">WebSocket support</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#connection-semantics">Connection semantics</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">New style Upgrade support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#old-style-websocket-support">Old style WebSocket support</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#old-style-connection-semantics">Old style Connection semantics</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="cluster_manager.html">Cluster manager</a></li>
@@ -191,7 +192,7 @@
         
           <li><a href="arch_overview.html">Architecture overview</a> &raquo;</li>
         
-      <li>WebSocket support</li>
+      <li>New style Upgrade support</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -210,8 +211,25 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="websocket-support">
-<span id="arch-overview-websocket"></span><h1>WebSocket support<a class="headerlink" href="#websocket-support" title="Permalink to this headline">¶</a></h1>
+  <p id="arch-overview-websocket">Envoy currently supports two modes of Upgrade behavior, the new generic upgrade mode, and
+the old WebSocket-only TCP proxy mode.</p>
+<div class="section" id="new-style-upgrade-support">
+<h1>New style Upgrade support<a class="headerlink" href="#new-style-upgrade-support" title="Permalink to this headline">¶</a></h1>
+<p>The new style Upgrade support is intended mainly for WebSocket but may be used for non-WebSocket
+upgrades as well. The new style of upgrades pass both the HTTP headers and the upgrade payload
+through an HTTP filter chain. One may configure the
+<a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-upgrade-configs"><span class="std std-ref">upgrade_configs</span></a>
+in one of two ways. If only the
+<cite>upgrade_type &lt;envoy_api_field_config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfigs.upgrade_type&gt;</cite>
+is specified, both the upgrade headers, any request and response body, and WebSocket payload will
+pass through the default HTTP filter chain. To avoid the use of HTTP-only filters for upgrade payload,
+one can set up custom
+<cite>filters &lt;envoy_api_field_config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfigs.upgrade_type&gt;</cite>
+for the given upgrade type, up to and including only using the router filter to send the WebSocket
+data upstream.</p>
+</div>
+<div class="section" id="old-style-websocket-support">
+<h1>Old style WebSocket support<a class="headerlink" href="#old-style-websocket-support" title="Permalink to this headline">¶</a></h1>
 <p>Envoy supports upgrading a HTTP/1.1 connection to a WebSocket connection.
 Connection upgrade will be allowed only if the downstream client
 sends the correct upgrade headers and the matching HTTP route is explicitly
@@ -225,8 +243,8 @@ format. Certain HTTP request level features such as redirects, timeouts,
 retries, rate limits and shadowing are not supported for WebSocket routes.
 However, prefix rewriting, explicit and automatic host rewriting, traffic
 shifting and splitting are supported.</p>
-<div class="section" id="connection-semantics">
-<h2>Connection semantics<a class="headerlink" href="#connection-semantics" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="old-style-connection-semantics">
+<h2>Old style Connection semantics<a class="headerlink" href="#old-style-connection-semantics" title="Permalink to this headline">¶</a></h2>
 <p>Even though WebSocket upgrades occur over HTTP/1.1 connections, WebSockets
 proxying works similarly to plain TCP proxy, i.e., Envoy does not interpret
 the websocket frames. The downstream client and/or the upstream server are
@@ -284,7 +302,7 @@ client connection.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.8.0-dev-6a5786',
+            VERSION:'1.8.0-dev-95c3e1',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

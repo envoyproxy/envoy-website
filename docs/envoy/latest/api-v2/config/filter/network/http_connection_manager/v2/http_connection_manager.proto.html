@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP connection manager &mdash; envoy 1.8.0-dev-6a5786 documentation</title>
+  <title>HTTP connection manager &mdash; envoy 1.8.0-dev-95c3e1 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.8.0-dev-6a5786
+                1.8.0-dev-95c3e1
               </div>
             
           
@@ -221,7 +221,8 @@
   <span class="nt">&quot;forward_client_cert_details&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;set_current_client_cert_details&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;proxy_100_continue&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;represent_ipv4_remote_address_as_ipv4_mapped_ipv6&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+  <span class="nt">&quot;represent_ipv4_remote_address_as_ipv4_mapped_ipv6&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;upgrade_configs&quot;</span><span class="p">:</span> <span class="p">[]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -374,6 +375,10 @@ example, 50.0.0.1 is represented as ::FFFF:50.0.0.1. See <a class="reference ext
 <a class="reference internal" href="../../../../../../configuration/http_conn_man/runtime.html#config-http-conn-man-runtime-represent-ipv4-remote-address-as-ipv4-mapped-ipv6"><span class="std std-ref">http_connection_manager.represent_ipv4_remote_address_as_ipv4_mapped_ipv6</span></a> for runtime
 control.</dd>
 </dl>
+<dl class="docutils" id="envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-upgrade-configs">
+<dt>upgrade_configs</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-config-filter-network-http-connection-manager-v2-httpconnectionmanager-upgradeconfig"><span class="std std-ref">config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfig</span></a>)</dd>
+</dl>
 </div>
 <div class="section" id="config-filter-network-http-connection-manager-v2-httpconnectionmanager-tracing">
 <span id="envoy-api-msg-config-filter-network-http-connection-manager-v2-httpconnectionmanager-tracing"></span><h2>config.filter.network.http_connection_manager.v2.HttpConnectionManager.Tracing<a class="headerlink" href="#config-filter-network-http-connection-manager-v2-httpconnectionmanager-tracing" title="Permalink to this headline">¶</a></h2>
@@ -469,6 +474,42 @@ Defaults to false.</dd>
 false.</dd>
 </dl>
 </div>
+<div class="section" id="config-filter-network-http-connection-manager-v2-httpconnectionmanager-upgradeconfig">
+<span id="envoy-api-msg-config-filter-network-http-connection-manager-v2-httpconnectionmanager-upgradeconfig"></span><h2>config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfig<a class="headerlink" href="#config-filter-network-http-connection-manager-v2-httpconnectionmanager-upgradeconfig" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L280">[config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfig proto]</a></p>
+<p>The configuration for HTTP upgrades.
+For each upgrade type desired, an UpgradeConfig must be added.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The current implementation of upgrade headers does not handle
+multi-valued upgrade headers. Support for multi-valued headers may be
+added in the future if needed.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The current implementation of upgrade headers does not work with HTTP/2
+upstreams.</p>
+</div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;upgrade_type&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;filters&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-upgradeconfig-upgrade-type">
+<dt>upgrade_type</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The case-insensitive name of this upgrade, e.g. “websocket”.
+For each upgrade type present in upgrade_configs, requests with
+Upgrade: [upgrade_type]
+will be proxied upstream.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-upgradeconfig-filters">
+<dt>filters</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-config-filter-network-http-connection-manager-v2-httpfilter"><span class="std std-ref">config.filter.network.http_connection_manager.v2.HttpFilter</span></a>) If present, this represents the filter chain which will be created for
+this type of upgrade. If no filters are present, the filter chain for
+HTTP connections will be used for this upgrade type.</dd>
+</dl>
+</div>
 <div class="section" id="enum-config-filter-network-http-connection-manager-v2-httpconnectionmanager-codectype">
 <span id="envoy-api-enum-config-filter-network-http-connection-manager-v2-httpconnectionmanager-codectype"></span><h2>Enum config.filter.network.http_connection_manager.v2.HttpConnectionManager.CodecType<a class="headerlink" href="#enum-config-filter-network-http-connection-manager-v2-httpconnectionmanager-codectype" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L23">[config.filter.network.http_connection_manager.v2.HttpConnectionManager.CodecType proto]</a></p>
@@ -523,7 +564,7 @@ client connection is mTLS.</dd>
 </div>
 <div class="section" id="config-filter-network-http-connection-manager-v2-rds">
 <span id="envoy-api-msg-config-filter-network-http-connection-manager-v2-rds"></span><h2>config.filter.network.http_connection_manager.v2.Rds<a class="headerlink" href="#config-filter-network-http-connection-manager-v2-rds" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L292">[config.filter.network.http_connection_manager.v2.Rds proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L294">[config.filter.network.http_connection_manager.v2.Rds proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;config_source&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;route_config_name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
@@ -544,7 +585,7 @@ configurations.</dd>
 </div>
 <div class="section" id="config-filter-network-http-connection-manager-v2-httpfilter">
 <span id="envoy-api-msg-config-filter-network-http-connection-manager-v2-httpfilter"></span><h2>config.filter.network.http_connection_manager.v2.HttpFilter<a class="headerlink" href="#config-filter-network-http-connection-manager-v2-httpfilter" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L304">[config.filter.network.http_connection_manager.v2.HttpFilter proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L306">[config.filter.network.http_connection_manager.v2.HttpFilter proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
@@ -624,7 +665,7 @@ instantiated. See the supported filters for further documentation.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../../../',
-            VERSION:'1.8.0-dev-6a5786',
+            VERSION:'1.8.0-dev-95c3e1',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

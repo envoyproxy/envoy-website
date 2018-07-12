@@ -37,7 +37,8 @@ config.filter.network.http_connection_manager.v2.HttpConnectionManager
     "forward_client_cert_details": "...",
     "set_current_client_cert_details": "{...}",
     "proxy_100_continue": "...",
-    "represent_ipv4_remote_address_as_ipv4_mapped_ipv6": "..."
+    "represent_ipv4_remote_address_as_ipv4_mapped_ipv6": "...",
+    "upgrade_configs": []
   }
 
 .. _envoy_api_field_config.filter.network.http_connection_manager.v2.HttpConnectionManager.codec_type:
@@ -241,7 +242,11 @@ represent_ipv4_remote_address_as_ipv4_mapped_ipv6
   control.
   
   
+.. _envoy_api_field_config.filter.network.http_connection_manager.v2.HttpConnectionManager.upgrade_configs:
 
+upgrade_configs
+  (:ref:`config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfig <envoy_api_msg_config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfig>`) 
+  
 .. _envoy_api_msg_config.filter.network.http_connection_manager.v2.HttpConnectionManager.Tracing:
 
 config.filter.network.http_connection_manager.v2.HttpConnectionManager.Tracing
@@ -377,6 +382,51 @@ uri
   
 
 
+.. _envoy_api_msg_config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfig:
+
+config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfig
+------------------------------------------------------------------------------------
+
+`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L280>`_
+
+The configuration for HTTP upgrades.
+For each upgrade type desired, an UpgradeConfig must be added.
+
+.. warning::
+
+   The current implementation of upgrade headers does not handle
+   multi-valued upgrade headers. Support for multi-valued headers may be
+   added in the future if needed.
+
+.. warning::
+   The current implementation of upgrade headers does not work with HTTP/2
+   upstreams.
+
+.. code-block:: json
+
+  {
+    "upgrade_type": "...",
+    "filters": []
+  }
+
+.. _envoy_api_field_config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfig.upgrade_type:
+
+upgrade_type
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The case-insensitive name of this upgrade, e.g. "websocket".
+  For each upgrade type present in upgrade_configs, requests with
+  Upgrade: [upgrade_type]
+  will be proxied upstream.
+  
+  
+.. _envoy_api_field_config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfig.filters:
+
+filters
+  (:ref:`config.filter.network.http_connection_manager.v2.HttpFilter <envoy_api_msg_config.filter.network.http_connection_manager.v2.HttpFilter>`) If present, this represents the filter chain which will be created for
+  this type of upgrade. If no filters are present, the filter chain for
+  HTTP connections will be used for this upgrade type.
+  
+  
+
 
 .. _envoy_api_enum_config.filter.network.http_connection_manager.v2.HttpConnectionManager.CodecType:
 
@@ -461,7 +511,7 @@ ALWAYS_FORWARD_ONLY
 config.filter.network.http_connection_manager.v2.Rds
 ----------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.Rds proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L292>`_
+`[config.filter.network.http_connection_manager.v2.Rds proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L294>`_
 
 
 .. code-block:: json
@@ -493,7 +543,7 @@ route_config_name
 config.filter.network.http_connection_manager.v2.HttpFilter
 -----------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.HttpFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L304>`_
+`[config.filter.network.http_connection_manager.v2.HttpFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L306>`_
 
 
 .. code-block:: json
