@@ -50,7 +50,7 @@ config
 listener.FilterChainMatch
 -------------------------
 
-`[listener.FilterChainMatch proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/listener/listener.proto#L72>`_
+`[listener.FilterChainMatch proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/listener/listener.proto#L73>`_
 
 Specifies the match criteria for selecting a specific filter chain for a
 listener.
@@ -61,9 +61,11 @@ networking stack and/or listener filters.
 
 The following order applies:
 
-1. Server name (e.g. SNI for TLS protocol),
-2. Transport protocol.
-3. Application protocols (e.g. ALPN for TLS protocol).
+1. Destination port.
+2. Destination IP address.
+3. Server name (e.g. SNI for TLS protocol),
+4. Transport protocol.
+5. Application protocols (e.g. ALPN for TLS protocol).
 
 For criterias that allow ranges or wildcards, the most specific value in any
 of the configured filter chains that matches the incoming connection is going
@@ -75,14 +77,28 @@ chain without ``server_names`` requirements).
 .. code-block:: json
 
   {
+    "destination_port": "{...}",
+    "prefix_ranges": [],
     "server_names": [],
     "transport_protocol": "...",
     "application_protocols": [],
     "sni_domains": []
   }
 
+.. _envoy_api_field_listener.FilterChainMatch.destination_port:
 
+destination_port
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Optional destination port to consider when use_original_dst is set on the
+  listener in determining a filter chain match.
+  
+  
+.. _envoy_api_field_listener.FilterChainMatch.prefix_ranges:
 
+prefix_ranges
+  (:ref:`core.CidrRange <envoy_api_msg_core.CidrRange>`) If non-empty, an IP address and prefix length to match addresses when the
+  listener is bound to 0.0.0.0/:: or when use_original_dst is specified.
+  
+  
 
 
 
@@ -168,7 +184,7 @@ sni_domains
 listener.FilterChain
 --------------------
 
-`[listener.FilterChain proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/listener/listener.proto#L169>`_
+`[listener.FilterChain proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/listener/listener.proto#L168>`_
 
 A filter chain wraps a set of match criteria, an option TLS context, a set of filters, and
 various other parameters.
@@ -229,7 +245,7 @@ transport_socket
 listener.ListenerFilter
 -----------------------
 
-`[listener.ListenerFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/listener/listener.proto#L197>`_
+`[listener.ListenerFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/listener/listener.proto#L196>`_
 
 
 .. code-block:: json
