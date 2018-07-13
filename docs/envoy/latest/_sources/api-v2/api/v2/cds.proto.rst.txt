@@ -370,7 +370,8 @@ endpoint metadata and selected by route and weighted cluster metadata.
   {
     "fallback_policy": "...",
     "default_subset": "{...}",
-    "subset_selectors": []
+    "subset_selectors": [],
+    "locality_weight_aware": "..."
   }
 
 .. _envoy_api_field_Cluster.LbSubsetConfig.fallback_policy:
@@ -411,6 +412,21 @@ subset_selectors
   A subset is matched when the metadata from the selected route and
   weighted cluster contains the same keys and values as the subset's
   metadata. The same host may appear in multiple subsets.
+  
+  
+.. _envoy_api_field_Cluster.LbSubsetConfig.locality_weight_aware:
+
+locality_weight_aware
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If true, routing to subsets will take into account the localities and locality weights of the
+  endpoints when making the routing decision.
+  
+  There are some potential pitfalls associated with enabling this feature, as the resulting
+  traffic split after applying both a subset match and locality weights might be undesirable.
+  
+  Consider for example a situation in which you have 50/50 split across two localities X/Y
+  which have 100 hosts each without subsetting. If the subset LB results in X having only 1
+  host selected but Y having 100, then a lot more load is being dumped on the single host in X
+  than originally anticipated in the load balancing assignment delivered via EDS.
   
   
 .. _envoy_api_msg_Cluster.LbSubsetConfig.LbSubsetSelector:
@@ -470,7 +486,7 @@ DEFAULT_SUBSET
 Cluster.RingHashLbConfig
 ------------------------
 
-`[Cluster.RingHashLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L354>`_
+`[Cluster.RingHashLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L366>`_
 
 Specific configuration for the :ref:`RingHash<arch_overview_load_balancing_types_ring_hash>`
 load balancing policy.
@@ -500,7 +516,7 @@ minimum_ring_size
 Cluster.CommonLbConfig
 ----------------------
 
-`[Cluster.CommonLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L392>`_
+`[Cluster.CommonLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L404>`_
 
 Common configuration for all load balancer implementations.
 
@@ -541,7 +557,7 @@ locality_weighted_lb_config
 Cluster.CommonLbConfig.ZoneAwareLbConfig
 ----------------------------------------
 
-`[Cluster.CommonLbConfig.ZoneAwareLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L401>`_
+`[Cluster.CommonLbConfig.ZoneAwareLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L413>`_
 
 Configuration for :ref:`zone aware routing
 <arch_overview_load_balancing_zone_aware_routing>`.
@@ -579,7 +595,7 @@ min_cluster_size
 Cluster.CommonLbConfig.LocalityWeightedLbConfig
 -----------------------------------------------
 
-`[Cluster.CommonLbConfig.LocalityWeightedLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L416>`_
+`[Cluster.CommonLbConfig.LocalityWeightedLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L428>`_
 
 Configuration for :ref:`locality weighted load balancing
 <arch_overview_load_balancing_locality_weighted_lb>`
@@ -738,7 +754,7 @@ V6_ONLY
 Enum Cluster.ClusterProtocolSelection
 -------------------------------------
 
-`[Cluster.ClusterProtocolSelection proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L437>`_
+`[Cluster.ClusterProtocolSelection proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L449>`_
 
 
 .. _envoy_api_enum_value_Cluster.ClusterProtocolSelection.USE_CONFIGURED_PROTOCOL:
@@ -761,7 +777,7 @@ USE_DOWNSTREAM_PROTOCOL
 UpstreamBindConfig
 ------------------
 
-`[UpstreamBindConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L478>`_
+`[UpstreamBindConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L490>`_
 
 An extensible structure containing the address Envoy should bind to when
 establishing upstream connections.
@@ -785,7 +801,7 @@ source_address
 UpstreamConnectionOptions
 -------------------------
 
-`[UpstreamConnectionOptions proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L483>`_
+`[UpstreamConnectionOptions proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L495>`_
 
 
 .. code-block:: json

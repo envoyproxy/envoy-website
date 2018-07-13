@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Clusters &mdash; envoy 1.8.0-dev-a18204 documentation</title>
+  <title>Clusters &mdash; envoy 1.8.0-dev-0a0914 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.8.0-dev-a18204
+                1.8.0-dev-0a0914
               </div>
             
           
@@ -485,7 +485,8 @@ endpoint metadata and selected by route and weighted cluster metadata.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;fallback_policy&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;default_subset&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;subset_selectors&quot;</span><span class="p">:</span> <span class="p">[]</span>
+  <span class="nt">&quot;subset_selectors&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;locality_weight_aware&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -520,6 +521,18 @@ combination of key and value. For example:</p>
 <p class="last">A subset is matched when the metadata from the selected route and
 weighted cluster contains the same keys and values as the subset’s
 metadata. The same host may appear in multiple subsets.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-cluster-lbsubsetconfig-locality-weight-aware">
+<dt>locality_weight_aware</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) If true, routing to subsets will take into account the localities and locality weights of the
+endpoints when making the routing decision.</p>
+<p>There are some potential pitfalls associated with enabling this feature, as the resulting
+traffic split after applying both a subset match and locality weights might be undesirable.</p>
+<p class="last">Consider for example a situation in which you have 50/50 split across two localities X/Y
+which have 100 hosts each without subsetting. If the subset LB results in X having only 1
+host selected but Y having 100, then a lot more load is being dumped on the single host in X
+than originally anticipated in the load balancing assignment delivered via EDS.</p>
 </dd>
 </dl>
 </div>
@@ -560,7 +573,7 @@ endpoints matching the values from the default_subset field.</p>
 </div>
 <div class="section" id="cluster-ringhashlbconfig">
 <span id="envoy-api-msg-cluster-ringhashlbconfig"></span><h2>Cluster.RingHashLbConfig<a class="headerlink" href="#cluster-ringhashlbconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L354">[Cluster.RingHashLbConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L366">[Cluster.RingHashLbConfig proto]</a></p>
 <p>Specific configuration for the <a class="reference internal" href="../../../intro/arch_overview/load_balancing.html#arch-overview-load-balancing-types-ring-hash"><span class="std std-ref">RingHash</span></a>
 load balancing policy.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -580,7 +593,7 @@ resource use.</dd>
 </div>
 <div class="section" id="cluster-commonlbconfig">
 <span id="envoy-api-msg-cluster-commonlbconfig"></span><h2>Cluster.CommonLbConfig<a class="headerlink" href="#cluster-commonlbconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L392">[Cluster.CommonLbConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L404">[Cluster.CommonLbConfig proto]</a></p>
 <p>Common configuration for all load balancer implementations.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;healthy_panic_threshold&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -614,7 +627,7 @@ If not specified, the default is 50%.</p>
 </div>
 <div class="section" id="cluster-commonlbconfig-zoneawarelbconfig">
 <span id="envoy-api-msg-cluster-commonlbconfig-zoneawarelbconfig"></span><h2>Cluster.CommonLbConfig.ZoneAwareLbConfig<a class="headerlink" href="#cluster-commonlbconfig-zoneawarelbconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L401">[Cluster.CommonLbConfig.ZoneAwareLbConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L413">[Cluster.CommonLbConfig.ZoneAwareLbConfig proto]</a></p>
 <p>Configuration for <a class="reference internal" href="../../../intro/arch_overview/load_balancing.html#arch-overview-load-balancing-zone-aware-routing"><span class="std std-ref">zone aware routing</span></a>.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;routing_enabled&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -640,7 +653,7 @@ even if zone aware routing is configured. If not specified, the default is 6.
 </div>
 <div class="section" id="cluster-commonlbconfig-localityweightedlbconfig">
 <span id="envoy-api-msg-cluster-commonlbconfig-localityweightedlbconfig"></span><h2>Cluster.CommonLbConfig.LocalityWeightedLbConfig<a class="headerlink" href="#cluster-commonlbconfig-localityweightedlbconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L416">[Cluster.CommonLbConfig.LocalityWeightedLbConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L428">[Cluster.CommonLbConfig.LocalityWeightedLbConfig proto]</a></p>
 <p>Configuration for <a class="reference internal" href="../../../intro/arch_overview/load_balancing.html#arch-overview-load-balancing-locality-weighted-lb"><span class="std std-ref">locality weighted load balancing</span></a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{}</span>
 </pre></div>
@@ -749,7 +762,7 @@ ignored.</p>
 </div>
 <div class="section" id="enum-cluster-clusterprotocolselection">
 <span id="envoy-api-enum-cluster-clusterprotocolselection"></span><h2>Enum Cluster.ClusterProtocolSelection<a class="headerlink" href="#enum-cluster-clusterprotocolselection" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L437">[Cluster.ClusterProtocolSelection proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L449">[Cluster.ClusterProtocolSelection proto]</a></p>
 <dl class="docutils" id="envoy-api-enum-value-cluster-clusterprotocolselection-use-configured-protocol">
 <dt>USE_CONFIGURED_PROTOCOL</dt>
 <dd><em>(DEFAULT)</em> ⁣Cluster can only operate on one of the possible upstream protocols (HTTP1.1, HTTP2).
@@ -763,7 +776,7 @@ present, HTTP2 will be used, otherwise HTTP1.1 will be used.</dd>
 </div>
 <div class="section" id="upstreambindconfig">
 <span id="envoy-api-msg-upstreambindconfig"></span><h2>UpstreamBindConfig<a class="headerlink" href="#upstreambindconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L478">[UpstreamBindConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L490">[UpstreamBindConfig proto]</a></p>
 <p>An extensible structure containing the address Envoy should bind to when
 establishing upstream connections.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -778,7 +791,7 @@ establishing upstream connections.</p>
 </div>
 <div class="section" id="upstreamconnectionoptions">
 <span id="envoy-api-msg-upstreamconnectionoptions"></span><h2>UpstreamConnectionOptions<a class="headerlink" href="#upstreamconnectionoptions" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L483">[UpstreamConnectionOptions proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L495">[UpstreamConnectionOptions proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;tcp_keepalive&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
@@ -833,7 +846,7 @@ establishing upstream connections.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'1.8.0-dev-a18204',
+            VERSION:'1.8.0-dev-0a0914',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
