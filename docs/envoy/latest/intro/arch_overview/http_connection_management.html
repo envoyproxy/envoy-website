@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP connection management &mdash; envoy 1.8.0-dev-391150 documentation</title>
+  <title>HTTP connection management &mdash; envoy 1.8.0-dev-672083 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.8.0-dev-391150
+                1.8.0-dev-672083
               </div>
             
           
@@ -99,6 +99,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#http-protocols">HTTP protocols</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#http-header-sanitizing">HTTP header sanitizing</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#route-table-configuration">Route table configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#timeouts">Timeouts</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="http_filters.html">HTTP filters</a></li>
@@ -246,6 +247,25 @@ table</span></a>. The route table can be specified in one of two ways:</p>
 <li>Dynamically via the <a class="reference internal" href="../../configuration/http_conn_man/rds.html#config-http-conn-man-rds"><span class="std std-ref">RDS API</span></a>.</li>
 </ul>
 </div>
+<div class="section" id="timeouts">
+<h2>Timeouts<a class="headerlink" href="#timeouts" title="Permalink to this headline">¶</a></h2>
+<p>Various configurable timeouts apply to an HTTP connection and its constituent streams:</p>
+<ul class="simple">
+<li>Connection-level <a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-idle-timeout"><span class="std std-ref">idle timeout</span></a>:
+this applies to the idle period where no streams are active.</li>
+<li>Connection-level <a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-drain-timeout"><span class="std std-ref">drain timeout</span></a>:
+this spans between an Envoy originated GOAWAY and connection termination.</li>
+<li>Stream-level idle timeout: this applies to each individual stream. It may be configured at both
+the <a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-stream-idle-timeout"><span class="std std-ref">connection manager</span></a>
+and <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-idle-timeout"><span class="std std-ref">per-route</span></a> granularity.
+Header/data/trailer events on the stream reset the idle timeout.</li>
+<li>Stream-level <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-timeout"><span class="std std-ref">per-route upstream timeout</span></a>: this
+applies to the upstream response, i.e. a maximum bound on the time from the end of the downstream
+request until the end of the upstream response. This may also be specified at the <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-retrypolicy-per-try-timeout"><span class="std std-ref">per-retry</span></a> granularity.</li>
+<li>Stream-level <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-max-grpc-timeout"><span class="std std-ref">per-route gRPC max timeout</span></a>: this bounds the upstream timeout and allows
+the timeout to be overriden via the <em>grpc-timeout</em> request header.</li>
+</ul>
+</div>
 </div>
 
 
@@ -290,7 +310,7 @@ table</span></a>. The route table can be specified in one of two ways:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.8.0-dev-391150',
+            VERSION:'1.8.0-dev-672083',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
