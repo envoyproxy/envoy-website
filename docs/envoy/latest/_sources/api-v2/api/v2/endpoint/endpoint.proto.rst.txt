@@ -16,7 +16,8 @@ Upstream host identifier.
 .. code-block:: json
 
   {
-    "address": "{...}"
+    "address": "{...}",
+    "health_check_config": "{...}"
   }
 
 .. _envoy_api_field_endpoint.Endpoint.address:
@@ -31,6 +32,44 @@ address
     specified :ref:`resolver <envoy_api_field_core.SocketAddress.resolver_name>`
     in the Address). For LOGICAL or STRICT DNS, it is expected to be hostname,
     and will be resolved via DNS.
+  
+  
+.. _envoy_api_field_endpoint.Endpoint.health_check_config:
+
+health_check_config
+  (:ref:`endpoint.Endpoint.HealthCheckConfig <envoy_api_msg_endpoint.Endpoint.HealthCheckConfig>`) The optional health check configuration is used as configuration for the
+  health checker to contact the health checked host.
+  
+  .. attention::
+  
+    This takes into effect only for upstream clusters with
+    :ref:`active health checking <arch_overview_health_checking>` enabled.
+  
+  
+.. _envoy_api_msg_endpoint.Endpoint.HealthCheckConfig:
+
+endpoint.Endpoint.HealthCheckConfig
+-----------------------------------
+
+`[endpoint.Endpoint.HealthCheckConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/endpoint/endpoint.proto#L32>`_
+
+The optional health check configuration.
+
+.. code-block:: json
+
+  {
+    "port_value": "..."
+  }
+
+.. _envoy_api_field_endpoint.Endpoint.HealthCheckConfig.port_value:
+
+port_value
+  (`uint32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Optional alternative health check port value.
+  
+  By default the health check address port of an upstream host is the same
+  as the host's serving address port. This provides an alternative health
+  check port. Setting this with a non-zero value allows an upstream host
+  to have different health check address port.
   
   
 

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Health checking &mdash; envoy 1.8.0-dev-8b3aae documentation</title>
+  <title>Health checking &mdash; envoy 1.8.0-dev-b32eab documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.8.0-dev-8b3aae
+                1.8.0-dev-b32eab
               </div>
             
           
@@ -104,6 +104,7 @@
 <li class="toctree-l3"><a class="reference internal" href="cluster_manager.html">Cluster manager</a></li>
 <li class="toctree-l3"><a class="reference internal" href="service_discovery.html">Service discovery</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Health checking</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#per-cluster-member-health-check-config">Per cluster member health check config</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#health-check-event-logging">Health check event logging</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#passive-health-checking">Passive health checking</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#connection-pool-interactions">Connection pool interactions</a></li>
@@ -238,6 +239,30 @@ it is considered a passing healthcheck. This allows the user to mark a Redis ins
 maintenance by setting the specified key to any value and waiting for traffic to drain. See
 <a class="reference internal" href="../../api-v1/cluster_manager/cluster_hc.html#config-cluster-manager-cluster-hc-redis-key"><span class="std std-ref">redis_key</span></a>.</li>
 </ul>
+<div class="section" id="per-cluster-member-health-check-config">
+<span id="arch-overview-per-cluster-health-check-config"></span><h2>Per cluster member health check config<a class="headerlink" href="#per-cluster-member-health-check-config" title="Permalink to this headline">¶</a></h2>
+<p>If active health checking is configured for an upstream cluster, a specific additional configuration
+for each registered member can be specified by setting the
+<a class="reference internal" href="../../api-v2/api/v2/endpoint/endpoint.proto.html#envoy-api-msg-endpoint-endpoint-healthcheckconfig"><span class="std std-ref">HealthCheckConfig</span></a>
+in the <a class="reference internal" href="../../api-v2/api/v2/endpoint/endpoint.proto.html#envoy-api-msg-endpoint-endpoint"><span class="std std-ref">Endpoint</span></a> of an <a class="reference internal" href="../../api-v2/api/v2/endpoint/endpoint.proto.html#envoy-api-msg-endpoint-lbendpoint"><span class="std std-ref">LbEndpoint</span></a>
+of each defined <a class="reference internal" href="../../api-v2/api/v2/endpoint/endpoint.proto.html#envoy-api-msg-endpoint-localitylbendpoints"><span class="std std-ref">LocalityLbEndpoints</span></a> in a
+<a class="reference internal" href="../../api-v2/api/v2/eds.proto.html#envoy-api-msg-clusterloadassignment"><span class="std std-ref">ClusterLoadAssignment</span></a>.</p>
+<p>An example of setting up <a class="reference internal" href="../../api-v2/api/v2/endpoint/endpoint.proto.html#envoy-api-msg-endpoint-endpoint-healthcheckconfig"><span class="std std-ref">health check config</span></a>
+to set a <a class="reference internal" href="../../api-v2/api/v2/endpoint/endpoint.proto.html#envoy-api-msg-endpoint-endpoint"><span class="std std-ref">cluster member</span></a>’s alternative health check
+<a class="reference internal" href="../../api-v2/api/v2/endpoint/endpoint.proto.html#envoy-api-field-endpoint-endpoint-healthcheckconfig-port-value"><span class="std std-ref">port</span></a> is:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">load_assignment</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">endpoints</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">lb_endpoints</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">endpoint</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">health_check_config</span><span class="p p-Indicator">:</span>
+          <span class="l l-Scalar l-Scalar-Plain">port_value</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">8080</span>
+        <span class="l l-Scalar l-Scalar-Plain">address</span><span class="p p-Indicator">:</span>
+          <span class="l l-Scalar l-Scalar-Plain">socket_address</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">address</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
+            <span class="l l-Scalar l-Scalar-Plain">port_value</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="health-check-event-logging">
 <span id="arch-overview-health-check-logging"></span><h2>Health check event logging<a class="headerlink" href="#health-check-event-logging" title="Permalink to this headline">¶</a></h2>
 <p>A per-healthchecker log of ejection and addition events can optionally be produced by Envoy by
@@ -352,7 +377,7 @@ value is determined by the <a class="reference internal" href="../../operations/
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.8.0-dev-8b3aae',
+            VERSION:'1.8.0-dev-b32eab',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
