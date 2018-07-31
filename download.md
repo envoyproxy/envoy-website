@@ -8,7 +8,7 @@ dynamic configuration and a [JSON/YAML configuration format for static configura
 
 To get it working, you're going to need to create your own Docker image with your own Envoy configuration. Create a `Dockerfile` that uses the latest Envoy images:
 
-```
+```dockerfile
 FROM envoyproxy/envoy:latest
 RUN apt-get update
 COPY envoy.json /etc/envoy.json
@@ -20,19 +20,19 @@ you can use that proxies incoming requests to Google.com. Note you may have to m
 
 Build the Dockerfile:
 
-```
+```shell
 docker build -t envoy:v1 .
 ```
 
 Run the image, binding localhost port 8080 to the listener on port 10000 specified in the `envoy.json`:
 
-```
+```shell
 docker run -d -p 8080:10000 envoy:v1
 ```
 
 Test the image with `curl`:
 
-```
+```shell
 curl localhost:8080
 ```
 
