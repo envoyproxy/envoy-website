@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Clusters &mdash; envoy 1.8.0-dev-eb5ea9 documentation</title>
+  <title>Clusters &mdash; envoy 1.8.0-dev-62441f documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.8.0-dev-eb5ea9
+                1.8.0-dev-62441f
               </div>
             
           
@@ -620,7 +620,8 @@ resource use.</dd>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;healthy_panic_threshold&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;zone_aware_lb_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;locality_weighted_lb_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;locality_weighted_lb_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;update_merge_window&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -644,6 +645,19 @@ If not specified, the default is 50%.</p>
 <dt>locality_weighted_lb_config</dt>
 <dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-cluster-commonlbconfig-localityweightedlbconfig"><span class="std std-ref">Cluster.CommonLbConfig.LocalityWeightedLbConfig</span></a>)</p>
 <p class="last">Only one of <a class="reference internal" href="#envoy-api-field-cluster-commonlbconfig-zone-aware-lb-config"><span class="std std-ref">zone_aware_lb_config</span></a>, <a class="reference internal" href="#envoy-api-field-cluster-commonlbconfig-locality-weighted-lb-config"><span class="std std-ref">locality_weighted_lb_config</span></a> may be set.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-cluster-commonlbconfig-update-merge-window">
+<dt>update_merge_window</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) If set, all health check/weight/metadata updates that happen within this duration will be
+merged and delivered in one shot when the duration expires. The start of the duration is when
+the first update happens. This is useful for big clusters, with potentially noisy deploys
+that might trigger excessive CPU usage due to a constant stream of healthcheck state changes
+or metadata updates. By default, this is not configured and updates apply immediately. Also,
+the first set of updates to be seen apply immediately as well (e.g.: a new cluster).</p>
+<p class="last">Note: merging does not apply to cluster membership changes (e.g.: adds/removes); this is
+because merging those updates isn’t currently safe. See
+<a class="reference external" href="https://github.com/envoyproxy/envoy/pull/3941">https://github.com/envoyproxy/envoy/pull/3941</a>.</p>
 </dd>
 </dl>
 </div>
@@ -784,7 +798,7 @@ ignored.</p>
 </div>
 <div class="section" id="enum-cluster-clusterprotocolselection">
 <span id="envoy-api-enum-cluster-clusterprotocolselection"></span><h2>Enum Cluster.ClusterProtocolSelection<a class="headerlink" href="#enum-cluster-clusterprotocolselection" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L454">[Cluster.ClusterProtocolSelection proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L465">[Cluster.ClusterProtocolSelection proto]</a></p>
 <dl class="docutils" id="envoy-api-enum-value-cluster-clusterprotocolselection-use-configured-protocol">
 <dt>USE_CONFIGURED_PROTOCOL</dt>
 <dd><em>(DEFAULT)</em> ⁣Cluster can only operate on one of the possible upstream protocols (HTTP1.1, HTTP2).
@@ -798,7 +812,7 @@ present, HTTP2 will be used, otherwise HTTP1.1 will be used.</dd>
 </div>
 <div class="section" id="upstreambindconfig">
 <span id="envoy-api-msg-upstreambindconfig"></span><h2>UpstreamBindConfig<a class="headerlink" href="#upstreambindconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L495">[UpstreamBindConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L506">[UpstreamBindConfig proto]</a></p>
 <p>An extensible structure containing the address Envoy should bind to when
 establishing upstream connections.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -813,7 +827,7 @@ establishing upstream connections.</p>
 </div>
 <div class="section" id="upstreamconnectionoptions">
 <span id="envoy-api-msg-upstreamconnectionoptions"></span><h2>UpstreamConnectionOptions<a class="headerlink" href="#upstreamconnectionoptions" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L500">[UpstreamConnectionOptions proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L511">[UpstreamConnectionOptions proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;tcp_keepalive&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
@@ -868,7 +882,7 @@ establishing upstream connections.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'1.8.0-dev-eb5ea9',
+            VERSION:'1.8.0-dev-62441f',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

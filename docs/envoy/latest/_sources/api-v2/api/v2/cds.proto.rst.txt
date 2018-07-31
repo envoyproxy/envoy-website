@@ -548,7 +548,8 @@ Common configuration for all load balancer implementations.
   {
     "healthy_panic_threshold": "{...}",
     "zone_aware_lb_config": "{...}",
-    "locality_weighted_lb_config": "{...}"
+    "locality_weighted_lb_config": "{...}",
+    "update_merge_window": "{...}"
   }
 
 .. _envoy_api_field_Cluster.CommonLbConfig.healthy_panic_threshold:
@@ -574,6 +575,21 @@ locality_weighted_lb_config
   (:ref:`Cluster.CommonLbConfig.LocalityWeightedLbConfig <envoy_api_msg_Cluster.CommonLbConfig.LocalityWeightedLbConfig>`) 
   
   Only one of :ref:`zone_aware_lb_config <envoy_api_field_Cluster.CommonLbConfig.zone_aware_lb_config>`, :ref:`locality_weighted_lb_config <envoy_api_field_Cluster.CommonLbConfig.locality_weighted_lb_config>` may be set.
+  
+.. _envoy_api_field_Cluster.CommonLbConfig.update_merge_window:
+
+update_merge_window
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) If set, all health check/weight/metadata updates that happen within this duration will be
+  merged and delivered in one shot when the duration expires. The start of the duration is when
+  the first update happens. This is useful for big clusters, with potentially noisy deploys
+  that might trigger excessive CPU usage due to a constant stream of healthcheck state changes
+  or metadata updates. By default, this is not configured and updates apply immediately. Also,
+  the first set of updates to be seen apply immediately as well (e.g.: a new cluster).
+  
+  Note: merging does not apply to cluster membership changes (e.g.: adds/removes); this is
+  because merging those updates isn't currently safe. See
+  https://github.com/envoyproxy/envoy/pull/3941.
+  
   
 .. _envoy_api_msg_Cluster.CommonLbConfig.ZoneAwareLbConfig:
 
@@ -777,7 +793,7 @@ V6_ONLY
 Enum Cluster.ClusterProtocolSelection
 -------------------------------------
 
-`[Cluster.ClusterProtocolSelection proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L454>`_
+`[Cluster.ClusterProtocolSelection proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L465>`_
 
 
 .. _envoy_api_enum_value_Cluster.ClusterProtocolSelection.USE_CONFIGURED_PROTOCOL:
@@ -800,7 +816,7 @@ USE_DOWNSTREAM_PROTOCOL
 UpstreamBindConfig
 ------------------
 
-`[UpstreamBindConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L495>`_
+`[UpstreamBindConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L506>`_
 
 An extensible structure containing the address Envoy should bind to when
 establishing upstream connections.
@@ -824,7 +840,7 @@ source_address
 UpstreamConnectionOptions
 -------------------------
 
-`[UpstreamConnectionOptions proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L500>`_
+`[UpstreamConnectionOptions proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L511>`_
 
 
 .. code-block:: json
