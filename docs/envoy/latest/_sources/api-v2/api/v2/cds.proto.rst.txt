@@ -40,6 +40,7 @@ Configuration for a single upstream cluster.
     "upstream_bind_config": "{...}",
     "lb_subset_config": "{...}",
     "ring_hash_lb_config": "{...}",
+    "original_dst_lb_config": "{...}",
     "common_lb_config": "{...}",
     "transport_socket": "{...}",
     "metadata": "{...}",
@@ -281,7 +282,15 @@ ring_hash_lb_config
   (:ref:`Cluster.RingHashLbConfig <envoy_api_msg_Cluster.RingHashLbConfig>`) Optional configuration for the Ring Hash load balancing policy.
   
   
-  Only one of :ref:`ring_hash_lb_config <envoy_api_field_Cluster.ring_hash_lb_config>` may be set.
+  Only one of :ref:`ring_hash_lb_config <envoy_api_field_Cluster.ring_hash_lb_config>`, :ref:`original_dst_lb_config <envoy_api_field_Cluster.original_dst_lb_config>` may be set.
+  
+.. _envoy_api_field_Cluster.original_dst_lb_config:
+
+original_dst_lb_config
+  (:ref:`Cluster.OriginalDstLbConfig <envoy_api_msg_Cluster.OriginalDstLbConfig>`) Optional configuration for the Original Destination load balancing policy.
+  
+  
+  Only one of :ref:`ring_hash_lb_config <envoy_api_field_Cluster.ring_hash_lb_config>`, :ref:`original_dst_lb_config <envoy_api_field_Cluster.original_dst_lb_config>` may be set.
   
 .. _envoy_api_field_Cluster.common_lb_config:
 
@@ -534,12 +543,45 @@ minimum_ring_size
 
 
 
+.. _envoy_api_msg_Cluster.OriginalDstLbConfig:
+
+Cluster.OriginalDstLbConfig
+---------------------------
+
+`[Cluster.OriginalDstLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L399>`_
+
+Specific configuration for the
+:ref:`Original Destination <arch_overview_load_balancing_types_original_destination>`
+load balancing policy.
+
+.. code-block:: json
+
+  {
+    "use_http_header": "..."
+  }
+
+.. _envoy_api_field_Cluster.OriginalDstLbConfig.use_http_header:
+
+use_http_header
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) When true, :ref:`x-envoy-orignal-dst-host
+  <config_http_conn_man_headers_x-envoy-original-dst-host>` can be used to override destination
+  address.
+  
+  .. attention::
+  
+    This header isn't sanitized by default, so enabling this feature allows HTTP clients to
+    route traffic to arbitrary hosts and/or ports, which may have serious security
+    consequences.
+  
+  
+
+
 .. _envoy_api_msg_Cluster.CommonLbConfig:
 
 Cluster.CommonLbConfig
 ----------------------
 
-`[Cluster.CommonLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L409>`_
+`[Cluster.CommonLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L427>`_
 
 Common configuration for all load balancer implementations.
 
@@ -596,7 +638,7 @@ update_merge_window
 Cluster.CommonLbConfig.ZoneAwareLbConfig
 ----------------------------------------
 
-`[Cluster.CommonLbConfig.ZoneAwareLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L418>`_
+`[Cluster.CommonLbConfig.ZoneAwareLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L436>`_
 
 Configuration for :ref:`zone aware routing
 <arch_overview_load_balancing_zone_aware_routing>`.
@@ -634,7 +676,7 @@ min_cluster_size
 Cluster.CommonLbConfig.LocalityWeightedLbConfig
 -----------------------------------------------
 
-`[Cluster.CommonLbConfig.LocalityWeightedLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L433>`_
+`[Cluster.CommonLbConfig.LocalityWeightedLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L451>`_
 
 Configuration for :ref:`locality weighted load balancing
 <arch_overview_load_balancing_locality_weighted_lb>`
@@ -793,7 +835,7 @@ V6_ONLY
 Enum Cluster.ClusterProtocolSelection
 -------------------------------------
 
-`[Cluster.ClusterProtocolSelection proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L465>`_
+`[Cluster.ClusterProtocolSelection proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L483>`_
 
 
 .. _envoy_api_enum_value_Cluster.ClusterProtocolSelection.USE_CONFIGURED_PROTOCOL:
@@ -816,7 +858,7 @@ USE_DOWNSTREAM_PROTOCOL
 UpstreamBindConfig
 ------------------
 
-`[UpstreamBindConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L506>`_
+`[UpstreamBindConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L524>`_
 
 An extensible structure containing the address Envoy should bind to when
 establishing upstream connections.
@@ -840,7 +882,7 @@ source_address
 UpstreamConnectionOptions
 -------------------------
 
-`[UpstreamConnectionOptions proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L511>`_
+`[UpstreamConnectionOptions proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L529>`_
 
 
 .. code-block:: json
