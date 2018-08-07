@@ -9,7 +9,7 @@ MetadataMatcher
 type.matcher.MetadataMatcher
 ----------------------------
 
-`[type.matcher.MetadataMatcher proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/type/matcher/metadata.proto#L68>`_
+`[type.matcher.MetadataMatcher proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/type/matcher/metadata.proto#L69>`_
 
 MetadataMatcher provides a general interface to check if a given value is matched in
 :ref:`Metadata <envoy_api_msg_core.Metadata>`. It uses `filter` and `path` to retrieve the value
@@ -50,8 +50,8 @@ from the Metadata which is matched to the specified prefix match.
      string_match:
        prefix: pr
 
-The following MetadataMatcher is not matched as the path [a, t] is pointing to a list value in
-the Metadata which is not supported for now.
+The following MetadataMatcher is matched as the code will match one of the string values in the
+list at the path [a, t].
 
 .. code-block:: yaml
 
@@ -60,8 +60,10 @@ the Metadata which is not supported for now.
    - key: a
    - key: t
    value:
-     string_match:
-       exact: m
+     list_match:
+       one_of:
+         string_match:
+           exact: m
 
 An example use of MetadataMatcher is specifying additional metadata in envoy.filters.http.rbac to
 enforce access control based on dynamic metadata in a request. See :ref:`Permission
@@ -91,7 +93,7 @@ path
 .. _envoy_api_field_type.matcher.MetadataMatcher.value:
 
 value
-  (:ref:`type.matcher.MetadataMatcher.Value <envoy_api_msg_type.matcher.MetadataMatcher.Value>`, *REQUIRED*) The MetadataMatcher is matched if the value retrieved by path is matched to this value.
+  (:ref:`type.matcher.ValueMatcher <envoy_api_msg_type.matcher.ValueMatcher>`, *REQUIRED*) The MetadataMatcher is matched if the value retrieved by path is matched to this value.
   
   
 .. _envoy_api_msg_type.matcher.MetadataMatcher.PathSegment:
@@ -99,11 +101,11 @@ value
 type.matcher.MetadataMatcher.PathSegment
 ----------------------------------------
 
-`[type.matcher.MetadataMatcher.PathSegment proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/type/matcher/metadata.proto#L72>`_
+`[type.matcher.MetadataMatcher.PathSegment proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/type/matcher/metadata.proto#L73>`_
 
 Specifies the segment in a path to retrieve value from Metadata.
-Note: Currently it's not supported to retrieve a value from a list in Metadata. This means it
-will always be not matched if the associated value of the key is a list.
+Note: Currently it's not supported to retrieve a value from a list in Metadata. This means that
+if the segment key refers to a list, it has to be the last segment in a path.
 
 .. code-block:: json
 
@@ -119,87 +121,5 @@ key
   
   Precisely one of :ref:`key <envoy_api_field_type.matcher.MetadataMatcher.PathSegment.key>` must be set.
   
-
-
-.. _envoy_api_msg_type.matcher.MetadataMatcher.Value:
-
-type.matcher.MetadataMatcher.Value
-----------------------------------
-
-`[type.matcher.MetadataMatcher.Value proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/type/matcher/metadata.proto#L83>`_
-
-Specifies the value to match. Only primitive value are supported. For non-primitive values, the
-result is always not matched.
-
-.. code-block:: json
-
-  {
-    "null_match": "{...}",
-    "double_match": "{...}",
-    "string_match": "{...}",
-    "bool_match": "...",
-    "present_match": "..."
-  }
-
-.. _envoy_api_field_type.matcher.MetadataMatcher.Value.null_match:
-
-null_match
-  (:ref:`type.matcher.MetadataMatcher.Value.NullMatch <envoy_api_msg_type.matcher.MetadataMatcher.Value.NullMatch>`) If specified, a match occurs if and only if the target value is a NullValue.
-  
-  
-  Precisely one of :ref:`null_match <envoy_api_field_type.matcher.MetadataMatcher.Value.null_match>`, :ref:`double_match <envoy_api_field_type.matcher.MetadataMatcher.Value.double_match>`, :ref:`string_match <envoy_api_field_type.matcher.MetadataMatcher.Value.string_match>`, :ref:`bool_match <envoy_api_field_type.matcher.MetadataMatcher.Value.bool_match>`, :ref:`present_match <envoy_api_field_type.matcher.MetadataMatcher.Value.present_match>` must be set.
-  
-.. _envoy_api_field_type.matcher.MetadataMatcher.Value.double_match:
-
-double_match
-  (:ref:`type.matcher.DoubleMatcher <envoy_api_msg_type.matcher.DoubleMatcher>`) If specified, a match occurs if and only if the target value is a double value and is
-  matched to this field.
-  
-  
-  Precisely one of :ref:`null_match <envoy_api_field_type.matcher.MetadataMatcher.Value.null_match>`, :ref:`double_match <envoy_api_field_type.matcher.MetadataMatcher.Value.double_match>`, :ref:`string_match <envoy_api_field_type.matcher.MetadataMatcher.Value.string_match>`, :ref:`bool_match <envoy_api_field_type.matcher.MetadataMatcher.Value.bool_match>`, :ref:`present_match <envoy_api_field_type.matcher.MetadataMatcher.Value.present_match>` must be set.
-  
-.. _envoy_api_field_type.matcher.MetadataMatcher.Value.string_match:
-
-string_match
-  (:ref:`type.matcher.StringMatcher <envoy_api_msg_type.matcher.StringMatcher>`) If specified, a match occurs if and only if the target value is a string value and is
-  matched to this field.
-  
-  
-  Precisely one of :ref:`null_match <envoy_api_field_type.matcher.MetadataMatcher.Value.null_match>`, :ref:`double_match <envoy_api_field_type.matcher.MetadataMatcher.Value.double_match>`, :ref:`string_match <envoy_api_field_type.matcher.MetadataMatcher.Value.string_match>`, :ref:`bool_match <envoy_api_field_type.matcher.MetadataMatcher.Value.bool_match>`, :ref:`present_match <envoy_api_field_type.matcher.MetadataMatcher.Value.present_match>` must be set.
-  
-.. _envoy_api_field_type.matcher.MetadataMatcher.Value.bool_match:
-
-bool_match
-  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If specified, a match occurs if and only if the target value is a bool value and is equal
-  to this field.
-  
-  
-  Precisely one of :ref:`null_match <envoy_api_field_type.matcher.MetadataMatcher.Value.null_match>`, :ref:`double_match <envoy_api_field_type.matcher.MetadataMatcher.Value.double_match>`, :ref:`string_match <envoy_api_field_type.matcher.MetadataMatcher.Value.string_match>`, :ref:`bool_match <envoy_api_field_type.matcher.MetadataMatcher.Value.bool_match>`, :ref:`present_match <envoy_api_field_type.matcher.MetadataMatcher.Value.present_match>` must be set.
-  
-.. _envoy_api_field_type.matcher.MetadataMatcher.Value.present_match:
-
-present_match
-  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If specified, value match will be performed based on whether the path is referring to a
-  valid primitive value in the metadata. If the path is referring to a non-primitive value,
-  the result is always not matched.
-  
-  
-  Precisely one of :ref:`null_match <envoy_api_field_type.matcher.MetadataMatcher.Value.null_match>`, :ref:`double_match <envoy_api_field_type.matcher.MetadataMatcher.Value.double_match>`, :ref:`string_match <envoy_api_field_type.matcher.MetadataMatcher.Value.string_match>`, :ref:`bool_match <envoy_api_field_type.matcher.MetadataMatcher.Value.bool_match>`, :ref:`present_match <envoy_api_field_type.matcher.MetadataMatcher.Value.present_match>` must be set.
-  
-.. _envoy_api_msg_type.matcher.MetadataMatcher.Value.NullMatch:
-
-type.matcher.MetadataMatcher.Value.NullMatch
---------------------------------------------
-
-`[type.matcher.MetadataMatcher.Value.NullMatch proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/type/matcher/metadata.proto#L85>`_
-
-NullMatch is an empty message to specify a null value.
-
-.. code-block:: json
-
-  {}
-
-
-
 
 
