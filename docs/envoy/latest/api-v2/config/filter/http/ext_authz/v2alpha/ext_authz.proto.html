@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>External Authorization &mdash; envoy 1.8.0-dev-22ae0a documentation</title>
+  <title>External Authorization &mdash; envoy 1.8.0-dev-aafdf6 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.8.0-dev-22ae0a
+                1.8.0-dev-aafdf6
               </div>
             
           
@@ -241,24 +241,23 @@ Defaults to false.</dd>
 </div>
 <div class="section" id="config-filter-http-ext-authz-v2alpha-httpservice">
 <span id="envoy-api-msg-config-filter-http-ext-authz-v2alpha-httpservice"></span><h2>config.filter.http.ext_authz.v2alpha.HttpService<a class="headerlink" href="#config-filter-http-ext-authz-v2alpha-httpservice" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L54">[config.filter.http.ext_authz.v2alpha.HttpService proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L52">[config.filter.http.ext_authz.v2alpha.HttpService proto]</a></p>
 <p>External Authorization filter calls out to an upstream authorization server by passing the raw
 HTTP request headers to the server. This allows the authorization service to take a decision
 whether the request is authorized or not.</p>
 <p>A successful check allows the authorization service adding or overriding headers from the
-original request before dispatching it to the upstream. This is done by including the headers in
-the response sent back from the authorization service to the filter. Note that <cite>Status</cite>,
-<cite>Method</cite>, <cite>Path</cite> and <cite>Content Length</cite> response headers are automatically removed from this
-response by the filter. If other headers need be deleted, they should be specified in
-<cite>response_headers_to_remove</cite> field.</p>
+original request before dispatching it to the upstream. This is done by configuring which headers
+in the authorization response should be sent to the upstream. See <em>allowed_authorization_headers</em>
+bellow.</p>
 <p>A failed check will cause this filter to close the HTTP request normally with 403 (Forbidden),
-unless a different status code has been indicated by the authorization service via response
-headers. The HTTP service also allows the authorization filter to also pass data from the
-response body to the downstream client in case of a denied request.</p>
+unless a different status code has been indicated by the authorization server via response
+headers. If other headers in the authorization response need to be sent to client, this can also
+be done by specifying them in <em>allowed_authorization_headers</em>.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;server_uri&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;path_prefix&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;response_headers_to_remove&quot;</span><span class="p">:</span> <span class="p">[]</span>
+  <span class="nt">&quot;allowed_authorization_headers&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;allowed_request_headers&quot;</span><span class="p">:</span> <span class="p">[]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -268,12 +267,20 @@ response body to the downstream client in case of a denied request.</p>
 </dl>
 <dl class="docutils" id="envoy-api-field-config-filter-http-ext-authz-v2alpha-httpservice-path-prefix">
 <dt>path_prefix</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Sets an optional prefix to the value of authorization request header <cite>path</cite>.</dd>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Sets an optional prefix to the value of authorization request header <em>Path</em>.</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-config-filter-http-ext-authz-v2alpha-httpservice-response-headers-to-remove">
-<dt>response_headers_to_remove</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Sets a list of headers that should be not be sent <em>from the authorization server</em> to the
-upstream.</dd>
+<dl class="docutils" id="envoy-api-field-config-filter-http-ext-authz-v2alpha-httpservice-allowed-authorization-headers">
+<dt>allowed_authorization_headers</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Sets a list of headers that can be sent from the authorization server to the upstream service,
+or to the downstream client when present in the authorization response. Note that a matched
+request header will have its value overridden by the ones sent from the authorization server.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-config-filter-http-ext-authz-v2alpha-httpservice-allowed-request-headers">
+<dt>allowed_request_headers</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Sets a list of headers that should be sent <em>from the filter</em> to the authorization server
+when they are also present in the client request. Note that <em>Content-Length</em>, <em>Authority</em>,
+<em>Method</em> and <em>Path</em> are always dispatched to the authorization server by default. The message
+will not contain body data and the <em>Content-Length</em> will be set to zero.</dd>
 </dl>
 </div>
 </div>
@@ -320,7 +327,7 @@ upstream.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../../../',
-            VERSION:'1.8.0-dev-22ae0a',
+            VERSION:'1.8.0-dev-aafdf6',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
