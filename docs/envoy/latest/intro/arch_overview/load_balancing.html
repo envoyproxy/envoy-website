@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Load balancing &mdash; envoy 1.8.0-dev-6c08fb documentation</title>
+  <title>Load balancing &mdash; envoy 1.8.0-dev-8c189a documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.8.0-dev-6c08fb
+                1.8.0-dev-8c189a
               </div>
             
           
@@ -108,6 +108,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Load balancing</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#supported-load-balancers">Supported load balancers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#original-destination">Original destination</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#overprovisioning-factor">Overprovisioning Factor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#panic-threshold">Panic threshold</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#priority-levels">Priority levels</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#zone-aware-routing">Zone aware routing</a></li>
@@ -322,6 +323,15 @@ routed to a host with IP address 10.195.16.237 at port 8888, the request header 
 <code class="docutils literal notranslate"><span class="pre">10.195.16.237:8888</span></code>.</p>
 </div>
 </div>
+<div class="section" id="overprovisioning-factor">
+<span id="arch-overview-load-balancing-overprovisioning-factor"></span><h2>Overprovisioning Factor<a class="headerlink" href="#overprovisioning-factor" title="Permalink to this headline">¶</a></h2>
+<p>Priority levels and localities are considered overprovisioned with
+<a class="reference internal" href="../../api-v2/api/v2/eds.proto.html#envoy-api-field-clusterloadassignment-policy-overprovisioning-factor"><span class="std std-ref">this percentage</span></a>.
+Envoy doesn’t consider a priority level or locality unhealthy until the
+percentage of healthy hosts multiplied by the overprovisioning factor drops
+below 100. The default value is 1.4, so a priority level or locality will not be
+considered unhealthy until the percentage of healthy endpoints goes below 72%.</p>
+</div>
 <div class="section" id="panic-threshold">
 <span id="arch-overview-load-balancing-panic-threshold"></span><h2>Panic threshold<a class="headerlink" href="#panic-threshold" title="Permalink to this headline">¶</a></h2>
 <p>During load balancing, Envoy will generally only consider healthy hosts in an upstream cluster.
@@ -344,9 +354,10 @@ level. For each EDS <a class="reference internal" href="../../api-v2/api/v2/endp
 priority may also be specified. When endpoints at the highest priority level (P=0) are healthy, all
 traffic will land on endpoints in that priority level. As endpoints for the highest priority level
 become unhealthy, traffic will begin to trickle to lower priority levels.</p>
-<p>Currently, it is assumed that each priority level is over-provisioned by a (hard-coded) factor of
-1.4. So if 80% of the endpoints are healthy, the priority level is still considered healthy because
-80*1.4 &gt; 100. As the number of healthy endpoints dips below 72%, the health of the priority level
+<p>Currently, it is assumed that each priority level is over-provisioned by the
+<a class="reference internal" href="#arch-overview-load-balancing-overprovisioning-factor"><span class="std std-ref">overprovisioning factor</span></a>.
+With default factor value 1.4, if 80% of the endpoints are healthy, the priority level is still considered
+healthy because 80*1.4 &gt; 100. As the number of healthy endpoints dips below 72%, the health of the priority level
 goes below 100. At that point the percent of traffic equivalent to the health of P=0 will go to P=0
 and remaining traffic will flow to P=1.</p>
 <p>Assume a simple set-up with 2 priority levels, P=1 100% healthy.</p>
@@ -569,11 +580,13 @@ routing.</p>
 <p>When all endpoints are healthy, the locality is picked using a weighted
 round-robin schedule, where the locality weight is used for weighting. When some
 endpoints in a locality are unhealthy, we adjust the locality weight to reflect
-this. As with <a class="reference internal" href="#arch-overview-load-balancing-priority-levels"><span class="std std-ref">priority levels</span></a>, we assume an over-provision
-factor (currently hardcoded at 1.4), which means we do not perform any weight
+this. As with <a class="reference internal" href="#arch-overview-load-balancing-priority-levels"><span class="std std-ref">priority levels</span></a>, we assume an
+<a class="reference internal" href="#arch-overview-load-balancing-overprovisioning-factor"><span class="std std-ref">over-provision factor</span></a>
+(default value 1.4), which means we do not perform any weight
 adjustment when only a small number of endpoints in a locality are unhealthy.</p>
 <p>Assume a simple set-up with 2 localities X and Y, where X has a locality weight
-of 1 and Y has a locality weight of 2, L=Y 100% healthy.</p>
+of 1 and Y has a locality weight of 2, L=Y 100% healthy,
+with default overprovisioning factor 1.4.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="34%" />
@@ -877,7 +890,7 @@ route:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.8.0-dev-6c08fb',
+            VERSION:'1.8.0-dev-8c189a',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
