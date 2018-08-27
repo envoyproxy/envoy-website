@@ -10,7 +10,7 @@ Thrift Proxy :ref:`configuration overview <config_network_filters_thrift_proxy>`
 config.filter.network.thrift_proxy.v2alpha1.RouteConfiguration
 --------------------------------------------------------------
 
-`[config.filter.network.thrift_proxy.v2alpha1.RouteConfiguration proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/thrift_proxy/v2alpha1/route.proto#L12>`_
+`[config.filter.network.thrift_proxy.v2alpha1.RouteConfiguration proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/thrift_proxy/v2alpha1/route.proto#L13>`_
 
 
 .. code-block:: json
@@ -40,7 +40,7 @@ routes
 config.filter.network.thrift_proxy.v2alpha1.Route
 -------------------------------------------------
 
-`[config.filter.network.thrift_proxy.v2alpha1.Route proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/thrift_proxy/v2alpha1/route.proto#L22>`_
+`[config.filter.network.thrift_proxy.v2alpha1.Route proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/thrift_proxy/v2alpha1/route.proto#L23>`_
 
 
 .. code-block:: json
@@ -69,7 +69,7 @@ route
 config.filter.network.thrift_proxy.v2alpha1.RouteMatch
 ------------------------------------------------------
 
-`[config.filter.network.thrift_proxy.v2alpha1.RouteMatch proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/thrift_proxy/v2alpha1/route.proto#L31>`_
+`[config.filter.network.thrift_proxy.v2alpha1.RouteMatch proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/thrift_proxy/v2alpha1/route.proto#L32>`_
 
 
 .. code-block:: json
@@ -77,7 +77,8 @@ config.filter.network.thrift_proxy.v2alpha1.RouteMatch
   {
     "method_name": "...",
     "service_name": "...",
-    "invert": "..."
+    "invert": "...",
+    "headers": []
   }
 
 .. _envoy_api_field_config.filter.network.thrift_proxy.v2alpha1.RouteMatch.method_name:
@@ -102,8 +103,28 @@ service_name
 .. _envoy_api_field_config.filter.network.thrift_proxy.v2alpha1.RouteMatch.invert:
 
 invert
-  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Inverts whatever matching is done in match_specifier. Cannot be combined with wildcard matching
-  as that would result in routes never being matched.
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Inverts whatever matching is done in the :ref:`method_name
+  <envoy_api_field_config.filter.network.thrift_proxy.v2alpha1.RouteMatch.method_name>` or
+  :ref:`service_name
+  <envoy_api_field_config.filter.network.thrift_proxy.v2alpha1.RouteMatch.service_name>` fields.
+  Cannot be combined with wildcard matching as that would result in routes never being matched.
+  
+  .. note::
+  
+    This does not invert matching done as part of the :ref:`headers field
+    <envoy_api_field_config.filter.network.thrift_proxy.v2alpha1.RouteMatch.headers>` field. To
+    invert header matching, see :ref:`invert_match
+    <envoy_api_field_route.HeaderMatcher.invert_match>`.
+  
+  
+.. _envoy_api_field_config.filter.network.thrift_proxy.v2alpha1.RouteMatch.headers:
+
+headers
+  (:ref:`route.HeaderMatcher <envoy_api_msg_route.HeaderMatcher>`) Specifies a set of headers that the route should match on. The router will check the request’s
+  headers against all the specified headers in the route config. A match will happen if all the
+  headers in the route are present in the request with the same values (or based on presence if
+  the value field is not in the config). Note that this only applies for Thrift transports and/or
+  protocols that support headers.
   
   
 
@@ -113,7 +134,7 @@ invert
 config.filter.network.thrift_proxy.v2alpha1.RouteAction
 -------------------------------------------------------
 
-`[config.filter.network.thrift_proxy.v2alpha1.RouteAction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/thrift_proxy/v2alpha1/route.proto#L51>`_
+`[config.filter.network.thrift_proxy.v2alpha1.RouteAction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/thrift_proxy/v2alpha1/route.proto#L69>`_
 
 
 .. code-block:: json
