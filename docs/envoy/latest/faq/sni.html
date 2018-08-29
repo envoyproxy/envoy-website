@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>How do I setup SNI? &mdash; envoy 1.8.0-dev-f95203 documentation</title>
+  <title>How do I setup SNI? &mdash; envoy 1.8.0-dev-cf87d5 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.8.0-dev-f95203
+                1.8.0-dev-cf87d5
               </div>
             
           
@@ -188,33 +188,39 @@ in order to detect requested SNI.</p>
   <span class="l l-Scalar l-Scalar-Plain">config</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{}</span>
 <span class="l l-Scalar l-Scalar-Plain">filter_chains</span><span class="p p-Indicator">:</span>
 <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">filter_chain_match</span><span class="p p-Indicator">:</span>
-    <span class="l l-Scalar l-Scalar-Plain">server_names</span><span class="p p-Indicator">:</span> <span class="s">&quot;example.com&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">server_names</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;example.com&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;www.example.com&quot;</span><span class="p p-Indicator">]</span>
   <span class="l l-Scalar l-Scalar-Plain">tls_context</span><span class="p p-Indicator">:</span>
     <span class="l l-Scalar l-Scalar-Plain">common_tls_context</span><span class="p p-Indicator">:</span>
       <span class="l l-Scalar l-Scalar-Plain">tls_certificates</span><span class="p p-Indicator">:</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">certificate_chain</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">filename</span><span class="p p-Indicator">:</span> <span class="s">&quot;example_com_cert.pem&quot;</span> <span class="p p-Indicator">}</span>
-          <span class="l l-Scalar l-Scalar-Plain">private_key</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">filename</span><span class="p p-Indicator">:</span> <span class="s">&quot;example_com_key.pem&quot;</span> <span class="p p-Indicator">}</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">certificate_chain</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">filename</span><span class="p p-Indicator">:</span> <span class="s">&quot;example_com_cert.pem&quot;</span> <span class="p p-Indicator">}</span>
+        <span class="l l-Scalar l-Scalar-Plain">private_key</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">filename</span><span class="p p-Indicator">:</span> <span class="s">&quot;example_com_key.pem&quot;</span> <span class="p p-Indicator">}</span>
   <span class="l l-Scalar l-Scalar-Plain">filters</span><span class="p p-Indicator">:</span>
   <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.http_connection_manager</span>
     <span class="l l-Scalar l-Scalar-Plain">config</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">stat_prefix</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ingress_http</span>
       <span class="l l-Scalar l-Scalar-Plain">route_config</span><span class="p p-Indicator">:</span>
         <span class="l l-Scalar l-Scalar-Plain">virtual_hosts</span><span class="p p-Indicator">:</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">routes</span><span class="p p-Indicator">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
+          <span class="l l-Scalar l-Scalar-Plain">domains</span><span class="p p-Indicator">:</span> <span class="s">&quot;*&quot;</span>
+          <span class="l l-Scalar l-Scalar-Plain">routes</span><span class="p p-Indicator">:</span>
           <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">match</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">prefix</span><span class="p p-Indicator">:</span> <span class="s">&quot;/&quot;</span> <span class="p p-Indicator">}</span>
             <span class="l l-Scalar l-Scalar-Plain">route</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">cluster</span><span class="p p-Indicator">:</span> <span class="nv">service_foo</span> <span class="p p-Indicator">}</span>
 <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">filter_chain_match</span><span class="p p-Indicator">:</span>
-    <span class="l l-Scalar l-Scalar-Plain">server_names</span><span class="p p-Indicator">:</span> <span class="s">&quot;www.example.com&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">server_names</span><span class="p p-Indicator">:</span> <span class="s">&quot;api.example.com&quot;</span>
   <span class="l l-Scalar l-Scalar-Plain">tls_context</span><span class="p p-Indicator">:</span>
     <span class="l l-Scalar l-Scalar-Plain">common_tls_context</span><span class="p p-Indicator">:</span>
       <span class="l l-Scalar l-Scalar-Plain">tls_certificates</span><span class="p p-Indicator">:</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">certificate_chain</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">filename</span><span class="p p-Indicator">:</span> <span class="s">&quot;www_example_com_cert.pem&quot;</span> <span class="p p-Indicator">}</span>
-          <span class="l l-Scalar l-Scalar-Plain">private_key</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">filename</span><span class="p p-Indicator">:</span> <span class="s">&quot;www_example_com_key.pem&quot;</span> <span class="p p-Indicator">}</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">certificate_chain</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">filename</span><span class="p p-Indicator">:</span> <span class="s">&quot;api_example_com_cert.pem&quot;</span> <span class="p p-Indicator">}</span>
+        <span class="l l-Scalar l-Scalar-Plain">private_key</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">filename</span><span class="p p-Indicator">:</span> <span class="s">&quot;api_example_com_key.pem&quot;</span> <span class="p p-Indicator">}</span>
   <span class="l l-Scalar l-Scalar-Plain">filters</span><span class="p p-Indicator">:</span>
   <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.http_connection_manager</span>
     <span class="l l-Scalar l-Scalar-Plain">config</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">stat_prefix</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ingress_http</span>
       <span class="l l-Scalar l-Scalar-Plain">route_config</span><span class="p p-Indicator">:</span>
         <span class="l l-Scalar l-Scalar-Plain">virtual_hosts</span><span class="p p-Indicator">:</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">routes</span><span class="p p-Indicator">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
+          <span class="l l-Scalar l-Scalar-Plain">domains</span><span class="p p-Indicator">:</span> <span class="s">&quot;*&quot;</span>
+          <span class="l l-Scalar l-Scalar-Plain">routes</span><span class="p p-Indicator">:</span>
           <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">match</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">prefix</span><span class="p p-Indicator">:</span> <span class="s">&quot;/&quot;</span> <span class="p p-Indicator">}</span>
             <span class="l l-Scalar l-Scalar-Plain">route</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">cluster</span><span class="p p-Indicator">:</span> <span class="nv">service_foo</span> <span class="p p-Indicator">}</span>
 </pre></div>
@@ -263,7 +269,7 @@ in order to detect requested SNI.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.8.0-dev-f95203',
+            VERSION:'1.8.0-dev-cf87d5',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
