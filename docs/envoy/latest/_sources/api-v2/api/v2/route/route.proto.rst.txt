@@ -815,7 +815,9 @@ hash_policy
   hash policies fail to generate a hash, no hash will be produced for
   the route. In this case, the behavior is the same as if no hash policies
   were specified (i.e. the ring hash load balancer will choose a random
-  backend).
+  backend). If a hash policy has the "terminal" attribute set to true, and
+  there is already a hash generated, the hash is returned immediately,
+  ignoring the rest of the hash policy list.
   
   
 .. _envoy_api_field_route.RouteAction.use_websocket:
@@ -971,7 +973,8 @@ Specifies the route's hashing policy if the upstream cluster uses a hashing :ref
   {
     "header": "{...}",
     "cookie": "{...}",
-    "connection_properties": "{...}"
+    "connection_properties": "{...}",
+    "terminal": "..."
   }
 
 .. _envoy_api_field_route.RouteAction.HashPolicy.header:
@@ -997,6 +1000,30 @@ connection_properties
   
   
   Precisely one of :ref:`header <envoy_api_field_route.RouteAction.HashPolicy.header>`, :ref:`cookie <envoy_api_field_route.RouteAction.HashPolicy.cookie>`, :ref:`connection_properties <envoy_api_field_route.RouteAction.HashPolicy.connection_properties>` must be set.
+  
+.. _envoy_api_field_route.RouteAction.HashPolicy.terminal:
+
+terminal
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The flag that shortcircuits the hash computing. This field provides a
+  'fallback' style of configuration: "if a terminal policy doesn't work,
+  fallback to rest of the policy list", it saves time when the terminal
+  policy works.
+  
+  If true, and there is already a hash computed, ignore rest of the
+  list of hash polices.
+  For example, if the following hash methods are configured:
+  
+   ========= ========
+   specifier terminal
+   ========= ========
+   Header A  true
+   Header B  false
+   Header C  false
+   ========= ========
+  
+  The generateHash process ends if policy "header A" generates a hash, as
+  it's a terminal policy.
+  
   
 .. _envoy_api_msg_route.RouteAction.HashPolicy.Header:
 
@@ -1104,7 +1131,7 @@ source_ip
 route.RouteAction.WebSocketProxyConfig
 --------------------------------------
 
-`[route.RouteAction.WebSocketProxyConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L615>`_
+`[route.RouteAction.WebSocketProxyConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L638>`_
 
 
 .. code-block:: json
@@ -1175,7 +1202,7 @@ NOT_FOUND
 route.RedirectAction
 --------------------
 
-`[route.RedirectAction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L663>`_
+`[route.RedirectAction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L686>`_
 
 
 .. code-block:: json
@@ -1244,7 +1271,7 @@ strip_query
 Enum route.RedirectAction.RedirectResponseCode
 ----------------------------------------------
 
-`[route.RedirectAction.RedirectResponseCode proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L682>`_
+`[route.RedirectAction.RedirectResponseCode proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L705>`_
 
 
 .. _envoy_api_enum_value_route.RedirectAction.RedirectResponseCode.MOVED_PERMANENTLY:
@@ -1283,7 +1310,7 @@ PERMANENT_REDIRECT
 route.DirectResponseAction
 --------------------------
 
-`[route.DirectResponseAction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L711>`_
+`[route.DirectResponseAction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L734>`_
 
 
 .. code-block:: json
@@ -1319,7 +1346,7 @@ body
 route.Decorator
 ---------------
 
-`[route.Decorator proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L726>`_
+`[route.Decorator proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L749>`_
 
 
 .. code-block:: json
@@ -1348,7 +1375,7 @@ operation
 route.VirtualCluster
 --------------------
 
-`[route.VirtualCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L755>`_
+`[route.VirtualCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L778>`_
 
 A virtual cluster is a way of specifying a regex matching rule against
 certain important endpoints such that statistics are generated explicitly for
@@ -1412,7 +1439,7 @@ method
 route.RateLimit
 ---------------
 
-`[route.RateLimit proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L780>`_
+`[route.RateLimit proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L803>`_
 
 Global rate limiting :ref:`architecture overview <arch_overview_rate_limit>`.
 
@@ -1458,7 +1485,7 @@ actions
 route.RateLimit.Action
 ----------------------
 
-`[route.RateLimit.Action proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L793>`_
+`[route.RateLimit.Action proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L816>`_
 
 
 .. code-block:: json
@@ -1525,7 +1552,7 @@ header_value_match
 route.RateLimit.Action.SourceCluster
 ------------------------------------
 
-`[route.RateLimit.Action.SourceCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L801>`_
+`[route.RateLimit.Action.SourceCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L824>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1547,7 +1574,7 @@ The following descriptor entry is appended to the descriptor:
 route.RateLimit.Action.DestinationCluster
 -----------------------------------------
 
-`[route.RateLimit.Action.DestinationCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L820>`_
+`[route.RateLimit.Action.DestinationCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L843>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1578,7 +1605,7 @@ settings:
 route.RateLimit.Action.RequestHeaders
 -------------------------------------
 
-`[route.RateLimit.Action.RequestHeaders proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L829>`_
+`[route.RateLimit.Action.RequestHeaders proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L852>`_
 
 The following descriptor entry is appended when a header contains a key that matches the
 *header_name*:
@@ -1615,7 +1642,7 @@ descriptor_key
 route.RateLimit.Action.RemoteAddress
 ------------------------------------
 
-`[route.RateLimit.Action.RemoteAddress proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L845>`_
+`[route.RateLimit.Action.RemoteAddress proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L868>`_
 
 The following descriptor entry is appended to the descriptor and is populated using the
 trusted address from :ref:`x-forwarded-for <config_http_conn_man_headers_x-forwarded-for>`:
@@ -1636,7 +1663,7 @@ trusted address from :ref:`x-forwarded-for <config_http_conn_man_headers_x-forwa
 route.RateLimit.Action.GenericKey
 ---------------------------------
 
-`[route.RateLimit.Action.GenericKey proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L853>`_
+`[route.RateLimit.Action.GenericKey proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L876>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1663,7 +1690,7 @@ descriptor_value
 route.RateLimit.Action.HeaderValueMatch
 ---------------------------------------
 
-`[route.RateLimit.Action.HeaderValueMatch proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L863>`_
+`[route.RateLimit.Action.HeaderValueMatch proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L886>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1713,7 +1740,7 @@ headers
 route.HeaderMatcher
 -------------------
 
-`[route.HeaderMatcher proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L936>`_
+`[route.HeaderMatcher proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L959>`_
 
 .. attention::
 
@@ -1854,7 +1881,7 @@ invert_match
 route.QueryParameterMatcher
 ---------------------------
 
-`[route.QueryParameterMatcher proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1008>`_
+`[route.QueryParameterMatcher proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1031>`_
 
 Query parameter matching treats the query string of a request's :path header
 as an ampersand-separated list of keys and/or key=value elements.
