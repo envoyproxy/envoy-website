@@ -141,7 +141,8 @@ config.filter.network.thrift_proxy.v2alpha1.RouteAction
 
   {
     "cluster": "...",
-    "weighted_clusters": "{...}"
+    "weighted_clusters": "{...}",
+    "metadata_match": "{...}"
   }
 
 .. _envoy_api_field_config.filter.network.thrift_proxy.v2alpha1.RouteAction.cluster:
@@ -163,6 +164,17 @@ weighted_clusters
   
   Precisely one of :ref:`cluster <envoy_api_field_config.filter.network.thrift_proxy.v2alpha1.RouteAction.cluster>`, :ref:`weighted_clusters <envoy_api_field_config.filter.network.thrift_proxy.v2alpha1.RouteAction.weighted_clusters>` must be set.
   
+.. _envoy_api_field_config.filter.network.thrift_proxy.v2alpha1.RouteAction.metadata_match:
+
+metadata_match
+  (:ref:`core.Metadata <envoy_api_msg_core.Metadata>`) Optional endpoint metadata match criteria used by the subset load balancer. Only endpoints in
+  the upstream cluster with metadata matching what is set in this field will be considered.
+  Note that this will be merged with what's provided in :ref: `WeightedCluster.MetadataMatch
+  <envoy_api_field_config.filter.network.thrift_proxy.v2alpha1.WeightedCluster.ClusterWeight.metadata_match>`,
+  with values there taking precedence. Keys and values should be provided under the "envoy.lb"
+  metadata key.
+  
+  
 
 
 .. _envoy_api_msg_config.filter.network.thrift_proxy.v2alpha1.WeightedCluster:
@@ -170,7 +182,7 @@ weighted_clusters
 config.filter.network.thrift_proxy.v2alpha1.WeightedCluster
 -----------------------------------------------------------
 
-`[config.filter.network.thrift_proxy.v2alpha1.WeightedCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/thrift_proxy/v2alpha1/route.proto#L91>`_
+`[config.filter.network.thrift_proxy.v2alpha1.WeightedCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/thrift_proxy/v2alpha1/route.proto#L99>`_
 
 Allows for specification of multiple upstream clusters along with weights that indicate the
 percentage of traffic to be forwarded to each cluster. The router selects an upstream cluster
@@ -193,14 +205,15 @@ clusters
 config.filter.network.thrift_proxy.v2alpha1.WeightedCluster.ClusterWeight
 -------------------------------------------------------------------------
 
-`[config.filter.network.thrift_proxy.v2alpha1.WeightedCluster.ClusterWeight proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/thrift_proxy/v2alpha1/route.proto#L92>`_
+`[config.filter.network.thrift_proxy.v2alpha1.WeightedCluster.ClusterWeight proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/thrift_proxy/v2alpha1/route.proto#L100>`_
 
 
 .. code-block:: json
 
   {
     "name": "...",
-    "weight": "{...}"
+    "weight": "{...}",
+    "metadata_match": "{...}"
   }
 
 .. _envoy_api_field_config.filter.network.thrift_proxy.v2alpha1.WeightedCluster.ClusterWeight.name:
@@ -215,6 +228,17 @@ weight
   (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) When a request matches the route, the choice of an upstream cluster is determined by its
   weight. The sum of weights across all entries in the clusters array determines the total
   weight.
+  
+  
+.. _envoy_api_field_config.filter.network.thrift_proxy.v2alpha1.WeightedCluster.ClusterWeight.metadata_match:
+
+metadata_match
+  (:ref:`core.Metadata <envoy_api_msg_core.Metadata>`) Optional endpoint metadata match criteria used by the subset load balancer. Only endpoints in
+  the upstream cluster with metadata matching what is set in this field, combined with what's
+  provided in :ref: `RouteAction's metadata_match
+  <envoy_api_field_config.filter.network.thrift_proxy.v2alpha1.RouteAction.metadata_match>`,
+  will be considered. Values here will take precedence. Keys and values should be provided
+  under the "envoy.lb" metadata key.
   
   
 

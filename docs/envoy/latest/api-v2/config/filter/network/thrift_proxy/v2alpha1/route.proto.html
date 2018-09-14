@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Thrift Proxy Route Configuration &mdash; envoy 1.8.0-dev-b0ff48 documentation</title>
+  <title>Thrift Proxy Route Configuration &mdash; envoy 1.8.0-dev-c32aed documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.8.0-dev-b0ff48
+                1.8.0-dev-c32aed
               </div>
             
           
@@ -286,7 +286,8 @@ protocols that support headers.</dd>
 <p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/thrift_proxy/v2alpha1/route.proto#L73">[config.filter.network.thrift_proxy.v2alpha1.RouteAction proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;cluster&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;weighted_clusters&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;weighted_clusters&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;metadata_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -305,10 +306,19 @@ assigned to each cluster.</p>
 <p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-config-filter-network-thrift-proxy-v2alpha1-routeaction-cluster"><span class="std std-ref">cluster</span></a>, <a class="reference internal" href="#envoy-api-field-config-filter-network-thrift-proxy-v2alpha1-routeaction-weighted-clusters"><span class="std std-ref">weighted_clusters</span></a> must be set.</p>
 </dd>
 </dl>
+<dl class="docutils" id="envoy-api-field-config-filter-network-thrift-proxy-v2alpha1-routeaction-metadata-match">
+<dt>metadata_match</dt>
+<dd>(<a class="reference internal" href="../../../../../api/v2/core/base.proto.html#envoy-api-msg-core-metadata"><span class="std std-ref">core.Metadata</span></a>) Optional endpoint metadata match criteria used by the subset load balancer. Only endpoints in
+the upstream cluster with metadata matching what is set in this field will be considered.
+Note that this will be merged with what’s provided in :ref: <cite>WeightedCluster.MetadataMatch
+&lt;envoy_api_field_config.filter.network.thrift_proxy.v2alpha1.WeightedCluster.ClusterWeight.metadata_match&gt;</cite>,
+with values there taking precedence. Keys and values should be provided under the “envoy.lb”
+metadata key.</dd>
+</dl>
 </div>
 <div class="section" id="config-filter-network-thrift-proxy-v2alpha1-weightedcluster">
 <span id="envoy-api-msg-config-filter-network-thrift-proxy-v2alpha1-weightedcluster"></span><h2>config.filter.network.thrift_proxy.v2alpha1.WeightedCluster<a class="headerlink" href="#config-filter-network-thrift-proxy-v2alpha1-weightedcluster" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/thrift_proxy/v2alpha1/route.proto#L91">[config.filter.network.thrift_proxy.v2alpha1.WeightedCluster proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/thrift_proxy/v2alpha1/route.proto#L99">[config.filter.network.thrift_proxy.v2alpha1.WeightedCluster proto]</a></p>
 <p>Allows for specification of multiple upstream clusters along with weights that indicate the
 percentage of traffic to be forwarded to each cluster. The router selects an upstream cluster
 based on these weights.</p>
@@ -324,10 +334,11 @@ based on these weights.</p>
 </div>
 <div class="section" id="config-filter-network-thrift-proxy-v2alpha1-weightedcluster-clusterweight">
 <span id="envoy-api-msg-config-filter-network-thrift-proxy-v2alpha1-weightedcluster-clusterweight"></span><h2>config.filter.network.thrift_proxy.v2alpha1.WeightedCluster.ClusterWeight<a class="headerlink" href="#config-filter-network-thrift-proxy-v2alpha1-weightedcluster-clusterweight" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/thrift_proxy/v2alpha1/route.proto#L92">[config.filter.network.thrift_proxy.v2alpha1.WeightedCluster.ClusterWeight proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/thrift_proxy/v2alpha1/route.proto#L100">[config.filter.network.thrift_proxy.v2alpha1.WeightedCluster.ClusterWeight proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;weight&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;weight&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;metadata_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -340,6 +351,15 @@ based on these weights.</p>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) When a request matches the route, the choice of an upstream cluster is determined by its
 weight. The sum of weights across all entries in the clusters array determines the total
 weight.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-config-filter-network-thrift-proxy-v2alpha1-weightedcluster-clusterweight-metadata-match">
+<dt>metadata_match</dt>
+<dd>(<a class="reference internal" href="../../../../../api/v2/core/base.proto.html#envoy-api-msg-core-metadata"><span class="std std-ref">core.Metadata</span></a>) Optional endpoint metadata match criteria used by the subset load balancer. Only endpoints in
+the upstream cluster with metadata matching what is set in this field, combined with what’s
+provided in :ref: <cite>RouteAction’s metadata_match
+&lt;envoy_api_field_config.filter.network.thrift_proxy.v2alpha1.RouteAction.metadata_match&gt;</cite>,
+will be considered. Values here will take precedence. Keys and values should be provided
+under the “envoy.lb” metadata key.</dd>
 </dl>
 </div>
 </div>
@@ -386,7 +406,7 @@ weight.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../../../',
-            VERSION:'1.8.0-dev-b0ff48',
+            VERSION:'1.8.0-dev-c32aed',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
