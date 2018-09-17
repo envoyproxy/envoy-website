@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Common TLS configuration &mdash; envoy 1.8.0-dev-480ad1 documentation</title>
+  <title>Common TLS configuration &mdash; envoy 1.8.0-dev-15cfc5 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.8.0-dev-480ad1
+                1.8.0-dev-15cfc5
               </div>
             
           
@@ -120,6 +120,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#auth-commontlscontext">auth.CommonTlsContext</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#auth-upstreamtlscontext">auth.UpstreamTlsContext</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#auth-downstreamtlscontext">auth.DownstreamTlsContext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#auth-sdssecretconfig">auth.SdsSecretConfig</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#auth-secret">auth.Secret</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../ratelimit/ratelimit.proto.html">Common rate limit components</a></li>
@@ -429,7 +431,9 @@ multiple CRLs, all of them will be used.</dd>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;tls_params&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;tls_certificates&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;tls_certificate_sds_secret_configs&quot;</span><span class="p">:</span> <span class="p">[],</span>
   <span class="nt">&quot;validation_context&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;validation_context_sds_secret_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;alpn_protocols&quot;</span><span class="p">:</span> <span class="p">[]</span>
 <span class="p">}</span>
 </pre></div>
@@ -449,10 +453,20 @@ relaxed in the future.</p>
 </div>
 </dd>
 </dl>
+<dl class="docutils" id="envoy-api-field-auth-commontlscontext-tls-certificate-sds-secret-configs">
+<dt>tls_certificate_sds_secret_configs</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-auth-sdssecretconfig"><span class="std std-ref">auth.SdsSecretConfig</span></a>) Configs for fetching TLS certificates via SDS API.</dd>
+</dl>
 <dl class="docutils" id="envoy-api-field-auth-commontlscontext-validation-context">
 <dt>validation_context</dt>
 <dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-auth-certificatevalidationcontext"><span class="std std-ref">auth.CertificateValidationContext</span></a>) How to validate peer certificates.</p>
-<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-auth-commontlscontext-validation-context"><span class="std std-ref">validation_context</span></a> may be set.</p>
+<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-auth-commontlscontext-validation-context"><span class="std std-ref">validation_context</span></a>, <a class="reference internal" href="#envoy-api-field-auth-commontlscontext-validation-context-sds-secret-config"><span class="std std-ref">validation_context_sds_secret_config</span></a> may be set.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-auth-commontlscontext-validation-context-sds-secret-config">
+<dt>validation_context_sds_secret_config</dt>
+<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-auth-sdssecretconfig"><span class="std std-ref">auth.SdsSecretConfig</span></a>) Config for fetching validation context via SDS API.</p>
+<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-auth-commontlscontext-validation-context"><span class="std std-ref">validation_context</span></a>, <a class="reference internal" href="#envoy-api-field-auth-commontlscontext-validation-context-sds-secret-config"><span class="std std-ref">validation_context_sds_secret_config</span></a> may be set.</p>
 </dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-auth-commontlscontext-alpn-protocols">
@@ -523,6 +537,68 @@ certificate.</dd>
 </dd>
 </dl>
 </div>
+<div class="section" id="auth-sdssecretconfig">
+<span id="envoy-api-msg-auth-sdssecretconfig"></span><h2>auth.SdsSecretConfig<a class="headerlink" href="#auth-sdssecretconfig" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L304">[auth.SdsSecretConfig proto]</a></p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This message type has <a class="reference internal" href="../../../../configuration/overview/v2_overview.html#config-overview-v2-status"><span class="std std-ref">experimental</span></a> status.</p>
+</div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;sds_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-auth-sdssecretconfig-name">
+<dt>name</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Name (FQDN, UUID, SPKI, SHA256, etc.) by which the secret can be uniquely referred to.
+When both name and config are specified, then secret can be fetched and/or reloaded via SDS.
+When only name is specified, then secret will be loaded from static resources [V2-API-DIFF].</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-auth-sdssecretconfig-sds-config">
+<dt>sds_config</dt>
+<dd>(<a class="reference internal" href="../core/config_source.proto.html#envoy-api-msg-core-configsource"><span class="std std-ref">core.ConfigSource</span></a>)</dd>
+</dl>
+</div>
+<div class="section" id="auth-secret">
+<span id="envoy-api-msg-auth-secret"></span><h2>auth.Secret<a class="headerlink" href="#auth-secret" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L313">[auth.Secret proto]</a></p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This message type has <a class="reference internal" href="../../../../configuration/overview/v2_overview.html#config-overview-v2-status"><span class="std std-ref">experimental</span></a> status.</p>
+</div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;tls_certificate&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;session_ticket_keys&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;validation_context&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-auth-secret-name">
+<dt>name</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Name (FQDN, UUID, SPKI, SHA256, etc.) by which the secret can be uniquely referred to.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-auth-secret-tls-certificate">
+<dt>tls_certificate</dt>
+<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-auth-tlscertificate"><span class="std std-ref">auth.TlsCertificate</span></a>)</p>
+<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-auth-secret-tls-certificate"><span class="std std-ref">tls_certificate</span></a>, <a class="reference internal" href="#envoy-api-field-auth-secret-session-ticket-keys"><span class="std std-ref">session_ticket_keys</span></a>, <a class="reference internal" href="#envoy-api-field-auth-secret-validation-context"><span class="std std-ref">validation_context</span></a> may be set.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-auth-secret-session-ticket-keys">
+<dt>session_ticket_keys</dt>
+<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-auth-tlssessionticketkeys"><span class="std std-ref">auth.TlsSessionTicketKeys</span></a>)</p>
+<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-auth-secret-tls-certificate"><span class="std std-ref">tls_certificate</span></a>, <a class="reference internal" href="#envoy-api-field-auth-secret-session-ticket-keys"><span class="std std-ref">session_ticket_keys</span></a>, <a class="reference internal" href="#envoy-api-field-auth-secret-validation-context"><span class="std std-ref">validation_context</span></a> may be set.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-auth-secret-validation-context">
+<dt>validation_context</dt>
+<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-auth-certificatevalidationcontext"><span class="std std-ref">auth.CertificateValidationContext</span></a>)</p>
+<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-auth-secret-tls-certificate"><span class="std std-ref">tls_certificate</span></a>, <a class="reference internal" href="#envoy-api-field-auth-secret-session-ticket-keys"><span class="std std-ref">session_ticket_keys</span></a>, <a class="reference internal" href="#envoy-api-field-auth-secret-validation-context"><span class="std std-ref">validation_context</span></a> may be set.</p>
+</dd>
+</dl>
+</div>
 </div>
 
 
@@ -567,7 +643,7 @@ certificate.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../',
-            VERSION:'1.8.0-dev-480ad1',
+            VERSION:'1.8.0-dev-15cfc5',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

@@ -334,7 +334,9 @@ TLS context shared by both client and server TLS contexts.
   {
     "tls_params": "{...}",
     "tls_certificates": [],
+    "tls_certificate_sds_secret_configs": [],
     "validation_context": "{...}",
+    "validation_context_sds_secret_config": "{...}",
     "alpn_protocols": []
   }
 
@@ -356,16 +358,28 @@ tls_certificates
     relaxed in the future.
   
   
+.. _envoy_api_field_auth.CommonTlsContext.tls_certificate_sds_secret_configs:
 
+tls_certificate_sds_secret_configs
+  (:ref:`auth.SdsSecretConfig <envoy_api_msg_auth.SdsSecretConfig>`) Configs for fetching TLS certificates via SDS API.
+  
+  
 .. _envoy_api_field_auth.CommonTlsContext.validation_context:
 
 validation_context
   (:ref:`auth.CertificateValidationContext <envoy_api_msg_auth.CertificateValidationContext>`) How to validate peer certificates.
   
   
-  Only one of :ref:`validation_context <envoy_api_field_auth.CommonTlsContext.validation_context>` may be set.
+  Only one of :ref:`validation_context <envoy_api_field_auth.CommonTlsContext.validation_context>`, :ref:`validation_context_sds_secret_config <envoy_api_field_auth.CommonTlsContext.validation_context_sds_secret_config>` may be set.
   
+.. _envoy_api_field_auth.CommonTlsContext.validation_context_sds_secret_config:
 
+validation_context_sds_secret_config
+  (:ref:`auth.SdsSecretConfig <envoy_api_msg_auth.SdsSecretConfig>`) Config for fetching validation context via SDS API.
+  
+  
+  Only one of :ref:`validation_context <envoy_api_field_auth.CommonTlsContext.validation_context>`, :ref:`validation_context_sds_secret_config <envoy_api_field_auth.CommonTlsContext.validation_context_sds_secret_config>` may be set.
+  
 .. _envoy_api_field_auth.CommonTlsContext.alpn_protocols:
 
 alpn_protocols
@@ -464,4 +478,84 @@ session_ticket_keys
 
 
 
+.. _envoy_api_msg_auth.SdsSecretConfig:
+
+auth.SdsSecretConfig
+--------------------
+
+`[auth.SdsSecretConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L304>`_
+
+
+
+.. WARNING::
+ This message type has :ref:`experimental <config_overview_v2_status>` status.
+.. code-block:: json
+
+  {
+    "name": "...",
+    "sds_config": "{...}"
+  }
+
+.. _envoy_api_field_auth.SdsSecretConfig.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Name (FQDN, UUID, SPKI, SHA256, etc.) by which the secret can be uniquely referred to.
+  When both name and config are specified, then secret can be fetched and/or reloaded via SDS.
+  When only name is specified, then secret will be loaded from static resources [V2-API-DIFF].
+  
+  
+.. _envoy_api_field_auth.SdsSecretConfig.sds_config:
+
+sds_config
+  (:ref:`core.ConfigSource <envoy_api_msg_core.ConfigSource>`) 
+  
+
+
+.. _envoy_api_msg_auth.Secret:
+
+auth.Secret
+-----------
+
+`[auth.Secret proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L313>`_
+
+
+
+.. WARNING::
+ This message type has :ref:`experimental <config_overview_v2_status>` status.
+.. code-block:: json
+
+  {
+    "name": "...",
+    "tls_certificate": "{...}",
+    "session_ticket_keys": "{...}",
+    "validation_context": "{...}"
+  }
+
+.. _envoy_api_field_auth.Secret.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Name (FQDN, UUID, SPKI, SHA256, etc.) by which the secret can be uniquely referred to.
+  
+  
+.. _envoy_api_field_auth.Secret.tls_certificate:
+
+tls_certificate
+  (:ref:`auth.TlsCertificate <envoy_api_msg_auth.TlsCertificate>`) 
+  
+  Only one of :ref:`tls_certificate <envoy_api_field_auth.Secret.tls_certificate>`, :ref:`session_ticket_keys <envoy_api_field_auth.Secret.session_ticket_keys>`, :ref:`validation_context <envoy_api_field_auth.Secret.validation_context>` may be set.
+  
+.. _envoy_api_field_auth.Secret.session_ticket_keys:
+
+session_ticket_keys
+  (:ref:`auth.TlsSessionTicketKeys <envoy_api_msg_auth.TlsSessionTicketKeys>`) 
+  
+  Only one of :ref:`tls_certificate <envoy_api_field_auth.Secret.tls_certificate>`, :ref:`session_ticket_keys <envoy_api_field_auth.Secret.session_ticket_keys>`, :ref:`validation_context <envoy_api_field_auth.Secret.validation_context>` may be set.
+  
+.. _envoy_api_field_auth.Secret.validation_context:
+
+validation_context
+  (:ref:`auth.CertificateValidationContext <envoy_api_msg_auth.CertificateValidationContext>`) 
+  
+  Only one of :ref:`tls_certificate <envoy_api_field_auth.Secret.tls_certificate>`, :ref:`session_ticket_keys <envoy_api_field_auth.Secret.session_ticket_keys>`, :ref:`validation_context <envoy_api_field_auth.Secret.validation_context>` may be set.
+  
 
