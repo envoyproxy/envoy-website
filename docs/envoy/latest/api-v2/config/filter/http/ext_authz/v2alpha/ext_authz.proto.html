@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>External Authorization &mdash; envoy 1.8.0-dev-b3645c documentation</title>
+  <title>External Authorization &mdash; envoy 1.8.0-dev-d64694 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.8.0-dev-b3645c
+                1.8.0-dev-d64694
               </div>
             
           
@@ -235,13 +235,13 @@ The default timeout is set to 200ms by this filter.</p>
 <dt>failure_mode_allow</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) The filter’s behaviour in case the external authorization service does
 not respond back. When it is set to true, Envoy will also allow traffic in case of
-communication failure between authorization service and the proxy.
+an error occurs during the authorization process.
 Defaults to false.</dd>
 </dl>
 </div>
 <div class="section" id="config-filter-http-ext-authz-v2alpha-httpservice">
 <span id="envoy-api-msg-config-filter-http-ext-authz-v2alpha-httpservice"></span><h2>config.filter.http.ext_authz.v2alpha.HttpService<a class="headerlink" href="#config-filter-http-ext-authz-v2alpha-httpservice" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L52">[config.filter.http.ext_authz.v2alpha.HttpService proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L65">[config.filter.http.ext_authz.v2alpha.HttpService proto]</a></p>
 <p>External Authorization filter calls out to an upstream authorization server by passing the raw
 HTTP request headers to the server. This allows the authorization service to take a decision
 whether the request is authorized or not.</p>
@@ -249,10 +249,23 @@ whether the request is authorized or not.</p>
 original request before dispatching it to the upstream. This is done by configuring which headers
 in the authorization response should be sent to the upstream. See <em>allowed_authorization_headers</em>
 bellow.</p>
-<p>A failed check will cause this filter to close the HTTP request normally with 403 (Forbidden),
+<p>A failed check will cause this filter to close the HTTP request with 403 (Forbidden),
 unless a different status code has been indicated by the authorization server via response
-headers. If other headers in the authorization response need to be sent to client, this can also
-be done by specifying them in <em>allowed_authorization_headers</em>.</p>
+headers.</p>
+<p>If an error happens during the checking process, two situations may occur depending on the
+filter’s configuration:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>When <em>failure_mode_allow</em> is true, traffic will be allowed in the presence of an error. This
+includes any of the HTTP 5xx errors, or a communication failure between the filter and the
+authorization server.</li>
+<li>When <em>failure_mode_allow</em> is false, the filter will <em>always</em> return a <em>Forbidden response</em> to
+the client. It will <em>not allow</em> traffic to the upstream in the presence of an error. This
+includes any of the HTTP 5xx errors, or a communication failure between the filter and the
+authorization server.</li>
+</ol>
+</div></blockquote>
+<p>Note that filter will produce stats on error. See <em>Statistics</em> at <a class="reference internal" href="../../../../../../configuration/http_filters/ext_authz_filter.html#config-http-filters-ext-authz"><span class="std std-ref">configuration overview</span></a>.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;server_uri&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;path_prefix&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
@@ -327,7 +340,7 @@ will not contain body data and the <em>Content-Length</em> will be set to zero.<
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../../../',
-            VERSION:'1.8.0-dev-b3645c',
+            VERSION:'1.8.0-dev-d64694',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
