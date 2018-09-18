@@ -32,7 +32,7 @@ region
 zone
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Defines the local service zone where Envoy is running. Though optional, it
   should be set if discovery service routing is used and the discovery
-  service exposes :ref:`zone data <config_cluster_manager_sds_api_host_az>`,
+  service exposes :ref:`zone data <envoy_api_field_endpoint.LocalityLbEndpoints.locality>`,
   either in this message or via :option:`--service-zone`. The meaning of zone
   is context dependent, e.g. `Availability Zone (AZ)
   <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html>`_
@@ -88,9 +88,10 @@ cluster
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Defines the local service cluster name where Envoy is running. Though
   optional, it should be set if any of the following features are used:
   :ref:`statsd <arch_overview_statistics>`, :ref:`health check cluster
-  verification <config_cluster_manager_cluster_hc_service_name>`,
-  :ref:`runtime override directory <config_runtime_override_subdirectory>`,
-  :ref:`user agent addition <config_http_conn_man_add_user_agent>`,
+  verification <envoy_api_field_core.HealthCheck.HttpHealthCheck.service_name>`,
+  :ref:`runtime override directory <envoy_api_msg_config.bootstrap.v2.Runtime>`,
+  :ref:`user agent addition
+  <envoy_api_field_config.filter.network.http_connection_manager.v2.HttpConnectionManager.add_user_agent>`,
   :ref:`HTTP global rate limiting <config_http_filters_rate_limit>`,
   :ref:`CDS <config_cluster_manager_cds>`, and :ref:`HTTP tracing
   <arch_overview_tracing>`, either in this message or via
@@ -125,7 +126,7 @@ build_version
 core.Metadata
 -------------
 
-`[core.Metadata proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L91>`_
+`[core.Metadata proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L92>`_
 
 Metadata provides additional inputs to filters based on matched listeners,
 filter chains, routes and endpoints. It is structured as a map from filter
@@ -166,7 +167,7 @@ filter_metadata
 core.RuntimeUInt32
 ------------------
 
-`[core.RuntimeUInt32 proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L98>`_
+`[core.RuntimeUInt32 proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L99>`_
 
 Runtime derived uint32 with a default when not specified.
 
@@ -196,7 +197,7 @@ runtime_key
 core.HeaderValue
 ----------------
 
-`[core.HeaderValue proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L133>`_
+`[core.HeaderValue proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L134>`_
 
 Header name/value pair.
 
@@ -230,7 +231,7 @@ value
 core.HeaderValueOption
 ----------------------
 
-`[core.HeaderValueOption proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L146>`_
+`[core.HeaderValueOption proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L147>`_
 
 Header name/value pair plus option to control append behavior.
 
@@ -261,7 +262,7 @@ append
 core.DataSource
 ---------------
 
-`[core.DataSource proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L156>`_
+`[core.DataSource proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L157>`_
 
 Data source consisting of either a file or an inline value.
 
@@ -304,10 +305,10 @@ inline_string
 core.TransportSocket
 --------------------
 
-`[core.TransportSocket proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L175>`_
+`[core.TransportSocket proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L176>`_
 
 Configuration for transport socket in :ref:`listeners <config_listeners>` and
-:ref:`clusters <config_cluster_manager_cluster>`. If the configuration is
+:ref:`clusters <envoy_api_msg_Cluster>`. If the configuration is
 empty, a default transport socket implementation and configuration will be
 chosen based on the platform and existence of tls_context.
 
@@ -339,7 +340,7 @@ config
 core.SocketOption
 -----------------
 
-`[core.SocketOption proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L187>`_
+`[core.SocketOption proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L188>`_
 
 Generic socket option message. This would be used to set socket options that
 might not exist in upstream kernels or precompiled Envoy binaries.
@@ -403,7 +404,7 @@ state
 Enum core.SocketOption.SocketState
 ----------------------------------
 
-`[core.SocketOption.SocketState proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L203>`_
+`[core.SocketOption.SocketState proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L204>`_
 
 
 .. _envoy_api_enum_value_core.SocketOption.SocketState.STATE_PREBIND:
@@ -429,7 +430,7 @@ STATE_LISTENING
 Enum core.RoutingPriority
 -------------------------
 
-`[core.RoutingPriority proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L113>`_
+`[core.RoutingPriority proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L114>`_
 
 Envoy supports :ref:`upstream priority routing
 <arch_overview_http_routing_priority>` both at the route and the virtual
@@ -455,7 +456,7 @@ HIGH
 Enum core.RequestMethod
 -----------------------
 
-`[core.RequestMethod proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L119>`_
+`[core.RequestMethod proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/base.proto#L120>`_
 
 HTTP request method.
 

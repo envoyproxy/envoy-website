@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP routing &mdash; envoy 1.8.0-dev-4715bf documentation</title>
+  <title>HTTP routing &mdash; envoy 1.8.0-dev-1d46c7 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.8.0-dev-4715bf
+                1.8.0-dev-1d46c7
               </div>
             
           
@@ -228,38 +228,38 @@ level the router takes an incoming HTTP request, matches it to an upstream clust
 request. The router filter supports the following features:</p>
 <ul class="simple">
 <li>Virtual hosts that map domains/authorities to a set of routing rules.</li>
-<li>Prefix and exact path matching rules (both <a class="reference internal" href="../../api-v1/route_config/route.html#config-http-conn-man-route-table-route-case-sensitive"><span class="std std-ref">case sensitive</span></a> and case insensitive). Regex/slug
+<li>Prefix and exact path matching rules (both <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routematch-case-sensitive"><span class="std std-ref">case sensitive</span></a> and case insensitive). Regex/slug
 matching is not currently supported, mainly because it makes it difficult/impossible to
 programmatically determine whether routing rules conflict with each other. For this reason we
 don’t recommend regex/slug routing at the reverse proxy level, however we may add support in the
 future depending on demand.</li>
-<li><a class="reference internal" href="../../api-v1/route_config/vhost.html#config-http-conn-man-route-table-vhost-require-ssl"><span class="std std-ref">TLS redirection</span></a> at the virtual host
+<li><a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-virtualhost-require-tls"><span class="std std-ref">TLS redirection</span></a> at the virtual host
 level.</li>
-<li><a class="reference internal" href="../../api-v1/route_config/route.html#config-http-conn-man-route-table-route-path-redirect"><span class="std std-ref">Path</span></a>/<a class="reference internal" href="../../api-v1/route_config/route.html#config-http-conn-man-route-table-route-host-redirect"><span class="std std-ref">host</span></a> redirection at the route level.</li>
+<li><a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-redirectaction-path-redirect"><span class="std std-ref">Path</span></a>/<a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-redirectaction-host-redirect"><span class="std std-ref">host</span></a> redirection at the route level.</li>
 <li><a class="reference internal" href="#arch-overview-http-routing-direct-response"><span class="std std-ref">Direct (non-proxied) HTTP responses</span></a>
 at the route level.</li>
-<li><a class="reference internal" href="../../api-v1/route_config/route.html#config-http-conn-man-route-table-route-host-rewrite"><span class="std std-ref">Explicit host rewriting</span></a>.</li>
-<li><a class="reference internal" href="../../api-v1/route_config/route.html#config-http-conn-man-route-table-route-auto-host-rewrite"><span class="std std-ref">Automatic host rewriting</span></a> based on
+<li><a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-host-rewrite"><span class="std std-ref">Explicit host rewriting</span></a>.</li>
+<li><a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-auto-host-rewrite"><span class="std std-ref">Automatic host rewriting</span></a> based on
 the DNS name of the selected upstream host.</li>
-<li><a class="reference internal" href="../../api-v1/route_config/route.html#config-http-conn-man-route-table-route-prefix-rewrite"><span class="std std-ref">Prefix rewriting</span></a>.</li>
-<li><a class="reference internal" href="../../api-v1/route_config/route.html#config-http-conn-man-route-table-route-use-websocket"><span class="std std-ref">Websocket upgrades</span></a> at route level.</li>
+<li><a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-redirectaction-prefix-rewrite"><span class="std std-ref">Prefix rewriting</span></a>.</li>
+<li><a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-use-websocket"><span class="std std-ref">Websocket upgrades</span></a> at route level.</li>
 <li><a class="reference internal" href="#arch-overview-http-routing-retry"><span class="std std-ref">Request retries</span></a> specified either via HTTP header or via
 route configuration.</li>
 <li>Request timeout specified either via <a class="reference internal" href="../../configuration/http_filters/router_filter.html#config-http-filters-router-headers-consumed"><span class="std std-ref">HTTP
-header</span></a> or via <a class="reference internal" href="../../api-v1/route_config/route.html#config-http-conn-man-route-table-route-timeout"><span class="std std-ref">route configuration</span></a>.</li>
-<li>Traffic shifting from one upstream cluster to another via <a class="reference internal" href="../../api-v1/route_config/route.html#config-http-conn-man-route-table-route-runtime"><span class="std std-ref">runtime values</span></a> (see <a class="reference internal" href="../../configuration/http_conn_man/traffic_splitting.html#config-http-conn-man-route-table-traffic-splitting"><span class="std std-ref">traffic shifting/splitting</span></a>).</li>
-<li>Traffic splitting across multiple upstream clusters using <a class="reference internal" href="../../api-v1/route_config/route.html#config-http-conn-man-route-table-route-weighted-clusters"><span class="std std-ref">weight/percentage-based routing</span></a> (see <a class="reference internal" href="../../configuration/http_conn_man/traffic_splitting.html#config-http-conn-man-route-table-traffic-splitting-split"><span class="std std-ref">traffic shifting/splitting</span></a>).</li>
-<li>Arbitrary header matching <a class="reference internal" href="../../api-v1/route_config/route.html#config-http-conn-man-route-table-route-headers"><span class="std std-ref">routing rules</span></a>.</li>
+header</span></a> or via <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-timeout"><span class="std std-ref">route configuration</span></a>.</li>
+<li>Traffic shifting from one upstream cluster to another via <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routematch-runtime"><span class="std std-ref">runtime values</span></a> (see <a class="reference internal" href="../../configuration/http_conn_man/traffic_splitting.html#config-http-conn-man-route-table-traffic-splitting"><span class="std std-ref">traffic shifting/splitting</span></a>).</li>
+<li>Traffic splitting across multiple upstream clusters using <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-weighted-clusters"><span class="std std-ref">weight/percentage-based routing</span></a> (see <a class="reference internal" href="../../configuration/http_conn_man/traffic_splitting.html#config-http-conn-man-route-table-traffic-splitting-split"><span class="std std-ref">traffic shifting/splitting</span></a>).</li>
+<li>Arbitrary header matching <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-msg-route-headermatcher"><span class="std std-ref">routing rules</span></a>.</li>
 <li>Virtual cluster specifications. A virtual cluster is specified at the virtual host level and is
 used by Envoy to generate additional statistics on top of the standard cluster level ones. Virtual
 clusters can use regex matching.</li>
 <li><a class="reference internal" href="#arch-overview-http-routing-priority"><span class="std std-ref">Priority</span></a> based routing.</li>
-<li><a class="reference internal" href="../../api-v1/route_config/route.html#config-http-conn-man-route-table-hash-policy"><span class="std std-ref">Hash policy</span></a> based routing.</li>
-<li><a class="reference internal" href="../../api-v1/network_filters/http_conn_man.html#config-http-conn-man-http1-settings"><span class="std std-ref">Absolute urls</span></a> are supported for non-tls forward proxies.</li>
+<li><a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-hash-policy"><span class="std std-ref">Hash policy</span></a> based routing.</li>
+<li><a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-http-protocol-options"><span class="std std-ref">Absolute urls</span></a> are supported for non-tls forward proxies.</li>
 </ul>
 <div class="section" id="route-table">
 <h2>Route table<a class="headerlink" href="#route-table" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="../../configuration/http_conn_man/http_conn_man.html#config-http-conn-man"><span class="std std-ref">configuration</span></a> for the HTTP connection manager owns the <a class="reference internal" href="../../api-v1/route_config/route_config.html#config-http-conn-man-route-table"><span class="std std-ref">route
+<p>The <a class="reference internal" href="../../configuration/http_conn_man/http_conn_man.html#config-http-conn-man"><span class="std std-ref">configuration</span></a> for the HTTP connection manager owns the <a class="reference internal" href="../../api-v2/api/v2/rds.proto.html#envoy-api-msg-routeconfiguration"><span class="std std-ref">route
 table</span></a> that is used by all configured HTTP filters. Although the
 router filter is the primary consumer of the route table, other filters also have access in case
 they want to make decisions based on the ultimate destination of the request. For example, the built
@@ -270,7 +270,7 @@ case of a runtime configuration route rule).</p>
 </div>
 <div class="section" id="retry-semantics">
 <span id="arch-overview-http-routing-retry"></span><h2>Retry semantics<a class="headerlink" href="#retry-semantics" title="Permalink to this headline">¶</a></h2>
-<p>Envoy allows retries to be configured both in the <a class="reference internal" href="../../api-v1/route_config/route.html#config-http-conn-man-route-table-route-retry"><span class="std std-ref">route configuration</span></a> as well as for specific requests via <a class="reference internal" href="../../configuration/http_filters/router_filter.html#config-http-filters-router-headers-consumed"><span class="std std-ref">request
+<p>Envoy allows retries to be configured both in the <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-retry-policy"><span class="std std-ref">route configuration</span></a> as well as for specific requests via <a class="reference internal" href="../../configuration/http_filters/router_filter.html#config-http-filters-router-headers-consumed"><span class="std std-ref">request
 headers</span></a>. The following configurations are possible:</p>
 <ul class="simple">
 <li><strong>Maximum number of retries</strong>: Envoy will continue to retry any number of times. An exponential
@@ -284,7 +284,7 @@ etc.</li>
 </div>
 <div class="section" id="priority-routing">
 <span id="arch-overview-http-routing-priority"></span><h2>Priority routing<a class="headerlink" href="#priority-routing" title="Permalink to this headline">¶</a></h2>
-<p>Envoy supports priority routing at the <a class="reference internal" href="../../api-v1/route_config/route.html#config-http-conn-man-route-table-route"><span class="std std-ref">route</span></a> level.
+<p>Envoy supports priority routing at the <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-msg-route-route"><span class="std std-ref">route</span></a> level.
 The current priority implementation uses different <a class="reference internal" href="connection_pooling.html#arch-overview-conn-pool"><span class="std std-ref">connection pool</span></a>
 and <a class="reference internal" href="../../configuration/cluster_manager/cluster_circuit_breakers.html#config-cluster-manager-cluster-circuit-breakers"><span class="std std-ref">circuit breaking</span></a> settings for each
 priority level. This means that even for HTTP/2 requests, two physical connections will be used to
@@ -361,7 +361,7 @@ Envoy will include the specified headers in the direct HTTP response.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.8.0-dev-4715bf',
+            VERSION:'1.8.0-dev-1d46c7',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
