@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Thrift proxy &mdash; envoy 1.8.0-dev-1d46c7 documentation</title>
+  <title>Thrift proxy &mdash; envoy 1.8.0-dev-21c6d1 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.8.0-dev-1d46c7
+                1.8.0-dev-21c6d1
               </div>
             
           
@@ -106,6 +106,7 @@
 <li class="toctree-l3"><a class="reference internal" href="tcp_proxy_filter.html">TCP proxy</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Thrift proxy</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#cluster-protocol-options">Cluster Protocol Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#thrift-request-metadata">Thrift Request Metadata</a></li>
 </ul>
 </li>
 </ul>
@@ -208,6 +209,47 @@ keyed by <cite>envoy.filters.network.thrift_proxy</cite>. The
 <a class="reference internal" href="../../api-v2/config/filter/network/thrift_proxy/v2alpha1/thrift_proxy.proto.html#envoy-api-msg-config-filter-network-thrift-proxy-v2alpha1-thriftprotocoloptions"><span class="std std-ref">ThriftProtocolOptions</span></a>
 message describes the available options.</p>
 </div>
+<div class="section" id="thrift-request-metadata">
+<h2>Thrift Request Metadata<a class="headerlink" href="#thrift-request-metadata" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="../../api-v2/config/filter/network/thrift_proxy/v2alpha1/thrift_proxy.proto.html#envoy-api-enum-value-config-filter-network-thrift-proxy-v2alpha1-transporttype-header"><span class="std std-ref">HEADER transport</span></a>
+and <a class="reference internal" href="../../api-v2/config/filter/network/thrift_proxy/v2alpha1/thrift_proxy.proto.html#envoy-api-enum-value-config-filter-network-thrift-proxy-v2alpha1-protocoltype-twitter"><span class="std std-ref">TWITTER protocol</span></a>
+support metadata. In particular, the
+<a class="reference external" href="https://github.com/apache/thrift/blob/master/doc/specs/HeaderFormat.md">Header transport</a>
+supports informational key/value pairs and the Twitter protocol transmits
+<a class="reference external" href="https://github.com/twitter/finagle/blob/master/finagle-thrift/src/main/thrift/tracing.thrift">tracing and request context data</a>.</p>
+<div class="section" id="header-transport-metadata">
+<h3>Header Transport Metadata<a class="headerlink" href="#header-transport-metadata" title="Permalink to this headline">¶</a></h3>
+<p>Header transport key/value pairs are available for routing as
+<a class="reference internal" href="../../api-v2/config/filter/network/thrift_proxy/v2alpha1/route.proto.html#envoy-api-field-config-filter-network-thrift-proxy-v2alpha1-routematch-headers"><span class="std std-ref">headers</span></a>.</p>
+</div>
+<div class="section" id="twitter-protocol-metadata">
+<h3>Twitter Protocol Metadata<a class="headerlink" href="#twitter-protocol-metadata" title="Permalink to this headline">¶</a></h3>
+<p>Twitter protocol request contexts are converted into headers which are available for routing as
+<a class="reference internal" href="../../api-v2/config/filter/network/thrift_proxy/v2alpha1/route.proto.html#envoy-api-field-config-filter-network-thrift-proxy-v2alpha1-routematch-headers"><span class="std std-ref">headers</span></a>.
+In addition, the following fields are presented as headers:</p>
+<dl class="docutils">
+<dt>Client Identifier</dt>
+<dd>The ClientId’s <cite>name</cite> field (nested in the RequestHeader <cite>client_id</cite> field) becomes the
+<cite>:client-id</cite> header.</dd>
+<dt>Destination</dt>
+<dd>The RequestHeader <cite>dest</cite> field becomes the <cite>:dest</cite> header.</dd>
+<dt>Delegations</dt>
+<dd>Each Delegation from the RequestHeader <cite>delegations</cite> field is added as a header. The header
+name is the prefix <cite>:d:</cite> followed by the Delegation’s <cite>src</cite>. The value is the Delegation’s
+<cite>dst</cite> field.</dd>
+</dl>
+</div>
+<div class="section" id="metadata-interoperability">
+<h3>Metadata Interoperability<a class="headerlink" href="#metadata-interoperability" title="Permalink to this headline">¶</a></h3>
+<p>Request metadata that is available for routing (see above) is automatically converted between wire
+formats when translation between downstream and upstream connections occurs. Twitter protocol
+request contexts, client id, destination, and delegations are therefore presented as Header
+transport key/value pairs, named as above. Similarly, Header transport key/value pairs are
+presented as Twitter protocol RequestContext values, unless they match the special names described
+above. For instance, a downstream Header transport request with the info key “:client-id” is
+translated to an upstream Twitter protocol request with a ClientId value.</p>
+</div>
+</div>
 </div>
 
 
@@ -252,7 +294,7 @@ message describes the available options.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.8.0-dev-1d46c7',
+            VERSION:'1.8.0-dev-21c6d1',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
