@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TCP Proxy &mdash; envoy 1.8.0-dev-f1d31d documentation</title>
+  <title>TCP Proxy &mdash; envoy 1.8.0-dev-10625c documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.8.0-dev-f1d31d
+                1.8.0-dev-10625c
               </div>
             
           
@@ -203,6 +203,7 @@
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;stat_prefix&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;cluster&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;weighted_clusters&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;metadata_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;idle_timeout&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;access_log&quot;</span><span class="p">:</span> <span class="p">[],</span>
@@ -218,15 +219,29 @@
 <dl class="docutils" id="envoy-api-field-config-filter-network-tcp-proxy-v2-tcpproxy-cluster">
 <dt>cluster</dt>
 <dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The upstream cluster to connect to.</p>
-<div class="last admonition note">
+<div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Once full filter chain matching is implemented in listeners, this field will become the only
 way to configure the target cluster. All other matching will be done via <a class="reference internal" href="../../../../../api/v2/listener/listener.proto.html#envoy-api-msg-listener-filterchainmatch"><span class="std std-ref">filter chain
 matching rules</span></a>. For very simple configurations,
-this field can still be used to select the cluster when no other matching rules are required.
-Otherwise, a <a class="reference internal" href="#envoy-api-field-config-filter-network-tcp-proxy-v2-tcpproxy-deprecated-v1"><span class="std std-ref">deprecated_v1</span></a> configuration is
-required to use more complex routing in the interim.</p>
+this field can still be used to select the cluster when no other matching rules are
+required. Otherwise, a <a class="reference internal" href="#envoy-api-field-config-filter-network-tcp-proxy-v2-tcpproxy-deprecated-v1"><span class="std std-ref">deprecated_v1</span></a> configuration
+is required to use more complex routing in the interim.</p>
 </div>
+<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-config-filter-network-tcp-proxy-v2-tcpproxy-cluster"><span class="std std-ref">cluster</span></a>, <a class="reference internal" href="#envoy-api-field-config-filter-network-tcp-proxy-v2-tcpproxy-weighted-clusters"><span class="std std-ref">weighted_clusters</span></a> must be set.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-config-filter-network-tcp-proxy-v2-tcpproxy-weighted-clusters">
+<dt>weighted_clusters</dt>
+<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-config-filter-network-tcp-proxy-v2-tcpproxy-weightedcluster"><span class="std std-ref">config.filter.network.tcp_proxy.v2.TcpProxy.WeightedCluster</span></a>) Multiple upstream clusters can be specified for a given route. The
+request is routed to one of the upstream clusters based on weights
+assigned to each cluster.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This field is ignored if the <a class="reference internal" href="#envoy-api-field-config-filter-network-tcp-proxy-v2-tcpproxy-deprecated-v1"><span class="std std-ref">deprecated_v1</span></a>
+configuration is set.</p>
+</div>
+<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-config-filter-network-tcp-proxy-v2-tcpproxy-cluster"><span class="std std-ref">cluster</span></a>, <a class="reference internal" href="#envoy-api-field-config-filter-network-tcp-proxy-v2-tcpproxy-weighted-clusters"><span class="std std-ref">weighted_clusters</span></a> must be set.</p>
 </dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-config-filter-network-tcp-proxy-v2-tcpproxy-metadata-match">
@@ -267,7 +282,7 @@ giving up. If the parameter is not specified, 1 connection attempt will be made.
 </div>
 <div class="section" id="config-filter-network-tcp-proxy-v2-tcpproxy-deprecatedv1">
 <span id="envoy-api-msg-config-filter-network-tcp-proxy-v2-tcpproxy-deprecatedv1"></span><h2>config.filter.network.tcp_proxy.v2.TcpProxy.DeprecatedV1<a class="headerlink" href="#config-filter-network-tcp-proxy-v2-tcpproxy-deprecatedv1" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/tcp_proxy/v2/tcp_proxy.proto#L67">[config.filter.network.tcp_proxy.v2.TcpProxy.DeprecatedV1 proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/tcp_proxy/v2/tcp_proxy.proto#L82">[config.filter.network.tcp_proxy.v2.TcpProxy.DeprecatedV1 proto]</a></p>
 <p>TCP Proxy filter configuration using V1 format, until Envoy gets the
 ability to match source/destination at the listener level (called
 <a class="reference internal" href="../../../../../api/v2/listener/listener.proto.html#envoy-api-msg-listener-filterchainmatch"><span class="std std-ref">filter chain match</span></a>).</p>
@@ -284,7 +299,7 @@ table, even if it is empty.</dd>
 </div>
 <div class="section" id="config-filter-network-tcp-proxy-v2-tcpproxy-deprecatedv1-tcproute">
 <span id="envoy-api-msg-config-filter-network-tcp-proxy-v2-tcpproxy-deprecatedv1-tcproute"></span><h2>config.filter.network.tcp_proxy.v2.TcpProxy.DeprecatedV1.TCPRoute<a class="headerlink" href="#config-filter-network-tcp-proxy-v2-tcpproxy-deprecatedv1-tcproute" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/tcp_proxy/v2/tcp_proxy.proto#L75">[config.filter.network.tcp_proxy.v2.TcpProxy.DeprecatedV1.TCPRoute proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/tcp_proxy/v2/tcp_proxy.proto#L90">[config.filter.network.tcp_proxy.v2.TcpProxy.DeprecatedV1.TCPRoute proto]</a></p>
 <p>A TCP proxy route consists of a set of optional L4 criteria and the
 name of a cluster. If a downstream connection matches all the
 specified criteria, the cluster in the route is used for the
@@ -344,6 +359,42 @@ ranges. If the parameter is not specified, the source port is
 ignored.</dd>
 </dl>
 </div>
+<div class="section" id="config-filter-network-tcp-proxy-v2-tcpproxy-weightedcluster">
+<span id="envoy-api-msg-config-filter-network-tcp-proxy-v2-tcpproxy-weightedcluster"></span><h2>config.filter.network.tcp_proxy.v2.TcpProxy.WeightedCluster<a class="headerlink" href="#config-filter-network-tcp-proxy-v2-tcpproxy-weightedcluster" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/tcp_proxy/v2/tcp_proxy.proto#L152">[config.filter.network.tcp_proxy.v2.TcpProxy.WeightedCluster proto]</a></p>
+<p>Allows for specification of multiple upstream clusters along with weights
+that indicate the percentage of traffic to be forwarded to each cluster.
+The router selects an upstream cluster based on these weights.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;clusters&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-config-filter-network-tcp-proxy-v2-tcpproxy-weightedcluster-clusters">
+<dt>clusters</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-config-filter-network-tcp-proxy-v2-tcpproxy-weightedcluster-clusterweight"><span class="std std-ref">config.filter.network.tcp_proxy.v2.TcpProxy.WeightedCluster.ClusterWeight</span></a>, <em>REQUIRED</em>) Specifies one or more upstream clusters associated with the route.</dd>
+</dl>
+</div>
+<div class="section" id="config-filter-network-tcp-proxy-v2-tcpproxy-weightedcluster-clusterweight">
+<span id="envoy-api-msg-config-filter-network-tcp-proxy-v2-tcpproxy-weightedcluster-clusterweight"></span><h2>config.filter.network.tcp_proxy.v2.TcpProxy.WeightedCluster.ClusterWeight<a class="headerlink" href="#config-filter-network-tcp-proxy-v2-tcpproxy-weightedcluster-clusterweight" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/tcp_proxy/v2/tcp_proxy.proto#L153">[config.filter.network.tcp_proxy.v2.TcpProxy.WeightedCluster.ClusterWeight proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;weight&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-config-filter-network-tcp-proxy-v2-tcpproxy-weightedcluster-clusterweight-name">
+<dt>name</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) Name of the upstream cluster.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-config-filter-network-tcp-proxy-v2-tcpproxy-weightedcluster-clusterweight-weight">
+<dt>weight</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">uint32</a>) When a request matches the route, the choice of an upstream cluster is
+determined by its weight. The sum of weights across all entries in the
+clusters array determines the total weight.</dd>
+</dl>
+</div>
 </div>
 
 
@@ -388,7 +439,7 @@ ignored.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../../../',
-            VERSION:'1.8.0-dev-f1d31d',
+            VERSION:'1.8.0-dev-10625c',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

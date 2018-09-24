@@ -18,6 +18,7 @@ config.filter.network.tcp_proxy.v2.TcpProxy
   {
     "stat_prefix": "...",
     "cluster": "...",
+    "weighted_clusters": "{...}",
     "metadata_match": "{...}",
     "idle_timeout": "{...}",
     "access_log": [],
@@ -42,12 +43,30 @@ cluster
    Once full filter chain matching is implemented in listeners, this field will become the only
    way to configure the target cluster. All other matching will be done via :ref:`filter chain
    matching rules <envoy_api_msg_listener.FilterChainMatch>`. For very simple configurations,
-   this field can still be used to select the cluster when no other matching rules are required.
-   Otherwise, a :ref:`deprecated_v1
-   <envoy_api_field_config.filter.network.tcp_proxy.v2.TcpProxy.deprecated_v1>` configuration is
-   required to use more complex routing in the interim.
+   this field can still be used to select the cluster when no other matching rules are
+   required. Otherwise, a :ref:`deprecated_v1
+   <envoy_api_field_config.filter.network.tcp_proxy.v2.TcpProxy.deprecated_v1>` configuration
+   is required to use more complex routing in the interim.
   
   
+  
+  Precisely one of :ref:`cluster <envoy_api_field_config.filter.network.tcp_proxy.v2.TcpProxy.cluster>`, :ref:`weighted_clusters <envoy_api_field_config.filter.network.tcp_proxy.v2.TcpProxy.weighted_clusters>` must be set.
+  
+.. _envoy_api_field_config.filter.network.tcp_proxy.v2.TcpProxy.weighted_clusters:
+
+weighted_clusters
+  (:ref:`config.filter.network.tcp_proxy.v2.TcpProxy.WeightedCluster <envoy_api_msg_config.filter.network.tcp_proxy.v2.TcpProxy.WeightedCluster>`) Multiple upstream clusters can be specified for a given route. The
+  request is routed to one of the upstream clusters based on weights
+  assigned to each cluster.
+  
+  .. note::
+  
+   This field is ignored if the :ref:`deprecated_v1
+   <envoy_api_field_config.filter.network.tcp_proxy.v2.TcpProxy.deprecated_v1>`
+   configuration is set.
+  
+  
+  Precisely one of :ref:`cluster <envoy_api_field_config.filter.network.tcp_proxy.v2.TcpProxy.cluster>`, :ref:`weighted_clusters <envoy_api_field_config.filter.network.tcp_proxy.v2.TcpProxy.weighted_clusters>` must be set.
   
 .. _envoy_api_field_config.filter.network.tcp_proxy.v2.TcpProxy.metadata_match:
 
@@ -101,7 +120,7 @@ max_connect_attempts
 config.filter.network.tcp_proxy.v2.TcpProxy.DeprecatedV1
 --------------------------------------------------------
 
-`[config.filter.network.tcp_proxy.v2.TcpProxy.DeprecatedV1 proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/tcp_proxy/v2/tcp_proxy.proto#L67>`_
+`[config.filter.network.tcp_proxy.v2.TcpProxy.DeprecatedV1 proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/tcp_proxy/v2/tcp_proxy.proto#L82>`_
 
 TCP Proxy filter configuration using V1 format, until Envoy gets the
 ability to match source/destination at the listener level (called
@@ -125,7 +144,7 @@ routes
 config.filter.network.tcp_proxy.v2.TcpProxy.DeprecatedV1.TCPRoute
 -----------------------------------------------------------------
 
-`[config.filter.network.tcp_proxy.v2.TcpProxy.DeprecatedV1.TCPRoute proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/tcp_proxy/v2/tcp_proxy.proto#L75>`_
+`[config.filter.network.tcp_proxy.v2.TcpProxy.DeprecatedV1.TCPRoute proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/tcp_proxy/v2/tcp_proxy.proto#L90>`_
 
 A TCP proxy route consists of a set of optional L4 criteria and the
 name of a cluster. If a downstream connection matches all the
@@ -195,6 +214,61 @@ source_ports
   downstream connection is contained in at least one of the specified
   ranges. If the parameter is not specified, the source port is
   ignored.
+  
+  
+
+
+
+.. _envoy_api_msg_config.filter.network.tcp_proxy.v2.TcpProxy.WeightedCluster:
+
+config.filter.network.tcp_proxy.v2.TcpProxy.WeightedCluster
+-----------------------------------------------------------
+
+`[config.filter.network.tcp_proxy.v2.TcpProxy.WeightedCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/tcp_proxy/v2/tcp_proxy.proto#L152>`_
+
+Allows for specification of multiple upstream clusters along with weights
+that indicate the percentage of traffic to be forwarded to each cluster.
+The router selects an upstream cluster based on these weights.
+
+.. code-block:: json
+
+  {
+    "clusters": []
+  }
+
+.. _envoy_api_field_config.filter.network.tcp_proxy.v2.TcpProxy.WeightedCluster.clusters:
+
+clusters
+  (:ref:`config.filter.network.tcp_proxy.v2.TcpProxy.WeightedCluster.ClusterWeight <envoy_api_msg_config.filter.network.tcp_proxy.v2.TcpProxy.WeightedCluster.ClusterWeight>`, *REQUIRED*) Specifies one or more upstream clusters associated with the route.
+  
+  
+.. _envoy_api_msg_config.filter.network.tcp_proxy.v2.TcpProxy.WeightedCluster.ClusterWeight:
+
+config.filter.network.tcp_proxy.v2.TcpProxy.WeightedCluster.ClusterWeight
+-------------------------------------------------------------------------
+
+`[config.filter.network.tcp_proxy.v2.TcpProxy.WeightedCluster.ClusterWeight proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/tcp_proxy/v2/tcp_proxy.proto#L153>`_
+
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "weight": "..."
+  }
+
+.. _envoy_api_field_config.filter.network.tcp_proxy.v2.TcpProxy.WeightedCluster.ClusterWeight.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Name of the upstream cluster.
+  
+  
+.. _envoy_api_field_config.filter.network.tcp_proxy.v2.TcpProxy.WeightedCluster.ClusterWeight.weight:
+
+weight
+  (`uint32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) When a request matches the route, the choice of an upstream cluster is
+  determined by its weight. The sum of weights across all entries in the
+  clusters array determines the total weight.
   
   
 
