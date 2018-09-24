@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP connection manager &mdash; envoy 1.8.0-dev-7e0134 documentation</title>
+  <title>HTTP connection manager &mdash; envoy 1.8.0-dev-aa9478 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.8.0-dev-7e0134
+                1.8.0-dev-aa9478
               </div>
             
           
@@ -214,6 +214,7 @@
   <span class="nt">&quot;idle_timeout&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;stream_idle_timeout&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;drain_timeout&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;delayed_close_timeout&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;access_log&quot;</span><span class="p">:</span> <span class="p">[],</span>
   <span class="nt">&quot;use_remote_address&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;xff_num_trusted_hops&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
@@ -325,6 +326,23 @@ frame is sent and Envoy will start refusing new streams. Draining occurs
 both when a connection hits the idle timeout or during general server
 draining. The default grace period is 5000 milliseconds (5 seconds) if this
 option is not specified.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-delayed-close-timeout">
+<dt>delayed_close_timeout</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The delayed close timeout is for downstream connections managed by the HTTP connection manager.
+It is defined as a grace period after connection close processing has been locally initiated
+during which Envoy will flush the write buffers for the connection and await the peer to close
+(i.e., a TCP FIN/RST is received by Envoy from the downstream connection).</p>
+<p>Delaying Envoy’s connection close and giving the peer the opportunity to initate the close
+sequence mitigates a race condition that exists when downstream clients do not drain/process
+data in a connection’s receive buffer after a remote close has been detected via a socket
+write(). This race leads to such clients failing to process the response code sent by Envoy,
+which could result in erroneous downstream processing.</p>
+<p>If the timeout triggers, Envoy will close the connection’s socket.</p>
+<p>The default timeout is 1000 ms if this option is not specified.</p>
+<p class="last">A value of 0 will completely disable delayed close processing, and the downstream connection’s
+socket will be closed immediately after the write flush is completed.</p>
+</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-access-log">
 <dt>access_log</dt>
@@ -479,7 +497,7 @@ Default: 100%</dd>
 </div>
 <div class="section" id="config-filter-network-http-connection-manager-v2-httpconnectionmanager-internaladdressconfig">
 <span id="envoy-api-msg-config-filter-network-http-connection-manager-v2-httpconnectionmanager-internaladdressconfig"></span><h2>config.filter.network.http_connection_manager.v2.HttpConnectionManager.InternalAddressConfig<a class="headerlink" href="#config-filter-network-http-connection-manager-v2-httpconnectionmanager-internaladdressconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L197">[config.filter.network.http_connection_manager.v2.HttpConnectionManager.InternalAddressConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L216">[config.filter.network.http_connection_manager.v2.HttpConnectionManager.InternalAddressConfig proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;unix_sockets&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
 <span class="p">}</span>
@@ -492,7 +510,7 @@ Default: 100%</dd>
 </div>
 <div class="section" id="config-filter-network-http-connection-manager-v2-httpconnectionmanager-setcurrentclientcertdetails">
 <span id="envoy-api-msg-config-filter-network-http-connection-manager-v2-httpconnectionmanager-setcurrentclientcertdetails"></span><h2>config.filter.network.http_connection_manager.v2.HttpConnectionManager.SetCurrentClientCertDetails<a class="headerlink" href="#config-filter-network-http-connection-manager-v2-httpconnectionmanager-setcurrentclientcertdetails" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L258">[config.filter.network.http_connection_manager.v2.HttpConnectionManager.SetCurrentClientCertDetails proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L277">[config.filter.network.http_connection_manager.v2.HttpConnectionManager.SetCurrentClientCertDetails proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;subject&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;cert&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
@@ -524,7 +542,7 @@ false.</dd>
 </div>
 <div class="section" id="config-filter-network-http-connection-manager-v2-httpconnectionmanager-upgradeconfig">
 <span id="envoy-api-msg-config-filter-network-http-connection-manager-v2-httpconnectionmanager-upgradeconfig"></span><h2>config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfig<a class="headerlink" href="#config-filter-network-http-connection-manager-v2-httpconnectionmanager-upgradeconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L319">[config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L338">[config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfig proto]</a></p>
 <p>The configuration for HTTP upgrades.
 For each upgrade type desired, an UpgradeConfig must be added.</p>
 <div class="admonition warning">
@@ -582,7 +600,7 @@ Prior knowledge is allowed).</dd>
 </div>
 <div class="section" id="enum-config-filter-network-http-connection-manager-v2-httpconnectionmanager-forwardclientcertdetails">
 <span id="envoy-api-enum-config-filter-network-http-connection-manager-v2-httpconnectionmanager-forwardclientcertdetails"></span><h2>Enum config.filter.network.http_connection_manager.v2.HttpConnectionManager.ForwardClientCertDetails<a class="headerlink" href="#enum-config-filter-network-http-connection-manager-v2-httpconnectionmanager-forwardclientcertdetails" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L230">[config.filter.network.http_connection_manager.v2.HttpConnectionManager.ForwardClientCertDetails proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L249">[config.filter.network.http_connection_manager.v2.HttpConnectionManager.ForwardClientCertDetails proto]</a></p>
 <p>How to handle the <a class="reference internal" href="../../../../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-client-cert"><span class="std std-ref">x-forwarded-client-cert</span></a> (XFCC) HTTP
 header.</p>
 <dl class="docutils" id="envoy-api-enum-value-config-filter-network-http-connection-manager-v2-httpconnectionmanager-forwardclientcertdetails-sanitize">
@@ -612,7 +630,7 @@ client connection is mTLS.</dd>
 </div>
 <div class="section" id="config-filter-network-http-connection-manager-v2-rds">
 <span id="envoy-api-msg-config-filter-network-http-connection-manager-v2-rds"></span><h2>config.filter.network.http_connection_manager.v2.Rds<a class="headerlink" href="#config-filter-network-http-connection-manager-v2-rds" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L333">[config.filter.network.http_connection_manager.v2.Rds proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L352">[config.filter.network.http_connection_manager.v2.Rds proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;config_source&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;route_config_name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
@@ -633,7 +651,7 @@ configurations.</dd>
 </div>
 <div class="section" id="config-filter-network-http-connection-manager-v2-httpfilter">
 <span id="envoy-api-msg-config-filter-network-http-connection-manager-v2-httpfilter"></span><h2>config.filter.network.http_connection_manager.v2.HttpFilter<a class="headerlink" href="#config-filter-network-http-connection-manager-v2-httpfilter" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L345">[config.filter.network.http_connection_manager.v2.HttpFilter proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L364">[config.filter.network.http_connection_manager.v2.HttpFilter proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
@@ -713,7 +731,7 @@ instantiated. See the supported filters for further documentation.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../../../',
-            VERSION:'1.8.0-dev-7e0134',
+            VERSION:'1.8.0-dev-aa9478',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
