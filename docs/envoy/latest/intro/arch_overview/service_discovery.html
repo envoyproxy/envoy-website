@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Service discovery &mdash; envoy 1.8.0-dev-05cb41 documentation</title>
+  <title>Service discovery &mdash; envoy 1.8.0-dev-7a97f9 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.8.0-dev-05cb41
+                1.8.0-dev-7a97f9
               </div>
             
           
@@ -263,15 +263,11 @@ Envoy can also pickup the original destination from a <a class="reference intern
 Original destination service discovery must be used with the original destination <a class="reference internal" href="load_balancing.html#arch-overview-load-balancing-types-original-destination"><span class="std std-ref">load
 balancer</span></a>.</p>
 </div>
-<div class="section" id="service-discovery-service-sds">
-<span id="arch-overview-service-discovery-types-sds"></span><h3>Service discovery service (SDS)<a class="headerlink" href="#service-discovery-service-sds" title="Permalink to this headline">¶</a></h3>
-<p>The <em>service discovery service</em> is a generic <a class="reference internal" href="../../api-v1/cluster_manager/sds.html#config-cluster-manager-sds-api"><span class="std std-ref">REST based API</span></a>
-used by Envoy to fetch cluster members. Lyft provides a reference implementation via the Python
-<a class="reference external" href="https://github.com/lyft/discovery">discovery service</a>. That implementation uses AWS DynamoDB as
-the backing store, however the API is simple enough that it could easily be implemented on top of a
-variety of different backing stores. For each SDS cluster, Envoy will periodically fetch the cluster
-members from the discovery service. SDS is the preferred service discovery mechanism for a few
-reasons:</p>
+<div class="section" id="endpoint-discovery-service-eds">
+<span id="arch-overview-service-discovery-types-eds"></span><h3>Endpoint discovery service (EDS)<a class="headerlink" href="#endpoint-discovery-service-eds" title="Permalink to this headline">¶</a></h3>
+<p>The <em>endpoint discovery service</em> is a <a class="reference internal" href="../../configuration/overview/v2_overview.html#config-overview-v2-management-server"><span class="std std-ref">xDS management server based on gRPC or REST-JSON API server</span></a> used by Envoy to fetch cluster members. The cluster members are called
+“endpoint” in Envoy terminology. For each cluster, Envoy fetch the endpoints from the discovery service. EDS is the
+preferred service discovery mechanism for a few reasons:</p>
 <ul class="simple">
 <li>Envoy has explicit knowledge of each upstream host (vs. routing through a DNS resolved load
 balancer) and can make more intelligent load balancing decisions.</li>
@@ -282,6 +278,20 @@ by the Envoy mesh during load balancing, statistic gathering, etc.</li>
 <p>Generally active health checking is used in conjunction with the eventually consistent service
 discovery service data to making load balancing and routing decisions. This is discussed further in
 the following section.</p>
+</div>
+<div class="section" id="service-discovery-service-v1-sds">
+<span id="arch-overview-service-discovery-types-sds"></span><h3>Service discovery service (v1 SDS)<a class="headerlink" href="#service-discovery-service-v1-sds" title="Permalink to this headline">¶</a></h3>
+<p><em>(deprecated)</em> This discovery service was replaced to endpoint discovery service in <a class="reference internal" href="../../configuration/overview/v2_overview.html#config-overview-v2"><span class="std std-ref">v2 xDS
+API</span></a>.</p>
+<p>The <em>service discovery service</em> is a generic <a class="reference internal" href="../../api-v1/cluster_manager/sds.html#config-cluster-manager-sds-api"><span class="std std-ref">REST based API</span></a>
+used by Envoy to fetch cluster members. Lyft provides a reference implementation via the Python
+<a class="reference external" href="https://github.com/lyft/discovery">discovery service</a>. That implementation uses AWS DynamoDB as
+the backing store, however the API is simple enough that it could easily be implemented on top of a
+variety of different backing stores.</p>
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<p class="last">In the current xDS API, the word “SDS” is used as an acronym for <a class="reference internal" href="../../configuration/secret.html#config-secret-discovery-service"><span class="std std-ref">Secret Discovery Service</span></a>.</p>
+</div>
 </div>
 </div>
 <div class="section" id="on-eventually-consistent-service-discovery">
@@ -385,7 +395,7 @@ is the only state in which Envoy will purge host data.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.8.0-dev-05cb41',
+            VERSION:'1.8.0-dev-7a97f9',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
