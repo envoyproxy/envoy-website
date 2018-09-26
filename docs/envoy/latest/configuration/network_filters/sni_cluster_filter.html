@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Route discovery service (RDS) &mdash; envoy 1.8.0-dev-a63750 documentation</title>
+  <title>Upstream Cluster from SNI &mdash; envoy 1.8.0-dev-a63750 documentation</title>
   
 
   
@@ -31,8 +31,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="HTTP filters" href="../http_filters/http_filters.html" />
-    <link rel="prev" title="Runtime" href="runtime.html" /> 
+    <link rel="next" title="HTTP connection manager" href="../http_conn_man/http_conn_man.html" />
+    <link rel="prev" title="Thrift proxy" href="thrift_proxy_filter.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -95,20 +95,20 @@
 <li class="toctree-l2"><a class="reference internal" href="../overview/v2_overview.html">Overview (v2 API)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../listeners/listeners.html">Listeners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../listener_filters/listener_filters.html">Listener filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../network_filters/network_filters.html">Network filters</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="http_conn_man.html">HTTP connection manager</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="route_matching.html">Route matching</a></li>
-<li class="toctree-l3"><a class="reference internal" href="traffic_splitting.html">Traffic Shifting/Splitting</a></li>
-<li class="toctree-l3"><a class="reference internal" href="headers.html">HTTP header manipulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="header_sanitizing.html">HTTP header sanitizing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stats.html">Statistics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="runtime.html">Runtime</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Route discovery service (RDS)</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#statistics">Statistics</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="network_filters.html">Network filters</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="client_ssl_auth_filter.html">Client TLS authentication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="echo_filter.html">Echo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ext_authz_filter.html">External Authorization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mongo_proxy_filter.html">Mongo proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rate_limit_filter.html">Rate limit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbac_filter.html">Role Based Access Control (RBAC) Network Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="redis_proxy_filter.html">Redis proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcp_proxy_filter.html">TCP proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="thrift_proxy_filter.html">Thrift proxy</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Upstream Cluster from SNI</a></li>
 </ul>
 </li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="../http_conn_man/http_conn_man.html">HTTP connection manager</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../http_filters/http_filters.html">HTTP filters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cluster_manager/cluster_manager.html">Cluster manager</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../health_checkers/health_checkers.html">Health checkers</a></li>
@@ -173,15 +173,15 @@
         
           <li><a href="../configuration.html">Configuration reference</a> &raquo;</li>
         
-          <li><a href="http_conn_man.html">HTTP connection manager</a> &raquo;</li>
+          <li><a href="network_filters.html">Network filters</a> &raquo;</li>
         
-      <li>Route discovery service (RDS)</li>
+      <li>Upstream Cluster from SNI</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/configuration/http_conn_man/rds.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/configuration/network_filters/sni_cluster_filter.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -194,62 +194,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="route-discovery-service-rds">
-<span id="config-http-conn-man-rds"></span><h1>Route discovery service (RDS)<a class="headerlink" href="#route-discovery-service-rds" title="Permalink to this headline">¶</a></h1>
-<p>The route discovery service (RDS) API is an optional API that Envoy will call to dynamically fetch
-<a class="reference internal" href="../../api-v2/api/v2/rds.proto.html#envoy-api-msg-routeconfiguration"><span class="std std-ref">route configurations</span></a>. A route configuration includes both
-HTTP header modifications, virtual hosts, and the individual route entries contained within each
-virtual host. Each <a class="reference internal" href="http_conn_man.html#config-http-conn-man"><span class="std std-ref">HTTP connection manager filter</span></a> can independently
-fetch its own route configuration via the API.</p>
+  <div class="section" id="upstream-cluster-from-sni">
+<span id="config-network-filters-sni-cluster"></span><h1>Upstream Cluster from SNI<a class="headerlink" href="#upstream-cluster-from-sni" title="Permalink to this headline">¶</a></h1>
+<p>The <cite>sni_cluster</cite> is a network filter that uses the SNI value in a TLS
+connection as the upstream cluster name. The filter will not modify the
+upstream cluster for non-TLS connections.</p>
+<p>This filter has no configuration. It must be installed before the
+<a class="reference internal" href="tcp_proxy_filter.html#config-network-filters-tcp-proxy"><span class="std std-ref">tcp_proxy</span></a> filter.</p>
 <ul class="simple">
-<li><a class="reference internal" href="../../api-v1/route_config/rds.html#config-http-conn-man-rds-v1"><span class="std std-ref">v1 API reference</span></a></li>
-<li><a class="reference internal" href="../overview/v2_overview.html#v2-grpc-streaming-endpoints"><span class="std std-ref">v2 API reference</span></a></li>
+<li><a class="reference internal" href="../../api-v2/api/v2/listener/listener.proto.html#envoy-api-field-listener-filter-name"><span class="std std-ref">v2 API reference</span></a></li>
 </ul>
-<div class="section" id="statistics">
-<h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
-<p>RDS has a statistics tree rooted at <em>http.&lt;stat_prefix&gt;.rds.&lt;route_config_name&gt;.</em>.
-Any <code class="docutils literal notranslate"><span class="pre">:</span></code> character in the <code class="docutils literal notranslate"><span class="pre">route_config_name</span></code> name gets replaced with <code class="docutils literal notranslate"><span class="pre">_</span></code> in the
-stats tree. The stats tree contains the following statistics:</p>
-<table border="1" class="colwidths-given docutils">
-<colgroup>
-<col width="25%" />
-<col width="25%" />
-<col width="50%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Name</th>
-<th class="head">Type</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>config_reload</td>
-<td>Counter</td>
-<td>Total API fetches that resulted in a config reload due to a different config</td>
-</tr>
-<tr class="row-odd"><td>update_attempt</td>
-<td>Counter</td>
-<td>Total API fetches attempted</td>
-</tr>
-<tr class="row-even"><td>update_success</td>
-<td>Counter</td>
-<td>Total API fetches completed successfully</td>
-</tr>
-<tr class="row-odd"><td>update_failure</td>
-<td>Counter</td>
-<td>Total API fetches that failed because of network errors</td>
-</tr>
-<tr class="row-even"><td>update_rejected</td>
-<td>Counter</td>
-<td>Total API fetches that failed because of schema/validation errors</td>
-</tr>
-<tr class="row-odd"><td>version</td>
-<td>Gauge</td>
-<td>Hash of the contents from the last successful API fetch</td>
-</tr>
-</tbody>
-</table>
-</div>
 </div>
 
 
@@ -260,10 +214,10 @@ stats tree. The stats tree contains the following statistics:</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../http_filters/http_filters.html" class="btn btn-neutral float-right" title="HTTP filters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../http_conn_man/http_conn_man.html" class="btn btn-neutral float-right" title="HTTP connection manager" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="runtime.html" class="btn btn-neutral" title="Runtime" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="thrift_proxy_filter.html" class="btn btn-neutral" title="Thrift proxy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
