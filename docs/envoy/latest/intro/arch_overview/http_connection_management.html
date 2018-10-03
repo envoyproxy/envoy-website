@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP connection management &mdash; envoy 1.8.0-dev-d101ae documentation</title>
+  <title>HTTP connection management &mdash; envoy 1.8.0-dev-3e2eff documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.8.0-dev-d101ae
+                1.8.0-dev-3e2eff
               </div>
             
           
@@ -99,6 +99,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#http-protocols">HTTP protocols</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#http-header-sanitizing">HTTP header sanitizing</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#route-table-configuration">Route table configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#retry-plugin-configuration">Retry plugin configuration</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#timeouts">Timeouts</a></li>
 </ul>
 </li>
@@ -248,6 +249,62 @@ table</span></a>. The route table can be specified in one of two ways:</p>
 <li>Dynamically via the <a class="reference internal" href="../../configuration/http_conn_man/rds.html#config-http-conn-man-rds"><span class="std std-ref">RDS API</span></a>.</li>
 </ul>
 </div>
+<div class="section" id="retry-plugin-configuration">
+<h2>Retry plugin configuration<a class="headerlink" href="#retry-plugin-configuration" title="Permalink to this headline">¶</a></h2>
+<p>Normally during retries, hosts selected for retry attempts will be selected the same way the
+initial request is selected. To modify this behavior retry plugins can be used, which fall into
+two categories:</p>
+<ul class="simple">
+<li><a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-retrypolicy-retry-host-predicate"><span class="std std-ref">**Retry host predicate**</span></a>.
+These can be used to “reject” a host, which will cause host selection to be reattempted. If one or
+more predicates have been configured, host selection will continue until either the host predicates
+accept the host or a configurable
+<a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-retrypolicy-host-selection-retry-max-attempts"><span class="std std-ref">max attempts</span></a>
+has been reached. Any number of these predicates can be specified, and the host will be rejected if
+any of the predicates reject the host.</li>
+<li><a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-retrypolicy-retry-priority"><span class="std std-ref">**Retry priority**</span></a>. These can
+be used to adjust the priority load used when selecting a priority for a retry attempt. Only one such
+plugin may be specified.</li>
+</ul>
+<p>These plugins can be combined to affect both host selection and priority load.</p>
+<p>For example, to configure retries to prefer hosts that haven’t been attempted already, the builtin
+<cite>envoy.retry_host_predicates.other_hosts</cite> predicate can be used:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">retry_policy</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">retry_host_predicate</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.retry_host_predicates.previous_hosts</span>
+  <span class="l l-Scalar l-Scalar-Plain">host_selection_retry_max_attempts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
+</pre></div>
+</div>
+<p>This will reject hosts previously attempted, retrying host selection a maximum of 3 times. The bound
+on attempts is necessary in order to deal with scenarios in which finding an acceptable host is either
+impossible (no hosts satisfy the predicate) or very unlikely (the only suitable host has a very low
+relative weight).</p>
+<p>To configure retries to attempt other priorities during retries, the built in
+<cite>envoy.retry_priority.other_priorities</cite> can be used.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">retry_policy</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">retry_priority</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.retry_priorities.previous_priorities</span>
+    <span class="l l-Scalar l-Scalar-Plain">config</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">update_frequency</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+</pre></div>
+</div>
+<p>This will keep track of previously attempted priorities, and adjust the priority load such that other
+priorites will be targeted in subsequent retry attempts. The <cite>update_frequency</cite> parameter decides how
+often the priority load should be recalculated.</p>
+<p>These plugins can be combined, which will exclude both previously attempted hosts as well as
+previously attempted priorities.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">retry_policy</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">retry_host_predicate</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.retry_host_predicates.previous_hosts</span>
+  <span class="l l-Scalar l-Scalar-Plain">host_selection_retry_max_attempts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
+  <span class="l l-Scalar l-Scalar-Plain">retry_priority</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.retry_priorities.previous_priorities</span>
+    <span class="l l-Scalar l-Scalar-Plain">config</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">update_frequency</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+</pre></div>
+</div>
+<p>Envoy can be extended with custom retry plugins similar to how custom filters can be added.</p>
+</div>
 <div class="section" id="timeouts">
 <h2>Timeouts<a class="headerlink" href="#timeouts" title="Permalink to this headline">¶</a></h2>
 <p>Various configurable timeouts apply to an HTTP connection and its constituent streams:</p>
@@ -311,7 +368,7 @@ the timeout to be overridden via the <em>grpc-timeout</em> request header.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.8.0-dev-d101ae',
+            VERSION:'1.8.0-dev-3e2eff',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
