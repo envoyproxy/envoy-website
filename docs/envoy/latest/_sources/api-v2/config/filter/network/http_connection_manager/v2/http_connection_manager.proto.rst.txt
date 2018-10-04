@@ -29,6 +29,7 @@ config.filter.network.http_connection_manager.v2.HttpConnectionManager
     "idle_timeout": "{...}",
     "stream_idle_timeout": "{...}",
     "drain_timeout": "{...}",
+    "delayed_close_timeout": "{...}",
     "access_log": [],
     "use_remote_address": "{...}",
     "xff_num_trusted_hops": "...",
@@ -172,7 +173,28 @@ drain_timeout
   option is not specified.
   
   
+.. _envoy_api_field_config.filter.network.http_connection_manager.v2.HttpConnectionManager.delayed_close_timeout:
 
+delayed_close_timeout
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The delayed close timeout is for downstream connections managed by the HTTP connection manager.
+  It is defined as a grace period after connection close processing has been locally initiated
+  during which Envoy will flush the write buffers for the connection and await the peer to close
+  (i.e., a TCP FIN/RST is received by Envoy from the downstream connection).
+  
+  Delaying Envoy's connection close and giving the peer the opportunity to initate the close
+  sequence mitigates a race condition that exists when downstream clients do not drain/process
+  data in a connection's receive buffer after a remote close has been detected via a socket
+  write(). This race leads to such clients failing to process the response code sent by Envoy,
+  which could result in erroneous downstream processing.
+  
+  If the timeout triggers, Envoy will close the connection's socket.
+  
+  The default timeout is 1000 ms if this option is not specified.
+  
+  A value of 0 will completely disable delayed close processing, and the downstream connection's
+  socket will be closed immediately after the write flush is completed.
+  
+  
 .. _envoy_api_field_config.filter.network.http_connection_manager.v2.HttpConnectionManager.access_log:
 
 access_log
@@ -383,7 +405,7 @@ EGRESS
 config.filter.network.http_connection_manager.v2.HttpConnectionManager.InternalAddressConfig
 --------------------------------------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.InternalAddressConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L217>`_
+`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.InternalAddressConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L216>`_
 
 
 .. code-block:: json
@@ -405,7 +427,7 @@ unix_sockets
 config.filter.network.http_connection_manager.v2.HttpConnectionManager.SetCurrentClientCertDetails
 --------------------------------------------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.SetCurrentClientCertDetails proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L278>`_
+`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.SetCurrentClientCertDetails proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L277>`_
 
 
 .. code-block:: json
@@ -452,7 +474,7 @@ uri
 config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfig
 ------------------------------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L339>`_
+`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L338>`_
 
 The configuration for HTTP upgrades.
 For each upgrade type desired, an UpgradeConfig must be added.
@@ -531,7 +553,7 @@ HTTP2
 Enum config.filter.network.http_connection_manager.v2.HttpConnectionManager.ForwardClientCertDetails
 ----------------------------------------------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.ForwardClientCertDetails proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L250>`_
+`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.ForwardClientCertDetails proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L249>`_
 
 How to handle the :ref:`config_http_conn_man_headers_x-forwarded-client-cert` (XFCC) HTTP
 header.
@@ -576,7 +598,7 @@ ALWAYS_FORWARD_ONLY
 config.filter.network.http_connection_manager.v2.Rds
 ----------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.Rds proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L353>`_
+`[config.filter.network.http_connection_manager.v2.Rds proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L352>`_
 
 
 .. code-block:: json
@@ -608,7 +630,7 @@ route_config_name
 config.filter.network.http_connection_manager.v2.HttpFilter
 -----------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.HttpFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L365>`_
+`[config.filter.network.http_connection_manager.v2.HttpFilter proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L364>`_
 
 
 .. code-block:: json
