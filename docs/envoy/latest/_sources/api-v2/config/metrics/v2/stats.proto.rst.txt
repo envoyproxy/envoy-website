@@ -10,7 +10,7 @@ Statistics :ref:`architecture overview <arch_overview_statistics>`.
 config.metrics.v2.StatsSink
 ---------------------------
 
-`[config.metrics.v2.StatsSink proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/metrics/v2/stats.proto#L16>`_
+`[config.metrics.v2.StatsSink proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/metrics/v2/stats.proto#L17>`_
 
 Configuration for pluggable stats sinks.
 
@@ -50,7 +50,7 @@ config
 config.metrics.v2.StatsConfig
 -----------------------------
 
-`[config.metrics.v2.StatsConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/metrics/v2/stats.proto#L35>`_
+`[config.metrics.v2.StatsConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/metrics/v2/stats.proto#L36>`_
 
 Statistics configuration such as tagging.
 
@@ -58,7 +58,8 @@ Statistics configuration such as tagging.
 
   {
     "stats_tags": [],
-    "use_all_default_tags": "{...}"
+    "use_all_default_tags": "{...}",
+    "stats_matcher": "{...}"
   }
 
 .. _envoy_api_field_config.metrics.v2.StatsConfig.stats_tags:
@@ -90,6 +91,60 @@ use_all_default_tags
   If not provided, the value is assumed to be true.
   
   
+.. _envoy_api_field_config.metrics.v2.StatsConfig.stats_matcher:
+
+stats_matcher
+  (:ref:`config.metrics.v2.StatsMatcher <envoy_api_msg_config.metrics.v2.StatsMatcher>`) Inclusion/exclusion matcher for stat name creation. If not provided, all stats are instantiated
+  as normal. Preventing the instantiation of certain families of stats can improve memory
+  performance for Envoys running especially large configs.
+  
+  
+
+
+.. _envoy_api_msg_config.metrics.v2.StatsMatcher:
+
+config.metrics.v2.StatsMatcher
+------------------------------
+
+`[config.metrics.v2.StatsMatcher proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/metrics/v2/stats.proto#L67>`_
+
+Configuration for disabling stat instantiation.
+
+.. code-block:: json
+
+  {
+    "reject_all": "...",
+    "exclusion_list": "{...}",
+    "inclusion_list": "{...}"
+  }
+
+.. _envoy_api_field_config.metrics.v2.StatsMatcher.reject_all:
+
+reject_all
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If `reject_all` is true, then all stats are disabled. If `reject_all` is false, then all
+  stats are enabled.
+  
+  
+  Precisely one of :ref:`reject_all <envoy_api_field_config.metrics.v2.StatsMatcher.reject_all>`, :ref:`exclusion_list <envoy_api_field_config.metrics.v2.StatsMatcher.exclusion_list>`, :ref:`inclusion_list <envoy_api_field_config.metrics.v2.StatsMatcher.inclusion_list>` must be set.
+  
+.. _envoy_api_field_config.metrics.v2.StatsMatcher.exclusion_list:
+
+exclusion_list
+  (:ref:`type.matcher.ListStringMatcher <envoy_api_msg_type.matcher.ListStringMatcher>`) Exclusive match. All stats are enabled except for those matching one of the supplied
+  StringMatcher protos.
+  
+  
+  Precisely one of :ref:`reject_all <envoy_api_field_config.metrics.v2.StatsMatcher.reject_all>`, :ref:`exclusion_list <envoy_api_field_config.metrics.v2.StatsMatcher.exclusion_list>`, :ref:`inclusion_list <envoy_api_field_config.metrics.v2.StatsMatcher.inclusion_list>` must be set.
+  
+.. _envoy_api_field_config.metrics.v2.StatsMatcher.inclusion_list:
+
+inclusion_list
+  (:ref:`type.matcher.ListStringMatcher <envoy_api_msg_type.matcher.ListStringMatcher>`) Inclusive match. No stats are enabled except for those matching one of the supplied
+  StringMatcher protos.
+  
+  
+  Precisely one of :ref:`reject_all <envoy_api_field_config.metrics.v2.StatsMatcher.reject_all>`, :ref:`exclusion_list <envoy_api_field_config.metrics.v2.StatsMatcher.exclusion_list>`, :ref:`inclusion_list <envoy_api_field_config.metrics.v2.StatsMatcher.inclusion_list>` must be set.
+  
 
 
 .. _envoy_api_msg_config.metrics.v2.TagSpecifier:
@@ -97,7 +152,7 @@ use_all_default_tags
 config.metrics.v2.TagSpecifier
 ------------------------------
 
-`[config.metrics.v2.TagSpecifier proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/metrics/v2/stats.proto#L64>`_
+`[config.metrics.v2.TagSpecifier proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/metrics/v2/stats.proto#L157>`_
 
 Designates a tag name and value pair. The value may be either a fixed value
 or a regex providing the value via capture groups. The specified tag will be
@@ -206,7 +261,7 @@ fixed_value
 config.metrics.v2.StatsdSink
 ----------------------------
 
-`[config.metrics.v2.StatsdSink proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/metrics/v2/stats.proto#L144>`_
+`[config.metrics.v2.StatsdSink proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/metrics/v2/stats.proto#L237>`_
 
 Stats configuration proto schema for built-in *envoy.statsd* sink. This sink does not support
 tagged metrics.
@@ -277,7 +332,7 @@ prefix
 config.metrics.v2.DogStatsdSink
 -------------------------------
 
-`[config.metrics.v2.DogStatsdSink proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/metrics/v2/stats.proto#L192>`_
+`[config.metrics.v2.DogStatsdSink proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/metrics/v2/stats.proto#L285>`_
 
 Stats configuration proto schema for built-in *envoy.dog_statsd* sink.
 The sink emits stats with `DogStatsD <https://docs.datadoghq.com/guides/dogstatsd/>`_
@@ -314,7 +369,7 @@ prefix
 config.metrics.v2.HystrixSink
 -----------------------------
 
-`[config.metrics.v2.HystrixSink proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/metrics/v2/stats.proto#L217>`_
+`[config.metrics.v2.HystrixSink proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/metrics/v2/stats.proto#L310>`_
 
 Stats configuration proto schema for built-in *envoy.stat_sinks.hystrix* sink.
 The sink emits stats in `text/event-stream
