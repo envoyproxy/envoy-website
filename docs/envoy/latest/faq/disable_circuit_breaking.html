@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Rate limit service &mdash; envoy 1.9.0-dev-d003be documentation</title>
+  <title>Is there a way to disable circuit breaking? &mdash; envoy 1.9.0-dev-d003be documentation</title>
   
 
   
@@ -31,8 +31,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Runtime" href="runtime.html" />
-    <link rel="prev" title="Administration interface" href="admin.html" /> 
+    <link rel="prev" title="Why doesn’t RR load balancing appear to be even?" href="concurrency_lb.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -93,21 +92,19 @@
 <li class="toctree-l1"><a class="reference internal" href="../configuration/configuration.html">Configuration reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../operations/operations.html">Operations and administration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../extending/extending.html">Extending Envoy for custom use cases</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="api.html">v1 API reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="listeners/listeners.html">Listeners</a></li>
-<li class="toctree-l2"><a class="reference internal" href="network_filters/network_filters.html">Network filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="route_config/route_config.html">HTTP Route configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="http_filters/http_filters.html">HTTP filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cluster_manager/cluster_manager.html">Cluster manager</a></li>
-<li class="toctree-l2"><a class="reference internal" href="access_log.html">Access logging</a></li>
-<li class="toctree-l2"><a class="reference internal" href="admin.html">Administration interface</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Rate limit service</a></li>
-<li class="toctree-l2"><a class="reference internal" href="runtime.html">Runtime</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tracing.html">Tracing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-v1/api.html">v1 API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-v2/api.html">v2 API reference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="overview.html">FAQ</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="how_fast_is_envoy.html">How fast is Envoy?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="binaries.html">Where do I get binaries?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sni.html">How do I setup SNI?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zone_aware_routing.html">How do I setup zone aware routing?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zipkin_tracing.html">How do I setup Zipkin tracing?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lb_panic_threshold.html">I setup health checking. When I fail some hosts, Envoy starts routing to all of them again. Why?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concurrency_lb.html">Why doesn’t RR load balancing appear to be even?</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Is there a way to disable circuit breaking?</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../api-v2/api.html">v2 API reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../faq/overview.html">FAQ</a></li>
 </ul>
 
             
@@ -153,15 +150,15 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="api.html">v1 API reference</a> &raquo;</li>
+          <li><a href="overview.html">FAQ</a> &raquo;</li>
         
-      <li>Rate limit service</li>
+      <li>Is there a way to disable circuit breaking?</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/api-v1/rate_limit.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/faq/disable_circuit_breaking.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -174,32 +171,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="rate-limit-service">
-<span id="config-rate-limit-service-v1"></span><h1>Rate limit service<a class="headerlink" href="#rate-limit-service" title="Permalink to this headline">¶</a></h1>
-<p>Rate limit <a class="reference internal" href="../configuration/rate_limit.html#config-rate-limit-service"><span class="std std-ref">configuration overview</span></a>.</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;grpc_service&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;cluster_name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+  <div class="section" id="is-there-a-way-to-disable-circuit-breaking">
+<h1>Is there a way to disable circuit breaking?<a class="headerlink" href="#is-there-a-way-to-disable-circuit-breaking" title="Permalink to this headline">¶</a></h1>
+<p>Envoy comes with <a class="reference internal" href="../api-v2/api/v2/cluster/circuit_breaker.proto.html#envoy-api-msg-cluster-circuitbreakers-thresholds"><span class="std std-ref">certain defaults</span></a>
+for each kind of circuit breaking. Currently, there isn’t a switch to turn
+circuit breaking off completely; however, you could achieve a similar behavior
+by setting these thresholds very high, for example, to <cite>std::numeric_limits&lt;uint32_t&gt;::max()</cite>.</p>
+<p>Following is a sample configuration that tries to effectively disable all kinds
+of circuit breaking by setting the thresholds to a value of <cite>1000000000</cite>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">circuit_breakers</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">thresholds</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">priority</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">HIGH</span>
+    <span class="l l-Scalar l-Scalar-Plain">max_connections</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1000000000</span>
+    <span class="l l-Scalar l-Scalar-Plain">max_pending_requests</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1000000000</span>
+    <span class="l l-Scalar l-Scalar-Plain">max_requests</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1000000000</span>
+    <span class="l l-Scalar l-Scalar-Plain">max_retries</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1000000000</span>
 </pre></div>
 </div>
-<dl class="docutils">
-<dt>type</dt>
-<dd><em>(required, string)</em> Specifies the type of rate limit service to call. Currently the only
-supported option is <em>grpc_service</em> which specifies Lyft’s global rate limit service and
-associated IDL.</dd>
-<dt>config</dt>
-<dd><p class="first"><em>(required, object)</em> Specifies type specific configuration for the rate limit service.</p>
-<dl class="last docutils">
-<dt>cluster_name</dt>
-<dd><em>(required, string)</em> Specifies the cluster manager cluster name that hosts the rate limit
-service. The client will connect to this cluster when it needs to make rate limit service
-requests.</dd>
-</dl>
-</dd>
-</dl>
 </div>
 
 
@@ -210,10 +198,8 @@ requests.</dd>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="runtime.html" class="btn btn-neutral float-right" title="Runtime" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-      
-        <a href="admin.html" class="btn btn-neutral" title="Administration interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="concurrency_lb.html" class="btn btn-neutral" title="Why doesn’t RR load balancing appear to be even?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
