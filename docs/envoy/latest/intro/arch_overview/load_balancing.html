@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Load balancing &mdash; envoy 1.9.0-dev-c42918 documentation</title>
+  <title>Load balancing &mdash; envoy 1.9.0-dev-bc322c documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.9.0-dev-c42918
+                1.9.0-dev-bc322c
               </div>
             
           
@@ -109,8 +109,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#supported-load-balancers">Supported load balancers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#original-destination">Original destination</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#overprovisioning-factor">Overprovisioning Factor</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#panic-threshold">Panic threshold</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#priority-levels">Priority levels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#panic-threshold">Panic threshold</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#zone-aware-routing">Zone aware routing</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#locality-weighted-load-balancing">Locality weighted load balancing</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#load-balancer-subsets">Load Balancer Subsets</a></li>
@@ -332,21 +332,6 @@ percentage of healthy hosts multiplied by the overprovisioning factor drops
 below 100. The default value is 1.4, so a priority level or locality will not be
 considered unhealthy until the percentage of healthy endpoints goes below 72%.</p>
 </div>
-<div class="section" id="panic-threshold">
-<span id="arch-overview-load-balancing-panic-threshold"></span><h2>Panic threshold<a class="headerlink" href="#panic-threshold" title="Permalink to this headline">¶</a></h2>
-<p>During load balancing, Envoy will generally only consider healthy hosts in an upstream cluster.
-However, if the percentage of healthy hosts in the cluster becomes too low, Envoy will disregard
-health status and balance amongst all hosts. This is known as the <em>panic threshold</em>. The default
-panic threshold is 50%. This is <a class="reference internal" href="../../configuration/cluster_manager/cluster_runtime.html#config-cluster-manager-cluster-runtime"><span class="std std-ref">configurable</span></a> via
-runtime as well as in the <a class="reference internal" href="../../api-v2/api/v2/cds.proto.html#envoy-api-field-cluster-commonlbconfig-healthy-panic-threshold"><span class="std std-ref">cluster configuration</span></a>. The panic threshold
-is used to avoid a situation in which host failures cascade throughout the cluster as load
-increases.</p>
-<p>Note that panic thresholds are <em>per-priority</em>. This means that if the percentage of healthy nodes
-in a single priority goes below the threshold, that priority will enter panic mode. In general
-it is discouraged to use panic thresholds in conjunction with priorities, as by the time enough
-nodes are unhealthy to trigger the panic threshold most of the traffic should already have spilled
-over to the next priority level.</p>
-</div>
 <div class="section" id="priority-levels">
 <span id="arch-overview-load-balancing-priority-levels"></span><h2>Priority levels<a class="headerlink" href="#priority-levels" title="Permalink to this headline">¶</a></h2>
 <p>During load balancing, Envoy will generally only consider hosts configured at the highest priority
@@ -360,17 +345,31 @@ With default factor value 1.4, if 80% of the endpoints are healthy, the priority
 healthy because 80*1.4 &gt; 100. As the number of healthy endpoints dips below 72%, the health of the priority level
 goes below 100. At that point the percent of traffic equivalent to the health of P=0 will go to P=0
 and remaining traffic will flow to P=1.</p>
+<p>It is important to understand how Envoy evaluates priority levels’ health. Each priority level is assigned
+a health value which basically is a percentage of healthy hosts in relation to total number of hosts in a given
+priority level multiplied by overprovisioning factor of 1.4.
+A priority level’s health is integer value between 0% and 100%. When there are more than one priority levels
+in a cluster, Envoy adds all priority levels’ health values and caps it at 100%. This is called normalized total health. Value 0% of
+normalized total health means that all hosts in all priority levels are unhealthy. Value 100% of normalized total health may
+describe many situations: all levels have health of 100% or 4 levels have health value of 30% each.
+When normalized total health value is 100%, Envoy assumes that there are enough healthy hosts in all priority
+levels to handle the load. Not all hosts need to be in one priority as Envoy distributes traffic across priority
+levels based on each priority level’s health value.
+In order for load distribution algorithm and normalized total health calculation to work properly, the number of hosts
+in each priority level should be close. Envoy assumes that for example 100% healthy priority level P=1 is able to take
+the entire traffic from P=0 should all its hosts become unhealthy. If P=0 has 10 hosts and P=1 has only 2 hosts, P=1 may be unable
+to take the entire load from P=0, even though P=1 health is 100%.</p>
 <p>Assume a simple set-up with 2 priority levels, P=1 100% healthy.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="34%" />
-<col width="33%" />
-<col width="34%" />
+<col width="46%" />
+<col width="26%" />
+<col width="28%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">P=0 healthy endpoints</th>
-<th class="head">Percent of traffic to P=0</th>
-<th class="head">Percent of traffic to P=1</th>
+<th class="head">Traffic to P=0</th>
+<th class="head">Traffic to P=1</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -407,7 +406,7 @@ P=0 + P=1 goes below 100. At this point the healths will be scaled up to an “e
 <colgroup>
 <col width="29%" />
 <col width="30%" />
-<col width="20%" />
+<col width="21%" />
 <col width="20%" />
 </colgroup>
 <thead valign="bottom">
@@ -516,12 +515,192 @@ P=2 would only receive traffic if the combined health of P=0 + P=1 was less than
 </tbody>
 </table>
 <p>To sum this up in pseudo algorithms:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">load</span> <span class="n">to</span> <span class="n">P_0</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">health</span><span class="p">(</span><span class="n">P_0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">/</span> <span class="n">total_health</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">load</span> <span class="n">to</span> <span class="n">P_0</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">health</span><span class="p">(</span><span class="n">P_0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">/</span> <span class="n">normalized_total_health</span><span class="p">)</span>
 <span class="n">health</span><span class="p">(</span><span class="n">P_X</span><span class="p">)</span> <span class="o">=</span> <span class="mi">140</span> <span class="o">*</span> <span class="n">healthy_P_X_backends</span> <span class="o">/</span> <span class="n">total_P_X_backends</span>
-<span class="n">total_health</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">Σ</span><span class="p">(</span><span class="n">health</span><span class="p">(</span><span class="n">P_0</span><span class="p">)</span><span class="o">...</span><span class="n">health</span><span class="p">(</span><span class="n">P_X</span><span class="p">))</span>
+<span class="n">normalized_total_health</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">Σ</span><span class="p">(</span><span class="n">health</span><span class="p">(</span><span class="n">P_0</span><span class="p">)</span><span class="o">...</span><span class="n">health</span><span class="p">(</span><span class="n">P_X</span><span class="p">))</span>
 <span class="n">load</span> <span class="n">to</span> <span class="n">P_X</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">-</span> <span class="n">Σ</span><span class="p">(</span><span class="n">percent_load</span><span class="p">(</span><span class="n">P_0</span><span class="p">)</span><span class="o">..</span><span class="n">percent_load</span><span class="p">(</span><span class="n">P_X</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="panic-threshold">
+<span id="arch-overview-load-balancing-panic-threshold"></span><h2>Panic threshold<a class="headerlink" href="#panic-threshold" title="Permalink to this headline">¶</a></h2>
+<p>During load balancing, Envoy will generally only consider healthy hosts in an upstream cluster.
+However, if the percentage of healthy hosts in the cluster becomes too low, Envoy will disregard
+health status and balance amongst all hosts. This is known as the <em>panic threshold</em>. The default
+panic threshold is 50%. This is <a class="reference internal" href="../../configuration/cluster_manager/cluster_runtime.html#config-cluster-manager-cluster-runtime"><span class="std std-ref">configurable</span></a> via
+runtime as well as in the <a class="reference internal" href="../../api-v2/api/v2/cds.proto.html#envoy-api-field-cluster-commonlbconfig-healthy-panic-threshold"><span class="std std-ref">cluster configuration</span></a>. The panic threshold
+is used to avoid a situation in which host failures cascade throughout the cluster as load
+increases.</p>
+<p>Panic thresholds work in conjunction with priorities. If number of healthy hosts in a given priority
+goes down, Envoy will try to shift some traffic to lower priorities. If it succeeds in finding enough
+healthy hosts in lower priorities, Envoy will disregard panic thresholds. In mathematical terms,
+if normalized total health across all priority levels is 100%, Envoy disregards panic thresholds but continues to
+distribute traffic load across priorities according to algorithm described <a class="reference internal" href="#arch-overview-load-balancing-priority-levels"><span class="std std-ref">here</span></a>.
+However, when value of normalized total health drops below 100%, Envoy assumes that there is not enough healthy
+hosts across all priority levels. It continues to distribute traffic load across priorities, but if a specific priority level’s
+health is below panic threshold, traffic will go to all hosts in that priority regardless of their health.</p>
+<p>The following examples explain relationship between normalized total health and panic threshold. It is
+assumed that default value of 50% is used for panic threshold.</p>
+<p>Assume a simple set-up with 2 priority levels, P=1 100% healthy. In this scenario
+normalized total health is always 100% and P=0 never enters panic mode and Envoy is able to shift entire traffic to P=1.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="15%" />
+<col width="18%" />
+<col width="15%" />
+<col width="18%" />
+<col width="18%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">P=0 healthy
+endpoints</th>
+<th class="head"><dl class="first last docutils">
+<dt>Traffic</dt>
+<dd>to P=0</dd>
+</dl>
+</th>
+<th class="head">P=0 in panic</th>
+<th class="head">Traffic
+to P=1</th>
+<th class="head">P=1 in panic</th>
+<th class="head">normalized
+total health</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>100%</td>
+<td>100%</td>
+<td>NO</td>
+<td>0%</td>
+<td>NO</td>
+<td>100%</td>
+</tr>
+<tr class="row-odd"><td>72%</td>
+<td>100%</td>
+<td>NO</td>
+<td>0%</td>
+<td>NO</td>
+<td>100%</td>
+</tr>
+<tr class="row-even"><td>71%</td>
+<td>100%</td>
+<td>NO</td>
+<td>0%</td>
+<td>NO</td>
+<td>100%</td>
+</tr>
+<tr class="row-odd"><td>50%</td>
+<td>100%</td>
+<td>NO</td>
+<td>0%</td>
+<td>NO</td>
+<td>100%</td>
+</tr>
+<tr class="row-even"><td>25%</td>
+<td>100%</td>
+<td>NO</td>
+<td>0%</td>
+<td>NO</td>
+<td>100%</td>
+</tr>
+<tr class="row-odd"><td>0%</td>
+<td>100%</td>
+<td>NO</td>
+<td>0%</td>
+<td>NO</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table>
+<p>If P=1 becomes unhealthy, panic threshold continues to be disregarded until the sum of the health
+P=0 + P=1 goes below 100%. At this point Envoy starts checking panic threshold value for each
+priority.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="15%" />
+<col width="11%" />
+<col width="16%" />
+<col width="11%" />
+<col width="16%" />
+<col width="15%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">P=0 healthy
+endpoints</th>
+<th class="head">P=1 healthy
+endpoints</th>
+<th class="head">Traffic
+to P=0</th>
+<th class="head">P=0 in panic</th>
+<th class="head">Traffic
+to P=1</th>
+<th class="head">P=1 in panic</th>
+<th class="head">normalized
+total health</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>100%</td>
+<td>100%</td>
+<td>100%</td>
+<td>NO</td>
+<td>0%</td>
+<td>NO</td>
+<td>100%</td>
+</tr>
+<tr class="row-odd"><td>72%</td>
+<td>72%</td>
+<td>100%</td>
+<td>NO</td>
+<td>0%</td>
+<td>NO</td>
+<td>100%</td>
+</tr>
+<tr class="row-even"><td>71%</td>
+<td>71%</td>
+<td>99%</td>
+<td>NO</td>
+<td>1%</td>
+<td>NO</td>
+<td>100%</td>
+</tr>
+<tr class="row-odd"><td>50%</td>
+<td>60%</td>
+<td>50%</td>
+<td>NO</td>
+<td>50%</td>
+<td>NO</td>
+<td>100%</td>
+</tr>
+<tr class="row-even"><td>25%</td>
+<td>100%</td>
+<td>25%</td>
+<td>NO</td>
+<td>75%</td>
+<td>NO</td>
+<td>100%</td>
+</tr>
+<tr class="row-odd"><td>25%</td>
+<td>25%</td>
+<td>50%</td>
+<td>YES</td>
+<td>50%</td>
+<td>YES</td>
+<td>70%</td>
+</tr>
+<tr class="row-even"><td>5%</td>
+<td>65%</td>
+<td>7%</td>
+<td>YES</td>
+<td>93%</td>
+<td>NO</td>
+<td>98%</td>
+</tr>
+</tbody>
+</table>
+<p>Note that panic thresholds can be configured <em>per-priority</em>.</p>
 </div>
 <div class="section" id="zone-aware-routing">
 <span id="arch-overview-load-balancing-zone-aware-routing"></span><h2>Zone aware routing<a class="headerlink" href="#zone-aware-routing" title="Permalink to this headline">¶</a></h2>
@@ -890,7 +1069,7 @@ route:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.9.0-dev-c42918',
+            VERSION:'1.9.0-dev-bc322c',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
