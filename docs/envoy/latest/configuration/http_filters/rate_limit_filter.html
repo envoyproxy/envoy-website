@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Rate limit &mdash; envoy 1.9.0-dev-4f94a5 documentation</title>
+  <title>Rate limit &mdash; envoy 1.9.0-dev-f1b484 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.9.0-dev-4f94a5
+                1.9.0-dev-f1b484
               </div>
             
           
@@ -226,11 +226,6 @@ apply to a request. Each configuration results in a descriptor being sent to the
 set to true, a 500 response is returned.</p>
 <div class="section" id="composing-actions">
 <span id="config-http-filters-rate-limit-composing-actions"></span><h2>Composing Actions<a class="headerlink" href="#composing-actions" title="Permalink to this headline">¶</a></h2>
-<div class="admonition attention">
-<p class="first admonition-title">Attention</p>
-<p class="last">This section is written for the v1 API but the concepts also apply to the v2 API. It will be
-rewritten to target the v2 API in a future release.</p>
-</div>
 <p>Each <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-msg-route-ratelimit"><span class="std std-ref">rate limit action</span></a> on the route or
 virtual host populates a descriptor entry. A vector of descriptor entries compose a descriptor. To
 create more complex rate limit descriptors, actions can be composed in any order. The descriptor
@@ -243,17 +238,9 @@ will be populated in the order the actions are specified in the configuration.</
 </pre></div>
 </div>
 <p>The configuration would be:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;actions&quot;</span> <span class="p">:</span> <span class="p">[</span>
-  <span class="p">{</span>
-    <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;generic_key&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;descriptor_value&quot;</span> <span class="p">:</span> <span class="s2">&quot;some_value&quot;</span>
-  <span class="p">},</span>
-  <span class="p">{</span>
-    <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;source_cluster&quot;</span>
-  <span class="p">}</span>
-  <span class="p">]</span>
-<span class="p">}</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">actions</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="p p-Indicator">{</span><span class="nv">source_cluster</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{}}</span>
+    <span class="p p-Indicator">-</span> <span class="p p-Indicator">{</span><span class="nv">generic_key</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span><span class="nv">descriptor_value</span><span class="p p-Indicator">:</span> <span class="nv">some_value</span><span class="p p-Indicator">}}</span>
 </pre></div>
 </div>
 </div>
@@ -262,20 +249,10 @@ will be populated in the order the actions are specified in the configuration.</
 <p>If an action doesn’t append a descriptor entry, no descriptor is generated for
 the configuration.</p>
 <p>For the following configuration:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;actions&quot;</span> <span class="p">:</span> <span class="p">[</span>
-  <span class="p">{</span>
-    <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;generic_key&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;descriptor_value&quot;</span> <span class="p">:</span> <span class="s2">&quot;some_value&quot;</span>
-  <span class="p">},</span>
-  <span class="p">{</span>
-    <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;remote_address&quot;</span>
-  <span class="p">},</span>
-  <span class="p">{</span>
-    <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;souce_cluster&quot;</span>
-  <span class="p">}</span>
-  <span class="p">]</span>
-<span class="p">}</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">actions</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="p p-Indicator">{</span><span class="nv">source_cluster</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{}}</span>
+    <span class="p p-Indicator">-</span> <span class="p p-Indicator">{</span><span class="nv">remote_address</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{}}</span>
+    <span class="p p-Indicator">-</span> <span class="p p-Indicator">{</span><span class="nv">generic_key</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span><span class="nv">descriptor_value</span><span class="p p-Indicator">:</span> <span class="nv">some_value</span><span class="p p-Indicator">}}</span>
 </pre></div>
 </div>
 <p>If a request did not set <a class="reference internal" href="../http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a>,
@@ -384,7 +361,7 @@ This can be used to test what would happen before fully enforcing the outcome.</
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.9.0-dev-4f94a5',
+            VERSION:'1.9.0-dev-f1b484',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

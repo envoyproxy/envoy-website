@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Health checking &mdash; envoy 1.9.0-dev-4f94a5 documentation</title>
+  <title>Health checking &mdash; envoy 1.9.0-dev-f1b484 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.9.0-dev-4f94a5
+                1.9.0-dev-f1b484
               </div>
             
           
@@ -204,51 +204,16 @@ documented <a class="reference internal" href="cluster_stats.html#config-cluster
 </ul>
 <div class="section" id="tcp-health-checking">
 <span id="config-cluster-manager-cluster-hc-tcp-health-checking"></span><h2>TCP health checking<a class="headerlink" href="#tcp-health-checking" title="Permalink to this headline">¶</a></h2>
-<div class="admonition attention">
-<p class="first admonition-title">Attention</p>
-<p class="last">This section is written for the v1 API but the concepts also apply to the v2 API. It will be
-rewritten to target the v2 API in a future release.</p>
-</div>
-<p>The type of matching performed is the following (this is the MongoDB health check request and
-response):</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span> <span class="p">{</span>
-   <span class="nt">&quot;send&quot;</span><span class="p">:</span> <span class="p">[</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;39000000&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;EEEEEEEE&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;00000000&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;d4070000&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;00000000&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;746573742e&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;24636d6400&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;00000000&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;FFFFFFFF&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;13000000&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;01&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;70696e6700&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;000000000000f03f&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;00&quot;</span><span class="p">}</span>
-    <span class="p">],</span>
-    <span class="nt">&quot;receive&quot;</span><span class="p">:</span> <span class="p">[</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;EEEEEEEE&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;01000000&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;00000000&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;0000000000000000&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;00000000&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;11000000&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;01&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;6f6b&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;00000000000000f03f&quot;</span><span class="p">},</span>
-     <span class="p">{</span><span class="nt">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;00&quot;</span><span class="p">}</span>
-    <span class="p">]</span>
-<span class="p">}</span>
+<p>The type of matching performed is the following:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">tcp_health_check</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">send</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span><span class="nv">text</span><span class="p p-Indicator">:</span> <span class="s">&#39;0101&#39;</span><span class="p p-Indicator">}</span>
+    <span class="l l-Scalar l-Scalar-Plain">receive</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[{</span><span class="nv">text</span><span class="p p-Indicator">:</span> <span class="s">&#39;02&#39;</span><span class="p p-Indicator">},</span> <span class="p p-Indicator">{</span><span class="nv">text</span><span class="p p-Indicator">:</span> <span class="s">&#39;03&#39;</span><span class="p p-Indicator">}]</span>
 </pre></div>
 </div>
-<p>During each health check cycle, all of the “send” bytes are sent to the target server. Each
-binary block can be of arbitrary length and is just concatenated together when sent. (Separating
-into multiple blocks can be useful for readability).</p>
-<p>When checking the response, “fuzzy” matching is performed such that each binary block must be found,
+<p>During each health check cycle, all of the “send” bytes are sent to the target server.</p>
+<p>When checking the response, “fuzzy” matching is performed such that each block must be found,
 and in the order specified, but not necessarily contiguous. Thus, in the example above,
-“FFFFFFFF” could be inserted in the response between “EEEEEEEE” and “01000000” and the check
+“04” could be inserted in the response between “02” and “03” and the check
 would still pass. This is done to support protocols that insert non-deterministic data, such as
 time, into the response.</p>
 <p>Health checks that require a more complex pattern such as send/receive/send/receive are not
@@ -301,7 +266,7 @@ connection succeeds. A new connection is created for each health check cycle.</p
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.9.0-dev-4f94a5',
+            VERSION:'1.9.0-dev-f1b484',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
