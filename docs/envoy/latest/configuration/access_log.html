@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Access logging &mdash; envoy 1.9.0-dev-10dcbb documentation</title>
+  <title>Access logging &mdash; envoy 1.9.0-dev-de0392 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.9.0-dev-10dcbb
+                1.9.0-dev-de0392
               </div>
             
           
@@ -104,7 +104,10 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Access logging</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#configuration">Configuration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#format-rules">Format rules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#default-format">Default format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#format-strings">Format Strings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#default-format-string">Default Format String</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#format-dictionaries">Format Dictionaries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#command-operators">Command Operators</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="rate_limit.html">Rate limit service</a></li>
@@ -197,14 +200,71 @@
 </div>
 <div class="section" id="format-rules">
 <span id="config-access-log-format"></span><h2>Format rules<a class="headerlink" href="#format-rules" title="Permalink to this headline">¶</a></h2>
-<p>The access log format string contains either command operators or other characters interpreted as a
-plain string. The access log formatter does not make any assumptions about a new line separator, so one
+<p>Access log formats contain command operators that extract the relevant data and insert it.
+They support two formats: <a class="reference internal" href="#config-access-log-format-strings"><span class="std std-ref">“format strings”</span></a> and
+<a class="reference internal" href="#config-access-log-format-dictionaries"><span class="std std-ref">“format dictionaries”</span></a>. In both cases, the command operators
+are used to extract the relevant data, which is then inserted into the specified log format.
+Only one access log format may be specified at a time.</p>
+</div>
+<div class="section" id="format-strings">
+<span id="config-access-log-format-strings"></span><h2>Format Strings<a class="headerlink" href="#format-strings" title="Permalink to this headline">¶</a></h2>
+<p>Format strings are plain strings, specified using the <code class="docutils literal notranslate"><span class="pre">format</span></code> key. They may contain
+either command operators or other characters interpreted as a plain string.
+The access log formatter does not make any assumptions about a new line separator, so one
 has to specified as part of the format string.
-See the <a class="reference internal" href="#config-access-log-default-format"><span class="std std-ref">default format</span></a> for an example.
-Note that the access log line will contain a ‘-‘ character for every not set/empty value.</p>
-<p>The same format strings are used by different types of access logs (such as HTTP and TCP). Some
+See the <a class="reference internal" href="#config-access-log-default-format"><span class="std std-ref">default format</span></a> for an example.</p>
+</div>
+<div class="section" id="default-format-string">
+<span id="config-access-log-default-format"></span><h2>Default Format String<a class="headerlink" href="#default-format-string" title="Permalink to this headline">¶</a></h2>
+<p>If custom format string is not specified, Envoy uses the following default format:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[%START_TIME%] &quot;%REQ(:METHOD)% %REQ(X-ENVOY-ORIGINAL-PATH?:PATH)% %PROTOCOL%&quot;
+%RESPONSE_CODE% %RESPONSE_FLAGS% %BYTES_RECEIVED% %BYTES_SENT% %DURATION%
+%RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)% &quot;%REQ(X-FORWARDED-FOR)%&quot; &quot;%REQ(USER-AGENT)%&quot;
+&quot;%REQ(X-REQUEST-ID)%&quot; &quot;%REQ(:AUTHORITY)%&quot; &quot;%UPSTREAM_HOST%&quot;\n
+</pre></div>
+</div>
+<p>Example of the default Envoy access log format:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[2016-04-15T20:17:00.310Z] &quot;POST /api/v1/locations HTTP/2&quot; 204 - 154 0 226 100 &quot;10.0.35.28&quot;
+&quot;nsq2http&quot; &quot;cc21d9b0-cf5c-432b-8c7e-98aeb7988cd2&quot; &quot;locations&quot; &quot;tcp://10.0.2.1:80&quot;
+</pre></div>
+</div>
+</div>
+<div class="section" id="format-dictionaries">
+<span id="config-access-log-format-dictionaries"></span><h2>Format Dictionaries<a class="headerlink" href="#format-dictionaries" title="Permalink to this headline">¶</a></h2>
+<p>Format dictionaries are dictionaries that specify a structured access log output format,
+specified using the <code class="docutils literal notranslate"><span class="pre">json_format</span></code> key. This allows logs to be output in a structured format
+such as JSON.
+Similar to format strings, command operators are evaluated and their values inserted into the format
+dictionary to construct the log output.</p>
+<p>For example, with the following format provided in the configuration:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;json_format&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;protocol&quot;</span><span class="p">:</span> <span class="s2">&quot;%PROTOCOL%&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;duration&quot;</span><span class="p">:</span> <span class="s2">&quot;%DURATION%&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;my_custom_header&quot;</span><span class="p">:</span> <span class="s2">&quot;%REQ(MY_CUSTOM_HEADER)%&quot;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The following JSON object would be written to the log file:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;protocol&quot;</span><span class="p">:</span> <span class="s2">&quot;HTTP/1.1&quot;</span><span class="p">,</span> <span class="nt">&quot;duration&quot;</span><span class="p">:</span> <span class="s2">&quot;123&quot;</span><span class="p">,</span> <span class="nt">&quot;my_custom_header&quot;</span><span class="p">:</span> <span class="s2">&quot;value_of_MY_CUSTOM_HEADER&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>This allows you to specify a custom key for each command operator.</p>
+<p>Format dictionaries have the following restrictions:</p>
+<ul class="simple">
+<li>The dictionary must map strings to strings (specifically, strings to command operators). Nesting is not currently supported.</li>
+</ul>
+</div>
+<div class="section" id="command-operators">
+<h2>Command Operators<a class="headerlink" href="#command-operators" title="Permalink to this headline">¶</a></h2>
+<p>Command operators are used to extract values that will be inserted into the access logs.
+The same operators are used by different types of access logs (such as HTTP and TCP). Some
 fields may have slightly different meanings, depending on what type of log it is. Differences
 are noted.</p>
+<p>Note that if a value is not set/empty, the logs will contain a ‘-‘ character.</p>
 <p>The following command operators are supported:</p>
 <dl class="docutils" id="config-access-log-format-start-time">
 <dt>%START_TIME%</dt>
@@ -437,21 +497,6 @@ can be set by filters using the <a class="reference external" href="https://gith
 </dd>
 </dl>
 </div>
-<div class="section" id="default-format">
-<span id="config-access-log-default-format"></span><h2>Default format<a class="headerlink" href="#default-format" title="Permalink to this headline">¶</a></h2>
-<p>If custom format is not specified, Envoy uses the following default format:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[%START_TIME%] &quot;%REQ(:METHOD)% %REQ(X-ENVOY-ORIGINAL-PATH?:PATH)% %PROTOCOL%&quot;
-%RESPONSE_CODE% %RESPONSE_FLAGS% %BYTES_RECEIVED% %BYTES_SENT% %DURATION%
-%RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)% &quot;%REQ(X-FORWARDED-FOR)%&quot; &quot;%REQ(USER-AGENT)%&quot;
-&quot;%REQ(X-REQUEST-ID)%&quot; &quot;%REQ(:AUTHORITY)%&quot; &quot;%UPSTREAM_HOST%&quot;\n
-</pre></div>
-</div>
-<p>Example of the default Envoy access log format:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[2016-04-15T20:17:00.310Z] &quot;POST /api/v1/locations HTTP/2&quot; 204 - 154 0 226 100 &quot;10.0.35.28&quot;
-&quot;nsq2http&quot; &quot;cc21d9b0-cf5c-432b-8c7e-98aeb7988cd2&quot; &quot;locations&quot; &quot;tcp://10.0.2.1:80&quot;
-</pre></div>
-</div>
-</div>
 </div>
 
 
@@ -496,7 +541,7 @@ can be set by filters using the <a class="reference external" href="https://gith
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.9.0-dev-10dcbb',
+            VERSION:'1.9.0-dev-de0392',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
