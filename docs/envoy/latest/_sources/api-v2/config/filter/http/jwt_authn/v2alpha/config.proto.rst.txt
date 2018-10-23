@@ -50,7 +50,8 @@ Example:
     "forward": "...",
     "from_headers": [],
     "from_params": [],
-    "forward_payload_header": "..."
+    "forward_payload_header": "...",
+    "payload_in_metadata": "..."
   }
 
 .. _envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtProvider.issuer:
@@ -192,6 +193,27 @@ forward_payload_header
   If it is not specified, the payload will not be forwarded.
   
   
+.. _envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtProvider.payload_in_metadata:
+
+payload_in_metadata
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If non empty, successfully verified JWT payloads will be written to StreamInfo DynamicMetadata
+  in the format as: *namespace* is the jwt_authn filter name as **envoy.filters.http.jwt_authn**
+  The value is the *protobuf::Struct*. The value of this field will be the key for its *fields*
+  and the value is the *protobuf::Struct* converted from JWT JSON payload.
+  
+  For example, if payload_in_metadata is *my_payload*:
+  
+  .. code-block:: yaml
+  
+    envoy.filters.http.jwt_authn:
+      my_payload:
+        iss: https://example.com
+        sub: test@example.com
+        aud: https://example.com
+        exp: 1501281058
+  
+  
+  
 
 
 .. _envoy_api_msg_config.filter.http.jwt_authn.v2alpha.RemoteJwks:
@@ -199,7 +221,7 @@ forward_payload_header
 config.filter.http.jwt_authn.v2alpha.RemoteJwks
 -----------------------------------------------
 
-`[config.filter.http.jwt_authn.v2alpha.RemoteJwks proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L162>`_
+`[config.filter.http.jwt_authn.v2alpha.RemoteJwks proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L180>`_
 
 This message specifies how to fetch JWKS from remote and how to cache it.
 
@@ -237,7 +259,7 @@ cache_duration
 config.filter.http.jwt_authn.v2alpha.JwtHeader
 ----------------------------------------------
 
-`[config.filter.http.jwt_authn.v2alpha.JwtHeader proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L179>`_
+`[config.filter.http.jwt_authn.v2alpha.JwtHeader proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L197>`_
 
 This message specifies a header location to extract JWT token.
 
@@ -269,7 +291,7 @@ value_prefix
 config.filter.http.jwt_authn.v2alpha.ProviderWithAudiences
 ----------------------------------------------------------
 
-`[config.filter.http.jwt_authn.v2alpha.ProviderWithAudiences proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L190>`_
+`[config.filter.http.jwt_authn.v2alpha.ProviderWithAudiences proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L208>`_
 
 Specify a required provider with audiences.
 
@@ -299,7 +321,7 @@ audiences
 config.filter.http.jwt_authn.v2alpha.JwtRequirement
 ---------------------------------------------------
 
-`[config.filter.http.jwt_authn.v2alpha.JwtRequirement proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L238>`_
+`[config.filter.http.jwt_authn.v2alpha.JwtRequirement proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L256>`_
 
 This message specifies a Jwt requirement. An empty message means JWT verification is not
 required. Here are some config examples:
@@ -404,7 +426,7 @@ allow_missing_or_failed
 config.filter.http.jwt_authn.v2alpha.JwtRequirementOrList
 ---------------------------------------------------------
 
-`[config.filter.http.jwt_authn.v2alpha.JwtRequirementOrList proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L264>`_
+`[config.filter.http.jwt_authn.v2alpha.JwtRequirementOrList proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L282>`_
 
 This message specifies a list of RequiredProvider.
 Their results are OR-ed; if any one of them passes, the result is passed
@@ -428,7 +450,7 @@ requirements
 config.filter.http.jwt_authn.v2alpha.JwtRequirementAndList
 ----------------------------------------------------------
 
-`[config.filter.http.jwt_authn.v2alpha.JwtRequirementAndList proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L271>`_
+`[config.filter.http.jwt_authn.v2alpha.JwtRequirementAndList proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L289>`_
 
 This message specifies a list of RequiredProvider.
 Their results are AND-ed; all of them must pass, if one of them fails or missing, it fails.
@@ -452,7 +474,7 @@ requirements
 config.filter.http.jwt_authn.v2alpha.RequirementRule
 ----------------------------------------------------
 
-`[config.filter.http.jwt_authn.v2alpha.RequirementRule proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L297>`_
+`[config.filter.http.jwt_authn.v2alpha.RequirementRule proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L315>`_
 
 This message specifies a Jwt requirement for a specific Route condition.
 Example 1:
@@ -511,7 +533,7 @@ requires
 config.filter.http.jwt_authn.v2alpha.JwtAuthentication
 ------------------------------------------------------
 
-`[config.filter.http.jwt_authn.v2alpha.JwtAuthentication proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L355>`_
+`[config.filter.http.jwt_authn.v2alpha.JwtAuthentication proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L373>`_
 
 This is the Envoy HTTP filter config for JWT authentication.
 
