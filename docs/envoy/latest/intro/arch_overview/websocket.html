@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>New style Upgrade support &mdash; envoy 1.9.0-dev-8fdede documentation</title>
+  <title>WebSocket and HTTP upgrades &mdash; envoy 1.9.0-dev-3004c1 documentation</title>
   
 
   
@@ -26,8 +26,7 @@
 
   
 
-  
-    <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -61,7 +60,7 @@
             
             
               <div class="version">
-                1.9.0-dev-8fdede
+                1.9.0-dev-3004c1
               </div>
             
           
@@ -99,12 +98,9 @@
 <li class="toctree-l3"><a class="reference internal" href="http_filters.html">HTTP filters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="http_routing.html">HTTP routing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="grpc.html">gRPC</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">New style Upgrade support</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#handling-h2-hops-implementation-in-progress">Handling H2 hops (implementation in progress)</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#old-style-websocket-support">Old style WebSocket support</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#old-style-connection-semantics">Old style Connection semantics</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">WebSocket and HTTP upgrades</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#new-style-upgrade-support">New style Upgrade support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#old-style-websocket-support">Old style WebSocket support</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="cluster_manager.html">Cluster manager</a></li>
@@ -196,7 +192,7 @@
         
           <li><a href="arch_overview.html">Architecture overview</a> &raquo;</li>
         
-      <li>New style Upgrade support</li>
+      <li>WebSocket and HTTP upgrades</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -215,10 +211,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <p id="arch-overview-websocket">Envoy currently supports two modes of Upgrade behavior, the new generic upgrade mode, and
+  <div class="section" id="websocket-and-http-upgrades">
+<span id="arch-overview-websocket"></span><h1>WebSocket and HTTP upgrades<a class="headerlink" href="#websocket-and-http-upgrades" title="Permalink to this headline">¶</a></h1>
+<p>Envoy currently supports two modes of Upgrade behavior, the new generic upgrade mode, and
 the old WebSocket-only TCP proxy mode.</p>
 <div class="section" id="new-style-upgrade-support">
-<h1>New style Upgrade support<a class="headerlink" href="#new-style-upgrade-support" title="Permalink to this headline">¶</a></h1>
+<h2>New style Upgrade support<a class="headerlink" href="#new-style-upgrade-support" title="Permalink to this headline">¶</a></h2>
 <p>The new style Upgrade support is intended mainly for WebSocket but may be used for non-WebSocket
 upgrades as well. The new style of upgrades pass both the HTTP headers and the upgrade payload
 through an HTTP filter chain. One may configure the
@@ -232,7 +230,7 @@ one can set up custom
 for the given upgrade type, up to and including only using the router filter to send the WebSocket
 data upstream.</p>
 <div class="section" id="handling-h2-hops-implementation-in-progress">
-<h2>Handling H2 hops (implementation in progress)<a class="headerlink" href="#handling-h2-hops-implementation-in-progress" title="Permalink to this headline">¶</a></h2>
+<h3>Handling H2 hops (implementation in progress)<a class="headerlink" href="#handling-h2-hops-implementation-in-progress" title="Permalink to this headline">¶</a></h3>
 <p>Envoy currently has an alpha implementation of tunneling websockets over H2 streams for deployments
 that prefer a uniform H2 mesh throughout, for example, for a deployment of the form:</p>
 <p>[Client] —- HTTP/1.1 —- [Front Envoy] —- HTTP/2 —- [Sidecar Envoy —- H1  —- App]</p>
@@ -251,7 +249,7 @@ a GET method on the final Envoy-Upstream hop.</p>
 </div>
 </div>
 <div class="section" id="old-style-websocket-support">
-<h1>Old style WebSocket support<a class="headerlink" href="#old-style-websocket-support" title="Permalink to this headline">¶</a></h1>
+<h2>Old style WebSocket support<a class="headerlink" href="#old-style-websocket-support" title="Permalink to this headline">¶</a></h2>
 <p>Envoy supports upgrading a HTTP/1.1 connection to a WebSocket connection.
 Connection upgrade will be allowed only if the downstream client
 sends the correct upgrade headers and the matching HTTP route is explicitly
@@ -266,7 +264,7 @@ retries, rate limits and shadowing are not supported for WebSocket routes.
 However, prefix rewriting, explicit and automatic host rewriting, traffic
 shifting and splitting are supported.</p>
 <div class="section" id="old-style-connection-semantics">
-<h2>Old style Connection semantics<a class="headerlink" href="#old-style-connection-semantics" title="Permalink to this headline">¶</a></h2>
+<h3>Old style Connection semantics<a class="headerlink" href="#old-style-connection-semantics" title="Permalink to this headline">¶</a></h3>
 <p>Even though WebSocket upgrades occur over HTTP/1.1 connections, WebSockets
 proxying works similarly to plain TCP proxy, i.e., Envoy does not interpret
 the websocket frames. The downstream client and/or the upstream server are
@@ -279,6 +277,7 @@ TCP connection. Envoy will not know if the upstream server rejected the upgrade
 request. It is the responsibility of the upstream server to terminate the TCP
 connection, which would cause Envoy to terminate the corresponding downstream
 client connection.</p>
+</div>
 </div>
 </div>
 
@@ -302,7 +301,7 @@ client connection.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016-2018, Envoy Project Authors.
+        &copy; Copyright 2016-2018, Envoy Project Authors
 
     </p>
   </div>
@@ -321,27 +320,18 @@ client connection.</p>
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'1.9.0-dev-8fdede',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
