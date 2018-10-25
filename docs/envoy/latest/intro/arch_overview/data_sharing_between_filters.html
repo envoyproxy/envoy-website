@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP filters &mdash; envoy 1.9.0-dev-d969db documentation</title>
+  <title>Static State &mdash; envoy 1.9.0-dev-d969db documentation</title>
   
 
   
@@ -30,8 +30,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Static State" href="data_sharing_between_filters.html" />
-    <link rel="prev" title="HTTP connection management" href="http_connection_management.html" /> 
+    <link rel="next" title="HTTP routing" href="http_routing.html" />
+    <link rel="prev" title="HTTP filters" href="http_filters.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -95,9 +95,14 @@
 <li class="toctree-l3"><a class="reference internal" href="listener_filters.html">Listener filters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="network_filters.html">Network (L3/L4) filters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="http_connection_management.html">HTTP connection management</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">HTTP filters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="data_sharing_between_filters.html">Static State</a></li>
-<li class="toctree-l3"><a class="reference internal" href="data_sharing_between_filters.html#dynamic-state">Dynamic State</a></li>
+<li class="toctree-l3"><a class="reference internal" href="http_filters.html">HTTP filters</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Static State</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#metadata">Metadata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#typed-metadata">Typed Metadata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#http-per-route-filter-configuration">HTTP Per-Route Filter Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#dynamic-state">Dynamic State</a></li>
 <li class="toctree-l3"><a class="reference internal" href="http_routing.html">HTTP routing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="grpc.html">gRPC</a></li>
 <li class="toctree-l3"><a class="reference internal" href="websocket.html">WebSocket and HTTP upgrades</a></li>
@@ -190,13 +195,13 @@
         
           <li><a href="arch_overview.html">Architecture overview</a> &raquo;</li>
         
-      <li>HTTP filters</li>
+      <li>Static State</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/intro/arch_overview/http_filters.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/intro/arch_overview/data_sharing_between_filters.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -209,30 +214,80 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="http-filters">
-<span id="arch-overview-http-filters"></span><h1>HTTP filters<a class="headerlink" href="#http-filters" title="Permalink to this headline">¶</a></h1>
-<p>Much like the <a class="reference internal" href="network_filters.html#arch-overview-network-filters"><span class="std std-ref">network level filter</span></a> stack, Envoy supports an
-HTTP level filter stack within the connection manager. Filters can be written that operate on HTTP
-level messages without knowledge of the underlying physical protocol (HTTP/1.1, HTTP/2, etc.) or
-multiplexing capabilities. There are three types of HTTP level filters:</p>
-<ul class="simple">
-<li><strong>Decoder</strong>: Decoder filters are invoked when the connection manager is decoding parts of the
-request stream (headers, body, and trailers).</li>
-<li><strong>Encoder</strong>: Encoder filters are invoked when the connection manager is about to encode parts of
-the response stream (headers, body, and trailers).</li>
-<li><strong>Decoder/Encoder</strong>: Decoder/Encoder filters are invoked both when the connection manager is
-decoding parts of the request stream and when the connection manager is about to encode parts of
-the response stream.</li>
-</ul>
-<p>The API for HTTP level filters allows the filters to operate without knowledge of the underlying
-protocol. Like network level filters, HTTP filters can stop and continue iteration to subsequent
-filters. This allows for more complex scenarios such as health check handling, calling a rate
-limiting service, buffering, routing, generating statistics for application traffic such as
-DynamoDB, etc. HTTP level filters can also share state (static and dynamic) among
-themselves within the context of a single request stream. Refer to <a class="reference internal" href="data_sharing_between_filters.html#arch-overview-data-sharing-between-filters"><span class="std std-ref">data sharing
-between filters</span></a> for more details. Envoy already
-includes several HTTP level filters that are documented in this architecture overview as well as
-the <a class="reference internal" href="../../configuration/http_filters/http_filters.html#config-http-filters"><span class="std std-ref">configuration reference</span></a>.</p>
+  <p id="arch-overview-data-sharing-between-filters">Envoy provides the following mechanisms for the transfer of configuration,
+metadata and per-request/connection state to, from and between filters, as
+well as to other core subsystems (e.g., access logging).</p>
+<div class="section" id="static-state">
+<h1>Static State<a class="headerlink" href="#static-state" title="Permalink to this headline">¶</a></h1>
+<p>Static state is any immutable state specified at configuration load time
+(e.g., through xDS). There are three categories of static state:</p>
+<div class="section" id="metadata">
+<h2>Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h2>
+<p>Several parts of Envoy configuration (e.g. listeners, routes, clusters)
+contain a <a class="reference internal" href="../../api-v2/api/v2/core/base.proto.html#envoy-api-msg-core-metadata"><span class="std std-ref">metadata</span></a> where arbitrary
+key-value pairs can be encoded. The typical pattern is to use the filter
+names in reverse DNS format as the key and encode filter specific
+configuration metadata in the value. This metadata is immutable and shared
+across all requests/connections. Such config metadata is usually provided
+during bootstrap time or as part of xDS. For example, weighted clusters in
+HTTP routes use the metadata to indicate the labels on the endpoints
+corresponding to the weighted cluster. Another example, the subset load
+balancer uses the metadata from the route entry corresponding to the
+weighted cluster to select appropriate endpoints in a cluster</p>
+</div>
+<div class="section" id="typed-metadata">
+<h2>Typed Metadata<a class="headerlink" href="#typed-metadata" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="../../api-v2/api/v2/core/base.proto.html#envoy-api-msg-core-metadata"><span class="std std-ref">Metadata</span></a> as such is untyped. Before
+acting on the metadata, callers typically convert it to a typed class
+object. The cost of conversion becomes non-negligible when performed
+repeatedly (e.g., for each request stream or connection). Typed Metadata
+solves this problem by allowing filters to register a one time conversion
+logic for a specific key. Incoming config metadata (via xDS) is converted
+to class objects at config load time. Filters can then obtain a typed
+variant of the metadata at runtime (per request or connection), thereby
+eliminating the need for filters to repeatedly convert from
+<cite>ProtobufWkt::Struct</cite> to some internal object during request/connection
+processing.</p>
+<p>For example, a filter that desires to have a convenience wrapper class over
+an opaque metadata with key <cite>xxx.service.policy</cite> in <cite>ClusterInfo</cite> could
+register a factory <cite>ServicePolicyFactory</cite> that inherits from
+<cite>ClusterTypedMetadataFactory</cite>. The factory translates the <cite>ProtobufWkt::Struct</cite>
+into an instance of <cite>ServicePolicy</cite> class (inherited from
+<cite>FilterState::Object</cite>). When a <cite>Cluster</cite> is created, the associated
+<cite>ServicePolicy</cite> instance will be created and cached. Note that typed
+metadata is not a new source of metadata. It is obtained from metadata that
+is specified as part of the configuration.</p>
+</div>
+<div class="section" id="http-per-route-filter-configuration">
+<h2>HTTP Per-Route Filter Configuration<a class="headerlink" href="#http-per-route-filter-configuration" title="Permalink to this headline">¶</a></h2>
+<p>In HTTP routes, <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-virtualhost-per-filter-config"><span class="std std-ref">per_filter_config</span></a> allows HTTP filters
+to have virtualhost/route-specific configuration in addition to a global
+filter config common to all virtual hosts. This configuration is converted
+and embedded into the route table. It is up to the HTTP filter
+implementation to treat the route-specific filter config as a replacement
+to global config or an enhancement. For example, the HTTP fault filter uses
+this technique to provide per-route fault configuration.</p>
+<p><cite>per_filter_config</cite> is a <cite>map&lt;string, ProtobufWkt::Struct&gt;</cite>. The Connection
+manager iterates over this map and invokes the filter factory interface
+<cite>createRouteSpecificFilterConfig</cite> to parse/validate the struct value and
+convert it into a typed class object that’s stored with the route
+itself. HTTP filters can then query the route-specific filter config during
+request processing.</p>
+</div>
+</div>
+<div class="section" id="dynamic-state">
+<h1>Dynamic State<a class="headerlink" href="#dynamic-state" title="Permalink to this headline">¶</a></h1>
+<p>Dynamic state is generated per network connection or per HTTP
+stream. Dynamic state can be mutable if desired by the filter generating
+the state.</p>
+<p><cite>Envoy::Network::Connection</cite> and <cite>Envoy::Http::Filter</cite> provide a
+<cite>StreamInfo</cite> object that contains information about the current TCP
+connection and HTTP stream (i.e., HTTP request/response pair)
+respectively. <cite>StreamInfo</cite> contains a set of fixed attributes as part of
+the class definition (e.g., HTTP protocol, requested server name, etc.). In
+addition, it provides a facility to store typed objects in a map
+(<cite>map&lt;string, FilterState::Object&gt;</cite>). The state stored per filter can be
+either write-once (immutable), or write-many (mutable).</p>
 </div>
 
 
@@ -243,10 +298,10 @@ the <a class="reference internal" href="../../configuration/http_filters/http_fi
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="data_sharing_between_filters.html" class="btn btn-neutral float-right" title="Static State" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="http_routing.html" class="btn btn-neutral float-right" title="HTTP routing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="http_connection_management.html" class="btn btn-neutral" title="HTTP connection management" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="http_filters.html" class="btn btn-neutral" title="HTTP filters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
