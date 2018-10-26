@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>What is Envoy &mdash; envoy 1.9.0-dev-59816a documentation</title>
+  <title>What is Envoy &mdash; envoy 1.9.0-dev-55dac1 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.9.0-dev-59816a
+                1.9.0-dev-55dac1
               </div>
             
           
@@ -234,9 +234,15 @@ and logging for MongoDB connections.</p>
 <p><strong>DynamoDB L7 support</strong>: <a class="reference external" href="https://aws.amazon.com/dynamodb/">DynamoDB</a> is Amazon’s hosted key/value
 NOSQL datastore. Envoy <a class="reference internal" href="arch_overview/dynamo.html#arch-overview-dynamo"><span class="std std-ref">supports</span></a> L7 sniffing and statistics production
 for DynamoDB connections.</p>
-<p><strong>Service discovery:</strong> <a class="reference internal" href="arch_overview/service_discovery.html#arch-overview-service-discovery"><span class="std std-ref">Service discovery</span></a> is a critical
-component of service oriented architectures. Envoy supports multiple service discovery methods
-including asynchronous DNS resolution and REST based lookup via a <a class="reference internal" href="arch_overview/service_discovery.html#arch-overview-service-discovery-types-sds"><span class="std std-ref">service discovery service</span></a>.</p>
+<p><strong>Service discovery and dynamic configuration:</strong> Envoy optionally consumes a layered set of
+<a class="reference internal" href="arch_overview/dynamic_configuration.html#arch-overview-dynamic-config"><span class="std std-ref">dynamic configuration APIs</span></a> for centralized management.
+The layers provide an Envoy with dynamic updates about: hosts within a backend cluster, the
+backend clusters themselves, HTTP routing, listening sockets, and cryptographic material.
+For a simpler deployment, backend host discovery can be
+<a class="reference internal" href="arch_overview/service_discovery.html#arch-overview-service-discovery-types-strict-dns"><span class="std std-ref">done through DNS resolution</span></a>
+(or even
+<a class="reference internal" href="arch_overview/service_discovery.html#arch-overview-service-discovery-types-static"><span class="std std-ref">skipped entirely</span></a>),
+with the further layers replaced by static config files.</p>
 <p><strong>Health checking:</strong> The <a class="reference internal" href="arch_overview/service_discovery.html#arch-overview-service-discovery-eventually-consistent"><span class="std std-ref">recommended</span></a>
 way of building an Envoy mesh is to treat service discovery as an eventually consistent process.
 Envoy includes a <a class="reference internal" href="arch_overview/health_checking.html#arch-overview-health-checking"><span class="std std-ref">health checking</span></a> subsystem which can
@@ -263,9 +269,6 @@ includes robust <a class="reference internal" href="arch_overview/statistics.htm
 sink, though plugging in a different one would not be difficult. Statistics are also viewable via
 the <a class="reference internal" href="../operations/admin.html#operations-admin-interface"><span class="std std-ref">administration</span></a> port. Envoy also supports distributed
 <a class="reference internal" href="arch_overview/tracing.html#arch-overview-tracing"><span class="std std-ref">tracing</span></a> via thirdparty providers.</p>
-<p><strong>Dynamic configuration:</strong> Envoy optionally consumes a layered set of <a class="reference internal" href="arch_overview/dynamic_configuration.html#arch-overview-dynamic-config"><span class="std std-ref">dynamic configuration
-APIs</span></a>. Implementors can use these APIs to build complex centrally
-managed deployments if desired.</p>
 <div class="section" id="design-goals">
 <h2>Design goals<a class="headerlink" href="#design-goals" title="Permalink to this headline">¶</a></h2>
 <p>A short note on the design goals of the code itself: Although Envoy is by no means slow (we have
