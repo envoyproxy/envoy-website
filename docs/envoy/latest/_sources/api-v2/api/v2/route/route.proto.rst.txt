@@ -687,8 +687,6 @@ route.RouteAction
     "rate_limits": [],
     "include_vh_rate_limits": "{...}",
     "hash_policy": [],
-    "use_websocket": "{...}",
-    "websocket_config": "{...}",
     "cors": "{...}",
     "max_grpc_timeout": "{...}"
   }
@@ -890,30 +888,6 @@ hash_policy
   backend). If a hash policy has the "terminal" attribute set to true, and
   there is already a hash generated, the hash is returned immediately,
   ignoring the rest of the hash policy list.
-  
-  
-.. _envoy_api_field_route.RouteAction.use_websocket:
-
-use_websocket
-  (`BoolValue <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue>`_) Indicates that a HTTP/1.1 client connection to this particular route is allowed to
-  upgrade to a WebSocket connection. The default is false.
-  
-  .. attention::
-  
-    If a connection is upgraded to a WebSocket connection, Envoy will set up plain TCP
-    proxying between the client and the upstream server. Hence, an upstream
-    server that rejects the WebSocket upgrade request is also responsible for
-    closing the associated connection. Until then, Envoy will continue to
-    proxy data from the client to the upstream server.
-  
-    Redirects are not supported on routes where WebSocket upgrades are allowed.
-  
-  
-.. _envoy_api_field_route.RouteAction.websocket_config:
-
-websocket_config
-  (:ref:`route.RouteAction.WebSocketProxyConfig <envoy_api_msg_route.RouteAction.WebSocketProxyConfig>`) Proxy configuration used for WebSocket connections. If unset, the default values as specified
-  in :ref:`TcpProxy <envoy_api_msg_config.filter.network.tcp_proxy.v2.TcpProxy>` are used.
   
   
 .. _envoy_api_field_route.RouteAction.cors:
@@ -1286,56 +1260,6 @@ source_ip
 
 
 
-.. _envoy_api_msg_route.RouteAction.WebSocketProxyConfig:
-
-route.RouteAction.WebSocketProxyConfig
---------------------------------------
-
-`[route.RouteAction.WebSocketProxyConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L719>`_
-
-
-.. code-block:: json
-
-  {
-    "stat_prefix": "...",
-    "idle_timeout": "{...}",
-    "max_connect_attempts": "{...}"
-  }
-
-.. _envoy_api_field_route.RouteAction.WebSocketProxyConfig.stat_prefix:
-
-stat_prefix
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) See :ref:`stat_prefix
-  <envoy_api_field_config.filter.network.tcp_proxy.v2.TcpProxy.stat_prefix>`. If the parameter
-  is not specified, the default value of "websocket" is used.
-  
-  WebSocket connections support the :ref:`downstream statistics
-  <config_network_filters_tcp_proxy_stats>` for TCP proxy, except for the following, which are
-  reported in the :ref:`HTTP Connection Manager statistics <config_http_conn_man_stats>`:
-  - downstream_cx_tx_bytes_total
-  - downstream_cx_tx_bytes_buffered
-  - downstream_cx_rx_bytes_total
-  - downstream_cx_rx_bytes_buffered
-  
-  
-.. _envoy_api_field_route.RouteAction.WebSocketProxyConfig.idle_timeout:
-
-idle_timeout
-  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) See :ref:`idle_timeout
-  <envoy_api_field_config.filter.network.tcp_proxy.v2.TcpProxy.idle_timeout>`. This timeout is
-  only in effect after the WebSocket upgrade request is received by Envoy. It does not cover
-  the initial part of the HTTP request.
-  
-  
-.. _envoy_api_field_route.RouteAction.WebSocketProxyConfig.max_connect_attempts:
-
-max_connect_attempts
-  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) See :ref:`max_connect_attempts
-  <envoy_api_field_config.filter.network.tcp_proxy.v2.TcpProxy.max_connect_attempts>`.
-  
-  
-
-
 .. _envoy_api_enum_route.RouteAction.ClusterNotFoundResponseCode:
 
 Enum route.RouteAction.ClusterNotFoundResponseCode
@@ -1362,7 +1286,7 @@ NOT_FOUND
 route.RedirectAction
 --------------------
 
-`[route.RedirectAction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L767>`_
+`[route.RedirectAction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L726>`_
 
 
 .. code-block:: json
@@ -1449,7 +1373,7 @@ strip_query
 Enum route.RedirectAction.RedirectResponseCode
 ----------------------------------------------
 
-`[route.RedirectAction.RedirectResponseCode proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L794>`_
+`[route.RedirectAction.RedirectResponseCode proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L753>`_
 
 
 .. _envoy_api_enum_value_route.RedirectAction.RedirectResponseCode.MOVED_PERMANENTLY:
@@ -1488,7 +1412,7 @@ PERMANENT_REDIRECT
 route.DirectResponseAction
 --------------------------
 
-`[route.DirectResponseAction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L820>`_
+`[route.DirectResponseAction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L779>`_
 
 
 .. code-block:: json
@@ -1524,7 +1448,7 @@ body
 route.Decorator
 ---------------
 
-`[route.Decorator proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L835>`_
+`[route.Decorator proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L794>`_
 
 
 .. code-block:: json
@@ -1553,7 +1477,7 @@ operation
 route.VirtualCluster
 --------------------
 
-`[route.VirtualCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L864>`_
+`[route.VirtualCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L823>`_
 
 A virtual cluster is a way of specifying a regex matching rule against
 certain important endpoints such that statistics are generated explicitly for
@@ -1617,7 +1541,7 @@ method
 route.RateLimit
 ---------------
 
-`[route.RateLimit proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L889>`_
+`[route.RateLimit proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L848>`_
 
 Global rate limiting :ref:`architecture overview <arch_overview_rate_limit>`.
 
@@ -1663,7 +1587,7 @@ actions
 route.RateLimit.Action
 ----------------------
 
-`[route.RateLimit.Action proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L902>`_
+`[route.RateLimit.Action proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L861>`_
 
 
 .. code-block:: json
@@ -1730,7 +1654,7 @@ header_value_match
 route.RateLimit.Action.SourceCluster
 ------------------------------------
 
-`[route.RateLimit.Action.SourceCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L910>`_
+`[route.RateLimit.Action.SourceCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L869>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1752,7 +1676,7 @@ The following descriptor entry is appended to the descriptor:
 route.RateLimit.Action.DestinationCluster
 -----------------------------------------
 
-`[route.RateLimit.Action.DestinationCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L929>`_
+`[route.RateLimit.Action.DestinationCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L888>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1783,7 +1707,7 @@ settings:
 route.RateLimit.Action.RequestHeaders
 -------------------------------------
 
-`[route.RateLimit.Action.RequestHeaders proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L938>`_
+`[route.RateLimit.Action.RequestHeaders proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L897>`_
 
 The following descriptor entry is appended when a header contains a key that matches the
 *header_name*:
@@ -1820,7 +1744,7 @@ descriptor_key
 route.RateLimit.Action.RemoteAddress
 ------------------------------------
 
-`[route.RateLimit.Action.RemoteAddress proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L954>`_
+`[route.RateLimit.Action.RemoteAddress proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L913>`_
 
 The following descriptor entry is appended to the descriptor and is populated using the
 trusted address from :ref:`x-forwarded-for <config_http_conn_man_headers_x-forwarded-for>`:
@@ -1841,7 +1765,7 @@ trusted address from :ref:`x-forwarded-for <config_http_conn_man_headers_x-forwa
 route.RateLimit.Action.GenericKey
 ---------------------------------
 
-`[route.RateLimit.Action.GenericKey proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L962>`_
+`[route.RateLimit.Action.GenericKey proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L921>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1868,7 +1792,7 @@ descriptor_value
 route.RateLimit.Action.HeaderValueMatch
 ---------------------------------------
 
-`[route.RateLimit.Action.HeaderValueMatch proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L972>`_
+`[route.RateLimit.Action.HeaderValueMatch proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L931>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1918,7 +1842,7 @@ headers
 route.HeaderMatcher
 -------------------
 
-`[route.HeaderMatcher proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1045>`_
+`[route.HeaderMatcher proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1004>`_
 
 .. attention::
 
@@ -2059,7 +1983,7 @@ invert_match
 route.QueryParameterMatcher
 ---------------------------
 
-`[route.QueryParameterMatcher proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1117>`_
+`[route.QueryParameterMatcher proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1076>`_
 
 Query parameter matching treats the query string of a request's :path header
 as an ampersand-separated list of keys and/or key=value elements.
