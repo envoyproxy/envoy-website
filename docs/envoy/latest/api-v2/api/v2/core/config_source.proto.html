@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Configuration sources &mdash; envoy 1.9.0-dev-d7a7db documentation</title>
+  <title>Configuration sources &mdash; envoy 1.9.0-dev-455714 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.9.0-dev-d7a7db
+                1.9.0-dev-455714
               </div>
             
           
@@ -111,6 +111,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#core-apiconfigsource">core.ApiConfigSource</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#enum-core-apiconfigsource-apitype">Enum core.ApiConfigSource.ApiType</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#core-aggregatedconfigsource">core.AggregatedConfigSource</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#core-ratelimitsettings">core.RateLimitSettings</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#core-configsource">core.ConfigSource</a></li>
 </ul>
 </li>
@@ -196,7 +197,7 @@
 <span id="envoy-api-file-envoy-api-v2-core-config-source-proto"></span><h1>Configuration sources<a class="headerlink" href="#configuration-sources" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="core-apiconfigsource">
 <span id="envoy-api-msg-core-apiconfigsource"></span><h2>core.ApiConfigSource<a class="headerlink" href="#core-apiconfigsource" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/config_source.proto#L17">[core.ApiConfigSource proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/config_source.proto#L18">[core.ApiConfigSource proto]</a></p>
 <p>API configuration source. This identifies the API type and cluster that Envoy
 will use to fetch an xDS API.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -204,7 +205,8 @@ will use to fetch an xDS API.</p>
   <span class="nt">&quot;cluster_names&quot;</span><span class="p">:</span> <span class="p">[],</span>
   <span class="nt">&quot;grpc_services&quot;</span><span class="p">:</span> <span class="p">[],</span>
   <span class="nt">&quot;refresh_delay&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;request_timeout&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;request_timeout&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;rate_limit_settings&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -237,10 +239,15 @@ services will be cycled through if any kind of failure occurs.</dd>
 <dt>request_timeout</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) For REST APIs, the request timeout. If not set, a default value of 1s will be used.</dd>
 </dl>
+<dl class="docutils" id="envoy-api-field-core-apiconfigsource-rate-limit-settings">
+<dt>rate_limit_settings</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-core-ratelimitsettings"><span class="std std-ref">core.RateLimitSettings</span></a>) For GRPC APIs, the rate limit settings. If present, discovery requests made by Envoy will be
+rate limited.</dd>
+</dl>
 </div>
 <div class="section" id="enum-core-apiconfigsource-apitype">
 <span id="envoy-api-enum-core-apiconfigsource-apitype"></span><h2>Enum core.ApiConfigSource.ApiType<a class="headerlink" href="#enum-core-apiconfigsource-apitype" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/config_source.proto#L19">[core.ApiConfigSource.ApiType proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/config_source.proto#L20">[core.ApiConfigSource.ApiType proto]</a></p>
 <p>APIs may be fetched via either REST or gRPC.</p>
 <dl class="docutils" id="envoy-api-enum-value-core-apiconfigsource-apitype-rest-legacy">
 <dt>REST_LEGACY</dt>
@@ -258,7 +265,7 @@ the v2 protos is used.</dd>
 </div>
 <div class="section" id="core-aggregatedconfigsource">
 <span id="envoy-api-msg-core-aggregatedconfigsource"></span><h2>core.AggregatedConfigSource<a class="headerlink" href="#core-aggregatedconfigsource" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/config_source.proto#L55">[core.AggregatedConfigSource proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/config_source.proto#L60">[core.AggregatedConfigSource proto]</a></p>
 <p>Aggregated Discovery Service (ADS) options. This is currently empty, but when
 set in <a class="reference internal" href="#envoy-api-msg-core-configsource"><span class="std std-ref">ConfigSource</span></a> can be used to
 specify that ADS is to be used.</p>
@@ -266,9 +273,30 @@ specify that ADS is to be used.</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="core-ratelimitsettings">
+<span id="envoy-api-msg-core-ratelimitsettings"></span><h2>core.RateLimitSettings<a class="headerlink" href="#core-ratelimitsettings" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/config_source.proto#L64">[core.RateLimitSettings proto]</a></p>
+<p>Rate Limit settings to be applied for discovery requests made by Envoy.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;max_tokens&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;fill_rate&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-core-ratelimitsettings-max-tokens">
+<dt>max_tokens</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) Maximum number of tokens to be used for rate limting discovery request calls. If not set, a
+default value of 100 will be used.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-core-ratelimitsettings-fill-rate">
+<dt>fill_rate</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#doublevalue">DoubleValue</a>) Rate at which tokens will be filled per second. If not set, a default fill rate of 10 tokens
+per second will be used.</dd>
+</dl>
+</div>
 <div class="section" id="core-configsource">
 <span id="envoy-api-msg-core-configsource"></span><h2>core.ConfigSource<a class="headerlink" href="#core-configsource" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/config_source.proto#L64">[core.ConfigSource proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/config_source.proto#L80">[core.ConfigSource proto]</a></p>
 <p>Configuration for <a class="reference internal" href="../../../../configuration/listeners/listeners.html#config-listeners"><span class="std std-ref">listeners</span></a>, <a class="reference internal" href="../../../../configuration/cluster_manager/cluster_manager.html#config-cluster-manager"><span class="std std-ref">clusters</span></a>, <a class="reference internal" href="../rds.proto.html#envoy-api-msg-routeconfiguration"><span class="std std-ref">routes</span></a>, <a class="reference internal" href="../../../../intro/arch_overview/service_discovery.html#arch-overview-service-discovery"><span class="std std-ref">endpoints</span></a> etc. may either be sourced from the
 filesystem or from an xDS API source. Filesystem configs are watched with
 inotify for updates.</p>

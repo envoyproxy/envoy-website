@@ -9,7 +9,7 @@ Configuration sources
 core.ApiConfigSource
 --------------------
 
-`[core.ApiConfigSource proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/config_source.proto#L17>`_
+`[core.ApiConfigSource proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/config_source.proto#L18>`_
 
 API configuration source. This identifies the API type and cluster that Envoy
 will use to fetch an xDS API.
@@ -21,7 +21,8 @@ will use to fetch an xDS API.
     "cluster_names": [],
     "grpc_services": [],
     "refresh_delay": "{...}",
-    "request_timeout": "{...}"
+    "request_timeout": "{...}",
+    "rate_limit_settings": "{...}"
   }
 
 .. _envoy_api_field_core.ApiConfigSource.api_type:
@@ -61,13 +62,20 @@ request_timeout
   (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) For REST APIs, the request timeout. If not set, a default value of 1s will be used.
   
   
+.. _envoy_api_field_core.ApiConfigSource.rate_limit_settings:
+
+rate_limit_settings
+  (:ref:`core.RateLimitSettings <envoy_api_msg_core.RateLimitSettings>`) For GRPC APIs, the rate limit settings. If present, discovery requests made by Envoy will be
+  rate limited.
+  
+  
 
 .. _envoy_api_enum_core.ApiConfigSource.ApiType:
 
 Enum core.ApiConfigSource.ApiType
 ---------------------------------
 
-`[core.ApiConfigSource.ApiType proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/config_source.proto#L19>`_
+`[core.ApiConfigSource.ApiType proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/config_source.proto#L20>`_
 
 APIs may be fetched via either REST or gRPC.
 
@@ -97,7 +105,7 @@ GRPC
 core.AggregatedConfigSource
 ---------------------------
 
-`[core.AggregatedConfigSource proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/config_source.proto#L55>`_
+`[core.AggregatedConfigSource proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/config_source.proto#L60>`_
 
 Aggregated Discovery Service (ADS) options. This is currently empty, but when
 set in :ref:`ConfigSource <envoy_api_msg_core.ConfigSource>` can be used to
@@ -110,12 +118,44 @@ specify that ADS is to be used.
 
 
 
+.. _envoy_api_msg_core.RateLimitSettings:
+
+core.RateLimitSettings
+----------------------
+
+`[core.RateLimitSettings proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/config_source.proto#L64>`_
+
+Rate Limit settings to be applied for discovery requests made by Envoy.
+
+.. code-block:: json
+
+  {
+    "max_tokens": "{...}",
+    "fill_rate": "{...}"
+  }
+
+.. _envoy_api_field_core.RateLimitSettings.max_tokens:
+
+max_tokens
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Maximum number of tokens to be used for rate limting discovery request calls. If not set, a
+  default value of 100 will be used.
+  
+  
+.. _envoy_api_field_core.RateLimitSettings.fill_rate:
+
+fill_rate
+  (`DoubleValue <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#doublevalue>`_) Rate at which tokens will be filled per second. If not set, a default fill rate of 10 tokens
+  per second will be used.
+  
+  
+
+
 .. _envoy_api_msg_core.ConfigSource:
 
 core.ConfigSource
 -----------------
 
-`[core.ConfigSource proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/config_source.proto#L64>`_
+`[core.ConfigSource proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/core/config_source.proto#L80>`_
 
 Configuration for :ref:`listeners <config_listeners>`, :ref:`clusters
 <config_cluster_manager>`, :ref:`routes
