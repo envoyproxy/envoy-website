@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP route &mdash; envoy 1.9.0-dev-bf18d3 documentation</title>
+  <title>HTTP route &mdash; envoy 1.9.0-dev-b46199 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.9.0-dev-bf18d3
+                1.9.0-dev-b46199
               </div>
             
           
@@ -730,14 +730,14 @@ application/grpc+ values.</dd>
 </div>
 <dl class="docutils" id="envoy-api-field-route-routeaction-cluster">
 <dt>cluster</dt>
-<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) Indicates the upstream cluster to which the request should be routed
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Indicates the upstream cluster to which the request should be routed
 to.</p>
 <p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-route-routeaction-cluster"><span class="std std-ref">cluster</span></a>, <a class="reference internal" href="#envoy-api-field-route-routeaction-cluster-header"><span class="std std-ref">cluster_header</span></a>, <a class="reference internal" href="#envoy-api-field-route-routeaction-weighted-clusters"><span class="std std-ref">weighted_clusters</span></a> must be set.</p>
 </dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-route-routeaction-cluster-header">
 <dt>cluster_header</dt>
-<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) Envoy will determine the cluster to route to by reading the value of the
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Envoy will determine the cluster to route to by reading the value of the
 HTTP header named by cluster_header from the request headers. If the
 header is not found or the referenced cluster does not exist, Envoy will
 return a 404 response.</p>
@@ -1203,12 +1203,32 @@ will be set for the cookie.</dd>
 <dl class="docutils" id="envoy-api-field-route-redirectaction-https-redirect">
 <dt>https_redirect</dt>
 <dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) The scheme portion of the URL will be swapped with “https”.</p>
+<dl class="docutils">
+<dt>When the scheme redirection take place, the following rules apply:</dt>
+<dd><ol class="first last arabic simple">
+<li>If the source URI scheme is <cite>http</cite> and the port is explicitly
+set to <cite>:80</cite>, the port will be removed after the redirection</li>
+<li>If the source URI scheme is <cite>https</cite> and the port is explicitly
+set to <cite>:443</cite>, the port will be removed after the redirection</li>
+</ol>
+</dd>
+</dl>
 <p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-redirectaction-https-redirect"><span class="std std-ref">https_redirect</span></a>, <a class="reference internal" href="#envoy-api-field-route-redirectaction-scheme-redirect"><span class="std std-ref">scheme_redirect</span></a> may be set.</p>
 </dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-route-redirectaction-scheme-redirect">
 <dt>scheme_redirect</dt>
 <dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The scheme portion of the URL will be swapped with this value.</p>
+<dl class="docutils">
+<dt>When the scheme redirection take place, the following rules apply:</dt>
+<dd><ol class="first last arabic simple">
+<li>If the source URI scheme is <cite>http</cite> and the port is explicitly
+set to <cite>:80</cite>, the port will be removed after the redirection</li>
+<li>If the source URI scheme is <cite>https</cite> and the port is explicitly
+set to <cite>:443</cite>, the port will be removed after the redirection</li>
+</ol>
+</dd>
+</dl>
 <p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-redirectaction-https-redirect"><span class="std std-ref">https_redirect</span></a>, <a class="reference internal" href="#envoy-api-field-route-redirectaction-scheme-redirect"><span class="std std-ref">scheme_redirect</span></a> may be set.</p>
 </dd>
 </dl>
@@ -1620,6 +1640,7 @@ value.</p>
 <dl class="docutils" id="envoy-api-field-route-headermatcher-exact-match">
 <dt>exact_match</dt>
 <dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) If specified, header match will be performed based on the value of the header.</p>
+<p>Specifies how the header match will be performed to route the request.</p>
 <p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-regex-match"><span class="std std-ref">regex_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-range-match"><span class="std std-ref">range_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-present-match"><span class="std std-ref">present_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-prefix-match"><span class="std std-ref">prefix_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-suffix-match"><span class="std std-ref">suffix_match</span></a> may be set.</p>
 </dd>
 </dl>
@@ -1635,6 +1656,7 @@ request header value matches the regex. The regex grammar used in the value fiel
 <li>The regex <em>d{3}</em> does not match the value <em>1234</em></li>
 <li>The regex <em>d{3}</em> does not match the value <em>123.456</em></li>
 </ul>
+<p>Specifies how the header match will be performed to route the request.</p>
 <p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-regex-match"><span class="std std-ref">regex_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-range-match"><span class="std std-ref">range_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-present-match"><span class="std std-ref">present_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-prefix-match"><span class="std std-ref">prefix_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-suffix-match"><span class="std std-ref">suffix_match</span></a> may be set.</p>
 </dd>
 </dl>
@@ -1651,6 +1673,7 @@ point numbers or if only a subsequence of the header value is an integer.</p>
 <li>For range [-10,0), route will match for header value -1, but not for 0, “somestring”, 10.9,
 “-1somestring”</li>
 </ul>
+<p>Specifies how the header match will be performed to route the request.</p>
 <p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-regex-match"><span class="std std-ref">regex_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-range-match"><span class="std std-ref">range_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-present-match"><span class="std std-ref">present_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-prefix-match"><span class="std std-ref">prefix_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-suffix-match"><span class="std std-ref">suffix_match</span></a> may be set.</p>
 </dd>
 </dl>
@@ -1658,28 +1681,31 @@ point numbers or if only a subsequence of the header value is an integer.</p>
 <dt>present_match</dt>
 <dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) If specified, header match will be be performed based on whether the header is in the
 request.</p>
+<p>Specifies how the header match will be performed to route the request.</p>
 <p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-regex-match"><span class="std std-ref">regex_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-range-match"><span class="std std-ref">range_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-present-match"><span class="std std-ref">present_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-prefix-match"><span class="std std-ref">prefix_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-suffix-match"><span class="std std-ref">suffix_match</span></a> may be set.</p>
 </dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-route-headermatcher-prefix-match">
 <dt>prefix_match</dt>
-<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) If specified, header match will be performed based on the prefix of the header value.
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) If specified, header match will be performed based on the prefix of the header value.
 Note: empty prefix is not allowed, please use present_match instead.</p>
 <p>Examples:</p>
 <ul class="simple">
 <li>The prefix <em>abcd</em> matches the value <em>abcdxyz</em>, but not for <em>abcxyz</em>.</li>
 </ul>
+<p>Specifies how the header match will be performed to route the request.</p>
 <p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-regex-match"><span class="std std-ref">regex_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-range-match"><span class="std std-ref">range_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-present-match"><span class="std std-ref">present_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-prefix-match"><span class="std std-ref">prefix_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-suffix-match"><span class="std std-ref">suffix_match</span></a> may be set.</p>
 </dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-route-headermatcher-suffix-match">
 <dt>suffix_match</dt>
-<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) If specified, header match will be performed based on the suffix of the header value.
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) If specified, header match will be performed based on the suffix of the header value.
 Note: empty suffix is not allowed, please use present_match instead.</p>
 <p>Examples:</p>
 <ul class="simple">
 <li>The suffix <em>abcd</em> matches the value <em>xyzabcd</em>, but not for <em>xyzbcd</em>.</li>
 </ul>
+<p>Specifies how the header match will be performed to route the request.</p>
 <p class="last">Only one of <a class="reference internal" href="#envoy-api-field-route-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-regex-match"><span class="std std-ref">regex_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-range-match"><span class="std std-ref">range_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-present-match"><span class="std std-ref">present_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-prefix-match"><span class="std std-ref">prefix_match</span></a>, <a class="reference internal" href="#envoy-api-field-route-headermatcher-suffix-match"><span class="std std-ref">suffix_match</span></a> may be set.</p>
 </dd>
 </dl>
