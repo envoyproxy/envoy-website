@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Resource monitors &mdash; envoy 1.9.0-dev-8aba10 documentation</title>
+  <title>Server State &mdash; envoy 1.9.0-dev-8aba10 documentation</title>
   
 
   
@@ -30,8 +30,8 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Fixed heap" href="fixed_heap/v2alpha/fixed_heap.proto.html" />
-    <link rel="prev" title="Capture" href="../transport_socket/capture/v2alpha/capture.proto.html" /> 
+    <link rel="next" title="Envoy data" href="../../data/data.html" />
+    <link rel="prev" title="Metrics" href="metrics.proto.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -97,20 +97,20 @@
 <li class="toctree-l2"><a class="reference internal" href="../../listeners/listeners.html">Listeners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../clusters/clusters.html">Clusters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../http_routes/http_routes.html">HTTP route management</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../config.html">Extensions</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../filter/filter.html">Filters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../accesslog/accesslog.html">Access loggers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../rbac/rbac.html">RBAC</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../health_checker/health_checker.html">Health checkers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../transport_socket/transport_socket.html">Transport sockets</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Resource monitors</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="fixed_heap/v2alpha/fixed_heap.proto.html">Fixed heap</a></li>
-<li class="toctree-l4"><a class="reference internal" href="injected_resource/v2alpha/injected_resource.proto.html">Injected resource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/config.html">Extensions</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../admin.html">Admin</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="certs.proto.html">Certificates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config_dump.proto.html">ConfigDump</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clusters.proto.html">Clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory.proto.html">Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="metrics.proto.html">Metrics</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Server State</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#admin-v2alpha-serverinfo">admin.v2alpha.ServerInfo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#enum-admin-v2alpha-serverinfo-state">Enum admin.v2alpha.ServerInfo.State</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../admin/admin.html">Admin</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../data/data.html">Envoy data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../service/service.html">Services</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../common_messages/common_messages.html">Common messages</a></li>
@@ -165,15 +165,15 @@
         
           <li><a href="../../api.html">v2 API reference</a> &raquo;</li>
         
-          <li><a href="../config.html">Extensions</a> &raquo;</li>
+          <li><a href="../admin.html">Admin</a> &raquo;</li>
         
-      <li>Resource monitors</li>
+      <li>Server State</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/api-v2/config/resource_monitor/resource_monitor.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/api-v2/admin/v2alpha/server_info.proto.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -186,13 +186,54 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="resource-monitors">
-<span id="config-resource-monitors"></span><h1>Resource monitors<a class="headerlink" href="#resource-monitors" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="fixed_heap/v2alpha/fixed_heap.proto.html">Fixed heap</a></li>
-<li class="toctree-l1"><a class="reference internal" href="injected_resource/v2alpha/injected_resource.proto.html">Injected resource</a></li>
-</ul>
+  <div class="section" id="server-state">
+<span id="envoy-api-file-envoy-admin-v2alpha-server-info-proto"></span><h1>Server State<a class="headerlink" href="#server-state" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="admin-v2alpha-serverinfo">
+<span id="envoy-api-msg-admin-v2alpha-serverinfo"></span><h2>admin.v2alpha.ServerInfo<a class="headerlink" href="#admin-v2alpha-serverinfo" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/admin/v2alpha/server_info.proto#L10">[admin.v2alpha.ServerInfo proto]</a></p>
+<p>Proto representation of the value returned by /server_info, containing
+server version/server status information.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;state&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;uptime_current_epoch&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;uptime_all_epochs&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;epoch&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-admin-v2alpha-serverinfo-version">
+<dt>version</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Server version.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-admin-v2alpha-serverinfo-state">
+<dt>state</dt>
+<dd>(<a class="reference internal" href="#envoy-api-enum-admin-v2alpha-serverinfo-state"><span class="std std-ref">admin.v2alpha.ServerInfo.State</span></a>) State of the server.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-admin-v2alpha-serverinfo-uptime-current-epoch">
+<dt>uptime_current_epoch</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) Uptime since current epoch was started.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-admin-v2alpha-serverinfo-uptime-all-epochs">
+<dt>uptime_all_epochs</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) Uptime since the start of the first epoch.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-admin-v2alpha-serverinfo-epoch">
+<dt>epoch</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">uint32</a>) Which restart epoch the server is currently in.</dd>
+</dl>
+</div>
+<div class="section" id="enum-admin-v2alpha-serverinfo-state">
+<span id="envoy-api-enum-admin-v2alpha-serverinfo-state"></span><h2>Enum admin.v2alpha.ServerInfo.State<a class="headerlink" href="#enum-admin-v2alpha-serverinfo-state" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/admin/v2alpha/server_info.proto#L14">[admin.v2alpha.ServerInfo.State proto]</a></p>
+<dl class="docutils" id="envoy-api-enum-value-admin-v2alpha-serverinfo-state-live">
+<dt>LIVE</dt>
+<dd><em>(DEFAULT)</em> ⁣Server is live and serving traffic.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-enum-value-admin-v2alpha-serverinfo-state-draining">
+<dt>DRAINING</dt>
+<dd>⁣Server is draining listeners in response to external health checks failing.</dd>
+</dl>
 </div>
 </div>
 
@@ -204,10 +245,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="fixed_heap/v2alpha/fixed_heap.proto.html" class="btn btn-neutral float-right" title="Fixed heap" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../../data/data.html" class="btn btn-neutral float-right" title="Envoy data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../transport_socket/capture/v2alpha/capture.proto.html" class="btn btn-neutral" title="Capture" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="metrics.proto.html" class="btn btn-neutral" title="Metrics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
