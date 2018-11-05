@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Tracing &mdash; envoy 1.9.0-dev-55e21f documentation</title>
+  <title>Tracing &mdash; envoy 1.9.0-dev-46c069 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.9.0-dev-55e21f
+                1.9.0-dev-46c069
               </div>
             
           
@@ -227,7 +227,8 @@ sources of latency. Envoy supports three features related to system wide tracing
 x-request-id header for unified logging as well as tracing.</li>
 <li><strong>External trace service integration</strong>: Envoy supports pluggable external trace visualization
 providers. Currently Envoy supports <a class="reference external" href="http://lightstep.com/">LightStep</a>, <a class="reference external" href="http://zipkin.io/">Zipkin</a>
-or any Zipkin compatible backends (e.g. <a class="reference external" href="https://github.com/jaegertracing/">Jaeger</a>).
+or any Zipkin compatible backends (e.g. <a class="reference external" href="https://github.com/jaegertracing/">Jaeger</a>), and
+<a class="reference external" href="https://datadoghq.com">Datadog</a>.
 However, support for other tracing providers would not be difficult to add.</li>
 <li><strong>Client trace ID joining</strong>: The <a class="reference internal" href="../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-client-trace-id"><span class="std std-ref">x-client-trace-id</span></a> header can
 be used to join untrusted request IDs to the trusted internal
@@ -279,6 +280,11 @@ B3 HTTP headers (
 header can also be supplied by an external client to either enable or disable tracing for a particular
 request. In addition, the single <a class="reference internal" href="../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-b3"><span class="std std-ref">b3</span></a> header propagation format is
 supported, which is a more compressed format.</li>
+<li>When using the Datadog tracer, Envoy relies on the service to propagate the
+Datadog-specific HTTP headers (
+<a class="reference internal" href="../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-datadog-trace-id"><span class="std std-ref">x-datadog-trace-id</span></a>,
+<a class="reference internal" href="../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-datadog-parent-id"><span class="std std-ref">x-datadog-parent-id</span></a>,
+<a class="reference internal" href="../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-datadog-sampling-priority"><span class="std std-ref">x-datadog-sampling-priority</span></a>).</li>
 </ul>
 </div>
 <div class="section" id="what-data-each-trace-contains">
@@ -304,7 +310,7 @@ the route. The name can also be overridden using the
 <p>Envoy automatically sends spans to tracing collectors. Depending on the tracing collector,
 multiple spans are stitched together using common information such as the globally unique
 request ID <a class="reference internal" href="../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a> (LightStep) or
-the trace ID configuration (Zipkin). See</p>
+the trace ID configuration (Zipkin and Datadog). See</p>
 <ul class="simple">
 <li><a class="reference internal" href="../../api-v2/config/trace/v2/trace.proto.html#envoy-api-msg-config-trace-v2-tracing"><span class="std std-ref">v2 API reference</span></a></li>
 </ul>
