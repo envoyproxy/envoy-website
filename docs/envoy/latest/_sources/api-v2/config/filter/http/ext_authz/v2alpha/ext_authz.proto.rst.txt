@@ -11,7 +11,7 @@ The external authorization service configuration
 config.filter.http.ext_authz.v2alpha.ExtAuthz
 ---------------------------------------------
 
-`[config.filter.http.ext_authz.v2alpha.ExtAuthz proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L21>`_
+`[config.filter.http.ext_authz.v2alpha.ExtAuthz proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L23>`_
 
 External Authorization filter calls out to an external service over either:
 
@@ -66,7 +66,7 @@ failure_mode_allow
 config.filter.http.ext_authz.v2alpha.HttpService
 ------------------------------------------------
 
-`[config.filter.http.ext_authz.v2alpha.HttpService proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L66>`_
+`[config.filter.http.ext_authz.v2alpha.HttpService proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L68>`_
 
 External Authorization filter calls out to an upstream authorization server by passing the raw
 HTTP request headers to the server. This allows the authorization service to take a decision
@@ -139,6 +139,79 @@ allowed_request_headers
 authorization_headers_to_add
   (:ref:`core.HeaderValue <envoy_api_msg_core.HeaderValue>`) Sets a list of headers and their values that will be added to the request to external
   authorization server. Note that these will override the headers coming from the downstream.
+  
+  
+
+
+.. _envoy_api_msg_config.filter.http.ext_authz.v2alpha.ExtAuthzPerRoute:
+
+config.filter.http.ext_authz.v2alpha.ExtAuthzPerRoute
+-----------------------------------------------------
+
+`[config.filter.http.ext_authz.v2alpha.ExtAuthzPerRoute proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L94>`_
+
+Extra settings on a per virtualhost/route/weighter-cluster level.
+
+.. code-block:: json
+
+  {
+    "disabled": "...",
+    "check_settings": "{...}"
+  }
+
+.. _envoy_api_field_config.filter.http.ext_authz.v2alpha.ExtAuthzPerRoute.disabled:
+
+disabled
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Disable the ext auth filter for this particular vhost or route.
+  If disabled is specified in multiple per-filter-configs, the most specific one will be used.
+  
+  
+  
+  Precisely one of :ref:`disabled <envoy_api_field_config.filter.http.ext_authz.v2alpha.ExtAuthzPerRoute.disabled>`, :ref:`check_settings <envoy_api_field_config.filter.http.ext_authz.v2alpha.ExtAuthzPerRoute.check_settings>` must be set.
+  
+.. _envoy_api_field_config.filter.http.ext_authz.v2alpha.ExtAuthzPerRoute.check_settings:
+
+check_settings
+  (:ref:`config.filter.http.ext_authz.v2alpha.CheckSettings <envoy_api_msg_config.filter.http.ext_authz.v2alpha.CheckSettings>`) Check request settings for this route.
+  
+  
+  
+  Precisely one of :ref:`disabled <envoy_api_field_config.filter.http.ext_authz.v2alpha.ExtAuthzPerRoute.disabled>`, :ref:`check_settings <envoy_api_field_config.filter.http.ext_authz.v2alpha.ExtAuthzPerRoute.check_settings>` must be set.
+  
+
+
+.. _envoy_api_msg_config.filter.http.ext_authz.v2alpha.CheckSettings:
+
+config.filter.http.ext_authz.v2alpha.CheckSettings
+--------------------------------------------------
+
+`[config.filter.http.ext_authz.v2alpha.CheckSettings proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L113>`_
+
+Extra settings for the check request. You can use this to provide extra context for the
+ext-authz server on specific virtual hosts \ routes. For example, adding a context extension on
+the virtual host level can give the ext-authz server information on what virtual host is used
+without needing to parse the host header.
+If CheckSettings is specified in multiple per-filter-configs, they will be merged in order,
+and the result will be be used.
+
+.. code-block:: json
+
+  {
+    "context_extensions": "{...}"
+  }
+
+.. _envoy_api_field_config.filter.http.ext_authz.v2alpha.CheckSettings.context_extensions:
+
+context_extensions
+  (map<`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, `string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_>) Context extensions to set on the CheckRequest's
+  :ref:`AttributeContext.context_extensions<envoy_api_field_service.auth.v2alpha.AttributeContext.context_extensions>`
+  
+  Merge semantics for this field are such that keys from more specific configs override.
+  
+  .. note::
+  
+    These settings are only applied to a filter configured with a
+    :ref:`grpc_service<envoy_api_field_config.filter.http.ext_authz.v2alpha.ExtAuthz.grpc_service>`.
   
   
 
