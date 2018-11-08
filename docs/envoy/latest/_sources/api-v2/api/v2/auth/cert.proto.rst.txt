@@ -340,6 +340,7 @@ TLS context shared by both client and server TLS contexts.
     "tls_certificate_sds_secret_configs": [],
     "validation_context": "{...}",
     "validation_context_sds_secret_config": "{...}",
+    "combined_validation_context": "{...}",
     "alpn_protocols": []
   }
 
@@ -374,7 +375,7 @@ validation_context
   
   
   
-  Only one of :ref:`validation_context <envoy_api_field_auth.CommonTlsContext.validation_context>`, :ref:`validation_context_sds_secret_config <envoy_api_field_auth.CommonTlsContext.validation_context_sds_secret_config>` may be set.
+  Only one of :ref:`validation_context <envoy_api_field_auth.CommonTlsContext.validation_context>`, :ref:`validation_context_sds_secret_config <envoy_api_field_auth.CommonTlsContext.validation_context_sds_secret_config>`, :ref:`combined_validation_context <envoy_api_field_auth.CommonTlsContext.combined_validation_context>` may be set.
   
 .. _envoy_api_field_auth.CommonTlsContext.validation_context_sds_secret_config:
 
@@ -383,7 +384,22 @@ validation_context_sds_secret_config
   
   
   
-  Only one of :ref:`validation_context <envoy_api_field_auth.CommonTlsContext.validation_context>`, :ref:`validation_context_sds_secret_config <envoy_api_field_auth.CommonTlsContext.validation_context_sds_secret_config>` may be set.
+  Only one of :ref:`validation_context <envoy_api_field_auth.CommonTlsContext.validation_context>`, :ref:`validation_context_sds_secret_config <envoy_api_field_auth.CommonTlsContext.validation_context_sds_secret_config>`, :ref:`combined_validation_context <envoy_api_field_auth.CommonTlsContext.combined_validation_context>` may be set.
+  
+.. _envoy_api_field_auth.CommonTlsContext.combined_validation_context:
+
+combined_validation_context
+  (:ref:`auth.CommonTlsContext.CombinedCertificateValidationContext <envoy_api_msg_auth.CommonTlsContext.CombinedCertificateValidationContext>`) Combined certificate validation context holds a default CertificateValidationContext
+  and SDS config. When SDS server returns dynamic CertificateValidationContext, both dynamic
+  and default CertificateValidationContext are merged into a new CertificateValidationContext
+  for validation. This merge is done by Message::MergeFrom(), so dynamic
+  CertificateValidationContext overwrites singular fields in default
+  CertificateValidationContext, and concatenates repeated fields to default
+  CertificateValidationContext, and logical OR is applied to boolean fields.
+  
+  
+  
+  Only one of :ref:`validation_context <envoy_api_field_auth.CommonTlsContext.validation_context>`, :ref:`validation_context_sds_secret_config <envoy_api_field_auth.CommonTlsContext.validation_context_sds_secret_config>`, :ref:`combined_validation_context <envoy_api_field_auth.CommonTlsContext.combined_validation_context>` may be set.
   
 .. _envoy_api_field_auth.CommonTlsContext.alpn_protocols:
 
@@ -400,6 +416,34 @@ alpn_protocols
   There is no default for this parameter. If empty, Envoy will not expose ALPN.
   
   
+.. _envoy_api_msg_auth.CommonTlsContext.CombinedCertificateValidationContext:
+
+auth.CommonTlsContext.CombinedCertificateValidationContext
+----------------------------------------------------------
+
+`[auth.CommonTlsContext.CombinedCertificateValidationContext proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L240>`_
+
+
+.. code-block:: json
+
+  {
+    "default_validation_context": "{...}",
+    "validation_context_sds_secret_config": "{...}"
+  }
+
+.. _envoy_api_field_auth.CommonTlsContext.CombinedCertificateValidationContext.default_validation_context:
+
+default_validation_context
+  (:ref:`auth.CertificateValidationContext <envoy_api_msg_auth.CertificateValidationContext>`, *REQUIRED*) How to validate peer certificates.
+  
+  
+.. _envoy_api_field_auth.CommonTlsContext.CombinedCertificateValidationContext.validation_context_sds_secret_config:
+
+validation_context_sds_secret_config
+  (:ref:`auth.SdsSecretConfig <envoy_api_msg_auth.SdsSecretConfig>`, *REQUIRED*) Config for fetching validation context via SDS API.
+  
+  
+
 
 
 .. _envoy_api_msg_auth.UpstreamTlsContext:
@@ -407,7 +451,7 @@ alpn_protocols
 auth.UpstreamTlsContext
 -----------------------
 
-`[auth.UpstreamTlsContext proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L263>`_
+`[auth.UpstreamTlsContext proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L282>`_
 
 
 .. code-block:: json
@@ -447,7 +491,7 @@ allow_renegotiation
 auth.DownstreamTlsContext
 -------------------------
 
-`[auth.DownstreamTlsContext proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L278>`_
+`[auth.DownstreamTlsContext proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L297>`_
 
 
 .. code-block:: json
@@ -487,7 +531,7 @@ session_ticket_keys
 auth.SdsSecretConfig
 --------------------
 
-`[auth.SdsSecretConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L300>`_
+`[auth.SdsSecretConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L319>`_
 
 
 
@@ -520,7 +564,7 @@ sds_config
 auth.Secret
 -----------
 
-`[auth.Secret proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L309>`_
+`[auth.Secret proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L328>`_
 
 
 
