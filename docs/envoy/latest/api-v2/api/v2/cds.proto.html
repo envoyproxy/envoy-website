@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Clusters &mdash; envoy 1.9.0-dev-11e196 documentation</title>
+  <title>Clusters &mdash; envoy 1.9.0-dev-cb44cf documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.9.0-dev-11e196
+                1.9.0-dev-cb44cf
               </div>
             
           
@@ -102,6 +102,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#cluster-lbsubsetconfig">Cluster.LbSubsetConfig</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#cluster-lbsubsetconfig-lbsubsetselector">Cluster.LbSubsetConfig.LbSubsetSelector</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#enum-cluster-lbsubsetconfig-lbsubsetfallbackpolicy">Enum Cluster.LbSubsetConfig.LbSubsetFallbackPolicy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cluster-leastrequestlbconfig">Cluster.LeastRequestLbConfig</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#cluster-ringhashlbconfig">Cluster.RingHashLbConfig</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#cluster-originaldstlbconfig">Cluster.OriginalDstLbConfig</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#cluster-commonlbconfig">Cluster.CommonLbConfig</a></li>
@@ -233,6 +234,7 @@
   <span class="nt">&quot;lb_subset_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;ring_hash_lb_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;original_dst_lb_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;least_request_lb_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;common_lb_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;transport_socket&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;metadata&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -434,12 +436,12 @@ If the address and port are empty, no bind will be performed.</dd>
 <dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-cluster-ringhashlbconfig"><span class="std std-ref">Cluster.RingHashLbConfig</span></a>) Optional configuration for the Ring Hash load balancing policy.</p>
 <p>Optional configuration for the load balancing algorithm selected by
 LbPolicy. Currently only
-<a class="reference internal" href="#envoy-api-enum-value-cluster-lbpolicy-ring-hash"><span class="std std-ref">RING_HASH</span></a>
+<a class="reference internal" href="#envoy-api-enum-value-cluster-lbpolicy-ring-hash"><span class="std std-ref">RING_HASH</span></a> and
+<a class="reference internal" href="#envoy-api-enum-value-cluster-lbpolicy-least-request"><span class="std std-ref">LEAST_REQUEST</span></a>
 has additional configuration options.
-Specifying ring_hash_lb_config without setting the LbPolicy to
-<a class="reference internal" href="#envoy-api-enum-value-cluster-lbpolicy-ring-hash"><span class="std std-ref">RING_HASH</span></a>
-will generate an error at runtime.</p>
-<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-cluster-ring-hash-lb-config"><span class="std std-ref">ring_hash_lb_config</span></a>, <a class="reference internal" href="#envoy-api-field-cluster-original-dst-lb-config"><span class="std std-ref">original_dst_lb_config</span></a> may be set.</p>
+Specifying ring_hash_lb_config or least_request_lb_config without setting the corresponding
+LbPolicy will generate an error at runtime.</p>
+<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-cluster-ring-hash-lb-config"><span class="std std-ref">ring_hash_lb_config</span></a>, <a class="reference internal" href="#envoy-api-field-cluster-original-dst-lb-config"><span class="std std-ref">original_dst_lb_config</span></a>, <a class="reference internal" href="#envoy-api-field-cluster-least-request-lb-config"><span class="std std-ref">least_request_lb_config</span></a> may be set.</p>
 </dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-original-dst-lb-config">
@@ -447,12 +449,25 @@ will generate an error at runtime.</p>
 <dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-cluster-originaldstlbconfig"><span class="std std-ref">Cluster.OriginalDstLbConfig</span></a>) Optional configuration for the Original Destination load balancing policy.</p>
 <p>Optional configuration for the load balancing algorithm selected by
 LbPolicy. Currently only
-<a class="reference internal" href="#envoy-api-enum-value-cluster-lbpolicy-ring-hash"><span class="std std-ref">RING_HASH</span></a>
+<a class="reference internal" href="#envoy-api-enum-value-cluster-lbpolicy-ring-hash"><span class="std std-ref">RING_HASH</span></a> and
+<a class="reference internal" href="#envoy-api-enum-value-cluster-lbpolicy-least-request"><span class="std std-ref">LEAST_REQUEST</span></a>
 has additional configuration options.
-Specifying ring_hash_lb_config without setting the LbPolicy to
-<a class="reference internal" href="#envoy-api-enum-value-cluster-lbpolicy-ring-hash"><span class="std std-ref">RING_HASH</span></a>
-will generate an error at runtime.</p>
-<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-cluster-ring-hash-lb-config"><span class="std std-ref">ring_hash_lb_config</span></a>, <a class="reference internal" href="#envoy-api-field-cluster-original-dst-lb-config"><span class="std std-ref">original_dst_lb_config</span></a> may be set.</p>
+Specifying ring_hash_lb_config or least_request_lb_config without setting the corresponding
+LbPolicy will generate an error at runtime.</p>
+<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-cluster-ring-hash-lb-config"><span class="std std-ref">ring_hash_lb_config</span></a>, <a class="reference internal" href="#envoy-api-field-cluster-original-dst-lb-config"><span class="std std-ref">original_dst_lb_config</span></a>, <a class="reference internal" href="#envoy-api-field-cluster-least-request-lb-config"><span class="std std-ref">least_request_lb_config</span></a> may be set.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-cluster-least-request-lb-config">
+<dt>least_request_lb_config</dt>
+<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-cluster-leastrequestlbconfig"><span class="std std-ref">Cluster.LeastRequestLbConfig</span></a>) Optional configuration for the LeastRequest load balancing policy.</p>
+<p>Optional configuration for the load balancing algorithm selected by
+LbPolicy. Currently only
+<a class="reference internal" href="#envoy-api-enum-value-cluster-lbpolicy-ring-hash"><span class="std std-ref">RING_HASH</span></a> and
+<a class="reference internal" href="#envoy-api-enum-value-cluster-lbpolicy-least-request"><span class="std std-ref">LEAST_REQUEST</span></a>
+has additional configuration options.
+Specifying ring_hash_lb_config or least_request_lb_config without setting the corresponding
+LbPolicy will generate an error at runtime.</p>
+<p class="last">Only one of <a class="reference internal" href="#envoy-api-field-cluster-ring-hash-lb-config"><span class="std std-ref">ring_hash_lb_config</span></a>, <a class="reference internal" href="#envoy-api-field-cluster-original-dst-lb-config"><span class="std std-ref">original_dst_lb_config</span></a>, <a class="reference internal" href="#envoy-api-field-cluster-least-request-lb-config"><span class="std std-ref">least_request_lb_config</span></a> may be set.</p>
 </dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-common-lb-config">
@@ -621,9 +636,24 @@ endpoints matching the values from the default_subset field.</p>
 <dd>⁣</dd>
 </dl>
 </div>
+<div class="section" id="cluster-leastrequestlbconfig">
+<span id="envoy-api-msg-cluster-leastrequestlbconfig"></span><h2>Cluster.LeastRequestLbConfig<a class="headerlink" href="#cluster-leastrequestlbconfig" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L384">[Cluster.LeastRequestLbConfig proto]</a></p>
+<p>Specific configuration for the LeastRequest load balancing policy.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;choice_count&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-cluster-leastrequestlbconfig-choice-count">
+<dt>choice_count</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The number of random healthy hosts from which the host with the fewest active requests will
+be chosen. Defaults to 2 so that we perform two-choice selection if the field is not set.</dd>
+</dl>
+</div>
 <div class="section" id="cluster-ringhashlbconfig">
 <span id="envoy-api-msg-cluster-ringhashlbconfig"></span><h2>Cluster.RingHashLbConfig<a class="headerlink" href="#cluster-ringhashlbconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L385">[Cluster.RingHashLbConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L392">[Cluster.RingHashLbConfig proto]</a></p>
 <p>Specific configuration for the <a class="reference internal" href="../../../intro/arch_overview/load_balancing.html#arch-overview-load-balancing-types-ring-hash"><span class="std std-ref">RingHash</span></a>
 load balancing policy.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -643,7 +673,7 @@ resource use.</dd>
 </div>
 <div class="section" id="cluster-originaldstlbconfig">
 <span id="envoy-api-msg-cluster-originaldstlbconfig"></span><h2>Cluster.OriginalDstLbConfig<a class="headerlink" href="#cluster-originaldstlbconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L409">[Cluster.OriginalDstLbConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L416">[Cluster.OriginalDstLbConfig proto]</a></p>
 <p>Specific configuration for the
 <a class="reference internal" href="../../../intro/arch_overview/load_balancing.html#arch-overview-load-balancing-types-original-destination"><span class="std std-ref">Original Destination</span></a>
 load balancing policy.</p>
@@ -667,7 +697,7 @@ consequences.</p>
 </div>
 <div class="section" id="cluster-commonlbconfig">
 <span id="envoy-api-msg-cluster-commonlbconfig"></span><h2>Cluster.CommonLbConfig<a class="headerlink" href="#cluster-commonlbconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L437">[Cluster.CommonLbConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L446">[Cluster.CommonLbConfig proto]</a></p>
 <p>Common configuration for all load balancer implementations.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;healthy_panic_threshold&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -717,7 +747,7 @@ because merging those updates isn’t currently safe. See
 </div>
 <div class="section" id="cluster-commonlbconfig-zoneawarelbconfig">
 <span id="envoy-api-msg-cluster-commonlbconfig-zoneawarelbconfig"></span><h2>Cluster.CommonLbConfig.ZoneAwareLbConfig<a class="headerlink" href="#cluster-commonlbconfig-zoneawarelbconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L446">[Cluster.CommonLbConfig.ZoneAwareLbConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L455">[Cluster.CommonLbConfig.ZoneAwareLbConfig proto]</a></p>
 <p>Configuration for <a class="reference internal" href="../../../intro/arch_overview/load_balancing.html#arch-overview-load-balancing-zone-aware-routing"><span class="std std-ref">zone aware routing</span></a>.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;routing_enabled&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -743,7 +773,7 @@ even if zone aware routing is configured. If not specified, the default is 6.
 </div>
 <div class="section" id="cluster-commonlbconfig-localityweightedlbconfig">
 <span id="envoy-api-msg-cluster-commonlbconfig-localityweightedlbconfig"></span><h2>Cluster.CommonLbConfig.LocalityWeightedLbConfig<a class="headerlink" href="#cluster-commonlbconfig-localityweightedlbconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L461">[Cluster.CommonLbConfig.LocalityWeightedLbConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L470">[Cluster.CommonLbConfig.LocalityWeightedLbConfig proto]</a></p>
 <p>Configuration for <a class="reference internal" href="../../../intro/arch_overview/load_balancing.html#arch-overview-load-balancing-locality-weighted-lb"><span class="std std-ref">locality weighted load balancing</span></a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{}</span>
 </pre></div>
@@ -852,7 +882,7 @@ ignored.</p>
 </div>
 <div class="section" id="enum-cluster-clusterprotocolselection">
 <span id="envoy-api-enum-cluster-clusterprotocolselection"></span><h2>Enum Cluster.ClusterProtocolSelection<a class="headerlink" href="#enum-cluster-clusterprotocolselection" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L496">[Cluster.ClusterProtocolSelection proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L505">[Cluster.ClusterProtocolSelection proto]</a></p>
 <dl class="docutils" id="envoy-api-enum-value-cluster-clusterprotocolselection-use-configured-protocol">
 <dt>USE_CONFIGURED_PROTOCOL</dt>
 <dd><em>(DEFAULT)</em> ⁣Cluster can only operate on one of the possible upstream protocols (HTTP1.1, HTTP2).
@@ -866,7 +896,7 @@ present, HTTP2 will be used, otherwise HTTP1.1 will be used.</dd>
 </div>
 <div class="section" id="upstreambindconfig">
 <span id="envoy-api-msg-upstreambindconfig"></span><h2>UpstreamBindConfig<a class="headerlink" href="#upstreambindconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L537">[UpstreamBindConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L546">[UpstreamBindConfig proto]</a></p>
 <p>An extensible structure containing the address Envoy should bind to when
 establishing upstream connections.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -881,7 +911,7 @@ establishing upstream connections.</p>
 </div>
 <div class="section" id="upstreamconnectionoptions">
 <span id="envoy-api-msg-upstreamconnectionoptions"></span><h2>UpstreamConnectionOptions<a class="headerlink" href="#upstreamconnectionoptions" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L542">[UpstreamConnectionOptions proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L551">[UpstreamConnectionOptions proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;tcp_keepalive&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>

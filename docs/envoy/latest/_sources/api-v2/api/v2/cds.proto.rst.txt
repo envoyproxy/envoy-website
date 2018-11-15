@@ -42,6 +42,7 @@ Configuration for a single upstream cluster.
     "lb_subset_config": "{...}",
     "ring_hash_lb_config": "{...}",
     "original_dst_lb_config": "{...}",
+    "least_request_lb_config": "{...}",
     "common_lb_config": "{...}",
     "transport_socket": "{...}",
     "metadata": "{...}",
@@ -294,14 +295,14 @@ ring_hash_lb_config
   
   Optional configuration for the load balancing algorithm selected by
   LbPolicy. Currently only
-  :ref:`RING_HASH<envoy_api_enum_value_Cluster.LbPolicy.RING_HASH>`
+  :ref:`RING_HASH<envoy_api_enum_value_Cluster.LbPolicy.RING_HASH>` and
+  :ref:`LEAST_REQUEST<envoy_api_enum_value_Cluster.LbPolicy.LEAST_REQUEST>`
   has additional configuration options.
-  Specifying ring_hash_lb_config without setting the LbPolicy to
-  :ref:`RING_HASH<envoy_api_enum_value_Cluster.LbPolicy.RING_HASH>`
-  will generate an error at runtime.
+  Specifying ring_hash_lb_config or least_request_lb_config without setting the corresponding
+  LbPolicy will generate an error at runtime.
   
   
-  Only one of :ref:`ring_hash_lb_config <envoy_api_field_Cluster.ring_hash_lb_config>`, :ref:`original_dst_lb_config <envoy_api_field_Cluster.original_dst_lb_config>` may be set.
+  Only one of :ref:`ring_hash_lb_config <envoy_api_field_Cluster.ring_hash_lb_config>`, :ref:`original_dst_lb_config <envoy_api_field_Cluster.original_dst_lb_config>`, :ref:`least_request_lb_config <envoy_api_field_Cluster.least_request_lb_config>` may be set.
   
 .. _envoy_api_field_Cluster.original_dst_lb_config:
 
@@ -310,14 +311,30 @@ original_dst_lb_config
   
   Optional configuration for the load balancing algorithm selected by
   LbPolicy. Currently only
-  :ref:`RING_HASH<envoy_api_enum_value_Cluster.LbPolicy.RING_HASH>`
+  :ref:`RING_HASH<envoy_api_enum_value_Cluster.LbPolicy.RING_HASH>` and
+  :ref:`LEAST_REQUEST<envoy_api_enum_value_Cluster.LbPolicy.LEAST_REQUEST>`
   has additional configuration options.
-  Specifying ring_hash_lb_config without setting the LbPolicy to
-  :ref:`RING_HASH<envoy_api_enum_value_Cluster.LbPolicy.RING_HASH>`
-  will generate an error at runtime.
+  Specifying ring_hash_lb_config or least_request_lb_config without setting the corresponding
+  LbPolicy will generate an error at runtime.
   
   
-  Only one of :ref:`ring_hash_lb_config <envoy_api_field_Cluster.ring_hash_lb_config>`, :ref:`original_dst_lb_config <envoy_api_field_Cluster.original_dst_lb_config>` may be set.
+  Only one of :ref:`ring_hash_lb_config <envoy_api_field_Cluster.ring_hash_lb_config>`, :ref:`original_dst_lb_config <envoy_api_field_Cluster.original_dst_lb_config>`, :ref:`least_request_lb_config <envoy_api_field_Cluster.least_request_lb_config>` may be set.
+  
+.. _envoy_api_field_Cluster.least_request_lb_config:
+
+least_request_lb_config
+  (:ref:`Cluster.LeastRequestLbConfig <envoy_api_msg_Cluster.LeastRequestLbConfig>`) Optional configuration for the LeastRequest load balancing policy.
+  
+  Optional configuration for the load balancing algorithm selected by
+  LbPolicy. Currently only
+  :ref:`RING_HASH<envoy_api_enum_value_Cluster.LbPolicy.RING_HASH>` and
+  :ref:`LEAST_REQUEST<envoy_api_enum_value_Cluster.LbPolicy.LEAST_REQUEST>`
+  has additional configuration options.
+  Specifying ring_hash_lb_config or least_request_lb_config without setting the corresponding
+  LbPolicy will generate an error at runtime.
+  
+  
+  Only one of :ref:`ring_hash_lb_config <envoy_api_field_Cluster.ring_hash_lb_config>`, :ref:`original_dst_lb_config <envoy_api_field_Cluster.original_dst_lb_config>`, :ref:`least_request_lb_config <envoy_api_field_Cluster.least_request_lb_config>` may be set.
   
 .. _envoy_api_field_Cluster.common_lb_config:
 
@@ -542,12 +559,36 @@ DEFAULT_SUBSET
   ⁣
   
 
+.. _envoy_api_msg_Cluster.LeastRequestLbConfig:
+
+Cluster.LeastRequestLbConfig
+----------------------------
+
+`[Cluster.LeastRequestLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L384>`_
+
+Specific configuration for the LeastRequest load balancing policy.
+
+.. code-block:: json
+
+  {
+    "choice_count": "{...}"
+  }
+
+.. _envoy_api_field_Cluster.LeastRequestLbConfig.choice_count:
+
+choice_count
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The number of random healthy hosts from which the host with the fewest active requests will
+  be chosen. Defaults to 2 so that we perform two-choice selection if the field is not set.
+  
+  
+
+
 .. _envoy_api_msg_Cluster.RingHashLbConfig:
 
 Cluster.RingHashLbConfig
 ------------------------
 
-`[Cluster.RingHashLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L385>`_
+`[Cluster.RingHashLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L392>`_
 
 Specific configuration for the :ref:`RingHash<arch_overview_load_balancing_types_ring_hash>`
 load balancing policy.
@@ -577,7 +618,7 @@ minimum_ring_size
 Cluster.OriginalDstLbConfig
 ---------------------------
 
-`[Cluster.OriginalDstLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L409>`_
+`[Cluster.OriginalDstLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L416>`_
 
 Specific configuration for the
 :ref:`Original Destination <arch_overview_load_balancing_types_original_destination>`
@@ -610,7 +651,7 @@ use_http_header
 Cluster.CommonLbConfig
 ----------------------
 
-`[Cluster.CommonLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L437>`_
+`[Cluster.CommonLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L446>`_
 
 Common configuration for all load balancer implementations.
 
@@ -672,7 +713,7 @@ update_merge_window
 Cluster.CommonLbConfig.ZoneAwareLbConfig
 ----------------------------------------
 
-`[Cluster.CommonLbConfig.ZoneAwareLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L446>`_
+`[Cluster.CommonLbConfig.ZoneAwareLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L455>`_
 
 Configuration for :ref:`zone aware routing
 <arch_overview_load_balancing_zone_aware_routing>`.
@@ -710,7 +751,7 @@ min_cluster_size
 Cluster.CommonLbConfig.LocalityWeightedLbConfig
 -----------------------------------------------
 
-`[Cluster.CommonLbConfig.LocalityWeightedLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L461>`_
+`[Cluster.CommonLbConfig.LocalityWeightedLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L470>`_
 
 Configuration for :ref:`locality weighted load balancing
 <arch_overview_load_balancing_locality_weighted_lb>`
@@ -869,7 +910,7 @@ V6_ONLY
 Enum Cluster.ClusterProtocolSelection
 -------------------------------------
 
-`[Cluster.ClusterProtocolSelection proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L496>`_
+`[Cluster.ClusterProtocolSelection proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L505>`_
 
 
 .. _envoy_api_enum_value_Cluster.ClusterProtocolSelection.USE_CONFIGURED_PROTOCOL:
@@ -892,7 +933,7 @@ USE_DOWNSTREAM_PROTOCOL
 UpstreamBindConfig
 ------------------
 
-`[UpstreamBindConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L537>`_
+`[UpstreamBindConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L546>`_
 
 An extensible structure containing the address Envoy should bind to when
 establishing upstream connections.
@@ -916,7 +957,7 @@ source_address
 UpstreamConnectionOptions
 -------------------------
 
-`[UpstreamConnectionOptions proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L542>`_
+`[UpstreamConnectionOptions proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L551>`_
 
 
 .. code-block:: json
