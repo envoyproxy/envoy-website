@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Service discovery &mdash; envoy 1.9.0-dev-8c6a40 documentation</title>
+  <title>Service discovery &mdash; envoy 1.9.0-dev-38758f documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.9.0-dev-8c6a40
+                1.9.0-dev-38758f
               </div>
             
           
@@ -232,6 +232,11 @@ assume the cluster has three hosts, and all three should be load balanced to. If
 from the result Envoy assumes it no longer exists and will drain traffic from any existing
 connection pools. Note that Envoy never synchronously resolves DNS in the forwarding path. At the
 expense of eventual consistency, there is never a worry of blocking on a long running DNS query.</p>
+<p>If a single DNS name resolves to the same IP multiple times, these IPs will be de-duplicated.</p>
+<p>If multiple DNS names resolve to the same IP, health checking will <em>not</em> be shared.
+This means that care should be taken if active health checking is used with DNS names that resolve
+to the same IPs: if an IP is repeated many times between DNS names it might cause undue load on the
+upstream host.</p>
 </div>
 <div class="section" id="logical-dns">
 <span id="arch-overview-service-discovery-types-logical-dns"></span><h3>Logical DNS<a class="headerlink" href="#logical-dns" title="Permalink to this headline">¶</a></h3>
