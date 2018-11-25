@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Load balancing &mdash; envoy 1.9.0-dev-38758f documentation</title>
+  <title>Load balancing &mdash; envoy 1.9.0-dev-b09401 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.9.0-dev-38758f
+                1.9.0-dev-b09401
               </div>
             
           
@@ -114,6 +114,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#zone-aware-routing">Zone aware routing</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#locality-weighted-load-balancing">Locality weighted load balancing</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#load-balancer-subsets">Load Balancer Subsets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scaled-locality-weights">Scaled Locality Weights</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="outlier.html">Outlier detection</a></li>
@@ -857,6 +858,12 @@ the <code class="docutils literal notranslate"><span class="pre">&quot;envoy.lb&
 key may be a structured value or list), but the subset load balancer only compares top-level keys
 and values. Therefore when using structured values, a route’s match criteria will only match if an
 identical structured value appears in the host’s metadata.</p>
+<p>Subsets may be used alongside locality weights by specifying the
+<a class="reference internal" href="../../api-v2/api/v2/cds.proto.html#envoy-api-field-cluster-lbsubsetconfig-locality-weight-aware"><span class="std std-ref">locality_aware</span></a> flag.
+This will route to each locality based on the original locality weights declared for the cluster.
+The <a class="reference internal" href="../../api-v2/api/v2/cds.proto.html#envoy-api-field-cluster-lbsubsetconfig-scale-locality-weight"><span class="std std-ref">scale_locality_weight</span></a> can
+be used to scale the locality weights based on the fraction of hosts remaining in the locality
+after the subset predicate has been applied.</p>
 <div class="section" id="examples">
 <h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
 <p>We’ll use simple metadata where all values are strings. Assume the following hosts are defined and
@@ -1023,6 +1030,74 @@ route:</p>
 </div>
 </div>
 </div>
+</div>
+<div class="section" id="scaled-locality-weights">
+<h2>Scaled Locality Weights<a class="headerlink" href="#scaled-locality-weights" title="Permalink to this headline">¶</a></h2>
+<p>When both locality weight and locality weight scaling is enabled, the weight
+of each locality will depend on the fraction of endpoints removed from the locality
+due to the subsetting.</p>
+<p>Consider the following:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="36%" />
+<col width="36%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Host</th>
+<th class="head">Metadata</th>
+<th class="head">Locality</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>host1</td>
+<td>v: 1.0</td>
+<td>L1</td>
+</tr>
+<tr class="row-odd"><td>host2</td>
+<td>v: 1.0</td>
+<td>L1</td>
+</tr>
+<tr class="row-even"><td>host3</td>
+<td>v: 1.1</td>
+<td>L1</td>
+</tr>
+<tr class="row-odd"><td>host4</td>
+<td>v: 1.0</td>
+<td>L2</td>
+</tr>
+<tr class="row-even"><td>host5</td>
+<td>v: 1.2</td>
+<td>L3</td>
+</tr>
+</tbody>
+</table>
+<p>Where the load between L1, L2 and L3 is split evenly (33/33/33).</p>
+<p>Each subset will scale the locality weight of each locality with the formula
+(original locality weight) * (hosts in locality in subset) / (hosts in locality in original host set).</p>
+<p>This causes the following locality weighting for each subset:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="73%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Subset</th>
+<th class="head">Locality Weights</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>v: 1.0</td>
+<td>{22, 33, 0}</td>
+</tr>
+<tr class="row-odd"><td>v: 1.1</td>
+<td>{11, 0, 0}</td>
+</tr>
+<tr class="row-even"><td>v: 1.2</td>
+<td>{0, 0, 33}</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 
