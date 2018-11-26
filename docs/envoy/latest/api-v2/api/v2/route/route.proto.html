@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP route &mdash; envoy 1.9.0-dev-c588a4 documentation</title>
+  <title>HTTP route &mdash; envoy 1.9.0-dev-d72eaa documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.9.0-dev-c588a4
+                1.9.0-dev-d72eaa
               </div>
             
           
@@ -116,6 +116,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#route-routeaction-hashpolicy-header">route.RouteAction.HashPolicy.Header</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#route-routeaction-hashpolicy-cookie">route.RouteAction.HashPolicy.Cookie</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#route-routeaction-hashpolicy-connectionproperties">route.RouteAction.HashPolicy.ConnectionProperties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#route-routeaction-upgradeconfig">route.RouteAction.UpgradeConfig</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#enum-route-routeaction-clusternotfoundresponsecode">Enum route.RouteAction.ClusterNotFoundResponseCode</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#route-redirectaction">route.RedirectAction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#enum-route-redirectaction-redirectresponsecode">Enum route.RedirectAction.RedirectResponseCode</a></li>
@@ -723,7 +724,8 @@ application/grpc+ values.</dd>
   <span class="nt">&quot;include_vh_rate_limits&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;hash_policy&quot;</span><span class="p">:</span> <span class="p">[],</span>
   <span class="nt">&quot;cors&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;max_grpc_timeout&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;max_grpc_timeout&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;upgrade_configs&quot;</span><span class="p">:</span> <span class="p">[]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -901,6 +903,10 @@ and gRPC requests time out like any other requests using
 <a class="reference internal" href="#envoy-api-field-route-routeaction-timeout"><span class="std std-ref">timeout</span></a> or its default.
 This can be used to prevent unexpected upstream request timeouts due to potentially long
 time gaps between gRPC request and response in gRPC streaming mode.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-route-routeaction-upgrade-configs">
+<dt>upgrade_configs</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-route-routeaction-upgradeconfig"><span class="std std-ref">route.RouteAction.UpgradeConfig</span></a>)</dd>
 </dl>
 </div>
 <div class="section" id="route-routeaction-retrypolicy">
@@ -1172,6 +1178,32 @@ will be set for the cookie.</dd>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Hash on source IP address.</dd>
 </dl>
 </div>
+<div class="section" id="route-routeaction-upgradeconfig">
+<span id="envoy-api-msg-route-routeaction-upgradeconfig"></span><h2>route.RouteAction.UpgradeConfig<a class="headerlink" href="#route-routeaction-upgradeconfig" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L766">[route.RouteAction.UpgradeConfig proto]</a></p>
+<p>Allows enabling and disabling upgrades on a per-route basis.
+This overrides any enabled/disabled upgrade filter chain specified in the
+HttpConnectionManager
+:ref:upgrade_configs`
+&lt;envoy_api_field_config.filter.network.http_connection_manager.v2.HttpConnectionManager.upgrade_configs&gt;`
+but does not affect any custom filter chain specified there.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;upgrade_type&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;enabled&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-route-routeaction-upgradeconfig-upgrade-type">
+<dt>upgrade_type</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The case-insensitive name of this upgrade, e.g. “websocket”.
+For each upgrade type present in upgrade_configs, requests with
+Upgrade: [upgrade_type] will be proxied upstream.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-route-routeaction-upgradeconfig-enabled">
+<dt>enabled</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue">BoolValue</a>) Determines if upgrades are available on this route. Defaults to true.</dd>
+</dl>
+</div>
 <div class="section" id="enum-route-routeaction-clusternotfoundresponsecode">
 <span id="envoy-api-enum-route-routeaction-clusternotfoundresponsecode"></span><h2>Enum route.RouteAction.ClusterNotFoundResponseCode<a class="headerlink" href="#enum-route-routeaction-clusternotfoundresponsecode" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L436">[route.RouteAction.ClusterNotFoundResponseCode proto]</a></p>
@@ -1186,7 +1218,7 @@ will be set for the cookie.</dd>
 </div>
 <div class="section" id="route-redirectaction">
 <span id="envoy-api-msg-route-redirectaction"></span><h2>route.RedirectAction<a class="headerlink" href="#route-redirectaction" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L761">[route.RedirectAction proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L777">[route.RedirectAction proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;https_redirect&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;scheme_redirect&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
@@ -1271,7 +1303,7 @@ be removed. Default value is false.</dd>
 </div>
 <div class="section" id="enum-route-redirectaction-redirectresponsecode">
 <span id="envoy-api-enum-route-redirectaction-redirectresponsecode"></span><h2>Enum route.RedirectAction.RedirectResponseCode<a class="headerlink" href="#enum-route-redirectaction-redirectresponsecode" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L793">[route.RedirectAction.RedirectResponseCode proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L809">[route.RedirectAction.RedirectResponseCode proto]</a></p>
 <dl class="docutils" id="envoy-api-enum-value-route-redirectaction-redirectresponsecode-moved-permanently">
 <dt>MOVED_PERMANENTLY</dt>
 <dd><em>(DEFAULT)</em> ⁣Moved Permanently HTTP Status Code - 301.</dd>
@@ -1295,7 +1327,7 @@ be removed. Default value is false.</dd>
 </div>
 <div class="section" id="route-directresponseaction">
 <span id="envoy-api-msg-route-directresponseaction"></span><h2>route.DirectResponseAction<a class="headerlink" href="#route-directresponseaction" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L819">[route.DirectResponseAction proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L835">[route.DirectResponseAction proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
@@ -1321,7 +1353,7 @@ no body is included in the generated response.</p>
 </div>
 <div class="section" id="route-decorator">
 <span id="envoy-api-msg-route-decorator"></span><h2>route.Decorator<a class="headerlink" href="#route-decorator" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L834">[route.Decorator proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L850">[route.Decorator proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;operation&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
 <span class="p">}</span>
@@ -1341,7 +1373,7 @@ by the <a class="reference internal" href="../../../../configuration/http_filter
 </div>
 <div class="section" id="route-virtualcluster">
 <span id="envoy-api-msg-route-virtualcluster"></span><h2>route.VirtualCluster<a class="headerlink" href="#route-virtualcluster" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L863">[route.VirtualCluster proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L879">[route.VirtualCluster proto]</a></p>
 <p>A virtual cluster is a way of specifying a regex matching rule against
 certain important endpoints such that statistics are generated explicitly for
 the matched requests. The reason this is useful is that when doing
@@ -1391,7 +1423,7 @@ etc.</dd>
 </div>
 <div class="section" id="route-ratelimit">
 <span id="envoy-api-msg-route-ratelimit"></span><h2>route.RateLimit<a class="headerlink" href="#route-ratelimit" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L888">[route.RateLimit proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L904">[route.RateLimit proto]</a></p>
 <p>Global rate limiting <a class="reference internal" href="../../../../intro/arch_overview/global_rate_limiting.html#arch-overview-rate-limit"><span class="std std-ref">architecture overview</span></a>.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;stage&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -1426,7 +1458,7 @@ configuration. See <a class="reference internal" href="../../../../configuration
 </div>
 <div class="section" id="route-ratelimit-action">
 <span id="envoy-api-msg-route-ratelimit-action"></span><h2>route.RateLimit.Action<a class="headerlink" href="#route-ratelimit-action" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L901">[route.RateLimit.Action proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L917">[route.RateLimit.Action proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;source_cluster&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;destination_cluster&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -1476,7 +1508,7 @@ configuration. See <a class="reference internal" href="../../../../configuration
 </div>
 <div class="section" id="route-ratelimit-action-sourcecluster">
 <span id="envoy-api-msg-route-ratelimit-action-sourcecluster"></span><h2>route.RateLimit.Action.SourceCluster<a class="headerlink" href="#route-ratelimit-action-sourcecluster" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L909">[route.RateLimit.Action.SourceCluster proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L925">[route.RateLimit.Action.SourceCluster proto]</a></p>
 <p>The following descriptor entry is appended to the descriptor:</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="s">&quot;source_cluster&quot;</span><span class="p">,</span> <span class="s">&quot;&lt;local service cluster&gt;&quot;</span><span class="p">)</span>
 </pre></div>
@@ -1488,7 +1520,7 @@ configuration. See <a class="reference internal" href="../../../../configuration
 </div>
 <div class="section" id="route-ratelimit-action-destinationcluster">
 <span id="envoy-api-msg-route-ratelimit-action-destinationcluster"></span><h2>route.RateLimit.Action.DestinationCluster<a class="headerlink" href="#route-ratelimit-action-destinationcluster" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L928">[route.RateLimit.Action.DestinationCluster proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L944">[route.RateLimit.Action.DestinationCluster proto]</a></p>
 <p>The following descriptor entry is appended to the descriptor:</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="s">&quot;destination_cluster&quot;</span><span class="p">,</span> <span class="s">&quot;&lt;routed target cluster&gt;&quot;</span><span class="p">)</span>
 </pre></div>
@@ -1510,7 +1542,7 @@ header in the request contains the target cluster.</li>
 </div>
 <div class="section" id="route-ratelimit-action-requestheaders">
 <span id="envoy-api-msg-route-ratelimit-action-requestheaders"></span><h2>route.RateLimit.Action.RequestHeaders<a class="headerlink" href="#route-ratelimit-action-requestheaders" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L937">[route.RateLimit.Action.RequestHeaders proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L953">[route.RateLimit.Action.RequestHeaders proto]</a></p>
 <p>The following descriptor entry is appended when a header contains a key that matches the
 <em>header_name</em>:</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="s">&quot;&lt;descriptor_key&gt;&quot;</span><span class="p">,</span> <span class="s">&quot;&lt;header_value_queried_from_header&gt;&quot;</span><span class="p">)</span>
@@ -1535,7 +1567,7 @@ descriptor_key.</dd>
 </div>
 <div class="section" id="route-ratelimit-action-remoteaddress">
 <span id="envoy-api-msg-route-ratelimit-action-remoteaddress"></span><h2>route.RateLimit.Action.RemoteAddress<a class="headerlink" href="#route-ratelimit-action-remoteaddress" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L953">[route.RateLimit.Action.RemoteAddress proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L969">[route.RateLimit.Action.RemoteAddress proto]</a></p>
 <p>The following descriptor entry is appended to the descriptor and is populated using the
 trusted address from <a class="reference internal" href="../../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a>:</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="s">&quot;remote_address&quot;</span><span class="p">,</span> <span class="s">&quot;&lt;trusted address from x-forwarded-for&gt;&quot;</span><span class="p">)</span>
@@ -1547,7 +1579,7 @@ trusted address from <a class="reference internal" href="../../../../configurati
 </div>
 <div class="section" id="route-ratelimit-action-generickey">
 <span id="envoy-api-msg-route-ratelimit-action-generickey"></span><h2>route.RateLimit.Action.GenericKey<a class="headerlink" href="#route-ratelimit-action-generickey" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L961">[route.RateLimit.Action.GenericKey proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L977">[route.RateLimit.Action.GenericKey proto]</a></p>
 <p>The following descriptor entry is appended to the descriptor:</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="s">&quot;generic_key&quot;</span><span class="p">,</span> <span class="s">&quot;&lt;descriptor_value&gt;&quot;</span><span class="p">)</span>
 </pre></div>
@@ -1564,7 +1596,7 @@ trusted address from <a class="reference internal" href="../../../../configurati
 </div>
 <div class="section" id="route-ratelimit-action-headervaluematch">
 <span id="envoy-api-msg-route-ratelimit-action-headervaluematch"></span><h2>route.RateLimit.Action.HeaderValueMatch<a class="headerlink" href="#route-ratelimit-action-headervaluematch" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L971">[route.RateLimit.Action.HeaderValueMatch proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L987">[route.RateLimit.Action.HeaderValueMatch proto]</a></p>
 <p>The following descriptor entry is appended to the descriptor:</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="s">&quot;header_match&quot;</span><span class="p">,</span> <span class="s">&quot;&lt;descriptor_value&gt;&quot;</span><span class="p">)</span>
 </pre></div>
@@ -1598,7 +1630,7 @@ headers in the config are present in the request with the same values
 </div>
 <div class="section" id="route-headermatcher">
 <span id="envoy-api-msg-route-headermatcher"></span><h2>route.HeaderMatcher<a class="headerlink" href="#route-headermatcher" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1044">[route.HeaderMatcher proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1060">[route.HeaderMatcher proto]</a></p>
 <div class="admonition attention">
 <p class="first admonition-title">Attention</p>
 <p class="last">Internally, Envoy always uses the HTTP/2 <em>:authority</em> header to represent the HTTP/1 <em>Host</em>
@@ -1721,7 +1753,7 @@ Note: empty suffix is not allowed, please use present_match instead.</p>
 </div>
 <div class="section" id="route-queryparametermatcher">
 <span id="envoy-api-msg-route-queryparametermatcher"></span><h2>route.QueryParameterMatcher<a class="headerlink" href="#route-queryparametermatcher" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1116">[route.QueryParameterMatcher proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1132">[route.QueryParameterMatcher proto]</a></p>
 <p>Query parameter matching treats the query string of a request’s :path header
 as an ampersand-separated list of keys and/or key=value elements.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>

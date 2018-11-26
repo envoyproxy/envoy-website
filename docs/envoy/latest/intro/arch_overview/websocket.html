@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>WebSocket and HTTP upgrades &mdash; envoy 1.9.0-dev-c588a4 documentation</title>
+  <title>WebSocket and HTTP upgrades &mdash; envoy 1.9.0-dev-d72eaa documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.9.0-dev-c588a4
+                1.9.0-dev-d72eaa
               </div>
             
           
@@ -217,7 +217,7 @@
 upgrades as well. Upgrades pass both the HTTP headers and the upgrade payload
 through an HTTP filter chain. One may configure the
 <a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-upgrade-configs"><span class="std std-ref">upgrade_configs</span></a>
-in one of two ways. If only the
+with or without custom filter chains. If only the
 <a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-upgradeconfig-upgrade-type"><span class="std std-ref">upgrade_type</span></a>
 is specified, both the upgrade headers, any request and response body, and WebSocket payload will
 pass through the default HTTP filter chain. To avoid the use of HTTP-only filters for upgrade payload,
@@ -225,6 +225,40 @@ one can set up custom
 <a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-upgradeconfig-filters"><span class="std std-ref">filters</span></a>
 for the given upgrade type, up to and including only using the router filter to send the WebSocket
 data upstream.</p>
+<p>Upgrades can be enabled or disabled on a <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-upgrade-configs"><span class="std std-ref">per-route</span></a> basis.
+Any per-route enabling/disabling automatically overrides HttpConnectionManager configuration as
+laid out below, but custom filter chains can only be configured on a per-HttpConnectionManager basis.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="34%" />
+<col width="37%" />
+<col width="28%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><em>HCM Upgrade Enabled</em></th>
+<th class="head"><em>Route Upgrade Enabled</em></th>
+<th class="head"><em>Upgrade Enabled</em></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>T (Default)</td>
+<td>T (Default)</td>
+<td>T</td>
+</tr>
+<tr class="row-odd"><td>T (Default)</td>
+<td>F</td>
+<td>F</td>
+</tr>
+<tr class="row-even"><td>F</td>
+<td>T (Default)</td>
+<td>T</td>
+</tr>
+<tr class="row-odd"><td>F</td>
+<td>F</td>
+<td>F</td>
+</tr>
+</tbody>
+</table>
 <p>Note that the statistics for upgrades are all bundled together so websocket
 <a class="reference internal" href="../../configuration/http_conn_man/stats.html#config-http-conn-man-stats"><span class="std std-ref">statistics</span></a> are tracked by stats such as
 downstream_cx_upgrades_total and downstream_cx_upgrades_active</p>
