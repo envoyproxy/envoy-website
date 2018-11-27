@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Listener components &mdash; envoy 1.9.0-dev-9d1d95 documentation</title>
+  <title>Listener components &mdash; envoy 1.9.0-dev-2c764e documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.9.0-dev-9d1d95
+                1.9.0-dev-2c764e
               </div>
             
           
@@ -99,6 +99,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Listener components</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#listener-filter">listener.Filter</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#listener-filterchainmatch">listener.FilterChainMatch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#enum-listener-filterchainmatch-connectionsourcetype">Enum listener.FilterChainMatch.ConnectionSourceType</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#listener-filterchain">listener.FilterChain</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#listener-listenerfilter">listener.ListenerFilter</a></li>
 </ul>
@@ -220,7 +221,7 @@ instantiated. See the supported filters for further documentation.</dd>
 </div>
 <div class="section" id="listener-filterchainmatch">
 <span id="envoy-api-msg-listener-filterchainmatch"></span><h2>listener.FilterChainMatch<a class="headerlink" href="#listener-filterchainmatch" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/listener/listener.proto#L78">[listener.FilterChainMatch proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/listener/listener.proto#L79">[listener.FilterChainMatch proto]</a></p>
 <p>Specifies the match criteria for selecting a specific filter chain for a
 listener.</p>
 <p>In order for a filter chain to be selected, <em>ALL</em> of its criteria must be
@@ -233,6 +234,7 @@ networking stack and/or listener filters.</p>
 <li>Server name (e.g. SNI for TLS protocol),</li>
 <li>Transport protocol.</li>
 <li>Application protocols (e.g. ALPN for TLS protocol).</li>
+<li>Source type (e.g. any, local or external network).</li>
 </ol>
 <p>For criteria that allow ranges or wildcards, the most specific value in any
 of the configured filter chains that matches the incoming connection is going
@@ -242,6 +244,7 @@ chain without <code class="docutils literal notranslate"><span class="pre">serve
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;destination_port&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;prefix_ranges&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;source_type&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;server_names&quot;</span><span class="p">:</span> <span class="p">[],</span>
   <span class="nt">&quot;transport_protocol&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;application_protocols&quot;</span><span class="p">:</span> <span class="p">[]</span>
@@ -257,6 +260,10 @@ listener in determining a filter chain match.</dd>
 <dt>prefix_ranges</dt>
 <dd>(<a class="reference internal" href="../core/address.proto.html#envoy-api-msg-core-cidrrange"><span class="std std-ref">core.CidrRange</span></a>) If non-empty, an IP address and prefix length to match addresses when the
 listener is bound to 0.0.0.0/:: or when use_original_dst is specified.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-listener-filterchainmatch-source-type">
+<dt>source_type</dt>
+<dd>(<a class="reference internal" href="#envoy-api-enum-listener-filterchainmatch-connectionsourcetype"><span class="std std-ref">listener.FilterChainMatch.ConnectionSourceType</span></a>) Specifies the connection source IP match type. Can be any, local or external network.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-listener-filterchainmatch-server-names">
 <dt>server_names</dt>
@@ -308,9 +315,25 @@ unless all connecting clients are known to use ALPN.</p>
 </dd>
 </dl>
 </div>
+<div class="section" id="enum-listener-filterchainmatch-connectionsourcetype">
+<span id="envoy-api-enum-listener-filterchainmatch-connectionsourcetype"></span><h2>Enum listener.FilterChainMatch.ConnectionSourceType<a class="headerlink" href="#enum-listener-filterchainmatch-connectionsourcetype" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/listener/listener.proto#L96">[listener.FilterChainMatch.ConnectionSourceType proto]</a></p>
+<dl class="docutils" id="envoy-api-enum-value-listener-filterchainmatch-connectionsourcetype-any">
+<dt>ANY</dt>
+<dd><em>(DEFAULT)</em> ⁣Any connection source matches.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-enum-value-listener-filterchainmatch-connectionsourcetype-local">
+<dt>LOCAL</dt>
+<dd>⁣Match a connection originating from the same host.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-enum-value-listener-filterchainmatch-connectionsourcetype-external">
+<dt>EXTERNAL</dt>
+<dd>⁣Match a connection originating from a different host.</dd>
+</dl>
+</div>
 <div class="section" id="listener-filterchain">
 <span id="envoy-api-msg-listener-filterchain"></span><h2>listener.FilterChain<a class="headerlink" href="#listener-filterchain" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/listener/listener.proto#L161">[listener.FilterChain proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/listener/listener.proto#L174">[listener.FilterChain proto]</a></p>
 <p>A filter chain wraps a set of match criteria, an option TLS context, a set of filters, and
 various other parameters.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -353,7 +376,7 @@ connection as the remote address.</dd>
 </div>
 <div class="section" id="listener-listenerfilter">
 <span id="envoy-api-msg-listener-listenerfilter"></span><h2>listener.ListenerFilter<a class="headerlink" href="#listener-listenerfilter" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/listener/listener.proto#L189">[listener.ListenerFilter proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/listener/listener.proto#L202">[listener.ListenerFilter proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
