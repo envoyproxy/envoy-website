@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Front Proxy &mdash; envoy 1.9.0-dev-704e4c documentation</title>
+  <title>Front Proxy &mdash; envoy 1.9.0-dev-9dacb4 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.9.0-dev-704e4c
+                1.9.0-dev-9dacb4
               </div>
             
           
@@ -211,7 +211,7 @@ as is described in the image above.</p>
 $ eval $(docker-machine env default)
 </pre></div>
 </div>
-<p><strong>Step 4: Clone the Envoy repo, and start all of our containers</strong></p>
+<p><strong>Step 3: Clone the Envoy repo, and start all of our containers</strong></p>
 <p>If you have not cloned the envoy repo, clone it with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:envoyproxy/envoy</span></code>
 or <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/envoyproxy/envoy.git</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pwd
@@ -225,7 +225,7 @@ example_service2_1      /bin/sh -c /usr/local/bin/ ... Up       80/tcp
 example_front-envoy_1   /bin/sh -c /usr/local/bin/ ... Up       0.0.0.0:8000-&gt;80/tcp, 0.0.0.0:8001-&gt;8001/tcp
 </pre></div>
 </div>
-<p><strong>Step 5: Test Envoy’s routing capabilities</strong></p>
+<p><strong>Step 4: Test Envoy’s routing capabilities</strong></p>
 <p>You can now send a request to both services via the front-envoy.</p>
 <p>For service1:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl -v $(docker-machine ip default):8000/service/1
@@ -271,7 +271,7 @@ Hello from behind Envoy (service 2)! hostname: 92f4a3737bbc resolvedhostname: 17
 </div>
 <p>Notice that each request, while sent to the front envoy, was correctly routed
 to the respective application.</p>
-<p><strong>Step 6: Test Envoy’s load balancing capabilities</strong></p>
+<p><strong>Step 5: Test Envoy’s load balancing capabilities</strong></p>
 <p>Now let’s scale up our service1 nodes to demonstrate the clustering abilities
 of envoy.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker-compose scale service1=3
@@ -337,7 +337,7 @@ Hello from behind Envoy (service 1)! hostname: f26027f1ce28 resolvedhostname: 17
 * Connection #0 to host 192.168.99.100 left intact
 </pre></div>
 </div>
-<p><strong>Step 7: enter containers and curl services</strong></p>
+<p><strong>Step 6: enter containers and curl services</strong></p>
 <p>In addition of using <code class="docutils literal notranslate"><span class="pre">curl</span></code> from your host machine, you can also enter the
 containers themselves and <code class="docutils literal notranslate"><span class="pre">curl</span></code> from inside them. To enter a container you
 can use <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">exec</span> <span class="pre">&lt;container_name&gt;</span> <span class="pre">/bin/bash</span></code>. For example we can
@@ -353,7 +353,7 @@ root@81288499f9d7:/# curl localhost:80/service/2
 Hello from behind Envoy (service 2)! hostname: 92f4a3737bbc resolvedhostname: 172.19.0.2
 </pre></div>
 </div>
-<p><strong>Step 8: enter containers and curl admin</strong></p>
+<p><strong>Step 7: enter containers and curl admin</strong></p>
 <p>When envoy runs it also attaches an <code class="docutils literal notranslate"><span class="pre">admin</span></code> to your desired port. In the example
 configs the admin is bound to port <code class="docutils literal notranslate"><span class="pre">8001</span></code>. We can <code class="docutils literal notranslate"><span class="pre">curl</span></code> it to gain useful information.
 For example you can <code class="docutils literal notranslate"><span class="pre">curl</span></code> <code class="docutils literal notranslate"><span class="pre">/server_info</span></code> to get information about the
