@@ -27,6 +27,22 @@ bundle exec jekyll serve --livereload
 
 4. Preview the site in your web browser at http://localhost:4000.
 
+### Running the site locally using Docker
+
+To run the website locally using Docker, run the command:
+
+```shell
+docker run -it -v $(pwd):/srv/jekyll -p 4000:4000 jekyll/jekyll jekyll serve --watch --incremental
+```
+
+Alternatively, use Docker Compose with:
+
+```shell
+docker-compose up
+```
+
+Preview the site in your web browser at http://localhost:4000.
+
 ### Deploying to Github Pages
 
 To deploy your changes all you have to do is push to `master` and Github pages will automatically run `jekyll build` and
