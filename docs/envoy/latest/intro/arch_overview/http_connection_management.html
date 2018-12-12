@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP connection management &mdash; envoy 1.9.0-dev-32ef85 documentation</title>
+  <title>HTTP connection management &mdash; envoy 1.9.0-dev-3d1d3f documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.9.0-dev-32ef85
+                1.9.0-dev-3d1d3f
               </div>
             
           
@@ -250,23 +250,34 @@ table</span></a>. The route table can be specified in one of two ways:</p>
 </div>
 <div class="section" id="retry-plugin-configuration">
 <span id="arch-overview-http-retry-plugins"></span><h2>Retry plugin configuration<a class="headerlink" href="#retry-plugin-configuration" title="Permalink to this headline">¶</a></h2>
-<p>Normally during retries, hosts selected for retry attempts will be selected the same way the
-initial request is selected. To modify this behavior retry plugins can be used, which fall into
-two categories:</p>
+<p>Normally during retries, hosts selection follows the same process as the original request. To modify
+this behavior retry plugins can be used, which fall into two categories:</p>
+<ul>
+<li><p class="first"><a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-retrypolicy-retry-host-predicate"><span class="std std-ref">Host Predicates</span></a>:
+These predicates can be used to “reject” a host, which will cause host selection to be reattempted.
+Any number of these predicates can be specified, and the host will be rejected if any of the predicates reject the host.</p>
+<p>Envoy supports the following built-in host predicates</p>
 <ul class="simple">
-<li><a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-retrypolicy-retry-host-predicate"><span class="std std-ref">Retry host predicate</span></a>.
-These can be used to “reject” a host, which will cause host selection to be reattempted. If one or
-more predicates have been configured, host selection will continue until either the host predicates
-accept the host or a configurable
-<a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-retrypolicy-host-selection-retry-max-attempts"><span class="std std-ref">max attempts</span></a>
-has been reached. Any number of these predicates can be specified, and the host will be rejected if
-any of the predicates reject the host.</li>
-<li><a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-retrypolicy-retry-priority"><span class="std std-ref">Retry priority</span></a>. These can
-be used to adjust the priority load used when selecting a priority for a retry attempt. Only one such
-plugin may be specified.</li>
+<li><em>envoy.retry_host_predicates.previous_hosts</em>: This will keep track of previously attempted hosts, and rejects
+hosts that have already been attempted.</li>
 </ul>
-<p>These plugins can be combined to affect both host selection and priority load.</p>
-<p>For example, to configure retries to prefer hosts that haven’t been attempted already, the builtin
+</li>
+<li><p class="first"><a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-retrypolicy-retry-priority"><span class="std std-ref">Priority Predicates</span></a>: These predicates can
+be used to adjust the priority load used when selecting a priority for a retry attempt. Only one such
+predicate may be specified.</p>
+<p>Envoy supports the following built-in priority predicates</p>
+<ul class="simple">
+<li><em>envoy.retry_priority.previous_priorities</em>: This will keep track of previously attempted priorities,
+and adjust the priority load such that other priorites will be targeted in subsequent retry attempts.</li>
+</ul>
+</li>
+</ul>
+<p>Host selection will continue until either the configured predicates accept the host or a configurable
+<a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-retrypolicy-host-selection-retry-max-attempts"><span class="std std-ref">max attempts</span></a> has been reached.</p>
+<p>These plugins can be combined to affect both host selection and priority load. Envoy can also be extended
+with custom retry plugins similar to how custom filters can be added.</p>
+<p><strong>Configuration Example</strong></p>
+<p>For example, to configure retries to prefer hosts that haven’t been attempted already, the built-in
 <code class="docutils literal notranslate"><span class="pre">envoy.retry_host_predicates.previous_hosts</span></code> predicate can be used:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">retry_policy</span><span class="p p-Indicator">:</span>
   <span class="l l-Scalar l-Scalar-Plain">retry_host_predicate</span><span class="p p-Indicator">:</span>
@@ -278,7 +289,7 @@ plugin may be specified.</li>
 on attempts is necessary in order to deal with scenarios in which finding an acceptable host is either
 impossible (no hosts satisfy the predicate) or very unlikely (the only suitable host has a very low
 relative weight).</p>
-<p>To configure retries to attempt other priorities during retries, the built in
+<p>To configure retries to attempt other priorities during retries, the built-in
 <code class="docutils literal notranslate"><span class="pre">envoy.retry_priority.previous_priorities</span></code> can be used.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">retry_policy</span><span class="p p-Indicator">:</span>
   <span class="l l-Scalar l-Scalar-Plain">retry_priority</span><span class="p p-Indicator">:</span>
@@ -287,8 +298,7 @@ relative weight).</p>
       <span class="l l-Scalar l-Scalar-Plain">update_frequency</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
 </pre></div>
 </div>
-<p>This will keep track of previously attempted priorities, and adjust the priority load such that other
-priorites will be targeted in subsequent retry attempts. The <code class="docutils literal notranslate"><span class="pre">update_frequency</span></code> parameter decides how
+<p>This will target priorites in subsequent retry attempts that haven’t been already used. The <code class="docutils literal notranslate"><span class="pre">update_frequency</span></code> parameter decides how
 often the priority load should be recalculated.</p>
 <p>These plugins can be combined, which will exclude both previously attempted hosts as well as
 previously attempted priorities.</p>
@@ -302,7 +312,6 @@ previously attempted priorities.</p>
       <span class="l l-Scalar l-Scalar-Plain">update_frequency</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
 </pre></div>
 </div>
-<p>Envoy can be extended with custom retry plugins similar to how custom filters can be added.</p>
 </div>
 <div class="section" id="timeouts">
 <h2>Timeouts<a class="headerlink" href="#timeouts" title="Permalink to this headline">¶</a></h2>
