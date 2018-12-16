@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Version history &mdash; envoy 1.9.0-dev-048581 documentation</title>
+  <title>Version history &mdash; envoy 1.9.0-dev-8475fc documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.9.0-dev-048581
+                1.9.0-dev-8475fc
               </div>
             
           
@@ -262,7 +262,7 @@ its behaviour within TCP and HTTP implementations.</li>
 <li>tracing: added support for <a class="reference internal" href="arch_overview/tracing.html#arch-overview-tracing"><span class="std std-ref">Datadog</span></a> tracer.</li>
 <li>upstream: added <a class="reference internal" href="../api-v2/api/v2/cds.proto.html#envoy-api-field-cluster-lbsubsetconfig-scale-locality-weight"><span class="std std-ref">scale_locality_weight</span></a> to enable
 scaling locality weights by number of hosts removed by subset lb predicates.</li>
-<li>upstream: changed how load calculation for <a class="reference internal" href="arch_overview/load_balancing.html#arch-overview-load-balancing-priority-levels"><span class="std std-ref">priority levels</span></a> and <a class="reference internal" href="arch_overview/load_balancing.html#arch-overview-load-balancing-panic-threshold"><span class="std std-ref">panic thresholds</span></a> interact. As long as normalized total health is 100% panic thresholds are disregarded.</li>
+<li>upstream: changed how load calculation for <a class="reference internal" href="arch_overview/load_balancing/priority.html#arch-overview-load-balancing-priority-levels"><span class="std std-ref">priority levels</span></a> and <a class="reference internal" href="arch_overview/load_balancing/panic_threshold.html#arch-overview-load-balancing-panic-threshold"><span class="std std-ref">panic thresholds</span></a> interact. As long as normalized total health is 100% panic thresholds are disregarded.</li>
 <li>upstream: changed the default hash for <a class="reference internal" href="../api-v2/api/v2/cds.proto.html#envoy-api-msg-cluster-ringhashlbconfig"><span class="std std-ref">ring hash</span></a> from std::hash to <a class="reference external" href="https://github.com/Cyan4973/xxHash">xxHash</a>.</li>
 <li>upstream: when using active health checking and STRICT_DNS with several addresses that resolve
 to the same hosts, Envoy will now health check each host independently.</li>
@@ -355,7 +355,7 @@ removed the old <cite>name</cite> field to give more flexibility for matching ce
 <li>upstream: added configuration option to the subset load balancer to take locality weights into account when
 selecting a host from a subset.</li>
 <li>upstream: require opt-in to use the <a class="reference internal" href="../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-envoy-original-dst-host"><span class="std std-ref">x-envoy-orignal-dst-host</span></a> header
-for overriding destination address when using the <a class="reference internal" href="arch_overview/load_balancing.html#arch-overview-load-balancing-types-original-destination"><span class="std std-ref">Original Destination</span></a>
+for overriding destination address when using the <a class="reference internal" href="arch_overview/load_balancing/original_dst.html#arch-overview-load-balancing-types-original-destination"><span class="std std-ref">Original Destination</span></a>
 load balancing policy.</li>
 </ul>
 </div>
@@ -429,12 +429,12 @@ encountering inline headers with multiple instances.</li>
 (e.g. ALPN for TLS protocol).</li>
 <li>listeners: <cite>sni_domains</cite> has been deprecated/renamed to <a class="reference internal" href="../api-v2/api/v2/listener/listener.proto.html#envoy-api-field-listener-filterchainmatch-server-names"><span class="std std-ref">server_names</span></a>.</li>
 <li>listeners: removed restriction on all filter chains having identical filters.</li>
-<li>load balancer: added <a class="reference internal" href="arch_overview/load_balancing.html#arch-overview-load-balancing-types-round-robin"><span class="std std-ref">weighted round robin</span></a> support. The round robin
+<li>load balancer: added <a class="reference internal" href="arch_overview/load_balancing/load_balancers.html#arch-overview-load-balancing-types-round-robin"><span class="std std-ref">weighted round robin</span></a> support. The round robin
 scheduler now respects endpoint weights and also has improved fidelity across
 picks.</li>
-<li>load balancer: <a class="reference internal" href="arch_overview/load_balancing.html#arch-overview-load-balancer-subsets"><span class="std std-ref">locality weighted load balancing</span></a> is now supported.</li>
+<li>load balancer: <a class="reference internal" href="arch_overview/load_balancing/subsets.html#arch-overview-load-balancer-subsets"><span class="std std-ref">locality weighted load balancing</span></a> is now supported.</li>
 <li>load balancer: ability to configure zone aware load balancer settings <a class="reference internal" href="../api-v2/api/v2/cds.proto.html#envoy-api-field-cluster-commonlbconfig-zone-aware-lb-config"><span class="std std-ref">through the API</span></a>.</li>
-<li>load balancer: the <a class="reference internal" href="arch_overview/load_balancing.html#arch-overview-load-balancing-types-least-request"><span class="std std-ref">weighted least request</span></a> load balancing algorithm has been improved
+<li>load balancer: the <a class="reference internal" href="arch_overview/load_balancing/load_balancers.html#arch-overview-load-balancing-types-least-request"><span class="std std-ref">weighted least request</span></a> load balancing algorithm has been improved
 to have better balance when operating in weighted mode.</li>
 <li>logger: added the ability to optionally set the log format via the <a class="reference internal" href="../operations/cli.html#cmdoption-log-format"><code class="xref std std-option docutils literal notranslate"><span class="pre">--log-format</span></code></a> option.</li>
 <li>logger: all <a class="reference internal" href="../operations/admin.html#operations-admin-interface-logging"><span class="std std-ref">logging levels</span></a> can be configured
@@ -494,7 +494,7 @@ when acting as a client.</li>
 to use it. For example, if the <a class="reference internal" href="../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-b3-sampled"><span class="std std-ref">x-b3-sampled</span></a> header
 is supplied with the client request, its value will override any sampling decision made by the Envoy proxy.</li>
 <li>websocket: support configuring idle_timeout and max_connect_attempts.</li>
-<li>upstream: added support for host override for a request in <a class="reference internal" href="arch_overview/load_balancing.html#arch-overview-load-balancing-types-original-destination-request-header"><span class="std std-ref">Original destination host request header</span></a>.</li>
+<li>upstream: added support for host override for a request in <a class="reference internal" href="arch_overview/load_balancing/original_dst.html#arch-overview-load-balancing-types-original-destination-request-header"><span class="std std-ref">Original destination host request header</span></a>.</li>
 <li>header to metadata: added <a class="reference internal" href="../configuration/http_filters/header_to_metadata_filter.html#config-http-filters-header-to-metadata"><span class="std std-ref">HTTP Header to Metadata filter</span></a>.</li>
 </ul>
 </div>
@@ -544,7 +544,7 @@ interval</span></a>.</li>
 <li>listeners: added support for <a class="reference internal" href="../api-v2/api/v2/core/address.proto.html#envoy-api-msg-core-pipe"><span class="std std-ref">abstract unix domain sockets</span></a> on
 Linux. The abstract namespace can be used by prepending ‘&#64;’ to a socket path.</li>
 <li>load balancer: added cluster configuration for <a class="reference internal" href="../api-v2/api/v2/cds.proto.html#envoy-api-field-cluster-commonlbconfig-healthy-panic-threshold"><span class="std std-ref">healthy panic threshold</span></a> percentage.</li>
-<li>load balancer: added <a class="reference internal" href="arch_overview/load_balancing.html#arch-overview-load-balancing-types-maglev"><span class="std std-ref">Maglev</span></a> consistent hash
+<li>load balancer: added <a class="reference internal" href="arch_overview/load_balancing/load_balancers.html#arch-overview-load-balancing-types-maglev"><span class="std std-ref">Maglev</span></a> consistent hash
 load balancer.</li>
 <li>load balancer: added support for
 <a class="reference internal" href="../api-v2/api/v2/endpoint/endpoint.proto.html#envoy-api-msg-endpoint-localitylbendpoints"><span class="std std-ref">LocalityLbEndpoints</span></a> priorities.</li>
@@ -609,7 +609,7 @@ endpoint. Histograms are not currently output.</li>
 <li>health check: added <a class="reference internal" href="../api-v2/api/v2/core/health_check.proto.html#envoy-api-field-core-healthcheck-reuse-connection"><span class="std std-ref">reuse_connection</span></a> option.</li>
 <li>http: added <a class="reference internal" href="../configuration/http_conn_man/stats.html#config-http-conn-man-stats-per-listener"><span class="std std-ref">per-listener stats</span></a>.</li>
 <li>http: end-to-end HTTP flow control is now complete across both connections, streams, and filters.</li>
-<li>load balancer: added <a class="reference internal" href="arch_overview/load_balancing.html#arch-overview-load-balancer-subsets"><span class="std std-ref">subset load balancer</span></a>.</li>
+<li>load balancer: added <a class="reference internal" href="arch_overview/load_balancing/subsets.html#arch-overview-load-balancer-subsets"><span class="std std-ref">subset load balancer</span></a>.</li>
 <li>load balancer: added ring size and hash <a class="reference internal" href="../api-v2/api/v2/cds.proto.html#envoy-api-msg-cluster-ringhashlbconfig"><span class="std std-ref">configuration options</span></a>. This used to be configurable via runtime. The runtime
 configuration was deleted without deprecation as we are fairly certain no one is using it.</li>
 <li>log: added the ability to optionally log to a file instead of stderr via the
@@ -663,7 +663,7 @@ that includes filter buffering is incomplete and will be implemented in 1.5.0.</
 <li>Log verbosity <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master//bazel#log-verbosity">compile time flag</a> added.</li>
 <li>Hot restart <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master//bazel#hot-restart">compile time flag</a> added.</li>
 <li>Original destination <a class="reference internal" href="arch_overview/service_discovery.html#arch-overview-service-discovery-types-original-destination"><span class="std std-ref">cluster</span></a>
-and <a class="reference internal" href="arch_overview/load_balancing.html#arch-overview-load-balancing-types-original-destination"><span class="std std-ref">load balancer</span></a> added.</li>
+and <a class="reference internal" href="arch_overview/load_balancing/original_dst.html#arch-overview-load-balancing-types-original-destination"><span class="std std-ref">load balancer</span></a> added.</li>
 <li><a class="reference internal" href="arch_overview/websocket.html#arch-overview-websocket"><span class="std std-ref">WebSocket</span></a> is now supported.</li>
 <li>Virtual cluster priorities have been hard removed without deprecation as we are reasonably sure
 no one is using this feature.</li>
@@ -765,7 +765,7 @@ be disabled if desired via the <code class="docutils literal notranslate"><span 
 <li><a class="reference internal" href="../configuration/cluster_manager/cds.html#config-cluster-manager-cds"><span class="std std-ref">Cluster discovery service (CDS) API</span></a>.</li>
 <li><a class="reference internal" href="arch_overview/outlier.html#arch-overview-outlier-detection"><span class="std std-ref">Outlier detection</span></a> (passive health checking).</li>
 <li>Envoy configuration is now checked against a JSON schema.</li>
-<li><a class="reference internal" href="arch_overview/load_balancing.html#arch-overview-load-balancing-types"><span class="std std-ref">Ring hash</span></a> consistent load balancer, as well as HTTP
+<li><a class="reference internal" href="arch_overview/load_balancing/load_balancers.html#arch-overview-load-balancing-types"><span class="std std-ref">Ring hash</span></a> consistent load balancer, as well as HTTP
 consistent hash routing based on a policy.</li>
 <li>Vastly <a class="reference internal" href="arch_overview/global_rate_limiting.html#arch-overview-rate-limit"><span class="std std-ref">enhanced global rate limit configuration</span></a> via the HTTP
 rate limiting filter.</li>
@@ -796,7 +796,7 @@ savings for large meshes.</li>
 <li>Upgrade <a class="reference internal" href="../install/building.html#install-requirements"><span class="std std-ref">recommended version</span></a> of various other libraries.</li>
 <li>Configurable DNS refresh rate for DNS service discovery types.</li>
 <li>Upstream circuit breaker configuration can be <a class="reference internal" href="../configuration/cluster_manager/cluster_runtime.html#config-cluster-manager-cluster-runtime"><span class="std std-ref">overridden via runtime</span></a>.</li>
-<li><a class="reference internal" href="arch_overview/load_balancing.html#arch-overview-load-balancing-zone-aware-routing"><span class="std std-ref">Zone aware routing support</span></a>.</li>
+<li><a class="reference internal" href="arch_overview/load_balancing/zone_aware.html#arch-overview-load-balancing-zone-aware-routing"><span class="std std-ref">Zone aware routing support</span></a>.</li>
 <li>Generic header matching routing rule.</li>
 <li>HTTP/2 graceful connection draining (double GOAWAY).</li>
 <li>DynamoDB filter <a class="reference internal" href="../configuration/http_filters/dynamodb_filter.html#config-http-filters-dynamo"><span class="std std-ref">per shard statistics</span></a> (pre-release AWS
