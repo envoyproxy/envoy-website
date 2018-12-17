@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>gRPC-JSON transcoder &mdash; envoy 1.9.0-dev-ab127e documentation</title>
+  <title>gRPC-JSON transcoder &mdash; envoy 1.9.0-dev-da7639 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.9.0-dev-ab127e
+                1.9.0-dev-da7639
               </div>
             
           
@@ -204,7 +204,8 @@
   <span class="nt">&quot;proto_descriptor_bin&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;services&quot;</span><span class="p">:</span> <span class="p">[],</span>
   <span class="nt">&quot;print_options&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;match_incoming_request_route&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+  <span class="nt">&quot;match_incoming_request_route&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;ignored_query_parameters&quot;</span><span class="p">:</span> <span class="p">[]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -242,6 +243,32 @@ the service names specified here, but they won’t be translated.</dd>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Whether to keep the incoming request route after the outgoing headers have been transformed to
 the match the upstream gRPC service. Note: This means that routes for gRPC services that are
 not transcoded cannot be used in combination with <em>match_incoming_request_route</em>.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-config-filter-http-transcoder-v2-grpcjsontranscoder-ignored-query-parameters">
+<dt>ignored_query_parameters</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) A list of query parameters to be ignored for transcoding method mapping.
+By default, the transcoder filter will not transcode a request if there are any
+unknown/invalid query parameters.</p>
+<p>Example :</p>
+<div class="highlight-proto notranslate"><div class="highlight"><pre><span></span><span class="kd">service</span> <span class="n">Bookstore</span> <span class="p">{</span>
+  <span class="k">rpc</span> <span class="n">GetShelf</span><span class="p">(</span><span class="n">GetShelfRequest</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="n">Shelf</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">option</span> <span class="p">(</span><span class="n">google.api.http</span><span class="p">)</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="n">get</span><span class="o">:</span> <span class="s">&quot;/shelves/{shelf}&quot;</span>
+    <span class="p">};</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">message</span> <span class="nc">GetShelfRequest</span> <span class="p">{</span>
+  <span class="kt">int64</span> <span class="na">shelf</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">message</span> <span class="nc">Shelf</span> <span class="p">{}</span>
+</pre></div>
+</div>
+<p class="last">The request <code class="docutils literal notranslate"><span class="pre">/shelves/100?foo=bar</span></code> will not be mapped to <code class="docutils literal notranslate"><span class="pre">GetShelf`</span></code> because variable
+binding for <code class="docutils literal notranslate"><span class="pre">foo</span></code> is not defined. Adding <code class="docutils literal notranslate"><span class="pre">foo</span></code> to <code class="docutils literal notranslate"><span class="pre">ignored_query_parameters</span></code> will allow
+the same request to be mapped to <code class="docutils literal notranslate"><span class="pre">GetShelf</span></code>.</p>
+</dd>
 </dl>
 </div>
 <div class="section" id="config-filter-http-transcoder-v2-grpcjsontranscoder-printoptions">
