@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TLS &mdash; envoy 1.9.0-dev-94133b documentation</title>
+  <title>TLS &mdash; envoy 1.9.0-dev-fdb088 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.9.0-dev-94133b
+                1.9.0-dev-fdb088
               </div>
             
           
@@ -112,6 +112,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">TLS</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#underlying-implementation">Underlying implementation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#enabling-certificate-verification">Enabling certificate verification</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#certificate-selection">Certificate selection</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#secret-discovery-service-sds">Secret discovery service (SDS)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#authentication-filter">Authentication filter</a></li>
 </ul>
@@ -291,6 +292,23 @@ standard Debian installations. Common paths for system CA bundles on Linux and B
 <p>See the reference for <a class="reference internal" href="../../api-v2/api/v2/auth/cert.proto.html#envoy-api-msg-auth-upstreamtlscontext"><span class="std std-ref">UpstreamTlsContexts</span></a> and
 <a class="reference internal" href="../../api-v2/api/v2/auth/cert.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContexts</span></a> for other TLS options.</p>
 </div>
+</div>
+<div class="section" id="certificate-selection">
+<span id="arch-overview-ssl-cert-select"></span><h2>Certificate selection<a class="headerlink" href="#certificate-selection" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="../../api-v2/api/v2/auth/cert.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContexts</span></a> support multiple TLS
+certificates. These may be a mix of RSA and P-256 ECDSA certificates. The following rules apply:</p>
+<ul class="simple">
+<li>Only one certificate of a particular type (RSA or ECDSA) may be specified.</li>
+<li>Non-P-256 server ECDSA certificates are rejected.</li>
+<li>If the client supports P-256 ECDSA, a P-256 ECDSA certificate will be selected if present in the
+<a class="reference internal" href="../../api-v2/api/v2/auth/cert.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContext</span></a>.</li>
+<li>If the client only supports RSA certificates, a RSA certificate will be selected if present in the
+<a class="reference internal" href="../../api-v2/api/v2/auth/cert.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContext</span></a>.</li>
+<li>Otherwise, the first certificate listed is used. This will result in a failed handshake if the
+client only supports RSA certificates and the server only has ECDSA certificates.</li>
+<li>Static and SDS certificates may not be mixed in a given <a class="reference internal" href="../../api-v2/api/v2/auth/cert.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContext</span></a>.</li>
+</ul>
+<p>Only a single TLS certificate is supported today for <a class="reference internal" href="../../api-v2/api/v2/auth/cert.proto.html#envoy-api-msg-auth-upstreamtlscontext"><span class="std std-ref">UpstreamTlsContexts</span></a>.</p>
 </div>
 <div class="section" id="secret-discovery-service-sds">
 <h2>Secret discovery service (SDS)<a class="headerlink" href="#secret-discovery-service-sds" title="Permalink to this headline">¶</a></h2>
