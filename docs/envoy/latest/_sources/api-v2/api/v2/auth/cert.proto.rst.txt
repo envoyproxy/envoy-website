@@ -38,7 +38,9 @@ tls_maximum_protocol_version
 cipher_suites
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If specified, the TLS listener will only support the specified `cipher list
   <https://commondatastorage.googleapis.com/chromium-boringssl-docs/ssl.h.html#Cipher-suite-configuration>`_.
-  If not specified, the default list:
+  If not specified, the default list will be used.
+  
+  In non-FIPS builds, the default cipher list is:
   
   .. code-block:: none
   
@@ -55,14 +57,42 @@ cipher_suites
     AES256-GCM-SHA384
     AES256-SHA
   
-  will be used.
+  In builds using :ref:`BoringSSL FIPS <arch_overview_ssl_fips>`, the default cipher list is:
+  
+  .. code-block:: none
+  
+    ECDHE-ECDSA-AES128-GCM-SHA256
+    ECDHE-RSA-AES128-GCM-SHA256
+    ECDHE-ECDSA-AES128-SHA
+    ECDHE-RSA-AES128-SHA
+    AES128-GCM-SHA256
+    AES128-SHA
+    ECDHE-ECDSA-AES256-GCM-SHA384
+    ECDHE-RSA-AES256-GCM-SHA384
+    ECDHE-ECDSA-AES256-SHA
+    ECDHE-RSA-AES256-SHA
+    AES256-GCM-SHA384
+    AES256-SHA
   
   
 .. _envoy_api_field_auth.TlsParameters.ecdh_curves:
 
 ecdh_curves
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If specified, the TLS connection will only support the specified ECDH
-  curves. If not specified, the default curves (X25519, P-256) will be used.
+  curves. If not specified, the default curves will be used.
+  
+  In non-FIPS builds, the default curves are:
+  
+  .. code-block:: none
+  
+    X25519
+    P-256
+  
+  In builds using :ref:`BoringSSL FIPS <arch_overview_ssl_fips>`, the default curve is:
+  
+  .. code-block:: none
+  
+    P-256
   
   
 
@@ -110,7 +140,7 @@ TLSv1_3
 auth.TlsCertificate
 -------------------
 
-`[auth.TlsCertificate proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L68>`_
+`[auth.TlsCertificate proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L98>`_
 
 
 .. code-block:: json
@@ -149,7 +179,7 @@ password
 auth.TlsSessionTicketKeys
 -------------------------
 
-`[auth.TlsSessionTicketKeys proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L86>`_
+`[auth.TlsSessionTicketKeys proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L116>`_
 
 
 .. code-block:: json
@@ -193,7 +223,7 @@ keys
 auth.CertificateValidationContext
 ---------------------------------
 
-`[auth.CertificateValidationContext proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L113>`_
+`[auth.CertificateValidationContext proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L143>`_
 
 
 .. code-block:: json
@@ -335,7 +365,7 @@ allow_expired_certificate
 auth.CommonTlsContext
 ---------------------
 
-`[auth.CommonTlsContext proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L225>`_
+`[auth.CommonTlsContext proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L255>`_
 
 TLS context shared by both client and server TLS contexts.
 
@@ -427,7 +457,7 @@ alpn_protocols
 auth.CommonTlsContext.CombinedCertificateValidationContext
 ----------------------------------------------------------
 
-`[auth.CommonTlsContext.CombinedCertificateValidationContext proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L241>`_
+`[auth.CommonTlsContext.CombinedCertificateValidationContext proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L271>`_
 
 
 .. code-block:: json
@@ -457,7 +487,7 @@ validation_context_sds_secret_config
 auth.UpstreamTlsContext
 -----------------------
 
-`[auth.UpstreamTlsContext proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L283>`_
+`[auth.UpstreamTlsContext proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L313>`_
 
 
 .. code-block:: json
@@ -507,7 +537,7 @@ max_session_keys
 auth.DownstreamTlsContext
 -------------------------
 
-`[auth.DownstreamTlsContext proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L304>`_
+`[auth.DownstreamTlsContext proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L334>`_
 
 
 .. code-block:: json
@@ -547,7 +577,7 @@ session_ticket_keys
 auth.SdsSecretConfig
 --------------------
 
-`[auth.SdsSecretConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L326>`_
+`[auth.SdsSecretConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L356>`_
 
 
 
@@ -580,7 +610,7 @@ sds_config
 auth.Secret
 -----------
 
-`[auth.Secret proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L335>`_
+`[auth.Secret proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L365>`_
 
 
 
