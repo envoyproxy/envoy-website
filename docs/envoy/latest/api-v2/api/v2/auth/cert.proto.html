@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Common TLS configuration &mdash; envoy 1.10.0-dev-5f7c3d documentation</title>
+  <title>Common TLS configuration &mdash; envoy 1.10.0-dev-5aae1e documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-5f7c3d
+                1.10.0-dev-5aae1e
               </div>
             
           
@@ -217,12 +217,14 @@
 </dl>
 <dl class="docutils" id="envoy-api-field-auth-tlsparameters-tls-maximum-protocol-version">
 <dt>tls_maximum_protocol_version</dt>
-<dd>(<a class="reference internal" href="#envoy-api-enum-auth-tlsparameters-tlsprotocol"><span class="std std-ref">auth.TlsParameters.TlsProtocol</span></a>) Maximum TLS protocol version. By default, it’s <code class="docutils literal notranslate"><span class="pre">TLSv1_2</span></code>.</dd>
+<dd>(<a class="reference internal" href="#envoy-api-enum-auth-tlsparameters-tlsprotocol"><span class="std std-ref">auth.TlsParameters.TlsProtocol</span></a>) Maximum TLS protocol version. By default, it’s <code class="docutils literal notranslate"><span class="pre">TLSv1_3</span></code> for servers in non-FIPS builds, and
+<code class="docutils literal notranslate"><span class="pre">TLSv1_2</span></code> for clients and for servers using <a class="reference internal" href="../../../../intro/arch_overview/ssl.html#arch-overview-ssl-fips"><span class="std std-ref">BoringSSL FIPS</span></a>.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-auth-tlsparameters-cipher-suites">
 <dt>cipher_suites</dt>
-<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) If specified, the TLS listener will only support the specified <a class="reference external" href="https://commondatastorage.googleapis.com/chromium-boringssl-docs/ssl.h.html#Cipher-suite-configuration">cipher list</a>.
-If not specified, the default list will be used.</p>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) If specified, the TLS listener will only support the specified <a class="reference external" href="https://commondatastorage.googleapis.com/chromium-boringssl-docs/ssl.h.html#Cipher-suite-configuration">cipher list</a>
+when negotiating TLS 1.0-1.2 (this setting has no effect when negotiating TLS 1.3). If not
+specified, the default list will be used.</p>
 <p>In non-FIPS builds, the default cipher list is:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[ECDHE-ECDSA-AES128-GCM-SHA256|ECDHE-ECDSA-CHACHA20-POLY1305]
 [ECDHE-RSA-AES128-GCM-SHA256|ECDHE-RSA-CHACHA20-POLY1305]
@@ -297,7 +299,7 @@ P-256
 </div>
 <div class="section" id="auth-tlscertificate">
 <span id="envoy-api-msg-auth-tlscertificate"></span><h2>auth.TlsCertificate<a class="headerlink" href="#auth-tlscertificate" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L100">[auth.TlsCertificate proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L102">[auth.TlsCertificate proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;certificate_chain&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;private_key&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -321,7 +323,7 @@ TLS private key is not password encrypted.</dd>
 </div>
 <div class="section" id="auth-tlssessionticketkeys">
 <span id="envoy-api-msg-auth-tlssessionticketkeys"></span><h2>auth.TlsSessionTicketKeys<a class="headerlink" href="#auth-tlssessionticketkeys" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L118">[auth.TlsSessionTicketKeys proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L120">[auth.TlsSessionTicketKeys proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;keys&quot;</span><span class="p">:</span> <span class="p">[]</span>
 <span class="p">}</span>
@@ -356,7 +358,7 @@ discussion. To minimize the risk, you must:</p>
 </div>
 <div class="section" id="auth-certificatevalidationcontext">
 <span id="envoy-api-msg-auth-certificatevalidationcontext"></span><h2>auth.CertificateValidationContext<a class="headerlink" href="#auth-certificatevalidationcontext" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L145">[auth.CertificateValidationContext proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L147">[auth.CertificateValidationContext proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;trusted_ca&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;verify_certificate_spki&quot;</span><span class="p">:</span> <span class="p">[],</span>
@@ -458,7 +460,7 @@ multiple CRLs, all of them will be used.</dd>
 </div>
 <div class="section" id="auth-commontlscontext">
 <span id="envoy-api-msg-auth-commontlscontext"></span><h2>auth.CommonTlsContext<a class="headerlink" href="#auth-commontlscontext" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L257">[auth.CommonTlsContext proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L259">[auth.CommonTlsContext proto]</a></p>
 <p>TLS context shared by both client and server TLS contexts.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;tls_params&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -528,7 +530,7 @@ parameter in the HTTP connection manager for more information):</p>
 </div>
 <div class="section" id="auth-commontlscontext-combinedcertificatevalidationcontext">
 <span id="envoy-api-msg-auth-commontlscontext-combinedcertificatevalidationcontext"></span><h2>auth.CommonTlsContext.CombinedCertificateValidationContext<a class="headerlink" href="#auth-commontlscontext-combinedcertificatevalidationcontext" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L273">[auth.CommonTlsContext.CombinedCertificateValidationContext proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L275">[auth.CommonTlsContext.CombinedCertificateValidationContext proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;default_validation_context&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;validation_context_sds_secret_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
@@ -546,7 +548,7 @@ parameter in the HTTP connection manager for more information):</p>
 </div>
 <div class="section" id="auth-upstreamtlscontext">
 <span id="envoy-api-msg-auth-upstreamtlscontext"></span><h2>auth.UpstreamTlsContext<a class="headerlink" href="#auth-upstreamtlscontext" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L315">[auth.UpstreamTlsContext proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L317">[auth.UpstreamTlsContext proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;common_tls_context&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;sni&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
@@ -582,7 +584,7 @@ for TLSv1.2 and older) to store for the purpose of session resumption.</p>
 </div>
 <div class="section" id="auth-downstreamtlscontext">
 <span id="envoy-api-msg-auth-downstreamtlscontext"></span><h2>auth.DownstreamTlsContext<a class="headerlink" href="#auth-downstreamtlscontext" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L336">[auth.DownstreamTlsContext proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L338">[auth.DownstreamTlsContext proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;common_tls_context&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;require_client_certificate&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -606,7 +608,7 @@ certificate.</dd>
 </div>
 <div class="section" id="auth-sdssecretconfig">
 <span id="envoy-api-msg-auth-sdssecretconfig"></span><h2>auth.SdsSecretConfig<a class="headerlink" href="#auth-sdssecretconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L358">[auth.SdsSecretConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L360">[auth.SdsSecretConfig proto]</a></p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">This message type has <a class="reference internal" href="../../../../configuration/overview/v2_overview.html#config-overview-v2-status"><span class="std std-ref">experimental</span></a> status.</p>
@@ -630,7 +632,7 @@ When only name is specified, then secret will be loaded from static resources [V
 </div>
 <div class="section" id="auth-secret">
 <span id="envoy-api-msg-auth-secret"></span><h2>auth.Secret<a class="headerlink" href="#auth-secret" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L367">[auth.Secret proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/auth/cert.proto#L369">[auth.Secret proto]</a></p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">This message type has <a class="reference internal" href="../../../../configuration/overview/v2_overview.html#config-overview-v2-status"><span class="std std-ref">experimental</span></a> status.</p>
