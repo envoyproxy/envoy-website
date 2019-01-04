@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>IP Tagging &mdash; envoy 1.10.0-dev-a97e13 documentation</title>
+  <title>gRPC HTTP/1.1 reverse bridge &mdash; envoy 1.10.0-dev-a97e13 documentation</title>
   
 
   
@@ -30,8 +30,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="JWT Authentication" href="jwt_authn_filter.html" />
-    <link rel="prev" title="Envoy Header-To-Metadata Filter" href="header_to_metadata_filter.html" /> 
+    <link rel="next" title="gRPC-JSON transcoder" href="grpc_json_transcoder_filter.html" />
+    <link rel="prev" title="gRPC HTTP/1.1 bridge" href="grpc_http1_bridge_filter.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -102,18 +102,16 @@
 <li class="toctree-l3"><a class="reference internal" href="ext_authz_filter.html">External Authorization</a></li>
 <li class="toctree-l3"><a class="reference internal" href="fault_filter.html">Fault Injection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="grpc_http1_bridge_filter.html">gRPC HTTP/1.1 bridge</a></li>
-<li class="toctree-l3"><a class="reference internal" href="grpc_http1_reverse_bridge_filter.html">gRPC HTTP/1.1 reverse bridge</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">gRPC HTTP/1.1 reverse bridge</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#grpc-frame-header-management">gRPC frame header management</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="grpc_json_transcoder_filter.html">gRPC-JSON transcoder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="grpc_web_filter.html">gRPC-Web</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gzip_filter.html">Gzip</a></li>
 <li class="toctree-l3"><a class="reference internal" href="health_check_filter.html">Health check</a></li>
 <li class="toctree-l3"><a class="reference internal" href="header_to_metadata_filter.html">Envoy Header-To-Metadata Filter</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">IP Tagging</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#configuration">Configuration</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#statistics">Statistics</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#runtime">Runtime</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="ip_tagging_filter.html">IP Tagging</a></li>
 <li class="toctree-l3"><a class="reference internal" href="jwt_authn_filter.html">JWT Authentication</a></li>
 <li class="toctree-l3"><a class="reference internal" href="lua_filter.html">Lua</a></li>
 <li class="toctree-l3"><a class="reference internal" href="rate_limit_filter.html">Rate limit</a></li>
@@ -188,13 +186,13 @@
         
           <li><a href="http_filters.html">HTTP filters</a> &raquo;</li>
         
-      <li>IP Tagging</li>
+      <li>gRPC HTTP/1.1 reverse bridge</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/configuration/http_filters/ip_tagging_filter.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/configuration/http_filters/grpc_http1_reverse_bridge_filter.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -207,62 +205,39 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="ip-tagging">
-<span id="config-http-filters-ip-tagging"></span><h1>IP Tagging<a class="headerlink" href="#ip-tagging" title="Permalink to this headline">¶</a></h1>
-<p>The HTTP IP Tagging filter sets the header <em>x-envoy-ip-tags</em> with the string tags for the trusted address from
-<a class="reference internal" href="../http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a>. If there are no tags for an address,
-the header is not set.</p>
-<p>The implementation for IP Tagging provides a scalable way to compare an IP address to a large list of CIDR
-ranges efficiently. The underlying algorithm for storing tags and IP address subnets is a Level-Compressed trie
-described in the paper <a class="reference external" href="https://www.nada.kth.se/~snilsson/publications/IP-address-lookup-using-LC-tries/">IP-address lookup using
-LC-tries</a> by S. Nilsson and
-G. Karlsson.</p>
-<div class="section" id="configuration">
-<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="grpc-http-1-1-reverse-bridge">
+<span id="config-http-filters-grpc-reverse-bridge"></span><h1>gRPC HTTP/1.1 reverse bridge<a class="headerlink" href="#grpc-http-1-1-reverse-bridge" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><a class="reference internal" href="../../api-v2/config/filter/http/ip_tagging/v2/ip_tagging.proto.html#envoy-api-msg-config-filter-http-ip-tagging-v2-iptagging"><span class="std std-ref">v2 API reference</span></a></li>
-<li>This filter should be configured with the name <em>envoy.ip_tagging</em>.</li>
+<li>gRPC <a class="reference internal" href="../../intro/arch_overview/grpc.html#arch-overview-grpc"><span class="std std-ref">architecture overview</span></a></li>
+<li><a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpfilter-name"><span class="std std-ref">v2 API reference</span></a></li>
+<li>This filter should be configured with the name <em>envoy.grpc_http1_reverse_bridge</em>.</li>
 </ul>
-</div>
-<div class="section" id="statistics">
-<h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
-<p>The IP Tagging filter outputs statistics in the <em>http.&lt;stat_prefix&gt;.ip_tagging.</em> namespace. The stat prefix comes from
-the owning HTTP connection manager.</p>
-<table border="1" class="colwidths-given docutils">
-<colgroup>
-<col width="25%" />
-<col width="25%" />
-<col width="50%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Name</th>
-<th class="head">Type</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>&lt;tag_name&gt;.hit</td>
-<td>Counter</td>
-<td>Total number of requests that have the &lt;tag_name&gt; applied to it</td>
-</tr>
-<tr class="row-odd"><td>no_hit</td>
-<td>Counter</td>
-<td>Total number of requests with no applicable IP tags</td>
-</tr>
-<tr class="row-even"><td>total</td>
-<td>Counter</td>
-<td>Total number of requests the IP Tagging Filter operated on</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="runtime">
-<h2>Runtime<a class="headerlink" href="#runtime" title="Permalink to this headline">¶</a></h2>
-<p>The IP Tagging filter supports the following runtime settings:</p>
-<dl class="docutils">
-<dt>ip_tagging.http_filter_enabled</dt>
-<dd>The % of requests for which the filter is enabled. Default is 100.</dd>
-</dl>
+<p>This is a filter that enables converting an incoming gRPC request into a HTTP/1.1 request to allow
+a server that does not understand HTTP/2 or gRPC semantics to handle the request.</p>
+<p>The filter works by:</p>
+<ul class="simple">
+<li>Checking the content type of the incoming request. If it’s a gRPC request, the filter is enabled.</li>
+<li>The content type is modified to a configurable value. This can be a noop by configuring
+<code class="docutils literal notranslate"><span class="pre">application/grpc</span></code>.</li>
+<li>The gRPC frame header is optionally stripped from the request body. The content length header
+will be adjusted if so.</li>
+<li>On receiving a response, the content type of the response is validated and the status code is
+mapped to a grpc-status which is inserted into the response trailers.</li>
+<li>The response body is optionally prefixed by the gRPC frame header, again adjusting the content
+length header if necessary.</li>
+</ul>
+<p>Due to being mapped to HTTP/1.1, this filter will only work with unary gRPC calls.</p>
+<div class="section" id="grpc-frame-header-management">
+<h2>gRPC frame header management<a class="headerlink" href="#grpc-frame-header-management" title="Permalink to this headline">¶</a></h2>
+<p>By setting the withhold_grpc_frame option, the filter will assume that the upstream does not
+understand any gRPC semantics and will convert the request body into a simple binary encoding
+of the request body and perform the reverse conversion on the response body. This ends up
+simplifying the server side handling of these requests, as they no longer need to be concerned
+with parsing and generating gRPC formatted data.</p>
+<p>This works by stripping the gRPC frame header from the request body, while injecting a gRPC
+frame header in the response.</p>
+<p>If this feature is not used, the upstream must be ready to receive HTTP/1.1 requests prefixed
+with the gRPC frame header and respond with gRPC formatted responses.</p>
 </div>
 </div>
 
@@ -274,10 +249,10 @@ the owning HTTP connection manager.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="jwt_authn_filter.html" class="btn btn-neutral float-right" title="JWT Authentication" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="grpc_json_transcoder_filter.html" class="btn btn-neutral float-right" title="gRPC-JSON transcoder" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="header_to_metadata_filter.html" class="btn btn-neutral" title="Envoy Header-To-Metadata Filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="grpc_http1_bridge_filter.html" class="btn btn-neutral" title="gRPC HTTP/1.1 bridge" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

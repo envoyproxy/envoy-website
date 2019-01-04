@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>gRPC &mdash; envoy 1.10.0-dev-2a2ad4 documentation</title>
+  <title>gRPC &mdash; envoy 1.10.0-dev-a97e13 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-2a2ad4
+                1.10.0-dev-a97e13
               </div>
             
           
@@ -100,6 +100,7 @@
 <li class="toctree-l3"><a class="reference internal" href="data_sharing_between_filters.html#dynamic-state">Dynamic State</a></li>
 <li class="toctree-l3"><a class="reference internal" href="http_routing.html">HTTP routing</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">gRPC</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#grpc-bridging">gRPC bridging</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#grpc-services">gRPC services</a></li>
 </ul>
 </li>
@@ -221,12 +222,8 @@ application layer:</p>
 <li>gRPC makes use of HTTP/2 trailers to convey request status. Envoy is one of very few HTTP proxies
 that correctly supports HTTP/2 trailers and is thus one of the few proxies that can transport
 gRPC requests and responses.</li>
-<li>The gRPC runtime for some languages is relatively immature. Envoy supports a gRPC <a class="reference internal" href="../../configuration/http_filters/grpc_http1_bridge_filter.html#config-http-filters-grpc-bridge"><span class="std std-ref">bridge
-filter</span></a> that allows gRPC requests to be sent to Envoy over
-HTTP/1.1. Envoy then translates the requests to HTTP/2 for transport to the target server.
-The response is translated back to HTTP/1.1.</li>
-<li>When installed, the bridge filter gathers per RPC statistics in addition to the standard array
-of global HTTP statistics.</li>
+<li>The gRPC runtime for some languages is relatively immature. See <a class="reference internal" href="#arch-overview-grpc-bridging"><span class="std std-ref">below</span></a>
+for an overview of filters that can help bring gRPC to more languages.</li>
 <li>gRPC-Web is supported by a <a class="reference internal" href="../../configuration/http_filters/grpc_web_filter.html#config-http-filters-grpc-web"><span class="std std-ref">filter</span></a> that allows a gRPC-Web
 client to send requests to Envoy over HTTP/1.1 and get proxied to a gRPC server. It’s under
 active development and is expected to be the successor to the gRPC <a class="reference internal" href="../../configuration/http_filters/grpc_http1_bridge_filter.html#config-http-filters-grpc-bridge"><span class="std std-ref">bridge filter</span></a>.</li>
@@ -234,6 +231,18 @@ active development and is expected to be the successor to the gRPC <a class="ref
 that allows a RESTful JSON API client to send requests to Envoy over HTTP and get proxied to a
 gRPC service.</li>
 </ul>
+<div class="section" id="grpc-bridging">
+<span id="arch-overview-grpc-bridging"></span><h2>gRPC bridging<a class="headerlink" href="#grpc-bridging" title="Permalink to this headline">¶</a></h2>
+<p>Envoy supports two gRPC bridges:</p>
+<ul class="simple">
+<li><a class="reference internal" href="../../configuration/http_filters/grpc_http1_bridge_filter.html#config-http-filters-grpc-bridge"><span class="std std-ref">grpc_http1_bridge filter</span></a> which allows gRPC requests to be sent to Envoy over
+HTTP/1.1. Envoy then translates the requests to HTTP/2 for transport to the target server. The response is translated back to HTTP/1.1.
+When installed, the bridge filter gathers per RPC statistics in addition to the standard array of global HTTP statistics.</li>
+<li><a class="reference internal" href="../../configuration/http_filters/grpc_http1_reverse_bridge_filter.html#config-http-filters-grpc-reverse-bridge"><span class="std std-ref">grpc_http1_reverse_bridge filter</span></a> which allows gRPC requests to be sent to Envoy and
+then translated to HTTP/1.1 when sent to the upstream. The response is then converted back into gRPC when sent to the downstream.
+This filter can also optionally manage the gRPC frame header, allowing the upstream to not have to be gRPC aware at all.</li>
+</ul>
+</div>
 <div class="section" id="grpc-services">
 <span id="arch-overview-grpc-services"></span><h2>gRPC services<a class="headerlink" href="#grpc-services" title="Permalink to this headline">¶</a></h2>
 <p>In addition to proxying gRPC on the data plane, Envoy make use of gRPC for its
