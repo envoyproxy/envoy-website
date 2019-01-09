@@ -34,7 +34,8 @@ upstream cluster to route to or whether to perform a redirect.
     "response_headers_to_remove": [],
     "cors": "{...}",
     "per_filter_config": "{...}",
-    "include_request_attempt_count": "..."
+    "include_request_attempt_count": "...",
+    "retry_policy": "{...}"
   }
 
 .. _envoy_api_field_route.VirtualHost.name:
@@ -155,6 +156,14 @@ include_request_attempt_count
   <envoy_api_field_config.filter.http.router.v2.Router.suppress_envoy_headers>` flag.
   
   
+.. _envoy_api_field_route.VirtualHost.retry_policy:
+
+retry_policy
+  (:ref:`route.RetryPolicy <envoy_api_msg_route.RetryPolicy>`) Indicates the retry policy for all routes in this virtual host. Note that setting a
+  route level entry will take precedence over this config and it'll be treated
+  independently (e.g.: values are not inherited).
+  
+  
 
 
 .. _envoy_api_enum_route.VirtualHost.TlsRequirementType:
@@ -191,7 +200,7 @@ ALL
 route.Route
 -----------
 
-`[route.Route proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L144>`_
+`[route.Route proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L149>`_
 
 A route is both a specification of how to match a request as well as an indication of what to do
 next (e.g., redirect, forward, rewrite, etc.).
@@ -321,7 +330,7 @@ response_headers_to_remove
 route.WeightedCluster
 ---------------------
 
-`[route.WeightedCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L222>`_
+`[route.WeightedCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L227>`_
 
 Compared to the :ref:`cluster <envoy_api_field_route.RouteAction.cluster>` field that specifies a
 single upstream cluster as the target of a request, the :ref:`weighted_clusters
@@ -369,7 +378,7 @@ runtime_key_prefix
 route.WeightedCluster.ClusterWeight
 -----------------------------------
 
-`[route.WeightedCluster.ClusterWeight proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L223>`_
+`[route.WeightedCluster.ClusterWeight proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L228>`_
 
 
 .. code-block:: json
@@ -469,7 +478,7 @@ per_filter_config
 route.RouteMatch
 ----------------
 
-`[route.RouteMatch proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L305>`_
+`[route.RouteMatch proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L310>`_
 
 
 .. code-block:: json
@@ -586,7 +595,7 @@ grpc
 route.RouteMatch.GrpcRouteMatchOptions
 --------------------------------------
 
-`[route.RouteMatch.GrpcRouteMatchOptions proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L370>`_
+`[route.RouteMatch.GrpcRouteMatchOptions proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L375>`_
 
 
 .. code-block:: json
@@ -602,7 +611,7 @@ route.RouteMatch.GrpcRouteMatchOptions
 route.CorsPolicy
 ----------------
 
-`[route.CorsPolicy proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L380>`_
+`[route.CorsPolicy proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L385>`_
 
 
 .. code-block:: json
@@ -719,7 +728,7 @@ shadow_enabled
 route.RouteAction
 -----------------
 
-`[route.RouteAction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L441>`_
+`[route.RouteAction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L446>`_
 
 
 .. code-block:: json
@@ -899,7 +908,9 @@ idle_timeout
 .. _envoy_api_field_route.RouteAction.retry_policy:
 
 retry_policy
-  (:ref:`route.RouteAction.RetryPolicy <envoy_api_msg_route.RouteAction.RetryPolicy>`) Indicates that the route has a retry policy.
+  (:ref:`route.RetryPolicy <envoy_api_msg_route.RetryPolicy>`) Indicates that the route has a retry policy. Note that if this is set,
+  it'll take precedence over the virtual host level retry policy entirely
+  (e.g.: policies are not merged, most internal one becomes the enforced policy).
   
   
 .. _envoy_api_field_route.RouteAction.request_mirror_policy:
@@ -976,155 +987,12 @@ max_grpc_timeout
 upgrade_configs
   (:ref:`route.RouteAction.UpgradeConfig <envoy_api_msg_route.RouteAction.UpgradeConfig>`) 
   
-.. _envoy_api_msg_route.RouteAction.RetryPolicy:
-
-route.RouteAction.RetryPolicy
------------------------------
-
-`[route.RouteAction.RetryPolicy proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L543>`_
-
-HTTP retry :ref:`architecture overview <arch_overview_http_routing_retry>`.
-
-.. code-block:: json
-
-  {
-    "retry_on": "...",
-    "num_retries": "{...}",
-    "per_try_timeout": "{...}",
-    "retry_priority": "{...}",
-    "retry_host_predicate": [],
-    "host_selection_retry_max_attempts": "...",
-    "retriable_status_codes": []
-  }
-
-.. _envoy_api_field_route.RouteAction.RetryPolicy.retry_on:
-
-retry_on
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies the conditions under which retry takes place. These are the same
-  conditions documented for :ref:`config_http_filters_router_x-envoy-retry-on` and
-  :ref:`config_http_filters_router_x-envoy-retry-grpc-on`.
-  
-  
-.. _envoy_api_field_route.RouteAction.RetryPolicy.num_retries:
-
-num_retries
-  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Specifies the allowed number of retries. This parameter is optional and
-  defaults to 1. These are the same conditions documented for
-  :ref:`config_http_filters_router_x-envoy-max-retries`.
-  
-  
-.. _envoy_api_field_route.RouteAction.RetryPolicy.per_try_timeout:
-
-per_try_timeout
-  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) Specifies a non-zero upstream timeout per retry attempt. This parameter is optional. The
-  same conditions documented for
-  :ref:`config_http_filters_router_x-envoy-upstream-rq-per-try-timeout-ms` apply.
-  
-  .. note::
-  
-    If left unspecified, Envoy will use the global
-    :ref:`route timeout <envoy_api_field_route.RouteAction.timeout>` for the request.
-    Consequently, when using a :ref:`5xx <config_http_filters_router_x-envoy-retry-on>` based
-    retry policy, a request that times out will not be retried as the total timeout budget
-    would have been exhausted.
-  
-  
-.. _envoy_api_field_route.RouteAction.RetryPolicy.retry_priority:
-
-retry_priority
-  (:ref:`route.RouteAction.RetryPolicy.RetryPriority <envoy_api_msg_route.RouteAction.RetryPolicy.RetryPriority>`) Specifies an implementation of a RetryPriority which is used to determine the
-  distribution of load across priorities used for retries. Refer to
-  :ref:`retry plugin configuration <arch_overview_http_retry_plugins>` for more details.
-  
-  
-.. _envoy_api_field_route.RouteAction.RetryPolicy.retry_host_predicate:
-
-retry_host_predicate
-  (:ref:`route.RouteAction.RetryPolicy.RetryHostPredicate <envoy_api_msg_route.RouteAction.RetryPolicy.RetryHostPredicate>`) Specifies a collection of RetryHostPredicates that will be consulted when selecting a host
-  for retries. If any of the predicates reject the host, host selection will be reattempted.
-  Refer to :ref:`retry plugin configuration <arch_overview_http_retry_plugins>` for more
-  details.
-  
-  
-.. _envoy_api_field_route.RouteAction.RetryPolicy.host_selection_retry_max_attempts:
-
-host_selection_retry_max_attempts
-  (`int64 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The maximum number of times host selection will be reattempted before giving up, at which
-  point the host that was last selected will be routed to. If unspecified, this will default to
-  retrying once.
-  
-  
-.. _envoy_api_field_route.RouteAction.RetryPolicy.retriable_status_codes:
-
-retriable_status_codes
-  (`uint32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) HTTP status codes that should trigger a retry in addition to those specified by retry_on.
-  
-  
-.. _envoy_api_msg_route.RouteAction.RetryPolicy.RetryPriority:
-
-route.RouteAction.RetryPolicy.RetryPriority
--------------------------------------------
-
-`[route.RouteAction.RetryPolicy.RetryPriority proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L567>`_
-
-
-.. code-block:: json
-
-  {
-    "name": "...",
-    "config": "{...}"
-  }
-
-.. _envoy_api_field_route.RouteAction.RetryPolicy.RetryPriority.name:
-
-name
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) 
-  
-.. _envoy_api_field_route.RouteAction.RetryPolicy.RetryPriority.config:
-
-config
-  (`Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_) 
-  
-  
-
-
-
-.. _envoy_api_msg_route.RouteAction.RetryPolicy.RetryHostPredicate:
-
-route.RouteAction.RetryPolicy.RetryHostPredicate
-------------------------------------------------
-
-`[route.RouteAction.RetryPolicy.RetryHostPredicate proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L582>`_
-
-
-.. code-block:: json
-
-  {
-    "name": "...",
-    "config": "{...}"
-  }
-
-.. _envoy_api_field_route.RouteAction.RetryPolicy.RetryHostPredicate.name:
-
-name
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) 
-  
-.. _envoy_api_field_route.RouteAction.RetryPolicy.RetryHostPredicate.config:
-
-config
-  (`Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_) 
-  
-  
-
-
-
-
 .. _envoy_api_msg_route.RouteAction.RequestMirrorPolicy:
 
 route.RouteAction.RequestMirrorPolicy
 -------------------------------------
 
-`[route.RouteAction.RequestMirrorPolicy proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L638>`_
+`[route.RouteAction.RequestMirrorPolicy proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L580>`_
 
 The router is capable of shadowing traffic from one cluster to another. The current
 implementation is "fire and forget," meaning Envoy will not wait for the shadow cluster to
@@ -1198,7 +1066,7 @@ runtime_fraction
 route.RouteAction.HashPolicy
 ----------------------------
 
-`[route.RouteAction.HashPolicy proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L709>`_
+`[route.RouteAction.HashPolicy proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L651>`_
 
 Specifies the route's hashing policy if the upstream cluster uses a hashing :ref:`load balancer
 <arch_overview_load_balancing_types>`.
@@ -1268,7 +1136,7 @@ terminal
 route.RouteAction.HashPolicy.Header
 -----------------------------------
 
-`[route.RouteAction.HashPolicy.Header proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L710>`_
+`[route.RouteAction.HashPolicy.Header proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L652>`_
 
 
 .. code-block:: json
@@ -1291,7 +1159,7 @@ header_name
 route.RouteAction.HashPolicy.Cookie
 -----------------------------------
 
-`[route.RouteAction.HashPolicy.Cookie proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L730>`_
+`[route.RouteAction.HashPolicy.Cookie proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L672>`_
 
 Envoy supports two types of cookie affinity:
 
@@ -1346,7 +1214,7 @@ path
 route.RouteAction.HashPolicy.ConnectionProperties
 -------------------------------------------------
 
-`[route.RouteAction.HashPolicy.ConnectionProperties proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L746>`_
+`[route.RouteAction.HashPolicy.ConnectionProperties proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L688>`_
 
 
 .. code-block:: json
@@ -1369,7 +1237,7 @@ source_ip
 route.RouteAction.UpgradeConfig
 -------------------------------
 
-`[route.RouteAction.UpgradeConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L826>`_
+`[route.RouteAction.UpgradeConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L768>`_
 
 Allows enabling and disabling upgrades on a per-route basis.
 This overrides any enabled/disabled upgrade filter chain specified in the
@@ -1406,7 +1274,7 @@ enabled
 Enum route.RouteAction.ClusterNotFoundResponseCode
 --------------------------------------------------
 
-`[route.RouteAction.ClusterNotFoundResponseCode proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L468>`_
+`[route.RouteAction.ClusterNotFoundResponseCode proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L473>`_
 
 
 .. _envoy_api_enum_value_route.RouteAction.ClusterNotFoundResponseCode.SERVICE_UNAVAILABLE:
@@ -1422,12 +1290,155 @@ NOT_FOUND
   
   
 
+.. _envoy_api_msg_route.RetryPolicy:
+
+route.RetryPolicy
+-----------------
+
+`[route.RetryPolicy proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L780>`_
+
+HTTP retry :ref:`architecture overview <arch_overview_http_routing_retry>`.
+
+.. code-block:: json
+
+  {
+    "retry_on": "...",
+    "num_retries": "{...}",
+    "per_try_timeout": "{...}",
+    "retry_priority": "{...}",
+    "retry_host_predicate": [],
+    "host_selection_retry_max_attempts": "...",
+    "retriable_status_codes": []
+  }
+
+.. _envoy_api_field_route.RetryPolicy.retry_on:
+
+retry_on
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies the conditions under which retry takes place. These are the same
+  conditions documented for :ref:`config_http_filters_router_x-envoy-retry-on` and
+  :ref:`config_http_filters_router_x-envoy-retry-grpc-on`.
+  
+  
+.. _envoy_api_field_route.RetryPolicy.num_retries:
+
+num_retries
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Specifies the allowed number of retries. This parameter is optional and
+  defaults to 1. These are the same conditions documented for
+  :ref:`config_http_filters_router_x-envoy-max-retries`.
+  
+  
+.. _envoy_api_field_route.RetryPolicy.per_try_timeout:
+
+per_try_timeout
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) Specifies a non-zero upstream timeout per retry attempt. This parameter is optional. The
+  same conditions documented for
+  :ref:`config_http_filters_router_x-envoy-upstream-rq-per-try-timeout-ms` apply.
+  
+  .. note::
+  
+    If left unspecified, Envoy will use the global
+    :ref:`route timeout <envoy_api_field_route.RouteAction.timeout>` for the request.
+    Consequently, when using a :ref:`5xx <config_http_filters_router_x-envoy-retry-on>` based
+    retry policy, a request that times out will not be retried as the total timeout budget
+    would have been exhausted.
+  
+  
+.. _envoy_api_field_route.RetryPolicy.retry_priority:
+
+retry_priority
+  (:ref:`route.RetryPolicy.RetryPriority <envoy_api_msg_route.RetryPolicy.RetryPriority>`) Specifies an implementation of a RetryPriority which is used to determine the
+  distribution of load across priorities used for retries. Refer to
+  :ref:`retry plugin configuration <arch_overview_http_retry_plugins>` for more details.
+  
+  
+.. _envoy_api_field_route.RetryPolicy.retry_host_predicate:
+
+retry_host_predicate
+  (:ref:`route.RetryPolicy.RetryHostPredicate <envoy_api_msg_route.RetryPolicy.RetryHostPredicate>`) Specifies a collection of RetryHostPredicates that will be consulted when selecting a host
+  for retries. If any of the predicates reject the host, host selection will be reattempted.
+  Refer to :ref:`retry plugin configuration <arch_overview_http_retry_plugins>` for more
+  details.
+  
+  
+.. _envoy_api_field_route.RetryPolicy.host_selection_retry_max_attempts:
+
+host_selection_retry_max_attempts
+  (`int64 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The maximum number of times host selection will be reattempted before giving up, at which
+  point the host that was last selected will be routed to. If unspecified, this will default to
+  retrying once.
+  
+  
+.. _envoy_api_field_route.RetryPolicy.retriable_status_codes:
+
+retriable_status_codes
+  (`uint32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) HTTP status codes that should trigger a retry in addition to those specified by retry_on.
+  
+  
+.. _envoy_api_msg_route.RetryPolicy.RetryPriority:
+
+route.RetryPolicy.RetryPriority
+-------------------------------
+
+`[route.RetryPolicy.RetryPriority proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L804>`_
+
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "config": "{...}"
+  }
+
+.. _envoy_api_field_route.RetryPolicy.RetryPriority.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) 
+  
+.. _envoy_api_field_route.RetryPolicy.RetryPriority.config:
+
+config
+  (`Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_) 
+  
+  
+
+
+
+.. _envoy_api_msg_route.RetryPolicy.RetryHostPredicate:
+
+route.RetryPolicy.RetryHostPredicate
+------------------------------------
+
+`[route.RetryPolicy.RetryHostPredicate proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L819>`_
+
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "config": "{...}"
+  }
+
+.. _envoy_api_field_route.RetryPolicy.RetryHostPredicate.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) 
+  
+.. _envoy_api_field_route.RetryPolicy.RetryHostPredicate.config:
+
+config
+  (`Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_) 
+  
+  
+
+
+
+
 .. _envoy_api_msg_route.RedirectAction:
 
 route.RedirectAction
 --------------------
 
-`[route.RedirectAction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L837>`_
+`[route.RedirectAction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L844>`_
 
 
 .. code-block:: json
@@ -1528,7 +1539,7 @@ strip_query
 Enum route.RedirectAction.RedirectResponseCode
 ----------------------------------------------
 
-`[route.RedirectAction.RedirectResponseCode proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L869>`_
+`[route.RedirectAction.RedirectResponseCode proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L876>`_
 
 
 .. _envoy_api_enum_value_route.RedirectAction.RedirectResponseCode.MOVED_PERMANENTLY:
@@ -1567,7 +1578,7 @@ PERMANENT_REDIRECT
 route.DirectResponseAction
 --------------------------
 
-`[route.DirectResponseAction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L895>`_
+`[route.DirectResponseAction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L902>`_
 
 
 .. code-block:: json
@@ -1603,7 +1614,7 @@ body
 route.Decorator
 ---------------
 
-`[route.Decorator proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L910>`_
+`[route.Decorator proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L917>`_
 
 
 .. code-block:: json
@@ -1632,7 +1643,7 @@ operation
 route.VirtualCluster
 --------------------
 
-`[route.VirtualCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L939>`_
+`[route.VirtualCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L946>`_
 
 A virtual cluster is a way of specifying a regex matching rule against
 certain important endpoints such that statistics are generated explicitly for
@@ -1696,7 +1707,7 @@ method
 route.RateLimit
 ---------------
 
-`[route.RateLimit proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L964>`_
+`[route.RateLimit proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L971>`_
 
 Global rate limiting :ref:`architecture overview <arch_overview_rate_limit>`.
 
@@ -1742,7 +1753,7 @@ actions
 route.RateLimit.Action
 ----------------------
 
-`[route.RateLimit.Action proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L977>`_
+`[route.RateLimit.Action proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L984>`_
 
 
 .. code-block:: json
@@ -1815,7 +1826,7 @@ header_value_match
 route.RateLimit.Action.SourceCluster
 ------------------------------------
 
-`[route.RateLimit.Action.SourceCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L985>`_
+`[route.RateLimit.Action.SourceCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L992>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1837,7 +1848,7 @@ The following descriptor entry is appended to the descriptor:
 route.RateLimit.Action.DestinationCluster
 -----------------------------------------
 
-`[route.RateLimit.Action.DestinationCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1004>`_
+`[route.RateLimit.Action.DestinationCluster proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1011>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1868,7 +1879,7 @@ settings:
 route.RateLimit.Action.RequestHeaders
 -------------------------------------
 
-`[route.RateLimit.Action.RequestHeaders proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1013>`_
+`[route.RateLimit.Action.RequestHeaders proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1020>`_
 
 The following descriptor entry is appended when a header contains a key that matches the
 *header_name*:
@@ -1905,7 +1916,7 @@ descriptor_key
 route.RateLimit.Action.RemoteAddress
 ------------------------------------
 
-`[route.RateLimit.Action.RemoteAddress proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1029>`_
+`[route.RateLimit.Action.RemoteAddress proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1036>`_
 
 The following descriptor entry is appended to the descriptor and is populated using the
 trusted address from :ref:`x-forwarded-for <config_http_conn_man_headers_x-forwarded-for>`:
@@ -1926,7 +1937,7 @@ trusted address from :ref:`x-forwarded-for <config_http_conn_man_headers_x-forwa
 route.RateLimit.Action.GenericKey
 ---------------------------------
 
-`[route.RateLimit.Action.GenericKey proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1037>`_
+`[route.RateLimit.Action.GenericKey proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1044>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -1953,7 +1964,7 @@ descriptor_value
 route.RateLimit.Action.HeaderValueMatch
 ---------------------------------------
 
-`[route.RateLimit.Action.HeaderValueMatch proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1047>`_
+`[route.RateLimit.Action.HeaderValueMatch proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1054>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -2003,7 +2014,7 @@ headers
 route.HeaderMatcher
 -------------------
 
-`[route.HeaderMatcher proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1120>`_
+`[route.HeaderMatcher proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1127>`_
 
 .. attention::
 
@@ -2156,7 +2167,7 @@ invert_match
 route.QueryParameterMatcher
 ---------------------------
 
-`[route.QueryParameterMatcher proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1192>`_
+`[route.QueryParameterMatcher proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/route/route.proto#L1199>`_
 
 Query parameter matching treats the query string of a request's :path header
 as an ampersand-separated list of keys and/or key=value elements.
