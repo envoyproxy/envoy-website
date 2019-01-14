@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>External Authorization &mdash; envoy 1.10.0-dev-74ef1a documentation</title>
+  <title>External Authorization &mdash; envoy 1.10.0-dev-082ba6 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-74ef1a
+                1.10.0-dev-082ba6
               </div>
             
           
@@ -199,16 +199,9 @@
 <a class="reference internal" href="../../../../../../configuration/http_filters/ext_authz_filter.html#config-http-filters-ext-authz"><span class="std std-ref">configuration overview</span></a>.</p>
 <div class="section" id="config-filter-http-ext-authz-v2alpha-extauthz">
 <span id="envoy-api-msg-config-filter-http-ext-authz-v2alpha-extauthz"></span><h2>config.filter.http.ext_authz.v2alpha.ExtAuthz<a class="headerlink" href="#config-filter-http-ext-authz-v2alpha-extauthz" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L25">[config.filter.http.ext_authz.v2alpha.ExtAuthz proto]</a></p>
-<p>External Authorization filter calls out to an external service over either:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li>gRPC Authorization API defined by <a class="reference internal" href="../../../../../service/auth/v2alpha/external_auth.proto.html#envoy-api-msg-service-auth-v2alpha-checkrequest"><span class="std std-ref">CheckRequest</span></a>.</li>
-<li>Raw HTTP Authorization server by passing the request headers to the service.</li>
-</ol>
-</div></blockquote>
-<p>A failed check will cause this filter to close the HTTP request normally with 403 (Forbidden),
-unless a different status code has been indicated in the authorization response.</p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L21">[config.filter.http.ext_authz.v2alpha.ExtAuthz proto]</a></p>
+<p>External Authorization filter calls out to an external service over either
+gRPC or raw HTTP clients.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;grpc_service&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;http_service&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -232,45 +225,48 @@ The default timeout is set to 200ms by this filter.</p>
 </dl>
 <dl class="docutils" id="envoy-api-field-config-filter-http-ext-authz-v2alpha-extauthz-failure-mode-allow">
 <dt>failure_mode_allow</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) The filter’s behaviour in case the external authorization service does
-not respond back. When set to true, Envoy will also allow traffic in cases when
-an error occurs during the authorization process.
-Defaults to false.</dd>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Allows bypassing the filter on errors during the authorization process.</p>
+<blockquote>
+<div>1. When <em>failure_mode_allow</em> is true, traffic will be allowed in the presence of an error.
+This includes any of the HTTP 5xx errors, or a communication failure between the filter and
+the authorization server.
+2. When <em>failure_mode_allow</em> is false, the filter will <em>always</em> return a <em>Forbidden response</em>
+to the client. It will <em>not allow</em> traffic to the upstream in the presence of an error. This
+includes any of the HTTP 5xx errors, or a communication failure between the filter and the
+authorization server.</div></blockquote>
+<p class="last">Note that filter will produce stats on error. See <em>Statistics</em> at <a class="reference internal" href="../../../../../../configuration/http_filters/ext_authz_filter.html#config-http-filters-ext-authz"><span class="std std-ref">configuration overview</span></a>.</p>
+</dd>
 </dl>
 </div>
 <div class="section" id="config-filter-http-ext-authz-v2alpha-httpservice">
 <span id="envoy-api-msg-config-filter-http-ext-authz-v2alpha-httpservice"></span><h2>config.filter.http.ext_authz.v2alpha.HttpService<a class="headerlink" href="#config-filter-http-ext-authz-v2alpha-httpservice" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L70">[config.filter.http.ext_authz.v2alpha.HttpService proto]</a></p>
-<p>External Authorization filter calls out to an upstream authorization server by passing the raw
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L71">[config.filter.http.ext_authz.v2alpha.HttpService proto]</a></p>
+<p>External Authorization filter calls an authorization server by passing the raw
 HTTP request headers to the server. This allows the authorization service to take a decision
-whether the request is authorized or not.</p>
+whether the request should be authorized or not.</p>
 <p>A successful check allows the authorization service adding or overriding headers from the
-original request before dispatching it to the upstream. This is done by configuring which headers
-in the authorization response should be sent to the upstream. See <em>allowed_authorization_headers</em>
-below.</p>
+original request before dispatching them to the upstream. This is done by configuring which
+headers in the authorization response should be sent to the upstream. See
+<a class="reference internal" href="#envoy-api-field-config-filter-http-ext-authz-v2alpha-authorizationresponse-allowed-upstream-headers"><span class="std std-ref">allowed_upstream_headers</span></a>
+for more details.</p>
 <p>A failed check will cause this filter to close the HTTP request with 403 (Forbidden),
 unless a different status code has been indicated by the authorization server via response
-headers.</p>
-<p>If an error happens during the checking process, two situations may occur depending on the
-filter’s configuration:</p>
+headers. In addition to the the status code and with exception of the <em>Authority</em>, the filter
+will send all headers from the authorization server back to the client by default. See
+<a class="reference internal" href="#envoy-api-field-config-filter-http-ext-authz-v2alpha-authorizationresponse-allowed-client-headers"><span class="std std-ref">allowed_client_headers</span></a>
+for more details.</p>
 <blockquote>
-<div><ol class="arabic simple">
-<li>When <em>failure_mode_allow</em> is true, traffic will be allowed in the presence of an error. This
-includes any of the HTTP 5xx errors, or a communication failure between the filter and the
-authorization server.</li>
-<li>When <em>failure_mode_allow</em> is false, the filter will <em>always</em> return a <em>Forbidden response</em> to
-the client. It will <em>not allow</em> traffic to the upstream in the presence of an error. This
-includes any of the HTTP 5xx errors, or a communication failure between the filter and the
-authorization server.</li>
-</ol>
+<div><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Unlike the gRPC client that request and response headers are passed in the message,
+headers forwarded by via the raw HTTP client will affect the request or the response.</p>
+</div>
 </div></blockquote>
-<p>Note that filter will produce stats on error. See <em>Statistics</em> at <a class="reference internal" href="../../../../../../configuration/http_filters/ext_authz_filter.html#config-http-filters-ext-authz"><span class="std std-ref">configuration overview</span></a>.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;server_uri&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;path_prefix&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;allowed_authorization_headers&quot;</span><span class="p">:</span> <span class="p">[],</span>
-  <span class="nt">&quot;allowed_request_headers&quot;</span><span class="p">:</span> <span class="p">[],</span>
-  <span class="nt">&quot;authorization_headers_to_add&quot;</span><span class="p">:</span> <span class="p">[]</span>
+  <span class="nt">&quot;authorization_request&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;authorization_response&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -282,28 +278,67 @@ authorization server.</li>
 <dt>path_prefix</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Sets an optional prefix to the value of authorization request header <em>Path</em>.</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-config-filter-http-ext-authz-v2alpha-httpservice-allowed-authorization-headers">
-<dt>allowed_authorization_headers</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Sets a list of headers that can be sent from the authorization server to the upstream service,
-or to the downstream client when present in the authorization response. Note that a matched
-request header will have its value overridden by the ones sent from the authorization server.</dd>
+<dl class="docutils" id="envoy-api-field-config-filter-http-ext-authz-v2alpha-httpservice-authorization-request">
+<dt>authorization_request</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-config-filter-http-ext-authz-v2alpha-authorizationrequest"><span class="std std-ref">config.filter.http.ext_authz.v2alpha.AuthorizationRequest</span></a>) Settings for controlling request headers forwarded from the filter to the authorization server.</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-config-filter-http-ext-authz-v2alpha-httpservice-allowed-request-headers">
-<dt>allowed_request_headers</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Sets a list of headers that should be sent <em>from the filter</em> to the authorization server
-when they are also present in the client request. Note that <em>Content-Length</em>, <em>Authority</em>,
-<em>Method</em> and <em>Path</em> are always dispatched to the authorization server by default. The message
-will not contain body data and the <em>Content-Length</em> will be set to zero.</dd>
+<dl class="docutils" id="envoy-api-field-config-filter-http-ext-authz-v2alpha-httpservice-authorization-response">
+<dt>authorization_response</dt>
+<dd>(<a class="reference internal" href="#envoy-api-msg-config-filter-http-ext-authz-v2alpha-authorizationresponse"><span class="std std-ref">config.filter.http.ext_authz.v2alpha.AuthorizationResponse</span></a>) Settings for controlling authorization response forwarded from the filter to a client,
+or to an upstream service.</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-config-filter-http-ext-authz-v2alpha-httpservice-authorization-headers-to-add">
-<dt>authorization_headers_to_add</dt>
+</div>
+<div class="section" id="config-filter-http-ext-authz-v2alpha-authorizationrequest">
+<span id="envoy-api-msg-config-filter-http-ext-authz-v2alpha-authorizationrequest"></span><h2>config.filter.http.ext_authz.v2alpha.AuthorizationRequest<a class="headerlink" href="#config-filter-http-ext-authz-v2alpha-authorizationrequest" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L91">[config.filter.http.ext_authz.v2alpha.AuthorizationRequest proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;allowed_headers&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;headers_to_add&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-config-filter-http-ext-authz-v2alpha-authorizationrequest-allowed-headers">
+<dt>allowed_headers</dt>
+<dd>(<a class="reference internal" href="../../../../../type/matcher/string.proto.html#envoy-api-msg-type-matcher-liststringmatcher"><span class="std std-ref">type.matcher.ListStringMatcher</span></a>) Sets a list of matchers that are used to determine which client request headers should
+be forwarded <em>from the filter</em> to the authorization server. Note that <em>Content-Length</em>,
+<em>Authority</em>, <em>Method</em>, <em>Path</em> and <em>Authorization</em> are always dispatched to the authorization
+server by default. The message will not contain body data and the <em>Content-Length</em> will be set
+to zero.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-config-filter-http-ext-authz-v2alpha-authorizationrequest-headers-to-add">
+<dt>headers_to_add</dt>
 <dd>(<a class="reference internal" href="../../../../../api/v2/core/base.proto.html#envoy-api-msg-core-headervalue"><span class="std std-ref">core.HeaderValue</span></a>) Sets a list of headers and their values that will be added to the request to external
 authorization server. Note that these will override the headers coming from the downstream.</dd>
 </dl>
 </div>
+<div class="section" id="config-filter-http-ext-authz-v2alpha-authorizationresponse">
+<span id="envoy-api-msg-config-filter-http-ext-authz-v2alpha-authorizationresponse"></span><h2>config.filter.http.ext_authz.v2alpha.AuthorizationResponse<a class="headerlink" href="#config-filter-http-ext-authz-v2alpha-authorizationresponse" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L104">[config.filter.http.ext_authz.v2alpha.AuthorizationResponse proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;allowed_upstream_headers&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;allowed_client_headers&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-config-filter-http-ext-authz-v2alpha-authorizationresponse-allowed-upstream-headers">
+<dt>allowed_upstream_headers</dt>
+<dd>(<a class="reference internal" href="../../../../../type/matcher/string.proto.html#envoy-api-msg-type-matcher-liststringmatcher"><span class="std std-ref">type.matcher.ListStringMatcher</span></a>) Sets a list of matchers that are used to determine which authorization response headers should
+be forwarded <em>from the filter</em> to the upstream service only when the HTTP status is a 200 OK.
+Note that these headers will override that the original request headers when respectively
+matched.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-config-filter-http-ext-authz-v2alpha-authorizationresponse-allowed-client-headers">
+<dt>allowed_client_headers</dt>
+<dd>(<a class="reference internal" href="../../../../../type/matcher/string.proto.html#envoy-api-msg-type-matcher-liststringmatcher"><span class="std std-ref">type.matcher.ListStringMatcher</span></a>) Sets a list of keys that are used to determine which authorization response headers should
+be forwarded <em>from the filter</em> to the client when the HTTP status is <em>NOT</em> a 200 OK. Note that
+when this list is empty, all the authorization response headers, except <em>Authority</em> will be
+sent to the client (default). When a header is included in this list, <em>Path</em>, <em>Status</em>,
+<em>Content-Length</em>, <em>WWWAuthenticate</em> and <em>Location</em> are automatically added.</dd>
+</dl>
+</div>
 <div class="section" id="config-filter-http-ext-authz-v2alpha-extauthzperroute">
 <span id="envoy-api-msg-config-filter-http-ext-authz-v2alpha-extauthzperroute"></span><h2>config.filter.http.ext_authz.v2alpha.ExtAuthzPerRoute<a class="headerlink" href="#config-filter-http-ext-authz-v2alpha-extauthzperroute" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L96">[config.filter.http.ext_authz.v2alpha.ExtAuthzPerRoute proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L120">[config.filter.http.ext_authz.v2alpha.ExtAuthzPerRoute proto]</a></p>
 <p>Extra settings on a per virtualhost/route/weighter-cluster level.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;disabled&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
@@ -327,7 +362,7 @@ If disabled is specified in multiple per-filter-configs, the most specific one w
 </div>
 <div class="section" id="config-filter-http-ext-authz-v2alpha-checksettings">
 <span id="envoy-api-msg-config-filter-http-ext-authz-v2alpha-checksettings"></span><h2>config.filter.http.ext_authz.v2alpha.CheckSettings<a class="headerlink" href="#config-filter-http-ext-authz-v2alpha-checksettings" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L115">[config.filter.http.ext_authz.v2alpha.CheckSettings proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/ext_authz/v2alpha/ext_authz.proto#L139">[config.filter.http.ext_authz.v2alpha.CheckSettings proto]</a></p>
 <p>Extra settings for the check request. You can use this to provide extra context for the
 ext-authz server on specific virtual hosts routes. For example, adding a context extension on
 the virtual host level can give the ext-authz server information on what virtual host is used
