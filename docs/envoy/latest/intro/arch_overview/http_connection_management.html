@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP connection management &mdash; envoy 1.10.0-dev-1ddd1f documentation</title>
+  <title>HTTP connection management &mdash; envoy 1.10.0-dev-bbf567 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-1ddd1f
+                1.10.0-dev-bbf567
               </div>
             
           
@@ -99,6 +99,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#http-header-sanitizing">HTTP header sanitizing</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#route-table-configuration">Route table configuration</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#retry-plugin-configuration">Retry plugin configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#internal-redirects">Internal redirects</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#timeouts">Timeouts</a></li>
 </ul>
 </li>
@@ -312,6 +313,50 @@ previously attempted priorities.</p>
       <span class="l l-Scalar l-Scalar-Plain">update_frequency</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="internal-redirects">
+<span id="arch-overview-internal-redirects"></span><h2>Internal redirects<a class="headerlink" href="#internal-redirects" title="Permalink to this headline">¶</a></h2>
+<p>Envoy supports handling 302 redirects internally, that is capturing a 302 redirect response,
+synthesizing a new request, sending it to the upstream specified by the new route match, and
+returning the redirected response as the response to the original request.</p>
+<p>Internal redirects are configured via the ref:<cite>redirect action
+&lt;envoy_api_field_route.RouteAction.redirect_action&gt;</cite> field in
+route configuration. When redirect handling is on, any 302 response from upstream is
+subject to the redirect being handled by Envoy.</p>
+<p>For a redirect to be handled successfully it must pass the following checks:</p>
+<ol class="arabic simple">
+<li>Be a 302 response.</li>
+<li>Have a <em>location</em> header with a valid, fully qualified URL matching the scheme of the original request.</li>
+<li>The request must have been fully processed by Envoy.</li>
+<li>The request must not have a body.</li>
+<li>The request must have not been previously redirected, as determined by the presence of an x-envoy-original-url header.</li>
+</ol>
+<p>Any failure will result in redirect being passed downstream instead.</p>
+<p>Once the redirect has passed these checks, the request headers which were shipped to the original
+upstream will be modified by:</p>
+<ol class="arabic simple">
+<li>Putting the fully qualified original request URL in the x-envoy-original-url header.</li>
+<li>Replacing the Authority/Host, Scheme, and Path headers with the values from the Location header.</li>
+</ol>
+<p>The altered request headers will then have a new route selected, be sent through a new filter chain,
+and then shipped upstream with all of the normal Envoy request sanitization taking place.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Note that HTTP connection manager sanitization such as clearing untrusted headers will only be
+applied once. Per-route header modifications will be applied on both the original route and the
+second route, even if they are the same, so be careful configuring header modification rules to
+avoid duplicating undesired header values.</p>
+</div>
+<p>A sample redirect flow might look like this:</p>
+<ol class="arabic simple">
+<li>Client sends a GET request for <em>http://foo.com/bar</em></li>
+<li>Upstream 1 sends a 302 with  <em>“location: http://baz.com/eep”</em></li>
+<li>Envoy is configured to allow redirects on the original route, and sends a new GET request to
+Upstream 2, to fetch <em>http://baz.com/eep</em> with the additional request header
+<em>“x-envoy-original-url: http://foo.com/bar”</em></li>
+<li>Envoy proxies the response data for <em>http://baz.com/eep</em> to the client as the response to the original
+request.</li>
+</ol>
 </div>
 <div class="section" id="timeouts">
 <h2>Timeouts<a class="headerlink" href="#timeouts" title="Permalink to this headline">¶</a></h2>
