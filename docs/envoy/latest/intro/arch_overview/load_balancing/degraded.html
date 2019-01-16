@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Supported load balancers &mdash; envoy 1.10.0-dev-596fa7 documentation</title>
+  <title>Degraded endpoints &mdash; envoy 1.10.0-dev-596fa7 documentation</title>
   
 
   
@@ -30,8 +30,8 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Priority levels" href="priority.html" />
-    <link rel="prev" title="Overview" href="overview.html" /> 
+    <link rel="next" title="Locality weighted load balancing" href="locality_weight.html" />
+    <link rel="prev" title="Priority levels" href="priority.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -107,9 +107,9 @@
 <li class="toctree-l3"><a class="reference internal" href="../connection_pooling.html">Connection pooling</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="load_balancing.html">Load Balancing</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Supported load balancers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="load_balancers.html">Supported load balancers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="priority.html">Priority levels</a></li>
-<li class="toctree-l4"><a class="reference internal" href="degraded.html">Degraded endpoints</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Degraded endpoints</a></li>
 <li class="toctree-l4"><a class="reference internal" href="locality_weight.html">Locality weighted load balancing</a></li>
 <li class="toctree-l4"><a class="reference internal" href="overprovisioning.html">Overprovisioning Factor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="panic_threshold.html">Panic threshold</a></li>
@@ -203,13 +203,13 @@
         
           <li><a href="load_balancing.html">Load Balancing</a> &raquo;</li>
         
-      <li>Supported load balancers</li>
+      <li>Degraded endpoints</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/intro/arch_overview/load_balancing/load_balancers.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/intro/arch_overview/load_balancing/degraded.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -222,89 +222,56 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="supported-load-balancers">
-<span id="arch-overview-load-balancing-types"></span><h1>Supported load balancers<a class="headerlink" href="#supported-load-balancers" title="Permalink to this headline">¶</a></h1>
-<p>When a filter needs to acquire a connection to a host in an upstream cluster, the cluster manager
-uses a load balancing policy to determine which host is selected. The load balancing policies are
-pluggable and are specified on a per upstream cluster basis in the <a class="reference internal" href="../../../api-v2/api/v2/cds.proto.html#envoy-api-msg-cluster"><span class="std std-ref">configuration</span></a>. Note that if no active health checking policy is <a class="reference internal" href="../../../configuration/cluster_manager/cluster_hc.html#config-cluster-manager-cluster-hc"><span class="std std-ref">configured</span></a> for a cluster, all upstream cluster members are considered
-healthy.</p>
-<div class="section" id="weighted-round-robin">
-<span id="arch-overview-load-balancing-types-round-robin"></span><h2>Weighted round robin<a class="headerlink" href="#weighted-round-robin" title="Permalink to this headline">¶</a></h2>
-<p>This is a simple policy in which each healthy upstream host is selected in round
-robin order. If <a class="reference internal" href="../../../api-v2/api/v2/endpoint/endpoint.proto.html#envoy-api-field-endpoint-lbendpoint-load-balancing-weight"><span class="std std-ref">weights</span></a> are assigned to
-endpoints in a locality, then a weighted round robin schedule is used, where
-higher weighted endpoints will appear more often in the rotation to achieve the
-effective weighting.</p>
-</div>
-<div class="section" id="weighted-least-request">
-<span id="arch-overview-load-balancing-types-least-request"></span><h2>Weighted least request<a class="headerlink" href="#weighted-least-request" title="Permalink to this headline">¶</a></h2>
-<p>The least request load balancer uses different algorithms depending on whether any of the hosts have
-weight greater than 1.</p>
-<ul>
-<li><p class="first"><em>all weights 1</em>: An O(1) algorithm which selects N random healthy hosts as specified in the
-<a class="reference internal" href="../../../api-v2/api/v2/cds.proto.html#envoy-api-msg-cluster-leastrequestlbconfig"><span class="std std-ref">configuration</span></a> (2 by default) and picks the
-host which has the fewest active requests (<a class="reference external" href="http://www.eecs.harvard.edu/~michaelm/postscripts/handbook2001.pdf">Research</a> has shown that this
-approach is nearly as good as an O(N) full scan). This is also known as P2C (power of two
-choices). The P2C load balancer has the property that a host with the highest number of active
-requests in the cluster will never receive new requests. It will be allowed to drain until it is
-less than or equal to all of the other hosts.</p>
-</li>
-<li><p class="first"><em>not all weights 1</em>:  If any host in the cluster has a load balancing weight greater than 1, the
-load balancer shifts into a mode where it uses a weighted round robin schedule in which weights
-are dynamically adjusted based on the host’s request load at the time of selection (weight is
-divided by the current active request count. For example, a host with weight 2 and an active
-request count of 4 will have a synthetic weight of 2 / 4 = 0.5). This algorithm provides good
-balance at steady state but may not adapt to load imbalance as quickly. Additionally, unlike P2C,
-a host will never truly drain, though it will receive fewer requests over time.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If all weights are not 1, but are the same (e.g., 42), Envoy will still use the weighted round
-robin schedule instead of P2C.</p>
-</div>
-</li>
-</ul>
-</div>
-<div class="section" id="ring-hash">
-<span id="arch-overview-load-balancing-types-ring-hash"></span><h2>Ring hash<a class="headerlink" href="#ring-hash" title="Permalink to this headline">¶</a></h2>
-<p>The ring/modulo hash load balancer implements consistent hashing to upstream hosts. The algorithm is
-based on mapping all hosts onto a circle such that the addition or removal of a host from the host
-set changes only affect 1/N requests. This technique is also commonly known as <a class="reference external" href="https://github.com/RJ/ketama">“ketama”</a> hashing. A consistent hashing load balancer is only effective
-when protocol routing is used that specifies a value to hash on. The minimum ring size governs the
-replication factor for each host in the ring. For example, if the minimum ring size is 1024 and
-there are 16 hosts, each host will be replicated 64 times. The ring hash load balancer does not
-currently support weighting.</p>
-<p>When priority based load balancing is in use, the priority level is also chosen by hash, so the
-endpoint selected will still be consistent when the set of backends is stable.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The ring hash load balancer does not support <a class="reference internal" href="locality_weight.html#arch-overview-load-balancing-locality-weighted-lb"><span class="std std-ref">locality weighted load
-balancing</span></a>.</p>
-</div>
-</div>
-<div class="section" id="maglev">
-<span id="arch-overview-load-balancing-types-maglev"></span><h2>Maglev<a class="headerlink" href="#maglev" title="Permalink to this headline">¶</a></h2>
-<p>The Maglev load balancer implements consistent hashing to upstream hosts. It uses the algorithm
-described in section 3.4 of <a class="reference external" href="https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/44824.pdf">this paper</a>
-with a fixed table size of 65537 (see section 5.3 of the same paper). Maglev can be used as a drop
-in replacement for the <a class="reference internal" href="#arch-overview-load-balancing-types-ring-hash"><span class="std std-ref">ring hash load balancer</span></a>
-any place in which consistent hashing is desired. Like the ring hash load balancer, a consistent
-hashing load balancer is only effective when protocol routing is used that specifies a value to
-hash on.</p>
-<p>In general, when compared to the ring hash (“ketama”) algorithm, Maglev has substantially faster
-table lookup build times as well as host selection times (approximately 10x and 5x respectively
-when using a large ring size of 256K entries). The downside of Maglev is that it is not as stable
-as ring hash. More keys will move position when hosts are removed (simulations show approximately
-double the keys will move). With that said, for many applications including Redis, Maglev is very
-likely a superior drop in replacement for ring hash. The advanced reader can use
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master//test/common/upstream/load_balancer_benchmark.cc">this benchmark</a> to compare ring hash
-versus Maglev with different parameters.</p>
-</div>
-<div class="section" id="random">
-<span id="arch-overview-load-balancing-types-random"></span><h2>Random<a class="headerlink" href="#random" title="Permalink to this headline">¶</a></h2>
-<p>The random load balancer selects a random healthy host. The random load balancer generally performs
-better than round robin if no health checking policy is configured. Random selection avoids bias
-towards the host in the set that comes after a failed host.</p>
-</div>
+  <div class="section" id="degraded-endpoints">
+<span id="arch-overview-load-balancing-degraded"></span><h1>Degraded endpoints<a class="headerlink" href="#degraded-endpoints" title="Permalink to this headline">¶</a></h1>
+<p>Envoy supports marking certain endpoints as degraded, meaning that they are able to receive
+traffic, but should only receive traffic once there are not sufficient healthy hosts available.</p>
+<p>Routing to degraded hosts can be thought of as routing to hosts in a lower
+<a class="reference internal" href="priority.html#arch-overview-load-balancing-priority-levels"><span class="std std-ref">priority</span></a>. As hosts in higher priorities go
+unhealthy, traffic spills down to lower priorities. As the amount of healthy hosts
+available is no longer sufficient to handle 100% of the load, traffic will spill over to degraded
+hosts using the same mechanism as priority spillover for healthy hosts. This ensures that
+traffic is gradually shifted to degraded hosts as it becomes necessary.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="34%" />
+<col width="32%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">P=0 healthy/degraded/unhealthy</th>
+<th class="head">Traffic to P=0 healthy hosts</th>
+<th class="head">Traffic to P=0 degraded hosts</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>100%/0%/0%</td>
+<td>100%</td>
+<td>0%</td>
+</tr>
+<tr class="row-odd"><td>71%/0%/29%</td>
+<td>100%</td>
+<td>0%</td>
+</tr>
+<tr class="row-even"><td>71%/29%/0%</td>
+<td>99%</td>
+<td>1%</td>
+</tr>
+<tr class="row-odd"><td>25%/65%/10%</td>
+<td>35%</td>
+<td>65%</td>
+</tr>
+<tr class="row-even"><td>5%/0%/95%</td>
+<td>100%</td>
+<td>0%</td>
+</tr>
+</tbody>
+</table>
+<p>Endpoints can be marked as degraded by using active health checking and having the upstream host
+return a <a class="reference internal" href="../health_checking.html#arch-overview-health-checking-degraded"><span class="std std-ref">special header</span></a>.</p>
+<p>Note: Degraded endpoints are considered unhealthy when computing panic thresholds. This means that
+the number of unhealthy hosts plus the number of degraded hosts is above the panic threshold, the
+containing priority will enter panic mode.</p>
 </div>
 
 
@@ -315,10 +282,10 @@ towards the host in the set that comes after a failed host.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="priority.html" class="btn btn-neutral float-right" title="Priority levels" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="locality_weight.html" class="btn btn-neutral float-right" title="Locality weighted load balancing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="overview.html" class="btn btn-neutral" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="priority.html" class="btn btn-neutral" title="Priority levels" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
