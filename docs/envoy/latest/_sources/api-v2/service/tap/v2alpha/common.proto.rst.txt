@@ -1,0 +1,255 @@
+.. _envoy_api_file_envoy/service/tap/v2alpha/common.proto:
+
+Common tap configuration
+========================
+
+
+.. _envoy_api_msg_service.tap.v2alpha.TapConfig:
+
+service.tap.v2alpha.TapConfig
+-----------------------------
+
+`[service.tap.v2alpha.TapConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L12>`_
+
+Tap configuration.
+
+.. code-block:: json
+
+  {
+    "match_config": "{...}",
+    "output_config": "{...}"
+  }
+
+.. _envoy_api_field_service.tap.v2alpha.TapConfig.match_config:
+
+match_config
+  (:ref:`service.tap.v2alpha.MatchPredicate <envoy_api_msg_service.tap.v2alpha.MatchPredicate>`, *REQUIRED*) The match configuration. If the configuration matches the data source being tapped, a tap will
+  occur, with the result written to the configured output.
+  
+  
+.. _envoy_api_field_service.tap.v2alpha.TapConfig.output_config:
+
+output_config
+  (:ref:`service.tap.v2alpha.OutputConfig <envoy_api_msg_service.tap.v2alpha.OutputConfig>`, *REQUIRED*) The tap output configuration. If a match configuration matches a data source being tapped,
+  a tap will occur and the data will be written to the configured output.
+  
+  
+
+
+.. _envoy_api_msg_service.tap.v2alpha.MatchPredicate:
+
+service.tap.v2alpha.MatchPredicate
+----------------------------------
+
+`[service.tap.v2alpha.MatchPredicate proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L26>`_
+
+Tap match configuration. This is a recursive structure which allows complex nested match
+configurations to be built using various logical operators.
+
+.. code-block:: json
+
+  {
+    "or_match": "{...}",
+    "and_match": "{...}",
+    "not_match": "{...}",
+    "any_match": "...",
+    "http_request_match": "{...}",
+    "http_response_match": "{...}"
+  }
+
+.. _envoy_api_field_service.tap.v2alpha.MatchPredicate.or_match:
+
+or_match
+  (:ref:`service.tap.v2alpha.MatchPredicate.MatchSet <envoy_api_msg_service.tap.v2alpha.MatchPredicate.MatchSet>`) A set that describes a logical OR. If any member of the set matches, the match configuration
+  matches.
+  
+  
+  
+  Precisely one of :ref:`or_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.or_match>`, :ref:`and_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.and_match>`, :ref:`not_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.not_match>`, :ref:`any_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.any_match>`, :ref:`http_request_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.http_request_match>`, :ref:`http_response_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.http_response_match>` must be set.
+  
+.. _envoy_api_field_service.tap.v2alpha.MatchPredicate.and_match:
+
+and_match
+  (:ref:`service.tap.v2alpha.MatchPredicate.MatchSet <envoy_api_msg_service.tap.v2alpha.MatchPredicate.MatchSet>`) A set that describes a logical AND. If all members of the set match, the match configuration
+  matches.
+  
+  
+  
+  Precisely one of :ref:`or_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.or_match>`, :ref:`and_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.and_match>`, :ref:`not_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.not_match>`, :ref:`any_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.any_match>`, :ref:`http_request_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.http_request_match>`, :ref:`http_response_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.http_response_match>` must be set.
+  
+.. _envoy_api_field_service.tap.v2alpha.MatchPredicate.not_match:
+
+not_match
+  (:ref:`service.tap.v2alpha.MatchPredicate <envoy_api_msg_service.tap.v2alpha.MatchPredicate>`) A negation match. The match configuration will match if the negated match condition matches.
+  
+  
+  
+  Precisely one of :ref:`or_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.or_match>`, :ref:`and_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.and_match>`, :ref:`not_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.not_match>`, :ref:`any_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.any_match>`, :ref:`http_request_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.http_request_match>`, :ref:`http_response_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.http_response_match>` must be set.
+  
+.. _envoy_api_field_service.tap.v2alpha.MatchPredicate.any_match:
+
+any_match
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The match configuration will always match.
+  
+  
+  
+  Precisely one of :ref:`or_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.or_match>`, :ref:`and_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.and_match>`, :ref:`not_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.not_match>`, :ref:`any_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.any_match>`, :ref:`http_request_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.http_request_match>`, :ref:`http_response_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.http_response_match>` must be set.
+  
+.. _envoy_api_field_service.tap.v2alpha.MatchPredicate.http_request_match:
+
+http_request_match
+  (:ref:`service.tap.v2alpha.HttpRequestMatch <envoy_api_msg_service.tap.v2alpha.HttpRequestMatch>`) HTTP request match configuration.
+  
+  
+  
+  Precisely one of :ref:`or_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.or_match>`, :ref:`and_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.and_match>`, :ref:`not_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.not_match>`, :ref:`any_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.any_match>`, :ref:`http_request_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.http_request_match>`, :ref:`http_response_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.http_response_match>` must be set.
+  
+.. _envoy_api_field_service.tap.v2alpha.MatchPredicate.http_response_match:
+
+http_response_match
+  (:ref:`service.tap.v2alpha.HttpResponseMatch <envoy_api_msg_service.tap.v2alpha.HttpResponseMatch>`) HTTP response match configuration.
+  
+  
+  
+  Precisely one of :ref:`or_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.or_match>`, :ref:`and_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.and_match>`, :ref:`not_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.not_match>`, :ref:`any_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.any_match>`, :ref:`http_request_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.http_request_match>`, :ref:`http_response_match <envoy_api_field_service.tap.v2alpha.MatchPredicate.http_response_match>` must be set.
+  
+.. _envoy_api_msg_service.tap.v2alpha.MatchPredicate.MatchSet:
+
+service.tap.v2alpha.MatchPredicate.MatchSet
+-------------------------------------------
+
+`[service.tap.v2alpha.MatchPredicate.MatchSet proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L28>`_
+
+A set of match configurations used for logical operations.
+
+.. code-block:: json
+
+  {
+    "rules": []
+  }
+
+.. _envoy_api_field_service.tap.v2alpha.MatchPredicate.MatchSet.rules:
+
+rules
+  (:ref:`service.tap.v2alpha.MatchPredicate <envoy_api_msg_service.tap.v2alpha.MatchPredicate>`, *REQUIRED*) The list of rules that make up the set.
+  
+  
+
+
+
+.. _envoy_api_msg_service.tap.v2alpha.HttpRequestMatch:
+
+service.tap.v2alpha.HttpRequestMatch
+------------------------------------
+
+`[service.tap.v2alpha.HttpRequestMatch proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L59>`_
+
+HTTP request match configuration.
+
+.. code-block:: json
+
+  {
+    "headers": []
+  }
+
+.. _envoy_api_field_service.tap.v2alpha.HttpRequestMatch.headers:
+
+headers
+  (:ref:`route.HeaderMatcher <envoy_api_msg_route.HeaderMatcher>`) HTTP request headers to match.
+  
+  
+
+
+.. _envoy_api_msg_service.tap.v2alpha.HttpResponseMatch:
+
+service.tap.v2alpha.HttpResponseMatch
+-------------------------------------
+
+`[service.tap.v2alpha.HttpResponseMatch proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L65>`_
+
+HTTP response match configuration.
+
+.. code-block:: json
+
+  {
+    "headers": []
+  }
+
+.. _envoy_api_field_service.tap.v2alpha.HttpResponseMatch.headers:
+
+headers
+  (:ref:`route.HeaderMatcher <envoy_api_msg_route.HeaderMatcher>`) HTTP response headers to match.
+  
+  
+
+
+.. _envoy_api_msg_service.tap.v2alpha.OutputConfig:
+
+service.tap.v2alpha.OutputConfig
+--------------------------------
+
+`[service.tap.v2alpha.OutputConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L71>`_
+
+Tap output configuration.
+
+.. code-block:: json
+
+  {
+    "sinks": []
+  }
+
+.. _envoy_api_field_service.tap.v2alpha.OutputConfig.sinks:
+
+sinks
+  (:ref:`service.tap.v2alpha.OutputSink <envoy_api_msg_service.tap.v2alpha.OutputSink>`, *REQUIRED*) Output sinks for tap data. Currently a single sink is allowed in the list. Once multiple
+  sink types are supported this constraint will be relaxed.
+  
+  
+
+
+.. _envoy_api_msg_service.tap.v2alpha.OutputSink:
+
+service.tap.v2alpha.OutputSink
+------------------------------
+
+`[service.tap.v2alpha.OutputSink proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L80>`_
+
+Tap output sink configuration.
+
+.. code-block:: json
+
+  {
+    "streaming_admin": "{...}"
+  }
+
+.. _envoy_api_field_service.tap.v2alpha.OutputSink.streaming_admin:
+
+streaming_admin
+  (:ref:`service.tap.v2alpha.StreamingAdminSink <envoy_api_msg_service.tap.v2alpha.StreamingAdminSink>`, *REQUIRED*) Tap output will be streamed out the :http:post:`/tap` admin endpoint.
+  
+  .. attention::
+  
+    It is only allowed to specify the streaming admin output sink if the tap is being
+    configured from the :http:post:`/tap` admin endpoint. Thus, if an extension has
+    been configured to receive tap configuration from some other source (e.g., static
+    file, XDS, etc.) configuring the streaming admin output type will fail.
+  
+  
+  
+
+
+.. _envoy_api_msg_service.tap.v2alpha.StreamingAdminSink:
+
+service.tap.v2alpha.StreamingAdminSink
+--------------------------------------
+
+`[service.tap.v2alpha.StreamingAdminSink proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L97>`_
+
+Streaming admin sink configuration.
+
+.. code-block:: json
+
+  {}
+
+
+
