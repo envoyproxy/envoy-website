@@ -32,7 +32,7 @@ using OpenSSL. The only important detail it will as you for is the Common
 Name. We’ll use `example.com`:
 
 ```console
-$ openssl req -x509 -newkey rsa:4096 -keyout example-com.key -out example-com.crt -days 365
+$ openssl req -nodes -x509 -newkey rsa:4096 -keyout example-com.key -out example-com.crt -days 365
 ```
 
 ```shell
