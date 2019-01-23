@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Supported load balancers &mdash; envoy 1.10.0-dev-7a5849 documentation</title>
+  <title>Supported load balancers &mdash; envoy 1.10.0-dev-ca93fc documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-7a5849
+                1.10.0-dev-ca93fc
               </div>
             
           
@@ -228,10 +228,11 @@
 <p>When a filter needs to acquire a connection to a host in an upstream cluster, the cluster manager
 uses a load balancing policy to determine which host is selected. The load balancing policies are
 pluggable and are specified on a per upstream cluster basis in the <a class="reference internal" href="../../../api-v2/api/v2/cds.proto.html#envoy-api-msg-cluster"><span class="std std-ref">configuration</span></a>. Note that if no active health checking policy is <a class="reference internal" href="../../../configuration/cluster_manager/cluster_hc.html#config-cluster-manager-cluster-hc"><span class="std std-ref">configured</span></a> for a cluster, all upstream cluster members are considered
-healthy.</p>
+healthy, unless otherwise specified through
+<a class="reference internal" href="../../../api-v2/api/v2/endpoint/endpoint.proto.html#envoy-api-field-endpoint-lbendpoint-health-status"><span class="std std-ref">health_status</span></a>.</p>
 <div class="section" id="weighted-round-robin">
 <span id="arch-overview-load-balancing-types-round-robin"></span><h2>Weighted round robin<a class="headerlink" href="#weighted-round-robin" title="Permalink to this headline">¶</a></h2>
-<p>This is a simple policy in which each healthy upstream host is selected in round
+<p>This is a simple policy in which each available upstream host is selected in round
 robin order. If <a class="reference internal" href="../../../api-v2/api/v2/endpoint/endpoint.proto.html#envoy-api-field-endpoint-lbendpoint-load-balancing-weight"><span class="std std-ref">weights</span></a> are assigned to
 endpoints in a locality, then a weighted round robin schedule is used, where
 higher weighted endpoints will appear more often in the rotation to achieve the
@@ -242,7 +243,7 @@ effective weighting.</p>
 <p>The least request load balancer uses different algorithms depending on whether any of the hosts have
 weight greater than 1.</p>
 <ul>
-<li><p class="first"><em>all weights 1</em>: An O(1) algorithm which selects N random healthy hosts as specified in the
+<li><p class="first"><em>all weights 1</em>: An O(1) algorithm which selects N random available hosts as specified in the
 <a class="reference internal" href="../../../api-v2/api/v2/cds.proto.html#envoy-api-msg-cluster-leastrequestlbconfig"><span class="std std-ref">configuration</span></a> (2 by default) and picks the
 host which has the fewest active requests (<a class="reference external" href="http://www.eecs.harvard.edu/~michaelm/postscripts/handbook2001.pdf">Research</a> has shown that this
 approach is nearly as good as an O(N) full scan). This is also known as P2C (power of two
@@ -302,7 +303,7 @@ versus Maglev with different parameters.</p>
 </div>
 <div class="section" id="random">
 <span id="arch-overview-load-balancing-types-random"></span><h2>Random<a class="headerlink" href="#random" title="Permalink to this headline">¶</a></h2>
-<p>The random load balancer selects a random healthy host. The random load balancer generally performs
+<p>The random load balancer selects a random available host. The random load balancer generally performs
 better than round robin if no health checking policy is configured. Random selection avoids bias
 towards the host in the set that comes after a failed host.</p>
 </div>

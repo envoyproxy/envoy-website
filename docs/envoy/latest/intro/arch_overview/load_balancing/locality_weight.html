@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Locality weighted load balancing &mdash; envoy 1.10.0-dev-7a5849 documentation</title>
+  <title>Locality weighted load balancing &mdash; envoy 1.10.0-dev-ca93fc documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-7a5849
+                1.10.0-dev-ca93fc
               </div>
             
           
@@ -233,15 +233,15 @@ This approach is mutually exclusive with
 in the case of locality aware LB, we rely on the management server to provide the
 locality weighting, rather than the Envoy-side heuristics used in zone aware
 routing.</p>
-<p>When all endpoints are healthy, the locality is picked using a weighted
+<p>When all endpoints are available, the locality is picked using a weighted
 round-robin schedule, where the locality weight is used for weighting. When some
-endpoints in a locality are unhealthy, we adjust the locality weight to reflect
+endpoints in a locality are unavailable, we adjust the locality weight to reflect
 this. As with <a class="reference internal" href="priority.html#arch-overview-load-balancing-priority-levels"><span class="std std-ref">priority levels</span></a>, we assume an
 <a class="reference internal" href="overprovisioning.html#arch-overview-load-balancing-overprovisioning-factor"><span class="std std-ref">over-provision factor</span></a>
 (default value 1.4), which means we do not perform any weight
-adjustment when only a small number of endpoints in a locality are unhealthy.</p>
+adjustment when only a small number of endpoints in a locality are unavilable.</p>
 <p>Assume a simple set-up with 2 localities X and Y, where X has a locality weight
-of 1 and Y has a locality weight of 2, L=Y 100% healthy,
+of 1 and Y has a locality weight of 2, L=Y 100% available,
 with default overprovisioning factor 1.4.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -283,8 +283,8 @@ with default overprovisioning factor 1.4.</p>
 </tbody>
 </table>
 <p>To sum this up in pseudo algorithms:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">health</span><span class="p">(</span><span class="n">L_X</span><span class="p">)</span> <span class="o">=</span> <span class="mi">140</span> <span class="o">*</span> <span class="n">healthy_X_backends</span> <span class="o">/</span> <span class="n">total_X_backends</span>
-<span class="n">effective_weight</span><span class="p">(</span><span class="n">L_X</span><span class="p">)</span> <span class="o">=</span> <span class="n">locality_weight_X</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">health</span><span class="p">(</span><span class="n">L_X</span><span class="p">))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">availability</span><span class="p">(</span><span class="n">L_X</span><span class="p">)</span> <span class="o">=</span> <span class="mi">140</span> <span class="o">*</span> <span class="n">available_X_upstreams</span> <span class="o">/</span> <span class="n">total_X_upstreams</span>
+<span class="n">effective_weight</span><span class="p">(</span><span class="n">L_X</span><span class="p">)</span> <span class="o">=</span> <span class="n">locality_weight_X</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">availability</span><span class="p">(</span><span class="n">L_X</span><span class="p">))</span>
 <span class="n">load</span> <span class="n">to</span> <span class="n">L_X</span> <span class="o">=</span> <span class="n">effective_weight</span><span class="p">(</span><span class="n">L_X</span><span class="p">)</span> <span class="o">/</span> <span class="n">Σ_c</span><span class="p">(</span><span class="n">effective_weight</span><span class="p">(</span><span class="n">L_c</span><span class="p">))</span>
 </pre></div>
 </div>
