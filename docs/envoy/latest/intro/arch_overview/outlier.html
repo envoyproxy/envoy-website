@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Outlier detection &mdash; envoy 1.10.0-dev-e1ac47 documentation</title>
+  <title>Outlier detection &mdash; envoy 1.10.0-dev-5c1d28 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-e1ac47
+                1.10.0-dev-5c1d28
               </div>
             
           
@@ -275,63 +275,11 @@ value.</p>
 </div>
 </div>
 <div class="section" id="ejection-event-logging">
-<h2>Ejection event logging<a class="headerlink" href="#ejection-event-logging" title="Permalink to this headline">¶</a></h2>
+<span id="arch-overview-outlier-detection-logging"></span><h2>Ejection event logging<a class="headerlink" href="#ejection-event-logging" title="Permalink to this headline">¶</a></h2>
 <p>A log of outlier ejection events can optionally be produced by Envoy. This is extremely useful
 during daily operations since global stats do not provide enough information on which hosts are
-being ejected and for what reasons. The log uses a JSON format with one object per line:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;secs_since_last_action&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;cluster&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;upstream_url&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;num_ejections&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;enforced&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;host_success_rate&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;cluster_success_rate_average&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;cluster_success_rate_ejection_threshold&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<dl class="docutils">
-<dt>time</dt>
-<dd>The time that the event took place.</dd>
-<dt>secs_since_last_action</dt>
-<dd>The time in seconds since the last action (either an ejection or unejection)
-took place. This value will be <code class="docutils literal notranslate"><span class="pre">-1</span></code> for the first ejection given there is no
-action before the first ejection.</dd>
-<dt>cluster</dt>
-<dd>The <a class="reference internal" href="../../api-v2/api/v2/cds.proto.html#envoy-api-msg-cluster"><span class="std std-ref">cluster</span></a> that owns the ejected host.</dd>
-<dt>upstream_url</dt>
-<dd>The URL of the ejected host. E.g., <code class="docutils literal notranslate"><span class="pre">tcp://1.2.3.4:80</span></code>.</dd>
-<dt>action</dt>
-<dd>The action that took place. Either <code class="docutils literal notranslate"><span class="pre">eject</span></code> if a host was ejected or <code class="docutils literal notranslate"><span class="pre">uneject</span></code> if it was
-brought back into service.</dd>
-<dt>type</dt>
-<dd>If <code class="docutils literal notranslate"><span class="pre">action</span></code> is <code class="docutils literal notranslate"><span class="pre">eject</span></code>, specifies the type of ejection that took place. Currently type can
-be one of <code class="docutils literal notranslate"><span class="pre">5xx</span></code>, <code class="docutils literal notranslate"><span class="pre">GatewayFailure</span></code> or <code class="docutils literal notranslate"><span class="pre">SuccessRate</span></code>.</dd>
-<dt>num_ejections</dt>
-<dd>If <code class="docutils literal notranslate"><span class="pre">action</span></code> is <code class="docutils literal notranslate"><span class="pre">eject</span></code>, specifies the number of times the host has been ejected
-(local to that Envoy and gets reset if the host gets removed from the upstream cluster for any
-reason and then re-added).</dd>
-<dt>enforced</dt>
-<dd>If <code class="docutils literal notranslate"><span class="pre">action</span></code> is <code class="docutils literal notranslate"><span class="pre">eject</span></code>, specifies if the ejection was enforced. <code class="docutils literal notranslate"><span class="pre">true</span></code> means the host was ejected.
-<code class="docutils literal notranslate"><span class="pre">false</span></code> means the event was logged but the host was not actually ejected.</dd>
-<dt>host_success_rate</dt>
-<dd>If <code class="docutils literal notranslate"><span class="pre">action</span></code> is <code class="docutils literal notranslate"><span class="pre">eject</span></code>, and <code class="docutils literal notranslate"><span class="pre">type</span></code> is <code class="docutils literal notranslate"><span class="pre">SuccessRate</span></code>, specifies the host’s success rate
-at the time of the ejection event on a <code class="docutils literal notranslate"><span class="pre">0-100</span></code> range.</dd>
-</dl>
-<dl class="docutils" id="arch-overview-outlier-detection-ejection-event-logging-cluster-success-rate-average">
-<dt>cluster_success_rate_average</dt>
-<dd>If <code class="docutils literal notranslate"><span class="pre">action</span></code> is <code class="docutils literal notranslate"><span class="pre">eject</span></code>, and <code class="docutils literal notranslate"><span class="pre">type</span></code> is <code class="docutils literal notranslate"><span class="pre">SuccessRate</span></code>, specifies the average success
-rate of the hosts in the cluster at the time of the ejection event on a <code class="docutils literal notranslate"><span class="pre">0-100</span></code> range.</dd>
-</dl>
-<dl class="docutils" id="arch-overview-outlier-detection-ejection-event-logging-cluster-success-rate-ejection-threshold">
-<dt>cluster_success_rate_ejection_threshold</dt>
-<dd>If <code class="docutils literal notranslate"><span class="pre">action</span></code> is <code class="docutils literal notranslate"><span class="pre">eject</span></code>, and <code class="docutils literal notranslate"><span class="pre">type</span></code> is <code class="docutils literal notranslate"><span class="pre">SuccessRate</span></code>, specifies success rate ejection
-threshold at the time of the ejection event.</dd>
-</dl>
+being ejected and for what reasons. The log is structured as protobuf-based dumps of
+<a class="reference internal" href="../../api-v2/data/cluster/v2alpha/outlier_detection_event.proto.html#envoy-api-msg-data-cluster-v2alpha-outlierdetectionevent"><span class="std std-ref">OutlierDetectionEvent messages</span></a>.</p>
 </div>
 <div class="section" id="configuration-reference">
 <h2>Configuration reference<a class="headerlink" href="#configuration-reference" title="Permalink to this headline">¶</a></h2>
