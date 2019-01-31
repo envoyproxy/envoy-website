@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Common tap configuration &mdash; envoy 1.10.0-dev-32c27c documentation</title>
+  <title>Common tap configuration &mdash; envoy 1.10.0-dev-f37ebd documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-32c27c
+                1.10.0-dev-f37ebd
               </div>
             
           
@@ -112,6 +112,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#service-tap-v2alpha-outputconfig">service.tap.v2alpha.OutputConfig</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#service-tap-v2alpha-outputsink">service.tap.v2alpha.OutputSink</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#service-tap-v2alpha-streamingadminsink">service.tap.v2alpha.StreamingAdminSink</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#service-tap-v2alpha-filepertapsink">service.tap.v2alpha.FilePerTapSink</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#enum-service-tap-v2alpha-filepertapsink-format">Enum service.tap.v2alpha.FilePerTapSink.Format</a></li>
 </ul>
 </li>
 </ul>
@@ -328,30 +330,72 @@ sink types are supported this constraint will be relaxed.</dd>
 <p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L80">[service.tap.v2alpha.OutputSink proto]</a></p>
 <p>Tap output sink configuration.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;streaming_admin&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;streaming_admin&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;file_per_tap&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <dl class="docutils" id="envoy-api-field-service-tap-v2alpha-outputsink-streaming-admin">
 <dt>streaming_admin</dt>
-<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-service-tap-v2alpha-streamingadminsink"><span class="std std-ref">service.tap.v2alpha.StreamingAdminSink</span></a>, <em>REQUIRED</em>) Tap output will be streamed out the <a class="reference internal" href="../../../../operations/admin.html#post--tap" title="POST /tap"><code class="xref http http-post docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/tap</span></code></a> admin endpoint.</p>
-<div class="last admonition attention">
+<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-service-tap-v2alpha-streamingadminsink"><span class="std std-ref">service.tap.v2alpha.StreamingAdminSink</span></a>) Tap output will be streamed out the <a class="reference internal" href="../../../../operations/admin.html#post--tap" title="POST /tap"><code class="xref http http-post docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/tap</span></code></a> admin endpoint.</p>
+<div class="admonition attention">
 <p class="first admonition-title">Attention</p>
 <p class="last">It is only allowed to specify the streaming admin output sink if the tap is being
 configured from the <a class="reference internal" href="../../../../operations/admin.html#post--tap" title="POST /tap"><code class="xref http http-post docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/tap</span></code></a> admin endpoint. Thus, if an extension has
 been configured to receive tap configuration from some other source (e.g., static
 file, XDS, etc.) configuring the streaming admin output type will fail.</p>
 </div>
+<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-outputsink-streaming-admin"><span class="std std-ref">streaming_admin</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-outputsink-file-per-tap"><span class="std std-ref">file_per_tap</span></a> must be set.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-service-tap-v2alpha-outputsink-file-per-tap">
+<dt>file_per_tap</dt>
+<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-service-tap-v2alpha-filepertapsink"><span class="std std-ref">service.tap.v2alpha.FilePerTapSink</span></a>) Tap output will be written to a file per tap sink.</p>
+<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-outputsink-streaming-admin"><span class="std std-ref">streaming_admin</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-outputsink-file-per-tap"><span class="std std-ref">file_per_tap</span></a> must be set.</p>
 </dd>
 </dl>
 </div>
 <div class="section" id="service-tap-v2alpha-streamingadminsink">
 <span id="envoy-api-msg-service-tap-v2alpha-streamingadminsink"></span><h2>service.tap.v2alpha.StreamingAdminSink<a class="headerlink" href="#service-tap-v2alpha-streamingadminsink" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L97">[service.tap.v2alpha.StreamingAdminSink proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L100">[service.tap.v2alpha.StreamingAdminSink proto]</a></p>
 <p>Streaming admin sink configuration.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{}</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="service-tap-v2alpha-filepertapsink">
+<span id="envoy-api-msg-service-tap-v2alpha-filepertapsink"></span><h2>service.tap.v2alpha.FilePerTapSink<a class="headerlink" href="#service-tap-v2alpha-filepertapsink" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L104">[service.tap.v2alpha.FilePerTapSink proto]</a></p>
+<p>The file per tap sink outputs a discrete file for every tapped stream.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;path_prefix&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils" id="envoy-api-field-service-tap-v2alpha-filepertapsink-path-prefix">
+<dt>path_prefix</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) Path prefix. The output file will be of the form &lt;path_prefix&gt;_&lt;id&gt;.pb, where &lt;id&gt; is an
+identifier distinguishing the recorded trace for stream instances (the Envoy
+connection ID, HTTP stream ID, etc.).</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-service-tap-v2alpha-filepertapsink-format">
+<dt>format</dt>
+<dd>(<a class="reference internal" href="#envoy-api-enum-service-tap-v2alpha-filepertapsink-format"><span class="std std-ref">service.tap.v2alpha.FilePerTapSink.Format</span></a>)</dd>
+</dl>
+</div>
+<div class="section" id="enum-service-tap-v2alpha-filepertapsink-format">
+<span id="envoy-api-enum-service-tap-v2alpha-filepertapsink-format"></span><h2>Enum service.tap.v2alpha.FilePerTapSink.Format<a class="headerlink" href="#enum-service-tap-v2alpha-filepertapsink-format" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L111">[service.tap.v2alpha.FilePerTapSink.Format proto]</a></p>
+<p>File format.</p>
+<dl class="docutils" id="envoy-api-enum-value-service-tap-v2alpha-filepertapsink-format-proto-binary">
+<dt>PROTO_BINARY</dt>
+<dd><em>(DEFAULT)</em> ⁣Binary proto format.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-enum-value-service-tap-v2alpha-filepertapsink-format-proto-text">
+<dt>PROTO_TEXT</dt>
+<dd>⁣Text proto format.</dd>
+</dl>
 </div>
 </div>
 

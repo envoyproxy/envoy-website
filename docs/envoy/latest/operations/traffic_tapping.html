@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Traffic tapping &mdash; envoy 1.10.0-dev-32c27c documentation</title>
+  <title>Traffic tapping &mdash; envoy 1.10.0-dev-f37ebd documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-32c27c
+                1.10.0-dev-f37ebd
               </div>
             
           
@@ -181,8 +181,8 @@
 <li><a class="reference internal" href="../configuration/http_filters/tap_filter.html#config-http-filters-tap"><span class="std std-ref">HTTP tap filter</span></a>. See the linked filter documentation for more
 information.</li>
 <li><a class="reference internal" href="../api-v2/api/v2/core/base.proto.html#envoy-api-msg-core-transportsocket"><span class="std std-ref">Tap transport socket extension</span></a> that can intercept
-traffic and write to a <a class="reference internal" href="../api-v2/data/tap/v2alpha/transport.proto.html#envoy-api-msg-data-tap-v2alpha-trace"><span class="std std-ref">protobuf trace file</span></a>. The
-remainder of this document describes the configuration of the tap transport socket.</li>
+traffic and write to a <a class="reference internal" href="../api-v2/data/tap/v2alpha/wrapper.proto.html#envoy-api-msg-data-tap-v2alpha-bufferedtracewrapper"><span class="std std-ref">protobuf trace file</span></a>. The remainder of this document describes
+the configuration of the tap transport socket.</li>
 </ul>
 </div></blockquote>
 <div class="section" id="tap-transport-socket-configuration">
@@ -201,8 +201,14 @@ or cluster. For a plain text socket this might look like:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">transport_socket</span><span class="p p-Indicator">:</span>
   <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.tap</span>
   <span class="l l-Scalar l-Scalar-Plain">config</span><span class="p p-Indicator">:</span>
-    <span class="l l-Scalar l-Scalar-Plain">file_sink</span><span class="p p-Indicator">:</span>
-      <span class="l l-Scalar l-Scalar-Plain">path_prefix</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/some/tap/path</span>
+    <span class="l l-Scalar l-Scalar-Plain">common_config</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">static_config</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">match_config</span><span class="p p-Indicator">:</span>
+          <span class="l l-Scalar l-Scalar-Plain">any_match</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+        <span class="l l-Scalar l-Scalar-Plain">output_config</span><span class="p p-Indicator">:</span>
+          <span class="l l-Scalar l-Scalar-Plain">sinks</span><span class="p p-Indicator">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">file_per_tap</span><span class="p p-Indicator">:</span>
+                <span class="l l-Scalar l-Scalar-Plain">path_prefix</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/some/tap/path</span>
     <span class="l l-Scalar l-Scalar-Plain">transport_socket</span><span class="p p-Indicator">:</span>
       <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">raw_buffer</span>
 </pre></div>
@@ -211,8 +217,14 @@ or cluster. For a plain text socket this might look like:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">transport_socket</span><span class="p p-Indicator">:</span>
   <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.tap</span>
   <span class="l l-Scalar l-Scalar-Plain">config</span><span class="p p-Indicator">:</span>
-    <span class="l l-Scalar l-Scalar-Plain">file_sink</span><span class="p p-Indicator">:</span>
-      <span class="l l-Scalar l-Scalar-Plain">path_prefix</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/some/tap/path</span>
+    <span class="l l-Scalar l-Scalar-Plain">common_config</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">static_config</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">match_config</span><span class="p p-Indicator">:</span>
+          <span class="l l-Scalar l-Scalar-Plain">any_match</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+        <span class="l l-Scalar l-Scalar-Plain">output_config</span><span class="p p-Indicator">:</span>
+          <span class="l l-Scalar l-Scalar-Plain">sinks</span><span class="p p-Indicator">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">file_per_tap</span><span class="p p-Indicator">:</span>
+                <span class="l l-Scalar l-Scalar-Plain">path_prefix</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/some/tap/path</span>
     <span class="l l-Scalar l-Scalar-Plain">transport_socket</span><span class="p p-Indicator">:</span>
       <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ssl</span>
       <span class="l l-Scalar l-Scalar-Plain">config</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;TLS context&gt;</span>

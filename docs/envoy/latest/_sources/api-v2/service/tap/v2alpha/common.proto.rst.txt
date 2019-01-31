@@ -219,13 +219,14 @@ Tap output sink configuration.
 .. code-block:: json
 
   {
-    "streaming_admin": "{...}"
+    "streaming_admin": "{...}",
+    "file_per_tap": "{...}"
   }
 
 .. _envoy_api_field_service.tap.v2alpha.OutputSink.streaming_admin:
 
 streaming_admin
-  (:ref:`service.tap.v2alpha.StreamingAdminSink <envoy_api_msg_service.tap.v2alpha.StreamingAdminSink>`, *REQUIRED*) Tap output will be streamed out the :http:post:`/tap` admin endpoint.
+  (:ref:`service.tap.v2alpha.StreamingAdminSink <envoy_api_msg_service.tap.v2alpha.StreamingAdminSink>`) Tap output will be streamed out the :http:post:`/tap` admin endpoint.
   
   .. attention::
   
@@ -236,6 +237,17 @@ streaming_admin
   
   
   
+  Precisely one of :ref:`streaming_admin <envoy_api_field_service.tap.v2alpha.OutputSink.streaming_admin>`, :ref:`file_per_tap <envoy_api_field_service.tap.v2alpha.OutputSink.file_per_tap>` must be set.
+  
+.. _envoy_api_field_service.tap.v2alpha.OutputSink.file_per_tap:
+
+file_per_tap
+  (:ref:`service.tap.v2alpha.FilePerTapSink <envoy_api_msg_service.tap.v2alpha.FilePerTapSink>`) Tap output will be written to a file per tap sink.
+  
+  
+  
+  Precisely one of :ref:`streaming_admin <envoy_api_field_service.tap.v2alpha.OutputSink.streaming_admin>`, :ref:`file_per_tap <envoy_api_field_service.tap.v2alpha.OutputSink.file_per_tap>` must be set.
+  
 
 
 .. _envoy_api_msg_service.tap.v2alpha.StreamingAdminSink:
@@ -243,7 +255,7 @@ streaming_admin
 service.tap.v2alpha.StreamingAdminSink
 --------------------------------------
 
-`[service.tap.v2alpha.StreamingAdminSink proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L97>`_
+`[service.tap.v2alpha.StreamingAdminSink proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L100>`_
 
 Streaming admin sink configuration.
 
@@ -253,3 +265,55 @@ Streaming admin sink configuration.
 
 
 
+
+.. _envoy_api_msg_service.tap.v2alpha.FilePerTapSink:
+
+service.tap.v2alpha.FilePerTapSink
+----------------------------------
+
+`[service.tap.v2alpha.FilePerTapSink proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L104>`_
+
+The file per tap sink outputs a discrete file for every tapped stream.
+
+.. code-block:: json
+
+  {
+    "path_prefix": "...",
+    "format": "..."
+  }
+
+.. _envoy_api_field_service.tap.v2alpha.FilePerTapSink.path_prefix:
+
+path_prefix
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Path prefix. The output file will be of the form <path_prefix>_<id>.pb, where <id> is an
+  identifier distinguishing the recorded trace for stream instances (the Envoy
+  connection ID, HTTP stream ID, etc.).
+  
+  
+.. _envoy_api_field_service.tap.v2alpha.FilePerTapSink.format:
+
+format
+  (:ref:`service.tap.v2alpha.FilePerTapSink.Format <envoy_api_enum_service.tap.v2alpha.FilePerTapSink.Format>`) 
+  
+
+.. _envoy_api_enum_service.tap.v2alpha.FilePerTapSink.Format:
+
+Enum service.tap.v2alpha.FilePerTapSink.Format
+----------------------------------------------
+
+`[service.tap.v2alpha.FilePerTapSink.Format proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L111>`_
+
+File format.
+
+.. _envoy_api_enum_value_service.tap.v2alpha.FilePerTapSink.Format.PROTO_BINARY:
+
+PROTO_BINARY
+  *(DEFAULT)* ⁣Binary proto format.
+  
+  
+.. _envoy_api_enum_value_service.tap.v2alpha.FilePerTapSink.Format.PROTO_TEXT:
+
+PROTO_TEXT
+  ⁣Text proto format.
+  
+  
