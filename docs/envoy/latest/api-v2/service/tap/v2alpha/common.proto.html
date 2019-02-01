@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Common tap configuration &mdash; envoy 1.10.0-dev-5a88c9 documentation</title>
+  <title>Common tap configuration &mdash; envoy 1.10.0-dev-fbcf6b documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-5a88c9
+                1.10.0-dev-fbcf6b
               </div>
             
           
@@ -107,8 +107,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#service-tap-v2alpha-tapconfig">service.tap.v2alpha.TapConfig</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#service-tap-v2alpha-matchpredicate">service.tap.v2alpha.MatchPredicate</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#service-tap-v2alpha-matchpredicate-matchset">service.tap.v2alpha.MatchPredicate.MatchSet</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#service-tap-v2alpha-httprequestmatch">service.tap.v2alpha.HttpRequestMatch</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#service-tap-v2alpha-httpresponsematch">service.tap.v2alpha.HttpResponseMatch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#service-tap-v2alpha-httpheadersmatch">service.tap.v2alpha.HttpHeadersMatch</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#service-tap-v2alpha-outputconfig">service.tap.v2alpha.OutputConfig</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#service-tap-v2alpha-outputsink">service.tap.v2alpha.OutputSink</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#service-tap-v2alpha-streamingadminsink">service.tap.v2alpha.StreamingAdminSink</a></li>
@@ -224,8 +223,10 @@ configurations to be built using various logical operators.</p>
   <span class="nt">&quot;and_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;not_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;any_match&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;http_request_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;http_response_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;http_request_headers_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;http_request_trailers_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;http_response_headers_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;http_response_trailers_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -233,38 +234,50 @@ configurations to be built using various logical operators.</p>
 <dt>or_match</dt>
 <dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-service-tap-v2alpha-matchpredicate-matchset"><span class="std std-ref">service.tap.v2alpha.MatchPredicate.MatchSet</span></a>) A set that describes a logical OR. If any member of the set matches, the match configuration
 matches.</p>
-<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-match"><span class="std std-ref">http_request_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-match"><span class="std std-ref">http_response_match</span></a> must be set.</p>
+<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-headers-match"><span class="std std-ref">http_request_headers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-trailers-match"><span class="std std-ref">http_request_trailers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-headers-match"><span class="std std-ref">http_response_headers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-trailers-match"><span class="std std-ref">http_response_trailers_match</span></a> must be set.</p>
 </dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-service-tap-v2alpha-matchpredicate-and-match">
 <dt>and_match</dt>
 <dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-service-tap-v2alpha-matchpredicate-matchset"><span class="std std-ref">service.tap.v2alpha.MatchPredicate.MatchSet</span></a>) A set that describes a logical AND. If all members of the set match, the match configuration
 matches.</p>
-<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-match"><span class="std std-ref">http_request_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-match"><span class="std std-ref">http_response_match</span></a> must be set.</p>
+<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-headers-match"><span class="std std-ref">http_request_headers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-trailers-match"><span class="std std-ref">http_request_trailers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-headers-match"><span class="std std-ref">http_response_headers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-trailers-match"><span class="std std-ref">http_response_trailers_match</span></a> must be set.</p>
 </dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-service-tap-v2alpha-matchpredicate-not-match">
 <dt>not_match</dt>
 <dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-service-tap-v2alpha-matchpredicate"><span class="std std-ref">service.tap.v2alpha.MatchPredicate</span></a>) A negation match. The match configuration will match if the negated match condition matches.</p>
-<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-match"><span class="std std-ref">http_request_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-match"><span class="std std-ref">http_response_match</span></a> must be set.</p>
+<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-headers-match"><span class="std std-ref">http_request_headers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-trailers-match"><span class="std std-ref">http_request_trailers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-headers-match"><span class="std std-ref">http_response_headers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-trailers-match"><span class="std std-ref">http_response_trailers_match</span></a> must be set.</p>
 </dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-service-tap-v2alpha-matchpredicate-any-match">
 <dt>any_match</dt>
 <dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) The match configuration will always match.</p>
-<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-match"><span class="std std-ref">http_request_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-match"><span class="std std-ref">http_response_match</span></a> must be set.</p>
+<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-headers-match"><span class="std std-ref">http_request_headers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-trailers-match"><span class="std std-ref">http_request_trailers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-headers-match"><span class="std std-ref">http_response_headers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-trailers-match"><span class="std std-ref">http_response_trailers_match</span></a> must be set.</p>
 </dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-match">
-<dt>http_request_match</dt>
-<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-service-tap-v2alpha-httprequestmatch"><span class="std std-ref">service.tap.v2alpha.HttpRequestMatch</span></a>) HTTP request match configuration.</p>
-<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-match"><span class="std std-ref">http_request_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-match"><span class="std std-ref">http_response_match</span></a> must be set.</p>
+<dl class="docutils" id="envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-headers-match">
+<dt>http_request_headers_match</dt>
+<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-service-tap-v2alpha-httpheadersmatch"><span class="std std-ref">service.tap.v2alpha.HttpHeadersMatch</span></a>) HTTP request headers match configuration.</p>
+<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-headers-match"><span class="std std-ref">http_request_headers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-trailers-match"><span class="std std-ref">http_request_trailers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-headers-match"><span class="std std-ref">http_response_headers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-trailers-match"><span class="std std-ref">http_response_trailers_match</span></a> must be set.</p>
 </dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-match">
-<dt>http_response_match</dt>
-<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-service-tap-v2alpha-httpresponsematch"><span class="std std-ref">service.tap.v2alpha.HttpResponseMatch</span></a>) HTTP response match configuration.</p>
-<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-match"><span class="std std-ref">http_request_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-match"><span class="std std-ref">http_response_match</span></a> must be set.</p>
+<dl class="docutils" id="envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-trailers-match">
+<dt>http_request_trailers_match</dt>
+<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-service-tap-v2alpha-httpheadersmatch"><span class="std std-ref">service.tap.v2alpha.HttpHeadersMatch</span></a>) HTTP request trailers match configuration.</p>
+<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-headers-match"><span class="std std-ref">http_request_headers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-trailers-match"><span class="std std-ref">http_request_trailers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-headers-match"><span class="std std-ref">http_response_headers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-trailers-match"><span class="std std-ref">http_response_trailers_match</span></a> must be set.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-headers-match">
+<dt>http_response_headers_match</dt>
+<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-service-tap-v2alpha-httpheadersmatch"><span class="std std-ref">service.tap.v2alpha.HttpHeadersMatch</span></a>) HTTP response headers match configuration.</p>
+<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-headers-match"><span class="std std-ref">http_request_headers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-trailers-match"><span class="std std-ref">http_request_trailers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-headers-match"><span class="std std-ref">http_response_headers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-trailers-match"><span class="std std-ref">http_response_trailers_match</span></a> must be set.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-trailers-match">
+<dt>http_response_trailers_match</dt>
+<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-service-tap-v2alpha-httpheadersmatch"><span class="std std-ref">service.tap.v2alpha.HttpHeadersMatch</span></a>) HTTP response trailers match configuration.</p>
+<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-headers-match"><span class="std std-ref">http_request_headers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-request-trailers-match"><span class="std std-ref">http_request_trailers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-headers-match"><span class="std std-ref">http_response_headers_match</span></a>, <a class="reference internal" href="#envoy-api-field-service-tap-v2alpha-matchpredicate-http-response-trailers-match"><span class="std std-ref">http_response_trailers_match</span></a> must be set.</p>
 </dd>
 </dl>
 </div>
@@ -282,32 +295,18 @@ matches.</p>
 <dd>(<a class="reference internal" href="#envoy-api-msg-service-tap-v2alpha-matchpredicate"><span class="std std-ref">service.tap.v2alpha.MatchPredicate</span></a>, <em>REQUIRED</em>) The list of rules that make up the set.</dd>
 </dl>
 </div>
-<div class="section" id="service-tap-v2alpha-httprequestmatch">
-<span id="envoy-api-msg-service-tap-v2alpha-httprequestmatch"></span><h2>service.tap.v2alpha.HttpRequestMatch<a class="headerlink" href="#service-tap-v2alpha-httprequestmatch" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L59">[service.tap.v2alpha.HttpRequestMatch proto]</a></p>
-<p>HTTP request match configuration.</p>
+<div class="section" id="service-tap-v2alpha-httpheadersmatch">
+<span id="envoy-api-msg-service-tap-v2alpha-httpheadersmatch"></span><h2>service.tap.v2alpha.HttpHeadersMatch<a class="headerlink" href="#service-tap-v2alpha-httpheadersmatch" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L65">[service.tap.v2alpha.HttpHeadersMatch proto]</a></p>
+<p>HTTP headers match configuration.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;headers&quot;</span><span class="p">:</span> <span class="p">[]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<dl class="docutils" id="envoy-api-field-service-tap-v2alpha-httprequestmatch-headers">
+<dl class="docutils" id="envoy-api-field-service-tap-v2alpha-httpheadersmatch-headers">
 <dt>headers</dt>
-<dd>(<a class="reference internal" href="../../../api/v2/route/route.proto.html#envoy-api-msg-route-headermatcher"><span class="std std-ref">route.HeaderMatcher</span></a>) HTTP request headers to match.</dd>
-</dl>
-</div>
-<div class="section" id="service-tap-v2alpha-httpresponsematch">
-<span id="envoy-api-msg-service-tap-v2alpha-httpresponsematch"></span><h2>service.tap.v2alpha.HttpResponseMatch<a class="headerlink" href="#service-tap-v2alpha-httpresponsematch" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L65">[service.tap.v2alpha.HttpResponseMatch proto]</a></p>
-<p>HTTP response match configuration.</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;headers&quot;</span><span class="p">:</span> <span class="p">[]</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<dl class="docutils" id="envoy-api-field-service-tap-v2alpha-httpresponsematch-headers">
-<dt>headers</dt>
-<dd>(<a class="reference internal" href="../../../api/v2/route/route.proto.html#envoy-api-msg-route-headermatcher"><span class="std std-ref">route.HeaderMatcher</span></a>) HTTP response headers to match.</dd>
+<dd>(<a class="reference internal" href="../../../api/v2/route/route.proto.html#envoy-api-msg-route-headermatcher"><span class="std std-ref">route.HeaderMatcher</span></a>) HTTP headers to match.</dd>
 </dl>
 </div>
 <div class="section" id="service-tap-v2alpha-outputconfig">
