@@ -53,7 +53,8 @@ Redis connection pool settings.
 .. code-block:: json
 
   {
-    "op_timeout": "{...}"
+    "op_timeout": "{...}",
+    "enable_hashtagging": "..."
   }
 
 .. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings.op_timeout:
@@ -65,6 +66,21 @@ op_timeout
   The only exception to this behavior is when a connection to a backend is not yet established.
   In that case, the connect timeout on the cluster will govern the timeout until the connection
   is ready.
+  
+  
+.. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings.enable_hashtagging:
+
+enable_hashtagging
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Use hash tagging on every redis key to guarantee that keys with the same hash tag will be
+  forwarded to the same upstream. The hash key used for determining the upstream in a
+  consistent hash ring configuration will be computed from the hash tagged key instead of the
+  whole key. The algorithm used to compute the hash tag is identical to the `redis-cluster
+  implementation <https://redis.io/topics/cluster-spec#keys-hash-tags>`_.
+  
+  Examples:
+  
+  * '{user1000}.following' and '{user1000}.followers' **will** be sent to the same upstream
+  * '{user1000}.following' and '{user1001}.following' **might** be sent to the same upstream
   
   
 

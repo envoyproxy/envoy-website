@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Redis Proxy &mdash; envoy 1.10.0-dev-cbf03b documentation</title>
+  <title>Redis Proxy &mdash; envoy 1.10.0-dev-4519a3 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-cbf03b
+                1.10.0-dev-4519a3
               </div>
             
           
@@ -227,7 +227,8 @@ configuring the backing cluster.</dd>
 <p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L24">[config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings proto]</a></p>
 <p>Redis connection pool settings.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;op_timeout&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;op_timeout&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;enable_hashtagging&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -239,6 +240,20 @@ resets the timer since it signifies that the next command is being processed by 
 The only exception to this behavior is when a connection to a backend is not yet established.
 In that case, the connect timeout on the cluster will govern the timeout until the connection
 is ready.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-config-filter-network-redis-proxy-v2-redisproxy-connpoolsettings-enable-hashtagging">
+<dt>enable_hashtagging</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Use hash tagging on every redis key to guarantee that keys with the same hash tag will be
+forwarded to the same upstream. The hash key used for determining the upstream in a
+consistent hash ring configuration will be computed from the hash tagged key instead of the
+whole key. The algorithm used to compute the hash tag is identical to the <a class="reference external" href="https://redis.io/topics/cluster-spec#keys-hash-tags">redis-cluster
+implementation</a>.</p>
+<p>Examples:</p>
+<ul class="last simple">
+<li>‘{user1000}.following’ and ‘{user1000}.followers’ <strong>will</strong> be sent to the same upstream</li>
+<li>‘{user1000}.following’ and ‘{user1001}.following’ <strong>might</strong> be sent to the same upstream</li>
+</ul>
+</dd>
 </dl>
 </div>
 </div>
