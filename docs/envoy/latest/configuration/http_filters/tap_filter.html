@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Tap &mdash; envoy 1.10.0-dev-b52452 documentation</title>
+  <title>Tap &mdash; envoy 1.10.0-dev-9a06dc documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-b52452
+                1.10.0-dev-9a06dc
               </div>
             
           
@@ -118,6 +118,8 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Tap</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#example-configuration">Example configuration</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#admin-handler">Admin handler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#output-format">Output format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#buffered-body-limits">Buffered body limits</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#streaming-matching">Streaming matching</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#statistics">Statistics</a></li>
 </ul>
@@ -311,6 +313,32 @@ conditions are met, the request will be tapped and streamed out the admin endpoi
 </div>
 <p>The preceding configuration instructs the tap filter to match any HTTP requests. All requests will
 be tapped and streamed out the admin endpoint.</p>
+</div>
+<div class="section" id="output-format">
+<h2>Output format<a class="headerlink" href="#output-format" title="Permalink to this headline">¶</a></h2>
+<p>Each output sink has an associated <a class="reference internal" href="../../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-enum-service-tap-v2alpha-outputsink-format"><span class="std std-ref">format</span></a>. The default format is
+<a class="reference internal" href="../../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-enum-value-service-tap-v2alpha-outputsink-format-json-body-as-bytes"><span class="std std-ref">JSON_BODY_AS_BYTES</span></a>. This format is
+easy to read JSON, but has the downside that body data is base64 encoded. In the case that the tap
+is known to be on human readable data, the <a class="reference internal" href="../../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-enum-value-service-tap-v2alpha-outputsink-format-json-body-as-string"><span class="std std-ref">JSON_BODY_AS_STRING</span></a> format may be
+more user friendly. See the reference documentation for more information on other available formats.</p>
+<p>An example of a streaming admin tap configuration that uses the <a class="reference internal" href="../../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-enum-value-service-tap-v2alpha-outputsink-format-json-body-as-string"><span class="std std-ref">JSON_BODY_AS_STRING</span></a> format:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">config_id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">test_config_id</span>
+<span class="l l-Scalar l-Scalar-Plain">tap_config</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">match_config</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">any_match</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="l l-Scalar l-Scalar-Plain">output_config</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">sinks</span><span class="p p-Indicator">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">format</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">JSON_BODY_AS_STRING</span>
+        <span class="l l-Scalar l-Scalar-Plain">streaming_admin</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="buffered-body-limits">
+<h2>Buffered body limits<a class="headerlink" href="#buffered-body-limits" title="Permalink to this headline">¶</a></h2>
+<p>For buffered taps, Envoy will limit the amount of body data that is tapped to avoid OOM situations.
+The default limit is 1KiB for both received (request) and transmitted (response) data. This is
+configurable via the <a class="reference internal" href="../../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-field-service-tap-v2alpha-outputconfig-max-buffered-rx-bytes"><span class="std std-ref">max_buffered_rx_bytes</span></a> and
+<a class="reference internal" href="../../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-field-service-tap-v2alpha-outputconfig-max-buffered-tx-bytes"><span class="std std-ref">max_buffered_tx_bytes</span></a> settings.</p>
 </div>
 <div class="section" id="streaming-matching">
 <h2>Streaming matching<a class="headerlink" href="#streaming-matching" title="Permalink to this headline">¶</a></h2>

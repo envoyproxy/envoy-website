@@ -9,7 +9,7 @@ Common tap configuration
 service.tap.v2alpha.TapConfig
 -----------------------------
 
-`[service.tap.v2alpha.TapConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L15>`_
+`[service.tap.v2alpha.TapConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L17>`_
 
 Tap configuration.
 
@@ -41,7 +41,7 @@ output_config
 service.tap.v2alpha.MatchPredicate
 ----------------------------------
 
-`[service.tap.v2alpha.MatchPredicate proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L29>`_
+`[service.tap.v2alpha.MatchPredicate proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L31>`_
 
 Tap match configuration. This is a recursive structure which allows complex nested match
 configurations to be built using various logical operators.
@@ -138,7 +138,7 @@ http_response_trailers_match
 service.tap.v2alpha.MatchPredicate.MatchSet
 -------------------------------------------
 
-`[service.tap.v2alpha.MatchPredicate.MatchSet proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L31>`_
+`[service.tap.v2alpha.MatchPredicate.MatchSet proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L33>`_
 
 A set of match configurations used for logical operations.
 
@@ -162,7 +162,7 @@ rules
 service.tap.v2alpha.HttpHeadersMatch
 ------------------------------------
 
-`[service.tap.v2alpha.HttpHeadersMatch proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L68>`_
+`[service.tap.v2alpha.HttpHeadersMatch proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L70>`_
 
 HTTP headers match configuration.
 
@@ -185,14 +185,16 @@ headers
 service.tap.v2alpha.OutputConfig
 --------------------------------
 
-`[service.tap.v2alpha.OutputConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L74>`_
+`[service.tap.v2alpha.OutputConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L76>`_
 
 Tap output configuration.
 
 .. code-block:: json
 
   {
-    "sinks": []
+    "sinks": [],
+    "max_buffered_rx_bytes": "{...}",
+    "max_buffered_tx_bytes": "{...}"
   }
 
 .. _envoy_api_field_service.tap.v2alpha.OutputConfig.sinks:
@@ -202,6 +204,24 @@ sinks
   sink types are supported this constraint will be relaxed.
   
   
+.. _envoy_api_field_service.tap.v2alpha.OutputConfig.max_buffered_rx_bytes:
+
+max_buffered_rx_bytes
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) For buffered tapping, the maximum amount of received body that will be buffered prior to
+  truncation. If truncation occurs, the :ref:`truncated
+  <envoy_api_field_data.tap.v2alpha.Body.truncated>` field will be set. If not specified, the
+  default is 1KiB.
+  
+  
+.. _envoy_api_field_service.tap.v2alpha.OutputConfig.max_buffered_tx_bytes:
+
+max_buffered_tx_bytes
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) For buffered tapping, the maximum amount of transmitted body that will be buffered prior to
+  truncation. If truncation occurs, the :ref:`truncated
+  <envoy_api_field_data.tap.v2alpha.Body.truncated>` field will be set. If not specified, the
+  default is 1KiB.
+  
+  
 
 
 .. _envoy_api_msg_service.tap.v2alpha.OutputSink:
@@ -209,17 +229,24 @@ sinks
 service.tap.v2alpha.OutputSink
 ------------------------------
 
-`[service.tap.v2alpha.OutputSink proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L83>`_
+`[service.tap.v2alpha.OutputSink proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L95>`_
 
 Tap output sink configuration.
 
 .. code-block:: json
 
   {
+    "format": "...",
     "streaming_admin": "{...}",
     "file_per_tap": "{...}"
   }
 
+.. _envoy_api_field_service.tap.v2alpha.OutputSink.format:
+
+format
+  (:ref:`service.tap.v2alpha.OutputSink.Format <envoy_api_enum_service.tap.v2alpha.OutputSink.Format>`) Sink output format.
+  
+  
 .. _envoy_api_field_service.tap.v2alpha.OutputSink.streaming_admin:
 
 streaming_admin
@@ -246,13 +273,62 @@ file_per_tap
   Precisely one of :ref:`streaming_admin <envoy_api_field_service.tap.v2alpha.OutputSink.streaming_admin>`, :ref:`file_per_tap <envoy_api_field_service.tap.v2alpha.OutputSink.file_per_tap>` must be set.
   
 
+.. _envoy_api_enum_service.tap.v2alpha.OutputSink.Format:
+
+Enum service.tap.v2alpha.OutputSink.Format
+------------------------------------------
+
+`[service.tap.v2alpha.OutputSink.Format proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L100>`_
+
+Output format. All output is in the form of one or more :ref:`BufferedTraceWrapper
+<envoy_api_msg_data.tap.v2alpha.BufferedTraceWrapper>` messages. This enumeration indicates
+how those messages are written. Note that not all sinks support all output formats. See
+individual sink documentation for more information.
+
+.. _envoy_api_enum_value_service.tap.v2alpha.OutputSink.Format.JSON_BODY_AS_BYTES:
+
+JSON_BODY_AS_BYTES
+  *(DEFAULT)* ⁣Each message will be written as JSON. Any :ref:`body <envoy_api_msg_data.tap.v2alpha.Body>`
+  data will be present in the :ref:`as_bytes
+  <envoy_api_field_data.tap.v2alpha.Body.as_bytes>` field. This means that body data will be
+  base64 encoded as per the `proto3 JSON mappings
+  <https://developers.google.com/protocol-buffers/docs/proto3#json>`_.
+  
+  
+.. _envoy_api_enum_value_service.tap.v2alpha.OutputSink.Format.JSON_BODY_AS_STRING:
+
+JSON_BODY_AS_STRING
+  ⁣Each message will be written as JSON. Any :ref:`body <envoy_api_msg_data.tap.v2alpha.Body>`
+  data will be present in the :ref:`as_string
+  <envoy_api_field_data.tap.v2alpha.Body.as_string>` field. This means that body data will be
+  string encoded as per the `proto3 JSON mappings
+  <https://developers.google.com/protocol-buffers/docs/proto3#json>`_. This format type is
+  useful when it is known that that body is human readable (e.g., JSON over HTTP) and the
+  user wishes to view it directly without being forced to base64 decode the body.
+  
+  
+.. _envoy_api_enum_value_service.tap.v2alpha.OutputSink.Format.PROTO_BINARY:
+
+PROTO_BINARY
+  ⁣Binary proto format. Note that binary proto is not self-delimiting. If a sink writes
+  multiple binary messages without any length information the data stream will not be
+  useful. However, for certain sinks that are self-delimiting (e.g., one message per file)
+  this output format makes consumption simpler.
+  
+  
+.. _envoy_api_enum_value_service.tap.v2alpha.OutputSink.Format.PROTO_TEXT:
+
+PROTO_TEXT
+  ⁣Text proto format.
+  
+  
 
 .. _envoy_api_msg_service.tap.v2alpha.StreamingAdminSink:
 
 service.tap.v2alpha.StreamingAdminSink
 --------------------------------------
 
-`[service.tap.v2alpha.StreamingAdminSink proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L103>`_
+`[service.tap.v2alpha.StreamingAdminSink proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L149>`_
 
 Streaming admin sink configuration.
 
@@ -268,15 +344,14 @@ Streaming admin sink configuration.
 service.tap.v2alpha.FilePerTapSink
 ----------------------------------
 
-`[service.tap.v2alpha.FilePerTapSink proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L107>`_
+`[service.tap.v2alpha.FilePerTapSink proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L153>`_
 
 The file per tap sink outputs a discrete file for every tapped stream.
 
 .. code-block:: json
 
   {
-    "path_prefix": "...",
-    "format": "..."
+    "path_prefix": "..."
   }
 
 .. _envoy_api_field_service.tap.v2alpha.FilePerTapSink.path_prefix:
@@ -287,30 +362,4 @@ path_prefix
   connection ID, HTTP stream ID, etc.).
   
   
-.. _envoy_api_field_service.tap.v2alpha.FilePerTapSink.format:
 
-format
-  (:ref:`service.tap.v2alpha.FilePerTapSink.Format <envoy_api_enum_service.tap.v2alpha.FilePerTapSink.Format>`) 
-  
-
-.. _envoy_api_enum_service.tap.v2alpha.FilePerTapSink.Format:
-
-Enum service.tap.v2alpha.FilePerTapSink.Format
-----------------------------------------------
-
-`[service.tap.v2alpha.FilePerTapSink.Format proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/service/tap/v2alpha/common.proto#L114>`_
-
-File format.
-
-.. _envoy_api_enum_value_service.tap.v2alpha.FilePerTapSink.Format.PROTO_BINARY:
-
-PROTO_BINARY
-  *(DEFAULT)* ⁣Binary proto format.
-  
-  
-.. _envoy_api_enum_value_service.tap.v2alpha.FilePerTapSink.Format.PROTO_TEXT:
-
-PROTO_TEXT
-  ⁣Text proto format.
-  
-  
