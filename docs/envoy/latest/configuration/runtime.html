@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Runtime &mdash; envoy 1.10.0-dev-87887e documentation</title>
+  <title>Runtime &mdash; envoy 1.10.0-dev-4486dd documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-87887e
+                1.10.0-dev-4486dd
               </div>
             
           
@@ -105,6 +105,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#file-system-layout">File system layout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#comments">Comments</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#updating-runtime-values-via-symbolic-link-swap">Updating runtime values via symbolic link swap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-runtime-overrides-for-deprecated-features">Using runtime overrides for deprecated features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#statistics">Statistics</a></li>
 </ul>
 </li>
@@ -245,8 +246,28 @@ old tree to the new runtime tree, using the equivalent of the following command:
 </div>
 <p>It’s beyond the scope of this document how the file system data is deployed, garbage collected, etc.</p>
 </div>
+<div class="section" id="using-runtime-overrides-for-deprecated-features">
+<h2>Using runtime overrides for deprecated features<a class="headerlink" href="#using-runtime-overrides-for-deprecated-features" title="Permalink to this headline">¶</a></h2>
+<p>The Envoy runtime is also a part of the Envoy feature deprecation process.</p>
+<p>As described in the Envoy <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/CONTRIBUTING.md#breaking-change-policy">breaking change policy</a>,
+feature deprecation in Envoy is in 3 phases: warn-by-default, fail-by-default, and code removal.</p>
+<p>In the first phase, Envoy logs a warning to the warning log that the feature is deprecated and
+increments the <a class="reference internal" href="#runtime-stats"><span class="std std-ref">deprecated_feature_use</span></a> runtime stat.
+Users are encouraged to go to <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/DEPRECATED.md">DEPRECATED.md</a> to see how to
+migrate to the new code path and make sure it is suitable for their use case.</p>
+<p>In the second phase the message and filename will be added to
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/source/common/runtime/runtime_features.h">runtime_features.h</a>
+and use of that configuration field will cause the config to be rejected by default.
+This fail-by-default mode can be overridden in runtime configuration by setting
+envoy.deprecated_features.filename.proto:fieldname to true. For example, for a deprecated field
+<code class="docutils literal notranslate"><span class="pre">Foo.Bar.Eep</span></code> in <code class="docutils literal notranslate"><span class="pre">baz.proto</span></code> set <code class="docutils literal notranslate"><span class="pre">envoy.deprecated_features.baz.proto:Eep</span></code> to
+<code class="docutils literal notranslate"><span class="pre">true</span></code>. Use of this override is <strong>strongly discouraged</strong>.
+Fatal-by-default configuration indicates that the removal of the old code paths is imminent. It is
+far better for both Envoy users and for Envoy contributors if any bugs or feature gaps with the new
+code paths are flushed out ahead of time, rather than after the code is removed!</p>
+</div>
 <div class="section" id="statistics">
-<h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
+<span id="runtime-stats"></span><h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
 <p>The file system runtime provider emits some statistics in the <em>runtime.</em> namespace.</p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
@@ -277,7 +298,11 @@ old tree to the new runtime tree, using the equivalent of the following command:
 <td>Counter</td>
 <td>Total number of load attempts that were successful</td>
 </tr>
-<tr class="row-even"><td>num_keys</td>
+<tr class="row-even"><td>deprecated_feature_use</td>
+<td>Counter</td>
+<td>Total number of times deprecated features were used.</td>
+</tr>
+<tr class="row-odd"><td>num_keys</td>
 <td>Gauge</td>
 <td>Number of keys currently loaded</td>
 </tr>
