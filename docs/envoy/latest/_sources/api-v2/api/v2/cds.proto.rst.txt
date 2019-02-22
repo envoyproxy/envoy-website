@@ -616,18 +616,17 @@ load balancing policy.
 
   {
     "minimum_ring_size": "{...}",
-    "hash_function": "..."
+    "hash_function": "...",
+    "maximum_ring_size": "{...}"
   }
 
 .. _envoy_api_field_Cluster.RingHashLbConfig.minimum_ring_size:
 
 minimum_ring_size
-  (`UInt64Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint64value>`_) Minimum hash ring size, i.e. total virtual nodes. A larger size
-  will provide better request distribution since each host in the
-  cluster will have more virtual nodes. Defaults to 1024. In the case
-  that total number of hosts is greater than the minimum, each host will
-  be allocated a single virtual node. This field is limited to 8M to bound
-  resource use.
+  (`UInt64Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint64value>`_) Minimum hash ring size. The larger the ring is (that is, the more hashes there are for each
+  provided host) the better the request distribution will reflect the desired weights. Defaults
+  to 1024 entries. See also
+  :ref:`maximum_ring_size<envoy_api_field_Cluster.RingHashLbConfig.maximum_ring_size>`.
   
   
 
@@ -638,13 +637,21 @@ hash_function
   :ref:`XX_HASH<envoy_api_enum_value_Cluster.RingHashLbConfig.HashFunction.XX_HASH>`.
   
   
+.. _envoy_api_field_Cluster.RingHashLbConfig.maximum_ring_size:
+
+maximum_ring_size
+  (`UInt64Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint64value>`_) Maximum hash ring size. Defaults to 8M entries, but can be lowered to further constrain
+  resource use. See also
+  :ref:`minimum_ring_size<envoy_api_field_Cluster.RingHashLbConfig.minimum_ring_size>`.
+  
+  
 
 .. _envoy_api_enum_Cluster.RingHashLbConfig.HashFunction:
 
 Enum Cluster.RingHashLbConfig.HashFunction
 ------------------------------------------
 
-`[Cluster.RingHashLbConfig.HashFunction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L422>`_
+`[Cluster.RingHashLbConfig.HashFunction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L420>`_
 
 The hash function used to hash hosts onto the ketama ring.
 
@@ -668,7 +675,7 @@ MURMUR_HASH_2
 Cluster.OriginalDstLbConfig
 ---------------------------
 
-`[Cluster.OriginalDstLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L439>`_
+`[Cluster.OriginalDstLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L442>`_
 
 Specific configuration for the
 :ref:`Original Destination <arch_overview_load_balancing_types_original_destination>`
@@ -701,7 +708,7 @@ use_http_header
 Cluster.CommonLbConfig
 ----------------------
 
-`[Cluster.CommonLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L469>`_
+`[Cluster.CommonLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L472>`_
 
 Common configuration for all load balancer implementations.
 
@@ -763,7 +770,7 @@ update_merge_window
 Cluster.CommonLbConfig.ZoneAwareLbConfig
 ----------------------------------------
 
-`[Cluster.CommonLbConfig.ZoneAwareLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L478>`_
+`[Cluster.CommonLbConfig.ZoneAwareLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L481>`_
 
 Configuration for :ref:`zone aware routing
 <arch_overview_load_balancing_zone_aware_routing>`.
@@ -801,7 +808,7 @@ min_cluster_size
 Cluster.CommonLbConfig.LocalityWeightedLbConfig
 -----------------------------------------------
 
-`[Cluster.CommonLbConfig.LocalityWeightedLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L493>`_
+`[Cluster.CommonLbConfig.LocalityWeightedLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L496>`_
 
 Configuration for :ref:`locality weighted load balancing
 <arch_overview_load_balancing_locality_weighted_lb>`
@@ -960,7 +967,7 @@ V6_ONLY
 Enum Cluster.ClusterProtocolSelection
 -------------------------------------
 
-`[Cluster.ClusterProtocolSelection proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L528>`_
+`[Cluster.ClusterProtocolSelection proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L531>`_
 
 
 .. _envoy_api_enum_value_Cluster.ClusterProtocolSelection.USE_CONFIGURED_PROTOCOL:
@@ -983,7 +990,7 @@ USE_DOWNSTREAM_PROTOCOL
 UpstreamBindConfig
 ------------------
 
-`[UpstreamBindConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L569>`_
+`[UpstreamBindConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L572>`_
 
 An extensible structure containing the address Envoy should bind to when
 establishing upstream connections.
@@ -1007,7 +1014,7 @@ source_address
 UpstreamConnectionOptions
 -------------------------
 
-`[UpstreamConnectionOptions proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L574>`_
+`[UpstreamConnectionOptions proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L577>`_
 
 
 .. code-block:: json

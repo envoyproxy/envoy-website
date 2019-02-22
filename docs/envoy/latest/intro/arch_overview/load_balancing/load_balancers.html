@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Supported load balancers &mdash; envoy 1.10.0-dev-386c0d documentation</title>
+  <title>Supported load balancers &mdash; envoy 1.10.0-dev-4fae56 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-386c0d
+                1.10.0-dev-4fae56
               </div>
             
           
@@ -268,20 +268,27 @@ robin schedule instead of P2C.</p>
 </div>
 <div class="section" id="ring-hash">
 <span id="arch-overview-load-balancing-types-ring-hash"></span><h2>Ring hash<a class="headerlink" href="#ring-hash" title="Permalink to this headline">¶</a></h2>
-<p>The ring/modulo hash load balancer implements consistent hashing to upstream hosts. The algorithm is
-based on mapping all hosts onto a circle such that the addition or removal of a host from the host
-set changes only affect 1/N requests. This technique is also commonly known as <a class="reference external" href="https://github.com/RJ/ketama">“ketama”</a> hashing. A consistent hashing load balancer is only effective
-when protocol routing is used that specifies a value to hash on. The minimum ring size governs the
-replication factor for each host in the ring. For example, if the minimum ring size is 1024 and
-there are 16 hosts, each host will be replicated 64 times. The ring hash load balancer does not
-currently support weighting.</p>
+<p>The ring/modulo hash load balancer implements consistent hashing to upstream hosts. Each host is
+mapped onto a circle (the “ring”) by hashing its address; each request is then routed to a host by
+hashing some property of the request, and finding the nearest corresponding host clockwise around
+the ring. This technique is also commonly known as <a class="reference external" href="https://github.com/RJ/ketama">“Ketama”</a>
+hashing, and like all hash-based load balancers, it is only effective when protocol routing is used
+that specifies a value to hash on.</p>
+<p>Each host is hashed and placed on the ring some number of times proportional to its weight. For
+example, if host A has a weight of 1 and host B has a weight of 2, then there might be three entries
+on the ring: one for host A and two for host B. This doesn’t actually provide the desired 2:1
+partitioning of the circle, however, since the computed hashes could be coincidentally very close to
+one another; so it is necessary to multiply the number of hashes per host—for example inserting
+100 entries on the ring for host A and 200 entries for host B—to better approximate the desired
+distribution. Best practice is to explicitly set
+<a class="reference internal" href="../../../api-v2/api/v2/cds.proto.html#envoy-api-field-cluster-ringhashlbconfig-minimum-ring-size"><span class="std std-ref">minimum_ring_size</span></a> and
+<a class="reference internal" href="../../../api-v2/api/v2/cds.proto.html#envoy-api-field-cluster-ringhashlbconfig-maximum-ring-size"><span class="std std-ref">maximum_ring_size</span></a>, and monitor
+the <a class="reference internal" href="../../../configuration/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats-ring-hash-lb"><span class="std std-ref">min_hashes_per_host and max_hashes_per_host
+gauges</span></a> to ensure good distribution. With the
+ring partitioned appropriately, the addition or removal of one host from a set of N hosts will
+affect only 1/N requests.</p>
 <p>When priority based load balancing is in use, the priority level is also chosen by hash, so the
 endpoint selected will still be consistent when the set of backends is stable.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The ring hash load balancer does not support <a class="reference internal" href="locality_weight.html#arch-overview-load-balancing-locality-weighted-lb"><span class="std std-ref">locality weighted load
-balancing</span></a>.</p>
-</div>
 </div>
 <div class="section" id="maglev">
 <span id="arch-overview-load-balancing-types-maglev"></span><h2>Maglev<a class="headerlink" href="#maglev" title="Permalink to this headline">¶</a></h2>
