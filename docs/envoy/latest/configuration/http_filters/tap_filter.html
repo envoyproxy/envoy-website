@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Tap &mdash; envoy 1.10.0-dev-b8901f documentation</title>
+  <title>Tap &mdash; envoy 1.10.0-dev-e2e4ba documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-b8901f
+                1.10.0-dev-e2e4ba
               </div>
             
           
@@ -341,15 +341,59 @@ configurable via the <a class="reference internal" href="../../api-v2/service/ta
 <a class="reference internal" href="../../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-field-service-tap-v2alpha-outputconfig-max-buffered-tx-bytes"><span class="std std-ref">max_buffered_tx_bytes</span></a> settings.</p>
 </div>
 <div class="section" id="streaming-matching">
-<h2>Streaming matching<a class="headerlink" href="#streaming-matching" title="Permalink to this headline">¶</a></h2>
+<span id="config-http-filters-tap-streaming"></span><h2>Streaming matching<a class="headerlink" href="#streaming-matching" title="Permalink to this headline">¶</a></h2>
 <p>The tap filter supports “streaming matching.” This means that instead of waiting until the end of
 the request/response sequence, the filter will match incrementally as the request proceeds. I.e.,
 first the request headers will be matched, then the request body if present, then the request
 trailers if present, then the response headers if present, etc.</p>
-<p>In the future, the filter will support streaming output. Currently only <a class="reference internal" href="../../api-v2/data/tap/v2alpha/http.proto.html#envoy-api-msg-data-tap-v2alpha-httpbufferedtrace"><span class="std std-ref">fully buffered output</span></a> is implemented. However, even in the current
-implementation, if a tap is configured to match request headers and the request headers match,
-even if there is no response (upstream failure, etc.) the request will still be tapped and sent
-to the configured output.</p>
+<p>The filter additionally supports optional streamed output which is governed by the <a class="reference internal" href="../../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-field-service-tap-v2alpha-outputconfig-streaming"><span class="std std-ref">streaming</span></a> setting. If this setting is false
+(the default), Envoy will emit <a class="reference internal" href="../../api-v2/data/tap/v2alpha/http.proto.html#envoy-api-msg-data-tap-v2alpha-httpbufferedtrace"><span class="std std-ref">fully buffered traces</span></a>. Users are likely to find this format easier
+to interact with for simple cases.</p>
+<p>In cases where fully buffered traces are not practical (e.g., very large request and responses,
+long lived streaming APIs, etc.), the streaming setting can be set to true, and Envoy will emit
+multiple <a class="reference internal" href="../../api-v2/data/tap/v2alpha/http.proto.html#envoy-api-msg-data-tap-v2alpha-httpstreamedtracesegment"><span class="std std-ref">streamed trace segments</span></a> for
+each tap. In this case, it is required that post-processing is performed to stitch all of the trace
+segments back together into a usable form. Also note that binary protobuf is not a self-delimiting
+format. If binary protobuf output is desired, the <a class="reference internal" href="../../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-enum-value-service-tap-v2alpha-outputsink-format-proto-binary-length-delimited"><span class="std std-ref">PROTO_BINARY_LENGTH_DELIMITED</span></a> output
+format should be used.</p>
+<p>An static filter configuration to enable streaming output looks like:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.tap</span>
+<span class="l l-Scalar l-Scalar-Plain">config</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">common_config</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">static_config</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">match_config</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">http_response_headers_match</span><span class="p p-Indicator">:</span>
+          <span class="l l-Scalar l-Scalar-Plain">headers</span><span class="p p-Indicator">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">bar</span>
+              <span class="l l-Scalar l-Scalar-Plain">exact_match</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">baz</span>
+      <span class="l l-Scalar l-Scalar-Plain">output_config</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">streaming</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+        <span class="l l-Scalar l-Scalar-Plain">sinks</span><span class="p p-Indicator">:</span>
+          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">format</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">PROTO_BINARY_LENGTH_DELIMITED</span>
+            <span class="l l-Scalar l-Scalar-Plain">file_per_tap</span><span class="p p-Indicator">:</span>
+              <span class="l l-Scalar l-Scalar-Plain">path_prefix</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/tmp/</span>
+</pre></div>
+</div>
+<p>The previous configuration will match response headers, and as such will buffer request headers,
+body, and trailers until a match can be determined (buffered data limits still apply as described
+in the previous section). If a match is determined, buffered data will be flushed in individual
+trace segments and then the rest of the tap will be streamed as data arrives. The messages output
+might look like this:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">http_streamed_trace_segment</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">trace_id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+  <span class="l l-Scalar l-Scalar-Plain">request_headers</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">headers</span><span class="p p-Indicator">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">key</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">a</span>
+        <span class="l l-Scalar l-Scalar-Plain">value</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">b</span>
+</pre></div>
+</div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">http_streamed_trace_segment</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">trace_id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+  <span class="l l-Scalar l-Scalar-Plain">request_body_chunk</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">as_bytes</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">aGVsbG8=</span>
+</pre></div>
+</div>
+<p>Etc.</p>
 </div>
 <div class="section" id="statistics">
 <h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
