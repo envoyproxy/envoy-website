@@ -1,6 +1,6 @@
 ---
 layout: learn
-title: Healthly Hosts in Envoy
+title: Healthy Hosts in Envoy
 description: >
   Envoy can be configured with both active and passive health checking in
   order to make the best load balancing decision possible. See how to configure
