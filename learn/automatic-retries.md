@@ -112,7 +112,7 @@ will allow several retries, accounting for the jitter that Envoy adds between
 calls.
 
 On the other hand, if the request makes many parallel requests (“high fan-out”)
-without an aggresive global timeout, adding retries will result in consistently
+without an aggressive global timeout, adding retries will result in consistently
 poor performance. Imagine a service (with no global timeout) that makes 100
 requests with an average of 150ms latency and a 500ms timeout on each upstream
 called. Without retries, the request will be bounded at ~500ms -- either the

@@ -21,7 +21,7 @@ with static files.
 
 A route is a set of rules that match virtual hosts to clusters and allow you to
 create traffic shifting rules. Routes are configured either via static
-definion, or via the route discovery service (RDS).
+definition, or via the route discovery service (RDS).
 
 ### Cluster
 
