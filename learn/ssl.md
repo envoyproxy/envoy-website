@@ -29,10 +29,10 @@ If you don’t already have this, [Let’s Encrypt](https://letsencrypt.org)
 provides free and automatable certificates. For testing, you can generate a
 private key file `example-com.key` and self-signed certificate `example-com.crt`
 using OpenSSL. The only important detail it will as you for is the Common
-Name. We’ll use `example.com`:
+Name. We’ll use `localhost` for this example, but in practice this should be a our domain name, `example.com`:
 
 ```console
-$ openssl req -x509 -newkey rsa:4096 -keyout example-com.key -out example-com.crt -days 365
+$ openssl req -nodes -x509 -newkey rsa:4096 -keyout example-com.key -out example-com.crt -days 365
 ```
 
 ```shell
@@ -53,8 +53,8 @@ State or Province Name (full name) []:CA
 Locality Name (eg, city) []:SF
 Organization Name (eg, company) []:Turbine Labs
 Organizational Unit Name (eg, section) []:Envoy Division
-Common Name (eg, fully qualified host name) []:example.com
-Email Address []:you@example.com
+Common Name (eg, fully qualified host name) []:localhost
+Email Address []:you@localhost
 ```
 
 You’ll have to put these somewhere that Envoy can get to them. Since we’re
