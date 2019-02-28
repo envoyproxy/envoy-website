@@ -13,7 +13,7 @@ service-to-service communication more apparent than ever. Envoy’s lightweight
 footprint, powerful routing constructs, and flexible observability support make
 it a great proxy to build a service mesh on. In this configuration, Envoy acts
 as the primary load balancer for requests between internal services. Managing
-this public traffic—also called “East/West” traffic—is trivial in an
+this internal traffic — also called “East/West” traffic — is trivial in an
 environment with a small number of services, but with tens or hundreds of
 services making calls to one another, it’s combinatorially more complex.
 
