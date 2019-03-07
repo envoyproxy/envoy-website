@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Common discovery API components &mdash; envoy 1.10.0-dev-0634e7 documentation</title>
+  <title>Common discovery API components &mdash; envoy 1.10.0-dev-8116b6 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-0634e7
+                1.10.0-dev-8116b6
               </div>
             
           
@@ -108,8 +108,8 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Common discovery API components</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#discoveryrequest">DiscoveryRequest</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#discoveryresponse">DiscoveryResponse</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#incrementaldiscoveryrequest">IncrementalDiscoveryRequest</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#incrementaldiscoveryresponse">IncrementalDiscoveryResponse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deltadiscoveryrequest">DeltaDiscoveryRequest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deltadiscoveryresponse">DeltaDiscoveryResponse</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#resource">Resource</a></li>
 </ul>
 </li>
@@ -291,32 +291,31 @@ DiscoveryRequest bearing the nonce. The nonce is optional and is not
 required for non-stream based xDS implementations.</dd>
 </dl>
 </div>
-<div class="section" id="incrementaldiscoveryrequest">
-<span id="envoy-api-msg-incrementaldiscoveryrequest"></span><h2>IncrementalDiscoveryRequest<a class="headerlink" href="#incrementaldiscoveryrequest" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/discovery.proto#L130">[IncrementalDiscoveryRequest proto]</a></p>
-<p>IncrementalDiscoveryRequest and IncrementalDiscoveryResponse are used in a
-new gRPC endpoint for Incremental xDS. The feature is not supported for REST
-management servers.</p>
-<p>With Incremental xDS, the IncrementalDiscoveryResponses do not need to
-include a full snapshot of the tracked resources. Instead
-IncrementalDiscoveryResponses are a diff to the state of a xDS client.
-In Incremental XDS there are per resource versions which allows to track
-state at the resource granularity.
-An xDS Incremental session is always in the context of a gRPC bidirectional
+<div class="section" id="deltadiscoveryrequest">
+<span id="envoy-api-msg-deltadiscoveryrequest"></span><h2>DeltaDiscoveryRequest<a class="headerlink" href="#deltadiscoveryrequest" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/discovery.proto#L129">[DeltaDiscoveryRequest proto]</a></p>
+<p>DeltaDiscoveryRequest and DeltaDiscoveryResponse are used in a new gRPC
+endpoint for Delta xDS.</p>
+<p>With Delta xDS, the DeltaDiscoveryResponses do not need to include a full
+snapshot of the tracked resources. Instead, DeltaDiscoveryResponses are a
+diff to the state of a xDS client.
+In Delta XDS there are per resource versions, which allow tracking state at
+the resource granularity.
+An xDS Delta session is always in the context of a gRPC bidirectional
 stream. This allows the xDS server to keep track of the state of xDS clients
 connected to it.</p>
-<p>In Incremental xDS the nonce field is required and used to pair
-IncrementalDiscoveryResponse to a IncrementalDiscoveryRequest ACK or NACK.
+<p>In Delta xDS the nonce field is required and used to pair
+DeltaDiscoveryResponse to a DeltaDiscoveryRequest ACK or NACK.
 Optionally, a response message level system_version_info is present for
 debugging purposes only.</p>
 <dl class="docutils">
-<dt>IncrementalDiscoveryRequest can be sent in 3 situations:</dt>
+<dt>DeltaDiscoveryRequest can be sent in 3 situations:</dt>
 <dd><ol class="first last arabic simple">
 <li>Initial message in a xDS bidirectional gRPC stream.</li>
-<li>As a ACK or NACK response to a previous IncrementalDiscoveryResponse.
+<li>As a ACK or NACK response to a previous DeltaDiscoveryResponse.
 In this case the response_nonce is set to the nonce value in the Response.
 ACK or NACK is determined by the absence or presence of error_detail.</li>
-<li>Spontaneous IncrementalDiscoveryRequest from the client.
+<li>Spontaneous DeltaDiscoveryRequest from the client.
 This can be done to dynamically add or remove elements from the tracked
 resource_names set. In this case response_nonce must be omitted.</li>
 </ol>
@@ -333,63 +332,65 @@ resource_names set. In this case response_nonce must be omitted.</li>
 <span class="p">}</span>
 </pre></div>
 </div>
-<dl class="docutils" id="envoy-api-field-incrementaldiscoveryrequest-node">
+<dl class="docutils" id="envoy-api-field-deltadiscoveryrequest-node">
 <dt>node</dt>
 <dd>(<a class="reference internal" href="core/base.proto.html#envoy-api-msg-core-node"><span class="std std-ref">core.Node</span></a>) The node making the request.</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-incrementaldiscoveryrequest-type-url">
+<dl class="docutils" id="envoy-api-field-deltadiscoveryrequest-type-url">
 <dt>type_url</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Type of the resource that is being requested, e.g.
 “type.googleapis.com/envoy.api.v2.ClusterLoadAssignment”. This is implicit
 in requests made via singleton xDS APIs such as CDS, LDS, etc. but is
 required for ADS.</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-incrementaldiscoveryrequest-resource-names-subscribe">
+<dl class="docutils" id="envoy-api-field-deltadiscoveryrequest-resource-names-subscribe">
 <dt>resource_names_subscribe</dt>
-<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) IncrementalDiscoveryRequests allow the client to add or remove individual
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) DeltaDiscoveryRequests allow the client to add or remove individual
 resources to the set of tracked resources in the context of a stream.
 All resource names in the resource_names_subscribe list are added to the
 set of tracked resources and all resource names in the resource_names_unsubscribe
 list are removed from the set of tracked resources.
-Unlike in non incremental xDS, an empty resource_names_subscribe or
+Unlike in state-of-the-world xDS, an empty resource_names_subscribe or
 resource_names_unsubscribe list simply means that no resources are to be
 added or removed to the resource list.
 The xDS server must send updates for all tracked resources but can also
 send updates for resources the client has not subscribed to. This behavior
-is similar to non incremental xDS.
-These two fields can be set for all types of IncrementalDiscoveryRequests
+is similar to state-of-the-world xDS.
+These two fields can be set for all types of DeltaDiscoveryRequests
 (initial, ACK/NACK or spontaneous).</p>
 <p class="last">A list of Resource names to add to the list of tracked resources.</p>
 </dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-incrementaldiscoveryrequest-resource-names-unsubscribe">
+<dl class="docutils" id="envoy-api-field-deltadiscoveryrequest-resource-names-unsubscribe">
 <dt>resource_names_unsubscribe</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) A list of Resource names to remove from the list of tracked resources.</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-incrementaldiscoveryrequest-initial-resource-versions">
+<dl class="docutils" id="envoy-api-field-deltadiscoveryrequest-initial-resource-versions">
 <dt>initial_resource_versions</dt>
-<dd>(map&lt;<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>&gt;) This map must be populated when the IncrementalDiscoveryRequest is the
-first in a stream. The keys are the resources names of the xDS resources
+<dd>(map&lt;<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>&gt;) This map must be populated when the DeltaDiscoveryRequest is the
+first in a stream (assuming there are any resources - this field’s purpose is to enable
+a session to continue in a reconnected gRPC stream, and so will not be used in the very
+first stream of a session). The keys are the resources names of the xDS resources
 known to the xDS client. The values in the map are the associated resource
 level version info.</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-incrementaldiscoveryrequest-response-nonce">
+<dl class="docutils" id="envoy-api-field-deltadiscoveryrequest-response-nonce">
 <dt>response_nonce</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) When the IncrementalDiscoveryRequest is a ACK or NACK message in response
-to a previous IncrementalDiscoveryResponse, the response_nonce must be the
-nonce in the IncrementalDiscoveryResponse.
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) When the DeltaDiscoveryRequest is a ACK or NACK message in response
+to a previous DeltaDiscoveryResponse, the response_nonce must be the
+nonce in the DeltaDiscoveryResponse.
 Otherwise response_nonce must be omitted.</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-incrementaldiscoveryrequest-error-detail">
+<dl class="docutils" id="envoy-api-field-deltadiscoveryrequest-error-detail">
 <dt>error_detail</dt>
 <dd>(<a class="reference external" href="https://cloud.google.com/natural-language/docs/reference/rpc/google.rpc#status">Status</a>) This is populated when the previous <a class="reference internal" href="#envoy-api-msg-discoveryresponse"><span class="std std-ref">DiscoveryResponse</span></a>
 failed to update configuration. The <em>message</em> field in <em>error_details</em>
 provides the Envoy internal exception related to the failure.</dd>
 </dl>
 </div>
-<div class="section" id="incrementaldiscoveryresponse">
-<span id="envoy-api-msg-incrementaldiscoveryresponse"></span><h2>IncrementalDiscoveryResponse<a class="headerlink" href="#incrementaldiscoveryresponse" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/discovery.proto#L178">[IncrementalDiscoveryResponse proto]</a></p>
+<div class="section" id="deltadiscoveryresponse">
+<span id="envoy-api-msg-deltadiscoveryresponse"></span><h2>DeltaDiscoveryResponse<a class="headerlink" href="#deltadiscoveryresponse" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/discovery.proto#L179">[DeltaDiscoveryResponse proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;system_version_info&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;resources&quot;</span><span class="p">:</span> <span class="p">[],</span>
@@ -398,35 +399,40 @@ provides the Envoy internal exception related to the failure.</dd>
 <span class="p">}</span>
 </pre></div>
 </div>
-<dl class="docutils" id="envoy-api-field-incrementaldiscoveryresponse-system-version-info">
+<dl class="docutils" id="envoy-api-field-deltadiscoveryresponse-system-version-info">
 <dt>system_version_info</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The version of the response data (used for debugging).</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-incrementaldiscoveryresponse-resources">
+<dl class="docutils" id="envoy-api-field-deltadiscoveryresponse-resources">
 <dt>resources</dt>
 <dd>(<a class="reference internal" href="#envoy-api-msg-resource"><span class="std std-ref">Resource</span></a>) The response resources. These are typed resources that match the type url
-in the IncrementalDiscoveryRequest.</dd>
+in the DeltaDiscoveryRequest.</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-incrementaldiscoveryresponse-removed-resources">
+<dl class="docutils" id="envoy-api-field-deltadiscoveryresponse-removed-resources">
 <dt>removed_resources</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Resources names of resources that have be deleted and to be removed from the xDS Client.
 Removed resources for missing resources can be ignored.</dd>
 </dl>
-<dl class="docutils" id="envoy-api-field-incrementaldiscoveryresponse-nonce">
+<dl class="docutils" id="envoy-api-field-deltadiscoveryresponse-nonce">
 <dt>nonce</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The nonce provides a way for IncrementalDiscoveryRequests to uniquely
-reference a IncrementalDiscoveryResponse. The nonce is required.</dd>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The nonce provides a way for DeltaDiscoveryRequests to uniquely
+reference a DeltaDiscoveryResponse. The nonce is required.</dd>
 </dl>
 </div>
 <div class="section" id="resource">
 <span id="envoy-api-msg-resource"></span><h2>Resource<a class="headerlink" href="#resource" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/discovery.proto#L195">[Resource proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/discovery.proto#L196">[Resource proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;resource&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
+<dl class="docutils" id="envoy-api-field-resource-name">
+<dt>name</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The resource’s name, to distinguish it from others of the same type of resource.</dd>
+</dl>
 <dl class="docutils" id="envoy-api-field-resource-version">
 <dt>version</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The resource level version. It allows xDS to track the state of individual
