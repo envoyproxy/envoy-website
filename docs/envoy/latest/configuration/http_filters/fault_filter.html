@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Fault Injection &mdash; envoy 1.10.0-dev-c69429 documentation</title>
+  <title>Fault Injection &mdash; envoy 1.10.0-dev-191c8b documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-c69429
+                1.10.0-dev-191c8b
               </div>
             
           
@@ -242,7 +242,7 @@ including the router filter.</p>
 </ul>
 </div>
 <div class="section" id="runtime">
-<h2>Runtime<a class="headerlink" href="#runtime" title="Permalink to this headline">¶</a></h2>
+<span id="config-http-filters-fault-injection-runtime"></span><h2>Runtime<a class="headerlink" href="#runtime" title="Permalink to this headline">¶</a></h2>
 <p>The HTTP fault injection filter supports the following global runtime settings:</p>
 <dl class="docutils">
 <dt>fault.http.abort.abort_percent</dt>
@@ -262,6 +262,11 @@ in the config. If the config does not contain an <em>abort</em> block, then
 <em>fixed_duration_ms</em> specified in the config will be used. If this field
 is missing from both the runtime and the config, no delays will be
 injected.</dd>
+<dt>fault.http.max_active_faults</dt>
+<dd>The maximum number of active faults (of all types) that Envoy will will inject via the fault
+filter. This can be used in cases where it is desired that faults are 100% injected,
+but the user wants to avoid a situation in which too many unexpected concurrent faulting requests
+cause resource constraint issues. If not specified, the <a class="reference internal" href="../../api-v2/config/filter/http/fault/v2/fault.proto.html#envoy-api-field-config-filter-http-fault-v2-httpfault-max-active-faults"><span class="std std-ref">max_active_faults</span></a> setting will be used.</dd>
 </dl>
 <p><em>Note</em>, fault filter runtime settings for the specific downstream cluster
 override the default ones if present. The following are downstream specific
@@ -278,7 +283,7 @@ header. If the following settings are not found in the runtime it defaults to th
 which defaults to the config settings.</p>
 </div>
 <div class="section" id="statistics">
-<h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
+<span id="config-http-filters-fault-injection-stats"></span><h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
 <p>The fault filter outputs statistics in the <em>http.&lt;stat_prefix&gt;.fault.</em> namespace. The <a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-stat-prefix"><span class="std std-ref">stat prefix</span></a> comes from the
 owning HTTP connection manager.</p>
 <table border="1" class="colwidths-given docutils">
@@ -301,6 +306,14 @@ owning HTTP connection manager.</p>
 <tr class="row-odd"><td>aborts_injected</td>
 <td>Counter</td>
 <td>Total requests that were aborted</td>
+</tr>
+<tr class="row-even"><td>faults_overflow</td>
+<td>Counter</td>
+<td>Total number of faults that were not injected due to overflowing the <a class="reference internal" href="../../api-v2/config/filter/http/fault/v2/fault.proto.html#envoy-api-field-config-filter-http-fault-v2-httpfault-max-active-faults"><span class="std std-ref">max_active_faults</span></a> setting</td>
+</tr>
+<tr class="row-odd"><td>active_faults</td>
+<td>Gauge</td>
+<td>Total number of faults active at the current time</td>
 </tr>
 <tr class="row-even"><td>&lt;downstream-cluster&gt;.delays_injected</td>
 <td>Counter</td>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Fault Injection &mdash; envoy 1.10.0-dev-c69429 documentation</title>
+  <title>Fault Injection &mdash; envoy 1.10.0-dev-191c8b documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-c69429
+                1.10.0-dev-191c8b
               </div>
             
           
@@ -200,7 +200,7 @@
 <p>Fault Injection <a class="reference internal" href="../../../../../../configuration/http_filters/fault_filter.html#config-http-filters-fault-injection"><span class="std std-ref">configuration overview</span></a>.</p>
 <div class="section" id="config-filter-http-fault-v2-faultabort">
 <span id="envoy-api-msg-config-filter-http-fault-v2-faultabort"></span><h2>config.filter.http.fault.v2.FaultAbort<a class="headerlink" href="#config-filter-http-fault-v2-faultabort" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/fault/v2/fault.proto#L18">[config.filter.http.fault.v2.FaultAbort proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/fault/v2/fault.proto#L20">[config.filter.http.fault.v2.FaultAbort proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;http_status&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;percentage&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
@@ -219,13 +219,14 @@ provided.</dd>
 </div>
 <div class="section" id="config-filter-http-fault-v2-httpfault">
 <span id="envoy-api-msg-config-filter-http-fault-v2-httpfault"></span><h2>config.filter.http.fault.v2.HTTPFault<a class="headerlink" href="#config-filter-http-fault-v2-httpfault" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/fault/v2/fault.proto#L33">[config.filter.http.fault.v2.HTTPFault proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/fault/v2/fault.proto#L35">[config.filter.http.fault.v2.HTTPFault proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;delay&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;abort&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;upstream_cluster&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;headers&quot;</span><span class="p">:</span> <span class="p">[],</span>
-  <span class="nt">&quot;downstream_nodes&quot;</span><span class="p">:</span> <span class="p">[]</span>
+  <span class="nt">&quot;downstream_nodes&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;max_active_faults&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -263,6 +264,23 @@ setting is not set, faults are injected for all downstream nodes.
 Downstream node name is taken from <a class="reference internal" href="../../../../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-downstream-service-node"><span class="std std-ref">the HTTP
 x-envoy-downstream-service-node</span></a> header and compared
 against downstream_nodes list.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-config-filter-http-fault-v2-httpfault-max-active-faults">
+<dt>max_active_faults</dt>
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The maximum number of faults that can be active at a single time via the configured fault
+filter. Note that because this setting can be overridden at the route level, it’s possible
+for the number of active faults to be greater than this value (if injected via a different
+route). If not specified, defaults to unlimited. This setting can be overridden via
+<cite>runtime &lt;config_http_filters_fault_injection_runtime&gt;</cite> and any faults that are not injected
+due to overflow will be indicated via the <cite>faults_overflow
+&lt;config_http_filters_fault_injection_stats&gt;</cite> stat.</p>
+<div class="last admonition attention">
+<p class="first admonition-title">Attention</p>
+<p class="last">Like other <a class="reference internal" href="../../../../../../intro/arch_overview/circuit_breaking.html#arch-overview-circuit-break"><span class="std std-ref">circuit breakers</span></a> in Envoy, this is a fuzzy
+limit. It’s possible for the number of active faults to rise slightly above the configured
+amount due to the implementation details.</p>
+</div>
+</dd>
 </dl>
 </div>
 </div>

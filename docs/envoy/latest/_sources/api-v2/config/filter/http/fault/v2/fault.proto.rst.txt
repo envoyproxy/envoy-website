@@ -10,7 +10,7 @@ Fault Injection :ref:`configuration overview <config_http_filters_fault_injectio
 config.filter.http.fault.v2.FaultAbort
 --------------------------------------
 
-`[config.filter.http.fault.v2.FaultAbort proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/fault/v2/fault.proto#L18>`_
+`[config.filter.http.fault.v2.FaultAbort proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/fault/v2/fault.proto#L20>`_
 
 
 .. code-block:: json
@@ -41,7 +41,7 @@ percentage
 config.filter.http.fault.v2.HTTPFault
 -------------------------------------
 
-`[config.filter.http.fault.v2.HTTPFault proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/fault/v2/fault.proto#L33>`_
+`[config.filter.http.fault.v2.HTTPFault proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/http/fault/v2/fault.proto#L35>`_
 
 
 .. code-block:: json
@@ -51,7 +51,8 @@ config.filter.http.fault.v2.HTTPFault
     "abort": "{...}",
     "upstream_cluster": "...",
     "headers": [],
-    "downstream_nodes": []
+    "downstream_nodes": [],
+    "max_active_faults": "{...}"
   }
 
 .. _envoy_api_field_config.filter.http.fault.v2.HTTPFault.delay:
@@ -99,6 +100,23 @@ downstream_nodes
   x-envoy-downstream-service-node
   <config_http_conn_man_headers_downstream-service-node>` header and compared
   against downstream_nodes list.
+  
+  
+.. _envoy_api_field_config.filter.http.fault.v2.HTTPFault.max_active_faults:
+
+max_active_faults
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The maximum number of faults that can be active at a single time via the configured fault
+  filter. Note that because this setting can be overridden at the route level, it's possible
+  for the number of active faults to be greater than this value (if injected via a different
+  route). If not specified, defaults to unlimited. This setting can be overridden via
+  `runtime <config_http_filters_fault_injection_runtime>` and any faults that are not injected
+  due to overflow will be indicated via the `faults_overflow
+  <config_http_filters_fault_injection_stats>` stat.
+  
+  .. attention::
+    Like other :ref:`circuit breakers <arch_overview_circuit_break>` in Envoy, this is a fuzzy
+    limit. It's possible for the number of active faults to rise slightly above the configured
+    amount due to the implementation details.
   
   
 
