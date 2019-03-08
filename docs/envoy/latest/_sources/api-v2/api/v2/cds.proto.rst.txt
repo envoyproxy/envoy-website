@@ -19,6 +19,7 @@ Configuration for a single upstream cluster.
     "name": "...",
     "alt_stat_name": "...",
     "type": "...",
+    "cluster_type": "{...}",
     "eds_cluster_config": "{...}",
     "connect_timeout": "{...}",
     "per_connection_buffer_limit_bytes": "{...}",
@@ -81,6 +82,18 @@ type
   (:ref:`Cluster.DiscoveryType <envoy_api_enum_Cluster.DiscoveryType>`) The :ref:`service discovery type <arch_overview_service_discovery_types>`
   to use for resolving the cluster.
   
+  
+  
+  Only one of :ref:`type <envoy_api_field_Cluster.type>`, :ref:`cluster_type <envoy_api_field_Cluster.cluster_type>` may be set.
+  
+.. _envoy_api_field_Cluster.cluster_type:
+
+cluster_type
+  (:ref:`Cluster.CustomClusterType <envoy_api_msg_Cluster.CustomClusterType>`) The custom cluster type.
+  
+  
+  
+  Only one of :ref:`type <envoy_api_field_Cluster.type>`, :ref:`cluster_type <envoy_api_field_Cluster.cluster_type>` may be set.
   
 .. _envoy_api_field_Cluster.eds_cluster_config:
 
@@ -408,12 +421,43 @@ drain_connections_on_host_removal
   checking before removing it from the cluster.
   
   
+.. _envoy_api_msg_Cluster.CustomClusterType:
+
+Cluster.CustomClusterType
+-------------------------
+
+`[Cluster.CustomClusterType proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L98>`_
+
+Extended cluster type.
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "typed_config": "{...}"
+  }
+
+.. _envoy_api_field_Cluster.CustomClusterType.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The type of the cluster to instantiate. The name must match a supported cluster type.
+  
+  
+.. _envoy_api_field_Cluster.CustomClusterType.typed_config:
+
+typed_config
+  (`Any <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any>`_) Cluster specific configuration which depends on the cluster being instantiated.
+  See the supported cluster for further documentation.
+  
+  
+
+
 .. _envoy_api_msg_Cluster.EdsClusterConfig:
 
 Cluster.EdsClusterConfig
 ------------------------
 
-`[Cluster.EdsClusterConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L101>`_
+`[Cluster.EdsClusterConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L117>`_
 
 Only valid when discovery type is EDS.
 
@@ -447,7 +491,7 @@ service_name
 Cluster.LbSubsetConfig
 ----------------------
 
-`[Cluster.LbSubsetConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L319>`_
+`[Cluster.LbSubsetConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L335>`_
 
 Optionally divide the endpoints in this cluster into subsets defined by
 endpoint metadata and selected by route and weighted cluster metadata.
@@ -543,7 +587,7 @@ panic_mode_any
 Cluster.LbSubsetConfig.LbSubsetSelector
 ---------------------------------------
 
-`[Cluster.LbSubsetConfig.LbSubsetSelector proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L348>`_
+`[Cluster.LbSubsetConfig.LbSubsetSelector proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L364>`_
 
 Specifications for subsets.
 
@@ -566,7 +610,7 @@ keys
 Enum Cluster.LbSubsetConfig.LbSubsetFallbackPolicy
 --------------------------------------------------
 
-`[Cluster.LbSubsetConfig.LbSubsetFallbackPolicy proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L326>`_
+`[Cluster.LbSubsetConfig.LbSubsetFallbackPolicy proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L342>`_
 
 If NO_FALLBACK is selected, a result
 equivalent to no healthy hosts is reported. If ANY_ENDPOINT is selected,
@@ -595,7 +639,7 @@ DEFAULT_SUBSET
 Cluster.LeastRequestLbConfig
 ----------------------------
 
-`[Cluster.LeastRequestLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L400>`_
+`[Cluster.LeastRequestLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L416>`_
 
 Specific configuration for the LeastRequest load balancing policy.
 
@@ -619,7 +663,7 @@ choice_count
 Cluster.RingHashLbConfig
 ------------------------
 
-`[Cluster.RingHashLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L408>`_
+`[Cluster.RingHashLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L424>`_
 
 Specific configuration for the :ref:`RingHash<arch_overview_load_balancing_types_ring_hash>`
 load balancing policy.
@@ -663,7 +707,7 @@ maximum_ring_size
 Enum Cluster.RingHashLbConfig.HashFunction
 ------------------------------------------
 
-`[Cluster.RingHashLbConfig.HashFunction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L427>`_
+`[Cluster.RingHashLbConfig.HashFunction proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L443>`_
 
 The hash function used to hash hosts onto the ketama ring.
 
@@ -687,7 +731,7 @@ MURMUR_HASH_2
 Cluster.OriginalDstLbConfig
 ---------------------------
 
-`[Cluster.OriginalDstLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L449>`_
+`[Cluster.OriginalDstLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L465>`_
 
 Specific configuration for the
 :ref:`Original Destination <arch_overview_load_balancing_types_original_destination>`
@@ -720,7 +764,7 @@ use_http_header
 Cluster.CommonLbConfig
 ----------------------
 
-`[Cluster.CommonLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L479>`_
+`[Cluster.CommonLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L495>`_
 
 Common configuration for all load balancer implementations.
 
@@ -782,7 +826,7 @@ update_merge_window
 Cluster.CommonLbConfig.ZoneAwareLbConfig
 ----------------------------------------
 
-`[Cluster.CommonLbConfig.ZoneAwareLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L488>`_
+`[Cluster.CommonLbConfig.ZoneAwareLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L504>`_
 
 Configuration for :ref:`zone aware routing
 <arch_overview_load_balancing_zone_aware_routing>`.
@@ -820,7 +864,7 @@ min_cluster_size
 Cluster.CommonLbConfig.LocalityWeightedLbConfig
 -----------------------------------------------
 
-`[Cluster.CommonLbConfig.LocalityWeightedLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L503>`_
+`[Cluster.CommonLbConfig.LocalityWeightedLbConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L519>`_
 
 Configuration for :ref:`locality weighted load balancing
 <arch_overview_load_balancing_locality_weighted_lb>`
@@ -887,7 +931,7 @@ ORIGINAL_DST
 Enum Cluster.LbPolicy
 ---------------------
 
-`[Cluster.LbPolicy proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L126>`_
+`[Cluster.LbPolicy proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L142>`_
 
 Refer to :ref:`load balancer type <arch_overview_load_balancing_types>` architecture
 overview section for information on each type.
@@ -945,7 +989,7 @@ MAGLEV
 Enum Cluster.DnsLookupFamily
 ----------------------------
 
-`[Cluster.DnsLookupFamily proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L268>`_
+`[Cluster.DnsLookupFamily proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L284>`_
 
 When V4_ONLY is selected, the DNS resolver will only perform a lookup for
 addresses in the IPv4 family. If V6_ONLY is selected, the DNS resolver will
@@ -979,7 +1023,7 @@ V6_ONLY
 Enum Cluster.ClusterProtocolSelection
 -------------------------------------
 
-`[Cluster.ClusterProtocolSelection proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L538>`_
+`[Cluster.ClusterProtocolSelection proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L554>`_
 
 
 .. _envoy_api_enum_value_Cluster.ClusterProtocolSelection.USE_CONFIGURED_PROTOCOL:
@@ -1002,7 +1046,7 @@ USE_DOWNSTREAM_PROTOCOL
 UpstreamBindConfig
 ------------------
 
-`[UpstreamBindConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L579>`_
+`[UpstreamBindConfig proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L595>`_
 
 An extensible structure containing the address Envoy should bind to when
 establishing upstream connections.
@@ -1026,7 +1070,7 @@ source_address
 UpstreamConnectionOptions
 -------------------------
 
-`[UpstreamConnectionOptions proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L584>`_
+`[UpstreamConnectionOptions proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/api/v2/cds.proto#L600>`_
 
 
 .. code-block:: json
