@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Fault Injection &mdash; envoy 1.10.0-dev-065764 documentation</title>
+  <title>Fault Injection &mdash; envoy 1.10.0-dev-628d16 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-065764
+                1.10.0-dev-628d16
               </div>
             
           
@@ -267,6 +267,10 @@ injected.</dd>
 filter. This can be used in cases where it is desired that faults are 100% injected,
 but the user wants to avoid a situation in which too many unexpected concurrent faulting requests
 cause resource constraint issues. If not specified, the <a class="reference internal" href="../../api-v2/config/filter/http/fault/v2/fault.proto.html#envoy-api-field-config-filter-http-fault-v2-httpfault-max-active-faults"><span class="std std-ref">max_active_faults</span></a> setting will be used.</dd>
+<dt>fault.http.rate_limit.response_percent</dt>
+<dd>% of requests which will have a response rate limit fault injected, if the filter is
+<a class="reference internal" href="../../api-v2/config/filter/http/fault/v2/fault.proto.html#envoy-api-field-config-filter-http-fault-v2-httpfault-response-rate-limit"><span class="std std-ref">configured</span></a> to
+do so. Defaults to the value set in the <a class="reference internal" href="../../api-v2/config/filter/fault/v2/fault.proto.html#envoy-api-field-config-filter-fault-v2-faultratelimit-percentage"><span class="std std-ref">percentage</span></a> field.</dd>
 </dl>
 <p><em>Note</em>, fault filter runtime settings for the specific downstream cluster
 override the default ones if present. The following are downstream specific
@@ -307,19 +311,23 @@ owning HTTP connection manager.</p>
 <td>Counter</td>
 <td>Total requests that were aborted</td>
 </tr>
-<tr class="row-even"><td>faults_overflow</td>
+<tr class="row-even"><td>response_rl_injected</td>
+<td>Counter</td>
+<td>Total requests that had a response rate limit selected for injection (actually injection may not occur due to disconnect, reset, no body, etc.)</td>
+</tr>
+<tr class="row-odd"><td>faults_overflow</td>
 <td>Counter</td>
 <td>Total number of faults that were not injected due to overflowing the <a class="reference internal" href="../../api-v2/config/filter/http/fault/v2/fault.proto.html#envoy-api-field-config-filter-http-fault-v2-httpfault-max-active-faults"><span class="std std-ref">max_active_faults</span></a> setting</td>
 </tr>
-<tr class="row-odd"><td>active_faults</td>
+<tr class="row-even"><td>active_faults</td>
 <td>Gauge</td>
 <td>Total number of faults active at the current time</td>
 </tr>
-<tr class="row-even"><td>&lt;downstream-cluster&gt;.delays_injected</td>
+<tr class="row-odd"><td>&lt;downstream-cluster&gt;.delays_injected</td>
 <td>Counter</td>
 <td>Total delayed requests for the given downstream cluster</td>
 </tr>
-<tr class="row-odd"><td>&lt;downstream-cluster&gt;.aborts_injected</td>
+<tr class="row-even"><td>&lt;downstream-cluster&gt;.aborts_injected</td>
 <td>Counter</td>
 <td>Total aborted requests for the given downstream cluster</td>
 </tr>
