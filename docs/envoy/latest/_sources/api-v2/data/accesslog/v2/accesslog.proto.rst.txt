@@ -99,6 +99,7 @@ Defines fields that are shared by all Envoy access logs.
   {
     "downstream_remote_address": "{...}",
     "downstream_local_address": "{...}",
+    "tls_properties": "{...}",
     "start_time": "{...}",
     "time_to_last_rx_byte": "{...}",
     "time_to_first_upstream_tx_byte": "{...}",
@@ -130,7 +131,12 @@ downstream_local_address
   (:ref:`core.Address <envoy_api_msg_core.Address>`) This field is the local/destination address on which the request from the user was received.
   
   
+.. _envoy_api_field_data.accesslog.v2.AccessLogCommon.tls_properties:
 
+tls_properties
+  (:ref:`data.accesslog.v2.TLSProperties <envoy_api_msg_data.accesslog.v2.TLSProperties>`) If the connection is secure,S this field will contain TLS properties.
+  
+  
 .. _envoy_api_field_data.accesslog.v2.AccessLogCommon.start_time:
 
 start_time
@@ -251,7 +257,7 @@ upstream_transport_failure_reason
 data.accesslog.v2.ResponseFlags
 -------------------------------
 
-`[data.accesslog.v2.ResponseFlags proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/data/accesslog/v2/accesslog.proto#L148>`_
+`[data.accesslog.v2.ResponseFlags proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/data/accesslog/v2/accesslog.proto#L147>`_
 
 Flags indicating occurrences during request/response processing.
 
@@ -384,7 +390,7 @@ stream_idle_timeout
 data.accesslog.v2.ResponseFlags.Unauthorized
 --------------------------------------------
 
-`[data.accesslog.v2.ResponseFlags.Unauthorized proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/data/accesslog/v2/accesslog.proto#L185>`_
+`[data.accesslog.v2.ResponseFlags.Unauthorized proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/data/accesslog/v2/accesslog.proto#L184>`_
 
 
 .. code-block:: json
@@ -404,7 +410,7 @@ reason
 Enum data.accesslog.v2.ResponseFlags.Unauthorized.Reason
 --------------------------------------------------------
 
-`[data.accesslog.v2.ResponseFlags.Unauthorized.Reason proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/data/accesslog/v2/accesslog.proto#L187>`_
+`[data.accesslog.v2.ResponseFlags.Unauthorized.Reason proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/data/accesslog/v2/accesslog.proto#L186>`_
 
 Reasons why the request was unauthorized
 
@@ -421,13 +427,101 @@ EXTERNAL_SERVICE
   
 
 
+.. _envoy_api_msg_data.accesslog.v2.TLSProperties:
+
+data.accesslog.v2.TLSProperties
+-------------------------------
+
+`[data.accesslog.v2.TLSProperties proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/data/accesslog/v2/accesslog.proto#L212>`_
+
+Properties of a negotiated TLS connection.
+
+.. code-block:: json
+
+  {
+    "tls_sni_hostname": "...",
+    "local_certificate_properties": "{...}",
+    "peer_certificate_properties": "{...}"
+  }
+
+
+
+.. _envoy_api_field_data.accesslog.v2.TLSProperties.tls_sni_hostname:
+
+tls_sni_hostname
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) SNI hostname from handshake.
+  
+  
+.. _envoy_api_field_data.accesslog.v2.TLSProperties.local_certificate_properties:
+
+local_certificate_properties
+  (:ref:`data.accesslog.v2.TLSProperties.CertificateProperties <envoy_api_msg_data.accesslog.v2.TLSProperties.CertificateProperties>`) Properties of the local certificate used to negotiate TLS.
+  
+  
+.. _envoy_api_field_data.accesslog.v2.TLSProperties.peer_certificate_properties:
+
+peer_certificate_properties
+  (:ref:`data.accesslog.v2.TLSProperties.CertificateProperties <envoy_api_msg_data.accesslog.v2.TLSProperties.CertificateProperties>`) Properties of the peer certificate used to negotiate TLS.
+  
+  
+.. _envoy_api_msg_data.accesslog.v2.TLSProperties.CertificateProperties:
+
+data.accesslog.v2.TLSProperties.CertificateProperties
+-----------------------------------------------------
+
+`[data.accesslog.v2.TLSProperties.CertificateProperties proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/data/accesslog/v2/accesslog.proto#L236>`_
+
+
+.. code-block:: json
+
+  {
+    "subject_alt_name": [],
+    "subject": "..."
+  }
+
+.. _envoy_api_field_data.accesslog.v2.TLSProperties.CertificateProperties.subject_alt_name:
+
+subject_alt_name
+  (:ref:`data.accesslog.v2.TLSProperties.CertificateProperties.SubjectAltName <envoy_api_msg_data.accesslog.v2.TLSProperties.CertificateProperties.SubjectAltName>`) SANs present in the certificate.
+  
+  
+.. _envoy_api_field_data.accesslog.v2.TLSProperties.CertificateProperties.subject:
+
+subject
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The subject field of the certificate.
+  
+  
+.. _envoy_api_msg_data.accesslog.v2.TLSProperties.CertificateProperties.SubjectAltName:
+
+data.accesslog.v2.TLSProperties.CertificateProperties.SubjectAltName
+--------------------------------------------------------------------
+
+`[data.accesslog.v2.TLSProperties.CertificateProperties.SubjectAltName proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/data/accesslog/v2/accesslog.proto#L237>`_
+
+
+.. code-block:: json
+
+  {
+    "uri": "..."
+  }
+
+.. _envoy_api_field_data.accesslog.v2.TLSProperties.CertificateProperties.SubjectAltName.uri:
+
+uri
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
+  
+  
+
+
+
+
 
 .. _envoy_api_msg_data.accesslog.v2.HTTPRequestProperties:
 
 data.accesslog.v2.HTTPRequestProperties
 ---------------------------------------
 
-`[data.accesslog.v2.HTTPRequestProperties proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/data/accesslog/v2/accesslog.proto#L236>`_
+`[data.accesslog.v2.HTTPRequestProperties proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/data/accesslog/v2/accesslog.proto#L259>`_
 
 
 .. code-block:: json
@@ -544,7 +638,7 @@ request_headers
 data.accesslog.v2.HTTPResponseProperties
 ----------------------------------------
 
-`[data.accesslog.v2.HTTPResponseProperties proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/data/accesslog/v2/accesslog.proto#L290>`_
+`[data.accesslog.v2.HTTPResponseProperties proto] <https://github.com/envoyproxy/envoy/blob/master/api/envoy/data/accesslog/v2/accesslog.proto#L313>`_
 
 
 .. code-block:: json
