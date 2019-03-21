@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Jaeger Tracing &mdash; envoy 1.10.0-dev-b1de1f documentation</title>
+  <title>Jaeger Tracing &mdash; envoy 1.10.0-dev-173765 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-b1de1f
+                1.10.0-dev-173765
               </div>
             
           
@@ -189,14 +189,14 @@ capabilities using <a class="reference external" href="https://jaegertracing.io/
 is very similar to the front proxy architecture described above, with one difference:
 service1 makes an API call to service2 before returning a response.
 The three containers will be deployed inside a virtual network called <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code>.</p>
-<p>All incoming requests are routed via the front envoy, which is acting as a reverse proxy
+<p>All incoming requests are routed via the front Envoy, which is acting as a reverse proxy
 sitting on the edge of the <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code> network. Port <code class="docutils literal notranslate"><span class="pre">80</span></code> is mapped to  port <code class="docutils literal notranslate"><span class="pre">8000</span></code>
 by docker compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master//examples/jaeger-tracing/docker-compose.yml">/examples/jaeger-tracing/docker-compose.yml</a>). Notice that
-all envoys are configured to collect request traces (e.g., http_connection_manager/config/tracing setup in
+all Envoys are configured to collect request traces (e.g., http_connection_manager/config/tracing setup in
 <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master//examples/jaeger-tracing/front-envoy-jaeger.yaml">/examples/jaeger-tracing/front-envoy-jaeger.yaml</a>) and setup to propagate the spans generated
 by the Jaeger tracer to a Jaeger cluster (trace driver setup
 in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master//examples/jaeger-tracing/front-envoy-jaeger.yaml">/examples/jaeger-tracing/front-envoy-jaeger.yaml</a>).</p>
-<p>Before routing a request to the appropriate service envoy or the application, Envoy will take
+<p>Before routing a request to the appropriate service Envoy or the application, Envoy will take
 care of generating the appropriate spans for tracing (parent/child context spans).
 At a high-level, each span records the latency of upstream API calls as well as information
 needed to correlate the span with other related spans (e.g., the trace ID).</p>
@@ -208,38 +208,40 @@ calls to other services. In the sandbox we have provided, the simple flask app
 the trace headers while making an outbound call to service2.</p>
 <div class="section" id="running-the-sandbox">
 <h2>Running the Sandbox<a class="headerlink" href="#running-the-sandbox" title="Permalink to this headline">¶</a></h2>
-<p>The following documentation runs through the setup of an envoy cluster organized
+<p>The following documentation runs through the setup of an Envoy cluster organized
 as is described in the image above.</p>
 <p><strong>Step 1: Build the sandbox</strong></p>
 <p>To build this sandbox example, and start the example apps run the following commands:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pwd
 envoy/examples/jaeger-tracing
+$ docker-compose pull
 $ docker-compose up --build -d
 $ docker-compose ps
-        Name                       Command               State      Ports
--------------------------------------------------------------------------------------------------------------
-jaegertracing_service1_1      /bin/sh -c /usr/local/bin/ ... Up       80/tcp
-jaegertracing_service2_1      /bin/sh -c /usr/local/bin/ ... Up       80/tcp
-jaegertracing_front-envoy_1   /bin/sh -c /usr/local/bin/ ... Up       0.0.0.0:8000-&gt;80/tcp, 0.0.0.0:8001-&gt;8001/tcp
+
+            Name                          Command             State                                                       Ports
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+jaeger-tracing_front-envoy_1   /docker-entrypoint.sh /bin ... Up      10000/tcp, 0.0.0.0:8000-&gt;80/tcp, 0.0.0.0:8001-&gt;8001/tcp
+jaeger-tracing_jaeger_1        /go/bin/all-in-one-linux - ... Up      14250/tcp, 14268/tcp, 0.0.0.0:16686-&gt;16686/tcp, 5775/udp, 5778/tcp, 6831/udp, 6832/udp, 0.0.0.0:9411-&gt;9411/tcp
+jaeger-tracing_service1_1      /bin/sh -c /usr/local/bin/ ... Up      10000/tcp, 80/tcp
+jaeger-tracing_service2_1      /bin/sh -c /usr/local/bin/ ... Up      10000/tcp, 80/tcp
 </pre></div>
 </div>
 <p><strong>Step 2: Generate some load</strong></p>
 <p>You can now send a request to service1 via the front-envoy as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl -v $(docker-machine ip default):8000/trace/1
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl -v localhost:8000/trace/1
 *   Trying 192.168.99.100...
 * Connected to 192.168.99.100 (192.168.99.100) port 8000 (#0)
 &gt; GET /trace/1 HTTP/1.1
 &gt; Host: 192.168.99.100:8000
-&gt; User-Agent: curl/7.43.0
+&gt; User-Agent: curl/7.54.0
 &gt; Accept: */*
 &gt;
 &lt; HTTP/1.1 200 OK
 &lt; content-type: text/html; charset=utf-8
 &lt; content-length: 89
-&lt; x-envoy-upstream-service-time: 1
+&lt; x-envoy-upstream-service-time: 9
 &lt; server: envoy
-&lt; date: Fri, 26 Aug 2016 19:39:19 GMT
-&lt; x-envoy-protocol-version: HTTP/1.1
+&lt; date: Fri, 26 Aug 2018 19:39:19 GMT
 &lt;
 Hello from behind Envoy (service 1)! hostname: f26027f1ce28 resolvedhostname: 172.19.0.6
 * Connection #0 to host 192.168.99.100 left intact
