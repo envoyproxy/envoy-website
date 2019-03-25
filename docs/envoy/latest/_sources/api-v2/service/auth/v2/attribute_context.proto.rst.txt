@@ -203,7 +203,8 @@ headers
 .. _envoy_api_field_service.auth.v2.AttributeContext.HttpRequest.path:
 
 path
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The HTTP URL path.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The request target, as it appears in the first line of the HTTP request. This includes
+  the URL path and query-string. No decoding is performed.
   
   
 .. _envoy_api_field_service.auth.v2.AttributeContext.HttpRequest.host:
@@ -221,14 +222,15 @@ scheme
 .. _envoy_api_field_service.auth.v2.AttributeContext.HttpRequest.query:
 
 query
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The HTTP URL query in the format of `name1=value`&name2=value2`, as it
-  appears in the first line of the HTTP request. No decoding is performed.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) This field is always empty, and exists for compatibility reasons. The HTTP URL query is
+  included in `path` field.
   
   
 .. _envoy_api_field_service.auth.v2.AttributeContext.HttpRequest.fragment:
 
 fragment
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The HTTP URL fragment, excluding leading `#`. No URL decoding is performed.
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) This field is always empty, and exists for compatibility reasons. The URL fragment is
+  not submitted as part of HTTP requests; it is unknowable.
   
   
 .. _envoy_api_field_service.auth.v2.AttributeContext.HttpRequest.size:
@@ -240,8 +242,10 @@ size
 .. _envoy_api_field_service.auth.v2.AttributeContext.HttpRequest.protocol:
 
 protocol
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The network protocol used with the request, such as
-  "http/1.1", "spdy/3", "h2", "h2c"
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The network protocol used with the request, such as "HTTP/1.0", "HTTP/1.1", or "HTTP/2".
+  
+  See :repo:`headers.h:ProtocolStrings <source/common/http/headers.h>` for a list of all
+  possible values.
   
   
 
