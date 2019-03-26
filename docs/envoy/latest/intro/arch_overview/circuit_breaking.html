@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Circuit breaking &mdash; envoy 1.10.0-dev-8fb00b documentation</title>
+  <title>Circuit breaking &mdash; envoy 1.10.0-dev-7de2b3 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-8fb00b
+                1.10.0-dev-7de2b3
               </div>
             
           
@@ -216,7 +216,7 @@ quickly and apply back pressure downstream as soon as possible. One of the main 
 mesh is that Envoy enforces circuit breaking limits at the network level as opposed to having to
 configure and code each application independently. Envoy supports various types of fully distributed
 (not coordinated) circuit breaking:</p>
-<ul class="simple">
+<ul class="simple" id="arch-overview-circuit-break-cluster-maximum-connections">
 <li><strong>Cluster maximum connections</strong>: The maximum number of connections that Envoy will establish to
 all hosts in an upstream cluster. In practice this is only applicable to HTTP/1.1 clusters since
 HTTP/2 uses a single connection to each host. If this circuit breaker overflows the <a class="reference internal" href="../../configuration/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats"><span class="std std-ref">upstream_cx_overflow</span></a> counter for the cluster will increment.</li>
@@ -240,6 +240,17 @@ retries so that retries for sporadic failures are allowed but the overall retry 
 explode and cause large scale cascading failure. If this circuit breaker overflows the
 <a class="reference internal" href="../../configuration/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats"><span class="std std-ref">upstream_rq_retry_overflow</span></a> counter for the cluster
 will increment.</li>
+<li id="arch-overview-circuit-break-cluster-maximum-connection-pools"><strong>Cluster maximum concurrent connection pools</strong>: The maximum number of connection pools that can be
+concurrently instantiated. Some features, such as the
+<a class="reference internal" href="ip_transparency.html#arch-overview-ip-transparency-original-src-listener"><span class="std std-ref">Original Src Listener Filter</span></a>, can
+create an unbounded number of connection pools. When a cluster has exhausted its concurrent
+connection pools, it will attempt to reclaim an idle one. If it cannot, then the circuit breaker
+will overflow. This differs from
+<a class="reference internal" href="#arch-overview-circuit-break-cluster-maximum-connections"><span class="std std-ref">Cluster maximum connections</span></a> in that
+connection pools never time out, whereas connections typically will. Connections automatically
+clean up; connection pools do not. Note that in order for a connection pool to function it needs
+at least one upstream connection, so this value should likely be no greater than
+<a class="reference internal" href="#arch-overview-circuit-break-cluster-maximum-connections"><span class="std std-ref">Cluster maximum connections</span></a>.</li>
 </ul>
 <p>Each circuit breaking limit is <a class="reference internal" href="../../configuration/cluster_manager/cluster_circuit_breakers.html#config-cluster-manager-cluster-circuit-breakers"><span class="std std-ref">configurable</span></a>
 and tracked on a per upstream cluster and per priority basis. This allows different components of
