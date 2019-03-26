@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Common fault injection types &mdash; envoy 1.10.0-dev-aab054 documentation</title>
+  <title>Common fault injection types &mdash; envoy 1.10.0-dev-805683 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10.0-dev-aab054
+                1.10.0-dev-805683
               </div>
             
           
@@ -203,50 +203,77 @@ HTTP/gRPC/Mongo/Redis operation or delay proxying of TCP connections.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;fixed_delay&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;header_delay&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;percentage&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <dl class="docutils" id="envoy-api-field-config-filter-fault-v2-faultdelay-type">
 <dt>type</dt>
-<dd>(<a class="reference internal" href="#envoy-api-enum-config-filter-fault-v2-faultdelay-faultdelaytype"><span class="std std-ref">config.filter.fault.v2.FaultDelay.FaultDelayType</span></a>) Delay type to use (fixed|exponential|..). Currently, only fixed delay (step function) is
-supported.</dd>
+<dd>(<a class="reference internal" href="#envoy-api-enum-config-filter-fault-v2-faultdelay-faultdelaytype"><span class="std std-ref">config.filter.fault.v2.FaultDelay.FaultDelayType</span></a>) Unused and deprecated. Will be removed in the next release.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-config-filter-fault-v2-faultdelay-fixed-delay">
 <dt>fixed_delay</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>, <em>REQUIRED</em>) Add a fixed delay before forwarding the operation upstream. See
+<dd><p class="first">(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) Add a fixed delay before forwarding the operation upstream. See
 <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto3#json">https://developers.google.com/protocol-buffers/docs/proto3#json</a> for
 the JSON/YAML Duration mapping. For HTTP/Mongo/Redis, the specified
 delay will be injected before a new request/operation. For TCP
 connections, the proxying of the connection upstream will be delayed
-for the specified period. This is required if type is FIXED.</dd>
+for the specified period. This is required if type is FIXED.</p>
+<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-config-filter-fault-v2-faultdelay-fixed-delay"><span class="std std-ref">fixed_delay</span></a>, <a class="reference internal" href="#envoy-api-field-config-filter-fault-v2-faultdelay-header-delay"><span class="std std-ref">header_delay</span></a> must be set.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-config-filter-fault-v2-faultdelay-header-delay">
+<dt>header_delay</dt>
+<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-config-filter-fault-v2-faultdelay-headerdelay"><span class="std std-ref">config.filter.fault.v2.FaultDelay.HeaderDelay</span></a>) Fault delays are controlled via an HTTP header (if applicable).</p>
+<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-config-filter-fault-v2-faultdelay-fixed-delay"><span class="std std-ref">fixed_delay</span></a>, <a class="reference internal" href="#envoy-api-field-config-filter-fault-v2-faultdelay-header-delay"><span class="std std-ref">header_delay</span></a> must be set.</p>
+</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-config-filter-fault-v2-faultdelay-percentage">
 <dt>percentage</dt>
 <dd>(<a class="reference internal" href="../../../../type/percent.proto.html#envoy-api-msg-type-fractionalpercent"><span class="std std-ref">type.FractionalPercent</span></a>) The percentage of operations/connections/requests on which the delay will be injected.</dd>
 </dl>
 </div>
+<div class="section" id="config-filter-fault-v2-faultdelay-headerdelay">
+<span id="envoy-api-msg-config-filter-fault-v2-faultdelay-headerdelay"></span><h2>config.filter.fault.v2.FaultDelay.HeaderDelay<a class="headerlink" href="#config-filter-fault-v2-faultdelay-headerdelay" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/fault/v2/fault.proto#L24">[config.filter.fault.v2.FaultDelay.HeaderDelay proto]</a></p>
+<p>Fault delays are controlled via an HTTP header (if applicable). See the
+<a class="reference internal" href="../../../../../configuration/http_filters/fault_filter.html#config-http-filters-fault-injection-http-header"><span class="std std-ref">http fault filter</span></a> documentation for
+more information.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{}</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="enum-config-filter-fault-v2-faultdelay-faultdelaytype">
 <span id="envoy-api-enum-config-filter-fault-v2-faultdelay-faultdelaytype"></span><h2>Enum config.filter.fault.v2.FaultDelay.FaultDelayType<a class="headerlink" href="#enum-config-filter-fault-v2-faultdelay-faultdelaytype" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/fault/v2/fault.proto#L21">[config.filter.fault.v2.FaultDelay.FaultDelayType proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/fault/v2/fault.proto#L27">[config.filter.fault.v2.FaultDelay.FaultDelayType proto]</a></p>
 <dl class="docutils" id="envoy-api-enum-value-config-filter-fault-v2-faultdelay-faultdelaytype-fixed">
 <dt>FIXED</dt>
-<dd><em>(DEFAULT)</em> ⁣Fixed delay (step function).</dd>
+<dd><em>(DEFAULT)</em> ⁣Unused and deprecated.</dd>
 </dl>
 </div>
 <div class="section" id="config-filter-fault-v2-faultratelimit">
 <span id="envoy-api-msg-config-filter-fault-v2-faultratelimit"></span><h2>config.filter.fault.v2.FaultRateLimit<a class="headerlink" href="#config-filter-fault-v2-faultratelimit" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/fault/v2/fault.proto#L49">[config.filter.fault.v2.FaultRateLimit proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/fault/v2/fault.proto#L58">[config.filter.fault.v2.FaultRateLimit proto]</a></p>
 <p>Describes a rate limit to be applied.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;fixed_limit&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;header_limit&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;percentage&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <dl class="docutils" id="envoy-api-field-config-filter-fault-v2-faultratelimit-fixed-limit">
 <dt>fixed_limit</dt>
-<dd>(<a class="reference internal" href="#envoy-api-msg-config-filter-fault-v2-faultratelimit-fixedlimit"><span class="std std-ref">config.filter.fault.v2.FaultRateLimit.FixedLimit</span></a>, <em>REQUIRED</em>) A fixed rate limit.</dd>
+<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-config-filter-fault-v2-faultratelimit-fixedlimit"><span class="std std-ref">config.filter.fault.v2.FaultRateLimit.FixedLimit</span></a>) A fixed rate limit.</p>
+<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-config-filter-fault-v2-faultratelimit-fixed-limit"><span class="std std-ref">fixed_limit</span></a>, <a class="reference internal" href="#envoy-api-field-config-filter-fault-v2-faultratelimit-header-limit"><span class="std std-ref">header_limit</span></a> must be set.</p>
+</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-config-filter-fault-v2-faultratelimit-header-limit">
+<dt>header_limit</dt>
+<dd><p class="first">(<a class="reference internal" href="#envoy-api-msg-config-filter-fault-v2-faultratelimit-headerlimit"><span class="std std-ref">config.filter.fault.v2.FaultRateLimit.HeaderLimit</span></a>) Rate limits are controlled via an HTTP header (if applicable).</p>
+<p class="last">Precisely one of <a class="reference internal" href="#envoy-api-field-config-filter-fault-v2-faultratelimit-fixed-limit"><span class="std std-ref">fixed_limit</span></a>, <a class="reference internal" href="#envoy-api-field-config-filter-fault-v2-faultratelimit-header-limit"><span class="std std-ref">header_limit</span></a> must be set.</p>
+</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-config-filter-fault-v2-faultratelimit-percentage">
 <dt>percentage</dt>
@@ -255,7 +282,7 @@ for the specified period. This is required if type is FIXED.</dd>
 </div>
 <div class="section" id="config-filter-fault-v2-faultratelimit-fixedlimit">
 <span id="envoy-api-msg-config-filter-fault-v2-faultratelimit-fixedlimit"></span><h2>config.filter.fault.v2.FaultRateLimit.FixedLimit<a class="headerlink" href="#config-filter-fault-v2-faultratelimit-fixedlimit" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/fault/v2/fault.proto#L51">[config.filter.fault.v2.FaultRateLimit.FixedLimit proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/fault/v2/fault.proto#L60">[config.filter.fault.v2.FaultRateLimit.FixedLimit proto]</a></p>
 <p>Describes a fixed/constant rate limit.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;limit_kbps&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
@@ -266,6 +293,16 @@ for the specified period. This is required if type is FIXED.</dd>
 <dt>limit_kbps</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">uint64</a>) The limit supplied in KiB/s.</dd>
 </dl>
+</div>
+<div class="section" id="config-filter-fault-v2-faultratelimit-headerlimit">
+<span id="envoy-api-msg-config-filter-fault-v2-faultratelimit-headerlimit"></span><h2>config.filter.fault.v2.FaultRateLimit.HeaderLimit<a class="headerlink" href="#config-filter-fault-v2-faultratelimit-headerlimit" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/master/api/envoy/config/filter/fault/v2/fault.proto#L68">[config.filter.fault.v2.FaultRateLimit.HeaderLimit proto]</a></p>
+<p>Rate limits are controlled via an HTTP header (if applicable). See the
+<a class="reference internal" href="../../../../../configuration/http_filters/fault_filter.html#config-http-filters-fault-injection-http-header"><span class="std std-ref">http fault filter</span></a> documentation for
+more information.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{}</span>
+</pre></div>
+</div>
 </div>
 </div>
 
