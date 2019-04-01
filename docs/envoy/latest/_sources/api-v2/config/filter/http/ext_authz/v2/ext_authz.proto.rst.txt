@@ -10,7 +10,7 @@ External Authorization :ref:`configuration overview <config_http_filters_ext_aut
 config.filter.http.ext_authz.v2.ExtAuthz
 ----------------------------------------
 
-`[config.filter.http.ext_authz.v2.ExtAuthz proto] <https://github.com/envoyproxy/envoy/blob/48082bcd22fe9165eb73bed6d27857f578df63b5/api/envoy/config/filter/http/ext_authz/v2/ext_authz.proto#L23>`_
+`[config.filter.http.ext_authz.v2.ExtAuthz proto] <https://github.com/envoyproxy/envoy/blob/075edf802b9ef94bdf26fddc9e775f8bb89df92d/api/envoy/config/filter/http/ext_authz/v2/ext_authz.proto#L23>`_
 
 
 .. code-block:: json
@@ -19,7 +19,8 @@ config.filter.http.ext_authz.v2.ExtAuthz
     "grpc_service": "{...}",
     "http_service": "{...}",
     "failure_mode_allow": "...",
-    "use_alpha": "..."
+    "use_alpha": "...",
+    "with_request_body": "{...}"
   }
 
 .. _envoy_api_field_config.filter.http.ext_authz.v2.ExtAuthz.grpc_service:
@@ -68,6 +69,47 @@ use_alpha
   version upgrade. See release notes for more details.
   
   
+.. _envoy_api_field_config.filter.http.ext_authz.v2.ExtAuthz.with_request_body:
+
+with_request_body
+  (:ref:`config.filter.http.ext_authz.v2.BufferSettings <envoy_api_msg_config.filter.http.ext_authz.v2.BufferSettings>`) Enables filter to buffer the client request body and send it within the authorization request.
+  
+  
+
+
+.. _envoy_api_msg_config.filter.http.ext_authz.v2.BufferSettings:
+
+config.filter.http.ext_authz.v2.BufferSettings
+----------------------------------------------
+
+`[config.filter.http.ext_authz.v2.BufferSettings proto] <https://github.com/envoyproxy/envoy/blob/075edf802b9ef94bdf26fddc9e775f8bb89df92d/api/envoy/config/filter/http/ext_authz/v2/ext_authz.proto#L58>`_
+
+Configuration for buffering the request data.
+
+.. code-block:: json
+
+  {
+    "max_request_bytes": "...",
+    "allow_partial_message": "..."
+  }
+
+.. _envoy_api_field_config.filter.http.ext_authz.v2.BufferSettings.max_request_bytes:
+
+max_request_bytes
+  (`uint32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Sets the maximum size of a message body that the filter will hold in memory. Envoy will return
+  *HTTP 413* and will *not* initiate the authorization process when buffer reaches the number
+  set in this field. Note that this setting will have precedence over :ref:`failure_mode_allow
+  <envoy_api_field_config.filter.http.ext_authz.v2.ExtAuthz.failure_mode_allow>`.
+  
+  
+.. _envoy_api_field_config.filter.http.ext_authz.v2.BufferSettings.allow_partial_message:
+
+allow_partial_message
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) When this field is true, Envoy will buffer the message until *max_request_bytes* is reached.
+  The authorization request will be dispatched and no 413 HTTP error will be returned by the
+  filter.
+  
+  
 
 
 .. _envoy_api_msg_config.filter.http.ext_authz.v2.HttpService:
@@ -75,7 +117,7 @@ use_alpha
 config.filter.http.ext_authz.v2.HttpService
 -------------------------------------------
 
-`[config.filter.http.ext_authz.v2.HttpService proto] <https://github.com/envoyproxy/envoy/blob/48082bcd22fe9165eb73bed6d27857f578df63b5/api/envoy/config/filter/http/ext_authz/v2/ext_authz.proto#L78>`_
+`[config.filter.http.ext_authz.v2.HttpService proto] <https://github.com/envoyproxy/envoy/blob/075edf802b9ef94bdf26fddc9e775f8bb89df92d/api/envoy/config/filter/http/ext_authz/v2/ext_authz.proto#L95>`_
 
 HttpService is used for raw HTTP communication between the filter and the authorization service.
 When configured, the filter will parse the client request and use these attributes to call the
@@ -142,7 +184,7 @@ authorization_response
 config.filter.http.ext_authz.v2.AuthorizationRequest
 ----------------------------------------------------
 
-`[config.filter.http.ext_authz.v2.AuthorizationRequest proto] <https://github.com/envoyproxy/envoy/blob/48082bcd22fe9165eb73bed6d27857f578df63b5/api/envoy/config/filter/http/ext_authz/v2/ext_authz.proto#L97>`_
+`[config.filter.http.ext_authz.v2.AuthorizationRequest proto] <https://github.com/envoyproxy/envoy/blob/075edf802b9ef94bdf26fddc9e775f8bb89df92d/api/envoy/config/filter/http/ext_authz/v2/ext_authz.proto#L114>`_
 
 
 .. code-block:: json
@@ -180,7 +222,7 @@ headers_to_add
 config.filter.http.ext_authz.v2.AuthorizationResponse
 -----------------------------------------------------
 
-`[config.filter.http.ext_authz.v2.AuthorizationResponse proto] <https://github.com/envoyproxy/envoy/blob/48082bcd22fe9165eb73bed6d27857f578df63b5/api/envoy/config/filter/http/ext_authz/v2/ext_authz.proto#L114>`_
+`[config.filter.http.ext_authz.v2.AuthorizationResponse proto] <https://github.com/envoyproxy/envoy/blob/075edf802b9ef94bdf26fddc9e775f8bb89df92d/api/envoy/config/filter/http/ext_authz/v2/ext_authz.proto#L131>`_
 
 
 .. code-block:: json
@@ -215,7 +257,7 @@ allowed_client_headers
 config.filter.http.ext_authz.v2.ExtAuthzPerRoute
 ------------------------------------------------
 
-`[config.filter.http.ext_authz.v2.ExtAuthzPerRoute proto] <https://github.com/envoyproxy/envoy/blob/48082bcd22fe9165eb73bed6d27857f578df63b5/api/envoy/config/filter/http/ext_authz/v2/ext_authz.proto#L129>`_
+`[config.filter.http.ext_authz.v2.ExtAuthzPerRoute proto] <https://github.com/envoyproxy/envoy/blob/075edf802b9ef94bdf26fddc9e775f8bb89df92d/api/envoy/config/filter/http/ext_authz/v2/ext_authz.proto#L146>`_
 
 Extra settings on a per virtualhost/route/weighted-cluster level.
 
@@ -252,7 +294,7 @@ check_settings
 config.filter.http.ext_authz.v2.CheckSettings
 ---------------------------------------------
 
-`[config.filter.http.ext_authz.v2.CheckSettings proto] <https://github.com/envoyproxy/envoy/blob/48082bcd22fe9165eb73bed6d27857f578df63b5/api/envoy/config/filter/http/ext_authz/v2/ext_authz.proto#L147>`_
+`[config.filter.http.ext_authz.v2.CheckSettings proto] <https://github.com/envoyproxy/envoy/blob/075edf802b9ef94bdf26fddc9e775f8bb89df92d/api/envoy/config/filter/http/ext_authz/v2/ext_authz.proto#L164>`_
 
 Extra settings for the check request. You can use this to provide extra context for the
 external authorization server on specific virtual hosts \ routes. For example, adding a context
