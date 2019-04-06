@@ -93,12 +93,12 @@ The easiest way to get started is to have Envoy handle traffic just the name as
 your internal network does. Practically, this means three things:
 
   - **Expose a single listener for your services to send outbound traffic to.**
-  This matches with the port exposed on your container, e.g. 8000 in the ex
-  ample configs above. Inbound traffic skips Envoy and continues to talk
+  This matches with the port exposed on your container, e.g. 8000 in the example
+  configs above. Inbound traffic skips Envoy and continues to talk
   directly to the services. Adding a listener to handle incoming traffic will
   be covered in Advanced Service Mesh (coming soon!).
 
-  - **Serve the full route table in all sidecars**. B By exposing all services
+  - **Serve the full route table in all sidecars**. By exposing all services
   to all other services, you’ll ensure nothing breaks on the first iteration.
   If you have a [Front Proxy](front-proxy), re-using these routes can save
   time. If not, it’s straightforward to create a
@@ -132,7 +132,7 @@ unique to it, but Envoy provides a simple way to get the same high-level
 metrics for all services. Keep the following principles in mind when deciding
 which metrics to look at:
 
-  - **Pick metrics that relate to customer experience**. IIn particular, Envoy
+  - **Pick metrics that relate to customer experience**. In particular, Envoy
   can generate request volume, request rate, and latency histograms. Resource
   metrics like number of connections or amount of network traffic can mean
   different things on different services. See how
