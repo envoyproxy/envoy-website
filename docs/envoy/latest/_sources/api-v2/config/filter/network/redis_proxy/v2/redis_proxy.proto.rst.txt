@@ -10,7 +10,7 @@ Redis Proxy :ref:`configuration overview <config_network_filters_redis_proxy>`.
 config.filter.network.redis_proxy.v2.RedisProxy
 -----------------------------------------------
 
-`[config.filter.network.redis_proxy.v2.RedisProxy proto] <https://github.com/envoyproxy/envoy/blob/22a9b8c57187925a82b46b922bad3dbb9b7c8166/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L17>`_
+`[config.filter.network.redis_proxy.v2.RedisProxy proto] <https://github.com/envoyproxy/envoy/blob/378d59b43e71e07c36c9ef60b0ee7318ca7f510f/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L17>`_
 
 
 .. code-block:: json
@@ -54,7 +54,7 @@ latency_in_micros
 config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings
 ----------------------------------------------------------------
 
-`[config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings proto] <https://github.com/envoyproxy/envoy/blob/22a9b8c57187925a82b46b922bad3dbb9b7c8166/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L27>`_
+`[config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings proto] <https://github.com/envoyproxy/envoy/blob/378d59b43e71e07c36c9ef60b0ee7318ca7f510f/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L27>`_
 
 Redis connection pool settings.
 
@@ -62,7 +62,8 @@ Redis connection pool settings.
 
   {
     "op_timeout": "{...}",
-    "enable_hashtagging": "..."
+    "enable_hashtagging": "...",
+    "enable_redirection": "..."
   }
 
 .. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings.op_timeout:
@@ -89,6 +90,16 @@ enable_hashtagging
   
   * '{user1000}.following' and '{user1000}.followers' **will** be sent to the same upstream
   * '{user1000}.following' and '{user1001}.following' **might** be sent to the same upstream
+  
+  
+.. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings.enable_redirection:
+
+enable_redirection
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Accept `moved and ask redirection
+  <https://redis.io/topics/cluster-spec#redirection-and-resharding>`_ errors from upstream
+  redis servers, and retry commands to the specified target server. The target server does not
+  need to be known to the cluster manager. If the command cannot be redirected, then the
+  original error is passed downstream unchanged. By default, this support is not enabled.
   
   
 
