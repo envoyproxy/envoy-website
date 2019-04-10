@@ -10,16 +10,17 @@ Endpoint discovery :ref:`architecture overview <arch_overview_service_discovery_
 ClusterLoadAssignment
 ---------------------
 
-`[ClusterLoadAssignment proto] <https://github.com/envoyproxy/envoy/blob/cfc514546bc0284536893cca5fa43d7128edcd35/api/envoy/api/v2/eds.proto#L48>`_
+`[ClusterLoadAssignment proto] <https://github.com/envoyproxy/envoy/blob/e03f6f7629ea563a56f8cb024558a8bce0fbfc1d/api/envoy/api/v2/eds.proto#L49>`_
 
 Each route from RDS will map to a single cluster or traffic split across
 clusters using weights expressed in the RDS WeightedCluster.
 
 With EDS, each cluster is treated independently from a LB perspective, with
 LB taking place between the Localities within a cluster and at a finer
-granularity between the hosts within a locality. For a given cluster, the
-effective weight of a host is its load_balancing_weight multiplied by the
-load_balancing_weight of its Locality.
+granularity between the hosts within a locality. The percentage of traffic
+for each endpoint is determined by both its load_balancing_weight, and the
+load_balancing_weight of its locality. First, a locality will be selected,
+then an endpoint within that locality will be chose based on its weight.
 
 .. code-block:: json
 
@@ -63,7 +64,7 @@ policy
 ClusterLoadAssignment.Policy
 ----------------------------
 
-`[ClusterLoadAssignment.Policy proto] <https://github.com/envoyproxy/envoy/blob/cfc514546bc0284536893cca5fa43d7128edcd35/api/envoy/api/v2/eds.proto#L62>`_
+`[ClusterLoadAssignment.Policy proto] <https://github.com/envoyproxy/envoy/blob/e03f6f7629ea563a56f8cb024558a8bce0fbfc1d/api/envoy/api/v2/eds.proto#L63>`_
 
 Load balancing policy settings.
 
@@ -122,7 +123,7 @@ overprovisioning_factor
 ClusterLoadAssignment.Policy.DropOverload
 -----------------------------------------
 
-`[ClusterLoadAssignment.Policy.DropOverload proto] <https://github.com/envoyproxy/envoy/blob/cfc514546bc0284536893cca5fa43d7128edcd35/api/envoy/api/v2/eds.proto#L65>`_
+`[ClusterLoadAssignment.Policy.DropOverload proto] <https://github.com/envoyproxy/envoy/blob/e03f6f7629ea563a56f8cb024558a8bce0fbfc1d/api/envoy/api/v2/eds.proto#L66>`_
 
 
 .. code-block:: json
