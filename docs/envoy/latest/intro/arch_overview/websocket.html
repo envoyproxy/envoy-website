@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>WebSocket and HTTP upgrades &mdash; envoy 1.11.0-dev-e612fc documentation</title>
+  <title>WebSocket and HTTP upgrades &mdash; envoy 1.11.0-dev-2135e1 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.11.0-dev-e612fc
+                1.11.0-dev-2135e1
               </div>
             
           
@@ -261,18 +261,18 @@ laid out below, but custom filter chains can only be configured on a per-HttpCon
 </tr>
 </tbody>
 </table>
-<p>Note that the statistics for upgrades are all bundled together so websocket
+<p>Note that the statistics for upgrades are all bundled together so WebSocket
 <a class="reference internal" href="../../configuration/http_conn_man/stats.html#config-http-conn-man-stats"><span class="std std-ref">statistics</span></a> are tracked by stats such as
 downstream_cx_upgrades_total and downstream_cx_upgrades_active</p>
 <div class="section" id="handling-h2-hops">
 <h2>Handling H2 hops<a class="headerlink" href="#handling-h2-hops" title="Permalink to this headline">¶</a></h2>
-<p>Envoy currently has an alpha implementation of tunneling websockets over H2 streams for deployments
-that prefer a uniform H2 mesh throughout, for example, for a deployment of the form:</p>
+<p>Envoy supports tunneling WebSockets over H2 streams for deployments that prefer a uniform
+H2 mesh throughout; this enables, for example, a deployment of the form:</p>
 <p>[Client] —- HTTP/1.1 —- [Front Envoy] —- HTTP/2 —- [Sidecar Envoy —- H1  —- App]</p>
 <p>In this case, if a client is for example using WebSocket, we want the Websocket to arrive at the
 upstream server functionally intact, which means it needs to traverse the HTTP/2 hop.</p>
 <p>This is accomplished via
-<a class="reference external" href="https://tools.ietf.org/html/draft-mcmanus-httpbis-h2-websockets">extended CONNECT</a> support. The
+<a class="reference external" href="https://tools.ietf.org/html/rfc8441">extended CONNECT</a> support. The
 WebSocket request will be transformed into an HTTP/2 CONNECT stream, with :protocol header
 indicating the original upgrade, traverse the HTTP/2 hop, and be downgraded back into an HTTP/1
 WebSocket Upgrade. This same Upgrade-CONNECT-Upgrade transformation will be performed on any
