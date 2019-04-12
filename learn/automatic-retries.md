@@ -132,4 +132,4 @@ service. Global circuit breaking helps selectively shed load when this sort of
 failure occurs, preventing it from cascading to multiple services.
 
 For more detail, and advanced configuration information, read about them in the
-[Envoy docs](https://www.envoyproxy.io/docs/envoy/latest/api-v1/route_config/route.html#config-http-conn-man-route-table-route-retry).
+[Envoy docs](https://www.envoyproxy.io/docs/envoy/v1.8.0/api-v1/route_config/route.html#config-http-conn-man-route-table-route-retry).
