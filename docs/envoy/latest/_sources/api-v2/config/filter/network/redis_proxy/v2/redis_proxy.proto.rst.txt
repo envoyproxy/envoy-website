@@ -10,7 +10,7 @@ Redis Proxy :ref:`configuration overview <config_network_filters_redis_proxy>`.
 config.filter.network.redis_proxy.v2.RedisProxy
 -----------------------------------------------
 
-`[config.filter.network.redis_proxy.v2.RedisProxy proto] <https://github.com/envoyproxy/envoy/blob/21fd1197716bdeca7e259d25f446ea1552a78246/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L17>`_
+`[config.filter.network.redis_proxy.v2.RedisProxy proto] <https://github.com/envoyproxy/envoy/blob/71634517d5e66380967ebf6bd8aeb44e7d5e4b4a/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L17>`_
 
 
 .. code-block:: json
@@ -19,7 +19,8 @@ config.filter.network.redis_proxy.v2.RedisProxy
     "stat_prefix": "...",
     "cluster": "...",
     "settings": "{...}",
-    "latency_in_micros": "..."
+    "latency_in_micros": "...",
+    "prefix_routes": "{...}"
   }
 
 .. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.stat_prefix:
@@ -31,15 +32,21 @@ stat_prefix
 .. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.cluster:
 
 cluster
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Name of cluster from cluster manager. See the :ref:`configuration section
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Name of cluster from cluster manager. See the :ref:`configuration section
   <arch_overview_redis_configuration>` of the architecture overview for recommendations on
   configuring the backing cluster.
+  
+  .. attention::
+  
+    This field is deprecated. Use a :ref:`catch-all
+    cluster<envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.catch_all_cluster>`
+    instead.
   
   
 .. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.settings:
 
 settings
-  (:ref:`config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings <envoy_api_msg_config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings>`, *REQUIRED*) Network settings for the connection pool to the upstream cluster.
+  (:ref:`config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings <envoy_api_msg_config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings>`, *REQUIRED*) Network settings for the connection pool to the upstream clusters.
   
   
 .. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.latency_in_micros:
@@ -49,12 +56,44 @@ latency_in_micros
   milliseconds.
   
   
+.. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.prefix_routes:
+
+prefix_routes
+  (:ref:`config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes <envoy_api_msg_config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes>`) List of **unique** prefixes used to separate keys from different workloads to different
+  clusters. Envoy will always favor the longest match first in case of overlap. A catch-all
+  cluster can be used to forward commands when there is no match. Time complexity of the
+  lookups are in O(min(longest key prefix, key length)).
+  
+  Example:
+  
+  .. code-block:: yaml
+  
+     prefix_routes:
+       routes:
+         - prefix: "ab"
+           cluster: "cluster_a"
+         - prefix: "abc"
+           cluster: "cluster_b"
+  
+  When using the above routes, the following prefixes would be sent to:
+  
+  * 'get abc:users' would retrive the key 'abc:users' from cluster_b.
+  * 'get ab:users' would retrive the key 'ab:users' from cluster_a.
+  * 'get z:users' would return a NoUpstreamHost error. A :ref:`catch-all
+    cluster<envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.catch_all_cluster>`
+    would have retrieved the key from that cluster instead.
+  
+  See the :ref:`configuration section
+  <arch_overview_redis_configuration>` of the architecture overview for recommendations on
+  configuring the backing clusters.
+  
+  
 .. _envoy_api_msg_config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings:
 
 config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings
 ----------------------------------------------------------------
 
-`[config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings proto] <https://github.com/envoyproxy/envoy/blob/21fd1197716bdeca7e259d25f446ea1552a78246/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L27>`_
+`[config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings proto] <https://github.com/envoyproxy/envoy/blob/71634517d5e66380967ebf6bd8aeb44e7d5e4b4a/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L33>`_
 
 Redis connection pool settings.
 
@@ -102,5 +141,78 @@ enable_redirection
   original error is passed downstream unchanged. By default, this support is not enabled.
   
   
+
+
+.. _envoy_api_msg_config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes:
+
+config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes
+------------------------------------------------------------
+
+`[config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes proto] <https://github.com/envoyproxy/envoy/blob/71634517d5e66380967ebf6bd8aeb44e7d5e4b4a/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L70>`_
+
+
+.. code-block:: json
+
+  {
+    "routes": [],
+    "case_insensitive": "...",
+    "catch_all_cluster": "..."
+  }
+
+.. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.routes:
+
+routes
+  (:ref:`config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.Route <envoy_api_msg_config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.Route>`) List of prefix routes.
+  
+  
+.. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.case_insensitive:
+
+case_insensitive
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Indicates that prefix matching should be case insensitive.
+  
+  
+.. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.catch_all_cluster:
+
+catch_all_cluster
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Optional catch-all route to forward commands that doesn't match any of the routes. The
+  catch-all route becomes required when no routes are specified.
+  
+  
+.. _envoy_api_msg_config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.Route:
+
+config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.Route
+------------------------------------------------------------------
+
+`[config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.Route proto] <https://github.com/envoyproxy/envoy/blob/71634517d5e66380967ebf6bd8aeb44e7d5e4b4a/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L71>`_
+
+
+.. code-block:: json
+
+  {
+    "prefix": "...",
+    "remove_prefix": "...",
+    "cluster": "..."
+  }
+
+.. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.Route.prefix:
+
+prefix
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) String prefix that must match the beginning of the keys. Envoy will always favor the
+  longest match.
+  
+  
+.. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.Route.remove_prefix:
+
+remove_prefix
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Indicates if the prefix needs to be removed from the key when forwarded.
+  
+  
+.. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.Route.cluster:
+
+cluster
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Upstream cluster to forward the command to.
+  
+  
+
 
 
