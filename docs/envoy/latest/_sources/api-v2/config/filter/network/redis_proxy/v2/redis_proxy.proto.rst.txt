@@ -10,7 +10,7 @@ Redis Proxy :ref:`configuration overview <config_network_filters_redis_proxy>`.
 config.filter.network.redis_proxy.v2.RedisProxy
 -----------------------------------------------
 
-`[config.filter.network.redis_proxy.v2.RedisProxy proto] <https://github.com/envoyproxy/envoy/blob/3b8e1764a6119dbc367710a80acb39e579b08d81/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L17>`_
+`[config.filter.network.redis_proxy.v2.RedisProxy proto] <https://github.com/envoyproxy/envoy/blob/dc3467adacb8f2b0393583857e709c06d76a2441/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L17>`_
 
 
 .. code-block:: json
@@ -93,7 +93,7 @@ prefix_routes
 config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings
 ----------------------------------------------------------------
 
-`[config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings proto] <https://github.com/envoyproxy/envoy/blob/3b8e1764a6119dbc367710a80acb39e579b08d81/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L33>`_
+`[config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings proto] <https://github.com/envoyproxy/envoy/blob/dc3467adacb8f2b0393583857e709c06d76a2441/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L33>`_
 
 Redis connection pool settings.
 
@@ -102,7 +102,9 @@ Redis connection pool settings.
   {
     "op_timeout": "{...}",
     "enable_hashtagging": "...",
-    "enable_redirection": "..."
+    "enable_redirection": "...",
+    "max_buffer_size_before_flush": "...",
+    "buffer_flush_timeout": "{...}"
   }
 
 .. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings.op_timeout:
@@ -141,6 +143,33 @@ enable_redirection
   original error is passed downstream unchanged. By default, this support is not enabled.
   
   
+.. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings.max_buffer_size_before_flush:
+
+max_buffer_size_before_flush
+  (`uint32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Maximum size of encoded request buffer before flush is triggered and encoded requests
+  are sent upstream. If this is unset, the buffer flushes whenever it receives data
+  and performs no batching.
+  This feature makes it possible for multiple clients to send requests to Envoy and have
+  them batched- for example if one is running several worker processes, each with its own
+  Redis connection. There is no benefit to using this with a single downstream process.
+  Recommended size (if enabled) is 1024 bytes.
+  
+  
+.. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings.buffer_flush_timeout:
+
+buffer_flush_timeout
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The encoded request buffer is flushed N milliseconds after the first request has been
+  encoded, unless the buffer size has already exceeded `max_buffer_size_before_flush`.
+  If `max_buffer_size_before_flush` is not set, this flush timer is not used. Otherwise,
+  the timer should be set according to the number of clients, overall request rate and
+  desired maximum latency for a single command. For example, if there are many requests
+  being batched together at a high rate, the buffer will likely be filled before the timer
+  fires. Alternatively, if the request rate is lower the buffer will not be filled as often
+  before the timer fires.
+  If `max_buffer_size_before_flush` is set, but `buffer_flush_timeout` is not, the latter
+  defaults to 3ms.
+  
+  
 
 
 .. _envoy_api_msg_config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes:
@@ -148,7 +177,7 @@ enable_redirection
 config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes
 ------------------------------------------------------------
 
-`[config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes proto] <https://github.com/envoyproxy/envoy/blob/3b8e1764a6119dbc367710a80acb39e579b08d81/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L70>`_
+`[config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes proto] <https://github.com/envoyproxy/envoy/blob/dc3467adacb8f2b0393583857e709c06d76a2441/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L91>`_
 
 
 .. code-block:: json
@@ -183,7 +212,7 @@ catch_all_cluster
 config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.Route
 ------------------------------------------------------------------
 
-`[config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.Route proto] <https://github.com/envoyproxy/envoy/blob/3b8e1764a6119dbc367710a80acb39e579b08d81/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L71>`_
+`[config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.Route proto] <https://github.com/envoyproxy/envoy/blob/dc3467adacb8f2b0393583857e709c06d76a2441/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L92>`_
 
 
 .. code-block:: json
