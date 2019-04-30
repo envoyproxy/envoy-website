@@ -10,7 +10,7 @@ gRPC-JSON transcoder :ref:`configuration overview <config_http_filters_grpc_json
 config.filter.http.transcoder.v2.GrpcJsonTranscoder
 ---------------------------------------------------
 
-`[config.filter.http.transcoder.v2.GrpcJsonTranscoder proto] <https://github.com/envoyproxy/envoy/blob/f0aedf04536f7e19a7053da2ebba4a25f642db2d/api/envoy/config/filter/http/transcoder/v2/transcoder.proto#L14>`_
+`[config.filter.http.transcoder.v2.GrpcJsonTranscoder proto] <https://github.com/envoyproxy/envoy/blob/68d8c9e604100e8465498759b86a53a1b9cff1ed/api/envoy/config/filter/http/transcoder/v2/transcoder.proto#L14>`_
 
 
 .. code-block:: json
@@ -21,7 +21,8 @@ config.filter.http.transcoder.v2.GrpcJsonTranscoder
     "services": [],
     "print_options": "{...}",
     "match_incoming_request_route": "...",
-    "ignored_query_parameters": []
+    "ignored_query_parameters": [],
+    "auto_mapping": "..."
   }
 
 .. _envoy_api_field_config.filter.http.transcoder.v2.GrpcJsonTranscoder.proto_descriptor:
@@ -102,12 +103,37 @@ ignored_query_parameters
   the same request to be mapped to ``GetShelf``.
   
   
+.. _envoy_api_field_config.filter.http.transcoder.v2.GrpcJsonTranscoder.auto_mapping:
+
+auto_mapping
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Whether to route methods without the ``google.api.http`` option.
+  
+  Example :
+  
+  .. code-block:: proto
+  
+      package bookstore;
+  
+      service Bookstore {
+        rpc GetShelf(GetShelfRequest) returns (Shelf) {}
+      }
+  
+      message GetShelfRequest {
+        int64 shelf = 1;
+      }
+  
+      message Shelf {}
+  
+  The client could ``post`` a json body ``{"shelf": 1234}`` with the path of
+  ``/bookstore.Bookstore/GetShelfRequest`` to call ``GetShelfRequest``.
+  
+  
 .. _envoy_api_msg_config.filter.http.transcoder.v2.GrpcJsonTranscoder.PrintOptions:
 
 config.filter.http.transcoder.v2.GrpcJsonTranscoder.PrintOptions
 ----------------------------------------------------------------
 
-`[config.filter.http.transcoder.v2.GrpcJsonTranscoder.PrintOptions proto] <https://github.com/envoyproxy/envoy/blob/f0aedf04536f7e19a7053da2ebba4a25f642db2d/api/envoy/config/filter/http/transcoder/v2/transcoder.proto#L36>`_
+`[config.filter.http.transcoder.v2.GrpcJsonTranscoder.PrintOptions proto] <https://github.com/envoyproxy/envoy/blob/68d8c9e604100e8465498759b86a53a1b9cff1ed/api/envoy/config/filter/http/transcoder/v2/transcoder.proto#L36>`_
 
 
 .. code-block:: json
