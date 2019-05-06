@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Redis &mdash; envoy 1.11.0-dev-61a7cb documentation</title>
+  <title>Redis &mdash; envoy 1.11.0-dev-ac1757 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.11.0-dev-61a7cb
+                1.11.0-dev-ac1757
               </div>
             
           
@@ -119,6 +119,7 @@
 <li class="toctree-l3"><a class="reference internal" href="dynamo.html">DynamoDB</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Redis</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#redis-cluster-support-experimental">Redis Cluster Support (Experimental)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#supported-commands">Supported commands</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#failure-modes">Failure modes</a></li>
 </ul>
@@ -258,6 +259,25 @@ cluster should be configured with a <a class="reference internal" href="../../ap
 <a class="reference internal" href="outlier.html#arch-overview-outlier-detection"><span class="std std-ref">outlier detection</span></a>.</p>
 <p>For the purposes of passive healthchecking, connect timeouts, command timeouts, and connection
 close map to 5xx. All other responses from Redis are counted as a success.</p>
+</div>
+<div class="section" id="redis-cluster-support-experimental">
+<h2>Redis Cluster Support (Experimental)<a class="headerlink" href="#redis-cluster-support-experimental" title="Permalink to this headline">¶</a></h2>
+<p>Envoy currently offers experimental support for <a class="reference external" href="https://redis.io/topics/cluster-spec">Redis Cluster</a>.</p>
+<p>When using Envoy as a sidecar proxy for a Redis Cluster, the service can use a non-cluster Redis client
+implemented in any language to connect to the proxy as if it’s a single node Redis instance.
+The Envoy proxy will keep track of the cluster topology and send commands to the correct Redis node in the
+cluster according to the <a class="reference external" href="https://redis.io/topics/cluster-spec">spec</a>. Advance features such as reading
+from replicas can also be added to the Envoy proxy instead of updating redis clients in each language.</p>
+<p>Envoy proxy tracks the topology of the cluster by sending periodic
+<a class="reference external" href="https://redis.io/commands/cluster-slots">cluster slots</a> commands to a random node in the cluster, and maintains the
+following information:</p>
+<ul class="simple">
+<li>List of known nodes.</li>
+<li>The masters for each shard.</li>
+<li>Nodes entering or leaving the cluster.</li>
+</ul>
+<p>For topology configuration details, see the Redis Cluster
+<a class="reference internal" href="../../api-v2/config/cluster/redis/redis_cluster.proto.html#envoy-api-msg-config-cluster-redis-redisclusterconfig"><span class="std std-ref">v2 API reference</span></a>.</p>
 </div>
 <div class="section" id="supported-commands">
 <h2>Supported commands<a class="headerlink" href="#supported-commands" title="Permalink to this headline">¶</a></h2>
