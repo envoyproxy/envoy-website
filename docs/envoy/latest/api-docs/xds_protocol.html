@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xDS REST and gRPC protocol &mdash; envoy 1.11.0-dev-ac0270 documentation</title>
+  <title>xDS REST and gRPC protocol &mdash; envoy 1.11.0-dev-8a5a83 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.11.0-dev-ac0270
+                1.11.0-dev-8a5a83
               </div>
             
           
@@ -98,8 +98,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#filesystem-subscriptions">Filesystem subscriptions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#streaming-grpc-subscriptions">Streaming gRPC subscriptions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#singleton-resource-type-discovery">Singleton resource type discovery</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#resource-update">Resource Update</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#resource-warming">Resource warming</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#aggregated-discovery-service-ads">Aggregated Discovery Service (ADS)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#aggregated-discovery-service">Aggregated Discovery Service</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#incremental-xds">Incremental xDS</a></li>
 </ul>
 </li>
@@ -176,7 +177,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="xds-rest-and-grpc-protocol">
-<h1>xDS REST and gRPC protocol<a class="headerlink" href="#xds-rest-and-grpc-protocol" title="Permalink to this headline">¶</a></h1>
+<span id="xds-protocol"></span><h1>xDS REST and gRPC protocol<a class="headerlink" href="#xds-rest-and-grpc-protocol" title="Permalink to this headline">¶</a></h1>
 <p>Envoy discovers its various dynamic resources via the filesystem or by
 querying one or more management servers. Collectively, these discovery
 services and their corresponding APIs are referred to as <em>xDS</em>.
@@ -203,7 +204,7 @@ an xDS API will continue to apply if an configuration update rejection
 occurs.</p>
 </div>
 <div class="section" id="streaming-grpc-subscriptions">
-<h2>Streaming gRPC subscriptions<a class="headerlink" href="#streaming-grpc-subscriptions" title="Permalink to this headline">¶</a></h2>
+<span id="xds-protocol-streaming-grpc-subscriptions"></span><h2>Streaming gRPC subscriptions<a class="headerlink" href="#streaming-grpc-subscriptions" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="singleton-resource-type-discovery">
 <h3>Singleton resource type discovery<a class="headerlink" href="#singleton-resource-type-discovery" title="Permalink to this headline">¶</a></h3>
 <p>A gRPC
@@ -212,8 +213,8 @@ can be specified independently for each xDS API, pointing at an upstream
 cluster corresponding to a management server. This will initiate an
 independent bidirectional gRPC stream for each xDS resource type,
 potentially to distinct management servers. API delivery is eventually
-consistent. See <a class="reference internal" href="#aggregated-discovery-service"><span class="std std-ref">Aggregated Discovery Service (ADS)</span></a> below for
-situations in which explicit control of sequencing is required.</p>
+consistent. See &lt;Aggregated Discovery Service&gt;`
+below for situations in which explicit control of sequencing is required.</p>
 <div class="section" id="type-urls">
 <h4>Type URLs<a class="headerlink" href="#type-urls" title="Permalink to this headline">¶</a></h4>
 <p>Each xDS API is concerned with resources of a given type. There is a 1:1
@@ -287,8 +288,11 @@ versioning across resource types. When ADS is not used, even each
 resource of a given resource type may have a distinct version, since the
 Envoy API allows distinct EDS/RDS resources to point at different <a class="reference internal" href="../api-v2/api/v2/core/config_source.proto.html#envoy-api-msg-core-configsource"><span class="std std-ref">ConfigSources</span></a>.</p>
 </div>
+</div>
+<div class="section" id="resource-update">
+<h3>Resource Update<a class="headerlink" href="#resource-update" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="when-to-send-an-update">
-<span id="resource-updates"></span><h4>When to send an update<a class="headerlink" href="#when-to-send-an-update" title="Permalink to this headline">¶</a></h4>
+<h4>When to send an update<a class="headerlink" href="#when-to-send-an-update" title="Permalink to this headline">¶</a></h4>
 <p>The management server should only send updates to the Envoy client when
 the resources in the <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryresponse"><span class="std std-ref">DiscoveryResponse</span></a> have changed. Envoy replies
 to any <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryresponse"><span class="std std-ref">DiscoveryResponse</span></a> with a <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryrequest"><span class="std std-ref">DiscoveryRequest</span></a> containing the
@@ -322,7 +326,7 @@ resources. <a class="reference internal" href="../api-v2/api/v2/discovery.proto.
 any superfluous resources. When a requested resource is missing in a RDS
 or EDS update, Envoy will retain the last known value for this resource
 except in the case where the <cite>Cluster</cite> or <cite>Listener</cite> is being
-warmed. See <a class="reference internal" href="#resource-warming"><span class="std std-ref">Resource warming</span></a> section below on
+warmed. See &lt;Resource Warming&gt; section below on
 the expectations during warming. The management server may be able to
 infer all the required EDS/RDS resources from the <a class="reference internal" href="../api-v2/api/v2/core/base.proto.html#envoy-api-msg-core-node"><span class="std std-ref">node</span></a>
 identification in the <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryrequest"><span class="std std-ref">DiscoveryRequest</span></a>, in which case this hint may
@@ -345,8 +349,8 @@ each request. Both sequence diagrams below are valid for fetching two
 EDS resources <cite>{foo, bar}</cite>:</p>
 <p><img alt="Multiple EDS requests on the same stream" src="../_images/eds-same-stream.svg" /> <img alt="Multiple EDS requests on distinct streams" src="../_images/eds-distinct-stream.svg" /></p>
 </div>
-<div class="section" id="id2">
-<h4>Resource updates<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="resource-updates">
+<h4>Resource updates<a class="headerlink" href="#resource-updates" title="Permalink to this headline">¶</a></h4>
 <p>As discussed above, Envoy may update the list of <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-resource-names"><span class="std std-ref">resource_names</span></a> it
 presents to the management server in each <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryrequest"><span class="std std-ref">DiscoveryRequest</span></a> that
 ACK/NACKs a specific <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryresponse"><span class="std std-ref">DiscoveryResponse</span></a>. In addition, Envoy may later
@@ -382,7 +386,7 @@ it issues.</p>
 </div>
 </div>
 <div class="section" id="resource-warming">
-<span id="id3"></span><h3>Resource warming<a class="headerlink" href="#resource-warming" title="Permalink to this headline">¶</a></h3>
+<span id="xds-protocol-resource-warming"></span><h3>Resource warming<a class="headerlink" href="#resource-warming" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference internal" href="../intro/arch_overview/cluster_manager.html#arch-overview-cluster-warming"><span class="std std-ref">Clusters</span></a> and
 <a class="reference internal" href="../configuration/listeners/lds.html#config-listeners-lds"><span class="std std-ref">Listeners</span></a>
 go through warming before they can serve requests. This process
@@ -397,7 +401,7 @@ server does not provide EDS/RDS responses, Envoy will not initialize
 itself during the initialization phase and the updates sent via CDS/LDS
 will not take effect until EDS/RDS responses are supplied.</p>
 <div class="section" id="eventual-consistency-considerations">
-<h4>Eventual consistency considerations<a class="headerlink" href="#eventual-consistency-considerations" title="Permalink to this headline">¶</a></h4>
+<span id="xds-protocol-eventual-consistency-considerations"></span><h4>Eventual consistency considerations<a class="headerlink" href="#eventual-consistency-considerations" title="Permalink to this headline">¶</a></h4>
 <p>Since Envoy’s xDS APIs are eventually consistent, traffic may drop
 briefly during updates. For example, if only cluster <strong>X</strong> is known via
 CDS/EDS, a <cite>RouteConfiguration</cite> references cluster <strong>X</strong> and is then
@@ -430,8 +434,8 @@ warmed, i.e., the management plane must ensure that clusters referenced
 by a route are in place, before pushing the updates for a route.</p>
 </div>
 </div>
-<div class="section" id="aggregated-discovery-service-ads">
-<span id="aggregated-discovery-service"></span><h3>Aggregated Discovery Service (ADS)<a class="headerlink" href="#aggregated-discovery-service-ads" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="aggregated-discovery-service">
+<span id="xds-protocol-ads"></span><h3>Aggregated Discovery Service<a class="headerlink" href="#aggregated-discovery-service" title="Permalink to this headline">¶</a></h3>
 <p>It’s challenging to provide the above guarantees on sequencing to avoid
 traffic drop when management servers are distributed. ADS allow a single
 management server, via a single gRPC stream, to deliver all API updates.
@@ -539,7 +543,7 @@ from the server, the client may have “forgotten” those resources despite
 apparently remaining subscribed.</p>
 </div>
 <div class="section" id="unsubscribing-from-resources">
-<h4>Unsubscribing from Resources<a class="headerlink" href="#unsubscribing-from-resources" title="Permalink to this headline">¶</a></h4>
+<span id="xds-protocol-unsubscribe"></span><h4>Unsubscribing from Resources<a class="headerlink" href="#unsubscribing-from-resources" title="Permalink to this headline">¶</a></h4>
 <p>When a client loses interest in some resources, it will indicate that
 with the <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-deltadiscoveryrequest-resource-names-unsubscribe"><span class="std std-ref">resource_names_unsubscribe</span></a> field of a
 <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-deltadiscoveryrequest"><span class="std std-ref">DeltaDiscoveryRequest</span></a>. As with <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-deltadiscoveryrequest-resource-names-subscribe"><span class="std std-ref">resource_names_subscribe</span></a>, these
@@ -564,8 +568,8 @@ is used to encode <a class="reference internal" href="../api-v2/api/v2/discovery
 messages. ADS is not available for REST-JSON polling.</p>
 <p>When the poll period is set to a small value, with the intention of long
 polling, then there is also a requirement to avoid sending a
-<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryresponse"><span class="std std-ref">DiscoveryResponse</span></a> <a class="reference internal" href="#resource-updates"><span class="std std-ref">unless a change to the underlying resources has
-occurred</span></a>.</p>
+<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryresponse"><span class="std std-ref">DiscoveryResponse</span></a> unless a change to the underlying resources has
+occurred &lt;Resource Update&gt;.</p>
 </div>
 </div>
 
