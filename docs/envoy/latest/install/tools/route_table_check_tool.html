@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Route table check tool &mdash; envoy 1.11.0-dev-f78295 documentation</title>
+  <title>Route table check tool &mdash; envoy 1.11.0-dev-cab4ce documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.11.0-dev-f78295
+                1.11.0-dev-cab4ce
               </div>
             
           
@@ -187,7 +187,17 @@ must reflect its file type (for instance, .json for JSON and .yaml for YAML).</l
 <li>A tool config JSON file. The tool config JSON file schema is found in
 <a class="reference internal" href="../../configuration/tools/router_check.html#config-tools-router-check-tool"><span class="std std-ref">config</span></a>.
 The tool config input file specifies urls (composed of authorities and paths)
-and expected route parameter values. Additional parameters such as additional headers are optional.</li>
+and expected route parameter values. Additional parameters such as additional headers are optional.
+Schema: All internal schemas in the tool are based on <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/cab4ce6920f365e8e106cde6b14bd9db0865858b/test/tools/router_check/validation.proto">proto3</a>.
+This is enabled by an extra optional parameter <code class="docutils literal notranslate"><span class="pre">--useproto</span></code>. This parameter will become the default in the future releases and enables more validation features in the tool.
+Any new feature addition in validations will be added behind this parameter.
+Migration: If you are currently using the tool and plan to migrate to use <code class="docutils literal notranslate"><span class="pre">--useproto</span></code>, change the yaml/json test’s schema based on the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/cab4ce6920f365e8e106cde6b14bd9db0865858b/test/tools/router_check/validation.proto">proto</a>.
+Few known changes necessary are:
+<code class="docutils literal notranslate"><span class="pre">:authority</span></code> input is now <code class="docutils literal notranslate"><span class="pre">authority</span></code>.
+<code class="docutils literal notranslate"><span class="pre">:path</span></code> input is now <code class="docutils literal notranslate"><span class="pre">path</span></code>.
+<code class="docutils literal notranslate"><span class="pre">:method</span></code> input is now <code class="docutils literal notranslate"><span class="pre">method</span></code>. This is a required property.
+<code class="docutils literal notranslate"><span class="pre">additional_headers</span></code> in the input along with <code class="docutils literal notranslate"><span class="pre">header_fields</span></code> and <code class="docutils literal notranslate"><span class="pre">custom_header_fields</span></code> contain <code class="docutils literal notranslate"><span class="pre">key</span></code> instead of <code class="docutils literal notranslate"><span class="pre">field</span></code>.
+<code class="docutils literal notranslate"><span class="pre">tests</span></code> is a root level field in the yaml/json.</li>
 </ol>
 </dd>
 <dt>Output</dt>
@@ -222,10 +232,13 @@ this may be added in future work.</p>
 expected order of command line arguments is:
 1. The router configuration file.
 2. The tool configuration json file.
-3. The optional details flag.</p>
+3. <code class="docutils literal notranslate"><span class="pre">--useproto</span></code> to use any new features in the tool.
+4. The optional details flag.</p>
 <div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bazel</span><span class="o">-</span><span class="nb">bin</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">router_check</span><span class="o">/</span><span class="n">router_check_tool</span> <span class="n">router_config</span><span class="o">.</span><span class="p">(</span><span class="n">yaml</span><span class="o">|</span><span class="n">json</span><span class="p">)</span> <span class="n">tool_config</span><span class="o">.</span><span class="n">json</span>
 
 <span class="n">bazel</span><span class="o">-</span><span class="nb">bin</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">router_check</span><span class="o">/</span><span class="n">router_check_tool</span> <span class="n">router_config</span><span class="o">.</span><span class="p">(</span><span class="n">yaml</span><span class="o">|</span><span class="n">json</span><span class="p">)</span> <span class="n">tool_config</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">details</span>
+
+<span class="n">bazel</span><span class="o">-</span><span class="nb">bin</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">router_check</span><span class="o">/</span><span class="n">router_check_tool</span> <span class="n">router_config</span><span class="o">.</span><span class="p">(</span><span class="n">yaml</span><span class="o">|</span><span class="n">json</span><span class="p">)</span> <span class="n">tool_config</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">details</span> <span class="o">--</span><span class="n">useproto</span>
 </pre></div>
 </div>
 </dd>
