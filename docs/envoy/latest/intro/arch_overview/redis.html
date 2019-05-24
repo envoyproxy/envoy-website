@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Redis &mdash; envoy 1.11.0-dev-4d4748 documentation</title>
+  <title>Redis &mdash; envoy 1.11.0-dev-316c33 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.11.0-dev-4d4748
+                1.11.0-dev-316c33
               </div>
             
           
@@ -236,6 +236,7 @@ requirements.</p>
 <li>Active and passive healthchecking.</li>
 <li>Hash tagging.</li>
 <li>Prefix routing.</li>
+<li>Separate downstream client and upstream server authentication.</li>
 </ul>
 <p><strong>Planned future enhancements</strong>:</p>
 <ul class="simple">
@@ -283,10 +284,13 @@ following information:</p>
 <h2>Supported commands<a class="headerlink" href="#supported-commands" title="Permalink to this headline">¶</a></h2>
 <p>At the protocol level, pipelines are supported. MULTI (transaction block) is not.
 Use pipelining wherever possible for the best performance.</p>
-<p>At the command level, Envoy only supports commands that can be reliably hashed to a server. PING
-is the only exception, which Envoy responds to immediately with PONG. Arguments to PING are not
-allowed. All other supported commands must contain a key. Supported commands are functionally
-identical to the original Redis command except possibly in failure scenarios.</p>
+<p>At the command level, Envoy only supports commands that can be reliably hashed to a server. AUTH and PING
+are the only exceptions. AUTH is processed locally by Envoy if a downstream password has been configured,
+and no other commands will be processed until authentication is successful when a password has been
+configured. Envoy will transparently issue AUTH commands upon connecting to upstream servers, if upstream
+authentication passwords are configured for the cluster. Envoy responds to PING immediately with PONG.
+Arguments to PING are not allowed. All other supported commands must contain a key. Supported commands are
+functionally identical to the original Redis command except possibly in failure scenarios.</p>
 <p>For details on each command’s usage see the official
 <a class="reference external" href="https://redis.io/commands">Redis command reference</a>.</p>
 <table border="1" class="colwidths-given docutils">
@@ -300,310 +304,313 @@ identical to the original Redis command except possibly in failure scenarios.</p
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>PING</td>
+<tr class="row-even"><td>AUTH</td>
+<td>Authentication</td>
+</tr>
+<tr class="row-odd"><td>PING</td>
 <td>Connection</td>
 </tr>
-<tr class="row-odd"><td>DEL</td>
+<tr class="row-even"><td>DEL</td>
 <td>Generic</td>
 </tr>
-<tr class="row-even"><td>DUMP</td>
+<tr class="row-odd"><td>DUMP</td>
 <td>Generic</td>
 </tr>
-<tr class="row-odd"><td>EXISTS</td>
+<tr class="row-even"><td>EXISTS</td>
 <td>Generic</td>
 </tr>
-<tr class="row-even"><td>EXPIRE</td>
+<tr class="row-odd"><td>EXPIRE</td>
 <td>Generic</td>
 </tr>
-<tr class="row-odd"><td>EXPIREAT</td>
+<tr class="row-even"><td>EXPIREAT</td>
 <td>Generic</td>
 </tr>
-<tr class="row-even"><td>PERSIST</td>
+<tr class="row-odd"><td>PERSIST</td>
 <td>Generic</td>
 </tr>
-<tr class="row-odd"><td>PEXPIRE</td>
+<tr class="row-even"><td>PEXPIRE</td>
 <td>Generic</td>
 </tr>
-<tr class="row-even"><td>PEXPIREAT</td>
+<tr class="row-odd"><td>PEXPIREAT</td>
 <td>Generic</td>
 </tr>
-<tr class="row-odd"><td>PTTL</td>
+<tr class="row-even"><td>PTTL</td>
 <td>Generic</td>
 </tr>
-<tr class="row-even"><td>RESTORE</td>
+<tr class="row-odd"><td>RESTORE</td>
 <td>Generic</td>
 </tr>
-<tr class="row-odd"><td>TOUCH</td>
+<tr class="row-even"><td>TOUCH</td>
 <td>Generic</td>
 </tr>
-<tr class="row-even"><td>TTL</td>
+<tr class="row-odd"><td>TTL</td>
 <td>Generic</td>
 </tr>
-<tr class="row-odd"><td>TYPE</td>
+<tr class="row-even"><td>TYPE</td>
 <td>Generic</td>
 </tr>
-<tr class="row-even"><td>UNLINK</td>
+<tr class="row-odd"><td>UNLINK</td>
 <td>Generic</td>
 </tr>
-<tr class="row-odd"><td>GEOADD</td>
+<tr class="row-even"><td>GEOADD</td>
 <td>Geo</td>
 </tr>
-<tr class="row-even"><td>GEODIST</td>
+<tr class="row-odd"><td>GEODIST</td>
 <td>Geo</td>
 </tr>
-<tr class="row-odd"><td>GEOHASH</td>
+<tr class="row-even"><td>GEOHASH</td>
 <td>Geo</td>
 </tr>
-<tr class="row-even"><td>GEOPOS</td>
+<tr class="row-odd"><td>GEOPOS</td>
 <td>Geo</td>
 </tr>
-<tr class="row-odd"><td>GEORADIUS_RO</td>
+<tr class="row-even"><td>GEORADIUS_RO</td>
 <td>Geo</td>
 </tr>
-<tr class="row-even"><td>GEORADIUSBYMEMBER_RO</td>
+<tr class="row-odd"><td>GEORADIUSBYMEMBER_RO</td>
 <td>Geo</td>
 </tr>
-<tr class="row-odd"><td>HDEL</td>
+<tr class="row-even"><td>HDEL</td>
 <td>Hash</td>
 </tr>
-<tr class="row-even"><td>HEXISTS</td>
+<tr class="row-odd"><td>HEXISTS</td>
 <td>Hash</td>
 </tr>
-<tr class="row-odd"><td>HGET</td>
+<tr class="row-even"><td>HGET</td>
 <td>Hash</td>
 </tr>
-<tr class="row-even"><td>HGETALL</td>
+<tr class="row-odd"><td>HGETALL</td>
 <td>Hash</td>
 </tr>
-<tr class="row-odd"><td>HINCRBY</td>
+<tr class="row-even"><td>HINCRBY</td>
 <td>Hash</td>
 </tr>
-<tr class="row-even"><td>HINCRBYFLOAT</td>
+<tr class="row-odd"><td>HINCRBYFLOAT</td>
 <td>Hash</td>
 </tr>
-<tr class="row-odd"><td>HKEYS</td>
+<tr class="row-even"><td>HKEYS</td>
 <td>Hash</td>
 </tr>
-<tr class="row-even"><td>HLEN</td>
+<tr class="row-odd"><td>HLEN</td>
 <td>Hash</td>
 </tr>
-<tr class="row-odd"><td>HMGET</td>
+<tr class="row-even"><td>HMGET</td>
 <td>Hash</td>
 </tr>
-<tr class="row-even"><td>HMSET</td>
+<tr class="row-odd"><td>HMSET</td>
 <td>Hash</td>
 </tr>
-<tr class="row-odd"><td>HSCAN</td>
+<tr class="row-even"><td>HSCAN</td>
 <td>Hash</td>
 </tr>
-<tr class="row-even"><td>HSET</td>
+<tr class="row-odd"><td>HSET</td>
 <td>Hash</td>
 </tr>
-<tr class="row-odd"><td>HSETNX</td>
+<tr class="row-even"><td>HSETNX</td>
 <td>Hash</td>
 </tr>
-<tr class="row-even"><td>HSTRLEN</td>
+<tr class="row-odd"><td>HSTRLEN</td>
 <td>Hash</td>
 </tr>
-<tr class="row-odd"><td>HVALS</td>
+<tr class="row-even"><td>HVALS</td>
 <td>Hash</td>
 </tr>
-<tr class="row-even"><td>LINDEX</td>
+<tr class="row-odd"><td>LINDEX</td>
 <td>List</td>
 </tr>
-<tr class="row-odd"><td>LINSERT</td>
+<tr class="row-even"><td>LINSERT</td>
 <td>List</td>
 </tr>
-<tr class="row-even"><td>LLEN</td>
+<tr class="row-odd"><td>LLEN</td>
 <td>List</td>
 </tr>
-<tr class="row-odd"><td>LPOP</td>
+<tr class="row-even"><td>LPOP</td>
 <td>List</td>
 </tr>
-<tr class="row-even"><td>LPUSH</td>
+<tr class="row-odd"><td>LPUSH</td>
 <td>List</td>
 </tr>
-<tr class="row-odd"><td>LPUSHX</td>
+<tr class="row-even"><td>LPUSHX</td>
 <td>List</td>
 </tr>
-<tr class="row-even"><td>LRANGE</td>
+<tr class="row-odd"><td>LRANGE</td>
 <td>List</td>
 </tr>
-<tr class="row-odd"><td>LREM</td>
+<tr class="row-even"><td>LREM</td>
 <td>List</td>
 </tr>
-<tr class="row-even"><td>LSET</td>
+<tr class="row-odd"><td>LSET</td>
 <td>List</td>
 </tr>
-<tr class="row-odd"><td>LTRIM</td>
+<tr class="row-even"><td>LTRIM</td>
 <td>List</td>
 </tr>
-<tr class="row-even"><td>RPOP</td>
+<tr class="row-odd"><td>RPOP</td>
 <td>List</td>
 </tr>
-<tr class="row-odd"><td>RPUSH</td>
+<tr class="row-even"><td>RPUSH</td>
 <td>List</td>
 </tr>
-<tr class="row-even"><td>RPUSHX</td>
+<tr class="row-odd"><td>RPUSHX</td>
 <td>List</td>
 </tr>
-<tr class="row-odd"><td>EVAL</td>
+<tr class="row-even"><td>EVAL</td>
 <td>Scripting</td>
 </tr>
-<tr class="row-even"><td>EVALSHA</td>
+<tr class="row-odd"><td>EVALSHA</td>
 <td>Scripting</td>
 </tr>
-<tr class="row-odd"><td>SADD</td>
+<tr class="row-even"><td>SADD</td>
 <td>Set</td>
 </tr>
-<tr class="row-even"><td>SCARD</td>
+<tr class="row-odd"><td>SCARD</td>
 <td>Set</td>
 </tr>
-<tr class="row-odd"><td>SISMEMBER</td>
+<tr class="row-even"><td>SISMEMBER</td>
 <td>Set</td>
 </tr>
-<tr class="row-even"><td>SMEMBERS</td>
+<tr class="row-odd"><td>SMEMBERS</td>
 <td>Set</td>
 </tr>
-<tr class="row-odd"><td>SPOP</td>
+<tr class="row-even"><td>SPOP</td>
 <td>Set</td>
 </tr>
-<tr class="row-even"><td>SRANDMEMBER</td>
+<tr class="row-odd"><td>SRANDMEMBER</td>
 <td>Set</td>
 </tr>
-<tr class="row-odd"><td>SREM</td>
+<tr class="row-even"><td>SREM</td>
 <td>Set</td>
 </tr>
-<tr class="row-even"><td>SSCAN</td>
+<tr class="row-odd"><td>SSCAN</td>
 <td>Set</td>
 </tr>
-<tr class="row-odd"><td>ZADD</td>
+<tr class="row-even"><td>ZADD</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-even"><td>ZCARD</td>
+<tr class="row-odd"><td>ZCARD</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-odd"><td>ZCOUNT</td>
+<tr class="row-even"><td>ZCOUNT</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-even"><td>ZINCRBY</td>
+<tr class="row-odd"><td>ZINCRBY</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-odd"><td>ZLEXCOUNT</td>
+<tr class="row-even"><td>ZLEXCOUNT</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-even"><td>ZRANGE</td>
+<tr class="row-odd"><td>ZRANGE</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-odd"><td>ZRANGEBYLEX</td>
+<tr class="row-even"><td>ZRANGEBYLEX</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-even"><td>ZRANGEBYSCORE</td>
+<tr class="row-odd"><td>ZRANGEBYSCORE</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-odd"><td>ZRANK</td>
+<tr class="row-even"><td>ZRANK</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-even"><td>ZREM</td>
+<tr class="row-odd"><td>ZREM</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-odd"><td>ZREMRANGEBYLEX</td>
+<tr class="row-even"><td>ZREMRANGEBYLEX</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-even"><td>ZREMRANGEBYRANK</td>
+<tr class="row-odd"><td>ZREMRANGEBYRANK</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-odd"><td>ZREMRANGEBYSCORE</td>
+<tr class="row-even"><td>ZREMRANGEBYSCORE</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-even"><td>ZREVRANGE</td>
+<tr class="row-odd"><td>ZREVRANGE</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-odd"><td>ZREVRANGEBYLEX</td>
+<tr class="row-even"><td>ZREVRANGEBYLEX</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-even"><td>ZREVRANGEBYSCORE</td>
+<tr class="row-odd"><td>ZREVRANGEBYSCORE</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-odd"><td>ZREVRANK</td>
+<tr class="row-even"><td>ZREVRANK</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-even"><td>ZPOPMIN</td>
+<tr class="row-odd"><td>ZPOPMIN</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-odd"><td>ZPOPMAX</td>
+<tr class="row-even"><td>ZPOPMAX</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-even"><td>ZSCAN</td>
+<tr class="row-odd"><td>ZSCAN</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-odd"><td>ZSCORE</td>
+<tr class="row-even"><td>ZSCORE</td>
 <td>Sorted Set</td>
 </tr>
-<tr class="row-even"><td>APPEND</td>
+<tr class="row-odd"><td>APPEND</td>
 <td>String</td>
 </tr>
-<tr class="row-odd"><td>BITCOUNT</td>
+<tr class="row-even"><td>BITCOUNT</td>
 <td>String</td>
 </tr>
-<tr class="row-even"><td>BITFIELD</td>
+<tr class="row-odd"><td>BITFIELD</td>
 <td>String</td>
 </tr>
-<tr class="row-odd"><td>BITPOS</td>
+<tr class="row-even"><td>BITPOS</td>
 <td>String</td>
 </tr>
-<tr class="row-even"><td>DECR</td>
+<tr class="row-odd"><td>DECR</td>
 <td>String</td>
 </tr>
-<tr class="row-odd"><td>DECRBY</td>
+<tr class="row-even"><td>DECRBY</td>
 <td>String</td>
 </tr>
-<tr class="row-even"><td>GET</td>
+<tr class="row-odd"><td>GET</td>
 <td>String</td>
 </tr>
-<tr class="row-odd"><td>GETBIT</td>
+<tr class="row-even"><td>GETBIT</td>
 <td>String</td>
 </tr>
-<tr class="row-even"><td>GETRANGE</td>
+<tr class="row-odd"><td>GETRANGE</td>
 <td>String</td>
 </tr>
-<tr class="row-odd"><td>GETSET</td>
+<tr class="row-even"><td>GETSET</td>
 <td>String</td>
 </tr>
-<tr class="row-even"><td>INCR</td>
+<tr class="row-odd"><td>INCR</td>
 <td>String</td>
 </tr>
-<tr class="row-odd"><td>INCRBY</td>
+<tr class="row-even"><td>INCRBY</td>
 <td>String</td>
 </tr>
-<tr class="row-even"><td>INCRBYFLOAT</td>
+<tr class="row-odd"><td>INCRBYFLOAT</td>
 <td>String</td>
 </tr>
-<tr class="row-odd"><td>MGET</td>
+<tr class="row-even"><td>MGET</td>
 <td>String</td>
 </tr>
-<tr class="row-even"><td>MSET</td>
+<tr class="row-odd"><td>MSET</td>
 <td>String</td>
 </tr>
-<tr class="row-odd"><td>PSETEX</td>
+<tr class="row-even"><td>PSETEX</td>
 <td>String</td>
 </tr>
-<tr class="row-even"><td>SET</td>
+<tr class="row-odd"><td>SET</td>
 <td>String</td>
 </tr>
-<tr class="row-odd"><td>SETBIT</td>
+<tr class="row-even"><td>SETBIT</td>
 <td>String</td>
 </tr>
-<tr class="row-even"><td>SETEX</td>
+<tr class="row-odd"><td>SETEX</td>
 <td>String</td>
 </tr>
-<tr class="row-odd"><td>SETNX</td>
+<tr class="row-even"><td>SETNX</td>
 <td>String</td>
 </tr>
-<tr class="row-even"><td>SETRANGE</td>
+<tr class="row-odd"><td>SETRANGE</td>
 <td>String</td>
 </tr>
-<tr class="row-odd"><td>STRLEN</td>
+<tr class="row-even"><td>STRLEN</td>
 <td>String</td>
 </tr>
 </tbody>
@@ -653,6 +660,17 @@ responded with a response that not conform to the Redis protocol.</td>
 <tr class="row-even"><td>wrong number of arguments for command</td>
 <td>Certain commands check in Envoy that the number of
 arguments is correct.</td>
+</tr>
+<tr class="row-odd"><td>NOAUTH Authentication required.</td>
+<td>The command was rejected because a downstream authentication
+password has been set and the client has not successfully authenticated.</td>
+</tr>
+<tr class="row-even"><td>ERR invalid password</td>
+<td>The authentication command failed due to an invalid password.</td>
+</tr>
+<tr class="row-odd"><td>ERR Client sent AUTH, but no password is set</td>
+<td>An authentication command was received, but no
+downstream authentication password has been configured.</td>
 </tr>
 </tbody>
 </table>

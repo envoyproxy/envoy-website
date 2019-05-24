@@ -10,7 +10,7 @@ Redis Proxy :ref:`configuration overview <config_network_filters_redis_proxy>`.
 config.filter.network.redis_proxy.v2.RedisProxy
 -----------------------------------------------
 
-`[config.filter.network.redis_proxy.v2.RedisProxy proto] <https://github.com/envoyproxy/envoy/blob/4d4748ea243e0ab0538bcb0894a64bb0da617b55/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L17>`_
+`[config.filter.network.redis_proxy.v2.RedisProxy proto] <https://github.com/envoyproxy/envoy/blob/316c33b1649972391481cd1d6bbe12f8fa658f98/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L19>`_
 
 
 .. code-block:: json
@@ -20,7 +20,8 @@ config.filter.network.redis_proxy.v2.RedisProxy
     "cluster": "...",
     "settings": "{...}",
     "latency_in_micros": "...",
-    "prefix_routes": "{...}"
+    "prefix_routes": "{...}",
+    "downstream_auth_password": "{...}"
   }
 
 .. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.stat_prefix:
@@ -88,12 +89,25 @@ prefix_routes
   configuring the backing clusters.
   
   
+.. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.downstream_auth_password:
+
+downstream_auth_password
+  (:ref:`core.DataSource <envoy_api_msg_core.DataSource>`) Authenticate Redis client connections locally by forcing downstream clients to issue a 'Redis
+  AUTH command <https://redis.io/commands/auth>`_ with this password before enabling any other
+  command. If an AUTH command's password matches this password, an "OK" response will be returned
+  to the client. If the AUTH command password does not match this password, then an "ERR invalid
+  password" error will be returned. If any other command is received before AUTH when this
+  password is set, then a "NOAUTH Authentication required." error response will be sent to the
+  client. If an AUTH command is received when the password is not set, then an "ERR Client sent
+  AUTH, but no password is set" error will be returned.
+  
+  
 .. _envoy_api_msg_config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings:
 
 config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings
 ----------------------------------------------------------------
 
-`[config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings proto] <https://github.com/envoyproxy/envoy/blob/4d4748ea243e0ab0538bcb0894a64bb0da617b55/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L33>`_
+`[config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings proto] <https://github.com/envoyproxy/envoy/blob/316c33b1649972391481cd1d6bbe12f8fa658f98/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L35>`_
 
 Redis connection pool settings.
 
@@ -177,7 +191,7 @@ buffer_flush_timeout
 config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes
 ------------------------------------------------------------
 
-`[config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes proto] <https://github.com/envoyproxy/envoy/blob/4d4748ea243e0ab0538bcb0894a64bb0da617b55/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L91>`_
+`[config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes proto] <https://github.com/envoyproxy/envoy/blob/316c33b1649972391481cd1d6bbe12f8fa658f98/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L93>`_
 
 
 .. code-block:: json
@@ -212,7 +226,7 @@ catch_all_cluster
 config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.Route
 ------------------------------------------------------------------
 
-`[config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.Route proto] <https://github.com/envoyproxy/envoy/blob/4d4748ea243e0ab0538bcb0894a64bb0da617b55/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L92>`_
+`[config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.Route proto] <https://github.com/envoyproxy/envoy/blob/316c33b1649972391481cd1d6bbe12f8fa658f98/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L94>`_
 
 
 .. code-block:: json
@@ -244,4 +258,30 @@ cluster
   
 
 
+
+
+.. _envoy_api_msg_config.filter.network.redis_proxy.v2.RedisProtocolOptions:
+
+config.filter.network.redis_proxy.v2.RedisProtocolOptions
+---------------------------------------------------------
+
+`[config.filter.network.redis_proxy.v2.RedisProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/316c33b1649972391481cd1d6bbe12f8fa658f98/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L160>`_
+
+RedisProtocolOptions specifies Redis upstream protocol options. This object is used in
+:ref:`extension_protocol_options<envoy_api_field_Cluster.extension_protocol_options>`, keyed
+by the name `envoy.redis_proxy`.
+
+.. code-block:: json
+
+  {
+    "auth_password": "{...}"
+  }
+
+.. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProtocolOptions.auth_password:
+
+auth_password
+  (:ref:`core.DataSource <envoy_api_msg_core.DataSource>`) Upstream server password as defined by the `requirepass directive
+  <https://redis.io/topics/config>`_ in the server's configuration file.
+  
+  
 
