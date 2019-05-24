@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP routing &mdash; envoy 1.11.0-dev-b2fd5e documentation</title>
+  <title>HTTP routing &mdash; envoy 1.11.0-dev-4d4748 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.11.0-dev-b2fd5e
+                1.11.0-dev-4d4748
               </div>
             
           
@@ -101,6 +101,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">HTTP routing</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#route-table">Route table</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#retry-semantics">Retry semantics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#request-hedging">Request Hedging</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#priority-routing">Priority routing</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#direct-responses">Direct responses</a></li>
 </ul>
@@ -247,6 +248,7 @@ the DNS name of the selected upstream host.</li>
 route configuration.</li>
 <li>Request timeout specified either via <a class="reference internal" href="../../configuration/http_filters/router_filter.html#config-http-filters-router-headers-consumed"><span class="std std-ref">HTTP
 header</span></a> or via <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-timeout"><span class="std std-ref">route configuration</span></a>.</li>
+<li><a class="reference internal" href="#arch-overview-http-routing-hedging"><span class="std std-ref">Request hedging</span></a> for retries in response to a request (per try) timeout.</li>
 <li>Traffic shifting from one upstream cluster to another via <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routematch-runtime-fraction"><span class="std std-ref">runtime values</span></a> (see <a class="reference internal" href="../../configuration/http_conn_man/traffic_splitting.html#config-http-conn-man-route-table-traffic-splitting"><span class="std std-ref">traffic shifting/splitting</span></a>).</li>
 <li>Traffic splitting across multiple upstream clusters using <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-weighted-clusters"><span class="std std-ref">weight/percentage-based routing</span></a> (see <a class="reference internal" href="../../configuration/http_conn_man/traffic_splitting.html#config-http-conn-man-route-table-traffic-splitting-split"><span class="std std-ref">traffic shifting/splitting</span></a>).</li>
 <li>Arbitrary header matching <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-msg-route-headermatcher"><span class="std std-ref">routing rules</span></a>.</li>
@@ -288,6 +290,22 @@ attempted host is selected), while a
 configured to adjust the priority load used when selecting a priority for retries.</li>
 </ul>
 <p>Note that retries may be disabled depending on the contents of the <a class="reference internal" href="../../configuration/http_filters/router_filter.html#config-http-filters-router-x-envoy-overloaded-consumed"><span class="std std-ref">x-envoy-overloaded</span></a>.</p>
+</div>
+<div class="section" id="request-hedging">
+<span id="arch-overview-http-routing-hedging"></span><h2>Request Hedging<a class="headerlink" href="#request-hedging" title="Permalink to this headline">¶</a></h2>
+<p>Envoy supports request hedging which can be enabled by specifying a <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-msg-route-hedgepolicy"><span class="std std-ref">hedge
+policy</span></a>. This means that Envoy will race
+multiple simultaneous upstream requests and return the response associated with
+the first acceptable response headers to the downstream. The retry policy is
+used to determine whether a response should be returned or whether more
+responses should be awaited.</p>
+<p>Currently hedging can only be performed in response to a request timeout. This
+means that a retry request will be issued without canceling the initial
+timed-out request and a late response will be awaited. The first “good”
+response according to retry policy will be returned downstream.</p>
+<p>The implementation ensures that the same upstream request is not retried twice.
+This might otherwise occur if a request times out and then results in a 5xx
+response, creating two retriable events.</p>
 </div>
 <div class="section" id="priority-routing">
 <span id="arch-overview-http-routing-priority"></span><h2>Priority routing<a class="headerlink" href="#priority-routing" title="Permalink to this headline">¶</a></h2>
