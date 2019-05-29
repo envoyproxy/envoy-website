@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>IP Transparency &mdash; envoy 1.11.0-dev-e25bb8 documentation</title>
+  <title>IP Transparency &mdash; envoy 1.11.0-dev-712a72 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.11.0-dev-e25bb8
+                1.11.0-dev-712a72
               </div>
             
           
@@ -130,6 +130,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#http-headers">HTTP Headers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#proxy-protocol">Proxy Protocol</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#original-source-listener-filter">Original Source Listener Filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#original-source-http-filter">Original Source HTTP Filter</a></li>
 </ul>
 </li>
 </ul>
@@ -237,7 +238,9 @@ These techniques vary in complexity and applicability.</p>
 <h2>HTTP Headers<a class="headerlink" href="#http-headers" title="Permalink to this headline">¶</a></h2>
 <p>HTTP headers may carry the original IP address of the request in the
 <a class="reference internal" href="../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a> header. The upstream server
-can use this header to determine the downstream remote address.</p>
+can use this header to determine the downstream remote address. Envoy may also use this header to
+choose the IP address used by the
+<a class="reference internal" href="#arch-overview-ip-transparency-original-src-http"><span class="std std-ref">Original Src HTTP Filter</span></a>.</p>
 <p>The HTTP header approach has a few downsides:</p>
 <ul class="simple">
 <li>It is only applicable to HTTP.</li>
@@ -274,6 +277,26 @@ all deployments due to routing constraints.</p>
 <p>Some drawbacks to the Original Source filter:</p>
 <ul class="simple">
 <li>It requires that Envoy have access to the downstream remote address.</li>
+<li>Its configuration is relatively complex.</li>
+<li>It may introduce a slight performance hit due to restrictions on connection pooling.</li>
+</ul>
+</div>
+<div class="section" id="original-source-http-filter">
+<span id="arch-overview-ip-transparency-original-src-http"></span><h2>Original Source HTTP Filter<a class="headerlink" href="#original-source-http-filter" title="Permalink to this headline">¶</a></h2>
+<p>In controlled deployments, it may be possible to replicate the downstream remote address on the
+upstream connection by using a
+<a class="reference internal" href="../../configuration/http_filters/original_src_filter.html#config-http-filters-original-src"><span class="std std-ref">Original Source HTTP filter</span></a>. This filter operates much like
+the <a class="reference internal" href="#arch-overview-ip-transparency-original-src-listener"><span class="std std-ref">Original Src Listener Filter</span></a>. The
+main difference is that it can infer the original source address from HTTP headers, which is important
+for cases where a single downstream connection carries multiple HTTP requests from different original
+source addresses. Deployments with a front proxy forwarding to sidecar proxies are examples where case
+applies.</p>
+<p>This filter will work with any upstream HTTP host. However, it requires fairly complex configuration,
+and it may not be supported in all deployments due to routing constraints.</p>
+<p>Some drawbacks to the Original Source filter:</p>
+<ul class="simple">
+<li>It requires that Envoy be properly configured to extract the downstream remote address from the
+<a class="reference internal" href="../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a> header.</li>
 <li>Its configuration is relatively complex.</li>
 <li>It may introduce a slight performance hit due to restrictions on connection pooling.</li>
 </ul>
