@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Runtime &mdash; envoy 1.11.0-dev-cbcb07 documentation</title>
+  <title>Runtime &mdash; envoy 1.11.0-dev-4dafba documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.11.0-dev-cbcb07
+                1.11.0-dev-4dafba
               </div>
             
           
@@ -111,6 +111,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#admin-console">Admin console</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#atomicity">Atomicity</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#protobuf-and-json-representation">Protobuf and JSON representation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#comments">Comments</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#using-runtime-overrides-for-deprecated-features">Using runtime overrides for deprecated features</a></li>
@@ -207,7 +208,21 @@ of local file system, static bootstrap configuration and admin console derived o
 <span id="config-virtual-filesystem"></span><h2>Virtual file system<a class="headerlink" href="#virtual-file-system" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="layering">
 <span id="config-runtime-layering"></span><h3>Layering<a class="headerlink" href="#layering" title="Permalink to this headline">¶</a></h3>
-<p>The runtime can be viewed as virtual file system consisting of multiple layers:</p>
+<p>The runtime can be viewed as a virtual file system consisting of multiple layers. The <a class="reference internal" href="../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-msg-config-bootstrap-v2-layeredruntime"><span class="std std-ref">layered
+runtime</span></a> bootstrap configuration specifies this
+layering. Runtime settings in later layers override earlier layers. A typical configuration might
+be:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">layers</span><span class="p p-Indicator">:</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">static_layer</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">health_check</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">min_interval</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">disk_layer</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">symlink_root</span><span class="p p-Indicator">:</span> <span class="nv">/srv/runtime/current/envoy</span> <span class="p p-Indicator">}</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">disk_layer</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">symlink_root</span><span class="p p-Indicator">:</span> <span class="nv">/srv/runtime/current/envoy_override</span><span class="p p-Indicator">,</span> <span class="nv">append_service_cluster</span><span class="p p-Indicator">:</span> <span class="nv">true</span> <span class="p p-Indicator">}</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">admin_layer</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{}</span>
+</pre></div>
+</div>
+<p>In the deprecated <a class="reference internal" href="../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-msg-config-bootstrap-v2-runtime"><span class="std std-ref">runtime</span></a> bootstrap
+configuration, the layering was implicit and fixed:</p>
 <ol class="arabic simple">
 <li><a class="reference internal" href="#config-runtime-bootstrap"><span class="std std-ref">Static bootstrap configuration</span></a></li>
 <li><a class="reference internal" href="#config-runtime-local-disk"><span class="std std-ref">Local disk file system</span></a></li>
@@ -237,21 +252,34 @@ disk, it is rooted at <em>symlink_root</em> +
 <em>subdirectory</em>. For example, the <em>health_check.min_interval</em> key would have the following full
 file system path (using the symbolic link):</p>
 <p><code class="docutils literal notranslate"><span class="pre">/srv/runtime/current/envoy/health_check/min_interval</span></code></p>
-<p>Assume that the folder <code class="docutils literal notranslate"><span class="pre">/srv/runtime/v1</span></code> points to the actual file system path where global
-runtime configurations are stored. The following would be a typical configuration setting for
-runtime:</p>
+<div class="section" id="overrides">
+<span id="config-runtime-local-disk-overrides"></span><h4>Overrides<a class="headerlink" href="#overrides" title="Permalink to this headline">¶</a></h4>
+<p>An arbitrary number of disk file system layers can be overlaid in the <a class="reference internal" href="../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-msg-config-bootstrap-v2-layeredruntime"><span class="std std-ref">layered
+runtime</span></a> bootstrap configuration.</p>
+<p>In the deprecated <a class="reference internal" href="../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-msg-config-bootstrap-v2-runtime"><span class="std std-ref">runtime</span></a> bootstrap configuration,
+there was a distinguished file system override. Assume that the folder <code class="docutils literal notranslate"><span class="pre">/srv/runtime/v1</span></code> points to
+the actual file system path where global runtime configurations are stored. The following would be a
+typical configuration setting for runtime:</p>
 <ul class="simple">
 <li><em>symlink_root</em>: <code class="docutils literal notranslate"><span class="pre">/srv/runtime/current</span></code></li>
 <li><em>subdirectory</em>: <code class="docutils literal notranslate"><span class="pre">envoy</span></code></li>
 <li><em>override_subdirectory</em>: <code class="docutils literal notranslate"><span class="pre">envoy_override</span></code></li>
 </ul>
 <p>Where <code class="docutils literal notranslate"><span class="pre">/srv/runtime/current</span></code> is a symbolic link to <code class="docutils literal notranslate"><span class="pre">/srv/runtime/v1</span></code>.</p>
-<p>The <em>override_subdirectory</em> is used along with the <a class="reference internal" href="../operations/cli.html#cmdoption-service-cluster"><code class="xref std std-option docutils literal notranslate"><span class="pre">--service-cluster</span></code></a> CLI option. Assume
+</div>
+<div class="section" id="cluster-specific-subdirectories">
+<span id="config-runtime-local-disk-service-cluster-subdirs"></span><h4>Cluster-specific subdirectories<a class="headerlink" href="#cluster-specific-subdirectories" title="Permalink to this headline">¶</a></h4>
+<p>In the deprecated <a class="reference internal" href="../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-msg-config-bootstrap-v2-runtime"><span class="std std-ref">runtime</span></a> bootstrap configuration,
+the <em>override_subdirectory</em> is used along with the <a class="reference internal" href="../operations/cli.html#cmdoption-service-cluster"><code class="xref std std-option docutils literal notranslate"><span class="pre">--service-cluster</span></code></a> CLI option. Assume
 that <a class="reference internal" href="../operations/cli.html#cmdoption-service-cluster"><code class="xref std std-option docutils literal notranslate"><span class="pre">--service-cluster</span></code></a> has been set to <code class="docutils literal notranslate"><span class="pre">my-cluster</span></code>. Envoy will first look for the
 <em>health_check.min_interval</em> key in the following full file system path:</p>
 <p><code class="docutils literal notranslate"><span class="pre">/srv/runtime/current/envoy_override/my-cluster/health_check/min_interval</span></code></p>
 <p>If found, the value will override any value found in the primary lookup path. This allows the user
 to customize the runtime values for individual clusters on top of global defaults.</p>
+<p>With the <a class="reference internal" href="../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-msg-config-bootstrap-v2-layeredruntime"><span class="std std-ref">layered runtime</span></a> bootstrap
+configuration, it is possible to specialize on service cluster via the <a class="reference internal" href="../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-field-config-bootstrap-v2-runtimelayer-disklayer-append-service-cluster"><span class="std std-ref">append_service_cluster</span></a> option at any
+disk layer.</p>
+</div>
 <div class="section" id="updating-runtime-values-via-symbolic-link-swap">
 <span id="config-runtime-symbolic-link-swap"></span><h4>Updating runtime values via symbolic link swap<a class="headerlink" href="#updating-runtime-values-via-symbolic-link-swap" title="Permalink to this headline">¶</a></h4>
 <p>There are two steps to update any runtime value. First, create a hard copy of the entire runtime
@@ -276,7 +304,24 @@ built into the code, except for any values added via <cite>/runtime_modify</cite
 Changes are effectively immediately. It is <strong>critical</strong> that the admin interface is <a class="reference internal" href="../operations/admin.html#operations-admin-interface-security"><span class="std std-ref">properly
 secured</span></a>.</p>
 </div>
+<p>At most one admin layer may be specified. If a non-empty <a class="reference internal" href="../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-msg-config-bootstrap-v2-layeredruntime"><span class="std std-ref">layered runtime</span></a> bootstrap configuration is specified with an
+absent admin layer, any mutating admin console actions will elicit a 503 response.</p>
 </div>
+</div>
+<div class="section" id="atomicity">
+<span id="config-runtime-atomicity"></span><h2>Atomicity<a class="headerlink" href="#atomicity" title="Permalink to this headline">¶</a></h2>
+<p>The runtime will reload and a new snapshot will be generated in a variety of situations, i.e.:</p>
+<ul class="simple">
+<li>When a file move operation is detected under the symlink root or the symlink root changes.</li>
+<li>When an admin console override is added or modified.</li>
+</ul>
+<p>All runtime layers are evaluated during a snapshot. Layers with errors are ignored and excluded from
+the effective layers, see <a class="reference internal" href="#runtime-stats"><span class="std std-ref">num_layers</span></a>. Walking the symlink root will take a
+non-zero amount of time, so if true atomicity is desired, the runtime directory should be immutable
+and symlink changes should be used to orchestrate updates.</p>
+<p>Disk layers with the same symlink root will only trigger a single refresh when a file movement is
+detected. Disk layers with overlapping symlink root paths that are not identical may trigger
+multiple reloads when a file movement is detected.</p>
 </div>
 <div class="section" id="protobuf-and-json-representation">
 <span id="config-runtime-proto-json"></span><h2>Protobuf and JSON representation<a class="headerlink" href="#protobuf-and-json-representation" title="Permalink to this headline">¶</a></h2>
@@ -304,14 +349,14 @@ otherwise empty file to keep a placeholder for deployment in a time of need.</p>
 <div class="section" id="using-runtime-overrides-for-deprecated-features">
 <h2>Using runtime overrides for deprecated features<a class="headerlink" href="#using-runtime-overrides-for-deprecated-features" title="Permalink to this headline">¶</a></h2>
 <p>The Envoy runtime is also a part of the Envoy feature deprecation process.</p>
-<p>As described in the Envoy <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/cbcb07295b09995003e9d17853b802a58236bf46/CONTRIBUTING.md#breaking-change-policy">breaking change policy</a>,
+<p>As described in the Envoy <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/4dafba65baaf9769723f895761268eed31af629b/CONTRIBUTING.md#breaking-change-policy">breaking change policy</a>,
 feature deprecation in Envoy is in 3 phases: warn-by-default, fail-by-default, and code removal.</p>
 <p>In the first phase, Envoy logs a warning to the warning log that the feature is deprecated and
 increments the <a class="reference internal" href="#runtime-stats"><span class="std std-ref">deprecated_feature_use</span></a> runtime stat.
 Users are encouraged to go to <a class="reference internal" href="../intro/deprecated.html#deprecated"><span class="std std-ref">deprecated</span></a> to see how to
 migrate to the new code path and make sure it is suitable for their use case.</p>
 <p>In the second phase the message and filename will be added to
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/cbcb07295b09995003e9d17853b802a58236bf46/source/common/runtime/runtime_features.cc">runtime_features.cc</a>
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/4dafba65baaf9769723f895761268eed31af629b/source/common/runtime/runtime_features.cc">runtime_features.cc</a>
 and use of that configuration field will cause the config to be rejected by default.
 This fail-by-default mode can be overridden in runtime configuration by setting
 envoy.deprecated_features.filename.proto:fieldname to true. For example, for a deprecated field
@@ -337,29 +382,37 @@ code paths are flushed out ahead of time, rather than after the code is removed!
 </tr>
 </thead>
 <tbody valign="top">
+<tr class="row-even"><td>admin_overrides_active</td>
+<td>Gauge</td>
+<td>1 if any admin overrides are active otherwise 0</td>
+</tr>
+<tr class="row-odd"><td>deprecated_feature_use</td>
+<td>Counter</td>
+<td>Total number of times deprecated features were used</td>
+</tr>
 <tr class="row-even"><td>load_error</td>
 <td>Counter</td>
-<td>Total number of load attempts that resulted in an error</td>
+<td>Total number of load attempts that resulted in an error in any layer</td>
 </tr>
-<tr class="row-odd"><td>override_dir_not_exists</td>
+<tr class="row-odd"><td>load_success</td>
 <td>Counter</td>
-<td>Total number of loads that did not use an override directory</td>
+<td>Total number of load attempts that were successful at all layers</td>
+</tr>
+<tr class="row-even"><td>num_keys</td>
+<td>Gauge</td>
+<td>Number of keys currently loaded</td>
+</tr>
+<tr class="row-odd"><td>num_layers</td>
+<td>Gauge</td>
+<td>Number of layers currently active (without loading errors)</td>
 </tr>
 <tr class="row-even"><td>override_dir_exists</td>
 <td>Counter</td>
 <td>Total number of loads that did use an override directory</td>
 </tr>
-<tr class="row-odd"><td>load_success</td>
+<tr class="row-odd"><td>override_dir_not_exists</td>
 <td>Counter</td>
-<td>Total number of load attempts that were successful</td>
-</tr>
-<tr class="row-even"><td>deprecated_feature_use</td>
-<td>Counter</td>
-<td>Total number of times deprecated features were used.</td>
-</tr>
-<tr class="row-odd"><td>num_keys</td>
-<td>Gauge</td>
-<td>Number of keys currently loaded</td>
+<td>Total number of loads that did not use an override directory</td>
 </tr>
 </tbody>
 </table>
