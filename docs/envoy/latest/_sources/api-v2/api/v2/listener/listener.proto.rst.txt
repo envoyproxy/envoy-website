@@ -10,7 +10,7 @@ Listener :ref:`configuration overview <config_listeners>`
 listener.Filter
 ---------------
 
-`[listener.Filter proto] <https://github.com/envoyproxy/envoy/blob/cd8d3423fecc6dca12c5ad98aaa8c3462bf8f1ac/api/envoy/api/v2/listener/listener.proto#L26>`_
+`[listener.Filter proto] <https://github.com/envoyproxy/envoy/blob/866d0438d12ce9d39afb35ba200b0107bf3d6de3/api/envoy/api/v2/listener/listener.proto#L26>`_
 
 
 .. code-block:: json
@@ -63,7 +63,7 @@ typed_config
 listener.FilterChainMatch
 -------------------------
 
-`[listener.FilterChainMatch proto] <https://github.com/envoyproxy/envoy/blob/cd8d3423fecc6dca12c5ad98aaa8c3462bf8f1ac/api/envoy/api/v2/listener/listener.proto#L77>`_
+`[listener.FilterChainMatch proto] <https://github.com/envoyproxy/envoy/blob/866d0438d12ce9d39afb35ba200b0107bf3d6de3/api/envoy/api/v2/listener/listener.proto#L79>`_
 
 Specifies the match criteria for selecting a specific filter chain for a
 listener.
@@ -80,6 +80,8 @@ The following order applies:
 4. Transport protocol.
 5. Application protocols (e.g. ALPN for TLS protocol).
 6. Source type (e.g. any, local or external network).
+7. Source IP address.
+8. Source port.
 
 For criteria that allow ranges or wildcards, the most specific value in any
 of the configured filter chains that matches the incoming connection is going
@@ -94,6 +96,8 @@ chain without ``server_names`` requirements).
     "destination_port": "{...}",
     "prefix_ranges": [],
     "source_type": "...",
+    "source_prefix_ranges": [],
+    "source_ports": [],
     "server_names": [],
     "transport_protocol": "...",
     "application_protocols": []
@@ -121,8 +125,23 @@ source_type
   (:ref:`listener.FilterChainMatch.ConnectionSourceType <envoy_api_enum_listener.FilterChainMatch.ConnectionSourceType>`) Specifies the connection source IP match type. Can be any, local or external network.
   
   
+.. _envoy_api_field_listener.FilterChainMatch.source_prefix_ranges:
 
+source_prefix_ranges
+  (:ref:`core.CidrRange <envoy_api_msg_core.CidrRange>`) The criteria is satisfied if the source IP address of the downstream
+  connection is contained in at least one of the specified subnets. If the
+  parameter is not specified or the list is empty, the source IP address is
+  ignored.
+  
+  
+.. _envoy_api_field_listener.FilterChainMatch.source_ports:
 
+source_ports
+  (`uint32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The criteria is satisfied if the source port of the downstream connection
+  is contained in at least one of the specified ports. If the parameter is
+  not specified, the source port is ignored.
+  
+  
 .. _envoy_api_field_listener.FilterChainMatch.server_names:
 
 server_names
@@ -185,7 +204,7 @@ application_protocols
 Enum listener.FilterChainMatch.ConnectionSourceType
 ---------------------------------------------------
 
-`[listener.FilterChainMatch.ConnectionSourceType proto] <https://github.com/envoyproxy/envoy/blob/cd8d3423fecc6dca12c5ad98aaa8c3462bf8f1ac/api/envoy/api/v2/listener/listener.proto#L94>`_
+`[listener.FilterChainMatch.ConnectionSourceType proto] <https://github.com/envoyproxy/envoy/blob/866d0438d12ce9d39afb35ba200b0107bf3d6de3/api/envoy/api/v2/listener/listener.proto#L96>`_
 
 
 .. _envoy_api_enum_value_listener.FilterChainMatch.ConnectionSourceType.ANY:
@@ -212,7 +231,7 @@ EXTERNAL
 listener.FilterChain
 --------------------
 
-`[listener.FilterChain proto] <https://github.com/envoyproxy/envoy/blob/cd8d3423fecc6dca12c5ad98aaa8c3462bf8f1ac/api/envoy/api/v2/listener/listener.proto#L172>`_
+`[listener.FilterChain proto] <https://github.com/envoyproxy/envoy/blob/866d0438d12ce9d39afb35ba200b0107bf3d6de3/api/envoy/api/v2/listener/listener.proto#L172>`_
 
 A filter chain wraps a set of match criteria, an option TLS context, a set of filters, and
 various other parameters.
@@ -273,7 +292,7 @@ transport_socket
 listener.ListenerFilter
 -----------------------
 
-`[listener.ListenerFilter proto] <https://github.com/envoyproxy/envoy/blob/cd8d3423fecc6dca12c5ad98aaa8c3462bf8f1ac/api/envoy/api/v2/listener/listener.proto#L200>`_
+`[listener.ListenerFilter proto] <https://github.com/envoyproxy/envoy/blob/866d0438d12ce9d39afb35ba200b0107bf3d6de3/api/envoy/api/v2/listener/listener.proto#L200>`_
 
 
 .. code-block:: json
