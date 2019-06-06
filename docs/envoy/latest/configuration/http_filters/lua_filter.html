@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Lua &mdash; envoy 1.11.0-dev-350a35 documentation</title>
+  <title>Lua &mdash; envoy 1.11.0-dev-974919 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.11.0-dev-350a35
+                1.11.0-dev-974919
               </div>
             
           
@@ -227,7 +227,7 @@
 <p class="first admonition-title">Attention</p>
 <p class="last">By default Envoy is built without exporting symbols that you may need when interacting with Lua
 modules installed as shared objects. Envoy may need to be built with support for exported symbols.
-Please see the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/350a35f2ac685c4958934466a90b40f876968f99/bazel/README.md">Bazel docs</a> for more information.</p>
+Please see the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/9749194de54b5c83b6c1e0e40e4402d631bc14be/bazel/README.md">Bazel docs</a> for more information.</p>
 </div>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
@@ -338,7 +338,7 @@ more details on the supported API.</p>
 </div>
 <div class="section" id="complete-example">
 <span id="config-http-filters-lua-stream-handle-api"></span><h2>Complete example<a class="headerlink" href="#complete-example" title="Permalink to this headline">¶</a></h2>
-<p>A complete example using Docker is available in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/350a35f2ac685c4958934466a90b40f876968f99//examples/lua">/examples/lua</a>.</p>
+<p>A complete example using Docker is available in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/9749194de54b5c83b6c1e0e40e4402d631bc14be//examples/lua">/examples/lua</a>.</p>
 </div>
 <div class="section" id="stream-handle-api">
 <h2>Stream handle API<a class="headerlink" href="#stream-handle-api" title="Permalink to this headline">¶</a></h2>
@@ -475,7 +475,7 @@ under the filter name i.e. <em>envoy.lua</em>. Below is an example of a <em>meta
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">streamInfo</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">streamInfo</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/350a35f2ac685c4958934466a90b40f876968f99/include/envoy/stream_info/stream_info.h">information</a> related to the current request.</p>
+<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/9749194de54b5c83b6c1e0e40e4402d631bc14be/include/envoy/stream_info/stream_info.h">information</a> related to the current request.</p>
 <p>Returns a <a class="reference internal" href="#config-http-filters-lua-stream-info-wrapper"><span class="std std-ref">stream info object</span></a>.</p>
 </div>
 <div class="section" id="connection">
@@ -483,8 +483,27 @@ under the filter name i.e. <em>envoy.lua</em>. Below is an example of a <em>meta
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">connection</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">connection</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Returns the current request’s underlying <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/350a35f2ac685c4958934466a90b40f876968f99/include/envoy/network/connection.h">connection</a>.</p>
+<p>Returns the current request’s underlying <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/9749194de54b5c83b6c1e0e40e4402d631bc14be/include/envoy/network/connection.h">connection</a>.</p>
 <p>Returns a <a class="reference internal" href="#config-http-filters-lua-connection-wrapper"><span class="std std-ref">connection object</span></a>.</p>
+</div>
+<div class="section" id="importpublickey">
+<h3>importPublicKey()<a class="headerlink" href="#importpublickey" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">pubkey</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">importPublicKey</span><span class="p">(</span><span class="n">keyder</span><span class="p">,</span> <span class="n">keyderLength</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Returns public key which is used by <a class="reference internal" href="#verify-signature"><span class="std std-ref">verifySignature</span></a> to verify digital signature.</p>
+</div>
+<div class="section" id="verifysignature">
+<span id="verify-signature"></span><h3>verifySignature()<a class="headerlink" href="#verifysignature" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">ok</span><span class="p">,</span> <span class="nb">error</span> <span class="o">=</span> <span class="n">verifySignature</span><span class="p">(</span><span class="n">hashFunction</span><span class="p">,</span> <span class="n">pubkey</span><span class="p">,</span> <span class="n">signature</span><span class="p">,</span> <span class="n">signatureLength</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dataLength</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Verify signature using provided parameters. <em>hashFunction</em> is the variable for hash function which be used
+for verifying signature. <em>SHA1</em>, <em>SHA224</em>, <em>SHA256</em>, <em>SHA384</em> and <em>SHA512</em> are supported.
+<em>pubkey</em> is the public key. <em>signature</em> is the signature to be verified. <em>signatureLength</em> is
+the length of the signature. <em>data</em> is the content which will be hashed. <em>dataLength</em> is the length of data.</p>
+<p>The function returns a pair. If the first element is <em>true</em>, the second element will be empty
+which means signature is verified; otherwise, the second element will store the error message.</p>
 </div>
 </div>
 <div class="section" id="header-object-api">
@@ -584,7 +603,7 @@ key. <em>value</em> is <em>metadata</em> entry value.</p>
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">streamInfo</span><span class="p">:</span><span class="n">protocol</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Returns the string representation of <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/350a35f2ac685c4958934466a90b40f876968f99/include/envoy/http/protocol.h">HTTP protocol</a>
+<p>Returns the string representation of <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/9749194de54b5c83b6c1e0e40e4402d631bc14be/include/envoy/http/protocol.h">HTTP protocol</a>
 used by the current request. The possible values are: <em>HTTP/1.0</em>, <em>HTTP/1.1</em>, and <em>HTTP/2</em>.</p>
 </div>
 <div class="section" id="dynamicmetadata">
@@ -637,7 +656,7 @@ key. <em>value</em> is <em>dynamicMetadata</em> entry value.</p>
 <span class="kr">end</span>
 </pre></div>
 </div>
-<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/350a35f2ac685c4958934466a90b40f876968f99/include/envoy/ssl/connection.h">SSL connection</a> object when the connection is
+<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/9749194de54b5c83b6c1e0e40e4402d631bc14be/include/envoy/ssl/connection.h">SSL connection</a> object when the connection is
 secured and <em>nil</em> when it is not.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
