@@ -54,7 +54,6 @@ Item | Path
 :----|:----
 Home page content | [`_data/home.yml`](./_data/home.yml)
 Nav links on the main page | [`_data/nav.yml`](./_data/nav.yml)
-
 Documentation (auto-generated) | [`docs`](./docs)
 
 ### Creating New Pages
