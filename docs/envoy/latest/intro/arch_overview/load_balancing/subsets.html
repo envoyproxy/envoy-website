@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Load Balancer Subsets &mdash; envoy 1.11.0-dev-9c80af documentation</title>
+  <title>Load Balancer Subsets &mdash; envoy 1.11.0-dev-1a60b3 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.11.0-dev-9c80af
+                1.11.0-dev-1a60b3
               </div>
             
           
@@ -239,7 +239,8 @@ specifies no metadata or no subset matching the metadata exists, the subset load
 its fallback policy. The default policy is <code class="docutils literal notranslate"><span class="pre">NO_FALLBACK</span></code>, in which case the request fails as if
 the cluster had no hosts. Conversely, the <code class="docutils literal notranslate"><span class="pre">ANY_ENDPOINT</span></code> fallback policy load balances across all
 hosts in the cluster, without regard to host metadata. Finally, the <code class="docutils literal notranslate"><span class="pre">DEFAULT_SUBSET</span></code> causes
-fallback to load balance among hosts that match a specific set of metadata.</p>
+fallback to load balance among hosts that match a specific set of metadata. It is possible to
+override fallback policy for specific subset selector.</p>
 <p>Subsets must be predefined to allow the subset load balancer to efficiently select the correct
 subset of hosts. Each definition is a set of keys, which translates to zero or more
 subsets. Conceptually, each host that has a metadata value for all of the keys in a definition is
@@ -307,6 +308,7 @@ associated with a cluster:</p>
     <span class="o">-</span> <span class="n">stage</span>
   <span class="o">-</span> <span class="n">keys</span><span class="p">:</span>
     <span class="o">-</span> <span class="n">stage</span>
+    <span class="n">fallback_policy</span><span class="p">:</span> <span class="n">NO_FALLBACK</span>
 </pre></div>
 </div>
 <p>The following table describes some routes and the result of their application to the
@@ -314,9 +316,9 @@ cluster. Typically the match criteria would be used with routes matching specifi
 request, such as the path or header information.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="29%" />
-<col width="17%" />
-<col width="55%" />
+<col width="21%" />
+<col width="12%" />
+<col width="67%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Match Criteria</th>
@@ -344,6 +346,10 @@ request, such as the path or header information.</p>
 <tr class="row-even"><td>(none)</td>
 <td>host1, host2</td>
 <td>Fallback: No subset requested</td>
+</tr>
+<tr class="row-odd"><td>stage: test</td>
+<td>empty cluster</td>
+<td>As fallback policy is overriden per selector with “NO_FALLBACK” value</td>
 </tr>
 </tbody>
 </table>
