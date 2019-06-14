@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>How do I handle transient failures? &mdash; envoy 1.11.0-dev-2d33ea documentation</title>
+  <title>How do I handle transient failures? &mdash; envoy 1.11.0-dev-f1597d documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                1.11.0-dev-2d33ea
+                1.11.0-dev-f1597d
               </div>
             
           
@@ -188,7 +188,7 @@ and resiliency of services but also brings in consistency in terms of the behavi
 used together to handle these scenarios.</p>
 <div class="section" id="circuit-breaking">
 <h2>Circuit Breaking<a class="headerlink" href="#circuit-breaking" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="../intro/arch_overview/circuit_breaking.html#arch-overview-circuit-break"><span class="std std-ref">Circuit Breaking</span></a> is a critical component of distributed systems.
+<p><a class="reference internal" href="../intro/arch_overview/upstream/circuit_breaking.html#arch-overview-circuit-break"><span class="std std-ref">Circuit Breaking</span></a> is a critical component of distributed systems.
 Circuit breaking lets applications configure failure thresholds that ensure safe maximums, allowing components
 to fail quickly and apply back pressure as soon as possible. Applying correct circuit breaking thresholds helps
 to save resources which otherwise are wasted in waiting for requests (timeouts) or retrying requests unnecessarily.
@@ -208,18 +208,18 @@ of requests are retried, how many times the request should be retried, timeouts 
 <ul class="simple">
 <li><em>CANCELLED</em> - Return this code if there is an error that can be retried in the service.</li>
 <li><em>RESOURCE_EXHAUSTED</em> - Return this code if some of the resources that service depends on are exhausted in that instance so that retrying
-to another instance would help. Please note that for shared resource exhaustion, returning this will not help. Instead <a class="reference internal" href="../intro/arch_overview/global_rate_limiting.html#arch-overview-rate-limit"><span class="std std-ref">rate limiting</span></a>
+to another instance would help. Please note that for shared resource exhaustion, returning this will not help. Instead <a class="reference internal" href="../intro/arch_overview/other_features/global_rate_limiting.html#arch-overview-rate-limit"><span class="std std-ref">rate limiting</span></a>
 should be used to handle such cases.</li>
 </ul>
 <p>The HTTP Status codes <em>502 (Bad Gateway)</em>, <em>503 (Service Unavailable)</em> and <em>504 (Gateway Timeout)</em> are all mapped to gRPC status code <em>UNAVAILABLE</em>.
 This can also be considered safe for automatic retry.</p>
 <p>The idempotency of a request is an important consideration when configuring retries.</p>
-<p>Envoy also supports extensions to its retry policies. The <a class="reference internal" href="../intro/arch_overview/http_connection_management.html#arch-overview-http-retry-plugins"><span class="std std-ref">retry plugins</span></a>
+<p>Envoy also supports extensions to its retry policies. The <a class="reference internal" href="../intro/arch_overview/http/http_connection_management.html#arch-overview-http-retry-plugins"><span class="std std-ref">retry plugins</span></a>
 allow you to customize the Envoy retry implementation to your application.</p>
 </div>
 <div class="section" id="outlier-detection">
 <h2>Outlier Detection<a class="headerlink" href="#outlier-detection" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="../intro/arch_overview/outlier.html#arch-overview-outlier-detection"><span class="std std-ref">Outlier detection</span></a> is a way of dynamically detecting misbehaving hosts
+<p><a class="reference internal" href="../intro/arch_overview/upstream/outlier.html#arch-overview-outlier-detection"><span class="std std-ref">Outlier detection</span></a> is a way of dynamically detecting misbehaving hosts
 in the upstream cluster. By detecting such hosts and ejecting them for a temporary period of time from the healthy
 load balancing set, Envoy can increase the success rate of a cluster. Envoy supports configuring outlier detection
 based on continuous <em>5xx</em>, continuous gateway failures and success rate.</p>
@@ -273,7 +273,7 @@ of times the host has been ejected).</p>
 </pre></div>
 </div>
 <p>The request will be retried based on the conditions documented in <em>retry_on</em>. This setting also configures Envoy to use
-<a class="reference internal" href="../intro/arch_overview/http_connection_management.html#arch-overview-http-retry-plugins"><span class="std std-ref">Previous Host Retry Predicate</span></a> that allows it to choose a different
+<a class="reference internal" href="../intro/arch_overview/http/http_connection_management.html#arch-overview-http-retry-plugins"><span class="std std-ref">Previous Host Retry Predicate</span></a> that allows it to choose a different
 host than the host where previous request has failed, because typically failures on that same host are likely to continue
 for some time and immediate retry would have less chance of success.</p>
 </div>
