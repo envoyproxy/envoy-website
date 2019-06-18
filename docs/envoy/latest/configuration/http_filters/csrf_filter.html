@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>CSRF &mdash; envoy 1.11.0-dev-154d7a documentation</title>
+  <title>CSRF &mdash; envoy 1.11.0-dev-a4953e documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.11.0-dev-154d7a
+                1.11.0-dev-a4953e
               </div>
             
           
@@ -99,6 +99,7 @@
 <li class="toctree-l3"><a class="reference internal" href="buffer_filter.html">Buffer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cors_filter.html">CORS</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">CSRF</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#configuration">Configuration</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#runtime">Runtime</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#statistics">Statistics</a></li>
 </ul>
@@ -232,7 +233,8 @@ a request originated from the same host.
 * The origin that the request is going to (target origin).</p>
 <p>When the filter is evaluating a request, it ensures both pieces of information are present
 and compares their values. If the source origin is missing or the origins do not match
-the request is rejected.</p>
+the request is rejected. The exception to this being if the source origin has been
+added to the policy as valid.</p>
 <blockquote>
 <div><div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -254,6 +256,25 @@ fall back to the host and port value from the requests Referer header.</p>
 </div>
 </li>
 </ul>
+<div class="section" id="configuration">
+<span id="csrf-configuration"></span><h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<p>The CSRF filter supports the ability to extend the source origins it will consider
+valid. The reason it is able to do this while still mitigating cross-site request
+forgery attempts is because the target origin has already been reached by the time
+front-envoy is applying the filter. This means that while endpoints may support
+cross-origin requests they are still protected from malicious third-parties who
+have not been whitelisted.</p>
+<p>It’s important to note that requests should generally originate from the same
+origin as the target but there are use cases where that may not be possible.
+For example, if you are hosting a static site on a third-party vendor but need
+to make requests for tracking purposes.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Additional origins can be either an exact string, regex pattern, prefix string,
+or suffix string. It’s advised to be cautious when adding regex, prefix, or suffix
+origins since an ambiguous origin can pose a security vulnerability.</p>
+</div>
+</div>
 <div class="section" id="runtime">
 <span id="csrf-runtime"></span><h2>Runtime<a class="headerlink" href="#runtime" title="Permalink to this headline">¶</a></h2>
 <p>The CSRF filter supports the following RuntimeFractionalPercent settings:</p>
