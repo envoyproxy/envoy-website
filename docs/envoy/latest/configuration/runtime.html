@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Runtime &mdash; envoy 1.11.0-dev-329008 documentation</title>
+  <title>Runtime &mdash; envoy 1.11.0-dev-07da33 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.11.0-dev-329008
+                1.11.0-dev-07da33
               </div>
             
           
@@ -108,6 +108,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#file-system-layout">File system layout</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#static-bootstrap">Static bootstrap</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#local-disk-file-system">Local disk file system</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#runtime-discovery-service-rtds">runTime Discovery Service (RTDS)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#admin-console">Admin console</a></li>
 </ul>
 </li>
@@ -200,7 +201,7 @@
 <span id="config-runtime"></span><h1>Runtime<a class="headerlink" href="#runtime" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="../intro/arch_overview/operations/runtime.html#arch-overview-runtime"><span class="std std-ref">runtime configuration</span></a> specifies a virtual file system tree that
 contains re-loadable configuration elements. This virtual file system can be realized via a series
-of local file system, static bootstrap configuration and admin console derived overlays.</p>
+of local file system, static bootstrap configuration, RTDS and admin console derived overlays.</p>
 <ul class="simple">
 <li><a class="reference internal" href="../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-msg-config-bootstrap-v2-runtime"><span class="std std-ref">v2 API reference</span></a></li>
 </ul>
@@ -291,6 +292,12 @@ old tree to the new runtime tree, using the equivalent of the following command:
 <p>It’s beyond the scope of this document how the file system data is deployed, garbage collected, etc.</p>
 </div>
 </div>
+<div class="section" id="runtime-discovery-service-rtds">
+<span id="config-runtime-rtds"></span><h3>runTime Discovery Service (RTDS)<a class="headerlink" href="#runtime-discovery-service-rtds" title="Permalink to this headline">¶</a></h3>
+<p>One or more runtime layers may be specified and delivered by specifying a <a class="reference internal" href="../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-field-config-bootstrap-v2-runtimelayer-rtds-layer"><span class="std std-ref">rtds_layer</span></a>. This points the runtime layer at a
+regular <a class="reference internal" href="../api-docs/xds_protocol.html#xds-protocol"><span class="std std-ref">xDS</span></a> endpoint, subscribing to a single xDS resource for the given
+layer. The resource type for these layers is a <a class="reference internal" href="../api-v2/service/discovery/v2/rtds.proto.html#envoy-api-msg-service-discovery-v2-runtime"><span class="std std-ref">Runtime message</span></a>.</p>
+</div>
 <div class="section" id="admin-console">
 <span id="config-runtime-admin"></span><h3>Admin console<a class="headerlink" href="#admin-console" title="Permalink to this headline">¶</a></h3>
 <p>Values can be viewed at the
@@ -349,14 +356,14 @@ otherwise empty file to keep a placeholder for deployment in a time of need.</p>
 <div class="section" id="using-runtime-overrides-for-deprecated-features">
 <h2>Using runtime overrides for deprecated features<a class="headerlink" href="#using-runtime-overrides-for-deprecated-features" title="Permalink to this headline">¶</a></h2>
 <p>The Envoy runtime is also a part of the Envoy feature deprecation process.</p>
-<p>As described in the Envoy <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/3290085f92706ba23205e26d6354a87d421cfd33/CONTRIBUTING.md#breaking-change-policy">breaking change policy</a>,
+<p>As described in the Envoy <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/07da3346bee84a7762052d9ce9f343a009ae994f/CONTRIBUTING.md#breaking-change-policy">breaking change policy</a>,
 feature deprecation in Envoy is in 3 phases: warn-by-default, fail-by-default, and code removal.</p>
 <p>In the first phase, Envoy logs a warning to the warning log that the feature is deprecated and
 increments the <a class="reference internal" href="#runtime-stats"><span class="std std-ref">deprecated_feature_use</span></a> runtime stat.
 Users are encouraged to go to <a class="reference internal" href="../intro/deprecated.html#deprecated"><span class="std std-ref">deprecated</span></a> to see how to
 migrate to the new code path and make sure it is suitable for their use case.</p>
 <p>In the second phase the message and filename will be added to
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/3290085f92706ba23205e26d6354a87d421cfd33/source/common/runtime/runtime_features.cc">runtime_features.cc</a>
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/07da3346bee84a7762052d9ce9f343a009ae994f/source/common/runtime/runtime_features.cc">runtime_features.cc</a>
 and use of that configuration field will cause the config to be rejected by default.
 This fail-by-default mode can be overridden in runtime configuration by setting
 envoy.deprecated_features.filename.proto:fieldname to true. For example, for a deprecated field
