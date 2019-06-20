@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Global rate limiting &mdash; envoy 1.11.0-dev-2d810b documentation</title>
+  <title>Role Based Access Control &mdash; envoy 1.11.0-dev-2d810b documentation</title>
   
 
   
@@ -30,8 +30,8 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Scripting" href="scripting.html" />
-    <link rel="prev" title="Other features" href="other_features.html" /> 
+    <link rel="next" title="Operations &amp; configuration" href="../operations/operations.html" />
+    <link rel="prev" title="Authorization Service" href="../../../api-v2/service/auth/v2/external_auth.proto.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -94,14 +94,14 @@
 <li class="toctree-l3"><a class="reference internal" href="../http/http.html">HTTP</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../upstream/upstream.html">Upstream clusters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../observability/observability.html">Observability</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../security/security.html">Security</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../operations/operations.html">Operations &amp; configuration</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="other_features.html">Other features</a><ul class="current">
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Global rate limiting</a></li>
-<li class="toctree-l4"><a class="reference internal" href="scripting.html">Scripting</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ip_transparency.html">IP Transparency</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="security.html">Security</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ssl.html">TLS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ext_authz_filter.html">External Authorization</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Role Based Access Control</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../operations/operations.html">Operations &amp; configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../other_features/other_features.html">Other features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../other_protocols/other_protocols.html">Other protocols</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../advanced/advanced.html">Advanced</a></li>
 </ul>
@@ -169,15 +169,15 @@
         
           <li><a href="../arch_overview.html">Architecture overview</a> &raquo;</li>
         
-          <li><a href="other_features.html">Other features</a> &raquo;</li>
+          <li><a href="security.html">Security</a> &raquo;</li>
         
-      <li>Global rate limiting</li>
+      <li>Role Based Access Control</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/intro/arch_overview/other_features/global_rate_limiting.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/intro/arch_overview/security/rbac_filter.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -190,32 +190,36 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="global-rate-limiting">
-<span id="arch-overview-rate-limit"></span><h1>Global rate limiting<a class="headerlink" href="#global-rate-limiting" title="Permalink to this headline">¶</a></h1>
-<p>Although distributed <a class="reference internal" href="../upstream/circuit_breaking.html#arch-overview-circuit-break"><span class="std std-ref">circuit breaking</span></a> is generally extremely
-effective in controlling throughput in distributed systems, there are times when it is not very
-effective and global rate limiting is desired. The most common case is when a large number of hosts
-are forwarding to a small number of hosts and the average request latency is low (e.g.,
-connections/requests to a database server). If the target hosts become backed up, the downstream
-hosts will overwhelm the upstream cluster. In this scenario it is extremely difficult to configure a
-tight enough circuit breaking limit on each downstream host such that the system will operate
-normally during typical request patterns but still prevent cascading failure when the system starts
-to fail. Global rate limiting is a good solution for this case.</p>
-<p>Envoy integrates directly with a global gRPC rate limiting service. Although any service that
-implements the defined RPC/IDL protocol can be used, Lyft provides a <a class="reference external" href="https://github.com/lyft/ratelimit">reference implementation</a>
-written in Go which uses a Redis backend. Envoy’s rate limit integration has the following features:</p>
+  <div class="section" id="role-based-access-control">
+<span id="arch-overview-rbac"></span><h1>Role Based Access Control<a class="headerlink" href="#role-based-access-control" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><strong>Network level rate limit filter</strong>: Envoy will call the rate limit service for every new
-connection on the listener where the filter is installed. The configuration specifies a specific
-domain and descriptor set to rate limit on. This has the ultimate effect of rate limiting the
-connections per second that transit the listener. <a class="reference internal" href="../../../configuration/network_filters/rate_limit_filter.html#config-network-filters-rate-limit"><span class="std std-ref">Configuration reference</span></a>.</li>
-<li><strong>HTTP level rate limit filter</strong>: Envoy will call the rate limit service for every new request on
-the listener where the filter is installed and where the route table specifies that the global
-rate limit service should be called. All requests to the target upstream cluster as well as all
-requests from the originating cluster to the target cluster can be rate limited.
-<a class="reference internal" href="../../../configuration/http_filters/rate_limit_filter.html#config-http-filters-rate-limit"><span class="std std-ref">Configuration reference</span></a></li>
+<li><a class="reference internal" href="../../../configuration/network_filters/rbac_filter.html#config-network-filters-rbac"><span class="std std-ref">Network filter configuration</span></a>.</li>
+<li><a class="reference internal" href="../../../configuration/http_filters/rbac_filter.html#config-http-filters-rbac"><span class="std std-ref">HTTP filter configuration</span></a>.</li>
 </ul>
-<p>Rate limit service <a class="reference internal" href="../../../configuration/rate_limit.html#config-rate-limit-service"><span class="std std-ref">configuration</span></a>.</p>
+<p>The Role Based Access Control (RBAC) filter checks if the incoming request is authorized or not.
+Unlike external authorization, the check of RBAC filter happens in the Envoy process and is
+based on a list of policies from the filter config.</p>
+<p>The RBAC filter can be either configured as a <a class="reference internal" href="../../../configuration/network_filters/rbac_filter.html#config-network-filters-rbac"><span class="std std-ref">network filter</span></a>,
+or as a <a class="reference internal" href="../../../configuration/http_filters/rbac_filter.html#config-http-filters-rbac"><span class="std std-ref">HTTP filter</span></a> or both. If the request is deemed unauthorized
+by the network filter then the connection will be closed. If the request is deemed unauthorized by
+the HTTP filter the request will be denied with 403 (Forbidden) response.</p>
+<div class="section" id="policy">
+<h2>Policy<a class="headerlink" href="#policy" title="Permalink to this headline">¶</a></h2>
+<p>The RBAC filter checks the request based on a list of
+<a class="reference internal" href="../../../api-v2/config/rbac/v2/rbac.proto.html#envoy-api-field-config-rbac-v2-rbac-policies"><span class="std std-ref">policies</span></a>. A policy consists of a list of
+<a class="reference internal" href="../../../api-v2/config/rbac/v2/rbac.proto.html#envoy-api-msg-config-rbac-v2-permission"><span class="std std-ref">permissions</span></a> and
+<a class="reference internal" href="../../../api-v2/config/rbac/v2/rbac.proto.html#envoy-api-msg-config-rbac-v2-principal"><span class="std std-ref">principals</span></a>. The permission specifies the actions of
+the request, for example, the method and path of a HTTP request. The principal specifies the
+downstream client identities of the request, for example, the URI SAN of the downstream client
+certificate. A policy is matched if its permissions and principals are matched at the same time.</p>
+</div>
+<div class="section" id="shadow-policy">
+<h2>Shadow Policy<a class="headerlink" href="#shadow-policy" title="Permalink to this headline">¶</a></h2>
+<p>The filter can be configured with a
+<a class="reference internal" href="../../../api-v2/config/filter/http/rbac/v2/rbac.proto.html#envoy-api-field-config-filter-http-rbac-v2-rbac-shadow-rules"><span class="std std-ref">shadow policy</span></a> that doesn’t
+have any effect (i.e. not deny the request) but only emit stats and log the result. This is useful
+for testing a rule before applying in production.</p>
+</div>
 </div>
 
 
@@ -226,10 +230,10 @@ requests from the originating cluster to the target cluster can be rate limited.
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="scripting.html" class="btn btn-neutral float-right" title="Scripting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../operations/operations.html" class="btn btn-neutral float-right" title="Operations &amp; configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="other_features.html" class="btn btn-neutral" title="Other features" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../../../api-v2/service/auth/v2/external_auth.proto.html" class="btn btn-neutral" title="Authorization Service" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
