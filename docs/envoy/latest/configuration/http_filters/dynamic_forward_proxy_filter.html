@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Dynamic forward proxy &mdash; envoy 1.11.0-dev-cad2e1 documentation</title>
+  <title>Dynamic forward proxy &mdash; envoy 1.11.0-dev-ccf66c documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.11.0-dev-cad2e1
+                1.11.0-dev-ccf66c
               </div>
             
           
@@ -99,7 +99,10 @@
 <li class="toctree-l3"><a class="reference internal" href="buffer_filter.html">Buffer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cors_filter.html">CORS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="csrf_filter.html">CSRF</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Dynamic forward proxy</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Dynamic forward proxy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#statistics">Statistics</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="dynamodb_filter.html">DynamoDB</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ext_authz_filter.html">External Authorization</a></li>
 <li class="toctree-l3"><a class="reference internal" href="fault_filter.html">Fault Injection</a></li>
@@ -212,13 +215,13 @@
 <span id="config-http-filters-dynamic-forward-proxy"></span><h1>Dynamic forward proxy<a class="headerlink" href="#dynamic-forward-proxy" title="Permalink to this headline">¶</a></h1>
 <div class="admonition attention">
 <p class="first admonition-title">Attention</p>
-<p class="last">HTTP dynamic forward proxy support should be considered alpha and not production ready. Stats
-as well as circuit breakers are missing and will be added soon.</p>
+<p class="last">HTTP dynamic forward proxy support should be considered alpha and not production ready. Circuit
+breakers are missing and will be added soon.</p>
 </div>
 <ul class="simple">
 <li>HTTP dynamic forward proxy <a class="reference internal" href="../../intro/arch_overview/http/http_proxy.html#arch-overview-http-dynamic-forward-proxy"><span class="std std-ref">architecture overview</span></a></li>
 <li><a class="reference internal" href="../../api-v2/config/filter/http/dynamic_forward_proxy/v2alpha/dynamic_forward_proxy.proto.html#envoy-api-msg-config-filter-http-dynamic-forward-proxy-v2alpha-filterconfig"><span class="std std-ref">v2 API reference</span></a></li>
-<li>This filter should be configured with the name <em>envoy.filters.http.dynamic_forward_proxy</em>.</li>
+<li>This filter should be configured with the name <em>envoy.filters.http.dynamic_forward_proxy</em></li>
 </ul>
 <p>The following is a complete configuration that configures both the
 <a class="reference internal" href="../../api-v2/config/filter/http/dynamic_forward_proxy/v2alpha/dynamic_forward_proxy.proto.html#envoy-api-msg-config-filter-http-dynamic-forward-proxy-v2alpha-filterconfig"><span class="std std-ref">dynamic forward proxy HTTP filter</span></a>
@@ -295,6 +298,54 @@ Use with care until full support for per-host validation is implemented.</p>
         <span class="l l-Scalar l-Scalar-Plain">validation_context</span><span class="p p-Indicator">:</span>
           <span class="l l-Scalar l-Scalar-Plain">trusted_ca</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span><span class="nv">filename</span><span class="p p-Indicator">:</span> <span class="nv">/etc/ssl/certs/ca-certificates.crt</span><span class="p p-Indicator">}</span>
 </pre></div>
+</div>
+<div class="section" id="statistics">
+<h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
+<p>The dynamic forward proxy DNS cache outputs statistics in the dns_cache.&lt;dns_cache_name&gt;.*
+namespace.</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>dns_query_attempt</td>
+<td>Counter</td>
+<td>Number of DNS query attempts.</td>
+</tr>
+<tr class="row-odd"><td>dns_query_success</td>
+<td>Counter</td>
+<td>Number of DNS query successes.</td>
+</tr>
+<tr class="row-even"><td>dns_query_failure</td>
+<td>Counter</td>
+<td>Number of DNS query failures.</td>
+</tr>
+<tr class="row-odd"><td>host_address_changed</td>
+<td>Counter</td>
+<td>Number of DNS queries that resulted in a host address change.</td>
+</tr>
+<tr class="row-even"><td>host_added</td>
+<td>Counter</td>
+<td>Number of hosts that have been added to the cache.</td>
+</tr>
+<tr class="row-odd"><td>host_removed</td>
+<td>Counter</td>
+<td>Number of hosts that have been removed from the cache.</td>
+</tr>
+<tr class="row-even"><td>num_hosts</td>
+<td>Gauge</td>
+<td>Number of hosts that are currently in the cache.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 
