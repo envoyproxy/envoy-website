@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP dynamic forward proxy &mdash; envoy 1.11.0-dev-e4bdb7 documentation</title>
+  <title>HTTP dynamic forward proxy &mdash; envoy 1.11.0-dev-a659c5 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.11.0-dev-e4bdb7
+                1.11.0-dev-a659c5
               </div>
             
           
@@ -196,8 +196,7 @@
 <span id="arch-overview-http-dynamic-forward-proxy"></span><h1>HTTP dynamic forward proxy<a class="headerlink" href="#http-dynamic-forward-proxy" title="Permalink to this headline">¶</a></h1>
 <div class="admonition attention">
 <p class="first admonition-title">Attention</p>
-<p class="last">HTTP dynamic forward proxy support should be considered alpha and not production ready. Circuit
-breakers are missing and will be added soon.</p>
+<p class="last">HTTP dynamic forward proxy support should be considered alpha and not production ready.</p>
 </div>
 <p>Through the combination of both an <a class="reference internal" href="../../../configuration/http_filters/dynamic_forward_proxy_filter.html#config-http-filters-dynamic-forward-proxy"><span class="std std-ref">HTTP filter</span></a> and
 <a class="reference internal" href="../../../api-v2/config/cluster/dynamic_forward_proxy/v2alpha/cluster.proto.html#envoy-api-msg-config-cluster-dynamic-forward-proxy-v2alpha-clusterconfig"><span class="std std-ref">custom cluster</span></a>,
@@ -226,11 +225,6 @@ including authentication, RBAC, rate limiting, etc.</p>
 <p>For further configuration information see the <a class="reference internal" href="../../../configuration/http_filters/dynamic_forward_proxy_filter.html#config-http-filters-dynamic-forward-proxy"><span class="std std-ref">HTTP filter configuration documentation</span></a>.</p>
 <div class="section" id="memory-usage-details">
 <h2>Memory usage details<a class="headerlink" href="#memory-usage-details" title="Permalink to this headline">¶</a></h2>
-<div class="admonition attention">
-<p class="first admonition-title">Attention</p>
-<p class="last">HTTP dynamic forward proxy support currently can use unbounded memory and is not ready for
-production use. Circuit breakers and other limits will be added soon.</p>
-</div>
 <p>Memory usage detail’s for Envoy’s dynamic forward proxy support are as follows:</p>
 <ul class="simple">
 <li>Each resolved host/port pair uses a fixed amount of memory global to the server and shared
@@ -238,6 +232,16 @@ amongst all workers.</li>
 <li>Address changes are performed inline using read/write locks and require no host reallocations.</li>
 <li>Hosts removed via TTL are purged once all active connections stop referring to them and all used
 memory is regained.</li>
+<li>The <a class="reference internal" href="../../../api-v2/config/common/dynamic_forward_proxy/v2alpha/dns_cache.proto.html#envoy-api-field-config-common-dynamic-forward-proxy-v2alpha-dnscacheconfig-max-hosts"><span class="std std-ref">max_hosts</span></a> field can
+be used to limit the number of hosts that the DNS cache will store at any given time.</li>
+<li>The cluster’s <a class="reference internal" href="../../../api-v2/api/v2/cluster/circuit_breaker.proto.html#envoy-api-field-cluster-circuitbreakers-thresholds-max-pending-requests"><span class="std std-ref">max_pending_requests</span></a> circuit breaker can
+be used to limit the number of requests that are pending waiting for the DNS cache to load
+a host.</li>
+<li>Long lived upstream connections can have the underlying logical host expire via TTL while the
+connection is still open. Upstream requests and connections are still bound by other cluster
+circuit breakers such as <a class="reference internal" href="../../../api-v2/api/v2/cluster/circuit_breaker.proto.html#envoy-api-field-cluster-circuitbreakers-thresholds-max-requests"><span class="std std-ref">max_requests</span></a>. The current assumption is that
+host data shared between connections uses a marginal amount of memory compared to the connections
+and requests themselves, making it not worth controlling independently.</li>
 </ul>
 </div>
 </div>
