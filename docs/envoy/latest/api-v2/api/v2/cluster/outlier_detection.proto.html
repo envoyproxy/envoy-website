@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Outlier detection &mdash; envoy 1.11.0-dev-eb65b2 documentation</title>
+  <title>Outlier detection &mdash; envoy 1.11.0-dev-89d81e documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.11.0-dev-eb65b2
+                1.11.0-dev-89d81e
               </div>
             
           
@@ -192,7 +192,7 @@
 <span id="envoy-api-file-envoy-api-v2-cluster-outlier-detection-proto"></span><h1>Outlier detection<a class="headerlink" href="#outlier-detection" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="cluster-outlierdetection">
 <span id="envoy-api-msg-cluster-outlierdetection"></span><h2>cluster.OutlierDetection<a class="headerlink" href="#cluster-outlierdetection" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/eb65b203627aa2a3f5862332ba17fe0ac1de2f88/api/envoy/api/v2/cluster/outlier_detection.proto#L22">[cluster.OutlierDetection proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/89d81e65df2a6b364bcf0af4c251241c2dd5866e/api/envoy/api/v2/cluster/outlier_detection.proto#L22">[cluster.OutlierDetection proto]</a></p>
 <p>See the <a class="reference internal" href="../../../../intro/arch_overview/upstream/outlier.html#arch-overview-outlier-detection"><span class="std std-ref">architecture overview</span></a> for
 more information on outlier detection.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -206,13 +206,18 @@ more information on outlier detection.</p>
   <span class="nt">&quot;success_rate_request_volume&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;success_rate_stdev_factor&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;consecutive_gateway_failure&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;enforcing_consecutive_gateway_failure&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;enforcing_consecutive_gateway_failure&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;split_external_local_origin_errors&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;consecutive_local_origin_failure&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;enforcing_consecutive_local_origin_failure&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;enforcing_local_origin_success_rate&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <dl class="docutils" id="envoy-api-field-cluster-outlierdetection-consecutive-5xx">
 <dt>consecutive_5xx</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The number of consecutive 5xx responses before a consecutive 5xx ejection
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The number of consecutive 5xx responses or local origin errors that are mapped
+to 5xx error codes before a consecutive 5xx ejection
 occurs. Defaults to 5.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-outlierdetection-interval">
@@ -271,15 +276,49 @@ be 1900. Defaults to 1900.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-outlierdetection-consecutive-gateway-failure">
 <dt>consecutive_gateway_failure</dt>
-<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The number of consecutive gateway failures (502, 503, 504 status or
-connection errors that are mapped to one of those status codes) before a
-consecutive gateway failure ejection occurs. Defaults to 5.</dd>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The number of consecutive gateway failures (502, 503, 504 status codes)
+before a consecutive gateway failure ejection occurs. Defaults to 5.</dd>
 </dl>
 <dl class="docutils" id="envoy-api-field-cluster-outlierdetection-enforcing-consecutive-gateway-failure">
 <dt>enforcing_consecutive_gateway_failure</dt>
 <dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The % chance that a host will be actually ejected when an outlier status
 is detected through consecutive gateway failures. This setting can be
 used to disable ejection or to ramp it up slowly. Defaults to 0.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-cluster-outlierdetection-split-external-local-origin-errors">
+<dt>split_external_local_origin_errors</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Determines whether to distinguish local origin failures from external errors. If set to true
+the following configuration parameters are taken into account:
+<a class="reference internal" href="#envoy-api-field-cluster-outlierdetection-consecutive-local-origin-failure"><span class="std std-ref">consecutive_local_origin_failure</span></a>,
+<a class="reference internal" href="#envoy-api-field-cluster-outlierdetection-enforcing-consecutive-local-origin-failure"><span class="std std-ref">enforcing_consecutive_local_origin_failure</span></a>
+and
+<a class="reference internal" href="#envoy-api-field-cluster-outlierdetection-enforcing-local-origin-success-rate"><span class="std std-ref">enforcing_local_origin_success_rate</span></a>.
+Defaults to false.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-cluster-outlierdetection-consecutive-local-origin-failure">
+<dt>consecutive_local_origin_failure</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The number of consecutive locally originated failures before ejection
+occurs. Defaults to 5. Parameter takes effect only when
+<a class="reference internal" href="#envoy-api-field-cluster-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">split_external_local_origin_errors</span></a>
+is set to true.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-cluster-outlierdetection-enforcing-consecutive-local-origin-failure">
+<dt>enforcing_consecutive_local_origin_failure</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The % chance that a host will be actually ejected when an outlier status
+is detected through consecutive locally originated failures. This setting can be
+used to disable ejection or to ramp it up slowly. Defaults to 100.
+Parameter takes effect only when
+<a class="reference internal" href="#envoy-api-field-cluster-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">split_external_local_origin_errors</span></a>
+is set to true.</dd>
+</dl>
+<dl class="docutils" id="envoy-api-field-cluster-outlierdetection-enforcing-local-origin-success-rate">
+<dt>enforcing_local_origin_success_rate</dt>
+<dd>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The % chance that a host will be actually ejected when an outlier status
+is detected through success rate statistics for locally originated errors.
+This setting can be used to disable ejection or to ramp it up slowly. Defaults to 100.
+Parameter takes effect only when
+<a class="reference internal" href="#envoy-api-field-cluster-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">split_external_local_origin_errors</span></a>
+is set to true.</dd>
 </dl>
 </div>
 </div>
