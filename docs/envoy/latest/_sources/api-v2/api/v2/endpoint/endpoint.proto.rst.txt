@@ -9,7 +9,7 @@ Endpoints
 endpoint.Endpoint
 -----------------
 
-`[endpoint.Endpoint proto] <https://github.com/envoyproxy/envoy/blob/fd7b4e8828c5dff839c1d1a9c5623ac9c841ca5e/api/envoy/api/v2/endpoint/endpoint.proto#L23>`_
+`[endpoint.Endpoint proto] <https://github.com/envoyproxy/envoy/blob/1e39e303fe0bcf5695d89841df08d5cb223d3879/api/envoy/api/v2/endpoint/endpoint.proto#L23>`_
 
 Upstream host identifier.
 
@@ -51,7 +51,7 @@ health_check_config
 endpoint.Endpoint.HealthCheckConfig
 -----------------------------------
 
-`[endpoint.Endpoint.HealthCheckConfig proto] <https://github.com/envoyproxy/envoy/blob/fd7b4e8828c5dff839c1d1a9c5623ac9c841ca5e/api/envoy/api/v2/endpoint/endpoint.proto#L36>`_
+`[endpoint.Endpoint.HealthCheckConfig proto] <https://github.com/envoyproxy/envoy/blob/1e39e303fe0bcf5695d89841df08d5cb223d3879/api/envoy/api/v2/endpoint/endpoint.proto#L36>`_
 
 The optional health check configuration.
 
@@ -80,7 +80,7 @@ port_value
 endpoint.LbEndpoint
 -------------------
 
-`[endpoint.LbEndpoint proto] <https://github.com/envoyproxy/envoy/blob/fd7b4e8828c5dff839c1d1a9c5623ac9c841ca5e/api/envoy/api/v2/endpoint/endpoint.proto#L57>`_
+`[endpoint.LbEndpoint proto] <https://github.com/envoyproxy/envoy/blob/1e39e303fe0bcf5695d89841df08d5cb223d3879/api/envoy/api/v2/endpoint/endpoint.proto#L57>`_
 
 An Endpoint that Envoy can route traffic to.
 
@@ -133,20 +133,14 @@ metadata
 .. _envoy_api_field_endpoint.LbEndpoint.load_balancing_weight:
 
 load_balancing_weight
-  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The optional load balancing weight of the upstream host, in the range 1 -
-  128. Envoy uses the load balancing weight in some of the built in load
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The optional load balancing weight of the upstream host; at least 1.
+  Envoy uses the load balancing weight in some of the built in load
   balancers. The load balancing weight for an endpoint is divided by the sum
   of the weights of all endpoints in the endpoint's locality to produce a
   percentage of traffic for the endpoint. This percentage is then further
   weighted by the endpoint's locality's load balancing weight from
   LocalityLbEndpoints. If unspecified, each host is presumed to have equal
   weight in a locality.
-  
-  .. attention::
-  
-    The limit of 128 is somewhat arbitrary, but is applied due to performance
-    concerns with the current implementation and can be removed when
-    `this issue <https://github.com/envoyproxy/envoy/issues/1285>`_ is fixed.
   
   
 
@@ -156,7 +150,7 @@ load_balancing_weight
 endpoint.LocalityLbEndpoints
 ----------------------------
 
-`[endpoint.LocalityLbEndpoints proto] <https://github.com/envoyproxy/envoy/blob/fd7b4e8828c5dff839c1d1a9c5623ac9c841ca5e/api/envoy/api/v2/endpoint/endpoint.proto#L98>`_
+`[endpoint.LocalityLbEndpoints proto] <https://github.com/envoyproxy/envoy/blob/1e39e303fe0bcf5695d89841df08d5cb223d3879/api/envoy/api/v2/endpoint/endpoint.proto#L91>`_
 
 A group of endpoints belonging to a Locality.
 One can have multiple LocalityLbEndpoints for a locality, but this is
@@ -187,7 +181,7 @@ lb_endpoints
 .. _envoy_api_field_endpoint.LocalityLbEndpoints.load_balancing_weight:
 
 load_balancing_weight
-  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Optional: Per priority/region/zone/sub_zone weight - range 1-128. The load
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Optional: Per priority/region/zone/sub_zone weight; at least 1. The load
   balancing weight for a locality is divided by the sum of the weights of all
   localities  at the same priority level to produce the effective percentage
   of traffic for the locality.
@@ -197,12 +191,6 @@ load_balancing_weight
   configured. These weights are ignored otherwise. If no weights are
   specified when locality weighted load balancing is enabled, the locality is
   assigned no load.
-  
-  .. attention::
-  
-    The limit of 128 is somewhat arbitrary, but is applied due to performance
-    concerns with the current implementation and can be removed when
-    `this issue <https://github.com/envoyproxy/envoy/issues/1285>`_ is fixed.
   
   
 .. _envoy_api_field_endpoint.LocalityLbEndpoints.priority:
