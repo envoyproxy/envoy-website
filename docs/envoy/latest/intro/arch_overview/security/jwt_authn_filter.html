@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Scripting &mdash; envoy 1.11.0-dev-9aa595 documentation</title>
+  <title>JSON Web Token (JWT) Authentication &mdash; envoy 1.11.0-dev-9aa595 documentation</title>
   
 
   
@@ -30,8 +30,8 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="IP Transparency" href="ip_transparency.html" />
-    <link rel="prev" title="Global rate limiting" href="global_rate_limiting.html" /> 
+    <link rel="next" title="External Authorization" href="ext_authz_filter.html" />
+    <link rel="prev" title="TLS" href="ssl.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
@@ -94,14 +94,15 @@
 <li class="toctree-l3"><a class="reference internal" href="../http/http.html">HTTP</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../upstream/upstream.html">Upstream clusters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../observability/observability.html">Observability</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../security/security.html">Security</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../operations/operations.html">Operations &amp; configuration</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="other_features.html">Other features</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="global_rate_limiting.html">Global rate limiting</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Scripting</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ip_transparency.html">IP Transparency</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="security.html">Security</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ssl.html">TLS</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">JSON Web Token (JWT) Authentication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ext_authz_filter.html">External Authorization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rbac_filter.html">Role Based Access Control</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../operations/operations.html">Operations &amp; configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../other_features/other_features.html">Other features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../other_protocols/other_protocols.html">Other protocols</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../advanced/advanced.html">Advanced</a></li>
 </ul>
@@ -169,15 +170,15 @@
         
           <li><a href="../arch_overview.html">Architecture overview</a> &raquo;</li>
         
-          <li><a href="other_features.html">Other features</a> &raquo;</li>
+          <li><a href="security.html">Security</a> &raquo;</li>
         
-      <li>Scripting</li>
+      <li>JSON Web Token (JWT) Authentication</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/intro/arch_overview/other_features/scripting.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/intro/arch_overview/security/jwt_authn_filter.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -190,10 +191,29 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="scripting">
-<h1>Scripting<a class="headerlink" href="#scripting" title="Permalink to this headline">¶</a></h1>
-<p>Envoy supports <a class="reference external" href="https://www.lua.org/">Lua</a> scripting as part of a dedicated
-<a class="reference internal" href="../../../configuration/http_filters/lua_filter.html#config-http-filters-lua"><span class="std std-ref">HTTP filter</span></a>.</p>
+  <div class="section" id="json-web-token-jwt-authentication">
+<span id="arch-overview-jwt-authn"></span><h1>JSON Web Token (JWT) Authentication<a class="headerlink" href="#json-web-token-jwt-authentication" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="../../../configuration/http_filters/jwt_authn_filter.html#config-http-filters-jwt-authn"><span class="std std-ref">HTTP filter configuration</span></a>.</li>
+</ul>
+<p>The JSON Web Token (JWT) Authentication filter checks if the incoming request has a valid
+<a class="reference external" href="https://tools.ietf.org/html/rfc7519">JSON Web Token (JWT)</a>. It checks the validity of the JWT by
+verifying the JWT signature, audiences and issuer based on the
+<a class="reference internal" href="../../../configuration/http_filters/jwt_authn_filter.html#config-http-filters-jwt-authn"><span class="std std-ref">HTTP filter configuration</span></a>. The JWT Authentication filter
+could be configured to either reject the request with invalid JWT immediately or defer the decision
+to later filters by passing the JWT payload to other filters.</p>
+<p>The JWT Authentication filter supports to check the JWT under various conditions of the request, it
+could be configured to check JWT only on specific paths so that you could whitelist some paths from
+the JWT authentication, which is useful if a path is accessible publicly and doesn’t require any JWT
+authentication.</p>
+<p>The JWT Authentication filter supports to extract the JWT from various locations of the request and
+could combine multiple JWT requirements for the same request. The
+<a class="reference external" href="https://tools.ietf.org/html/rfc7517">JSON Web Key Set (JWKS)</a> needed for the JWT signature
+verification could be either specified inline in the filter config or fetched from remote server
+via HTTP/HTTPS.</p>
+<p>The JWT Authentication filter also supports to write the payloads of the successfully verified JWT
+to <a class="reference internal" href="../advanced/data_sharing_between_filters.html#arch-overview-data-sharing-between-filters"><span class="std std-ref">Dynamic State</span></a> so that later filters could use
+it to make their own decisions based on the JWT payloads.</p>
 </div>
 
 
@@ -204,10 +224,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="ip_transparency.html" class="btn btn-neutral float-right" title="IP Transparency" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="ext_authz_filter.html" class="btn btn-neutral float-right" title="External Authorization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="global_rate_limiting.html" class="btn btn-neutral" title="Global rate limiting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="ssl.html" class="btn btn-neutral" title="TLS" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
