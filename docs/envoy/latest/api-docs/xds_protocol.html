@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xDS REST and gRPC protocol &mdash; envoy 1.12.0-dev-23d82b documentation</title>
+  <title>xDS REST and gRPC protocol &mdash; envoy 1.12.0-dev-7ef20d documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.12.0-dev-23d82b
+                1.12.0-dev-7ef20d
               </div>
             
           
@@ -309,18 +309,19 @@ the management server only needs to respond to the latest
 <div class="section" id="resource-hints">
 <h4>Resource hints<a class="headerlink" href="#resource-hints" title="Permalink to this headline">¶</a></h4>
 <p>The <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-resource-names"><span class="std std-ref">resource_names</span></a> specified in the <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryrequest"><span class="std std-ref">DiscoveryRequest</span></a> are a hint.
-Some resource types, e.g. <cite>Clusters</cite> and <cite>Listeners</cite> will
-specify an empty <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-resource-names"><span class="std std-ref">resource_names</span></a> list, since Envoy is interested in
+Some resource types, e.g. <cite>Clusters</cite> and <cite>Listeners</cite> may
+specify an empty <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-resource-names"><span class="std std-ref">resource_names</span></a> list, since a client such as Envoy is interested in
 learning about all the <a class="reference internal" href="../api-v2/api/v2/cds.proto.html#envoy-api-msg-cluster"><span class="std std-ref">Clusters (CDS)</span></a> and <a class="reference internal" href="../api-v2/api/v2/lds.proto.html#envoy-api-msg-listener"><span class="std std-ref">Listeners (LDS)</span></a>
 that the management server(s) know about corresponding to its node
 identification. Other resource types, e.g. <a class="reference internal" href="../api-v2/api/v2/rds.proto.html#envoy-api-msg-routeconfiguration"><span class="std std-ref">RouteConfiguration (RDS)</span></a>
 and <a class="reference internal" href="../api-v2/api/v2/eds.proto.html#envoy-api-msg-clusterloadassignment"><span class="std std-ref">ClusterLoadAssignment (EDS)</span></a>, follow from earlier
 CDS/LDS updates and Envoy is able to explicitly enumerate these
 resources.</p>
-<p>LDS/CDS resource hints will always be empty and it is expected that the
-management server will provide the complete state of the LDS/CDS
-resources in each response. An absent <cite>Listener</cite> or <cite>Cluster</cite> will
-be deleted.</p>
+<p>Envoy will always set the LDS/CDS resource hints to empty and it is expected that the management
+server will provide the complete state of the LDS/CDS resources in each response. An absent
+<cite>Listener</cite> or <cite>Cluster</cite> will be deleted. Other xDS clients may specify explicit LDS/CDS resources as
+resource hints, for example if they only have a singleton listener and already know its name from
+some out-of-band configuration.</p>
 <p>For EDS/RDS, the management server does not need to supply every
 requested resource and may also supply additional, unrequested
 resources. <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-resource-names"><span class="std std-ref">resource_names</span></a> is only a hint. Envoy will silently ignore
