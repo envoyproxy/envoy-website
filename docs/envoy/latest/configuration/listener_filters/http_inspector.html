@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Configuring Envoy for the edge &mdash; envoy 1.12.0-dev-c2967a documentation</title>
+  <title>HTTP Inspector &mdash; envoy 1.12.0-dev-c2967a documentation</title>
   
 
   
@@ -30,8 +30,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Operations and administration" href="../../operations/operations.html" />
-    <link rel="prev" title="Configuration best practices" href="best_practices.html" /> 
+    <link rel="next" title="Original Destination" href="original_dst_filter.html" />
+    <link rel="prev" title="Listener filters" href="listener_filters.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -92,7 +92,18 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../configuration.html">Configuration reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../overview/v2_overview.html">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../listeners/listeners.html">Listeners</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../listener_filters/listener_filters.html">Listener filters</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="listener_filters.html">Listener filters</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">HTTP Inspector</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#example">Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#statistics">Statistics</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="original_dst_filter.html">Original Destination</a></li>
+<li class="toctree-l3"><a class="reference internal" href="original_src_filter.html">Original Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="proxy_protocol.html">Proxy Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls_inspector.html">TLS Inspector</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../network_filters/network_filters.html">Network filters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../http_conn_man/http_conn_man.html">HTTP connection manager</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../http_filters/http_filters.html">HTTP filters</a></li>
@@ -108,10 +119,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../overload_manager/overload_manager.html">Overload manager</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../secret.html">Secret discovery service (SDS)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../well_known_dynamic_metadata.html">Well Known Dynamic Metadata</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="best_practices.html">Configuration best practices</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Configuring Envoy for the edge</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="../best_practices/best_practices.html">Configuration best practices</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
@@ -165,15 +173,15 @@
         
           <li><a href="../configuration.html">Configuration reference</a> &raquo;</li>
         
-          <li><a href="best_practices.html">Configuration best practices</a> &raquo;</li>
+          <li><a href="listener_filters.html">Listener filters</a> &raquo;</li>
         
-      <li>Configuring Envoy for the edge</li>
+      <li>HTTP Inspector</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/configuration/best_practices/edge.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/configuration/listener_filters/http_inspector.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -186,10 +194,64 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="configuring-envoy-for-the-edge">
-<h1>Configuring Envoy for the edge<a class="headerlink" href="#configuring-envoy-for-the-edge" title="Permalink to this headline">¶</a></h1>
-<p>This document describes best practices for configuring Envoy for the edge. It is currently a
-work-in-progress</p>
+  <div class="section" id="http-inspector">
+<span id="config-listener-filters-http-inspector"></span><h1>HTTP Inspector<a class="headerlink" href="#http-inspector" title="Permalink to this headline">¶</a></h1>
+<p>HTTP Inspector listener filter allows detecting whether the application protocol appears to be HTTP,
+and if it is HTTP, it detects the HTTP protocol (HTTP/1.x or HTTP/2) further. This can be used to select a
+<a class="reference internal" href="../../api-v2/api/v2/listener/listener.proto.html#envoy-api-msg-listener-filterchain"><span class="std std-ref">FilterChain</span></a> via the <a class="reference internal" href="../../api-v2/api/v2/listener/listener.proto.html#envoy-api-field-listener-filterchainmatch-application-protocols"><span class="std std-ref">application_protocols</span></a>
+of a <a class="reference internal" href="../../api-v2/api/v2/listener/listener.proto.html#envoy-api-msg-listener-filterchainmatch"><span class="std std-ref">FilterChainMatch</span></a>.</p>
+<ul class="simple">
+<li><a class="reference internal" href="../../api-v2/api/v2/listener/listener.proto.html#envoy-api-field-listener-listenerfilter-name"><span class="std std-ref">v2 API reference</span></a></li>
+<li>This filter should be configured with the name <em>envoy.listener.http_inspector</em>.</li>
+</ul>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>A sample filter configuration could be:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">listener_filters</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;envoy.listener.http_inspector&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">typed_config</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="statistics">
+<h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
+<p>This filter has a statistics tree rooted at <em>http_inspector</em> with the following statistics:</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>read_error</td>
+<td>Counter</td>
+<td>Total read errors</td>
+</tr>
+<tr class="row-odd"><td>http10_found</td>
+<td>Counter</td>
+<td>Total number of times HTTP/1.0 was found</td>
+</tr>
+<tr class="row-even"><td>http11_found</td>
+<td>Counter</td>
+<td>Total number of times HTTP/1.1 was found</td>
+</tr>
+<tr class="row-odd"><td>http2_found</td>
+<td>Counter</td>
+<td>Total number of times HTTP/2 was found</td>
+</tr>
+<tr class="row-even"><td>http_not_found</td>
+<td>Counter</td>
+<td>Total number of times HTTP protocol was not found</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 
 
@@ -200,10 +262,10 @@ work-in-progress</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../operations/operations.html" class="btn btn-neutral float-right" title="Operations and administration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="original_dst_filter.html" class="btn btn-neutral float-right" title="Original Destination" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="best_practices.html" class="btn btn-neutral" title="Configuration best practices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="listener_filters.html" class="btn btn-neutral" title="Listener filters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
