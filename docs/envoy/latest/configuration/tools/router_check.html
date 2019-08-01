@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Route table check tool &mdash; envoy 1.12.0-dev-912318 documentation</title>
+  <title>Route table check tool &mdash; envoy 1.12.0-dev-43bb29 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.12.0-dev-912318
+                1.12.0-dev-43bb29
               </div>
             
           
@@ -104,7 +104,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../rate_limit.html">Rate limit service</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../runtime.html">Runtime</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../statistics.html">Statistics</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Route table check tool</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Route table check tool</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#coverage">Coverage</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../overload_manager/overload_manager.html">Overload manager</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../secret.html">Secret discovery service (SDS)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../well_known_dynamic_metadata.html">Well Known Dynamic Metadata</a></li>
@@ -183,9 +186,12 @@
             
   <div class="section" id="route-table-check-tool">
 <span id="config-tools-router-check-tool"></span><h1>Route table check tool<a class="headerlink" href="#route-table-check-tool" title="Permalink to this headline">¶</a></h1>
-<p><strong>NOTE: The following configuration is for the route table check tool only and is not part of the Envoy binary.
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The following configuration is for the route table check tool only and is not part of the Envoy binary.
 The route table check tool is a standalone binary that can be used to verify Envoy’s routing for a given configuration
-file.</strong></p>
+file.</p>
+</div>
 <p>The following specifies input to the route table check tool. The route table check tool checks if
 the route returned by a <a class="reference internal" href="../../api-v2/api/v2/rds.proto.html#envoy-api-msg-routeconfiguration"><span class="std std-ref">router</span></a> matches what is expected.
 The tool can be used to check cluster name, virtual cluster name,
@@ -316,6 +322,22 @@ will be those of the redirected or rewritten routes when applicable.</p>
 </dl>
 </dd>
 </dl>
+<div class="section" id="coverage">
+<h2>Coverage<a class="headerlink" href="#coverage" title="Permalink to this headline">¶</a></h2>
+<p>The router check tool will report route coverage at the end of a successful test run.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">bazel</span><span class="o">-</span><span class="nb">bin</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">router_check</span><span class="o">/</span><span class="n">router_check_tool</span> <span class="o">--</span><span class="n">config</span><span class="o">-</span><span class="n">path</span> <span class="o">...</span> <span class="o">--</span><span class="n">test</span><span class="o">-</span><span class="n">path</span> <span class="o">...</span> <span class="o">--</span><span class="n">useproto</span>
+<span class="n">Current</span> <span class="n">route</span> <span class="n">coverage</span><span class="p">:</span> <span class="mf">0.0744863</span>
+</pre></div>
+</div>
+<p>This reporting can be leveraged to enforce a minimum coverage percentage by using
+the <cite>-f</cite> or <cite>–fail-under</cite> flag. If coverage falls below this percentage the test
+run will fail.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">bazel</span><span class="o">-</span><span class="nb">bin</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">router_check</span><span class="o">/</span><span class="n">router_check_tool</span> <span class="o">--</span><span class="n">config</span><span class="o">-</span><span class="n">path</span> <span class="o">...</span> <span class="o">--</span><span class="n">test</span><span class="o">-</span><span class="n">path</span> <span class="o">...</span> <span class="o">--</span><span class="n">useproto</span> <span class="o">--</span><span class="n">fail</span><span class="o">-</span><span class="n">under</span> <span class="mf">0.08</span>
+<span class="n">Current</span> <span class="n">route</span> <span class="n">coverage</span><span class="p">:</span> <span class="mf">0.0744863</span>
+<span class="n">Failed</span> <span class="n">to</span> <span class="n">meet</span> <span class="n">coverage</span> <span class="n">requirement</span><span class="p">:</span> <span class="mf">0.08</span>
+</pre></div>
+</div>
+</div>
 </div>
 
 
