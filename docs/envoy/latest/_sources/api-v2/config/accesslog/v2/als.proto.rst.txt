@@ -9,7 +9,7 @@ gRPC Access Log Service (ALS)
 config.accesslog.v2.HttpGrpcAccessLogConfig
 -------------------------------------------
 
-`[config.accesslog.v2.HttpGrpcAccessLogConfig proto] <https://github.com/envoyproxy/envoy/blob/3e63182c3e74e0d517d2f0d1fc2ee950bbfe21e1/api/envoy/config/accesslog/v2/als.proto#L19>`_
+`[config.accesslog.v2.HttpGrpcAccessLogConfig proto] <https://github.com/envoyproxy/envoy/blob/e6145e0d5f93235b0d9b70c424766ebbb2e46294/api/envoy/config/accesslog/v2/als.proto#L22>`_
 
 Configuration for the built-in *envoy.http_grpc_access_log*
 :ref:`AccessLog <envoy_api_msg_config.filter.accesslog.v2.AccessLog>`. This configuration will
@@ -59,7 +59,7 @@ additional_response_trailers_to_log
 config.accesslog.v2.CommonGrpcAccessLogConfig
 ---------------------------------------------
 
-`[config.accesslog.v2.CommonGrpcAccessLogConfig proto] <https://github.com/envoyproxy/envoy/blob/3e63182c3e74e0d517d2f0d1fc2ee950bbfe21e1/api/envoy/config/accesslog/v2/als.proto#L43>`_
+`[config.accesslog.v2.CommonGrpcAccessLogConfig proto] <https://github.com/envoyproxy/envoy/blob/e6145e0d5f93235b0d9b70c424766ebbb2e46294/api/envoy/config/accesslog/v2/als.proto#L46>`_
 
 Common configuration for gRPC access logs.
 
@@ -67,7 +67,9 @@ Common configuration for gRPC access logs.
 
   {
     "log_name": "...",
-    "grpc_service": "{...}"
+    "grpc_service": "{...}",
+    "buffer_flush_interval": "{...}",
+    "buffer_size_bytes": "{...}"
   }
 
 .. _envoy_api_field_config.accesslog.v2.CommonGrpcAccessLogConfig.log_name:
@@ -82,6 +84,22 @@ log_name
 
 grpc_service
   (:ref:`core.GrpcService <envoy_api_msg_core.GrpcService>`, *REQUIRED*) The gRPC service for the access log service.
+  
+  
+.. _envoy_api_field_config.accesslog.v2.CommonGrpcAccessLogConfig.buffer_flush_interval:
+
+buffer_flush_interval
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) Interval for flushing access logs to the gRPC stream. Logger will flush requests every time
+  this interval is elapsed, or when batch size limit is hit, whichever comes first. Defaults to
+  1 second.
+  
+  
+.. _envoy_api_field_config.accesslog.v2.CommonGrpcAccessLogConfig.buffer_size_bytes:
+
+buffer_size_bytes
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Soft size limit in bytes for access log entries buffer. Logger will buffer requests until
+  this limit it hit, or every time flush interval is elapsed, whichever comes first. Setting it
+  to zero effectively disables the batching. Defaults to 16384.
   
   
 
