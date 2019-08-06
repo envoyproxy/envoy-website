@@ -14,7 +14,7 @@ Header to Metadata :ref:`configuration overview <config_http_filters_header_to_m
 config.filter.http.header_to_metadata.v2.Config
 -----------------------------------------------
 
-`[config.filter.http.header_to_metadata.v2.Config proto] <https://github.com/envoyproxy/envoy/blob/3286ea069278075cc24ac2f671c240e5d18d04ac/api/envoy/config/filter/http/header_to_metadata/v2/header_to_metadata.proto#L18>`_
+`[config.filter.http.header_to_metadata.v2.Config proto] <https://github.com/envoyproxy/envoy/blob/9e552c5f0a86542eaae897d8f27bd34be85ad1df/api/envoy/config/filter/http/header_to_metadata/v2/header_to_metadata.proto#L18>`_
 
 
 .. code-block:: json
@@ -41,7 +41,7 @@ response_rules
 config.filter.http.header_to_metadata.v2.Config.KeyValuePair
 ------------------------------------------------------------
 
-`[config.filter.http.header_to_metadata.v2.Config.KeyValuePair proto] <https://github.com/envoyproxy/envoy/blob/3286ea069278075cc24ac2f671c240e5d18d04ac/api/envoy/config/filter/http/header_to_metadata/v2/header_to_metadata.proto#L24>`_
+`[config.filter.http.header_to_metadata.v2.Config.KeyValuePair proto] <https://github.com/envoyproxy/envoy/blob/9e552c5f0a86542eaae897d8f27bd34be85ad1df/api/envoy/config/filter/http/header_to_metadata/v2/header_to_metadata.proto#L39>`_
 
 
 .. code-block:: json
@@ -50,7 +50,8 @@ config.filter.http.header_to_metadata.v2.Config.KeyValuePair
     "metadata_namespace": "...",
     "key": "...",
     "value": "...",
-    "type": "..."
+    "type": "...",
+    "encode": "..."
   }
 
 .. _envoy_api_field_config.filter.http.header_to_metadata.v2.Config.KeyValuePair.metadata_namespace:
@@ -83,6 +84,13 @@ type
   (:ref:`config.filter.http.header_to_metadata.v2.Config.ValueType <envoy_api_enum_config.filter.http.header_to_metadata.v2.Config.ValueType>`) The value's type — defaults to string.
   
   
+.. _envoy_api_field_config.filter.http.header_to_metadata.v2.Config.KeyValuePair.encode:
+
+encode
+  (:ref:`config.filter.http.header_to_metadata.v2.Config.ValueEncode <envoy_api_enum_config.filter.http.header_to_metadata.v2.Config.ValueEncode>`) How is the value encoded, default is NONE (not encoded).
+  The value will be decoded accordingly before storing to metadata.
+  
+  
 
 
 .. _envoy_api_msg_config.filter.http.header_to_metadata.v2.Config.Rule:
@@ -90,7 +98,7 @@ type
 config.filter.http.header_to_metadata.v2.Config.Rule
 ----------------------------------------------------
 
-`[config.filter.http.header_to_metadata.v2.Config.Rule proto] <https://github.com/envoyproxy/envoy/blob/3286ea069278075cc24ac2f671c240e5d18d04ac/api/envoy/config/filter/http/header_to_metadata/v2/header_to_metadata.proto#L45>`_
+`[config.filter.http.header_to_metadata.v2.Config.Rule proto] <https://github.com/envoyproxy/envoy/blob/9e552c5f0a86542eaae897d8f27bd34be85ad1df/api/envoy/config/filter/http/header_to_metadata/v2/header_to_metadata.proto#L64>`_
 
 A Rule defines what metadata to apply when a header is present or missing.
 
@@ -142,7 +150,7 @@ remove
 Enum config.filter.http.header_to_metadata.v2.Config.ValueType
 --------------------------------------------------------------
 
-`[config.filter.http.header_to_metadata.v2.Config.ValueType proto] <https://github.com/envoyproxy/envoy/blob/3286ea069278075cc24ac2f671c240e5d18d04ac/api/envoy/config/filter/http/header_to_metadata/v2/header_to_metadata.proto#L19>`_
+`[config.filter.http.header_to_metadata.v2.Config.ValueType proto] <https://github.com/envoyproxy/envoy/blob/9e552c5f0a86542eaae897d8f27bd34be85ad1df/api/envoy/config/filter/http/header_to_metadata/v2/header_to_metadata.proto#L19>`_
 
 
 .. _envoy_api_enum_value_config.filter.http.header_to_metadata.v2.Config.ValueType.STRING:
@@ -154,4 +162,35 @@ STRING
 
 NUMBER
   ⁣
+  
+.. _envoy_api_enum_value_config.filter.http.header_to_metadata.v2.Config.ValueType.PROTOBUF_VALUE:
+
+PROTOBUF_VALUE
+  ⁣The value is a serialized `protobuf.Value
+  <https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/struct.proto#L62>`_.
+  
+  
+
+.. _envoy_api_enum_config.filter.http.header_to_metadata.v2.Config.ValueEncode:
+
+Enum config.filter.http.header_to_metadata.v2.Config.ValueEncode
+----------------------------------------------------------------
+
+`[config.filter.http.header_to_metadata.v2.Config.ValueEncode proto] <https://github.com/envoyproxy/envoy/blob/9e552c5f0a86542eaae897d8f27bd34be85ad1df/api/envoy/config/filter/http/header_to_metadata/v2/header_to_metadata.proto#L29>`_
+
+ValueEncode defines the encoding algorithm.
+
+.. _envoy_api_enum_value_config.filter.http.header_to_metadata.v2.Config.ValueEncode.NONE:
+
+NONE
+  *(DEFAULT)* ⁣The value is not encoded.
+  
+  
+.. _envoy_api_enum_value_config.filter.http.header_to_metadata.v2.Config.ValueEncode.BASE64:
+
+BASE64
+  ⁣The value is encoded in `Base64 <https://tools.ietf.org/html/rfc4648#section-4>`_.
+  Note: this is mostly used for STRING and PROTOBUF_VALUE to escape the
+  non-ASCII characters in the header.
+  
   
