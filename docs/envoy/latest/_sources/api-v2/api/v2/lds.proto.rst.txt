@@ -10,7 +10,7 @@ Listener :ref:`configuration overview <config_listeners>`
 Listener
 --------
 
-`[Listener proto] <https://github.com/envoyproxy/envoy/blob/26a1346a15020c1af2e2a15a1b90fec1998ac98a/api/envoy/api/v2/lds.proto#L47>`_
+`[Listener proto] <https://github.com/envoyproxy/envoy/blob/975c62dd2258fe23c3d8098b99261fffd43da736/api/envoy/api/v2/lds.proto#L47>`_
 
 
 .. code-block:: json
@@ -25,6 +25,7 @@ Listener
     "drain_type": "...",
     "listener_filters": [],
     "listener_filters_timeout": "{...}",
+    "continue_on_listener_filters_timeout": "...",
     "transparent": "{...}",
     "freebind": "{...}",
     "socket_options": [],
@@ -118,8 +119,21 @@ listener_filters
 
 listener_filters_timeout
   (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The timeout to wait for all listener filters to complete operation. If the timeout is reached,
-  the accepted socket is closed without a connection being created. Specify 0 to disable the
+  the accepted socket is closed without a connection being created unless
+  `continue_on_listener_filters_timeout` is set to true. Specify 0 to disable the
   timeout. If not specified, a default timeout of 15s is used.
+  
+  
+.. _envoy_api_field_Listener.continue_on_listener_filters_timeout:
+
+continue_on_listener_filters_timeout
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Whether a connection should be created when listener filters timeout. Default is false.
+  
+  .. attention::
+  
+    Some listener filters, such as :ref:`Proxy Protocol filter
+    <config_listener_filters_proxy_protocol>`, should not be used with this option. It will cause
+    unexpected behavior when a connection is created.
   
   
 .. _envoy_api_field_Listener.transparent:
@@ -190,7 +204,7 @@ traffic_direction
 Enum Listener.DrainType
 -----------------------
 
-`[Listener.DrainType proto] <https://github.com/envoyproxy/envoy/blob/26a1346a15020c1af2e2a15a1b90fec1998ac98a/api/envoy/api/v2/lds.proto#L109>`_
+`[Listener.DrainType proto] <https://github.com/envoyproxy/envoy/blob/975c62dd2258fe23c3d8098b99261fffd43da736/api/envoy/api/v2/lds.proto#L109>`_
 
 
 .. _envoy_api_enum_value_Listener.DrainType.DEFAULT:
