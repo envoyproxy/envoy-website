@@ -10,7 +10,7 @@ Protocol options
 core.HttpProtocolOptions
 ------------------------
 
-`[core.HttpProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/7b0ce0d32a9b584626e8c16b5ae07817eade322d/api/envoy/api/v2/core/protocol.proto#L24>`_
+`[core.HttpProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/f2129cbfeff3b206fb5d00bbae06049a4a21383e/api/envoy/api/v2/core/protocol.proto#L24>`_
 
 
 .. code-block:: json
@@ -35,7 +35,7 @@ idle_timeout
 core.Http1ProtocolOptions
 -------------------------
 
-`[core.Http1ProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/7b0ce0d32a9b584626e8c16b5ae07817eade322d/api/envoy/api/v2/core/protocol.proto#L32>`_
+`[core.Http1ProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/f2129cbfeff3b206fb5d00bbae06049a4a21383e/api/envoy/api/v2/core/protocol.proto#L32>`_
 
 
 .. code-block:: json
@@ -79,7 +79,7 @@ default_host_for_http_10
 core.Http2ProtocolOptions
 -------------------------
 
-`[core.Http2ProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/7b0ce0d32a9b584626e8c16b5ae07817eade322d/api/envoy/api/v2/core/protocol.proto#L51>`_
+`[core.Http2ProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/f2129cbfeff3b206fb5d00bbae06049a4a21383e/api/envoy/api/v2/core/protocol.proto#L52>`_
 
 
 .. code-block:: json
@@ -89,7 +89,13 @@ core.Http2ProtocolOptions
     "max_concurrent_streams": "{...}",
     "initial_stream_window_size": "{...}",
     "initial_connection_window_size": "{...}",
-    "allow_connect": "..."
+    "allow_connect": "...",
+    "max_outbound_frames": "{...}",
+    "max_outbound_control_frames": "{...}",
+    "max_consecutive_inbound_frames_with_empty_payload": "{...}",
+    "max_inbound_priority_frames_per_stream": "{...}",
+    "max_inbound_window_update_frames_per_data_frame_sent": "{...}",
+    "stream_error_on_invalid_http_messaging": "..."
   }
 
 .. _envoy_api_field_core.Http2ProtocolOptions.hpack_table_size:
@@ -131,5 +137,74 @@ allow_connect
   
   
 
+.. _envoy_api_field_core.Http2ProtocolOptions.max_outbound_frames:
+
+max_outbound_frames
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Limit the number of pending outbound downstream frames of all types (frames that are waiting to
+  be written into the socket). Exceeding this limit triggers flood mitigation and connection is
+  terminated. The ``http2.outbound_flood`` stat tracks the number of terminated connections due
+  to flood mitigation. The default limit is 10000.
+  
+  
+.. _envoy_api_field_core.Http2ProtocolOptions.max_outbound_control_frames:
+
+max_outbound_control_frames
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Limit the number of pending outbound downstream frames of types PING, SETTINGS and RST_STREAM,
+  preventing high memory utilization when receiving continuous stream of these frames. Exceeding
+  this limit triggers flood mitigation and connection is terminated. The
+  ``http2.outbound_control_flood`` stat tracks the number of terminated connections due to flood
+  mitigation. The default limit is 1000.
+  
+  
+.. _envoy_api_field_core.Http2ProtocolOptions.max_consecutive_inbound_frames_with_empty_payload:
+
+max_consecutive_inbound_frames_with_empty_payload
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Limit the number of consecutive inbound frames of types HEADERS, CONTINUATION and DATA with an
+  empty payload and no end stream flag. Those frames have no legitimate use and are abusive, but
+  might be a result of a broken HTTP/2 implementation. The `http2.inbound_empty_frames_flood``
+  stat tracks the number of connections terminated due to flood mitigation.
+  Setting this to 0 will terminate connection upon receiving first frame with an empty payload
+  and no end stream flag. The default limit is 1.
+  
+  
+.. _envoy_api_field_core.Http2ProtocolOptions.max_inbound_priority_frames_per_stream:
+
+max_inbound_priority_frames_per_stream
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Limit the number of inbound PRIORITY frames allowed per each opened stream. If the number
+  of PRIORITY frames received over the lifetime of connection exceeds the value calculated
+  using this formula::
+  
+      max_inbound_priority_frames_per_stream * (1 + inbound_streams)
+  
+  the connection is terminated. The ``http2.inbound_priority_frames_flood`` stat tracks
+  the number of connections terminated due to flood mitigation. The default limit is 100.
+  
+  
+.. _envoy_api_field_core.Http2ProtocolOptions.max_inbound_window_update_frames_per_data_frame_sent:
+
+max_inbound_window_update_frames_per_data_frame_sent
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Limit the number of inbound WINDOW_UPDATE frames allowed per DATA frame sent. If the number
+  of WINDOW_UPDATE frames received over the lifetime of connection exceeds the value calculated
+  using this formula::
+  
+      1 + 2 * (inbound_streams +
+               max_inbound_window_update_frames_per_data_frame_sent * outbound_data_frames)
+  
+  the connection is terminated. The ``http2.inbound_priority_frames_flood`` stat tracks
+  the number of connections terminated due to flood mitigation. The default limit is 10.
+  Setting this to 1 should be enough to support HTTP/2 implementations with basic flow control,
+  but more complex implementations that try to estimate available bandwidth require at least 2.
+  
+  
+.. _envoy_api_field_core.Http2ProtocolOptions.stream_error_on_invalid_http_messaging:
+
+stream_error_on_invalid_http_messaging
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Allows invalid HTTP messaging and headers. When this option is disabled (default), then
+  the whole HTTP/2 connection is terminated upon receiving invalid HEADERS frame. However,
+  when this option is enabled, only the offending stream is terminated.
+  
+  See [RFC7540, sec. 8.1](https://tools.ietf.org/html/rfc7540#section-8.1) for details.
+  
+  
 
 

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Version history &mdash; envoy 1.12.0-dev-7b0ce0 documentation</title>
+  <title>Version history &mdash; envoy 1.12.0-dev-f2129c documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.12.0-dev-7b0ce0
+                1.12.0-dev-f2129c
               </div>
             
           
@@ -94,6 +94,7 @@
 <li class="toctree-l2"><a class="reference internal" href="getting_help.html">Getting help</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Version history</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#pending">1.12.0 (pending)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#august-13-2019">1.11.1 (August 13, 2019)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#july-11-2019">1.11.0 (July 11, 2019)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#apr-5-2019">1.10.0 (Apr 5, 2019)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#apr-2-2019">1.9.1 (Apr 2, 2019)</a></li>
@@ -214,6 +215,24 @@ certificate validation context.</li>
 <li>zookeeper: parse responses and emit latency stats.</li>
 </ul>
 </div>
+<div class="section" id="august-13-2019">
+<h2>1.11.1 (August 13, 2019)<a class="headerlink" href="#august-13-2019" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>http: added mitigation of client initiated attacks that result in flooding of the downstream HTTP/2 connections. Those attacks can be logged at the “warning” level when the runtime feature <cite>http.connection_manager.log_flood_exception</cite> is enabled. The runtime setting defaults to disabled to avoid log spam when under attack.</li>
+<li>http: added <a class="reference internal" href="../configuration/http_conn_man/stats.html#config-http-conn-man-stats-per-codec"><span class="std std-ref">inbound_empty_frames_flood</span></a> counter stat to the HTTP/2 codec stats, for tracking number of connections terminated for exceeding the limit on consecutive inbound frames with an empty payload and no end stream flag. The limit is configured by setting the <a class="reference internal" href="../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-http2protocoloptions-max-consecutive-inbound-frames-with-empty-payload"><span class="std std-ref">max_consecutive_inbound_frames_with_empty_payload config setting</span></a>.
+Runtime feature <cite>envoy.reloadable_features.http2_protocol_options.max_consecutive_inbound_frames_with_empty_payload</cite> overrides <a class="reference internal" href="../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-http2protocoloptions-max-consecutive-inbound-frames-with-empty-payload"><span class="std std-ref">max_consecutive_inbound_frames_with_empty_payload setting</span></a>. Large override value (i.e. 2147483647) effectively disables mitigation of inbound frames with empty payload.</li>
+<li>http: added <a class="reference internal" href="../configuration/http_conn_man/stats.html#config-http-conn-man-stats-per-codec"><span class="std std-ref">inbound_priority_frames_flood</span></a> counter stat to the HTTP/2 codec stats, for tracking number of connections terminated for exceeding the limit on inbound PRIORITY frames. The limit is configured by setting the <a class="reference internal" href="../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-http2protocoloptions-max-inbound-priority-frames-per-stream"><span class="std std-ref">max_inbound_priority_frames_per_stream config setting</span></a>.
+Runtime feature <cite>envoy.reloadable_features.http2_protocol_options.max_inbound_priority_frames_per_stream</cite> overrides <a class="reference internal" href="../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-http2protocoloptions-max-inbound-priority-frames-per-stream"><span class="std std-ref">max_inbound_priority_frames_per_stream setting</span></a>. Large override value effectively disables flood mitigation of inbound PRIORITY frames.</li>
+<li>http: added <a class="reference internal" href="../configuration/http_conn_man/stats.html#config-http-conn-man-stats-per-codec"><span class="std std-ref">inbound_window_update_frames_flood</span></a> counter stat to the HTTP/2 codec stats, for tracking number of connections terminated for exceeding the limit on inbound WINDOW_UPDATE frames. The limit is configured by setting the <a class="reference internal" href="../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-http2protocoloptions-max-inbound-window-update-frames-per-data-frame-sent"><span class="std std-ref">max_inbound_window_update_frames_per_data_frame_sent config setting</span></a>.
+Runtime feature <cite>envoy.reloadable_features.http2_protocol_options.max_inbound_window_update_frames_per_data_frame_sent</cite> overrides <a class="reference internal" href="../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-http2protocoloptions-max-inbound-window-update-frames-per-data-frame-sent"><span class="std std-ref">max_inbound_window_update_frames_per_data_frame_sent setting</span></a>. Large override value effectively disables flood mitigation of inbound WINDOW_UPDATE frames.</li>
+<li>http: added <a class="reference internal" href="../configuration/http_conn_man/stats.html#config-http-conn-man-stats-per-codec"><span class="std std-ref">outbound_flood</span></a> counter stat to the HTTP/2 codec stats, for tracking number of connections terminated for exceeding the outbound queue limit. The limit is configured by setting the <a class="reference internal" href="../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-http2protocoloptions-max-outbound-frames"><span class="std std-ref">max_outbound_frames config setting</span></a>
+Runtime feature <cite>envoy.reloadable_features.http2_protocol_options.max_outbound_frames</cite> overrides <a class="reference internal" href="../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-http2protocoloptions-max-outbound-frames"><span class="std std-ref">max_outbound_frames config setting</span></a>. Large override value effectively disables flood mitigation of outbound frames of all types.</li>
+<li>http: added <a class="reference internal" href="../configuration/http_conn_man/stats.html#config-http-conn-man-stats-per-codec"><span class="std std-ref">outbound_control_flood</span></a> counter stat to the HTTP/2 codec stats, for tracking number of connections terminated for exceeding the outbound queue limit for PING, SETTINGS and RST_STREAM frames. The limit is configured by setting the <a class="reference internal" href="../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-http2protocoloptions-max-outbound-control-frames"><span class="std std-ref">max_outbound_control_frames config setting</span></a>.
+Runtime feature <cite>envoy.reloadable_features.http2_protocol_options.max_outbound_control_frames</cite> overrides <a class="reference internal" href="../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-http2protocoloptions-max-outbound-control-frames"><span class="std std-ref">max_outbound_control_frames config setting</span></a>. Large override value effectively disables flood mitigation of outbound frames of types PING, SETTINGS and RST_STREAM.</li>
+<li>http: enabled strict validation of HTTP/2 messaging. Previous behavior can be restored using <a class="reference internal" href="../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-http2protocoloptions-stream-error-on-invalid-http-messaging"><span class="std std-ref">stream_error_on_invalid_http_messaging config setting</span></a>.
+Runtime feature <cite>envoy.reloadable_features.http2_protocol_options.stream_error_on_invalid_http_messaging</cite> overrides <a class="reference internal" href="../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-http2protocoloptions-stream-error-on-invalid-http-messaging"><span class="std std-ref">stream_error_on_invalid_http_messaging config setting</span></a>.</li>
+</ul>
+</div>
 <div class="section" id="july-11-2019">
 <h2>1.11.0 (July 11, 2019)<a class="headerlink" href="#july-11-2019" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -296,7 +315,7 @@ more info in the <a class="reference external" href="https://github.com/envoypro
 <li>subset: added <a class="reference internal" href="../api-v2/api/v2/cds.proto.html#envoy-api-field-cluster-lbsubsetconfig-list-as-any"><span class="std std-ref">list_as_any</span></a> option to
 the subset lb which allows matching metadata against any of the values in a list value
 on the endpoints.</li>
-<li>tools: added <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7b0ce0d32a9b584626e8c16b5ae07817eade322d/test/tools/router_check/validation.proto">proto</a> support for <a class="reference internal" href="../install/tools/route_table_check_tool.html#install-tools-route-table-check-tool"><span class="std std-ref">router check tool</span></a> tests.</li>
+<li>tools: added <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f2129cbfeff3b206fb5d00bbae06049a4a21383e/test/tools/router_check/validation.proto">proto</a> support for <a class="reference internal" href="../install/tools/route_table_check_tool.html#install-tools-route-table-check-tool"><span class="std std-ref">router check tool</span></a> tests.</li>
 <li>tracing: add trace sampling configuration to the route, to override the route level.</li>
 <li>upstream: added <a class="reference internal" href="../configuration/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats"><span class="std std-ref">upstream_cx_pool_overflow</span></a> for the connection pool circuit breaker.</li>
 <li>upstream: an EDS management server can now force removal of a host that is still passing active
@@ -564,7 +583,7 @@ dynamic table size of both: encoder and decoder.</li>
 <li>network: introduced <a class="reference internal" href="../configuration/network_filters/sni_cluster_filter.html#config-network-filters-sni-cluster"><span class="std std-ref">sni_cluster</span></a> network filter that forwards connections to the
 upstream cluster specified by the SNI value presented by the client during a TLS handshake.</li>
 <li>proxy_protocol: added support for HAProxy Proxy Protocol v2 (AF_INET/AF_INET6 only).</li>
-<li>ratelimit: added support for <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7b0ce0d32a9b584626e8c16b5ae07817eade322d/api/envoy/service/ratelimit/v2/rls.proto">api/envoy/service/ratelimit/v2/rls.proto</a>.
+<li>ratelimit: added support for <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f2129cbfeff3b206fb5d00bbae06049a4a21383e/api/envoy/service/ratelimit/v2/rls.proto">api/envoy/service/ratelimit/v2/rls.proto</a>.
 Lyft’s reference implementation of the <a class="reference external" href="https://github.com/lyft/ratelimit">ratelimit</a> service also supports the data-plane-api proto as of v1.1.0.
 Envoy can use either proto to send client requests to a ratelimit server with the use of the
 <cite>use_data_plane_proto</cite> boolean flag in the ratelimit configuration.
@@ -740,7 +759,7 @@ DOWNSTREAM_ADDRESS access log formatter has been deprecated.</li>
 and whether to use independent randomness or not.</li>
 <li>admin: added <a class="reference internal" href="../operations/admin.html#operations-admin-interface-runtime"><span class="std std-ref">/runtime</span></a> admin endpoint to read the
 current runtime values.</li>
-<li>build: added support for <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7b0ce0d32a9b584626e8c16b5ae07817eade322d/bazel#enabling-optional-features">building Envoy with exported symbols</a>. This change allows scripts loaded with the Lua filter to
+<li>build: added support for <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f2129cbfeff3b206fb5d00bbae06049a4a21383e/bazel#enabling-optional-features">building Envoy with exported symbols</a>. This change allows scripts loaded with the Lua filter to
 load shared object libraries such as those installed via <a class="reference external" href="https://luarocks.org/">LuaRocks</a>.</li>
 <li>config: added support for sending error details as
 <a class="reference external" href="https://github.com/googleapis/googleapis/blob/master/google/rpc/status.proto">grpc.rpc.Status</a>
@@ -885,14 +904,14 @@ to return either a 404 or 503 if the upstream cluster does not exist.</li>
 <div class="section" id="august-24-2017">
 <h2>1.4.0 (August 24, 2017)<a class="headerlink" href="#august-24-2017" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>macOS is <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7b0ce0d32a9b584626e8c16b5ae07817eade322d//bazel#quick-start-bazel-build-for-developers">now supported</a>. (A few features
+<li>macOS is <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f2129cbfeff3b206fb5d00bbae06049a4a21383e//bazel#quick-start-bazel-build-for-developers">now supported</a>. (A few features
 are missing such as hot restart and original destination routing).</li>
 <li>YAML is now directly supported for config files.</li>
 <li>Added /routes admin endpoint.</li>
 <li>End-to-end flow control is now supported for TCP proxy, HTTP/1, and HTTP/2. HTTP flow control
 that includes filter buffering is incomplete and will be implemented in 1.5.0.</li>
-<li>Log verbosity <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7b0ce0d32a9b584626e8c16b5ae07817eade322d//bazel#log-verbosity">compile time flag</a> added.</li>
-<li>Hot restart <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7b0ce0d32a9b584626e8c16b5ae07817eade322d//bazel#hot-restart">compile time flag</a> added.</li>
+<li>Log verbosity <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f2129cbfeff3b206fb5d00bbae06049a4a21383e//bazel#log-verbosity">compile time flag</a> added.</li>
+<li>Hot restart <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f2129cbfeff3b206fb5d00bbae06049a4a21383e//bazel#hot-restart">compile time flag</a> added.</li>
 <li>Original destination <a class="reference internal" href="arch_overview/upstream/service_discovery.html#arch-overview-service-discovery-types-original-destination"><span class="std std-ref">cluster</span></a>
 and <a class="reference internal" href="arch_overview/upstream/load_balancing/original_dst.html#arch-overview-load-balancing-types-original-destination"><span class="std std-ref">load balancer</span></a> added.</li>
 <li><a class="reference internal" href="arch_overview/http/websocket.html#arch-overview-websocket"><span class="std std-ref">WebSocket</span></a> is now supported.</li>
@@ -930,12 +949,12 @@ will be removed at the beginning of the 1.5.0 release cycle. We explicitly call 
 <div class="section" id="may-17-2017">
 <h2>1.3.0 (May 17, 2017)<a class="headerlink" href="#may-17-2017" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>As of this release, we now have an official <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7b0ce0d32a9b584626e8c16b5ae07817eade322d//CONTRIBUTING.md#breaking-change-policy">breaking change policy</a>. Note that there are numerous breaking configuration
+<li>As of this release, we now have an official <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f2129cbfeff3b206fb5d00bbae06049a4a21383e//CONTRIBUTING.md#breaking-change-policy">breaking change policy</a>. Note that there are numerous breaking configuration
 changes in this release. They are not listed here. Future releases will adhere to the policy and
 have clear documentation on deprecations and changes.</li>
 <li>Bazel is now the canonical build system (replacing CMake). There have been a huge number of
-changes to the development/build/test flow. See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7b0ce0d32a9b584626e8c16b5ae07817eade322d//bazel/README.md">/bazel/README.md</a> and
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7b0ce0d32a9b584626e8c16b5ae07817eade322d//ci/README.md">/ci/README.md</a> for more information.</li>
+changes to the development/build/test flow. See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f2129cbfeff3b206fb5d00bbae06049a4a21383e//bazel/README.md">/bazel/README.md</a> and
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f2129cbfeff3b206fb5d00bbae06049a4a21383e//ci/README.md">/ci/README.md</a> for more information.</li>
 <li><a class="reference internal" href="arch_overview/upstream/outlier.html#arch-overview-outlier-detection"><span class="std std-ref">Outlier detection</span></a> has been expanded to include success
 rate variance, and all parameters are now configurable in both runtime and in the JSON
 configuration.</li>
