@@ -10,7 +10,7 @@ Redis Proxy :ref:`configuration overview <config_network_filters_redis_proxy>`.
 config.filter.network.redis_proxy.v2.RedisProxy
 -----------------------------------------------
 
-`[config.filter.network.redis_proxy.v2.RedisProxy proto] <https://github.com/envoyproxy/envoy/blob/e64361bcc3ed77f0721dee83915810b7f6c3ec0d/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L20>`_
+`[config.filter.network.redis_proxy.v2.RedisProxy proto] <https://github.com/envoyproxy/envoy/blob/560d09f51546b9c363b90c871df5979472976204/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L20>`_
 
 
 .. code-block:: json
@@ -107,7 +107,7 @@ downstream_auth_password
 config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings
 ----------------------------------------------------------------
 
-`[config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings proto] <https://github.com/envoyproxy/envoy/blob/e64361bcc3ed77f0721dee83915810b7f6c3ec0d/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L36>`_
+`[config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings proto] <https://github.com/envoyproxy/envoy/blob/560d09f51546b9c363b90c871df5979472976204/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L36>`_
 
 Redis connection pool settings.
 
@@ -119,7 +119,8 @@ Redis connection pool settings.
     "enable_redirection": "...",
     "max_buffer_size_before_flush": "...",
     "buffer_flush_timeout": "{...}",
-    "max_upstream_unknown_connections": "{...}"
+    "max_upstream_unknown_connections": "{...}",
+    "read_policy": "..."
   }
 
 .. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings.op_timeout:
@@ -195,14 +196,65 @@ max_upstream_unknown_connections
   downstream unchanged. This limit defaults to 100.
   
   
+.. _envoy_api_field_config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings.read_policy:
 
+read_policy
+  (:ref:`config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings.ReadPolicy <envoy_api_enum_config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings.ReadPolicy>`) Read policy. The default is to read from the master.
+  
+  
+
+.. _envoy_api_enum_config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings.ReadPolicy:
+
+Enum config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings.ReadPolicy
+--------------------------------------------------------------------------------
+
+`[config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings.ReadPolicy proto] <https://github.com/envoyproxy/envoy/blob/560d09f51546b9c363b90c871df5979472976204/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L97>`_
+
+ReadPolicy controls how Envoy routes read commands to Redis nodes. This is currently
+supported for Redis Cluster. All ReadPolicy settings except MASTER may return stale data
+because replication is asynchronous and requires some delay. You need to ensure that your
+application can tolerate stale data.
+
+.. _envoy_api_enum_value_config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings.ReadPolicy.MASTER:
+
+MASTER
+  *(DEFAULT)* ⁣Default mode. Read from the current master node.
+  
+  
+.. _envoy_api_enum_value_config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings.ReadPolicy.PREFER_MASTER:
+
+PREFER_MASTER
+  ⁣Read from the master, but if it is unavailable, read from replica nodes.
+  
+  
+.. _envoy_api_enum_value_config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings.ReadPolicy.REPLICA:
+
+REPLICA
+  ⁣Read from replica nodes. If multiple replica nodes are present within a shard, a random
+  node is selected. Healthy nodes have precedent over unhealthy nodes.
+  
+  
+.. _envoy_api_enum_value_config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings.ReadPolicy.PREFER_REPLICA:
+
+PREFER_REPLICA
+  ⁣Read from the replica nodes (similar to REPLICA), but if all replicas are unavailable (not
+  present or unhealthy), read from the master.
+  
+  
+.. _envoy_api_enum_value_config.filter.network.redis_proxy.v2.RedisProxy.ConnPoolSettings.ReadPolicy.ANY:
+
+ANY
+  ⁣Read from any node of the cluster. A random node is selected among the master and replicas,
+  healthy nodes have precedent over unhealthy nodes.
+  
+  
 
 .. _envoy_api_msg_config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes:
 
 config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes
 ------------------------------------------------------------
 
-`[config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes proto] <https://github.com/envoyproxy/envoy/blob/e64361bcc3ed77f0721dee83915810b7f6c3ec0d/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L101>`_
+`[config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes proto] <https://github.com/envoyproxy/envoy/blob/560d09f51546b9c363b90c871df5979472976204/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L124>`_
 
 
 .. code-block:: json
@@ -250,7 +302,7 @@ catch_all_route
 config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.Route
 ------------------------------------------------------------------
 
-`[config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.Route proto] <https://github.com/envoyproxy/envoy/blob/e64361bcc3ed77f0721dee83915810b7f6c3ec0d/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L102>`_
+`[config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.Route proto] <https://github.com/envoyproxy/envoy/blob/560d09f51546b9c363b90c871df5979472976204/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L125>`_
 
 
 .. code-block:: json
@@ -292,7 +344,7 @@ request_mirror_policy
 config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.Route.RequestMirrorPolicy
 --------------------------------------------------------------------------------------
 
-`[config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.Route.RequestMirrorPolicy proto] <https://github.com/envoyproxy/envoy/blob/e64361bcc3ed77f0721dee83915810b7f6c3ec0d/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L117>`_
+`[config.filter.network.redis_proxy.v2.RedisProxy.PrefixRoutes.Route.RequestMirrorPolicy proto] <https://github.com/envoyproxy/envoy/blob/560d09f51546b9c363b90c871df5979472976204/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L140>`_
 
 The router is capable of shadowing traffic from one cluster to another. The current
 implementation is "fire and forget," meaning Envoy will not wait for the shadow cluster to
@@ -348,7 +400,7 @@ exclude_read_commands
 config.filter.network.redis_proxy.v2.RedisProtocolOptions
 ---------------------------------------------------------
 
-`[config.filter.network.redis_proxy.v2.RedisProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/e64361bcc3ed77f0721dee83915810b7f6c3ec0d/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L208>`_
+`[config.filter.network.redis_proxy.v2.RedisProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/560d09f51546b9c363b90c871df5979472976204/api/envoy/config/filter/network/redis_proxy/v2/redis_proxy.proto#L231>`_
 
 RedisProtocolOptions specifies Redis upstream protocol options. This object is used in
 :ref:`extension_protocol_options<envoy_api_field_Cluster.extension_protocol_options>`, keyed
