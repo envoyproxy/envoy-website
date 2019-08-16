@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Tracing &mdash; envoy 1.12.0-dev-5a7bab documentation</title>
+  <title>Tracing &mdash; envoy 1.12.0-dev-cb15cc documentation</title>
   
 
   
@@ -19,34 +19,37 @@
   
 
   
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Security" href="../security/security.html" />
     <link rel="prev" title="Access logging" href="access_logging.html" /> 
-
-  
-  <script src="../../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -60,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-5a7bab
+                1.12.0-dev-cb15cc
               </div>
             
           
@@ -198,18 +201,19 @@
 oriented architectures. It can be invaluable in understanding serialization, parallelism, and
 sources of latency. Envoy supports three features related to system wide tracing:</p>
 <ul class="simple">
-<li><strong>Request ID generation</strong>: Envoy will generate UUIDs when needed and populate the
+<li><p><strong>Request ID generation</strong>: Envoy will generate UUIDs when needed and populate the
 <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a> HTTP header. Applications can forward the
-x-request-id header for unified logging as well as tracing.</li>
-<li><strong>Client trace ID joining</strong>: The <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-client-trace-id"><span class="std std-ref">x-client-trace-id</span></a> header can
+x-request-id header for unified logging as well as tracing.</p></li>
+<li><p><strong>Client trace ID joining</strong>: The <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-client-trace-id"><span class="std std-ref">x-client-trace-id</span></a> header can
 be used to join untrusted request IDs to the trusted internal
-<a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a>.</li>
-<li><strong>External trace service integration</strong>: Envoy supports pluggable external trace visualization
-providers, that are divided into two subgroups:<ul>
-<li>External tracers which are part of the Envoy code base, like <a class="reference external" href="https://lightstep.com/">LightStep</a>,
+<a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a>.</p></li>
+<li><p><strong>External trace service integration</strong>: Envoy supports pluggable external trace visualization
+providers, that are divided into two subgroups:</p>
+<ul>
+<li><p>External tracers which are part of the Envoy code base, like <a class="reference external" href="https://lightstep.com/">LightStep</a>,
 <a class="reference external" href="https://zipkin.io/">Zipkin</a>  or any Zipkin compatible backends (e.g. <a class="reference external" href="https://github.com/jaegertracing/">Jaeger</a>), and
-<a class="reference external" href="https://datadoghq.com">Datadog</a>.</li>
-<li>External tracers which come as a third party plugin, like <a class="reference external" href="https://www.instana.com/blog/monitoring-envoy-proxy-microservices/">Instana</a>.</li>
+<a class="reference external" href="https://datadoghq.com">Datadog</a>.</p></li>
+<li><p>External tracers which come as a third party plugin, like <a class="reference external" href="https://www.instana.com/blog/monitoring-envoy-proxy-microservices/">Instana</a>.</p></li>
 </ul>
 </li>
 </ul>
@@ -220,12 +224,12 @@ providers, that are divided into two subgroups:<ul>
 <p>The HTTP connection manager that handles the request must have the <a class="reference internal" href="../../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-msg-config-filter-network-http-connection-manager-v2-httpconnectionmanager-tracing"><span class="std std-ref">tracing</span></a> object set. There are several ways tracing can be
 initiated:</p>
 <ul class="simple">
-<li>By an external client via the <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-client-trace-id"><span class="std std-ref">x-client-trace-id</span></a>
-header.</li>
-<li>By an internal service via the <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-envoy-force-trace"><span class="std std-ref">x-envoy-force-trace</span></a>
-header.</li>
-<li>Randomly sampled via the <a class="reference internal" href="../../../configuration/http_conn_man/runtime.html#config-http-conn-man-runtime-random-sampling"><span class="std std-ref">random_sampling</span></a>
-runtime setting.</li>
+<li><p>By an external client via the <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-client-trace-id"><span class="std std-ref">x-client-trace-id</span></a>
+header.</p></li>
+<li><p>By an internal service via the <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-envoy-force-trace"><span class="std std-ref">x-envoy-force-trace</span></a>
+header.</p></li>
+<li><p>Randomly sampled via the <a class="reference internal" href="../../../configuration/http_conn_man/runtime.html#config-http-conn-man-runtime-random-sampling"><span class="std std-ref">random_sampling</span></a>
+runtime setting.</p></li>
 </ul>
 <p>The router filter is also capable of creating a child span for egress calls via the
 <a class="reference internal" href="../../../api-v2/config/filter/http/router/v2/router.proto.html#envoy-api-field-config-filter-http-router-v2-router-start-child-span"><span class="std std-ref">start_child_span</span></a> option.</p>
@@ -247,10 +251,10 @@ approach would also enable the service to create additional spans, describing wo
 internally within the service, that may be useful when examining the end-to-end trace.</p>
 <p>Alternatively the trace context can be manually propagated by the service:</p>
 <ul class="simple">
-<li>When using the LightStep tracer, Envoy relies on the service to propagate the
+<li><p>When using the LightStep tracer, Envoy relies on the service to propagate the
 <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-ot-span-context"><span class="std std-ref">x-ot-span-context</span></a> HTTP header
-while sending HTTP requests to other services.</li>
-<li>When using the Zipkin tracer, Envoy relies on the service to propagate the
+while sending HTTP requests to other services.</p></li>
+<li><p>When using the Zipkin tracer, Envoy relies on the service to propagate the
 B3 HTTP headers (
 <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-b3-traceid"><span class="std std-ref">x-b3-traceid</span></a>,
 <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-b3-spanid"><span class="std std-ref">x-b3-spanid</span></a>,
@@ -259,12 +263,12 @@ B3 HTTP headers (
 <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-b3-flags"><span class="std std-ref">x-b3-flags</span></a>). The <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-b3-sampled"><span class="std std-ref">x-b3-sampled</span></a>
 header can also be supplied by an external client to either enable or disable tracing for a particular
 request. In addition, the single <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-b3"><span class="std std-ref">b3</span></a> header propagation format is
-supported, which is a more compressed format.</li>
-<li>When using the Datadog tracer, Envoy relies on the service to propagate the
+supported, which is a more compressed format.</p></li>
+<li><p>When using the Datadog tracer, Envoy relies on the service to propagate the
 Datadog-specific HTTP headers (
 <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-datadog-trace-id"><span class="std std-ref">x-datadog-trace-id</span></a>,
 <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-datadog-parent-id"><span class="std std-ref">x-datadog-parent-id</span></a>,
-<a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-datadog-sampling-priority"><span class="std std-ref">x-datadog-sampling-priority</span></a>).</li>
+<a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-datadog-sampling-priority"><span class="std std-ref">x-datadog-sampling-priority</span></a>).</p></li>
 </ul>
 </div>
 <div class="section" id="what-data-each-trace-contains">
@@ -273,15 +277,15 @@ Datadog-specific HTTP headers (
 span represents a logical unit of work that has a start time and duration and can contain metadata
 associated with it. Each span generated by Envoy contains the following data:</p>
 <ul class="simple">
-<li>Originating service cluster set via <a class="reference internal" href="../../../operations/cli.html#cmdoption-service-cluster"><code class="xref std std-option docutils literal notranslate"><span class="pre">--service-cluster</span></code></a>.</li>
-<li>Start time and duration of the request.</li>
-<li>Originating host set via <a class="reference internal" href="../../../operations/cli.html#cmdoption-service-node"><code class="xref std std-option docutils literal notranslate"><span class="pre">--service-node</span></code></a>.</li>
-<li>Downstream cluster set via the <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-downstream-service-cluster"><span class="std std-ref">x-envoy-downstream-service-cluster</span></a>
-header.</li>
-<li>HTTP URL.</li>
-<li>HTTP method.</li>
-<li>HTTP response code.</li>
-<li>Tracing system-specific metadata.</li>
+<li><p>Originating service cluster set via <a class="reference internal" href="../../../operations/cli.html#cmdoption-service-cluster"><code class="xref std std-option docutils literal notranslate"><span class="pre">--service-cluster</span></code></a>.</p></li>
+<li><p>Start time and duration of the request.</p></li>
+<li><p>Originating host set via <a class="reference internal" href="../../../operations/cli.html#cmdoption-service-node"><code class="xref std std-option docutils literal notranslate"><span class="pre">--service-node</span></code></a>.</p></li>
+<li><p>Downstream cluster set via the <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-downstream-service-cluster"><span class="std std-ref">x-envoy-downstream-service-cluster</span></a>
+header.</p></li>
+<li><p>HTTP URL.</p></li>
+<li><p>HTTP method.</p></li>
+<li><p>HTTP response code.</p></li>
+<li><p>Tracing system-specific metadata.</p></li>
 </ul>
 <p>The span also includes a name (or operation) which by default is defined as the host of the invoked
 service. However this can be customized using a <a class="reference internal" href="../../../api-v2/api/v2/route/route.proto.html#envoy-api-msg-route-decorator"><span class="std std-ref">route.Decorator</span></a> on
@@ -307,7 +311,7 @@ for more information on how to setup tracing in Envoy.</p>
         <a href="../security/security.html" class="btn btn-neutral float-right" title="Security" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="access_logging.html" class="btn btn-neutral" title="Access logging" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="access_logging.html" class="btn btn-neutral float-left" title="Access logging" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -333,26 +337,16 @@ for more information on how to setup tracing in Envoy.</p>
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

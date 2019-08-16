@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Priority levels &mdash; envoy 1.12.0-dev-5a7bab documentation</title>
+  <title>Priority levels &mdash; envoy 1.12.0-dev-cb15cc documentation</title>
   
 
   
@@ -19,34 +19,37 @@
   
 
   
+  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../../../_static/css/envoy.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
     <link rel="next" title="Degraded endpoints" href="degraded.html" />
     <link rel="prev" title="Supported load balancers" href="load_balancers.html" /> 
-
-  
-  <script src="../../../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -60,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-5a7bab
+                1.12.0-dev-cb15cc
               </div>
             
           
@@ -217,48 +220,48 @@ to P=1 (assuming P=1 is 100% healthy - more on that later). For instance, when 5
 endpoints are healthy, they will receive 50 * 1.4 = 70% of the traffic.
 The integer percents of traffic that each priority level receives are collectively called the
 system’s “priority load”. More examples (with 2 priority levels, P=1 100% healthy):</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="46%" />
-<col width="26%" />
-<col width="28%" />
+<col style="width: 46%" />
+<col style="width: 26%" />
+<col style="width: 28%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">P=0 healthy endpoints</th>
-<th class="head">Traffic to P=0</th>
-<th class="head">Traffic to P=1</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>P=0 healthy endpoints</p></th>
+<th class="head"><p>Traffic to P=0</p></th>
+<th class="head"><p>Traffic to P=1</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>100%</td>
-<td>100%</td>
-<td>0%</td>
+<tbody>
+<tr class="row-even"><td><p>100%</p></td>
+<td><p>100%</p></td>
+<td><p>0%</p></td>
 </tr>
-<tr class="row-odd"><td>72%</td>
-<td>100%</td>
-<td>0%</td>
+<tr class="row-odd"><td><p>72%</p></td>
+<td><p>100%</p></td>
+<td><p>0%</p></td>
 </tr>
-<tr class="row-even"><td>71%</td>
-<td>99%</td>
-<td>1%</td>
+<tr class="row-even"><td><p>71%</p></td>
+<td><p>99%</p></td>
+<td><p>1%</p></td>
 </tr>
-<tr class="row-odd"><td>50%</td>
-<td>70%</td>
-<td>30%</td>
+<tr class="row-odd"><td><p>50%</p></td>
+<td><p>70%</p></td>
+<td><p>30%</p></td>
 </tr>
-<tr class="row-even"><td>25%</td>
-<td>35%</td>
-<td>65%</td>
+<tr class="row-even"><td><p>25%</p></td>
+<td><p>35%</p></td>
+<td><p>65%</p></td>
 </tr>
-<tr class="row-odd"><td>0%</td>
-<td>0%</td>
-<td>100%</td>
+<tr class="row-odd"><td><p>0%</p></td>
+<td><p>0%</p></td>
+<td><p>100%</p></td>
 </tr>
 </tbody>
 </table>
 <div class="admonition attention">
-<p class="first admonition-title">Attention</p>
-<p class="last">In order for the load distribution algorithm and normalized total health calculation to work
+<p class="admonition-title">Attention</p>
+<p>In order for the load distribution algorithm and normalized total health calculation to work
 properly, each priority level must be able to handle (100% * overprovision factor) of the
 traffic: Envoy assumes a 100% healthy P=1 can take over entirely for an unhealthy P=0, etc.
 If P=0 has 10 hosts but P=1 only has 2 hosts, that assumption probably will not hold.</p>
@@ -270,122 +273,122 @@ enough healthy endpoints to fully handle the traffic. This sum is called the “
 health.” When normalized total health drops below 100, traffic is distributed after normalizing
 the levels’ health scores to that sub-100 total. E.g. healths of {20, 30} (yielding a normalized
 total health of 50) would be normalized, and result in a priority load of {40%, 60%} of traffic.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="29%" />
-<col width="30%" />
-<col width="21%" />
-<col width="20%" />
+<col style="width: 29%" />
+<col style="width: 30%" />
+<col style="width: 21%" />
+<col style="width: 20%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">P=0 healthy endpoints</th>
-<th class="head">P=1 healthy endpoints</th>
-<th class="head">Traffic to  P=0</th>
-<th class="head">Traffic to P=1</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>P=0 healthy endpoints</p></th>
+<th class="head"><p>P=1 healthy endpoints</p></th>
+<th class="head"><p>Traffic to  P=0</p></th>
+<th class="head"><p>Traffic to P=1</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>100%</td>
-<td>100%</td>
-<td>100%</td>
-<td>0%</td>
+<tbody>
+<tr class="row-even"><td><p>100%</p></td>
+<td><p>100%</p></td>
+<td><p>100%</p></td>
+<td><p>0%</p></td>
 </tr>
-<tr class="row-odd"><td>72%</td>
-<td>72%</td>
-<td>100%</td>
-<td>0%</td>
+<tr class="row-odd"><td><p>72%</p></td>
+<td><p>72%</p></td>
+<td><p>100%</p></td>
+<td><p>0%</p></td>
 </tr>
-<tr class="row-even"><td>71%</td>
-<td>71%</td>
-<td>99%</td>
-<td>1%</td>
+<tr class="row-even"><td><p>71%</p></td>
+<td><p>71%</p></td>
+<td><p>99%</p></td>
+<td><p>1%</p></td>
 </tr>
-<tr class="row-odd"><td>50%</td>
-<td>50%</td>
-<td>70%</td>
-<td>30%</td>
+<tr class="row-odd"><td><p>50%</p></td>
+<td><p>50%</p></td>
+<td><p>70%</p></td>
+<td><p>30%</p></td>
 </tr>
-<tr class="row-even"><td>25%</td>
-<td>100%</td>
-<td>35%</td>
-<td>65%</td>
+<tr class="row-even"><td><p>25%</p></td>
+<td><p>100%</p></td>
+<td><p>35%</p></td>
+<td><p>65%</p></td>
 </tr>
-<tr class="row-odd"><td>25%</td>
-<td>25%</td>
-<td>50%</td>
-<td>50%</td>
+<tr class="row-odd"><td><p>25%</p></td>
+<td><p>25%</p></td>
+<td><p>50%</p></td>
+<td><p>50%</p></td>
 </tr>
 </tbody>
 </table>
 <p>As more priorities are added, each level consumes load equal to its normalized effective health,
 unless the healths of the levels above it sum to 100%, in which case it receives no load.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="20%" />
-<col width="20%" />
-<col width="20%" />
-<col width="14%" />
-<col width="14%" />
-<col width="14%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">P=0 healthy endpoints</th>
-<th class="head">P=1 healthy endpoints</th>
-<th class="head">P=2 healthy endpoints</th>
-<th class="head">Traffic to P=0</th>
-<th class="head">Traffic to P=1</th>
-<th class="head">Traffic to P=2</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>P=0 healthy endpoints</p></th>
+<th class="head"><p>P=1 healthy endpoints</p></th>
+<th class="head"><p>P=2 healthy endpoints</p></th>
+<th class="head"><p>Traffic to P=0</p></th>
+<th class="head"><p>Traffic to P=1</p></th>
+<th class="head"><p>Traffic to P=2</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>100%</td>
-<td>100%</td>
-<td>100%</td>
-<td>100%</td>
-<td>0%</td>
-<td>0%</td>
+<tbody>
+<tr class="row-even"><td><p>100%</p></td>
+<td><p>100%</p></td>
+<td><p>100%</p></td>
+<td><p>100%</p></td>
+<td><p>0%</p></td>
+<td><p>0%</p></td>
 </tr>
-<tr class="row-odd"><td>72%</td>
-<td>72%</td>
-<td>100%</td>
-<td>100%</td>
-<td>0%</td>
-<td>0%</td>
+<tr class="row-odd"><td><p>72%</p></td>
+<td><p>72%</p></td>
+<td><p>100%</p></td>
+<td><p>100%</p></td>
+<td><p>0%</p></td>
+<td><p>0%</p></td>
 </tr>
-<tr class="row-even"><td>71%</td>
-<td>71%</td>
-<td>100%</td>
-<td>99%</td>
-<td>1%</td>
-<td>0%</td>
+<tr class="row-even"><td><p>71%</p></td>
+<td><p>71%</p></td>
+<td><p>100%</p></td>
+<td><p>99%</p></td>
+<td><p>1%</p></td>
+<td><p>0%</p></td>
 </tr>
-<tr class="row-odd"><td>50%</td>
-<td>50%</td>
-<td>100%</td>
-<td>70%</td>
-<td>30%</td>
-<td>0%</td>
+<tr class="row-odd"><td><p>50%</p></td>
+<td><p>50%</p></td>
+<td><p>100%</p></td>
+<td><p>70%</p></td>
+<td><p>30%</p></td>
+<td><p>0%</p></td>
 </tr>
-<tr class="row-even"><td>25%</td>
-<td>100%</td>
-<td>100%</td>
-<td>35%</td>
-<td>65%</td>
-<td>0%</td>
+<tr class="row-even"><td><p>25%</p></td>
+<td><p>100%</p></td>
+<td><p>100%</p></td>
+<td><p>35%</p></td>
+<td><p>65%</p></td>
+<td><p>0%</p></td>
 </tr>
-<tr class="row-odd"><td>25%</td>
-<td>25%</td>
-<td>100%</td>
-<td>35%</td>
-<td>35%</td>
-<td>30%</td>
+<tr class="row-odd"><td><p>25%</p></td>
+<td><p>25%</p></td>
+<td><p>100%</p></td>
+<td><p>35%</p></td>
+<td><p>35%</p></td>
+<td><p>30%</p></td>
 </tr>
-<tr class="row-even"><td>25%</td>
-<td>25%</td>
-<td>20%</td>
-<td>36%</td>
-<td>36%</td>
-<td>28%</td>
+<tr class="row-even"><td><p>25%</p></td>
+<td><p>25%</p></td>
+<td><p>20%</p></td>
+<td><p>36%</p></td>
+<td><p>36%</p></td>
+<td><p>28%</p></td>
 </tr>
 </tbody>
 </table>
@@ -412,7 +415,7 @@ unless the healths of the levels above it sum to 100%, in which case it receives
         <a href="degraded.html" class="btn btn-neutral float-right" title="Degraded endpoints" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="load_balancers.html" class="btn btn-neutral" title="Supported load balancers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="load_balancers.html" class="btn btn-neutral float-left" title="Supported load balancers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -438,26 +441,16 @@ unless the healths of the levels above it sum to 100%, in which case it receives
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

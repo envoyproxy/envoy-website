@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Circuit breaking &mdash; envoy 1.12.0-dev-5a7bab documentation</title>
+  <title>Circuit breaking &mdash; envoy 1.12.0-dev-cb15cc documentation</title>
   
 
   
@@ -19,34 +19,37 @@
   
 
   
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Upstream network filters" href="upstream_filters.html" />
     <link rel="prev" title="Outlier detection" href="outlier.html" /> 
-
-  
-  <script src="../../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -60,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-5a7bab
+                1.12.0-dev-cb15cc
               </div>
             
           
@@ -203,10 +206,10 @@ mesh is that Envoy enforces circuit breaking limits at the network level as oppo
 configure and code each application independently. Envoy supports various types of fully distributed
 (not coordinated) circuit breaking:</p>
 <ul class="simple" id="arch-overview-circuit-break-cluster-maximum-connections">
-<li><strong>Cluster maximum connections</strong>: The maximum number of connections that Envoy will establish to
+<li><p><strong>Cluster maximum connections</strong>: The maximum number of connections that Envoy will establish to
 all hosts in an upstream cluster. In practice this is only applicable to HTTP/1.1 clusters since
-HTTP/2 uses a single connection to each host. If this circuit breaker overflows the <a class="reference internal" href="../../../configuration/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats"><span class="std std-ref">upstream_cx_overflow</span></a> counter for the cluster will increment.</li>
-<li><strong>Cluster maximum pending requests</strong>: The maximum number of requests that will be queued while
+HTTP/2 uses a single connection to each host. If this circuit breaker overflows the <a class="reference internal" href="../../../configuration/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats"><span class="std std-ref">upstream_cx_overflow</span></a> counter for the cluster will increment.</p></li>
+<li><p><strong>Cluster maximum pending requests</strong>: The maximum number of requests that will be queued while
 waiting for a ready connection pool connection. Since HTTP/2 requests are sent over a single
 connection, this circuit breaker only comes into play as the initial connection is created,
 as requests will be multiplexed immediately afterwards. For HTTP/1.1, requests are added to the list
@@ -214,19 +217,20 @@ of pending requests whenever there aren’t enough upstream connections availabl
 the request, so this circuit breaker will remain in play for the lifetime of the process.
 If this circuit breaker overflows the
 <a class="reference internal" href="../../../configuration/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats"><span class="std std-ref">upstream_rq_pending_overflow</span></a> counter for the cluster will
-increment.</li>
-<li><strong>Cluster maximum requests</strong>: The maximum number of requests that can be outstanding to all hosts
+increment.</p></li>
+<li><p><strong>Cluster maximum requests</strong>: The maximum number of requests that can be outstanding to all hosts
 in a cluster at any given time. In practice this is applicable to HTTP/2 clusters since HTTP/1.1
 clusters are governed by the maximum connections circuit breaker. If this circuit breaker
 overflows the <a class="reference internal" href="../../../configuration/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats"><span class="std std-ref">upstream_rq_pending_overflow</span></a> counter
-for the cluster will increment.</li>
-<li><strong>Cluster maximum active retries</strong>: The maximum number of retries that can be outstanding to all
+for the cluster will increment.</p></li>
+<li><p><strong>Cluster maximum active retries</strong>: The maximum number of retries that can be outstanding to all
 hosts in a cluster at any given time. In general we recommend aggressively circuit breaking
 retries so that retries for sporadic failures are allowed but the overall retry volume cannot
 explode and cause large scale cascading failure. If this circuit breaker overflows the
 <a class="reference internal" href="../../../configuration/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats"><span class="std std-ref">upstream_rq_retry_overflow</span></a> counter for the cluster
-will increment.</li>
-<li id="arch-overview-circuit-break-cluster-maximum-connection-pools"><strong>Cluster maximum concurrent connection pools</strong>: The maximum number of connection pools that can be
+will increment.</p>
+</li>
+<li id="arch-overview-circuit-break-cluster-maximum-connection-pools"><p><strong>Cluster maximum concurrent connection pools</strong>: The maximum number of connection pools that can be
 concurrently instantiated. Some features, such as the
 <a class="reference internal" href="../other_features/ip_transparency.html#arch-overview-ip-transparency-original-src-listener"><span class="std std-ref">Original Src Listener Filter</span></a>, can
 create an unbounded number of connection pools. When a cluster has exhausted its concurrent
@@ -239,7 +243,7 @@ at least one upstream connection, so this value should likely be no greater than
 <a class="reference internal" href="#arch-overview-circuit-break-cluster-maximum-connections"><span class="std std-ref">Cluster maximum connections</span></a>.
 If this circuit breaker overflows the
 <a class="reference internal" href="../../../configuration/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats"><span class="std std-ref">upstream_cx_pool_overflow</span></a> counter for the cluster
-will increment.</li>
+will increment.</p></li>
 </ul>
 <p>Each circuit breaking limit is <a class="reference internal" href="../../../configuration/cluster_manager/cluster_circuit_breakers.html#config-cluster-manager-cluster-circuit-breakers"><span class="std std-ref">configurable</span></a>
 and tracked on a per upstream cluster and per priority basis. This allows different components of
@@ -261,7 +265,7 @@ case of HTTP requests.</p>
         <a href="upstream_filters.html" class="btn btn-neutral float-right" title="Upstream network filters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="outlier.html" class="btn btn-neutral" title="Outlier detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="outlier.html" class="btn btn-neutral float-left" title="Outlier detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -287,26 +291,16 @@ case of HTTP requests.</p>
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

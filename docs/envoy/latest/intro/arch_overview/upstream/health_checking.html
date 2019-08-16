@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Health checking &mdash; envoy 1.12.0-dev-5a7bab documentation</title>
+  <title>Health checking &mdash; envoy 1.12.0-dev-cb15cc documentation</title>
   
 
   
@@ -19,34 +19,37 @@
   
 
   
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Connection pooling" href="connection_pooling.html" />
     <link rel="prev" title="Service discovery" href="service_discovery.html" /> 
-
-  
-  <script src="../../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -60,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-5a7bab
+                1.12.0-dev-cb15cc
               </div>
             
           
@@ -204,20 +207,20 @@ even when using the other service discovery types. Envoy supports three differen
 checking along with various settings (check interval, failures required before marking a host
 unhealthy, successes required before marking a host healthy, etc.):</p>
 <ul class="simple">
-<li><strong>HTTP</strong>: During HTTP health checking Envoy will send an HTTP request to the upstream host. By
+<li><p><strong>HTTP</strong>: During HTTP health checking Envoy will send an HTTP request to the upstream host. By
 default, it expects a 200 response if the host is healthy. Expected response codes are
 <a class="reference internal" href="../../../api-v2/api/v2/core/health_check.proto.html#envoy-api-msg-core-healthcheck-httphealthcheck"><span class="std std-ref">configurable</span></a>. The
 upstream host can return 503 if it wants to immediately notify downstream hosts to no longer
-forward traffic to it.</li>
-<li><strong>L3/L4</strong>: During L3/L4 health checking, Envoy will send a configurable byte buffer to the
+forward traffic to it.</p></li>
+<li><p><strong>L3/L4</strong>: During L3/L4 health checking, Envoy will send a configurable byte buffer to the
 upstream host. It expects the byte buffer to be echoed in the response if the host is to be
-considered healthy. Envoy also supports connect only L3/L4 health checking.</li>
-<li><strong>Redis</strong>: Envoy will send a Redis PING command and expect a PONG response. The upstream Redis
+considered healthy. Envoy also supports connect only L3/L4 health checking.</p></li>
+<li><p><strong>Redis</strong>: Envoy will send a Redis PING command and expect a PONG response. The upstream Redis
 server can respond with anything other than PONG to cause an immediate active health check
 failure. Optionally, Envoy can perform EXISTS on a user-specified key. If the key does not exist
 it is considered a passing healthcheck. This allows the user to mark a Redis instance for
 maintenance by setting the specified key to any value and waiting for traffic to drain. See
-<a class="reference internal" href="../../../api-v2/config/health_checker/redis/v2/redis.proto.html#envoy-api-msg-config-health-checker-redis-v2-redis"><span class="std std-ref">redis_key</span></a>.</li>
+<a class="reference internal" href="../../../api-v2/config/health_checker/redis/v2/redis.proto.html#envoy-api-msg-config-health-checker-redis-v2-redis"><span class="std std-ref">redis_key</span></a>.</p></li>
 </ul>
 <div class="section" id="per-cluster-member-health-check-config">
 <span id="arch-overview-per-cluster-health-check-config"></span><h2>Per cluster member health check config<a class="headerlink" href="#per-cluster-member-health-check-config" title="Permalink to this headline">¶</a></h2>
@@ -230,16 +233,16 @@ of each defined <a class="reference internal" href="../../../api-v2/api/v2/endpo
 <p>An example of setting up <a class="reference internal" href="../../../api-v2/api/v2/endpoint/endpoint.proto.html#envoy-api-msg-endpoint-endpoint-healthcheckconfig"><span class="std std-ref">health check config</span></a>
 to set a <a class="reference internal" href="../../../api-v2/api/v2/endpoint/endpoint.proto.html#envoy-api-msg-endpoint-endpoint"><span class="std std-ref">cluster member</span></a>’s alternative health check
 <a class="reference internal" href="../../../api-v2/api/v2/endpoint/endpoint.proto.html#envoy-api-field-endpoint-endpoint-healthcheckconfig-port-value"><span class="std std-ref">port</span></a> is:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">load_assignment</span><span class="p p-Indicator">:</span>
-  <span class="l l-Scalar l-Scalar-Plain">endpoints</span><span class="p p-Indicator">:</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">lb_endpoints</span><span class="p p-Indicator">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">endpoint</span><span class="p p-Indicator">:</span>
-        <span class="l l-Scalar l-Scalar-Plain">health_check_config</span><span class="p p-Indicator">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">port_value</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">8080</span>
-        <span class="l l-Scalar l-Scalar-Plain">address</span><span class="p p-Indicator">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">socket_address</span><span class="p p-Indicator">:</span>
-            <span class="l l-Scalar l-Scalar-Plain">address</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
-            <span class="l l-Scalar l-Scalar-Plain">port_value</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">load_assignment</span><span class="p">:</span>
+  <span class="nt">endpoints</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">endpoint</span><span class="p">:</span>
+        <span class="nt">health_check_config</span><span class="p">:</span>
+          <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8080</span>
+        <span class="nt">address</span><span class="p">:</span>
+          <span class="nt">socket_address</span><span class="p">:</span>
+            <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
+            <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
 </pre></div>
 </div>
 </div>
@@ -267,29 +270,29 @@ health checking traffic can be generated. Envoy includes an HTTP health checking
 installed in a configured HTTP listener. This filter is capable of a few different modes of
 operation:</p>
 <ul class="simple">
-<li><strong>No pass through</strong>: In this mode, the health check request is never passed to the local service.
-Envoy will respond with a 200 or a 503 depending on the current draining state of the server.</li>
-<li><strong>No pass through, computed from upstream cluster health</strong>: In this mode, the health checking
+<li><p><strong>No pass through</strong>: In this mode, the health check request is never passed to the local service.
+Envoy will respond with a 200 or a 503 depending on the current draining state of the server.</p></li>
+<li><p><strong>No pass through, computed from upstream cluster health</strong>: In this mode, the health checking
 filter will return a 200 or a 503 depending on whether at least a <a class="reference internal" href="../../../api-v2/config/filter/http/health_check/v2/health_check.proto.html#envoy-api-field-config-filter-http-health-check-v2-healthcheck-cluster-min-healthy-percentages"><span class="std std-ref">specified percentage</span></a>
 of the servers are available (healthy + degraded) in one or more upstream clusters. (If the Envoy
 server is in a draining state, though, it will respond with a 503 regardless of the upstream
-cluster health.)</li>
-<li><strong>Pass through</strong>: In this mode, Envoy will pass every health check request to the local service.
-The service is expected to return a 200 or a 503 depending on its health state.</li>
-<li><strong>Pass through with caching</strong>: In this mode, Envoy will pass health check requests to the local
+cluster health.)</p></li>
+<li><p><strong>Pass through</strong>: In this mode, Envoy will pass every health check request to the local service.
+The service is expected to return a 200 or a 503 depending on its health state.</p></li>
+<li><p><strong>Pass through with caching</strong>: In this mode, Envoy will pass health check requests to the local
 service, but then cache the result for some period of time. Subsequent health check requests will
 return the cached value up to the cache time. When the cache time is reached, the next health
 check request will be passed to the local service. This is the recommended mode of operation when
 operating a large mesh. Envoy uses persistent connections for health checking traffic and health
 check requests have very little cost to Envoy itself. Thus, this mode of operation yields an
 eventually consistent view of the health state of each upstream host without overwhelming the
-local service with a large number of health check requests.</li>
+local service with a large number of health check requests.</p></li>
 </ul>
 <p>Further reading:</p>
 <ul class="simple">
-<li>Health check filter <a class="reference internal" href="../../../configuration/http_filters/health_check_filter.html#config-http-filters-health-check"><span class="std std-ref">configuration</span></a>.</li>
-<li><a class="reference internal" href="../../../operations/admin.html#operations-admin-interface-healthcheck-fail"><span class="std std-ref">/healthcheck/fail</span></a> admin endpoint.</li>
-<li><a class="reference internal" href="../../../operations/admin.html#operations-admin-interface-healthcheck-ok"><span class="std std-ref">/healthcheck/ok</span></a> admin endpoint.</li>
+<li><p>Health check filter <a class="reference internal" href="../../../configuration/http_filters/health_check_filter.html#config-http-filters-health-check"><span class="std std-ref">configuration</span></a>.</p></li>
+<li><p><a class="reference internal" href="../../../operations/admin.html#operations-admin-interface-healthcheck-fail"><span class="std std-ref">/healthcheck/fail</span></a> admin endpoint.</p></li>
+<li><p><a class="reference internal" href="../../../operations/admin.html#operations-admin-interface-healthcheck-ok"><span class="std std-ref">/healthcheck/ok</span></a> admin endpoint.</p></li>
 </ul>
 </div>
 <div class="section" id="active-health-checking-fast-failure">
@@ -336,7 +339,7 @@ how this affects load balancing.</p>
         <a href="connection_pooling.html" class="btn btn-neutral float-right" title="Connection pooling" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="service_discovery.html" class="btn btn-neutral" title="Service discovery" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="service_discovery.html" class="btn btn-neutral float-left" title="Service discovery" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -362,26 +365,16 @@ how this affects load balancing.</p>
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

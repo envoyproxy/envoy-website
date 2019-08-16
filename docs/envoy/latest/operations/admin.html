@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Administration interface &mdash; envoy 1.12.0-dev-5a7bab documentation</title>
+  <title>Administration interface &mdash; envoy 1.12.0-dev-cb15cc documentation</title>
   
 
   
@@ -19,34 +19,37 @@
   
 
   
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../_static/css/envoy.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Statistics overview" href="stats_overview.html" />
     <link rel="prev" title="Hot restart Python wrapper" href="hot_restarter.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -60,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-5a7bab
+                1.12.0-dev-cb15cc
               </div>
             
           
@@ -175,10 +178,10 @@
 <p>Envoy exposes a local administration interface that can be used to query and
 modify different aspects of the server:</p>
 <ul class="simple">
-<li><a class="reference internal" href="../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-msg-config-bootstrap-v2-admin"><span class="std std-ref">v2 API reference</span></a></li>
+<li><p><a class="reference internal" href="../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-msg-config-bootstrap-v2-admin"><span class="std std-ref">v2 API reference</span></a></p></li>
 </ul>
 <div class="admonition attention" id="operations-admin-interface-security">
-<p class="first admonition-title">Attention</p>
+<p class="admonition-title">Attention</p>
 <p>The administration interface in its current form both allows destructive operations to be
 performed (e.g., shutting down the server) as well as potentially exposes private information
 (e.g., stats, cluster names, cert info, etc.). It is <strong>critical</strong> that access to the
@@ -187,190 +190,186 @@ that access the administration interface are <strong>only</strong> attached to t
 avoid CSRF attacks). This involves setting up an appropriate firewall or optimally only allowing
 access to the administration listener via localhost. This can be accomplished with a v2
 configuration like the following:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">admin</span><span class="p p-Indicator">:</span>
-  <span class="l l-Scalar l-Scalar-Plain">access_log_path</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/tmp/admin_access.log</span>
-  <span class="l l-Scalar l-Scalar-Plain">profile_path</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/tmp/envoy.prof</span>
-  <span class="l l-Scalar l-Scalar-Plain">address</span><span class="p p-Indicator">:</span>
-    <span class="l l-Scalar l-Scalar-Plain">socket_address</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">address</span><span class="p p-Indicator">:</span> <span class="nv">127.0.0.1</span><span class="p p-Indicator">,</span> <span class="nv">port_value</span><span class="p p-Indicator">:</span> <span class="nv">9901</span> <span class="p p-Indicator">}</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">admin</span><span class="p">:</span>
+  <span class="nt">access_log_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/tmp/admin_access.log</span>
+  <span class="nt">profile_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/tmp/envoy.prof</span>
+  <span class="nt">address</span><span class="p">:</span>
+    <span class="nt">socket_address</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> address</span><span class="p">:</span> <span class="nv">127.0.0.1</span><span class="p p-Indicator">,</span><span class="nt"> port_value</span><span class="p">:</span> <span class="nv">9901</span> <span class="p p-Indicator">}</span>
 </pre></div>
 </div>
 <p>In the future additional security options will be added to the administration interface. This
 work is tracked in <a class="reference external" href="https://github.com/envoyproxy/envoy/issues/2763">this</a> issue.</p>
-<p class="last">All mutations must be sent as HTTP POST operations. When a mutation is requested via GET,
+<p>All mutations must be sent as HTTP POST operations. When a mutation is requested via GET,
 the request has no effect, and an HTTP 400 (Invalid Request) response is returned.</p>
 </div>
 <dl class="get">
 <dt id="get--">
-<code class="descname">GET </code><code class="descname">/</code><a class="headerlink" href="#get--" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GET </code><code class="sig-name descname">/</code><a class="headerlink" href="#get--" title="Permalink to this definition">¶</a></dt>
 <dd><p>Render an HTML home page with a table of links to all available options.</p>
 </dd></dl>
 
 <dl class="get">
 <dt id="get--help">
-<code class="descname">GET </code><code class="descname">/help</code><a class="headerlink" href="#get--help" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GET </code><code class="sig-name descname">/help</code><a class="headerlink" href="#get--help" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print a textual table of all available options.</p>
 </dd></dl>
 
 <span class="target" id="operations-admin-interface-certs"></span><dl class="get">
 <dt id="get--certs">
-<code class="descname">GET </code><code class="descname">/certs</code><a class="headerlink" href="#get--certs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GET </code><code class="sig-name descname">/certs</code><a class="headerlink" href="#get--certs" title="Permalink to this definition">¶</a></dt>
 <dd><p>List out all loaded TLS certificates, including file name, serial number, subject alternate names and days until
 expiration in JSON format conforming to the <a class="reference internal" href="../api-v2/admin/v2alpha/certs.proto.html#envoy-api-msg-admin-v2alpha-certificates"><span class="std std-ref">certificate proto definition</span></a>.</p>
 </dd></dl>
 
 <span class="target" id="operations-admin-interface-clusters"></span><dl class="get">
 <dt id="get--clusters">
-<code class="descname">GET </code><code class="descname">/clusters</code><a class="headerlink" href="#get--clusters" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GET </code><code class="sig-name descname">/clusters</code><a class="headerlink" href="#get--clusters" title="Permalink to this definition">¶</a></dt>
 <dd><p>List out all configured <a class="reference internal" href="../intro/arch_overview/upstream/cluster_manager.html#arch-overview-cluster-manager"><span class="std std-ref">cluster manager</span></a> clusters. This
 information includes all discovered upstream hosts in each cluster along with per host statistics.
 This is useful for debugging service discovery issues.</p>
-<dl class="docutils">
-<dt>Cluster manager information</dt>
-<dd><ul class="first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">version_info</span></code> string – the version info string of the last loaded
+<dl>
+<dt>Cluster manager information</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">version_info</span></code> string – the version info string of the last loaded
 <a class="reference internal" href="../configuration/cluster_manager/cds.html#config-cluster-manager-cds"><span class="std std-ref">CDS</span></a> update.
 If Envoy does not have <a class="reference internal" href="../configuration/cluster_manager/cds.html#config-cluster-manager-cds"><span class="std std-ref">CDS</span></a> setup, the
-output will read <code class="docutils literal notranslate"><span class="pre">version_info::static</span></code>.</li>
+output will read <code class="docutils literal notranslate"><span class="pre">version_info::static</span></code>.</p></li>
 </ul>
 </dd>
-<dt>Cluster wide information</dt>
-<dd><ul class="first last simple">
-<li><a class="reference internal" href="../configuration/cluster_manager/cluster_circuit_breakers.html#config-cluster-manager-cluster-circuit-breakers"><span class="std std-ref">circuit breakers</span></a> settings for all priority settings.</li>
-<li>Information about <a class="reference internal" href="../intro/arch_overview/upstream/outlier.html#arch-overview-outlier-detection"><span class="std std-ref">outlier detection</span></a> if a detector is installed. Currently
+<dt>Cluster wide information</dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="../configuration/cluster_manager/cluster_circuit_breakers.html#config-cluster-manager-cluster-circuit-breakers"><span class="std std-ref">circuit breakers</span></a> settings for all priority settings.</p></li>
+<li><p>Information about <a class="reference internal" href="../intro/arch_overview/upstream/outlier.html#arch-overview-outlier-detection"><span class="std std-ref">outlier detection</span></a> if a detector is installed. Currently
 <a class="reference internal" href="../api-v2/data/cluster/v2alpha/outlier_detection_event.proto.html#envoy-api-field-data-cluster-v2alpha-outlierejectsuccessrate-cluster-average-success-rate"><span class="std std-ref">average success rate</span></a>,
 and <a class="reference internal" href="../api-v2/data/cluster/v2alpha/outlier_detection_event.proto.html#envoy-api-field-data-cluster-v2alpha-outlierejectsuccessrate-cluster-success-rate-ejection-threshold"><span class="std std-ref">ejection threshold</span></a>
 are presented. Both of these values could be <code class="docutils literal notranslate"><span class="pre">-1</span></code> if there was not enough data to calculate them in the last
-<a class="reference internal" href="../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-interval"><span class="std std-ref">interval</span></a>.</li>
-<li><code class="docutils literal notranslate"><span class="pre">added_via_api</span></code> flag – <code class="docutils literal notranslate"><span class="pre">false</span></code> if the cluster was added via static configuration, <code class="docutils literal notranslate"><span class="pre">true</span></code>
-if it was added via the <a class="reference internal" href="../configuration/cluster_manager/cds.html#config-cluster-manager-cds"><span class="std std-ref">CDS</span></a> api.</li>
+<a class="reference internal" href="../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-interval"><span class="std std-ref">interval</span></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">added_via_api</span></code> flag – <code class="docutils literal notranslate"><span class="pre">false</span></code> if the cluster was added via static configuration, <code class="docutils literal notranslate"><span class="pre">true</span></code>
+if it was added via the <a class="reference internal" href="../configuration/cluster_manager/cds.html#config-cluster-manager-cds"><span class="std std-ref">CDS</span></a> api.</p></li>
 </ul>
 </dd>
-<dt>Per host statistics</dt>
-<dd><table border="1" class="colwidths-given first last docutils">
+<dt>Per host statistics</dt><dd><table class="colwidths-given docutils align-default">
 <colgroup>
-<col width="25%" />
-<col width="25%" />
-<col width="50%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Name</th>
-<th class="head">Type</th>
-<th class="head">Description</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>cx_total</td>
-<td>Counter</td>
-<td>Total connections</td>
+<tbody>
+<tr class="row-even"><td><p>cx_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections</p></td>
 </tr>
-<tr class="row-odd"><td>cx_active</td>
-<td>Gauge</td>
-<td>Total active connections</td>
+<tr class="row-odd"><td><p>cx_active</p></td>
+<td><p>Gauge</p></td>
+<td><p>Total active connections</p></td>
 </tr>
-<tr class="row-even"><td>cx_connect_fail</td>
-<td>Counter</td>
-<td>Total connection failures</td>
+<tr class="row-even"><td><p>cx_connect_fail</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connection failures</p></td>
 </tr>
-<tr class="row-odd"><td>rq_total</td>
-<td>Counter</td>
-<td>Total requests</td>
+<tr class="row-odd"><td><p>rq_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests</p></td>
 </tr>
-<tr class="row-even"><td>rq_timeout</td>
-<td>Counter</td>
-<td>Total timed out requests</td>
+<tr class="row-even"><td><p>rq_timeout</p></td>
+<td><p>Counter</p></td>
+<td><p>Total timed out requests</p></td>
 </tr>
-<tr class="row-odd"><td>rq_success</td>
-<td>Counter</td>
-<td>Total requests with non-5xx responses</td>
+<tr class="row-odd"><td><p>rq_success</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests with non-5xx responses</p></td>
 </tr>
-<tr class="row-even"><td>rq_error</td>
-<td>Counter</td>
-<td>Total requests with 5xx responses</td>
+<tr class="row-even"><td><p>rq_error</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests with 5xx responses</p></td>
 </tr>
-<tr class="row-odd"><td>rq_active</td>
-<td>Gauge</td>
-<td>Total active requests</td>
+<tr class="row-odd"><td><p>rq_active</p></td>
+<td><p>Gauge</p></td>
+<td><p>Total active requests</p></td>
 </tr>
-<tr class="row-even"><td>healthy</td>
-<td>String</td>
-<td>The health status of the host. See below</td>
+<tr class="row-even"><td><p>healthy</p></td>
+<td><p>String</p></td>
+<td><p>The health status of the host. See below</p></td>
 </tr>
-<tr class="row-odd"><td>weight</td>
-<td>Integer</td>
-<td>Load balancing weight (1-100)</td>
+<tr class="row-odd"><td><p>weight</p></td>
+<td><p>Integer</p></td>
+<td><p>Load balancing weight (1-100)</p></td>
 </tr>
-<tr class="row-even"><td>zone</td>
-<td>String</td>
-<td>Service zone</td>
+<tr class="row-even"><td><p>zone</p></td>
+<td><p>String</p></td>
+<td><p>Service zone</p></td>
 </tr>
-<tr class="row-odd"><td>canary</td>
-<td>Boolean</td>
-<td>Whether the host is a canary</td>
+<tr class="row-odd"><td><p>canary</p></td>
+<td><p>Boolean</p></td>
+<td><p>Whether the host is a canary</p></td>
 </tr>
-<tr class="row-even"><td>success_rate</td>
-<td>Double</td>
-<td>Request success rate (0-100). -1 if there was not enough
+<tr class="row-even"><td><p>success_rate</p></td>
+<td><p>Double</p></td>
+<td><p>Request success rate (0-100). -1 if there was not enough
 <a class="reference internal" href="../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-success-rate-request-volume"><span class="std std-ref">request volume</span></a>
 in the <a class="reference internal" href="../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-interval"><span class="std std-ref">interval</span></a>
-to calculate it</td>
+to calculate it</p></td>
 </tr>
 </tbody>
 </table>
 </dd>
-<dt>Host health status</dt>
-<dd><p class="first">A host is either healthy or unhealthy because of one or more different failing health states.
+<dt>Host health status</dt><dd><p>A host is either healthy or unhealthy because of one or more different failing health states.
 If the host is healthy the <code class="docutils literal notranslate"><span class="pre">healthy</span></code> output will be equal to <em>healthy</em>.</p>
 <p>If the host is not healthy, the <code class="docutils literal notranslate"><span class="pre">healthy</span></code> output will be composed of one or more of the
 following strings:</p>
 <p><em>/failed_active_hc</em>: The host has failed an <a class="reference internal" href="../configuration/cluster_manager/cluster_hc.html#config-cluster-manager-cluster-hc"><span class="std std-ref">active health check</span></a>.</p>
 <p><em>/failed_eds_health</em>: The host was marked unhealthy by EDS.</p>
-<p class="last"><em>/failed_outlier_check</em>: The host has failed an outlier detection check.</p>
+<p><em>/failed_outlier_check</em>: The host has failed an outlier detection check.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="get">
 <dt id="get--clusters?format=json">
-<code class="descname">GET </code><code class="descname">/clusters?format=json</code><a class="headerlink" href="#get--clusters?format=json" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GET </code><code class="sig-name descname">/clusters?format=json</code><a class="headerlink" href="#get--clusters?format=json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dump the <em>/clusters</em> output in a JSON-serialized proto. See the
 <a class="reference internal" href="../api-v2/admin/v2alpha/clusters.proto.html#envoy-api-msg-admin-v2alpha-clusters"><span class="std std-ref">definition</span></a> for more information.</p>
 </dd></dl>
 
 <span class="target" id="operations-admin-interface-config-dump"></span><dl class="get">
 <dt id="get--config_dump">
-<code class="descname">GET </code><code class="descname">/config_dump</code><a class="headerlink" href="#get--config_dump" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GET </code><code class="sig-name descname">/config_dump</code><a class="headerlink" href="#get--config_dump" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dump currently loaded configuration from various Envoy components as JSON-serialized proto
 messages. See the <a class="reference internal" href="../api-v2/admin/v2alpha/config_dump.proto.html#envoy-api-msg-admin-v2alpha-configdump"><span class="std std-ref">response definition</span></a> for more
 information.</p>
 </dd></dl>
 
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">The underlying proto is marked v2alpha and hence its contents, including the JSON representation,
+<p class="admonition-title">Warning</p>
+<p>The underlying proto is marked v2alpha and hence its contents, including the JSON representation,
 are not guaranteed to be stable.</p>
 </div>
 <dl class="get">
 <dt id="get--contention">
-<code class="descname">GET </code><code class="descname">/contention</code><a class="headerlink" href="#get--contention" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GET </code><code class="sig-name descname">/contention</code><a class="headerlink" href="#get--contention" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dump current Envoy mutex contention stats (<a class="reference internal" href="../api-v2/admin/v2alpha/mutex_stats.proto.html#envoy-api-msg-admin-v2alpha-mutexstats"><span class="std std-ref">MutexStats</span></a>) in JSON
 format, if mutex tracing is enabled. See <a class="reference internal" href="cli.html#cmdoption-enable-mutex-tracing"><code class="xref std std-option docutils literal notranslate"><span class="pre">--enable-mutex-tracing</span></code></a>.</p>
 </dd></dl>
 
 <dl class="post">
 <dt id="post--cpuprofiler">
-<code class="descname">POST </code><code class="descname">/cpuprofiler</code><a class="headerlink" href="#post--cpuprofiler" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">POST </code><code class="sig-name descname">/cpuprofiler</code><a class="headerlink" href="#post--cpuprofiler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enable or disable the CPU profiler. Requires compiling with gperftools. The output file can be configured by admin.profile_path.</p>
 </dd></dl>
 
 <dl class="post">
 <dt id="post--heapprofiler">
-<code class="descname">POST </code><code class="descname">/heapprofiler</code><a class="headerlink" href="#post--heapprofiler" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">POST </code><code class="sig-name descname">/heapprofiler</code><a class="headerlink" href="#post--heapprofiler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enable or disable the Heap profiler. Requires compiling with gperftools. The output file can be configured by admin.profile_path.</p>
 </dd></dl>
 
 <span class="target" id="operations-admin-interface-healthcheck-fail"></span><dl class="post">
 <dt id="post--healthcheck-fail">
-<code class="descname">POST </code><code class="descname">/healthcheck/fail</code><a class="headerlink" href="#post--healthcheck-fail" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">POST </code><code class="sig-name descname">/healthcheck/fail</code><a class="headerlink" href="#post--healthcheck-fail" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fail inbound health checks. This requires the use of the HTTP <a class="reference internal" href="../configuration/http_filters/health_check_filter.html#config-http-filters-health-check"><span class="std std-ref">health check filter</span></a>. This is useful for draining a server prior to shutting it
 down or doing a full restart. Invoking this command will universally fail health check requests
 regardless of how the filter is configured (pass through, etc.).</p>
@@ -378,20 +377,20 @@ regardless of how the filter is configured (pass through, etc.).</p>
 
 <span class="target" id="operations-admin-interface-healthcheck-ok"></span><dl class="post">
 <dt id="post--healthcheck-ok">
-<code class="descname">POST </code><code class="descname">/healthcheck/ok</code><a class="headerlink" href="#post--healthcheck-ok" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">POST </code><code class="sig-name descname">/healthcheck/ok</code><a class="headerlink" href="#post--healthcheck-ok" title="Permalink to this definition">¶</a></dt>
 <dd><p>Negate the effect of <a class="reference internal" href="#post--healthcheck-fail" title="POST /healthcheck/fail"><code class="xref http http-post docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/healthcheck/fail</span></code></a>. This requires the use of the HTTP
 <a class="reference internal" href="../configuration/http_filters/health_check_filter.html#config-http-filters-health-check"><span class="std std-ref">health check filter</span></a>.</p>
 </dd></dl>
 
 <dl class="get">
 <dt id="get--hot_restart_version">
-<code class="descname">GET </code><code class="descname">/hot_restart_version</code><a class="headerlink" href="#get--hot_restart_version" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GET </code><code class="sig-name descname">/hot_restart_version</code><a class="headerlink" href="#get--hot_restart_version" title="Permalink to this definition">¶</a></dt>
 <dd><p>See <a class="reference internal" href="cli.html#cmdoption-hot-restart-version"><code class="xref std std-option docutils literal notranslate"><span class="pre">--hot-restart-version</span></code></a>.</p>
 </dd></dl>
 
 <span class="target" id="operations-admin-interface-listeners"></span><dl class="get">
 <dt id="get--listeners">
-<code class="descname">GET </code><code class="descname">/listeners</code><a class="headerlink" href="#get--listeners" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GET </code><code class="sig-name descname">/listeners</code><a class="headerlink" href="#get--listeners" title="Permalink to this definition">¶</a></dt>
 <dd><p>List out all configured <a class="reference internal" href="../intro/arch_overview/listeners/listeners.html#arch-overview-listeners"><span class="std std-ref">listeners</span></a>. This information includes the names of listeners as well as
 the addresses that they are listening on. If a listener is configured to listen on port 0, then the output will contain the actual
 port that was allocated by the OS.</p>
@@ -399,41 +398,41 @@ port that was allocated by the OS.</p>
 
 <dl class="get">
 <dt id="get--listeners?format=json">
-<code class="descname">GET </code><code class="descname">/listeners?format=json</code><a class="headerlink" href="#get--listeners?format=json" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GET </code><code class="sig-name descname">/listeners?format=json</code><a class="headerlink" href="#get--listeners?format=json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dump the <em>/listeners</em> output in a JSON-serialized proto. See the
 <a class="reference internal" href="../api-v2/admin/v2alpha/listeners.proto.html#envoy-api-msg-admin-v2alpha-listeners"><span class="std std-ref">definition</span></a> for more information.</p>
 </dd></dl>
 
 <span class="target" id="operations-admin-interface-logging"></span><dl class="post">
 <dt id="post--logging">
-<code class="descname">POST </code><code class="descname">/logging</code><a class="headerlink" href="#post--logging" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">POST </code><code class="sig-name descname">/logging</code><a class="headerlink" href="#post--logging" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enable/disable different logging levels on a particular logger or all loggers.</p>
 <ul class="simple">
-<li>To change the logging level across all loggers, set the query parameter as level=&lt;desired_level&gt;.</li>
-<li>To change a particular logger’s level, set the query parameter like so, &lt;logger_name&gt;=&lt;desired_level&gt;.</li>
-<li>To list the loggers, send a POST request to the /logging endpoint without a query parameter.</li>
+<li><p>To change the logging level across all loggers, set the query parameter as level=&lt;desired_level&gt;.</p></li>
+<li><p>To change a particular logger’s level, set the query parameter like so, &lt;logger_name&gt;=&lt;desired_level&gt;.</p></li>
+<li><p>To list the loggers, send a POST request to the /logging endpoint without a query parameter.</p></li>
 </ul>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Generally only used during development.</p>
+<p class="admonition-title">Note</p>
+<p>Generally only used during development.</p>
 </div>
 </dd></dl>
 
 <dl class="post">
 <dt id="post--memory">
-<code class="descname">POST </code><code class="descname">/memory</code><a class="headerlink" href="#post--memory" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">POST </code><code class="sig-name descname">/memory</code><a class="headerlink" href="#post--memory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints current memory allocation / heap usage, in bytes. Useful in lieu of printing all <cite>/stats</cite> and filtering to get the memory-related statistics.</p>
 </dd></dl>
 
 <dl class="post">
 <dt id="post--quitquitquit">
-<code class="descname">POST </code><code class="descname">/quitquitquit</code><a class="headerlink" href="#post--quitquitquit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">POST </code><code class="sig-name descname">/quitquitquit</code><a class="headerlink" href="#post--quitquitquit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cleanly exit the server.</p>
 </dd></dl>
 
 <dl class="post">
 <dt id="post--reset_counters">
-<code class="descname">POST </code><code class="descname">/reset_counters</code><a class="headerlink" href="#post--reset_counters" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">POST </code><code class="sig-name descname">/reset_counters</code><a class="headerlink" href="#post--reset_counters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset all counters to zero. This is useful along with <a class="reference internal" href="#get--stats" title="GET /stats"><code class="xref http http-get docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/stats</span></code></a> during debugging. Note
 that this does not drop any data sent to statsd. It just effects local output of the
 <a class="reference internal" href="#get--stats" title="GET /stats"><code class="xref http http-get docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/stats</span></code></a> command.</p>
@@ -441,7 +440,7 @@ that this does not drop any data sent to statsd. It just effects local output of
 
 <dl class="get">
 <dt id="get--server_info">
-<code class="descname">GET </code><code class="descname">/server_info</code><a class="headerlink" href="#get--server_info" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GET </code><code class="sig-name descname">/server_info</code><a class="headerlink" href="#get--server_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Outputs a JSON message containing information about the running server.</p>
 <p>Sample output looks like:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -483,7 +482,7 @@ explanation of the output.</p>
 
 <dl class="get">
 <dt id="get--ready">
-<code class="descname">GET </code><code class="descname">/ready</code><a class="headerlink" href="#get--ready" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GET </code><code class="sig-name descname">/ready</code><a class="headerlink" href="#get--ready" title="Permalink to this definition">¶</a></dt>
 <dd><p>Outputs a string and error code reflecting the state of the server. 200 is returned for the LIVE state,
 and 503 otherwise. This can be used as a readiness check.</p>
 <p>Example output:</p>
@@ -496,7 +495,7 @@ explanation of the output.</p>
 
 <span class="target" id="operations-admin-interface-stats"></span><dl class="get">
 <dt id="get--stats">
-<code class="descname">GET </code><code class="descname">/stats</code><a class="headerlink" href="#get--stats" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GET </code><code class="sig-name descname">/stats</code><a class="headerlink" href="#get--stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Outputs all statistics on demand. This command is very useful for local debugging.
 Histograms will output the computed quantiles i.e P0,P25,P50,P75,P90,P99,P99.9 and P100.
 The output for each quantile will be in the form of (interval,cumulative) where interval value
@@ -506,14 +505,14 @@ that it has not been updated with a value.
 See <a class="reference internal" href="stats_overview.html#operations-stats"><span class="std std-ref">here</span></a> for more information.</p>
 <dl class="get">
 <dt id="get--stats?usedonly">
-<code class="descname">GET </code><code class="descname">/stats?usedonly</code><a class="headerlink" href="#get--stats?usedonly" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GET </code><code class="sig-name descname">/stats?usedonly</code><a class="headerlink" href="#get--stats?usedonly" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Outputs statistics that Envoy has updated (counters incremented at least once, gauges changed at
 least once, and histograms added to at least once).</p>
 <dl class="get">
 <dt id="get--stats?filter=regex">
-<code class="descname">GET </code><code class="descname">/stats?filter=regex</code><a class="headerlink" href="#get--stats?filter=regex" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GET </code><code class="sig-name descname">/stats?filter=regex</code><a class="headerlink" href="#get--stats?filter=regex" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Filters the returned stats to those with names matching the regular expression
@@ -525,7 +524,7 @@ Full-string matching can be specified with begin- and end-line anchors. (i.e.
 
 <dl class="get">
 <dt id="get--stats?format=json">
-<code class="descname">GET </code><code class="descname">/stats?format=json</code><a class="headerlink" href="#get--stats?format=json" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GET </code><code class="sig-name descname">/stats?format=json</code><a class="headerlink" href="#get--stats?format=json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Outputs /stats in JSON format. This can be used for programmatic access of stats. Counters and Gauges
 will be in the form of a set of (name,value) pairs. Histograms will be under the element “histograms”,
 that contains “supported_quantiles” which lists the quantiles supported and an array of computed_quantiles
@@ -573,7 +572,7 @@ that has the computed quantile for each histogram.</p>
 </div>
 <dl class="get">
 <dt id="get--stats?format=json&amp;usedonly">
-<code class="descname">GET </code><code class="descname">/stats?format=json&amp;usedonly</code><a class="headerlink" href="#get--stats?format=json&usedonly" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GET </code><code class="sig-name descname">/stats?format=json&amp;usedonly</code><a class="headerlink" href="#get--stats?format=json&usedonly" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Outputs statistics that Envoy has updated (counters incremented at least once,
@@ -582,11 +581,11 @@ gauges changed at least once, and histograms added to at least once) in JSON for
 
 <dl class="get">
 <dt id="get--stats?format=prometheus">
-<code class="descname">GET </code><code class="descname">/stats?format=prometheus</code><a class="headerlink" href="#get--stats?format=prometheus" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GET </code><code class="sig-name descname">/stats?format=prometheus</code><a class="headerlink" href="#get--stats?format=prometheus" title="Permalink to this definition">¶</a></dt>
 <dd><p>or alternatively,</p>
 <dl class="get">
 <dt id="get--stats-prometheus">
-<code class="descname">GET </code><code class="descname">/stats/prometheus</code><a class="headerlink" href="#get--stats-prometheus" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GET </code><code class="sig-name descname">/stats/prometheus</code><a class="headerlink" href="#get--stats-prometheus" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Outputs /stats in <a class="reference external" href="https://prometheus.io/docs/instrumenting/exposition_formats/">Prometheus</a>
@@ -598,7 +597,7 @@ and histograms added to at least once)</p>
 
 <span class="target" id="operations-admin-interface-runtime"></span><dl class="get">
 <dt id="get--runtime">
-<code class="descname">GET </code><code class="descname">/runtime</code><a class="headerlink" href="#get--runtime" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GET </code><code class="sig-name descname">/runtime</code><a class="headerlink" href="#get--runtime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Outputs all runtime values on demand in JSON format. See <a class="reference internal" href="../intro/arch_overview/operations/runtime.html#arch-overview-runtime"><span class="std std-ref">here</span></a> for
 more information on how these values are configured and utilized. The output include the list of
 the active runtime override layers and the stack of layer values for each key. Empty strings
@@ -635,20 +634,20 @@ Example output:</p>
 </div>
 <span class="target" id="operations-admin-interface-runtime-modify"></span><dl class="post">
 <dt id="post--runtime_modify?key1=value1&amp;key2=value2&amp;keyN=valueN">
-<code class="descname">POST </code><code class="descname">/runtime_modify?key1=value1&amp;key2=value2&amp;keyN=valueN</code><a class="headerlink" href="#post--runtime_modify?key1=value1&key2=value2&keyN=valueN" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">POST </code><code class="sig-name descname">/runtime_modify?key1=value1&amp;key2=value2&amp;keyN=valueN</code><a class="headerlink" href="#post--runtime_modify?key1=value1&key2=value2&keyN=valueN" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds or modifies runtime values as passed in query parameters. To delete a previously added key,
 use an empty string as the value. Note that deletion only applies to overrides added via this
 endpoint; values loaded from disk can be modified via override but not deleted.</p>
 </dd></dl>
 
 <div class="admonition attention">
-<p class="first admonition-title">Attention</p>
-<p class="last">Use the /runtime_modify endpoint with care. Changes are effectively immediately. It is
+<p class="admonition-title">Attention</p>
+<p>Use the /runtime_modify endpoint with care. Changes are effectively immediately. It is
 <strong>critical</strong> that the admin interface is <a class="reference internal" href="#operations-admin-interface-security"><span class="std std-ref">properly secured</span></a>.</p>
 <span class="target" id="operations-admin-interface-hystrix-event-stream"></span></div>
 <dl class="get">
 <dt id="get--hystrix_event_stream">
-<code class="descname">GET </code><code class="descname">/hystrix_event_stream</code><a class="headerlink" href="#get--hystrix_event_stream" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GET </code><code class="sig-name descname">/hystrix_event_stream</code><a class="headerlink" href="#get--hystrix_event_stream" title="Permalink to this definition">¶</a></dt>
 <dd><p>This endpoint is intended to be used as the stream source for
 <a class="reference external" href="https://github.com/Netflix-Skunkworks/hystrix-dashboard/wiki">Hystrix dashboard</a>.
 a GET to this endpoint will trigger a stream of statistics from Envoy in
@@ -662,31 +661,31 @@ sent in intervals defined by the <a class="reference internal" href="../api-v2/c
 <p>As Envoy’s and Hystrix resiliency mechanisms differ, some of the statistics shown in the dashboard
 had to be adapted:</p>
 <ul class="simple">
-<li><strong>Thread pool rejections</strong> - Generally similar to what’s called short circuited in Envoy,
+<li><p><strong>Thread pool rejections</strong> - Generally similar to what’s called short circuited in Envoy,
 and counted by <em>upstream_rq_pending_overflow</em>, although the term thread pool is not accurate for
-Envoy. Both in Hystrix and Envoy, the result is rejected requests which are not passed upstream.</li>
-<li><strong>circuit breaker status (closed or open)</strong> - Since in Envoy, a circuit is opened based on the
+Envoy. Both in Hystrix and Envoy, the result is rejected requests which are not passed upstream.</p></li>
+<li><p><strong>circuit breaker status (closed or open)</strong> - Since in Envoy, a circuit is opened based on the
 current number of connections/requests in queue, there is no sleeping window for circuit breaker,
-circuit open/closed is momentary. Hence, we set the circuit breaker status to “forced closed”.</li>
-<li><strong>Short-circuited (rejected)</strong> - The term exists in Envoy but refers to requests not sent because
+circuit open/closed is momentary. Hence, we set the circuit breaker status to “forced closed”.</p></li>
+<li><p><strong>Short-circuited (rejected)</strong> - The term exists in Envoy but refers to requests not sent because
 of passing a limit (queue or connections), while in Hystrix it refers to requests not sent because
 of high percentage of service unavailable responses during some time frame.
 In Envoy, service unavailable response will cause <strong>outlier detection</strong> - removing a node off the
 load balancer pool, but requests are not rejected as a result. Therefore, this counter is always
-set to ‘0’.</li>
-<li>Latency information represents data since last flush.
-Mean latency is currently not available.</li>
+set to ‘0’.</p></li>
+<li><p>Latency information represents data since last flush.
+Mean latency is currently not available.</p></li>
 </ul>
 </dd></dl>
 
 <dl class="post">
 <dt id="post--tap">
-<code class="descname">POST </code><code class="descname">/tap</code><a class="headerlink" href="#post--tap" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">POST </code><code class="sig-name descname">/tap</code><a class="headerlink" href="#post--tap" title="Permalink to this definition">¶</a></dt>
 <dd><p>This endpoint is used for configuring an active tap session. It is only
 available if a valid tap extension has been configured, and that extension has
 been configured to accept admin configuration. See:</p>
 <ul class="simple">
-<li><a class="reference internal" href="../configuration/http_filters/tap_filter.html#config-http-filters-tap-admin-handler"><span class="std std-ref">HTTP tap filter configuration</span></a></li>
+<li><p><a class="reference internal" href="../configuration/http_filters/tap_filter.html#config-http-filters-tap-admin-handler"><span class="std std-ref">HTTP tap filter configuration</span></a></p></li>
 </ul>
 </dd></dl>
 
@@ -703,7 +702,7 @@ been configured to accept admin configuration. See:</p>
         <a href="stats_overview.html" class="btn btn-neutral float-right" title="Statistics overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="hot_restarter.html" class="btn btn-neutral" title="Hot restart Python wrapper" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="hot_restarter.html" class="btn btn-neutral float-left" title="Hot restart Python wrapper" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -729,26 +728,16 @@ been configured to accept admin configuration. See:</p>
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

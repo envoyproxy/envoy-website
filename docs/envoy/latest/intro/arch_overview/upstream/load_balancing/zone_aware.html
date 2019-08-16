@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Zone aware routing &mdash; envoy 1.12.0-dev-5a7bab documentation</title>
+  <title>Zone aware routing &mdash; envoy 1.12.0-dev-cb15cc documentation</title>
   
 
   
@@ -19,34 +19,37 @@
   
 
   
+  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../../../_static/css/envoy.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
     <link rel="next" title="Load Balancer Subsets" href="subsets.html" />
     <link rel="prev" title="Original destination" href="original_dst.html" /> 
-
-  
-  <script src="../../../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -60,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-5a7bab
+                1.12.0-dev-cb15cc
               </div>
             
           
@@ -201,23 +204,23 @@
 <span id="arch-overview-load-balancing-zone-aware-routing"></span><h1>Zone aware routing<a class="headerlink" href="#zone-aware-routing" title="Permalink to this headline">¶</a></h1>
 <p>We use the following terminology:</p>
 <ul class="simple">
-<li><strong>Originating/Upstream cluster</strong>: Envoy routes requests from an originating cluster to an upstream
-cluster.</li>
-<li><strong>Local zone</strong>: The same zone that contains a subset of hosts in both the originating and
-upstream clusters.</li>
-<li><strong>Zone aware routing</strong>: Best effort routing of requests to an upstream cluster host in the local
-zone.</li>
+<li><p><strong>Originating/Upstream cluster</strong>: Envoy routes requests from an originating cluster to an upstream
+cluster.</p></li>
+<li><p><strong>Local zone</strong>: The same zone that contains a subset of hosts in both the originating and
+upstream clusters.</p></li>
+<li><p><strong>Zone aware routing</strong>: Best effort routing of requests to an upstream cluster host in the local
+zone.</p></li>
 </ul>
 <p>In deployments where hosts in originating and upstream clusters belong to different zones
 Envoy performs zone aware routing. There are several preconditions before zone aware routing can be
 performed:</p>
 <ul class="simple" id="arch-overview-load-balancing-zone-aware-routing-preconditions">
-<li>Both originating and upstream cluster are not in
-<a class="reference internal" href="panic_threshold.html#arch-overview-load-balancing-panic-threshold"><span class="std std-ref">panic mode</span></a>.</li>
-<li>Zone aware <a class="reference internal" href="../../../../configuration/cluster_manager/cluster_runtime.html#config-cluster-manager-cluster-runtime-zone-routing"><span class="std std-ref">routing is enabled</span></a>.</li>
-<li>The originating cluster has the same number of zones as the upstream cluster.</li>
-<li>The upstream cluster has enough hosts. See
-<a class="reference internal" href="../../../../configuration/cluster_manager/cluster_runtime.html#config-cluster-manager-cluster-runtime-zone-routing"><span class="std std-ref">here</span></a> for more information.</li>
+<li><p>Both originating and upstream cluster are not in
+<a class="reference internal" href="panic_threshold.html#arch-overview-load-balancing-panic-threshold"><span class="std std-ref">panic mode</span></a>.</p></li>
+<li><p>Zone aware <a class="reference internal" href="../../../../configuration/cluster_manager/cluster_runtime.html#config-cluster-manager-cluster-runtime-zone-routing"><span class="std std-ref">routing is enabled</span></a>.</p></li>
+<li><p>The originating cluster has the same number of zones as the upstream cluster.</p></li>
+<li><p>The upstream cluster has enough hosts. See
+<a class="reference internal" href="../../../../configuration/cluster_manager/cluster_runtime.html#config-cluster-manager-cluster-runtime-zone-routing"><span class="std std-ref">here</span></a> for more information.</p></li>
 </ul>
 <p>The purpose of zone aware routing is to send as much traffic to the local zone in the upstream
 cluster as possible while roughly maintaining the same number of requests per second across all
@@ -228,17 +231,17 @@ whether Envoy routes to the local zone or performs cross zone routing depends on
 healthy hosts in the originating cluster and upstream cluster in the local zone. There are two cases
 with regard to percentage relations in the local zone between originating and upstream clusters:</p>
 <ul class="simple">
-<li>The originating cluster local zone percentage is greater than the one in the upstream cluster.
+<li><p>The originating cluster local zone percentage is greater than the one in the upstream cluster.
 In this case we cannot route all requests from the local zone of the originating cluster to the
 local zone of the upstream cluster because that will lead to request imbalance across all upstream
 hosts. Instead, Envoy calculates the percentage of requests that can be routed directly to the
 local zone of the upstream cluster. The rest of the requests are routed cross zone. The specific
 zone is selected based on the residual capacity of the zone (that zone will get some local zone
-traffic and may have additional capacity Envoy can use for cross zone traffic).</li>
-<li>The originating cluster local zone percentage is smaller than the one in upstream cluster.
+traffic and may have additional capacity Envoy can use for cross zone traffic).</p></li>
+<li><p>The originating cluster local zone percentage is smaller than the one in upstream cluster.
 In this case the local zone of the upstream cluster can get all of the requests from the
 local zone of the originating cluster and also have some space to allow traffic from other zones
-in the originating cluster (if needed).</li>
+in the originating cluster (if needed).</p></li>
 </ul>
 <p>Note that when using multiple priorities, zone aware routing is currently only supported for P=0.</p>
 </div>
@@ -254,7 +257,7 @@ in the originating cluster (if needed).</li>
         <a href="subsets.html" class="btn btn-neutral float-right" title="Load Balancer Subsets" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="original_dst.html" class="btn btn-neutral" title="Original destination" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="original_dst.html" class="btn btn-neutral float-left" title="Original destination" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -280,26 +283,16 @@ in the originating cluster (if needed).</li>
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

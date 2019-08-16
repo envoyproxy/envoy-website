@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Traffic tapping &mdash; envoy 1.12.0-dev-5a7bab documentation</title>
+  <title>Traffic tapping &mdash; envoy 1.12.0-dev-cb15cc documentation</title>
   
 
   
@@ -19,34 +19,37 @@
   
 
   
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../_static/css/envoy.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Performance" href="performance.html" />
     <link rel="prev" title="File system flags" href="fs_flags.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -60,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-5a7bab
+                1.12.0-dev-cb15cc
               </div>
             
           
@@ -181,18 +184,18 @@
 <p>Envoy currently provides two experimental extensions that can tap traffic:</p>
 <blockquote>
 <div><ul class="simple">
-<li><a class="reference internal" href="../configuration/http_filters/tap_filter.html#config-http-filters-tap"><span class="std std-ref">HTTP tap filter</span></a>. See the linked filter documentation for more
-information.</li>
-<li><a class="reference internal" href="../api-v2/api/v2/core/base.proto.html#envoy-api-msg-core-transportsocket"><span class="std std-ref">Tap transport socket extension</span></a> that can intercept
+<li><p><a class="reference internal" href="../configuration/http_filters/tap_filter.html#config-http-filters-tap"><span class="std std-ref">HTTP tap filter</span></a>. See the linked filter documentation for more
+information.</p></li>
+<li><p><a class="reference internal" href="../api-v2/api/v2/core/base.proto.html#envoy-api-msg-core-transportsocket"><span class="std std-ref">Tap transport socket extension</span></a> that can intercept
 traffic and write to a <a class="reference internal" href="../api-v2/data/tap/v2alpha/wrapper.proto.html#envoy-api-msg-data-tap-v2alpha-tracewrapper"><span class="std std-ref">protobuf trace file</span></a>. The remainder of this document describes
-the configuration of the tap transport socket.</li>
+the configuration of the tap transport socket.</p></li>
 </ul>
 </div></blockquote>
 <div class="section" id="tap-transport-socket-configuration">
 <h2>Tap transport socket configuration<a class="headerlink" href="#tap-transport-socket-configuration" title="Permalink to this headline">¶</a></h2>
 <div class="admonition attention">
-<p class="first admonition-title">Attention</p>
-<p class="last">The tap transport socket is experimental and is currently under active development. There is
+<p class="admonition-title">Attention</p>
+<p>The tap transport socket is experimental and is currently under active development. There is
 currently a very limited set of match conditions, output configuration, output sinks, etc.
 Capabilities will be expanded over time and the configuration structures are likely to change.</p>
 </div>
@@ -201,38 +204,38 @@ downstream and upstream L4 connections respectively.</p>
 <p>To configure traffic tapping, add an <cite>envoy.transport_sockets.tap</cite> transport socket
 <a class="reference internal" href="../api-v2/config/transport_socket/tap/v2alpha/tap.proto.html#envoy-api-msg-config-transport-socket-tap-v2alpha-tap"><span class="std std-ref">configuration</span></a> to the listener
 or cluster. For a plain text socket this might look like:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">transport_socket</span><span class="p p-Indicator">:</span>
-  <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.tap</span>
-  <span class="l l-Scalar l-Scalar-Plain">config</span><span class="p p-Indicator">:</span>
-    <span class="l l-Scalar l-Scalar-Plain">common_config</span><span class="p p-Indicator">:</span>
-      <span class="l l-Scalar l-Scalar-Plain">static_config</span><span class="p p-Indicator">:</span>
-        <span class="l l-Scalar l-Scalar-Plain">match_config</span><span class="p p-Indicator">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">any_match</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-        <span class="l l-Scalar l-Scalar-Plain">output_config</span><span class="p p-Indicator">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">sinks</span><span class="p p-Indicator">:</span>
-            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">format</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">PROTO_BINARY</span>
-              <span class="l l-Scalar l-Scalar-Plain">file_per_tap</span><span class="p p-Indicator">:</span>
-                <span class="l l-Scalar l-Scalar-Plain">path_prefix</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/some/tap/path</span>
-    <span class="l l-Scalar l-Scalar-Plain">transport_socket</span><span class="p p-Indicator">:</span>
-      <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">raw_buffer</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">transport_socket</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.tap</span>
+  <span class="nt">config</span><span class="p">:</span>
+    <span class="nt">common_config</span><span class="p">:</span>
+      <span class="nt">static_config</span><span class="p">:</span>
+        <span class="nt">match_config</span><span class="p">:</span>
+          <span class="nt">any_match</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+        <span class="nt">output_config</span><span class="p">:</span>
+          <span class="nt">sinks</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="nt">format</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">PROTO_BINARY</span>
+              <span class="nt">file_per_tap</span><span class="p">:</span>
+                <span class="nt">path_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/some/tap/path</span>
+    <span class="nt">transport_socket</span><span class="p">:</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">raw_buffer</span>
 </pre></div>
 </div>
 <p>For a TLS socket, this will be:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">transport_socket</span><span class="p p-Indicator">:</span>
-  <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.tap</span>
-  <span class="l l-Scalar l-Scalar-Plain">config</span><span class="p p-Indicator">:</span>
-    <span class="l l-Scalar l-Scalar-Plain">common_config</span><span class="p p-Indicator">:</span>
-      <span class="l l-Scalar l-Scalar-Plain">static_config</span><span class="p p-Indicator">:</span>
-        <span class="l l-Scalar l-Scalar-Plain">match_config</span><span class="p p-Indicator">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">any_match</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-        <span class="l l-Scalar l-Scalar-Plain">output_config</span><span class="p p-Indicator">:</span>
-          <span class="l l-Scalar l-Scalar-Plain">sinks</span><span class="p p-Indicator">:</span>
-            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">format</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">PROTO_BINARY</span>
-              <span class="l l-Scalar l-Scalar-Plain">file_per_tap</span><span class="p p-Indicator">:</span>
-                <span class="l l-Scalar l-Scalar-Plain">path_prefix</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/some/tap/path</span>
-    <span class="l l-Scalar l-Scalar-Plain">transport_socket</span><span class="p p-Indicator">:</span>
-      <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ssl</span>
-      <span class="l l-Scalar l-Scalar-Plain">config</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;TLS context&gt;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">transport_socket</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.tap</span>
+  <span class="nt">config</span><span class="p">:</span>
+    <span class="nt">common_config</span><span class="p">:</span>
+      <span class="nt">static_config</span><span class="p">:</span>
+        <span class="nt">match_config</span><span class="p">:</span>
+          <span class="nt">any_match</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+        <span class="nt">output_config</span><span class="p">:</span>
+          <span class="nt">sinks</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="nt">format</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">PROTO_BINARY</span>
+              <span class="nt">file_per_tap</span><span class="p">:</span>
+                <span class="nt">path_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/some/tap/path</span>
+    <span class="nt">transport_socket</span><span class="p">:</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ssl</span>
+      <span class="nt">config</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;TLS context&gt;</span>
 </pre></div>
 </div>
 <p>where the TLS context configuration replaces any existing <a class="reference internal" href="../api-v2/api/v2/auth/cert.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">downstream</span></a> or <a class="reference internal" href="../api-v2/api/v2/auth/cert.proto.html#envoy-api-msg-auth-upstreamtlscontext"><span class="std std-ref">upstream</span></a>
@@ -286,7 +289,7 @@ tshark -r path_0.pcap -d <span class="s2">&quot;tcp.port==10000,http2&quot;</spa
         <a href="performance.html" class="btn btn-neutral float-right" title="Performance" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="fs_flags.html" class="btn btn-neutral" title="File system flags" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="fs_flags.html" class="btn btn-neutral float-left" title="File system flags" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -312,26 +315,16 @@ tshark -r path_0.pcap -d <span class="s2">&quot;tcp.port==10000,http2&quot;</spa
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

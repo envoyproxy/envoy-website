@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Traffic Shifting/Splitting &mdash; envoy 1.12.0-dev-5a7bab documentation</title>
+  <title>Traffic Shifting/Splitting &mdash; envoy 1.12.0-dev-cb15cc documentation</title>
   
 
   
@@ -19,34 +19,37 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="HTTP header manipulation" href="headers.html" />
     <link rel="prev" title="Route matching" href="route_matching.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -60,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-5a7bab
+                1.12.0-dev-cb15cc
               </div>
             
           
@@ -202,8 +205,8 @@
 <span id="config-http-conn-man-route-table-traffic-splitting"></span><h1>Traffic Shifting/Splitting<a class="headerlink" href="#traffic-shifting-splitting" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#traffic-shifting-between-two-upstreams" id="id1">Traffic shifting between two upstreams</a></li>
-<li><a class="reference internal" href="#traffic-splitting-across-multiple-upstreams" id="id2">Traffic splitting across multiple upstreams</a></li>
+<li><p><a class="reference internal" href="#traffic-shifting-between-two-upstreams" id="id1">Traffic shifting between two upstreams</a></p></li>
+<li><p><a class="reference internal" href="#traffic-splitting-across-multiple-upstreams" id="id2">Traffic splitting across multiple upstreams</a></p></li>
 </ul>
 </div>
 <p>Envoy’s router can split traffic to a route in a virtual host across
@@ -228,24 +231,24 @@ gradually shifted from one cluster to another. Consider the following
 example configuration, where two versions <code class="docutils literal notranslate"><span class="pre">helloworld_v1</span></code> and
 <code class="docutils literal notranslate"><span class="pre">helloworld_v2</span></code> of a service named <code class="docutils literal notranslate"><span class="pre">helloworld</span></code> are declared in the
 envoy configuration file.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">virtual_hosts</span><span class="p p-Indicator">:</span>
-   <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">www2</span>
-     <span class="l l-Scalar l-Scalar-Plain">domains</span><span class="p p-Indicator">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">virtual_hosts</span><span class="p">:</span>
+   <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">www2</span>
+     <span class="nt">domains</span><span class="p">:</span>
      <span class="p p-Indicator">-</span> <span class="s">&#39;*&#39;</span>
-     <span class="l l-Scalar l-Scalar-Plain">routes</span><span class="p p-Indicator">:</span>
-       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">match</span><span class="p p-Indicator">:</span>
-           <span class="l l-Scalar l-Scalar-Plain">prefix</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/</span>
-           <span class="l l-Scalar l-Scalar-Plain">runtime_fraction</span><span class="p p-Indicator">:</span>
-             <span class="l l-Scalar l-Scalar-Plain">default_value</span><span class="p p-Indicator">:</span>
-               <span class="l l-Scalar l-Scalar-Plain">numerator</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
-               <span class="l l-Scalar l-Scalar-Plain">denominator</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">HUNDRED</span>
-             <span class="l l-Scalar l-Scalar-Plain">runtime_key</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">routing.traffic_shift.helloworld</span>
-         <span class="l l-Scalar l-Scalar-Plain">route</span><span class="p p-Indicator">:</span>
-           <span class="l l-Scalar l-Scalar-Plain">cluster</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">helloworld_v1</span>
-       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">match</span><span class="p p-Indicator">:</span>
-           <span class="l l-Scalar l-Scalar-Plain">prefix</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/</span>
-         <span class="l l-Scalar l-Scalar-Plain">route</span><span class="p p-Indicator">:</span>
-           <span class="l l-Scalar l-Scalar-Plain">cluster</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">helloworld_v2</span>
+     <span class="nt">routes</span><span class="p">:</span>
+       <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span>
+           <span class="nt">prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/</span>
+           <span class="nt">runtime_fraction</span><span class="p">:</span>
+             <span class="nt">default_value</span><span class="p">:</span>
+               <span class="nt">numerator</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
+               <span class="nt">denominator</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">HUNDRED</span>
+             <span class="nt">runtime_key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">routing.traffic_shift.helloworld</span>
+         <span class="nt">route</span><span class="p">:</span>
+           <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">helloworld_v1</span>
+       <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span>
+           <span class="nt">prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/</span>
+         <span class="nt">route</span><span class="p">:</span>
+           <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">helloworld_v2</span>
 </pre></div>
 </div>
 <p>Envoy matches routes with a <a class="reference internal" href="route_matching.html#config-http-conn-man-route-table-route-matching"><span class="std std-ref">first match</span></a> policy.
@@ -257,20 +260,20 @@ first route, traffic shifting can be accomplished by changing the runtime_fracti
 value. The following are the approximate sequence of actions required to
 accomplish the task.</p>
 <ol class="arabic simple">
-<li>In the beginning, set <code class="docutils literal notranslate"><span class="pre">routing.traffic_shift.helloworld</span></code> to <code class="docutils literal notranslate"><span class="pre">100</span></code>,
+<li><p>In the beginning, set <code class="docutils literal notranslate"><span class="pre">routing.traffic_shift.helloworld</span></code> to <code class="docutils literal notranslate"><span class="pre">100</span></code>,
 so that all requests to the <code class="docutils literal notranslate"><span class="pre">helloworld</span></code> virtual host would match with
-the v1 route and be served by the <code class="docutils literal notranslate"><span class="pre">helloworld_v1</span></code> cluster.</li>
-<li>To start shifting traffic to <code class="docutils literal notranslate"><span class="pre">helloworld_v2</span></code> cluster, set
+the v1 route and be served by the <code class="docutils literal notranslate"><span class="pre">helloworld_v1</span></code> cluster.</p></li>
+<li><p>To start shifting traffic to <code class="docutils literal notranslate"><span class="pre">helloworld_v2</span></code> cluster, set
 <code class="docutils literal notranslate"><span class="pre">routing.traffic_shift.helloworld</span></code> to values <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">&lt;</span> <span class="pre">x</span> <span class="pre">&lt;</span> <span class="pre">100</span></code>. For
 instance at <code class="docutils literal notranslate"><span class="pre">90</span></code>, 1 out of every 10 requests to the <code class="docutils literal notranslate"><span class="pre">helloworld</span></code>
 virtual host will not match the v1 route and will fall through to the v2
-route.</li>
-<li>Gradually decrease the value set in <code class="docutils literal notranslate"><span class="pre">routing.traffic_shift.helloworld</span></code>
-so that a larger percentage of requests match the v2 route.</li>
-<li>When <code class="docutils literal notranslate"><span class="pre">routing.traffic_shift.helloworld</span></code> is set to <code class="docutils literal notranslate"><span class="pre">0</span></code>, no requests
+route.</p></li>
+<li><p>Gradually decrease the value set in <code class="docutils literal notranslate"><span class="pre">routing.traffic_shift.helloworld</span></code>
+so that a larger percentage of requests match the v2 route.</p></li>
+<li><p>When <code class="docutils literal notranslate"><span class="pre">routing.traffic_shift.helloworld</span></code> is set to <code class="docutils literal notranslate"><span class="pre">0</span></code>, no requests
 to the <code class="docutils literal notranslate"><span class="pre">helloworld</span></code> virtual host will match to the v1 route. All
 traffic would now fall through to the v2 route and be served by the
-<code class="docutils literal notranslate"><span class="pre">helloworld_v2</span></code> cluster.</li>
+<code class="docutils literal notranslate"><span class="pre">helloworld_v2</span></code> cluster.</p></li>
 </ol>
 </div>
 <div class="section" id="traffic-splitting-across-multiple-upstreams">
@@ -284,21 +287,21 @@ specify the weight for each upstream cluster.</p>
 configuration block in a route can be used to specify multiple upstream clusters
 along with weights that indicate the <strong>percentage</strong> of traffic to be sent
 to each upstream cluster.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">virtual_hosts</span><span class="p p-Indicator">:</span>
-   <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">www2</span>
-     <span class="l l-Scalar l-Scalar-Plain">domains</span><span class="p p-Indicator">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">virtual_hosts</span><span class="p">:</span>
+   <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">www2</span>
+     <span class="nt">domains</span><span class="p">:</span>
      <span class="p p-Indicator">-</span> <span class="s">&#39;*&#39;</span>
-     <span class="l l-Scalar l-Scalar-Plain">routes</span><span class="p p-Indicator">:</span>
-       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">match</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span> <span class="nv">prefix</span><span class="p p-Indicator">:</span> <span class="nv">/</span> <span class="p p-Indicator">}</span>
-         <span class="l l-Scalar l-Scalar-Plain">route</span><span class="p p-Indicator">:</span>
-           <span class="l l-Scalar l-Scalar-Plain">weighted_clusters</span><span class="p p-Indicator">:</span>
-             <span class="l l-Scalar l-Scalar-Plain">clusters</span><span class="p p-Indicator">:</span>
-               <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">helloworld_v1</span>
-                 <span class="l l-Scalar l-Scalar-Plain">weight</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">33</span>
-               <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">helloworld_v2</span>
-                 <span class="l l-Scalar l-Scalar-Plain">weight</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">33</span>
-               <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">helloworld_v3</span>
-                 <span class="l l-Scalar l-Scalar-Plain">weight</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">34</span>
+     <span class="nt">routes</span><span class="p">:</span>
+       <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> prefix</span><span class="p">:</span> <span class="nv">/</span> <span class="p p-Indicator">}</span>
+         <span class="nt">route</span><span class="p">:</span>
+           <span class="nt">weighted_clusters</span><span class="p">:</span>
+             <span class="nt">clusters</span><span class="p">:</span>
+               <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">helloworld_v1</span>
+                 <span class="nt">weight</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">33</span>
+               <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">helloworld_v2</span>
+                 <span class="nt">weight</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">33</span>
+               <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">helloworld_v3</span>
+                 <span class="nt">weight</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">34</span>
 </pre></div>
 </div>
 <p>By default, the weights must sum to exactly 100. In the V2 API, the
@@ -322,7 +325,7 @@ following runtime variables: <code class="docutils literal notranslate"><span cl
         <a href="headers.html" class="btn btn-neutral float-right" title="HTTP header manipulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="route_matching.html" class="btn btn-neutral" title="Route matching" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="route_matching.html" class="btn btn-neutral float-left" title="Route matching" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -348,26 +351,16 @@ following runtime variables: <code class="docutils literal notranslate"><span cl
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
