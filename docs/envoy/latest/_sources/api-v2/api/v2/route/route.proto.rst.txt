@@ -11,7 +11,7 @@ HTTP route
 route.VirtualHost
 -----------------
 
-`[route.VirtualHost proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L35>`_
+`[route.VirtualHost proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L37>`_
 
 The top level element in the routing configuration is a virtual host. Each virtual host has
 a logical name as well as a set of domains that get routed to it based on the incoming request's
@@ -194,7 +194,7 @@ hedge_policy
 Enum route.VirtualHost.TlsRequirementType
 -----------------------------------------
 
-`[route.VirtualHost.TlsRequirementType proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L62>`_
+`[route.VirtualHost.TlsRequirementType proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L64>`_
 
 
 .. _envoy_api_enum_value_route.VirtualHost.TlsRequirementType.NONE:
@@ -223,7 +223,7 @@ ALL
 route.Route
 -----------
 
-`[route.Route proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L161>`_
+`[route.Route proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L163>`_
 
 A route is both a specification of how to match a request as well as an indication of what to do
 next (e.g., redirect, forward, rewrite, etc.).
@@ -378,7 +378,7 @@ tracing
 route.WeightedCluster
 ---------------------
 
-`[route.WeightedCluster proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L245>`_
+`[route.WeightedCluster proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L247>`_
 
 Compared to the :ref:`cluster <envoy_api_field_route.RouteAction.cluster>` field that specifies a
 single upstream cluster as the target of a request, the :ref:`weighted_clusters
@@ -426,7 +426,7 @@ runtime_key_prefix
 route.WeightedCluster.ClusterWeight
 -----------------------------------
 
-`[route.WeightedCluster.ClusterWeight proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L246>`_
+`[route.WeightedCluster.ClusterWeight proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L248>`_
 
 
 .. code-block:: json
@@ -536,7 +536,7 @@ typed_per_filter_config
 route.RouteMatch
 ----------------
 
-`[route.RouteMatch proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L327>`_
+`[route.RouteMatch proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L329>`_
 
 
 .. code-block:: json
@@ -545,6 +545,7 @@ route.RouteMatch
     "prefix": "...",
     "path": "...",
     "regex": "...",
+    "safe_regex": "{...}",
     "case_sensitive": "{...}",
     "runtime_fraction": "{...}",
     "headers": [],
@@ -560,7 +561,7 @@ prefix
   
   
   
-  Precisely one of :ref:`prefix <envoy_api_field_route.RouteMatch.prefix>`, :ref:`path <envoy_api_field_route.RouteMatch.path>`, :ref:`regex <envoy_api_field_route.RouteMatch.regex>` must be set.
+  Precisely one of :ref:`prefix <envoy_api_field_route.RouteMatch.prefix>`, :ref:`path <envoy_api_field_route.RouteMatch.path>`, :ref:`regex <envoy_api_field_route.RouteMatch.regex>`, :ref:`safe_regex <envoy_api_field_route.RouteMatch.safe_regex>` must be set.
   
 .. _envoy_api_field_route.RouteMatch.path:
 
@@ -570,7 +571,7 @@ path
   
   
   
-  Precisely one of :ref:`prefix <envoy_api_field_route.RouteMatch.prefix>`, :ref:`path <envoy_api_field_route.RouteMatch.path>`, :ref:`regex <envoy_api_field_route.RouteMatch.regex>` must be set.
+  Precisely one of :ref:`prefix <envoy_api_field_route.RouteMatch.prefix>`, :ref:`path <envoy_api_field_route.RouteMatch.path>`, :ref:`regex <envoy_api_field_route.RouteMatch.regex>`, :ref:`safe_regex <envoy_api_field_route.RouteMatch.safe_regex>` must be set.
   
 .. _envoy_api_field_route.RouteMatch.regex:
 
@@ -588,9 +589,26 @@ regex
   * The regex */b[io]t* does not match the path */bite*
   * The regex */b[io]t* does not match the path */bit/bot*
   
+  .. attention::
+    This field has been deprecated in favor of `safe_regex` as it is not safe for use with
+    untrusted input in all cases.
   
   
-  Precisely one of :ref:`prefix <envoy_api_field_route.RouteMatch.prefix>`, :ref:`path <envoy_api_field_route.RouteMatch.path>`, :ref:`regex <envoy_api_field_route.RouteMatch.regex>` must be set.
+  
+  Precisely one of :ref:`prefix <envoy_api_field_route.RouteMatch.prefix>`, :ref:`path <envoy_api_field_route.RouteMatch.path>`, :ref:`regex <envoy_api_field_route.RouteMatch.regex>`, :ref:`safe_regex <envoy_api_field_route.RouteMatch.safe_regex>` must be set.
+  
+.. _envoy_api_field_route.RouteMatch.safe_regex:
+
+safe_regex
+  (:ref:`type.matcher.RegexMatcher <envoy_api_msg_type.matcher.RegexMatcher>`) If specified, the route is a regular expression rule meaning that the
+  regex must match the *:path* header once the query string is removed. The entire path
+  (without the query string) must match the regex. The rule will not match if only a
+  subsequence of the *:path* header matches the regex.
+  
+  
+  
+  
+  Precisely one of :ref:`prefix <envoy_api_field_route.RouteMatch.prefix>`, :ref:`path <envoy_api_field_route.RouteMatch.path>`, :ref:`regex <envoy_api_field_route.RouteMatch.regex>`, :ref:`safe_regex <envoy_api_field_route.RouteMatch.safe_regex>` must be set.
   
 .. _envoy_api_field_route.RouteMatch.case_sensitive:
 
@@ -653,7 +671,7 @@ grpc
 route.RouteMatch.GrpcRouteMatchOptions
 --------------------------------------
 
-`[route.RouteMatch.GrpcRouteMatchOptions proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L392>`_
+`[route.RouteMatch.GrpcRouteMatchOptions proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L412>`_
 
 
 .. code-block:: json
@@ -669,7 +687,7 @@ route.RouteMatch.GrpcRouteMatchOptions
 route.CorsPolicy
 ----------------
 
-`[route.CorsPolicy proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L402>`_
+`[route.CorsPolicy proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L422>`_
 
 
 .. code-block:: json
@@ -677,6 +695,7 @@ route.CorsPolicy
   {
     "allow_origin": [],
     "allow_origin_regex": [],
+    "allow_origin_string_match": [],
     "allow_methods": "...",
     "allow_headers": "...",
     "expose_headers": "...",
@@ -694,6 +713,9 @@ allow_origin
   
   An origin is allowed if either allow_origin or allow_origin_regex match.
   
+  .. attention::
+   This field has been deprecated in favor of `allow_origin_string_match`.
+  
   
 .. _envoy_api_field_route.CorsPolicy.allow_origin_regex:
 
@@ -701,6 +723,17 @@ allow_origin_regex
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies regex patterns that match allowed origins.
   
   An origin is allowed if either allow_origin or allow_origin_regex match.
+  
+  .. attention::
+    This field has been deprecated in favor of `allow_origin_string_match` as it is not safe for
+    use with untrusted input in all cases.
+  
+  
+.. _envoy_api_field_route.CorsPolicy.allow_origin_string_match:
+
+allow_origin_string_match
+  (:ref:`type.matcher.StringMatcher <envoy_api_msg_type.matcher.StringMatcher>`) Specifies string patterns that match allowed origins. An origin is allowed if any of the
+  string matchers match.
   
   
 .. _envoy_api_field_route.CorsPolicy.allow_methods:
@@ -786,7 +819,7 @@ shadow_enabled
 route.RouteAction
 -----------------
 
-`[route.RouteAction proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L463>`_
+`[route.RouteAction proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L495>`_
 
 
 .. code-block:: json
@@ -1093,7 +1126,7 @@ hedge_policy
 route.RouteAction.RequestMirrorPolicy
 -------------------------------------
 
-`[route.RouteAction.RequestMirrorPolicy proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L607>`_
+`[route.RouteAction.RequestMirrorPolicy proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L639>`_
 
 The router is capable of shadowing traffic from one cluster to another. The current
 implementation is "fire and forget," meaning Envoy will not wait for the shadow cluster to
@@ -1167,7 +1200,7 @@ runtime_fraction
 route.RouteAction.HashPolicy
 ----------------------------
 
-`[route.RouteAction.HashPolicy proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L673>`_
+`[route.RouteAction.HashPolicy proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L705>`_
 
 Specifies the route's hashing policy if the upstream cluster uses a hashing :ref:`load balancer
 <arch_overview_load_balancing_types>`.
@@ -1237,7 +1270,7 @@ terminal
 route.RouteAction.HashPolicy.Header
 -----------------------------------
 
-`[route.RouteAction.HashPolicy.Header proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L674>`_
+`[route.RouteAction.HashPolicy.Header proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L706>`_
 
 
 .. code-block:: json
@@ -1260,7 +1293,7 @@ header_name
 route.RouteAction.HashPolicy.Cookie
 -----------------------------------
 
-`[route.RouteAction.HashPolicy.Cookie proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L694>`_
+`[route.RouteAction.HashPolicy.Cookie proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L726>`_
 
 Envoy supports two types of cookie affinity:
 
@@ -1315,7 +1348,7 @@ path
 route.RouteAction.HashPolicy.ConnectionProperties
 -------------------------------------------------
 
-`[route.RouteAction.HashPolicy.ConnectionProperties proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L710>`_
+`[route.RouteAction.HashPolicy.ConnectionProperties proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L742>`_
 
 
 .. code-block:: json
@@ -1338,7 +1371,7 @@ source_ip
 route.RouteAction.UpgradeConfig
 -------------------------------
 
-`[route.RouteAction.UpgradeConfig proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L799>`_
+`[route.RouteAction.UpgradeConfig proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L831>`_
 
 Allows enabling and disabling upgrades on a per-route basis.
 This overrides any enabled/disabled upgrade filter chain specified in the
@@ -1375,7 +1408,7 @@ enabled
 Enum route.RouteAction.ClusterNotFoundResponseCode
 --------------------------------------------------
 
-`[route.RouteAction.ClusterNotFoundResponseCode proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L490>`_
+`[route.RouteAction.ClusterNotFoundResponseCode proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L522>`_
 
 
 .. _envoy_api_enum_value_route.RouteAction.ClusterNotFoundResponseCode.SERVICE_UNAVAILABLE:
@@ -1396,7 +1429,7 @@ NOT_FOUND
 Enum route.RouteAction.InternalRedirectAction
 ---------------------------------------------
 
-`[route.RouteAction.InternalRedirectAction proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L810>`_
+`[route.RouteAction.InternalRedirectAction proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L842>`_
 
 Configures :ref:`internal redirect <arch_overview_internal_redirects>` behavior.
 
@@ -1416,7 +1449,7 @@ HANDLE_INTERNAL_REDIRECT
 route.RetryPolicy
 -----------------
 
-`[route.RetryPolicy proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L824>`_
+`[route.RetryPolicy proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L856>`_
 
 HTTP retry :ref:`architecture overview <arch_overview_http_routing_retry>`.
 
@@ -1511,7 +1544,7 @@ retry_back_off
 route.RetryPolicy.RetryPriority
 -------------------------------
 
-`[route.RetryPolicy.RetryPriority proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L848>`_
+`[route.RetryPolicy.RetryPriority proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L880>`_
 
 
 .. code-block:: json
@@ -1550,7 +1583,7 @@ typed_config
 route.RetryPolicy.RetryHostPredicate
 ------------------------------------
 
-`[route.RetryPolicy.RetryHostPredicate proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L862>`_
+`[route.RetryPolicy.RetryHostPredicate proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L894>`_
 
 
 .. code-block:: json
@@ -1589,7 +1622,7 @@ typed_config
 route.RetryPolicy.RetryBackOff
 ------------------------------
 
-`[route.RetryPolicy.RetryBackOff proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L885>`_
+`[route.RetryPolicy.RetryBackOff proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L917>`_
 
 
 .. code-block:: json
@@ -1625,7 +1658,7 @@ max_interval
 route.HedgePolicy
 -----------------
 
-`[route.HedgePolicy proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L915>`_
+`[route.HedgePolicy proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L947>`_
 
 HTTP request hedging :ref:`architecture overview <arch_overview_http_routing_hedging>`.
 
@@ -1657,7 +1690,7 @@ hedge_on_per_try_timeout
 route.RedirectAction
 --------------------
 
-`[route.RedirectAction proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L939>`_
+`[route.RedirectAction proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L971>`_
 
 
 .. code-block:: json
@@ -1758,7 +1791,7 @@ strip_query
 Enum route.RedirectAction.RedirectResponseCode
 ----------------------------------------------
 
-`[route.RedirectAction.RedirectResponseCode proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L971>`_
+`[route.RedirectAction.RedirectResponseCode proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L1003>`_
 
 
 .. _envoy_api_enum_value_route.RedirectAction.RedirectResponseCode.MOVED_PERMANENTLY:
@@ -1797,7 +1830,7 @@ PERMANENT_REDIRECT
 route.DirectResponseAction
 --------------------------
 
-`[route.DirectResponseAction proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L997>`_
+`[route.DirectResponseAction proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L1029>`_
 
 
 .. code-block:: json
@@ -1833,7 +1866,7 @@ body
 route.Decorator
 ---------------
 
-`[route.Decorator proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L1012>`_
+`[route.Decorator proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L1044>`_
 
 
 .. code-block:: json
@@ -1862,7 +1895,7 @@ operation
 route.Tracing
 -------------
 
-`[route.Tracing proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L1024>`_
+`[route.Tracing proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L1056>`_
 
 
 .. code-block:: json
@@ -1914,7 +1947,7 @@ overall_sampling
 route.VirtualCluster
 --------------------
 
-`[route.VirtualCluster proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L1069>`_
+`[route.VirtualCluster proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L1101>`_
 
 A virtual cluster is a way of specifying a regex matching rule against
 certain important endpoints such that statistics are generated explicitly for
@@ -1938,6 +1971,7 @@ Documentation for :ref:`virtual cluster statistics <config_http_filters_router_s
 
   {
     "pattern": "...",
+    "headers": [],
     "name": "...",
     "method": "..."
   }
@@ -1945,7 +1979,7 @@ Documentation for :ref:`virtual cluster statistics <config_http_filters_router_s
 .. _envoy_api_field_route.VirtualCluster.pattern:
 
 pattern
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Specifies a regex pattern to use for matching requests. The entire path of the request
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies a regex pattern to use for matching requests. The entire path of the request
   must match the regex. The regex grammar used is defined `here
   <https://en.cppreference.com/w/cpp/regex/ecmascript>`_.
   
@@ -1955,11 +1989,23 @@ pattern
   * The regex */rides/\d+* matches the path */rides/123*
   * The regex */rides/\d+* does not match the path */rides/123/456*
   
+  .. attention::
+    This field has been deprecated in favor of `headers` as it is not safe for use with
+    untrusted input in all cases.
+  
+  
+.. _envoy_api_field_route.VirtualCluster.headers:
+
+headers
+  (:ref:`route.HeaderMatcher <envoy_api_msg_route.HeaderMatcher>`) Specifies a list of header matchers to use for matching requests. Each specified header must
+  match. The pseudo-headers `:path` and `:method` can be used to match the request path and
+  method, respectively.
+  
   
 .. _envoy_api_field_route.VirtualCluster.name:
 
 name
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*)  Specifies the name of the virtual cluster. The virtual cluster name as well
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Specifies the name of the virtual cluster. The virtual cluster name as well
   as the virtual host name are used when emitting statistics. The statistics are emitted by the
   router filter and are documented :ref:`here <config_http_filters_router_stats>`.
   
@@ -1970,6 +2016,9 @@ method
   (:ref:`core.RequestMethod <envoy_api_enum_core.RequestMethod>`) Optionally specifies the HTTP method to match on. For example GET, PUT,
   etc.
   
+  .. attention::
+    This field has been deprecated in favor of `headers`.
+  
   
 
 
@@ -1978,7 +2027,7 @@ method
 route.RateLimit
 ---------------
 
-`[route.RateLimit proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L1094>`_
+`[route.RateLimit proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L1136>`_
 
 Global rate limiting :ref:`architecture overview <arch_overview_rate_limit>`.
 
@@ -2024,7 +2073,7 @@ actions
 route.RateLimit.Action
 ----------------------
 
-`[route.RateLimit.Action proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L1107>`_
+`[route.RateLimit.Action proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L1149>`_
 
 
 .. code-block:: json
@@ -2097,7 +2146,7 @@ header_value_match
 route.RateLimit.Action.SourceCluster
 ------------------------------------
 
-`[route.RateLimit.Action.SourceCluster proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L1115>`_
+`[route.RateLimit.Action.SourceCluster proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L1157>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -2119,7 +2168,7 @@ The following descriptor entry is appended to the descriptor:
 route.RateLimit.Action.DestinationCluster
 -----------------------------------------
 
-`[route.RateLimit.Action.DestinationCluster proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L1134>`_
+`[route.RateLimit.Action.DestinationCluster proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L1176>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -2150,7 +2199,7 @@ settings:
 route.RateLimit.Action.RequestHeaders
 -------------------------------------
 
-`[route.RateLimit.Action.RequestHeaders proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L1143>`_
+`[route.RateLimit.Action.RequestHeaders proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L1185>`_
 
 The following descriptor entry is appended when a header contains a key that matches the
 *header_name*:
@@ -2187,7 +2236,7 @@ descriptor_key
 route.RateLimit.Action.RemoteAddress
 ------------------------------------
 
-`[route.RateLimit.Action.RemoteAddress proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L1159>`_
+`[route.RateLimit.Action.RemoteAddress proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L1201>`_
 
 The following descriptor entry is appended to the descriptor and is populated using the
 trusted address from :ref:`x-forwarded-for <config_http_conn_man_headers_x-forwarded-for>`:
@@ -2208,7 +2257,7 @@ trusted address from :ref:`x-forwarded-for <config_http_conn_man_headers_x-forwa
 route.RateLimit.Action.GenericKey
 ---------------------------------
 
-`[route.RateLimit.Action.GenericKey proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L1167>`_
+`[route.RateLimit.Action.GenericKey proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L1209>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -2235,7 +2284,7 @@ descriptor_value
 route.RateLimit.Action.HeaderValueMatch
 ---------------------------------------
 
-`[route.RateLimit.Action.HeaderValueMatch proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L1177>`_
+`[route.RateLimit.Action.HeaderValueMatch proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L1219>`_
 
 The following descriptor entry is appended to the descriptor:
 
@@ -2285,7 +2334,7 @@ headers
 route.HeaderMatcher
 -------------------
 
-`[route.HeaderMatcher proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L1250>`_
+`[route.HeaderMatcher proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L1293>`_
 
 .. attention::
 
@@ -2310,13 +2359,14 @@ route.HeaderMatcher
   <envoy_api_field_route.HeaderMatcher.name>` header will match, regardless of the header's
   value.
 
-
+ 
 .. code-block:: json
 
   {
     "name": "...",
     "exact_match": "...",
     "regex_match": "...",
+    "safe_regex_match": "{...}",
     "range_match": "{...}",
     "present_match": "...",
     "prefix_match": "...",
@@ -2338,7 +2388,7 @@ exact_match
   Specifies how the header match will be performed to route the request.
   
   
-  Only one of :ref:`exact_match <envoy_api_field_route.HeaderMatcher.exact_match>`, :ref:`regex_match <envoy_api_field_route.HeaderMatcher.regex_match>`, :ref:`range_match <envoy_api_field_route.HeaderMatcher.range_match>`, :ref:`present_match <envoy_api_field_route.HeaderMatcher.present_match>`, :ref:`prefix_match <envoy_api_field_route.HeaderMatcher.prefix_match>`, :ref:`suffix_match <envoy_api_field_route.HeaderMatcher.suffix_match>` may be set.
+  Only one of :ref:`exact_match <envoy_api_field_route.HeaderMatcher.exact_match>`, :ref:`regex_match <envoy_api_field_route.HeaderMatcher.regex_match>`, :ref:`safe_regex_match <envoy_api_field_route.HeaderMatcher.safe_regex_match>`, :ref:`range_match <envoy_api_field_route.HeaderMatcher.range_match>`, :ref:`present_match <envoy_api_field_route.HeaderMatcher.present_match>`, :ref:`prefix_match <envoy_api_field_route.HeaderMatcher.prefix_match>`, :ref:`suffix_match <envoy_api_field_route.HeaderMatcher.suffix_match>` may be set.
   
 .. _envoy_api_field_route.HeaderMatcher.regex_match:
 
@@ -2354,10 +2404,26 @@ regex_match
   * The regex *\d{3}* does not match the value *1234*
   * The regex *\d{3}* does not match the value *123.456*
   
+  .. attention::
+    This field has been deprecated in favor of `safe_regex_match` as it is not safe for use
+    with untrusted input in all cases.
+  
   Specifies how the header match will be performed to route the request.
   
   
-  Only one of :ref:`exact_match <envoy_api_field_route.HeaderMatcher.exact_match>`, :ref:`regex_match <envoy_api_field_route.HeaderMatcher.regex_match>`, :ref:`range_match <envoy_api_field_route.HeaderMatcher.range_match>`, :ref:`present_match <envoy_api_field_route.HeaderMatcher.present_match>`, :ref:`prefix_match <envoy_api_field_route.HeaderMatcher.prefix_match>`, :ref:`suffix_match <envoy_api_field_route.HeaderMatcher.suffix_match>` may be set.
+  Only one of :ref:`exact_match <envoy_api_field_route.HeaderMatcher.exact_match>`, :ref:`regex_match <envoy_api_field_route.HeaderMatcher.regex_match>`, :ref:`safe_regex_match <envoy_api_field_route.HeaderMatcher.safe_regex_match>`, :ref:`range_match <envoy_api_field_route.HeaderMatcher.range_match>`, :ref:`present_match <envoy_api_field_route.HeaderMatcher.present_match>`, :ref:`prefix_match <envoy_api_field_route.HeaderMatcher.prefix_match>`, :ref:`suffix_match <envoy_api_field_route.HeaderMatcher.suffix_match>` may be set.
+  
+.. _envoy_api_field_route.HeaderMatcher.safe_regex_match:
+
+safe_regex_match
+  (:ref:`type.matcher.RegexMatcher <envoy_api_msg_type.matcher.RegexMatcher>`) If specified, this regex string is a regular expression rule which implies the entire request
+  header value must match the regex. The rule will not match if only a subsequence of the
+  request header value matches the regex.
+  
+  Specifies how the header match will be performed to route the request.
+  
+  
+  Only one of :ref:`exact_match <envoy_api_field_route.HeaderMatcher.exact_match>`, :ref:`regex_match <envoy_api_field_route.HeaderMatcher.regex_match>`, :ref:`safe_regex_match <envoy_api_field_route.HeaderMatcher.safe_regex_match>`, :ref:`range_match <envoy_api_field_route.HeaderMatcher.range_match>`, :ref:`present_match <envoy_api_field_route.HeaderMatcher.present_match>`, :ref:`prefix_match <envoy_api_field_route.HeaderMatcher.prefix_match>`, :ref:`suffix_match <envoy_api_field_route.HeaderMatcher.suffix_match>` may be set.
   
 .. _envoy_api_field_route.HeaderMatcher.range_match:
 
@@ -2377,7 +2443,7 @@ range_match
   Specifies how the header match will be performed to route the request.
   
   
-  Only one of :ref:`exact_match <envoy_api_field_route.HeaderMatcher.exact_match>`, :ref:`regex_match <envoy_api_field_route.HeaderMatcher.regex_match>`, :ref:`range_match <envoy_api_field_route.HeaderMatcher.range_match>`, :ref:`present_match <envoy_api_field_route.HeaderMatcher.present_match>`, :ref:`prefix_match <envoy_api_field_route.HeaderMatcher.prefix_match>`, :ref:`suffix_match <envoy_api_field_route.HeaderMatcher.suffix_match>` may be set.
+  Only one of :ref:`exact_match <envoy_api_field_route.HeaderMatcher.exact_match>`, :ref:`regex_match <envoy_api_field_route.HeaderMatcher.regex_match>`, :ref:`safe_regex_match <envoy_api_field_route.HeaderMatcher.safe_regex_match>`, :ref:`range_match <envoy_api_field_route.HeaderMatcher.range_match>`, :ref:`present_match <envoy_api_field_route.HeaderMatcher.present_match>`, :ref:`prefix_match <envoy_api_field_route.HeaderMatcher.prefix_match>`, :ref:`suffix_match <envoy_api_field_route.HeaderMatcher.suffix_match>` may be set.
   
 .. _envoy_api_field_route.HeaderMatcher.present_match:
 
@@ -2388,7 +2454,7 @@ present_match
   Specifies how the header match will be performed to route the request.
   
   
-  Only one of :ref:`exact_match <envoy_api_field_route.HeaderMatcher.exact_match>`, :ref:`regex_match <envoy_api_field_route.HeaderMatcher.regex_match>`, :ref:`range_match <envoy_api_field_route.HeaderMatcher.range_match>`, :ref:`present_match <envoy_api_field_route.HeaderMatcher.present_match>`, :ref:`prefix_match <envoy_api_field_route.HeaderMatcher.prefix_match>`, :ref:`suffix_match <envoy_api_field_route.HeaderMatcher.suffix_match>` may be set.
+  Only one of :ref:`exact_match <envoy_api_field_route.HeaderMatcher.exact_match>`, :ref:`regex_match <envoy_api_field_route.HeaderMatcher.regex_match>`, :ref:`safe_regex_match <envoy_api_field_route.HeaderMatcher.safe_regex_match>`, :ref:`range_match <envoy_api_field_route.HeaderMatcher.range_match>`, :ref:`present_match <envoy_api_field_route.HeaderMatcher.present_match>`, :ref:`prefix_match <envoy_api_field_route.HeaderMatcher.prefix_match>`, :ref:`suffix_match <envoy_api_field_route.HeaderMatcher.suffix_match>` may be set.
   
 .. _envoy_api_field_route.HeaderMatcher.prefix_match:
 
@@ -2403,7 +2469,7 @@ prefix_match
   Specifies how the header match will be performed to route the request.
   
   
-  Only one of :ref:`exact_match <envoy_api_field_route.HeaderMatcher.exact_match>`, :ref:`regex_match <envoy_api_field_route.HeaderMatcher.regex_match>`, :ref:`range_match <envoy_api_field_route.HeaderMatcher.range_match>`, :ref:`present_match <envoy_api_field_route.HeaderMatcher.present_match>`, :ref:`prefix_match <envoy_api_field_route.HeaderMatcher.prefix_match>`, :ref:`suffix_match <envoy_api_field_route.HeaderMatcher.suffix_match>` may be set.
+  Only one of :ref:`exact_match <envoy_api_field_route.HeaderMatcher.exact_match>`, :ref:`regex_match <envoy_api_field_route.HeaderMatcher.regex_match>`, :ref:`safe_regex_match <envoy_api_field_route.HeaderMatcher.safe_regex_match>`, :ref:`range_match <envoy_api_field_route.HeaderMatcher.range_match>`, :ref:`present_match <envoy_api_field_route.HeaderMatcher.present_match>`, :ref:`prefix_match <envoy_api_field_route.HeaderMatcher.prefix_match>`, :ref:`suffix_match <envoy_api_field_route.HeaderMatcher.suffix_match>` may be set.
   
 .. _envoy_api_field_route.HeaderMatcher.suffix_match:
 
@@ -2418,7 +2484,7 @@ suffix_match
   Specifies how the header match will be performed to route the request.
   
   
-  Only one of :ref:`exact_match <envoy_api_field_route.HeaderMatcher.exact_match>`, :ref:`regex_match <envoy_api_field_route.HeaderMatcher.regex_match>`, :ref:`range_match <envoy_api_field_route.HeaderMatcher.range_match>`, :ref:`present_match <envoy_api_field_route.HeaderMatcher.present_match>`, :ref:`prefix_match <envoy_api_field_route.HeaderMatcher.prefix_match>`, :ref:`suffix_match <envoy_api_field_route.HeaderMatcher.suffix_match>` may be set.
+  Only one of :ref:`exact_match <envoy_api_field_route.HeaderMatcher.exact_match>`, :ref:`regex_match <envoy_api_field_route.HeaderMatcher.regex_match>`, :ref:`safe_regex_match <envoy_api_field_route.HeaderMatcher.safe_regex_match>`, :ref:`range_match <envoy_api_field_route.HeaderMatcher.range_match>`, :ref:`present_match <envoy_api_field_route.HeaderMatcher.present_match>`, :ref:`prefix_match <envoy_api_field_route.HeaderMatcher.prefix_match>`, :ref:`suffix_match <envoy_api_field_route.HeaderMatcher.suffix_match>` may be set.
   
 .. _envoy_api_field_route.HeaderMatcher.invert_match:
 
@@ -2438,7 +2504,7 @@ invert_match
 route.QueryParameterMatcher
 ---------------------------
 
-`[route.QueryParameterMatcher proto] <https://github.com/envoyproxy/envoy/blob/fd19af83fbbd48c4508562802d1dd4d4c917156e/api/envoy/api/v2/route/route.proto#L1322>`_
+`[route.QueryParameterMatcher proto] <https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/route/route.proto#L1374>`_
 
 Query parameter matching treats the query string of a request's :path header
 as an ampersand-separated list of keys and/or key=value elements.
@@ -2448,7 +2514,9 @@ as an ampersand-separated list of keys and/or key=value elements.
   {
     "name": "...",
     "value": "...",
-    "regex": "{...}"
+    "regex": "{...}",
+    "string_match": "{...}",
+    "present_match": "..."
   }
 
 .. _envoy_api_field_route.QueryParameterMatcher.name:
@@ -2465,6 +2533,9 @@ value
   that contains the key in its query string will match, whether the
   key appears with a value (e.g., "?debug=true") or not (e.g., "?debug")
   
+  ..attention::
+    This field is deprecated. Use an `exact` match inside the `string_match` field.
+  
   
 .. _envoy_api_field_route.QueryParameterMatcher.regex:
 
@@ -2474,5 +2545,26 @@ regex
   the right of the equals sign in "key=value") must match the regex.
   E.g., the regex "\d+$" will match "123" but not "a123" or "123a".
   
+  ..attention::
+    This field is deprecated. Use a `safe_regex` match inside the `string_match` field.
+  
+  
+.. _envoy_api_field_route.QueryParameterMatcher.string_match:
+
+string_match
+  (:ref:`type.matcher.StringMatcher <envoy_api_msg_type.matcher.StringMatcher>`) Specifies whether a query parameter value should match against a string.
+  
+  
+  
+  Only one of :ref:`string_match <envoy_api_field_route.QueryParameterMatcher.string_match>`, :ref:`present_match <envoy_api_field_route.QueryParameterMatcher.present_match>` may be set.
+  
+.. _envoy_api_field_route.QueryParameterMatcher.present_match:
+
+present_match
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies whether a query parameter should be present.
+  
+  
+  
+  Only one of :ref:`string_match <envoy_api_field_route.QueryParameterMatcher.string_match>`, :ref:`present_match <envoy_api_field_route.QueryParameterMatcher.present_match>` may be set.
   
 
