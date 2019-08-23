@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Listener discovery service (LDS) &mdash; envoy 1.12.0-dev-eff020 documentation</title>
+  <title>Listener discovery service (LDS) &mdash; envoy 1.12.0-dev-25e3e8 documentation</title>
   
 
   
@@ -38,8 +38,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Listener filters" href="../listener_filters/listener_filters.html" />
-    <link rel="prev" title="Statistics" href="stats.html" /> 
+    <link rel="next" title="HTTP" href="../http/http.html" />
+    <link rel="prev" title="ZooKeeper proxy" href="network_filters/zookeeper_proxy_filter.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-eff020
+                1.12.0-dev-25e3e8
               </div>
             
           
@@ -97,6 +97,8 @@
 <li class="toctree-l2 current"><a class="reference internal" href="listeners.html">Listeners</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l3"><a class="reference internal" href="stats.html">Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="listener_filters/listener_filters.html">Listener filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="network_filters/network_filters.html">Network filters</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Listener discovery service (LDS)</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#configuration">Configuration</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#statistics">Statistics</a></li>
@@ -104,23 +106,14 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../listener_filters/listener_filters.html">Listener filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../network_filters/network_filters.html">Network filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../http_conn_man/http_conn_man.html">HTTP connection manager</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../http_filters/http_filters.html">HTTP filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../thrift_filters/thrift_filters.html">Thrift filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../dubbo_filters/dubbo_filters.html">Dubbo filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cluster_manager/cluster_manager.html">Cluster manager</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../health_checkers/health_checkers.html">Health checkers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../access_log.html">Access logging</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../rate_limit.html">Rate limit service</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../runtime.html">Runtime</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../statistics.html">Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../xds_subscription_stats.html">xDS subscription statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tools/router_check.html">Route table check tool</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../overload_manager/overload_manager.html">Overload manager</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../secret.html">Secret discovery service (SDS)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../well_known_dynamic_metadata.html">Well Known Dynamic Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../http/http.html">HTTP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../upstream/upstream.html">Upstream clusters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../observability/observability.html">Observability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../security/security.html">Security</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../operations/operations.html">Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../other_features/other_features.html">Other features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced/advanced.html">Advanced</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../best_practices/best_practices.html">Configuration best practices</a></li>
 </ul>
 </li>
@@ -207,7 +200,7 @@ depending on what is required.</p>
 provided, Envoy will create a UUID. Listeners that are to be dynamically updated should have a
 unique name supplied by the management server.</p></li>
 <li><p>When a listener is added, it will be “warmed” before taking traffic. For example, if the listener
-references an <a class="reference internal" href="../http_conn_man/rds.html#config-http-conn-man-rds"><span class="std std-ref">RDS</span></a> configuration, that configuration will be
+references an <a class="reference internal" href="../http/http_conn_man/rds.html#config-http-conn-man-rds"><span class="std std-ref">RDS</span></a> configuration, that configuration will be
 resolved and fetched before the listener is moved to “active.”</p></li>
 <li><p>Listeners are effectively constant once created. Thus, when a listener is updated, an entirely
 new listener is created (with the same listen socket). This listener goes through the same
@@ -231,7 +224,7 @@ removed via the LDS API.</p>
 </div>
 <div class="section" id="statistics">
 <h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
-<p>LDS has a <a class="reference internal" href="../xds_subscription_stats.html#subscription-statistics"><span class="std std-ref">statistics</span></a> tree rooted at <em>listener_manager.lds.</em></p>
+<p>LDS has a <a class="reference internal" href="../overview/v2_overview.html#subscription-statistics"><span class="std std-ref">statistics</span></a> tree rooted at <em>listener_manager.lds.</em></p>
 </div>
 </div>
 
@@ -243,10 +236,10 @@ removed via the LDS API.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../listener_filters/listener_filters.html" class="btn btn-neutral float-right" title="Listener filters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../http/http.html" class="btn btn-neutral float-right" title="HTTP" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="stats.html" class="btn btn-neutral float-left" title="Statistics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="network_filters/zookeeper_proxy_filter.html" class="btn btn-neutral float-left" title="ZooKeeper proxy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

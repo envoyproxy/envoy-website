@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Supported load balancers &mdash; envoy 1.12.0-dev-eff020 documentation</title>
+  <title>Supported load balancers &mdash; envoy 1.12.0-dev-25e3e8 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-eff020
+                1.12.0-dev-25e3e8
               </div>
             
           
@@ -204,7 +204,7 @@
 <span id="arch-overview-load-balancing-types"></span><h1>Supported load balancers<a class="headerlink" href="#supported-load-balancers" title="Permalink to this headline">¶</a></h1>
 <p>When a filter needs to acquire a connection to a host in an upstream cluster, the cluster manager
 uses a load balancing policy to determine which host is selected. The load balancing policies are
-pluggable and are specified on a per upstream cluster basis in the <a class="reference internal" href="../../../../api-v2/api/v2/cds.proto.html#envoy-api-msg-cluster"><span class="std std-ref">configuration</span></a>. Note that if no active health checking policy is <a class="reference internal" href="../../../../configuration/cluster_manager/cluster_hc.html#config-cluster-manager-cluster-hc"><span class="std std-ref">configured</span></a> for a cluster, all upstream cluster members are considered
+pluggable and are specified on a per upstream cluster basis in the <a class="reference internal" href="../../../../api-v2/api/v2/cds.proto.html#envoy-api-msg-cluster"><span class="std std-ref">configuration</span></a>. Note that if no active health checking policy is <a class="reference internal" href="../../../../configuration/upstream/cluster_manager/cluster_hc.html#config-cluster-manager-cluster-hc"><span class="std std-ref">configured</span></a> for a cluster, all upstream cluster members are considered
 healthy, unless otherwise specified through
 <a class="reference internal" href="../../../../api-v2/api/v2/endpoint/endpoint.proto.html#envoy-api-field-endpoint-lbendpoint-health-status"><span class="std std-ref">health_status</span></a>.</p>
 <div class="section" id="weighted-round-robin">
@@ -253,7 +253,7 @@ one another; so it is necessary to multiply the number of hashes per host—for 
 distribution. Best practice is to explicitly set
 <a class="reference internal" href="../../../../api-v2/api/v2/cds.proto.html#envoy-api-field-cluster-ringhashlbconfig-minimum-ring-size"><span class="std std-ref">minimum_ring_size</span></a> and
 <a class="reference internal" href="../../../../api-v2/api/v2/cds.proto.html#envoy-api-field-cluster-ringhashlbconfig-maximum-ring-size"><span class="std std-ref">maximum_ring_size</span></a>, and monitor
-the <a class="reference internal" href="../../../../configuration/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats-ring-hash-lb"><span class="std std-ref">min_hashes_per_host and max_hashes_per_host
+the <a class="reference internal" href="../../../../configuration/upstream/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats-ring-hash-lb"><span class="std std-ref">min_hashes_per_host and max_hashes_per_host
 gauges</span></a> to ensure good distribution. With the
 ring partitioned appropriately, the addition or removal of one host from a set of N hosts will
 affect only 1/N requests.</p>
@@ -276,7 +276,7 @@ host B has a weight of 2, then host A will have 21,846 entries and host B will h
 regardless of the configured host and locality weights, so in some extreme cases the actual
 proportions may differ from the configured weights. For example, if the total number of hosts is
 larger than the fixed table size, then some hosts will get 1 entry each and the rest will get 0,
-regardless of weight. Best practice is to monitor the <a class="reference internal" href="../../../../configuration/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats-maglev-lb"><span class="std std-ref">min_entries_per_host and
+regardless of weight. Best practice is to monitor the <a class="reference internal" href="../../../../configuration/upstream/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats-maglev-lb"><span class="std std-ref">min_entries_per_host and
 max_entries_per_host gauges</span></a> to ensure no hosts
 are underrepresented or missing.</p>
 <p>In general, when compared to the ring hash (“ketama”) algorithm, Maglev has substantially faster
@@ -285,7 +285,7 @@ when using a large ring size of 256K entries). The downside of Maglev is that it
 as ring hash. More keys will move position when hosts are removed (simulations show approximately
 double the keys will move). With that said, for many applications including Redis, Maglev is very
 likely a superior drop in replacement for ring hash. The advanced reader can use
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d//test/common/upstream/load_balancer_benchmark.cc">this benchmark</a> to compare ring hash
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/25e3e86ccf50ec7469a854974c7212f4ffc8c7e1//test/common/upstream/load_balancer_benchmark.cc">this benchmark</a> to compare ring hash
 versus Maglev with different parameters.</p>
 </div>
 <div class="section" id="random">

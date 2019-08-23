@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>IP Transparency &mdash; envoy 1.12.0-dev-eff020 documentation</title>
+  <title>IP Transparency &mdash; envoy 1.12.0-dev-25e3e8 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-eff020
+                1.12.0-dev-25e3e8
               </div>
             
           
@@ -213,7 +213,7 @@ These techniques vary in complexity and applicability.</p>
 <div class="section" id="http-headers">
 <h2>HTTP Headers<a class="headerlink" href="#http-headers" title="Permalink to this headline">¶</a></h2>
 <p>HTTP headers may carry the original IP address of the request in the
-<a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a> header. The upstream server
+<a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a> header. The upstream server
 can use this header to determine the downstream remote address. Envoy may also use this header to
 choose the IP address used by the
 <a class="reference internal" href="#arch-overview-ip-transparency-original-src-http"><span class="std std-ref">Original Src HTTP Filter</span></a>.</p>
@@ -229,9 +229,9 @@ choose the IP address used by the
 <p><a class="reference external" href="http://www.haproxy.org/download/1.9/doc/proxy-protocol.txt">HAProxy Proxy Protocol</a> defines a
 protocol for communicating metadata about a connection over TCP, prior to the main TCP stream. This
 metadata includes the source IP. Envoy supports consuming this information using
-<a class="reference internal" href="../../../configuration/listener_filters/proxy_protocol.html#config-listener-filters-proxy-protocol"><span class="std std-ref">Proxy Protocol filter</span></a>, which may be used to recover
+<a class="reference internal" href="../../../configuration/listeners/listener_filters/proxy_protocol.html#config-listener-filters-proxy-protocol"><span class="std std-ref">Proxy Protocol filter</span></a>, which may be used to recover
 the downstream remote address for propagation into an
-<a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a> header. It can also be used in
+<a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a> header. It can also be used in
 conjunction with the
 <a class="reference internal" href="#arch-overview-ip-transparency-original-src-listener"><span class="std std-ref">Original Src Listener Filter</span></a>.</p>
 <p>Some drawbacks to Proxy Protocol:</p>
@@ -245,7 +245,7 @@ conjunction with the
 <span id="arch-overview-ip-transparency-original-src-listener"></span><h2>Original Source Listener Filter<a class="headerlink" href="#original-source-listener-filter" title="Permalink to this headline">¶</a></h2>
 <p>In controlled deployments, it may be possible to replicate the downstream remote address on the
 upstream connection by using a
-<a class="reference internal" href="../../../configuration/listener_filters/original_src_filter.html#config-listener-filters-original-src"><span class="std std-ref">Original Source listener filter</span></a>. No metadata is added
+<a class="reference internal" href="../../../configuration/listeners/listener_filters/original_src_filter.html#config-listener-filters-original-src"><span class="std std-ref">Original Source listener filter</span></a>. No metadata is added
 to the upstream request or stream. Rather, the upstream connection itself will be established with
 the downstream remote address as its source address. This filter will work with any upstream
 protocol or host. However, it requires fairly complex configuration, and it may not be supported in
@@ -261,7 +261,7 @@ all deployments due to routing constraints.</p>
 <span id="arch-overview-ip-transparency-original-src-http"></span><h2>Original Source HTTP Filter<a class="headerlink" href="#original-source-http-filter" title="Permalink to this headline">¶</a></h2>
 <p>In controlled deployments, it may be possible to replicate the downstream remote address on the
 upstream connection by using a
-<a class="reference internal" href="../../../configuration/http_filters/original_src_filter.html#config-http-filters-original-src"><span class="std std-ref">Original Source HTTP filter</span></a>. This filter operates much like
+<a class="reference internal" href="../../../configuration/http/http_filters/original_src_filter.html#config-http-filters-original-src"><span class="std std-ref">Original Source HTTP filter</span></a>. This filter operates much like
 the <a class="reference internal" href="#arch-overview-ip-transparency-original-src-listener"><span class="std std-ref">Original Src Listener Filter</span></a>. The
 main difference is that it can infer the original source address from HTTP headers, which is important
 for cases where a single downstream connection carries multiple HTTP requests from different original
@@ -272,7 +272,7 @@ and it may not be supported in all deployments due to routing constraints.</p>
 <p>Some drawbacks to the Original Source filter:</p>
 <ul class="simple">
 <li><p>It requires that Envoy be properly configured to extract the downstream remote address from the
-<a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a> header.</p></li>
+<a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a> header.</p></li>
 <li><p>Its configuration is relatively complex.</p></li>
 <li><p>It may introduce a slight performance hit due to restrictions on connection pooling.</p></li>
 </ul>

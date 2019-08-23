@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Tracing &mdash; envoy 1.12.0-dev-eff020 documentation</title>
+  <title>Tracing &mdash; envoy 1.12.0-dev-25e3e8 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-eff020
+                1.12.0-dev-25e3e8
               </div>
             
           
@@ -202,11 +202,11 @@ oriented architectures. It can be invaluable in understanding serialization, par
 sources of latency. Envoy supports three features related to system wide tracing:</p>
 <ul class="simple">
 <li><p><strong>Request ID generation</strong>: Envoy will generate UUIDs when needed and populate the
-<a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a> HTTP header. Applications can forward the
+<a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a> HTTP header. Applications can forward the
 x-request-id header for unified logging as well as tracing.</p></li>
-<li><p><strong>Client trace ID joining</strong>: The <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-client-trace-id"><span class="std std-ref">x-client-trace-id</span></a> header can
+<li><p><strong>Client trace ID joining</strong>: The <a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-client-trace-id"><span class="std std-ref">x-client-trace-id</span></a> header can
 be used to join untrusted request IDs to the trusted internal
-<a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a>.</p></li>
+<a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a>.</p></li>
 <li><p><strong>External trace service integration</strong>: Envoy supports pluggable external trace visualization
 providers, that are divided into two subgroups:</p>
 <ul>
@@ -224,11 +224,11 @@ providers, that are divided into two subgroups:</p>
 <p>The HTTP connection manager that handles the request must have the <a class="reference internal" href="../../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-msg-config-filter-network-http-connection-manager-v2-httpconnectionmanager-tracing"><span class="std std-ref">tracing</span></a> object set. There are several ways tracing can be
 initiated:</p>
 <ul class="simple">
-<li><p>By an external client via the <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-client-trace-id"><span class="std std-ref">x-client-trace-id</span></a>
+<li><p>By an external client via the <a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-client-trace-id"><span class="std std-ref">x-client-trace-id</span></a>
 header.</p></li>
-<li><p>By an internal service via the <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-envoy-force-trace"><span class="std std-ref">x-envoy-force-trace</span></a>
+<li><p>By an internal service via the <a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-envoy-force-trace"><span class="std std-ref">x-envoy-force-trace</span></a>
 header.</p></li>
-<li><p>Randomly sampled via the <a class="reference internal" href="../../../configuration/http_conn_man/runtime.html#config-http-conn-man-runtime-random-sampling"><span class="std std-ref">random_sampling</span></a>
+<li><p>Randomly sampled via the <a class="reference internal" href="../../../configuration/http/http_conn_man/runtime.html#config-http-conn-man-runtime-random-sampling"><span class="std std-ref">random_sampling</span></a>
 runtime setting.</p></li>
 </ul>
 <p>The router filter is also capable of creating a child span for egress calls via the
@@ -241,7 +241,7 @@ services in the mesh. However, to be able to correlate the pieces of tracing inf
 by the various proxies within a call flow, the services must propagate certain trace context between
 the inbound and outbound requests.</p>
 <p>Whichever tracing provider is being used, the service should propagate the
-<a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a> to enable logging across the invoked services
+<a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a> to enable logging across the invoked services
 to be correlated.</p>
 <p>The tracing providers also require additional context, to enable the parent/child relationships
 between the spans (logical units of work) to be understood. This can be achieved by using the
@@ -252,23 +252,23 @@ internally within the service, that may be useful when examining the end-to-end 
 <p>Alternatively the trace context can be manually propagated by the service:</p>
 <ul class="simple">
 <li><p>When using the LightStep tracer, Envoy relies on the service to propagate the
-<a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-ot-span-context"><span class="std std-ref">x-ot-span-context</span></a> HTTP header
+<a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-ot-span-context"><span class="std std-ref">x-ot-span-context</span></a> HTTP header
 while sending HTTP requests to other services.</p></li>
 <li><p>When using the Zipkin tracer, Envoy relies on the service to propagate the
 B3 HTTP headers (
-<a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-b3-traceid"><span class="std std-ref">x-b3-traceid</span></a>,
-<a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-b3-spanid"><span class="std std-ref">x-b3-spanid</span></a>,
-<a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-b3-parentspanid"><span class="std std-ref">x-b3-parentspanid</span></a>,
-<a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-b3-sampled"><span class="std std-ref">x-b3-sampled</span></a>, and
-<a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-b3-flags"><span class="std std-ref">x-b3-flags</span></a>). The <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-b3-sampled"><span class="std std-ref">x-b3-sampled</span></a>
+<a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-b3-traceid"><span class="std std-ref">x-b3-traceid</span></a>,
+<a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-b3-spanid"><span class="std std-ref">x-b3-spanid</span></a>,
+<a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-b3-parentspanid"><span class="std std-ref">x-b3-parentspanid</span></a>,
+<a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-b3-sampled"><span class="std std-ref">x-b3-sampled</span></a>, and
+<a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-b3-flags"><span class="std std-ref">x-b3-flags</span></a>). The <a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-b3-sampled"><span class="std std-ref">x-b3-sampled</span></a>
 header can also be supplied by an external client to either enable or disable tracing for a particular
-request. In addition, the single <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-b3"><span class="std std-ref">b3</span></a> header propagation format is
+request. In addition, the single <a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-b3"><span class="std std-ref">b3</span></a> header propagation format is
 supported, which is a more compressed format.</p></li>
 <li><p>When using the Datadog tracer, Envoy relies on the service to propagate the
 Datadog-specific HTTP headers (
-<a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-datadog-trace-id"><span class="std std-ref">x-datadog-trace-id</span></a>,
-<a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-datadog-parent-id"><span class="std std-ref">x-datadog-parent-id</span></a>,
-<a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-datadog-sampling-priority"><span class="std std-ref">x-datadog-sampling-priority</span></a>).</p></li>
+<a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-datadog-trace-id"><span class="std std-ref">x-datadog-trace-id</span></a>,
+<a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-datadog-parent-id"><span class="std std-ref">x-datadog-parent-id</span></a>,
+<a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-datadog-sampling-priority"><span class="std std-ref">x-datadog-sampling-priority</span></a>).</p></li>
 </ul>
 </div>
 <div class="section" id="what-data-each-trace-contains">
@@ -280,7 +280,7 @@ associated with it. Each span generated by Envoy contains the following data:</p
 <li><p>Originating service cluster set via <a class="reference internal" href="../../../operations/cli.html#cmdoption-service-cluster"><code class="xref std std-option docutils literal notranslate"><span class="pre">--service-cluster</span></code></a>.</p></li>
 <li><p>Start time and duration of the request.</p></li>
 <li><p>Originating host set via <a class="reference internal" href="../../../operations/cli.html#cmdoption-service-node"><code class="xref std std-option docutils literal notranslate"><span class="pre">--service-node</span></code></a>.</p></li>
-<li><p>Downstream cluster set via the <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-downstream-service-cluster"><span class="std std-ref">x-envoy-downstream-service-cluster</span></a>
+<li><p>Downstream cluster set via the <a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-downstream-service-cluster"><span class="std std-ref">x-envoy-downstream-service-cluster</span></a>
 header.</p></li>
 <li><p>HTTP URL.</p></li>
 <li><p>HTTP method.</p></li>
@@ -290,10 +290,10 @@ header.</p></li>
 <p>The span also includes a name (or operation) which by default is defined as the host of the invoked
 service. However this can be customized using a <a class="reference internal" href="../../../api-v2/api/v2/route/route.proto.html#envoy-api-msg-route-decorator"><span class="std std-ref">route.Decorator</span></a> on
 the route. The name can also be overridden using the
-<a class="reference internal" href="../../../configuration/http_filters/router_filter.html#config-http-filters-router-x-envoy-decorator-operation"><span class="std std-ref">x-envoy-decorator-operation</span></a> header.</p>
+<a class="reference internal" href="../../../configuration/http/http_filters/router_filter.html#config-http-filters-router-x-envoy-decorator-operation"><span class="std std-ref">x-envoy-decorator-operation</span></a> header.</p>
 <p>Envoy automatically sends spans to tracing collectors. Depending on the tracing collector,
 multiple spans are stitched together using common information such as the globally unique
-request ID <a class="reference internal" href="../../../configuration/http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a> (LightStep) or
+request ID <a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a> (LightStep) or
 the trace ID configuration (Zipkin and Datadog). See
 <a class="reference internal" href="../../../api-v2/config/trace/v2/trace.proto.html#envoy-api-msg-config-trace-v2-tracing"><span class="std std-ref">v2 API reference</span></a>
 for more information on how to setup tracing in Envoy.</p>

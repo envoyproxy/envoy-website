@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Overview &mdash; envoy 1.12.0-dev-eff020 documentation</title>
+  <title>Overview &mdash; envoy 1.12.0-dev-25e3e8 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-eff020
+                1.12.0-dev-25e3e8
               </div>
             
           
@@ -109,27 +109,19 @@
 <li class="toctree-l3"><a class="reference internal" href="#aggregated-discovery-service">Aggregated Discovery Service</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#management-server-unreachability">Management Server Unreachability</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#statistics">Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xds-subscription-statistics">xDS subscription statistics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#status">Status</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../listeners/listeners.html">Listeners</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../listener_filters/listener_filters.html">Listener filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../network_filters/network_filters.html">Network filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../http_conn_man/http_conn_man.html">HTTP connection manager</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../http_filters/http_filters.html">HTTP filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../thrift_filters/thrift_filters.html">Thrift filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../dubbo_filters/dubbo_filters.html">Dubbo filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cluster_manager/cluster_manager.html">Cluster manager</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../health_checkers/health_checkers.html">Health checkers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../access_log.html">Access logging</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../rate_limit.html">Rate limit service</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../runtime.html">Runtime</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../statistics.html">Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../xds_subscription_stats.html">xDS subscription statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tools/router_check.html">Route table check tool</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../overload_manager/overload_manager.html">Overload manager</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../secret.html">Secret discovery service (SDS)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../well_known_dynamic_metadata.html">Well Known Dynamic Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../http/http.html">HTTP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../upstream/upstream.html">Upstream clusters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../observability/observability.html">Observability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../security/security.html">Security</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../operations/operations.html">Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../other_features/other_features.html">Other features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced/advanced.html">Advanced</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../best_practices/best_practices.html">Configuration best practices</a></li>
 </ul>
 </li>
@@ -235,7 +227,7 @@ configuration. A key concept in the <a class="reference internal" href="../../ap
 message is the distinction between static and dynamic resources. Resources such
 as a <a class="reference internal" href="../../api-v2/api/v2/lds.proto.html#envoy-api-msg-listener"><span class="std std-ref">Listener</span></a> or <a class="reference internal" href="../../api-v2/api/v2/cds.proto.html#envoy-api-msg-cluster"><span class="std std-ref">Cluster</span></a> may be supplied either statically in
 <a class="reference internal" href="../../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-field-config-bootstrap-v2-bootstrap-static-resources"><span class="std std-ref">static_resources</span></a> or have
-an xDS service such as <a class="reference internal" href="../listeners/lds.html#config-listeners-lds"><span class="std std-ref">LDS</span></a> or <a class="reference internal" href="../cluster_manager/cds.html#config-cluster-manager-cds"><span class="std std-ref">CDS</span></a> configured in
+an xDS service such as <a class="reference internal" href="../listeners/lds.html#config-listeners-lds"><span class="std std-ref">LDS</span></a> or <a class="reference internal" href="../upstream/cluster_manager/cds.html#config-cluster-manager-cds"><span class="std std-ref">CDS</span></a> configured in
 <a class="reference internal" href="../../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-field-config-bootstrap-v2-bootstrap-dynamic-resources"><span class="std std-ref">dynamic_resources</span></a>.</p>
 </div>
 <div class="section" id="example">
@@ -513,7 +505,7 @@ REST-JSON cases, a <a class="reference internal" href="../../api-v2/api/v2/disco
 <code class="sig-name descname">POST </code><code class="sig-name descname">/envoy.api.v2.ClusterDiscoveryService/StreamClusters</code><a class="headerlink" href="#post--envoy.api.v2.ClusterDiscoveryService-StreamClusters" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/cds.proto">cds.proto</a> for the service definition. This is used by Envoy
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/25e3e86ccf50ec7469a854974c7212f4ffc8c7e1/api/envoy/api/v2/cds.proto">cds.proto</a> for the service definition. This is used by Envoy
 as a client when</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">cds_config</span><span class="p">:</span>
   <span class="nt">api_config_source</span><span class="p">:</span>
@@ -529,7 +521,7 @@ as a client when</p>
 <code class="sig-name descname">POST </code><code class="sig-name descname">/envoy.api.v2.EndpointDiscoveryService/StreamEndpoints</code><a class="headerlink" href="#post--envoy.api.v2.EndpointDiscoveryService-StreamEndpoints" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/eds.proto">eds.proto</a>
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/25e3e86ccf50ec7469a854974c7212f4ffc8c7e1/api/envoy/api/v2/eds.proto">eds.proto</a>
 for the service definition. This is used by Envoy as a client when</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">eds_config</span><span class="p">:</span>
   <span class="nt">api_config_source</span><span class="p">:</span>
@@ -545,7 +537,7 @@ for the service definition. This is used by Envoy as a client when</p>
 <code class="sig-name descname">POST </code><code class="sig-name descname">/envoy.api.v2.ListenerDiscoveryService/StreamListeners</code><a class="headerlink" href="#post--envoy.api.v2.ListenerDiscoveryService-StreamListeners" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/lds.proto">lds.proto</a>
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/25e3e86ccf50ec7469a854974c7212f4ffc8c7e1/api/envoy/api/v2/lds.proto">lds.proto</a>
 for the service definition. This is used by Envoy as a client when</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">lds_config</span><span class="p">:</span>
   <span class="nt">api_config_source</span><span class="p">:</span>
@@ -561,7 +553,7 @@ for the service definition. This is used by Envoy as a client when</p>
 <code class="sig-name descname">POST </code><code class="sig-name descname">/envoy.api.v2.RouteDiscoveryService/StreamRoutes</code><a class="headerlink" href="#post--envoy.api.v2.RouteDiscoveryService-StreamRoutes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/rds.proto">rds.proto</a>
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/25e3e86ccf50ec7469a854974c7212f4ffc8c7e1/api/envoy/api/v2/rds.proto">rds.proto</a>
 for the service definition. This is used by Envoy as a client when</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">route_config_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_route_name</span>
 <span class="nt">config_source</span><span class="p">:</span>
@@ -581,7 +573,7 @@ for the service definition. This is used by Envoy as a client when</p>
 <code class="sig-name descname">POST </code><code class="sig-name descname">/v2/discovery:clusters</code><a class="headerlink" href="#post--v2-discovery-clusters" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/cds.proto">cds.proto</a>
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/25e3e86ccf50ec7469a854974c7212f4ffc8c7e1/api/envoy/api/v2/cds.proto">cds.proto</a>
 for the service definition. This is used by Envoy as a client when</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">cds_config</span><span class="p">:</span>
   <span class="nt">api_config_source</span><span class="p">:</span>
@@ -595,7 +587,7 @@ for the service definition. This is used by Envoy as a client when</p>
 <code class="sig-name descname">POST </code><code class="sig-name descname">/v2/discovery:endpoints</code><a class="headerlink" href="#post--v2-discovery-endpoints" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/eds.proto">eds.proto</a>
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/25e3e86ccf50ec7469a854974c7212f4ffc8c7e1/api/envoy/api/v2/eds.proto">eds.proto</a>
 for the service definition. This is used by Envoy as a client when</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">eds_config</span><span class="p">:</span>
   <span class="nt">api_config_source</span><span class="p">:</span>
@@ -609,7 +601,7 @@ for the service definition. This is used by Envoy as a client when</p>
 <code class="sig-name descname">POST </code><code class="sig-name descname">/v2/discovery:listeners</code><a class="headerlink" href="#post--v2-discovery-listeners" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/lds.proto">lds.proto</a>
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/25e3e86ccf50ec7469a854974c7212f4ffc8c7e1/api/envoy/api/v2/lds.proto">lds.proto</a>
 for the service definition. This is used by Envoy as a client when</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">lds_config</span><span class="p">:</span>
   <span class="nt">api_config_source</span><span class="p">:</span>
@@ -623,7 +615,7 @@ for the service definition. This is used by Envoy as a client when</p>
 <code class="sig-name descname">POST </code><code class="sig-name descname">/v2/discovery:routes</code><a class="headerlink" href="#post--v2-discovery-routes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/rds.proto">rds.proto</a>
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/25e3e86ccf50ec7469a854974c7212f4ffc8c7e1/api/envoy/api/v2/rds.proto">rds.proto</a>
 for the service definition. This is used by Envoy as a client when</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">route_config_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_route_name</span>
 <span class="nt">config_source</span><span class="p">:</span>
@@ -670,7 +662,7 @@ document. The gRPC endpoint is:</p>
 <code class="sig-name descname">POST </code><code class="sig-name descname">/envoy.service.discovery.v2.AggregatedDiscoveryService/StreamAggregatedResources</code><a class="headerlink" href="#post--envoy.service.discovery.v2.AggregatedDiscoveryService-StreamAggregatedResources" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/api/envoy/api/v2/discovery.proto">discovery.proto</a>
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/25e3e86ccf50ec7469a854974c7212f4ffc8c7e1/api/envoy/api/v2/discovery.proto">discovery.proto</a>
 for the service definition. This is used by Envoy as a client when</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">ads_config</span><span class="p">:</span>
   <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GRPC</span>
@@ -735,6 +727,60 @@ every time it attempts a connection.</p>
 </tbody>
 </table>
 </div>
+<div class="section" id="xds-subscription-statistics">
+<span id="subscription-statistics"></span><h2>xDS subscription statistics<a class="headerlink" href="#xds-subscription-statistics" title="Permalink to this headline">¶</a></h2>
+<p>Envoy discovers its various dynamic resources via discovery
+services referred to as <em>xDS</em>. Resources are requested via <a class="reference internal" href="../../api-docs/xds_protocol.html#xds-protocol"><span class="std std-ref">subscriptions</span></a>,
+by specifying a filesystem path to watch, initiating gRPC streams or polling a REST-JSON URL.</p>
+<p>The following statistics are generated for all subscriptions.</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>config_reload</p></td>
+<td><p>Counter</p></td>
+<td><p>Total API fetches that resulted in a config reload due to a different config</p></td>
+</tr>
+<tr class="row-odd"><td><p>init_fetch_timeout</p></td>
+<td><p>Counter</p></td>
+<td><p>Total <a class="reference internal" href="../../api-v2/api/v2/core/config_source.proto.html#envoy-api-field-core-configsource-initial-fetch-timeout"><span class="std std-ref">initial fetch timeouts</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>update_attempt</p></td>
+<td><p>Counter</p></td>
+<td><p>Total API fetches attempted</p></td>
+</tr>
+<tr class="row-odd"><td><p>update_success</p></td>
+<td><p>Counter</p></td>
+<td><p>Total API fetches completed successfully</p></td>
+</tr>
+<tr class="row-even"><td><p>update_failure</p></td>
+<td><p>Counter</p></td>
+<td><p>Total API fetches that failed because of network errors</p></td>
+</tr>
+<tr class="row-odd"><td><p>update_rejected</p></td>
+<td><p>Counter</p></td>
+<td><p>Total API fetches that failed because of schema/validation errors</p></td>
+</tr>
+<tr class="row-even"><td><p>version</p></td>
+<td><p>Gauge</p></td>
+<td><p>Hash of the contents from the last successful API fetch</p></td>
+</tr>
+<tr class="row-odd"><td><p>control_plane.connected_state</p></td>
+<td><p>Gauge</p></td>
+<td><p>A boolean (1 for connected and 0 for disconnected) that indicates the current connection state with management server</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="section" id="status">
 <span id="config-overview-v2-status"></span><h2>Status<a class="headerlink" href="#status" title="Permalink to this headline">¶</a></h2>
 <p>All features described in the <a class="reference internal" href="../../api-v2/api.html#envoy-api-reference"><span class="std std-ref">v2 API reference</span></a> are
@@ -745,7 +791,7 @@ means that we will not break wire format compatibility.</p>
 <p><em>Frozen</em> protos may be further extended, e.g. by adding new fields, in a
 manner that does not break <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/overview#how-do-they-work">backwards compatibility</a>.
 Fields in the above protos may be later deprecated, subject to the
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/eff020170c6267e6c8dc235473f7fc85c5b1e07d/CONTRIBUTING.md#breaking-change-policy">breaking change policy</a>,
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/25e3e86ccf50ec7469a854974c7212f4ffc8c7e1/CONTRIBUTING.md#breaking-change-policy">breaking change policy</a>,
 when their related functionality is no longer required. While frozen APIs
 have their wire format compatibility preserved, we reserve the right to change
 proto namespaces, file locations and nesting relationships, which may cause
