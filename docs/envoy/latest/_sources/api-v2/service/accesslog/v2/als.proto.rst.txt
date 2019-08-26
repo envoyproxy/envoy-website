@@ -9,7 +9,7 @@ gRPC Access Log Service (ALS)
 service.accesslog.v2.StreamAccessLogsResponse
 ---------------------------------------------
 
-`[service.accesslog.v2.StreamAccessLogsResponse proto] <https://github.com/envoyproxy/envoy/blob/d39bd813a156989369597d69efd4e50489cfeebb/api/envoy/service/accesslog/v2/als.proto#L30>`_
+`[service.accesslog.v2.StreamAccessLogsResponse proto] <https://github.com/envoyproxy/envoy/blob/8bdebbfb936c533a822df9e96fd37be2cbdbab94/api/envoy/service/accesslog/v2/als.proto#L30>`_
 
 Empty response for the StreamAccessLogs API. Will never be sent. See below.
 
@@ -25,7 +25,7 @@ Empty response for the StreamAccessLogs API. Will never be sent. See below.
 service.accesslog.v2.StreamAccessLogsMessage
 --------------------------------------------
 
-`[service.accesslog.v2.StreamAccessLogsMessage proto] <https://github.com/envoyproxy/envoy/blob/d39bd813a156989369597d69efd4e50489cfeebb/api/envoy/service/accesslog/v2/als.proto#L35>`_
+`[service.accesslog.v2.StreamAccessLogsMessage proto] <https://github.com/envoyproxy/envoy/blob/8bdebbfb936c533a822df9e96fd37be2cbdbab94/api/envoy/service/accesslog/v2/als.proto#L35>`_
 
 Stream message for the StreamAccessLogs API. Envoy will open a stream to the server and stream
 access logs without ever expecting a response.
@@ -34,7 +34,8 @@ access logs without ever expecting a response.
 
   {
     "identifier": "{...}",
-    "http_logs": "{...}"
+    "http_logs": "{...}",
+    "tcp_logs": "{...}"
   }
 
 .. _envoy_api_field_service.accesslog.v2.StreamAccessLogsMessage.identifier:
@@ -47,18 +48,29 @@ identifier
 .. _envoy_api_field_service.accesslog.v2.StreamAccessLogsMessage.http_logs:
 
 http_logs
-  (:ref:`service.accesslog.v2.StreamAccessLogsMessage.HTTPAccessLogEntries <envoy_api_msg_service.accesslog.v2.StreamAccessLogsMessage.HTTPAccessLogEntries>`, *REQUIRED*) 
+  (:ref:`service.accesslog.v2.StreamAccessLogsMessage.HTTPAccessLogEntries <envoy_api_msg_service.accesslog.v2.StreamAccessLogsMessage.HTTPAccessLogEntries>`) 
   Batches of log entries of a single type. Generally speaking, a given stream should only
   ever include one type of log entry.
   
   
+  Precisely one of :ref:`http_logs <envoy_api_field_service.accesslog.v2.StreamAccessLogsMessage.http_logs>`, :ref:`tcp_logs <envoy_api_field_service.accesslog.v2.StreamAccessLogsMessage.tcp_logs>` must be set.
+  
+.. _envoy_api_field_service.accesslog.v2.StreamAccessLogsMessage.tcp_logs:
 
+tcp_logs
+  (:ref:`service.accesslog.v2.StreamAccessLogsMessage.TCPAccessLogEntries <envoy_api_msg_service.accesslog.v2.StreamAccessLogsMessage.TCPAccessLogEntries>`) 
+  Batches of log entries of a single type. Generally speaking, a given stream should only
+  ever include one type of log entry.
+  
+  
+  Precisely one of :ref:`http_logs <envoy_api_field_service.accesslog.v2.StreamAccessLogsMessage.http_logs>`, :ref:`tcp_logs <envoy_api_field_service.accesslog.v2.StreamAccessLogsMessage.tcp_logs>` must be set.
+  
 .. _envoy_api_msg_service.accesslog.v2.StreamAccessLogsMessage.Identifier:
 
 service.accesslog.v2.StreamAccessLogsMessage.Identifier
 -------------------------------------------------------
 
-`[service.accesslog.v2.StreamAccessLogsMessage.Identifier proto] <https://github.com/envoyproxy/envoy/blob/d39bd813a156989369597d69efd4e50489cfeebb/api/envoy/service/accesslog/v2/als.proto#L36>`_
+`[service.accesslog.v2.StreamAccessLogsMessage.Identifier proto] <https://github.com/envoyproxy/envoy/blob/8bdebbfb936c533a822df9e96fd37be2cbdbab94/api/envoy/service/accesslog/v2/als.proto#L36>`_
 
 
 .. code-block:: json
@@ -88,7 +100,7 @@ log_name
 service.accesslog.v2.StreamAccessLogsMessage.HTTPAccessLogEntries
 -----------------------------------------------------------------
 
-`[service.accesslog.v2.StreamAccessLogsMessage.HTTPAccessLogEntries proto] <https://github.com/envoyproxy/envoy/blob/d39bd813a156989369597d69efd4e50489cfeebb/api/envoy/service/accesslog/v2/als.proto#L50>`_
+`[service.accesslog.v2.StreamAccessLogsMessage.HTTPAccessLogEntries proto] <https://github.com/envoyproxy/envoy/blob/8bdebbfb936c533a822df9e96fd37be2cbdbab94/api/envoy/service/accesslog/v2/als.proto#L50>`_
 
 Wrapper for batches of HTTP access log entries.
 
@@ -104,5 +116,26 @@ log_entry
   (:ref:`data.accesslog.v2.HTTPAccessLogEntry <envoy_api_msg_data.accesslog.v2.HTTPAccessLogEntry>`, *REQUIRED*) 
   
 
+
+.. _envoy_api_msg_service.accesslog.v2.StreamAccessLogsMessage.TCPAccessLogEntries:
+
+service.accesslog.v2.StreamAccessLogsMessage.TCPAccessLogEntries
+----------------------------------------------------------------
+
+`[service.accesslog.v2.StreamAccessLogsMessage.TCPAccessLogEntries proto] <https://github.com/envoyproxy/envoy/blob/8bdebbfb936c533a822df9e96fd37be2cbdbab94/api/envoy/service/accesslog/v2/als.proto#L56>`_
+
+Wrapper for batches of TCP access log entries.
+
+.. code-block:: json
+
+  {
+    "log_entry": []
+  }
+
+.. _envoy_api_field_service.accesslog.v2.StreamAccessLogsMessage.TCPAccessLogEntries.log_entry:
+
+log_entry
+  (:ref:`data.accesslog.v2.TCPAccessLogEntry <envoy_api_msg_data.accesslog.v2.TCPAccessLogEntry>`, *REQUIRED*) 
+  
 
 
