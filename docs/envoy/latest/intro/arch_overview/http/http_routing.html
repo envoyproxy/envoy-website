@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP routing &mdash; envoy 1.12.0-dev-0b0aa3 documentation</title>
+  <title>HTTP routing &mdash; envoy 1.12.0-dev-796056 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-0b0aa3
+                1.12.0-dev-796056
               </div>
             
           
@@ -237,8 +237,29 @@ clusters can use regex matching.</p></li>
 <li><p><a class="reference internal" href="../../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-routeaction-hash-policy"><span class="std std-ref">Hash policy</span></a> based routing.</p></li>
 <li><p><a class="reference internal" href="../../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-http-protocol-options"><span class="std std-ref">Absolute urls</span></a> are supported for non-tls forward proxies.</p></li>
 </ul>
+<div class="section" id="route-scope">
+<span id="arch-overview-http-routing-route-scope"></span><h2>Route Scope<a class="headerlink" href="#route-scope" title="Permalink to this headline">¶</a></h2>
+<p>Scoped routing enables Envoy to put constraints on search space of domains and route rules.
+A <a class="reference internal" href="../../../api-v2/api/v2/srds.proto.html#envoy-api-msg-scopedrouteconfiguration"><span class="std std-ref">Route Scope</span></a> associates a key with a <a class="reference internal" href="#arch-overview-http-routing-route-table"><span class="std std-ref">route table</span></a>.
+For each request, a scope key is computed dynamically by the HTTP connection manager to pick the <a class="reference internal" href="../../../api-v2/api/v2/rds.proto.html#envoy-api-msg-routeconfiguration"><span class="std std-ref">route table</span></a>.</p>
+<p>The Scoped RDS (SRDS) API contains a set of <a class="reference internal" href="../../../api-v2/api/v2/srds.proto.html#envoy-api-msg-scopedrouteconfiguration"><span class="std std-ref">Scopes</span></a> resources, each defining independent routing configuration,
+along with a <a class="reference internal" href="../../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-msg-config-filter-network-http-connection-manager-v2-scopedroutes-scopekeybuilder"><span class="std std-ref">ScopeKeyBuilder</span></a>
+defining the key construction algorithm used by Envoy to look up the scope corresponding to each request.</p>
+<p>For example, for the following scoped route configuration, Envoy will look into the “addr” header value, split the header value by “;” first, and use the first value for key ‘x-foo-key’ as the scope key.
+If the “addr” header value is “foo=1;x-foo-key=127.0.0.1;x-bar-key=1.1.1.1”, then “127.0.0.1” will be computed as the scope key to look up for corresponding route configuration.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">scope_by_addr</span>
+<span class="nt">fragments</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">header_value_extractor</span><span class="p">:</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Addr</span>
+      <span class="nt">element_separator</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">;</span>
+      <span class="nt">element</span><span class="p">:</span>
+        <span class="nt">key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">x-foo-key</span>
+        <span class="nt">separator</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">=</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="route-table">
-<h2>Route table<a class="headerlink" href="#route-table" title="Permalink to this headline">¶</a></h2>
+<span id="arch-overview-http-routing-route-table"></span><h2>Route table<a class="headerlink" href="#route-table" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="../../../configuration/http/http_conn_man/http_conn_man.html#config-http-conn-man"><span class="std std-ref">configuration</span></a> for the HTTP connection manager owns the <a class="reference internal" href="../../../api-v2/api/v2/rds.proto.html#envoy-api-msg-routeconfiguration"><span class="std std-ref">route
 table</span></a> that is used by all configured HTTP filters. Although the
 router filter is the primary consumer of the route table, other filters also have access in case
