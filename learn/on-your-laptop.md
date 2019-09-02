@@ -55,6 +55,10 @@ definition.
 The `docker-compose.yaml` file provides a description of how to build, package,
 and run the front proxy and services together.
 
+If using Windows, make sure in Docker Desktop > Settings > Shared Drives, the drive you're
+using to run the `front-proxy` example is shared/checked. Otherwise, you'll get errors like:
+`ERROR: for front-proxy_front-envoy_1  Cannot create container for service front-envoy: b'Drive has not been shared'`.
+
 To build our containers, run:
 
 ```console
