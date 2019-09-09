@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>WebSocket and HTTP upgrades &mdash; envoy 1.12.0-dev-99e3c6 documentation</title>
+  <title>WebSocket and HTTP upgrades &mdash; envoy 1.12.0-dev-ced130 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-99e3c6
+                1.12.0-dev-ced130
               </div>
             
           
@@ -246,15 +246,17 @@ laid out below, but custom filter chains can only be configured on a per-HttpCon
 <p>Note that the statistics for upgrades are all bundled together so WebSocket
 <a class="reference internal" href="../../../configuration/http/http_conn_man/stats.html#config-http-conn-man-stats"><span class="std std-ref">statistics</span></a> are tracked by stats such as
 downstream_cx_upgrades_total and downstream_cx_upgrades_active</p>
-<div class="section" id="handling-h2-hops">
-<h2>Handling H2 hops<a class="headerlink" href="#handling-h2-hops" title="Permalink to this headline">¶</a></h2>
-<p>Envoy supports tunneling WebSockets over H2 streams for deployments that prefer a uniform
-H2 mesh throughout; this enables, for example, a deployment of the form:</p>
+<div class="section" id="handling-http-2-hops">
+<h2>Handling HTTP/2 hops<a class="headerlink" href="#handling-http-2-hops" title="Permalink to this headline">¶</a></h2>
+<p>While HTTP/2 support for WebSockets is off by default, Envoy does support tunneling WebSockets over
+HTTP/2 streams for deployments that prefer a uniform HTTP/2 mesh throughout; this enables, for example,
+a deployment of the form:</p>
 <p>[Client] —- HTTP/1.1 —- [Front Envoy] —- HTTP/2 —- [Sidecar Envoy —- H1  —- App]</p>
 <p>In this case, if a client is for example using WebSocket, we want the Websocket to arrive at the
 upstream server functionally intact, which means it needs to traverse the HTTP/2 hop.</p>
-<p>This is accomplished via
-<a class="reference external" href="https://tools.ietf.org/html/rfc8441">extended CONNECT</a> support. The
+<p>This is accomplished via <a class="reference external" href="https://tools.ietf.org/html/rfc8441">extended CONNECT</a> support,
+turned on by setting <a class="reference internal" href="../../../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-http2protocoloptions-allow-connect"><span class="std std-ref">allow_connect</span></a>
+true at the second layer Envoy. The
 WebSocket request will be transformed into an HTTP/2 CONNECT stream, with :protocol header
 indicating the original upgrade, traverse the HTTP/2 hop, and be downgraded back into an HTTP/1
 WebSocket Upgrade. This same Upgrade-CONNECT-Upgrade transformation will be performed on any
@@ -262,7 +264,7 @@ HTTP/2 hop, with the documented flaw that the HTTP/1.1 method is always assumed 
 Non-WebSocket upgrades are allowed to use any valid HTTP method (i.e. POST) and the current
 upgrade/downgrade mechanism will drop the original method and transform the Upgrade request to
 a GET method on the final Envoy-Upstream hop.</p>
-<p>Note that the H2 upgrade path has very strict HTTP/1.1 compliance, so will not proxy WebSocket
+<p>Note that the HTTP/2 upgrade path has very strict HTTP/1.1 compliance, so will not proxy WebSocket
 upgrade requests or responses with bodies.</p>
 </div>
 </div>
