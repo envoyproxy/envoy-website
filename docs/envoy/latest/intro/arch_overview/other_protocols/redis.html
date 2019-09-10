@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Redis &mdash; envoy 1.12.0-dev-cee989 documentation</title>
+  <title>Redis &mdash; envoy 1.12.0-dev-ad10a9 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-cee989
+                1.12.0-dev-ad10a9
               </div>
             
           
@@ -242,7 +242,7 @@ cluster should be configured with a <a class="reference internal" href="../../..
 close map to 5xx. All other responses from Redis are counted as a success.</p>
 </div>
 <div class="section" id="redis-cluster-support-experimental">
-<h2>Redis Cluster Support (Experimental)<a class="headerlink" href="#redis-cluster-support-experimental" title="Permalink to this headline">¶</a></h2>
+<span id="arch-overview-redis-cluster-support"></span><h2>Redis Cluster Support (Experimental)<a class="headerlink" href="#redis-cluster-support-experimental" title="Permalink to this headline">¶</a></h2>
 <p>Envoy currently offers experimental support for <a class="reference external" href="https://redis.io/topics/cluster-spec">Redis Cluster</a>.</p>
 <p>When using Envoy as a sidecar proxy for a Redis Cluster, the service can use a non-cluster Redis client
 implemented in any language to connect to the proxy as if it’s a single node Redis instance.
@@ -280,6 +280,42 @@ following information:</p>
 <tr class="row-odd"><td><p>upstream_cx_drained</p></td>
 <td><p>Counter</p></td>
 <td><p>Total number of upstream connections drained of active requests before being closed</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_commands.upstream_rq_time</p></td>
+<td><p>Histogram</p></td>
+<td><p>Histogram of upstream request times for all types of requests</p></td>
+</tr>
+</tbody>
+</table>
+<p id="arch-overview-redis-cluster-command-stats">Per-cluster command statistics can be enabled via the setting <a class="reference internal" href="../../../api-v2/config/filter/network/redis_proxy/v2/redis_proxy.proto.html#envoy-api-field-config-filter-network-redis-proxy-v2-redisproxy-connpoolsettings-enable-command-stats"><span class="std std-ref">enable_command_stats</span></a>:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>upstream_commands.[command].success</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of successful requests for a specific Redis command</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_commands.[command].error</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of failed or cancelled requests for a specific Redis command</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_commands.[command].total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of requests for a specific Redis command (sum of success and error)</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_commands.[command].latency</p></td>
+<td><p>Histogram</p></td>
+<td><p>Latency of requests for a specific Redis command</p></td>
 </tr>
 </tbody>
 </table>
