@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Load Balancer Subsets &mdash; envoy 1.12.0-dev-d5515a documentation</title>
+  <title>Load Balancer Subsets &mdash; envoy 1.12.0-dev-cee989 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-d5515a
+                1.12.0-dev-cee989
               </div>
             
           
@@ -229,12 +229,19 @@ balancing. Otherwise, the fallback policy is used. The cluster’s subset config
 therefore, contain a definition that has the same keys as a given route in order for subset load
 balancing to occur.</p>
 <p>This feature can only be enabled using the V2 configuration API. Furthermore, host metadata is only
-supported when using the EDS discovery type for clusters. Host metadata for subset load balancing
-must be placed under the filter name <code class="docutils literal notranslate"><span class="pre">&quot;envoy.lb&quot;</span></code>. Similarly, route metadata match criteria use
-the <code class="docutils literal notranslate"><span class="pre">&quot;envoy.lb&quot;</span></code> filter name. Host metadata may be hierarchical (e.g., the value for a top-level
-key may be a structured value or list), but the subset load balancer only compares top-level keys
-and values. Therefore when using structured values, a route’s match criteria will only match if an
-identical structured value appears in the host’s metadata.</p>
+supported when hosts are defined using
+<a class="reference internal" href="../../../../api-v2/api/v2/eds.proto.html#envoy-api-msg-clusterloadassignment"><span class="std std-ref">ClusterLoadAssignments</span></a>. ClusterLoadAssignments are
+available via EDS or the Cluster <a class="reference internal" href="../../../../api-v2/api/v2/cds.proto.html#envoy-api-field-cluster-load-assignment"><span class="std std-ref">load_assignment</span></a>
+field. Host metadata for subset load balancing must be placed under the filter name <code class="docutils literal notranslate"><span class="pre">&quot;envoy.lb&quot;</span></code>.
+Similarly, route metadata match criteria use <code class="docutils literal notranslate"><span class="pre">&quot;envoy.lb&quot;</span></code> filter name. Host metadata may be
+hierarchical (e.g., the value for a top-level key may be a structured value or list), but the
+subset load balancer only compares top-level keys and values. Therefore when using structured
+values, a route’s match criteria will only match if an identical structured value appears in the
+host’s metadata.</p>
+<p>Finally, note that subset load balancing is not available for the
+<a class="reference internal" href="../../../../api-v2/api/v2/cds.proto.html#envoy-api-enum-value-cluster-lbpolicy-original-dst-lb"><span class="std std-ref">ORIGINAL_DST_LB</span></a> or
+<a class="reference internal" href="../../../../api-v2/api/v2/cds.proto.html#envoy-api-enum-value-cluster-lbpolicy-cluster-provided"><span class="std std-ref">CLUSTER_PROVIDED</span></a> load balancer
+policies.</p>
 <div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p>We’ll use simple metadata where all values are strings. Assume the following hosts are defined and
