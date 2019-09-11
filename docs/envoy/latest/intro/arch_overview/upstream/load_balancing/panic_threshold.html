@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Panic threshold &mdash; envoy 1.12.0-dev-38b926 documentation</title>
+  <title>Panic threshold &mdash; envoy 1.12.0-dev-e2eb25 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-38b926
+                1.12.0-dev-e2eb25
               </div>
             
           
@@ -204,12 +204,22 @@
 <span id="arch-overview-load-balancing-panic-threshold"></span><h1>Panic threshold<a class="headerlink" href="#panic-threshold" title="Permalink to this headline">¶</a></h1>
 <p>During load balancing, Envoy will generally only consider available (healthy or degraded) hosts in
 an upstream cluster. However, if the percentage of available hosts in the cluster becomes too low,
-Envoy will disregard health status and balance amongst all hosts. This is known as the <em>panic
-threshold</em>. The default panic threshold is 50%. This is
+Envoy will disregard health status and balance either amongst all hosts or no hosts. This is known
+as the <em>panic threshold</em>. The default panic threshold is 50%. This is
 <a class="reference internal" href="../../../../configuration/upstream/cluster_manager/cluster_runtime.html#config-cluster-manager-cluster-runtime"><span class="std std-ref">configurable</span></a> via runtime as well as in the
 <a class="reference internal" href="../../../../api-v2/api/v2/cds.proto.html#envoy-api-field-cluster-commonlbconfig-healthy-panic-threshold"><span class="std std-ref">cluster configuration</span></a>.
 The panic threshold is used to avoid a situation in which host failures cascade throughout the
 cluster as load increases.</p>
+<p>There are two modes Envoy can choose from when in a panic state: traffic will either be sent to all
+hosts, or will be sent to no hosts (and therefore will always fail). This is configured in the
+<a class="reference internal" href="../../../../api-v2/api/v2/cds.proto.html#envoy-api-field-cluster-commonlbconfig-zoneawarelbconfig-fail-traffic-on-panic"><span class="std std-ref">cluster configuration</span></a>.
+Choosing to fail traffic during panic scenarios can help avoid overwhelming potentially failing
+upstream services, as it will reduce the load on the upstream service before all hosts have been
+determined to be unhealthy. However, it eliminates the possibility of _some_ requests succeeding
+even when many or all hosts in a cluster are unhealthy. This may be a good tradeoff to make if a
+given service is observed to fail in an all-or-nothing pattern, as it will more quickly cut off
+requests to the cluster. Conversely, if a cluster typically continues to successfully service _some_
+requests even when degraded, enabling this option is probably unhelpful.</p>
 <p>Panic thresholds work in conjunction with priorities. If the number of available hosts in a given
 priority goes down, Envoy will try to shift some traffic to lower priorities. If it succeeds in
 finding enough available hosts in lower priorities, Envoy will disregard panic thresholds. In
@@ -218,8 +228,8 @@ disregards panic thresholds and continues to distribute traffic load across prio
 the algorithm described <a class="reference internal" href="priority.html#arch-overview-load-balancing-priority-levels"><span class="std std-ref">here</span></a>.
 However, when normalized total availability drops below 100%, Envoy assumes that there are not enough
 available hosts across all priority levels. It continues to distribute traffic load across priorities,
-but if a given priority level’s availability is below the panic threshold, traffic will go to all hosts
-in that priority level regardless of their availability.</p>
+but if a given priority level’s availability is below the panic threshold, traffic will go to all
+(or no) hosts in that priority level regardless of their availability.</p>
 <p>The following examples explain the relationship between normalized total availability and panic threshold.
 It is assumed that the default value of 50% is used for the panic threshold.</p>
 <p>Assume a simple set-up with 2 priority levels, P=1 100% healthy. In this scenario normalized total
