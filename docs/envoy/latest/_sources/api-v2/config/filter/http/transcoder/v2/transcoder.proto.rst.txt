@@ -10,7 +10,7 @@ gRPC-JSON transcoder :ref:`configuration overview <config_http_filters_grpc_json
 config.filter.http.transcoder.v2.GrpcJsonTranscoder
 ---------------------------------------------------
 
-`[config.filter.http.transcoder.v2.GrpcJsonTranscoder proto] <https://github.com/envoyproxy/envoy/blob/32e6018f10f9d6de58fd6c3d6844a68a5be7723b/api/envoy/config/filter/http/transcoder/v2/transcoder.proto#L13>`_
+`[config.filter.http.transcoder.v2.GrpcJsonTranscoder proto] <https://github.com/envoyproxy/envoy/blob/219e8b91809d14cfea2c064c59a5ac98647840b1/api/envoy/config/filter/http/transcoder/v2/transcoder.proto#L13>`_
 
 
 .. code-block:: json
@@ -23,7 +23,8 @@ config.filter.http.transcoder.v2.GrpcJsonTranscoder
     "match_incoming_request_route": "...",
     "ignored_query_parameters": [],
     "auto_mapping": "...",
-    "ignore_unknown_query_parameters": "..."
+    "ignore_unknown_query_parameters": "...",
+    "convert_grpc_status": "..."
   }
 
 .. _envoy_api_field_config.filter.http.transcoder.v2.GrpcJsonTranscoder.proto_descriptor:
@@ -138,12 +139,45 @@ ignore_unknown_query_parameters
   Defaults to false.
   
   
+.. _envoy_api_field_config.filter.http.transcoder.v2.GrpcJsonTranscoder.convert_grpc_status:
+
+convert_grpc_status
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Whether to convert gRPC status headers to JSON.
+  When trailer indicates a gRPC error and there was no HTTP body, take ``google.rpc.Status``
+  from the ``grpc-status-details-bin`` header and use it as JSON body.
+  If there was no such header, make ``google.rpc.Status`` out of the ``grpc-status`` and
+  ``grpc-message`` headers.
+  The error details types must be present in the ``proto_descriptor``.
+  
+  For example, if an upstream server replies with headers:
+  
+  .. code-block:: none
+  
+      grpc-status: 5
+      grpc-status-details-bin:
+          CAUaMwoqdHlwZS5nb29nbGVhcGlzLmNvbS9nb29nbGUucnBjLlJlcXVlc3RJbmZvEgUKA3ItMQ
+  
+  The ``grpc-status-details-bin`` header contains a base64-encoded protobuf message
+  ``google.rpc.Status``. It will be transcoded into:
+  
+  .. code-block:: none
+  
+      HTTP/1.1 404 Not Found
+      content-type: application/json
+  
+      {"code":5,"details":[{"@type":"type.googleapis.com/google.rpc.RequestInfo","requestId":"r-1"}]}
+  
+   In order to transcode the message, the ``google.rpc.RequestInfo`` type from
+   the ``google/rpc/error_details.proto`` should be included in the configured
+   :ref:`proto descriptor set <config_grpc_json_generate_proto_descriptor_set>`.
+  
+  
 .. _envoy_api_msg_config.filter.http.transcoder.v2.GrpcJsonTranscoder.PrintOptions:
 
 config.filter.http.transcoder.v2.GrpcJsonTranscoder.PrintOptions
 ----------------------------------------------------------------
 
-`[config.filter.http.transcoder.v2.GrpcJsonTranscoder.PrintOptions proto] <https://github.com/envoyproxy/envoy/blob/32e6018f10f9d6de58fd6c3d6844a68a5be7723b/api/envoy/config/filter/http/transcoder/v2/transcoder.proto#L35>`_
+`[config.filter.http.transcoder.v2.GrpcJsonTranscoder.PrintOptions proto] <https://github.com/envoyproxy/envoy/blob/219e8b91809d14cfea2c064c59a5ac98647840b1/api/envoy/config/filter/http/transcoder/v2/transcoder.proto#L35>`_
 
 
 .. code-block:: json
