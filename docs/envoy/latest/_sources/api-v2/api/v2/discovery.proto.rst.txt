@@ -9,7 +9,7 @@ Common discovery API components
 DiscoveryRequest
 ----------------
 
-`[DiscoveryRequest proto] <https://github.com/envoyproxy/envoy/blob/3ebedeb708a23062332a6fcdf33b462b7070adba/api/envoy/api/v2/discovery.proto#L17>`_
+`[DiscoveryRequest proto] <https://github.com/envoyproxy/envoy/blob/d6964e5aa985663f50759ad4cfc7f3d78d944b39/api/envoy/api/v2/discovery.proto#L17>`_
 
 A DiscoveryRequest requests a set of versioned resources of the same type for
 a given Envoy node on some API.
@@ -68,8 +68,9 @@ type_url
 response_nonce
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) nonce corresponding to DiscoveryResponse being ACK/NACKed. See above
   discussion on version_info and the DiscoveryResponse nonce comment. This
-  may be empty if no nonce is available, e.g. at startup or for non-stream
-  xDS implementations.
+  may be empty only if 1) this is a non-persistent-stream xDS such as HTTP,
+  or 2) the client has not yet accepted an update in this xDS stream (unlike
+  delta, where it is populated only for new explicit ACKs).
   
   
 .. _envoy_api_field_DiscoveryRequest.error_detail:
@@ -88,7 +89,7 @@ error_detail
 DiscoveryResponse
 -----------------
 
-`[DiscoveryResponse proto] <https://github.com/envoyproxy/envoy/blob/3ebedeb708a23062332a6fcdf33b462b7070adba/api/envoy/api/v2/discovery.proto#L57>`_
+`[DiscoveryResponse proto] <https://github.com/envoyproxy/envoy/blob/d6964e5aa985663f50759ad4cfc7f3d78d944b39/api/envoy/api/v2/discovery.proto#L58>`_
 
 
 .. code-block:: json
@@ -141,7 +142,7 @@ nonce
 DeltaDiscoveryRequest
 ---------------------
 
-`[DeltaDiscoveryRequest proto] <https://github.com/envoyproxy/envoy/blob/3ebedeb708a23062332a6fcdf33b462b7070adba/api/envoy/api/v2/discovery.proto#L131>`_
+`[DeltaDiscoveryRequest proto] <https://github.com/envoyproxy/envoy/blob/d6964e5aa985663f50759ad4cfc7f3d78d944b39/api/envoy/api/v2/discovery.proto#L132>`_
 
 DeltaDiscoveryRequest and DeltaDiscoveryResponse are used in a new gRPC
 endpoint for Delta xDS.
@@ -252,7 +253,7 @@ response_nonce
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) When the DeltaDiscoveryRequest is a ACK or NACK message in response
   to a previous DeltaDiscoveryResponse, the response_nonce must be the
   nonce in the DeltaDiscoveryResponse.
-  Otherwise response_nonce must be omitted.
+  Otherwise (unlike in DiscoveryRequest) response_nonce must be omitted.
   
   
 .. _envoy_api_field_DeltaDiscoveryRequest.error_detail:
@@ -270,7 +271,7 @@ error_detail
 DeltaDiscoveryResponse
 ----------------------
 
-`[DeltaDiscoveryResponse proto] <https://github.com/envoyproxy/envoy/blob/3ebedeb708a23062332a6fcdf33b462b7070adba/api/envoy/api/v2/discovery.proto#L187>`_
+`[DeltaDiscoveryResponse proto] <https://github.com/envoyproxy/envoy/blob/d6964e5aa985663f50759ad4cfc7f3d78d944b39/api/envoy/api/v2/discovery.proto#L188>`_
 
 
 .. code-block:: json
@@ -324,7 +325,7 @@ nonce
 Resource
 --------
 
-`[Resource proto] <https://github.com/envoyproxy/envoy/blob/3ebedeb708a23062332a6fcdf33b462b7070adba/api/envoy/api/v2/discovery.proto#L210>`_
+`[Resource proto] <https://github.com/envoyproxy/envoy/blob/d6964e5aa985663f50759ad4cfc7f3d78d944b39/api/envoy/api/v2/discovery.proto#L211>`_
 
 
 .. code-block:: json
