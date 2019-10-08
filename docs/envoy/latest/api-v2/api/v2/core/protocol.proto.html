@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Protocol options &mdash; envoy 1.12.0-dev-9c682f documentation</title>
+  <title>Protocol options &mdash; envoy 1.12.0-dev-48c7c2 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-9c682f
+                1.12.0-dev-48c7c2
               </div>
             
           
@@ -198,23 +198,32 @@
 <span id="envoy-api-file-envoy-api-v2-core-protocol-proto"></span><h1>Protocol options<a class="headerlink" href="#protocol-options" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="core-httpprotocoloptions">
 <span id="envoy-api-msg-core-httpprotocoloptions"></span><h2>core.HttpProtocolOptions<a class="headerlink" href="#core-httpprotocoloptions" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/9c682f815ec70da374c4c5d2e24fd7a46f868bfb/api/envoy/api/v2/core/protocol.proto#L19">[core.HttpProtocolOptions proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/48c7c203890cf6c011fa6591a3b233d637c334f5/api/envoy/api/v2/core/protocol.proto#L19">[core.HttpProtocolOptions proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;idle_timeout&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;idle_timeout&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;max_headers_count&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <dl class="simple" id="envoy-api-field-core-httpprotocoloptions-idle-timeout">
-<dt>idle_timeout</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The idle timeout for upstream connection pool connections. The idle timeout is defined as the
+<dt>idle_timeout</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The idle timeout for connections. The idle timeout is defined as the
 period in which there are no active requests. If not set, there is no idle timeout. When the
-idle timeout is reached the connection will be closed. Note that request based timeouts mean
-that HTTP/2 PINGs will not keep the connection alive.</p>
+idle timeout is reached the connection will be closed. If the connection is an HTTP/2
+downstream connection a drain sequence will occur prior to closing the connection, see
+<a class="reference internal" href="../../../config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-drain-timeout"><span class="std std-ref">drain_timeout</span></a>.
+Note that request based timeouts mean that HTTP/2 PINGs will not keep the connection alive.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-api-field-core-httpprotocoloptions-max-headers-count">
+<dt>max_headers_count</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The maximum number of headers. If unconfigured, the default
+maximum number of request headers allowed is 100. Requests that exceed this limit will receive
+a 431 response for HTTP/1.x and cause a stream reset for HTTP/2.</p>
 </dd>
 </dl>
 </div>
 <div class="section" id="core-http1protocoloptions">
 <span id="envoy-api-msg-core-http1protocoloptions"></span><h2>core.Http1ProtocolOptions<a class="headerlink" href="#core-http1protocoloptions" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/9c682f815ec70da374c4c5d2e24fd7a46f868bfb/api/envoy/api/v2/core/protocol.proto#L27">[core.Http1ProtocolOptions proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/48c7c203890cf6c011fa6591a3b233d637c334f5/api/envoy/api/v2/core/protocol.proto#L35">[core.Http1ProtocolOptions proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;allow_absolute_url&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;accept_http_10&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
@@ -245,7 +254,7 @@ This is a no-op if <em>accept_http_10</em> is not true.</p>
 </div>
 <div class="section" id="core-http2protocoloptions">
 <span id="envoy-api-msg-core-http2protocoloptions"></span><h2>core.Http2ProtocolOptions<a class="headerlink" href="#core-http2protocoloptions" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/9c682f815ec70da374c4c5d2e24fd7a46f868bfb/api/envoy/api/v2/core/protocol.proto#L47">[core.Http2ProtocolOptions proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/48c7c203890cf6c011fa6591a3b233d637c334f5/api/envoy/api/v2/core/protocol.proto#L55">[core.Http2ProtocolOptions proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;hpack_table_size&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;max_concurrent_streams&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
