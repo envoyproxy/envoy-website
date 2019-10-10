@@ -11,7 +11,7 @@ HTTP route configuration
 RouteConfiguration
 ------------------
 
-`[RouteConfiguration proto] <https://github.com/envoyproxy/envoy/blob/42a16fb7c5179fda96411acf79285de4fa03e8d7/api/envoy/api/v2/rds.proto#L59>`_
+`[RouteConfiguration proto] <https://github.com/envoyproxy/envoy/blob/6460467c366e26d63feb1ebe1ffd9d86dcb9ceca/api/envoy/api/v2/rds.proto#L59>`_
 
 
 .. code-block:: json
@@ -24,6 +24,7 @@ RouteConfiguration
     "response_headers_to_remove": [],
     "request_headers_to_add": [],
     "request_headers_to_remove": [],
+    "most_specific_header_mutations_wins": "...",
     "validate_clusters": "{...}"
   }
 
@@ -86,6 +87,20 @@ request_headers_to_add
 request_headers_to_remove
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies a list of HTTP headers that should be removed from each request
   routed by the HTTP connection manager.
+  
+  
+.. _envoy_api_field_RouteConfiguration.most_specific_header_mutations_wins:
+
+most_specific_header_mutations_wins
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) By default, headers that should be added/removed are evaluated from most to least specific:
+  
+  * route level
+  * virtual host level
+  * connection manager level
+  
+  To allow setting overrides at the route or virtual host level, this order can be reversed
+  by setting this option to true. Defaults to false.
+  
   
   
 .. _envoy_api_field_RouteConfiguration.validate_clusters:
