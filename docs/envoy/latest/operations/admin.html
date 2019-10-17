@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Administration interface &mdash; envoy 1.12.0-dev-c2a396 documentation</title>
+  <title>Administration interface &mdash; envoy 1.12.0-dev-39c323 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-c2a396
+                1.12.0-dev-39c323
               </div>
             
           
@@ -434,7 +434,7 @@ port that was allocated by the OS.</p>
 <dt id="post--reset_counters">
 <code class="sig-name descname">POST </code><code class="sig-name descname">/reset_counters</code><a class="headerlink" href="#post--reset_counters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset all counters to zero. This is useful along with <a class="reference internal" href="#get--stats" title="GET /stats"><code class="xref http http-get docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/stats</span></code></a> during debugging. Note
-that this does not drop any data sent to statsd. It just effects local output of the
+that this does not drop any data sent to statsd. It just affects local output of the
 <a class="reference internal" href="#get--stats" title="GET /stats"><code class="xref http http-get docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/stats</span></code></a> command.</p>
 </dd></dl>
 
@@ -593,6 +593,56 @@ v0.0.4 format. This can be used to integrate with a Prometheus server.</p>
 <p>You can optionally pass the <cite>usedonly</cite> URL query argument to only get statistics that
 Envoy has updated (counters incremented at least once, gauges changed at least once,
 and histograms added to at least once)</p>
+<dl class="get">
+<dt id="get--stats-recentlookups">
+<code class="sig-name descname">GET </code><code class="sig-name descname">/stats/recentlookups</code><a class="headerlink" href="#get--stats-recentlookups" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>This endpoint helps Envoy developers debug potential contention
+issues in the stats system. Initially, only the count of StatName
+lookups is acumulated, not the specific names that are being looked
+up. In order to see specific recent requests, you must enable the
+feature by POSTing to <cite>/stats/recentlookups/enable</cite>. There may be
+approximately 40-100 nanoseconds of added overhead per lookup.</p>
+<p>When enabled, this endpoint emits a table of stat names that were
+recently accessed as strings by Envoy. Ideally, strings should be
+converted into StatNames, counters, gauges, and histograms by Envoy
+code only during startup or when receiving a new configuration via
+xDS. This is because when stats are looked up as strings they must
+take a global symbol table lock. During startup this is acceptable,
+but in response to user requests on high core-count machines, this
+can cause performance issues due to mutex contention.</p>
+<p>This admin endpoint requires Envoy to be started with option
+<cite>–use-fake-symbol-table 0</cite>.</p>
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/39c323da2952edfa30da61c6ce736ffc1370bcc2/source/docs/stats.md">source/docs/stats.md</a> for more details.</p>
+<p>Note also that actual mutex contention can be tracked via <a class="reference internal" href="#get--contention" title="GET /contention"><code class="xref http http-get docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/contention</span></code></a>.</p>
+<dl class="post">
+<dt id="post--stats-recentlookups-enable">
+<code class="sig-name descname">POST </code><code class="sig-name descname">/stats/recentlookups/enable</code><a class="headerlink" href="#post--stats-recentlookups-enable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Turns on collection of recent lookup of stat-names, thus enabling
+<cite>/stats/recentlookups</cite>.</p>
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/39c323da2952edfa30da61c6ce736ffc1370bcc2/source/docs/stats.md">source/docs/stats.md</a> for more details.</p>
+<dl class="post">
+<dt id="post--stats-recentlookups-disable">
+<code class="sig-name descname">POST </code><code class="sig-name descname">/stats/recentlookups/disable</code><a class="headerlink" href="#post--stats-recentlookups-disable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Turns off collection of recent lookup of stat-names, thus disabling
+<cite>/stats/recentlookups</cite>. It also clears the list of lookups. However,
+the total count, visible as stat <cite>server.stats_recent_lookups</cite>, is
+not cleared, and continues to accumulate.</p>
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/39c323da2952edfa30da61c6ce736ffc1370bcc2/source/docs/stats.md">source/docs/stats.md</a> for more details.</p>
+<dl class="post">
+<dt id="post--stats-recentlookups-clear">
+<code class="sig-name descname">POST </code><code class="sig-name descname">/stats/recentlookups/clear</code><a class="headerlink" href="#post--stats-recentlookups-clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Clears all outstanding lookups and counts. This clears all recent
+lookups data as well as the count, but collection continues if
+it is enabled.</p>
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/39c323da2952edfa30da61c6ce736ffc1370bcc2/source/docs/stats.md">source/docs/stats.md</a> for more details.</p>
 </dd></dl>
 
 <span class="target" id="operations-admin-interface-runtime"></span><dl class="get">
