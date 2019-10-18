@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Redis Cluster Configuration &mdash; envoy 1.12.0-dev-848121 documentation</title>
+  <title>Redis Cluster Configuration &mdash; envoy 1.12.0-dev-ef4bec documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-848121
+                1.12.0-dev-ef4bec
               </div>
             
           
@@ -208,6 +208,10 @@ However, as there is no unified frontend or proxy service in front of Redis Clus
 topology. A random node in the cluster is queried for the topology using the <a class="reference external" href="https://redis.io/commands/cluster-slots">CLUSTER SLOTS
 command</a>. This result is then stored locally, and
 updated at user-configured intervals.</p>
+<p>Additionally, if
+<a class="reference internal" href="../../filter/network/redis_proxy/v2/redis_proxy.proto.html#envoy-api-field-config-filter-network-redis-proxy-v2-redisproxy-connpoolsettings-enable-redirection"><span class="std std-ref">enable_redirection</span></a>
+is true, then moved and ask redirection errors from upstream servers will trigger a topology
+refresh when they exceed a user-configured error threshold.</p>
 <p>Example:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">name</span>
 <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25s</span>
@@ -223,14 +227,18 @@ updated at user-configured intervals.</p>
   <span class="nt">value</span><span class="p">:</span>
     <span class="nt">cluster_refresh_rate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30s</span>
     <span class="nt">cluster_refresh_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5s</span>
+    <span class="nt">redirect_refresh_interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10s</span>
+    <span class="nt">redirect_refresh_threshold</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
 </pre></div>
 </div>
 <div class="section" id="config-cluster-redis-redisclusterconfig">
 <span id="envoy-api-msg-config-cluster-redis-redisclusterconfig"></span><h2>config.cluster.redis.RedisClusterConfig<a class="headerlink" href="#config-cluster-redis-redisclusterconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/848121582dd706fc1608060ebb338207a4ff653b/api/envoy/config/cluster/redis/redis_cluster.proto#L43">[config.cluster.redis.RedisClusterConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/ef4bec0c4e18665ff7f6d5ad9748e4d12b349134/api/envoy/config/cluster/redis/redis_cluster.proto#L51">[config.cluster.redis.RedisClusterConfig proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;cluster_refresh_rate&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;cluster_refresh_timeout&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;cluster_refresh_timeout&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;redirect_refresh_interval&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;redirect_refresh_threshold&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -240,6 +248,17 @@ updated at user-configured intervals.</p>
 </dl>
 <dl class="simple" id="envoy-api-field-config-cluster-redis-redisclusterconfig-cluster-refresh-timeout">
 <dt>cluster_refresh_timeout</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) Timeout for topology refresh request. If not set, this defaults to 3s.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-api-field-config-cluster-redis-redisclusterconfig-redirect-refresh-interval">
+<dt>redirect_refresh_interval</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The minimum interval that must pass after triggering a topology refresh request before a new
+request can possibly be triggered again. Any redirection errors received during one of these
+time intervals are ignored. If not set, this defaults to 5s.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-api-field-config-cluster-redis-redisclusterconfig-redirect-refresh-threshold">
+<dt>redirect_refresh_threshold</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The number of redirection errors that must be received before
+triggering a topology refresh request. If not set, this defaults to 5.</p>
 </dd>
 </dl>
 </div>
