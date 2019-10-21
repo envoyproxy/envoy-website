@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TLS &mdash; envoy 1.12.0-dev-e0e94c documentation</title>
+  <title>TLS &mdash; envoy 1.12.0-dev-8e0b24 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-e0e94c
+                1.12.0-dev-8e0b24
               </div>
             
           
@@ -281,13 +281,16 @@ validation context specifies one or more trusted authority certificates.</p>
           <span class="nt">certificate_chain</span><span class="p">:</span> <span class="p p-Indicator">{</span> <span class="s">&quot;filename&quot;</span><span class="p p-Indicator">:</span> <span class="s">&quot;/cert.crt&quot;</span> <span class="p p-Indicator">}</span>
           <span class="nt">private_key</span><span class="p">:</span> <span class="p p-Indicator">{</span> <span class="s">&quot;filename&quot;</span><span class="p p-Indicator">:</span> <span class="s">&quot;/cert.key&quot;</span> <span class="p p-Indicator">}</span>
         <span class="nt">validation_context</span><span class="p">:</span>
+          <span class="nt">verify_subject_alt_name</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="nv">foo</span> <span class="p p-Indicator">]</span>
           <span class="nt">trusted_ca</span><span class="p">:</span>
             <span class="nt">filename</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/etc/ssl/certs/ca-certificates.crt</span>
 </pre></div>
 </div>
 <p><em>/etc/ssl/certs/ca-certificates.crt</em> is the default path for the system CA bundle on Debian systems.
-This makes Envoy verify the server identity of <em>127.0.0.2:1234</em> in the same way as e.g. cURL does on
-standard Debian installations. Common paths for system CA bundles on Linux and BSD are</p>
+<a class="reference internal" href="../../../api-v2/api/v2/auth/cert.proto.html#envoy-api-field-auth-certificatevalidationcontext-trusted-ca"><span class="std std-ref">trusted_ca</span></a> along with
+<a class="reference internal" href="../../../api-v2/api/v2/auth/cert.proto.html#envoy-api-field-auth-certificatevalidationcontext-verify-subject-alt-name"><span class="std std-ref">verify_subject_alt_name</span></a>
+makes Envoy verify the server identity of <em>127.0.0.2:1234</em> as “foo” in the same way as e.g. cURL
+does on standard Debian installations. Common paths for system CA bundles on Linux and BSD are:</p>
 <ul class="simple">
 <li><p>/etc/ssl/certs/ca-certificates.crt (Debian/Ubuntu/Gentoo etc.)</p></li>
 <li><p>/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem (CentOS/RHEL 7)</p></li>
@@ -298,6 +301,13 @@ standard Debian installations. Common paths for system CA bundles on Linux and B
 </ul>
 <p>See the reference for <a class="reference internal" href="../../../api-v2/api/v2/auth/cert.proto.html#envoy-api-msg-auth-upstreamtlscontext"><span class="std std-ref">UpstreamTlsContexts</span></a> and
 <a class="reference internal" href="../../../api-v2/api/v2/auth/cert.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContexts</span></a> for other TLS options.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>If only <a class="reference internal" href="../../../api-v2/api/v2/auth/cert.proto.html#envoy-api-field-auth-certificatevalidationcontext-trusted-ca"><span class="std std-ref">trusted_ca</span></a> is
+specified, Envoy will verify the certificate chain of the presented certificate, but not its
+subject name, hash, etc. Other validation context configuration is typically required depending
+on the deployment.</p>
+</div>
 </div>
 </div>
 <div class="section" id="certificate-selection">

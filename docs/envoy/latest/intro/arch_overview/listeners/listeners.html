@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Listeners &mdash; envoy 1.12.0-dev-e0e94c documentation</title>
+  <title>Listeners &mdash; envoy 1.12.0-dev-8e0b24 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-e0e94c
+                1.12.0-dev-8e0b24
               </div>
             
           
@@ -199,12 +199,14 @@
 recommend running a single Envoy per machine regardless of the number of configured listeners. This
 allows for easier operation and a single source of statistics. Currently Envoy only supports TCP
 listeners.</p>
-<p>Each listener is independently configured with some number of network level (L3/L4) <a class="reference internal" href="network_filters.html#arch-overview-network-filters"><span class="std std-ref">filters</span></a>. When a new connection is received on a listener, the configured
-connection local filter stack is instantiated and begins processing subsequent events. The generic
-listener architecture is used to perform the vast majority of different proxy tasks that Envoy is
-used for (e.g., <a class="reference internal" href="../other_features/global_rate_limiting.html#arch-overview-rate-limit"><span class="std std-ref">rate limiting</span></a>, <a class="reference internal" href="../security/ssl.html#arch-overview-ssl-auth-filter"><span class="std std-ref">TLS client authentication</span></a>, <a class="reference internal" href="../http/http_connection_management.html#arch-overview-http-conn-man"><span class="std std-ref">HTTP connection management</span></a>,
-MongoDB <a class="reference internal" href="../other_protocols/mongo.html#arch-overview-mongo"><span class="std std-ref">sniffing</span></a>, raw <a class="reference internal" href="tcp_proxy.html#arch-overview-tcp-proxy"><span class="std std-ref">TCP proxy</span></a>,
-etc.).</p>
+<p>Each listener is independently configured with some number <a class="reference internal" href="../../../api-v2/api/v2/listener/listener.proto.html#envoy-api-msg-listener-filterchain"><span class="std std-ref">filter chains</span></a>, where an individual chain is selected based on its
+<a class="reference internal" href="../../../api-v2/api/v2/listener/listener.proto.html#envoy-api-msg-listener-filterchainmatch"><span class="std std-ref">match criteria</span></a>. An individual filter chain is
+composed of one or more network level (L3/L4) <a class="reference internal" href="network_filters.html#arch-overview-network-filters"><span class="std std-ref">filters</span></a>. When
+a new connection is received on a listener, the appropriate filter chain is selected, and the
+configured connection local filter stack is instantiated and begins processing subsequent events.
+The generic listener architecture is used to perform the vast majority of different proxy tasks that
+Envoy is used for (e.g., <a class="reference internal" href="../other_features/global_rate_limiting.html#arch-overview-rate-limit"><span class="std std-ref">rate limiting</span></a>, <a class="reference internal" href="../security/ssl.html#arch-overview-ssl-auth-filter"><span class="std std-ref">TLS client
+authentication</span></a>, <a class="reference internal" href="../http/http_connection_management.html#arch-overview-http-conn-man"><span class="std std-ref">HTTP connection management</span></a>, MongoDB <a class="reference internal" href="../other_protocols/mongo.html#arch-overview-mongo"><span class="std std-ref">sniffing</span></a>, raw <a class="reference internal" href="tcp_proxy.html#arch-overview-tcp-proxy"><span class="std std-ref">TCP proxy</span></a>, etc.).</p>
 <p>Listeners are optionally also configured with some number of <a class="reference internal" href="listener_filters.html#arch-overview-listener-filters"><span class="std std-ref">listener filters</span></a>. These filters are processed before the network level filters,
 and have the opportunity to manipulate the connection metadata, usually to influence how the
 connection is processed by later filters or clusters.</p>
