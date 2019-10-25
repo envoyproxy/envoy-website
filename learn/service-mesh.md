@@ -89,7 +89,7 @@ through Envoy with something like /etc/hosts or iptables.
 
 ## Sidecar Configuration
 
-The easiest way to get started is to have Envoy handle traffic just the name as
+The easiest way to get started is to have Envoy handle traffic the same as
 your internal network does. Practically, this means three things:
 
   - **Expose a single listener for your services to send outbound traffic to.**
