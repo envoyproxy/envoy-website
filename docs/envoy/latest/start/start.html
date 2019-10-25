@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Getting Started &mdash; envoy 1.12.0-dev-63455d documentation</title>
+  <title>Getting Started &mdash; envoy 1.12.0-dev-b4ca60 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-63455d
+                1.12.0-dev-b4ca60
               </div>
             
           
@@ -199,10 +199,10 @@ feature of the API, which is most useful for simple requirements. For more compl
 more detailed explanation of the configuration file and execution steps for
 the same configuration.</p>
 <p>A very minimal Envoy configuration that can be used to validate basic plain HTTP
-proxying is available in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/63455de2ee5ee9b916ae73a805f8177996ded618/configs/google_com_proxy.v2.yaml">configs/google_com_proxy.v2.yaml</a>. This is not
+proxying is available in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/b4ca6034aae03083e65b058beaebc7404d5cf456/configs/google_com_proxy.v2.yaml">configs/google_com_proxy.v2.yaml</a>. This is not
 intended to represent a realistic Envoy deployment:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ docker pull envoyproxy/envoy-dev:63455de2ee5ee9b916ae73a805f8177996ded618
-$ docker run --rm -d -p 10000:10000 envoyproxy/envoy-dev:63455de2ee5ee9b916ae73a805f8177996ded618
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ docker pull envoyproxy/envoy-dev:b4ca6034aae03083e65b058beaebc7404d5cf456
+$ docker run --rm -d -p 10000:10000 envoyproxy/envoy-dev:b4ca6034aae03083e65b058beaebc7404d5cf456
 $ curl -v localhost:10000
 </pre></div>
 </div>
@@ -270,8 +270,11 @@ The <a class="reference internal" href="../configuration/overview/v2_overview.ht
             <span class="nt">socket_address</span><span class="p">:</span>
               <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">www.google.com</span>
               <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">443</span>
-  <span class="nt">tls_context</span><span class="p">:</span>
-    <span class="nt">sni</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">www.google.com</span>
+  <span class="nt">transport_socket</span><span class="p">:</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.tls</span>
+    <span class="nt">typed_config</span><span class="p">:</span>
+      <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.api.v2.auth.UpstreamTlsContext</span>
+      <span class="nt">sni</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">www.google.com</span>
 </pre></div>
 </div>
 </div>
@@ -279,7 +282,7 @@ The <a class="reference internal" href="../configuration/overview/v2_overview.ht
 <h2>Using the Envoy Docker Image<a class="headerlink" href="#using-the-envoy-docker-image" title="Permalink to this headline">¶</a></h2>
 <p>Create a simple Dockerfile to execute Envoy, which assumes that envoy.yaml (described above) is in your local directory.
 You can refer to the <a class="reference internal" href="../operations/cli.html#operations-cli"><span class="std std-ref">Command line options</span></a>.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>FROM envoyproxy/envoy-dev:63455de2ee5ee9b916ae73a805f8177996ded618
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>FROM envoyproxy/envoy-dev:b4ca6034aae03083e65b058beaebc7404d5cf456
 COPY envoy.yaml /etc/envoy/envoy.yaml
 </pre></div>
 </div>

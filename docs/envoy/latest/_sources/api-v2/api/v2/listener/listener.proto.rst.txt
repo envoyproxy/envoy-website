@@ -10,7 +10,7 @@ Listener :ref:`configuration overview <config_listeners>`
 listener.Filter
 ---------------
 
-`[listener.Filter proto] <https://github.com/envoyproxy/envoy/blob/63455de2ee5ee9b916ae73a805f8177996ded618/api/envoy/api/v2/listener/listener.proto#L23>`_
+`[listener.Filter proto] <https://github.com/envoyproxy/envoy/blob/b4ca6034aae03083e65b058beaebc7404d5cf456/api/envoy/api/v2/listener/listener.proto#L23>`_
 
 
 .. code-block:: json
@@ -55,7 +55,7 @@ typed_config
 listener.FilterChainMatch
 -------------------------
 
-`[listener.FilterChainMatch proto] <https://github.com/envoyproxy/envoy/blob/63455de2ee5ee9b916ae73a805f8177996ded618/api/envoy/api/v2/listener/listener.proto#L68>`_
+`[listener.FilterChainMatch proto] <https://github.com/envoyproxy/envoy/blob/b4ca6034aae03083e65b058beaebc7404d5cf456/api/envoy/api/v2/listener/listener.proto#L68>`_
 
 Specifies the match criteria for selecting a specific filter chain for a
 listener.
@@ -196,7 +196,7 @@ application_protocols
 Enum listener.FilterChainMatch.ConnectionSourceType
 ---------------------------------------------------
 
-`[listener.FilterChainMatch.ConnectionSourceType proto] <https://github.com/envoyproxy/envoy/blob/63455de2ee5ee9b916ae73a805f8177996ded618/api/envoy/api/v2/listener/listener.proto#L69>`_
+`[listener.FilterChainMatch.ConnectionSourceType proto] <https://github.com/envoyproxy/envoy/blob/b4ca6034aae03083e65b058beaebc7404d5cf456/api/envoy/api/v2/listener/listener.proto#L69>`_
 
 
 .. _envoy_api_enum_value_listener.FilterChainMatch.ConnectionSourceType.ANY:
@@ -223,7 +223,7 @@ EXTERNAL
 listener.FilterChain
 --------------------
 
-`[listener.FilterChain proto] <https://github.com/envoyproxy/envoy/blob/63455de2ee5ee9b916ae73a805f8177996ded618/api/envoy/api/v2/listener/listener.proto#L164>`_
+`[listener.FilterChain proto] <https://github.com/envoyproxy/envoy/blob/b4ca6034aae03083e65b058beaebc7404d5cf456/api/envoy/api/v2/listener/listener.proto#L164>`_
 
 A filter chain wraps a set of match criteria, an option TLS context, a set of filters, and
 various other parameters.
@@ -248,6 +248,11 @@ filter_chain_match
 
 tls_context
   (:ref:`auth.DownstreamTlsContext <envoy_api_msg_auth.DownstreamTlsContext>`) The TLS context for this filter chain.
+  
+  .. attention::
+  
+    **This field is deprecated**. Use `transport_socket` with name `tls` instead. If both are
+    set, `transport_socket` takes priority.
   
   
 .. _envoy_api_field_listener.FilterChain.filters:
@@ -274,7 +279,11 @@ use_proxy_proto
 .. _envoy_api_field_listener.FilterChain.transport_socket:
 
 transport_socket
-  (:ref:`core.TransportSocket <envoy_api_msg_core.TransportSocket>`) See :ref:`base.TransportSocket<envoy_api_msg_core.TransportSocket>` description.
+  (:ref:`core.TransportSocket <envoy_api_msg_core.TransportSocket>`) Optional custom transport socket implementation to use for downstream connections.
+  To setup TLS, set a transport socket with name `tls` and
+  :ref:`DownstreamTlsContext <envoy_api_msg_auth.DownstreamTlsContext>` in the `typed_config`.
+  If no transport socket configuration is specified, new connections
+  will be set up with plaintext.
   
   
 
@@ -285,7 +294,7 @@ transport_socket
 listener.ListenerFilter
 -----------------------
 
-`[listener.ListenerFilter proto] <https://github.com/envoyproxy/envoy/blob/63455de2ee5ee9b916ae73a805f8177996ded618/api/envoy/api/v2/listener/listener.proto#L197>`_
+`[listener.ListenerFilter proto] <https://github.com/envoyproxy/envoy/blob/b4ca6034aae03083e65b058beaebc7404d5cf456/api/envoy/api/v2/listener/listener.proto#L206>`_
 
 
 .. code-block:: json
