@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Overview &mdash; envoy 1.12.0-dev-86420e documentation</title>
+  <title>HTTP/1.1 Header Casing &mdash; envoy 1.12.0-dev-86420e documentation</title>
   
 
   
@@ -38,8 +38,8 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Route matching" href="route_matching.html" />
-    <link rel="prev" title="HTTP connection manager" href="http_conn_man.html" /> 
+    <link rel="next" title="HTTP header manipulation" href="headers.html" />
+    <link rel="prev" title="Traffic Shifting/Splitting" href="traffic_splitting.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -97,10 +97,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../listeners/listeners.html">Listeners</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../http.html">HTTP</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="http_conn_man.html">HTTP connection manager</a><ul class="current">
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l4"><a class="reference internal" href="route_matching.html">Route matching</a></li>
 <li class="toctree-l4"><a class="reference internal" href="traffic_splitting.html">Traffic Shifting/Splitting</a></li>
-<li class="toctree-l4"><a class="reference internal" href="header_casing.html">HTTP/1.1 Header Casing</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">HTTP/1.1 Header Casing</a></li>
 <li class="toctree-l4"><a class="reference internal" href="headers.html">HTTP header manipulation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="header_sanitizing.html">HTTP header sanitizing</a></li>
 <li class="toctree-l4"><a class="reference internal" href="stats.html">Statistics</a></li>
@@ -176,13 +176,13 @@
         
           <li><a href="http_conn_man.html">HTTP connection manager</a> &raquo;</li>
         
-      <li>Overview</li>
+      <li>HTTP/1.1 Header Casing</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/configuration/http/http_conn_man/overview.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/configuration/http/http_conn_man/header_casing.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -195,13 +195,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="overview">
-<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><p>HTTP connection manager <a class="reference internal" href="../../../intro/arch_overview/http/http_connection_management.html#arch-overview-http-conn-man"><span class="std std-ref">architecture overview</span></a></p></li>
-<li><p>HTTP protocols <a class="reference internal" href="../../../intro/arch_overview/http/http_connection_management.html#arch-overview-http-protocols"><span class="std std-ref">architecture overview</span></a></p></li>
-<li><p><a class="reference internal" href="../../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-msg-config-filter-network-http-connection-manager-v2-httpconnectionmanager"><span class="std std-ref">v2 API reference</span></a></p></li>
-</ul>
+  <div class="section" id="http-1-1-header-casing">
+<h1>HTTP/1.1 Header Casing<a class="headerlink" href="#http-1-1-header-casing" title="Permalink to this headline">¶</a></h1>
+<p>When handling HTTP/1.1, Envoy will normalize the header keys to be all lowercase. While this is
+compliant with the HTTP/1.1 spec, in practice this can result in issues when migrating
+existing systems that might rely on specific header casing.</p>
+<p>To support these use cases, Envoy allows configuring a formatting scheme for the headers, which
+will have Envoy transform the header keys during serialization. To configure this formatting on
+response headers, specify the format in the <a class="reference internal" href="../../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-http-protocol-options"><span class="std std-ref">http_protocol_options</span></a>.
+To configure this for upstream request headers, specify the formatting on the <a class="reference internal" href="../../../api-v2/api/v2/cds.proto.html#envoy-api-field-cluster-http-protocol-options"><span class="std std-ref">Cluster</span></a>.</p>
 </div>
 
 
@@ -212,10 +214,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="route_matching.html" class="btn btn-neutral float-right" title="Route matching" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="headers.html" class="btn btn-neutral float-right" title="HTTP header manipulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="http_conn_man.html" class="btn btn-neutral float-left" title="HTTP connection manager" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="traffic_splitting.html" class="btn btn-neutral float-left" title="Traffic Shifting/Splitting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
