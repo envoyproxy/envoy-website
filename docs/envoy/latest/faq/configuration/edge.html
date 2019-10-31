@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Service to service, front proxy, and double proxy &mdash; envoy 1.12.0-dev-6a5e23 documentation</title>
+  <title>How do I configure Envoy as an edge proxy? &mdash; envoy 1.12.0-dev-6a5e23 documentation</title>
   
 
   
@@ -38,8 +38,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Getting help" href="../getting_help.html" />
-    <link rel="prev" title="Service to service plus front proxy" href="front_proxy.html" /> 
+    <link rel="next" title="How do I configure SNI?" href="sni.html" />
+    <link rel="prev" title="How fast is Envoy?" href="../performance/how_fast_is_envoy.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -89,30 +89,28 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../intro.html">Introduction</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../what_is_envoy.html">What is Envoy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../arch_overview/arch_overview.html">Architecture overview</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="deployment_types.html">Deployment types</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="service_to_service.html">Service to service only</a></li>
-<li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Service to service plus front proxy</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Service to service, front proxy, and double proxy</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#configuration-template">Configuration template</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../getting_help.html">Getting help</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../version_history.html">Version history</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../deprecated.html">Deprecated</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../start/start.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../install/install.html">Building and installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/api.html">API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../overview.html">FAQ</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#build">Build</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#performance">Performance</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../overview.html#configuration">Configuration</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">How do I configure Envoy as an edge proxy?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sni.html">How do I configure SNI?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zone_aware_routing.html">How do I configure zone aware routing?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">How do I configure Zipkin tracing?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flow_control.html">How do I configure flow control?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="timeouts.html">How do I configure timeouts?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#load-balancing">Load balancing</a></li>
+</ul>
+</li>
 </ul>
 
             
@@ -158,17 +156,15 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../intro.html">Introduction</a> &raquo;</li>
+          <li><a href="../overview.html">FAQ</a> &raquo;</li>
         
-          <li><a href="deployment_types.html">Deployment types</a> &raquo;</li>
-        
-      <li>Service to service, front proxy, and double proxy</li>
+      <li>How do I configure Envoy as an edge proxy?</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/intro/deployment_types/double_proxy.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/faq/configuration/edge.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -181,25 +177,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="service-to-service-front-proxy-and-double-proxy">
-<span id="deployment-type-double-proxy"></span><h1>Service to service, front proxy, and double proxy<a class="headerlink" href="#service-to-service-front-proxy-and-double-proxy" title="Permalink to this headline">¶</a></h1>
-<a class="reference internal image-reference" href="../../_images/double_proxy.svg"><img alt="../../_images/double_proxy.svg" src="../../_images/double_proxy.svg" width="70%" /></a>
-<p>The above diagram shows the <a class="reference internal" href="front_proxy.html#deployment-type-front-proxy"><span class="std std-ref">front proxy</span></a> configuration alongside
-another Envoy cluster running as a <em>double proxy</em>. The idea behind the double proxy is that it is
-more efficient to terminate TLS and client connections as close as possible to the user (shorter
-round trip times for the TLS handshake, faster TCP CWND expansion, less chance for packet loss,
-etc.). Connections that terminate in the double proxy are then multiplexed onto long lived HTTP/2
-connections running in the main data center.</p>
-<p>In the above diagram, the front Envoy proxy running in region 1 authenticates itself with the front
-Envoy proxy running in region 2 via TLS mutual authentication and pinned certificates. This allows
-the front Envoy instances running in region 2 to trust elements of the incoming requests that
-ordinarily would not be trustable (such as the x-forwarded-for HTTP header).</p>
-<div class="section" id="configuration-template">
-<h2>Configuration template<a class="headerlink" href="#configuration-template" title="Permalink to this headline">¶</a></h2>
-<p>The source distribution includes an example double proxy configuration that is very similar to
-the version that Lyft runs in production. See <a class="reference internal" href="../../install/ref_configs.html#install-ref-configs"><span class="std std-ref">here</span></a> for more
-information.</p>
-</div>
+  <div class="section" id="how-do-i-configure-envoy-as-an-edge-proxy">
+<span id="faq-edge"></span><h1>How do I configure Envoy as an edge proxy?<a class="headerlink" href="#how-do-i-configure-envoy-as-an-edge-proxy" title="Permalink to this headline">¶</a></h1>
+<p>Refer to <a class="reference internal" href="../../configuration/best_practices/edge.html#best-practices-edge"><span class="std std-ref">configuring Envoy as an edge proxy</span></a>
+for an example of the edge proxy configuration.</p>
 </div>
 
 
@@ -210,10 +191,10 @@ information.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../getting_help.html" class="btn btn-neutral float-right" title="Getting help" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="sni.html" class="btn btn-neutral float-right" title="How do I configure SNI?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="front_proxy.html" class="btn btn-neutral float-left" title="Service to service plus front proxy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../performance/how_fast_is_envoy.html" class="btn btn-neutral float-left" title="How fast is Envoy?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
