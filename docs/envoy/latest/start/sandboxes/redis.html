@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Redis &mdash; envoy 1.12.0-dev-badfb6 documentation</title>
+  <title>Redis Filter &mdash; envoy 1.12.0-dev-c5afab documentation</title>
   
 
   
@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Zipkin Tracing" href="zipkin_tracing.html" />
-    <link rel="prev" title="MySQL" href="mysql.html" /> 
+    <link rel="prev" title="MySQL Filter" href="mysql.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-badfb6
+                1.12.0-dev-c5afab
               </div>
             
           
@@ -97,14 +97,17 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../start.html#sandboxes">Sandboxes</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="cors.html">CORS Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault injection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault Injection Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front Proxy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC Bridge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger Native Tracing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="jaeger_tracing.html">Jaeger Tracing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mysql.html">MySQL</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Redis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mysql.html">MySQL Filter</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Redis Filter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#running-the-sandboxes">Running the Sandboxes</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">Zipkin Tracing</a></li>
 </ul>
 </li>
@@ -164,7 +167,7 @@
         
           <li><a href="../start.html">Getting Started</a> &raquo;</li>
         
-      <li>Redis</li>
+      <li>Redis Filter</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -183,11 +186,51 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="redis">
-<h1>Redis<a class="headerlink" href="#redis" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/badfb6e25456e39429223b42d6b7dc7c7b1b544d/examples/redis">Redis</a></p></li>
-</ul>
+  <div class="section" id="redis-filter">
+<span id="install-sandboxes-redis-filter"></span><h1>Redis Filter<a class="headerlink" href="#redis-filter" title="Permalink to this headline">¶</a></h1>
+<p>In this example, we show how a <a class="reference internal" href="../../configuration/listeners/network_filters/redis_proxy_filter.html#config-network-filters-redis-proxy"><span class="std std-ref">Redis filter</span></a> can be used with the Envoy proxy. The Envoy proxy configuration includes a Redis filter that routes egress requests to redis server.</p>
+<div class="section" id="running-the-sandboxes">
+<h2>Running the Sandboxes<a class="headerlink" href="#running-the-sandboxes" title="Permalink to this headline">¶</a></h2>
+<p>The following documentation runs through the setup of both services.</p>
+<p><strong>Step 1: Install Docker</strong></p>
+<p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code>.</p>
+<p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
+<p><strong>Step 2: Clone the Envoy repo and start all of our containers</strong></p>
+<p>If you have not cloned the Envoy repo, clone it with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:envoyproxy/envoy</span></code>
+or <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/envoyproxy/envoy.git</span></code></p>
+<p>Terminal 1</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
+<span class="go">envoy/examples/redis</span>
+<span class="gp">$</span> docker-compose pull
+<span class="gp">$</span> docker-compose up --build -d
+<span class="gp">$</span> docker-compose ps
+
+<span class="go">    Name                   Command               State                             Ports</span>
+<span class="go">------------------------------------------------------------------------------------------------------------------</span>
+<span class="go">redis_proxy_1   /docker-entrypoint.sh /bin       Up      10000/tcp, 0.0.0.0:1999-&gt;1999/tcp, 0.0.0.0:8001-&gt;8001/tcp</span>
+<span class="go">redis_redis_1   docker-entrypoint.sh redis       Up      0.0.0.0:6379-&gt;6379/tcp</span>
+</pre></div>
+</div>
+<p><strong>Step 3: Issue Redis commands</strong></p>
+<p>Issue Redis commands using your favourite Redis client, such as <code class="docutils literal notranslate"><span class="pre">redis-cli</span></code>, and verify they are routed via Envoy.</p>
+<p>Terminal 1</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> redis-cli -h localhost -p <span class="m">1999</span> <span class="nb">set</span> foo foo
+<span class="go">OK</span>
+<span class="gp">$</span> redis-cli -h localhost -p <span class="m">1999</span> <span class="nb">set</span> bar bar
+<span class="go">OK</span>
+<span class="gp">$</span> redis-cli -h localhost -p <span class="m">1999</span> get foo
+<span class="go">&quot;foo&quot;</span>
+<span class="gp">$</span> redis-cli -h localhost -p <span class="m">1999</span> get bar
+<span class="go">&quot;bar&quot;</span>
+</pre></div>
+</div>
+<p><strong>Step 4: Verify egress stats</strong></p>
+<p>Go to <code class="docutils literal notranslate"><span class="pre">http://localhost:8001/stats?usedonly&amp;filter=redis.egress_redis.command</span></code> and verify the following stats:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>redis.egress_redis.command.get.total: 2
+redis.egress_redis.command.set.total: 2
+</pre></div>
+</div>
+</div>
 </div>
 
 
@@ -201,7 +244,7 @@
         <a href="zipkin_tracing.html" class="btn btn-neutral float-right" title="Zipkin Tracing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="mysql.html" class="btn btn-neutral float-left" title="MySQL" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="mysql.html" class="btn btn-neutral float-left" title="MySQL Filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>MySQL &mdash; envoy 1.12.0-dev-badfb6 documentation</title>
+  <title>MySQL Filter &mdash; envoy 1.12.0-dev-c5afab documentation</title>
   
 
   
@@ -38,8 +38,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Redis" href="redis.html" />
-    <link rel="prev" title="Lua" href="lua.html" /> 
+    <link rel="next" title="Redis Filter" href="redis.html" />
+    <link rel="prev" title="Lua Filter" href="lua.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.12.0-dev-badfb6
+                1.12.0-dev-c5afab
               </div>
             
           
@@ -97,14 +97,17 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../start.html#sandboxes">Sandboxes</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="cors.html">CORS Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault injection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault Injection Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front Proxy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC Bridge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger Native Tracing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="jaeger_tracing.html">Jaeger Tracing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">MySQL</a></li>
-<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua Filter</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">MySQL Filter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#running-the-sandboxes">Running the Sandboxes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">Zipkin Tracing</a></li>
 </ul>
 </li>
@@ -164,7 +167,7 @@
         
           <li><a href="../start.html">Getting Started</a> &raquo;</li>
         
-      <li>MySQL</li>
+      <li>MySQL Filter</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -183,11 +186,105 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="mysql">
-<h1>MySQL<a class="headerlink" href="#mysql" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/badfb6e25456e39429223b42d6b7dc7c7b1b544d/examples/mysql">MySQL</a></p></li>
-</ul>
+  <div class="section" id="mysql-filter">
+<span id="install-sandboxes-mysql"></span><h1>MySQL Filter<a class="headerlink" href="#mysql-filter" title="Permalink to this headline">¶</a></h1>
+<p>In this example, we show how the <a class="reference internal" href="../../configuration/listeners/network_filters/mysql_proxy_filter.html#config-network-filters-mysql-proxy"><span class="std std-ref">MySQL filter</span></a> can be used with the Envoy proxy. The Envoy proxy configuration includes a MySQL filter that parses queries and collects MySQL-specific
+metrics.</p>
+<div class="section" id="running-the-sandboxes">
+<h2>Running the Sandboxes<a class="headerlink" href="#running-the-sandboxes" title="Permalink to this headline">¶</a></h2>
+<p>The following documentation runs through the setup of both services.</p>
+<p><strong>Step 1: Install Docker</strong></p>
+<p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code>.</p>
+<p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
+<p><strong>Step 2: Clone the Envoy repo and start all of our containers</strong></p>
+<p>If you have not cloned the Envoy repo, clone it with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:envoyproxy/envoy</span></code>
+or <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/envoyproxy/envoy.git</span></code></p>
+<p>Terminal 1</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
+<span class="go">envoy/examples/mysql</span>
+<span class="gp">$</span> docker-compose pull
+<span class="gp">$</span> docker-compose up --build -d
+<span class="gp">$</span> docker-compose ps
+
+<span class="go">    Name                   Command               State                             Ports</span>
+<span class="go">------------------------------------------------------------------------------------------------------------------</span>
+<span class="go">mysql_mysql_1   docker-entrypoint.sh mysqld      Up      0.0.0.0:3306-&gt;3306/tcp</span>
+<span class="go">mysql_proxy_1   /docker-entrypoint.sh /bin       Up      10000/tcp, 0.0.0.0:1999-&gt;1999/tcp, 0.0.0.0:8001-&gt;8001/tcp</span>
+</pre></div>
+</div>
+<p><strong>Step 3: Issue commands using mysql</strong></p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">mysql</span></code> to issue some commands and verify they are routed via Envoy. Note
+that the current implementation of the protocol filter was tested with MySQL
+v5.5. It may, however, not work with other versions of MySQL due to differences
+in the protocol implementation.</p>
+<p>Terminal 1</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker run --rm -it --network envoymesh mysql:5.5 mysql -h envoy -P <span class="m">1999</span> -u root
+<span class="go">... snip ...</span>
+
+<span class="go">mysql&gt; CREATE DATABASE test;</span>
+<span class="go">Query OK, 1 row affected (0.00 sec)</span>
+
+<span class="go">mysql&gt; USE test;</span>
+<span class="go">Database changed</span>
+<span class="go">mysql&gt; CREATE TABLE test ( text VARCHAR(255) );</span>
+<span class="go">Query OK, 0 rows affected (0.01 sec)</span>
+
+<span class="go">mysql&gt; SELECT COUNT(*) FROM test;</span>
+<span class="go">+----------+</span>
+<span class="go">| COUNT(*) |</span>
+<span class="go">+----------+</span>
+<span class="go">|        0 |</span>
+<span class="go">+----------+</span>
+<span class="go">1 row in set (0.01 sec)</span>
+
+<span class="go">mysql&gt; INSERT INTO test VALUES (&#39;hello, world!&#39;);</span>
+<span class="go">Query OK, 1 row affected (0.00 sec)</span>
+
+<span class="go">mysql&gt; SELECT COUNT(*) FROM test;</span>
+<span class="go">+----------+</span>
+<span class="go">| COUNT(*) |</span>
+<span class="go">+----------+</span>
+<span class="go">|        1 |</span>
+<span class="go">+----------+</span>
+<span class="go">1 row in set (0.00 sec)</span>
+
+<span class="go">mysql&gt; exit</span>
+<span class="go">Bye</span>
+</pre></div>
+</div>
+<p><strong>Step 4: Check egress stats</strong></p>
+<p>Check egress stats were updated.</p>
+<p>Terminal 1</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:8001/stats?filter<span class="o">=</span>egress_mysql
+<span class="go">mysql.egress_mysql.auth_switch_request: 0</span>
+<span class="go">mysql.egress_mysql.decoder_errors: 0</span>
+<span class="go">mysql.egress_mysql.login_attempts: 1</span>
+<span class="go">mysql.egress_mysql.login_failures: 0</span>
+<span class="go">mysql.egress_mysql.protocol_errors: 0</span>
+<span class="go">mysql.egress_mysql.queries_parse_error: 0</span>
+<span class="go">mysql.egress_mysql.queries_parsed: 7</span>
+<span class="go">mysql.egress_mysql.sessions: 1</span>
+<span class="go">mysql.egress_mysql.upgraded_to_ssl: 0</span>
+</pre></div>
+</div>
+<p><strong>Step 5: Check TCP stats</strong></p>
+<p>Check TCP stats were updated.</p>
+<p>Terminal 1</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:8001/stats?filter<span class="o">=</span>mysql_tcp
+<span class="go">tcp.mysql_tcp.downstream_cx_no_route: 0</span>
+<span class="go">tcp.mysql_tcp.downstream_cx_rx_bytes_buffered: 0</span>
+<span class="go">tcp.mysql_tcp.downstream_cx_rx_bytes_total: 347</span>
+<span class="go">tcp.mysql_tcp.downstream_cx_total: 1</span>
+<span class="go">tcp.mysql_tcp.downstream_cx_tx_bytes_buffered: 0</span>
+<span class="go">tcp.mysql_tcp.downstream_cx_tx_bytes_total: 702</span>
+<span class="go">tcp.mysql_tcp.downstream_flow_control_paused_reading_total: 0</span>
+<span class="go">tcp.mysql_tcp.downstream_flow_control_resumed_reading_total: 0</span>
+<span class="go">tcp.mysql_tcp.idle_timeout: 0</span>
+<span class="go">tcp.mysql_tcp.upstream_flush_active: 0</span>
+<span class="go">tcp.mysql_tcp.upstream_flush_total: 0</span>
+</pre></div>
+</div>
+</div>
 </div>
 
 
@@ -198,10 +295,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="redis.html" class="btn btn-neutral float-right" title="Redis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="redis.html" class="btn btn-neutral float-right" title="Redis Filter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="lua.html" class="btn btn-neutral float-left" title="Lua" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="lua.html" class="btn btn-neutral float-left" title="Lua Filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
