@@ -9,7 +9,7 @@ ConfigDump
 admin.v2alpha.ConfigDump
 ------------------------
 
-`[admin.v2alpha.ConfigDump proto] <https://github.com/envoyproxy/envoy/blob/69cdcc58065b55fdc4a2ed430ed5b7998b02964d/api/envoy/admin/v2alpha/config_dump.proto#L22>`_
+`[admin.v2alpha.ConfigDump proto] <https://github.com/envoyproxy/envoy/blob/0aed05aecd17576b0dd96f3e4126acd1c24a02bc/api/envoy/admin/v2alpha/config_dump.proto#L22>`_
 
 The :ref:`/config_dump <operations_admin_interface_config_dump>` admin endpoint uses this wrapper
 message to maintain and serve arbitrary configuration information from any component in Envoy.
@@ -37,12 +37,48 @@ configs
   
 
 
+.. _envoy_api_msg_admin.v2alpha.UpdateFailureState:
+
+admin.v2alpha.UpdateFailureState
+--------------------------------
+
+`[admin.v2alpha.UpdateFailureState proto] <https://github.com/envoyproxy/envoy/blob/0aed05aecd17576b0dd96f3e4126acd1c24a02bc/api/envoy/admin/v2alpha/config_dump.proto#L36>`_
+
+
+.. code-block:: json
+
+  {
+    "failed_configuration": "{...}",
+    "last_update_attempt": "{...}",
+    "details": "..."
+  }
+
+.. _envoy_api_field_admin.v2alpha.UpdateFailureState.failed_configuration:
+
+failed_configuration
+  (`Any <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any>`_) What the component configuration would have been if the update had succeeded.
+  
+  
+.. _envoy_api_field_admin.v2alpha.UpdateFailureState.last_update_attempt:
+
+last_update_attempt
+  (`Timestamp <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#timestamp>`_) Time of the latest failed update attempt.
+  
+  
+.. _envoy_api_field_admin.v2alpha.UpdateFailureState.details:
+
+details
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Details about the last failed update attempt.
+  
+  
+
+
 .. _envoy_api_msg_admin.v2alpha.BootstrapConfigDump:
 
 admin.v2alpha.BootstrapConfigDump
 ---------------------------------
 
-`[admin.v2alpha.BootstrapConfigDump proto] <https://github.com/envoyproxy/envoy/blob/69cdcc58065b55fdc4a2ed430ed5b7998b02964d/api/envoy/admin/v2alpha/config_dump.proto#L40>`_
+`[admin.v2alpha.BootstrapConfigDump proto] <https://github.com/envoyproxy/envoy/blob/0aed05aecd17576b0dd96f3e4126acd1c24a02bc/api/envoy/admin/v2alpha/config_dump.proto#L51>`_
 
 This message describes the bootstrap configuration that Envoy was started with. This includes
 any CLI overrides that were merged. Bootstrap configuration information can be used to recreate
@@ -74,7 +110,7 @@ last_updated
 admin.v2alpha.ListenersConfigDump
 ---------------------------------
 
-`[admin.v2alpha.ListenersConfigDump proto] <https://github.com/envoyproxy/envoy/blob/69cdcc58065b55fdc4a2ed430ed5b7998b02964d/api/envoy/admin/v2alpha/config_dump.proto#L51>`_
+`[admin.v2alpha.ListenersConfigDump proto] <https://github.com/envoyproxy/envoy/blob/0aed05aecd17576b0dd96f3e4126acd1c24a02bc/api/envoy/admin/v2alpha/config_dump.proto#L61>`_
 
 Envoy's listener manager fills this message with all currently known listeners. Listener
 configuration information can be used to recreate an Envoy configuration by populating all
@@ -85,9 +121,7 @@ listeners as static listeners or by returning them in a LDS response.
   {
     "version_info": "...",
     "static_listeners": [],
-    "dynamic_active_listeners": [],
-    "dynamic_warming_listeners": [],
-    "dynamic_draining_listeners": []
+    "dynamic_listeners": []
   }
 
 .. _envoy_api_field_admin.v2alpha.ListenersConfigDump.version_info:
@@ -104,29 +138,10 @@ static_listeners
   (:ref:`admin.v2alpha.ListenersConfigDump.StaticListener <envoy_api_msg_admin.v2alpha.ListenersConfigDump.StaticListener>`) The statically loaded listener configs.
   
   
-.. _envoy_api_field_admin.v2alpha.ListenersConfigDump.dynamic_active_listeners:
+.. _envoy_api_field_admin.v2alpha.ListenersConfigDump.dynamic_listeners:
 
-dynamic_active_listeners
-  (:ref:`admin.v2alpha.ListenersConfigDump.DynamicListener <envoy_api_msg_admin.v2alpha.ListenersConfigDump.DynamicListener>`) The dynamically loaded active listeners. These are listeners that are available to service
-  data plane traffic.
-  
-  
-.. _envoy_api_field_admin.v2alpha.ListenersConfigDump.dynamic_warming_listeners:
-
-dynamic_warming_listeners
-  (:ref:`admin.v2alpha.ListenersConfigDump.DynamicListener <envoy_api_msg_admin.v2alpha.ListenersConfigDump.DynamicListener>`) The dynamically loaded warming listeners. These are listeners that are currently undergoing
-  warming in preparation to service data plane traffic. Note that if attempting to recreate an
-  Envoy configuration from a configuration dump, the warming listeners should generally be
-  discarded.
-  
-  
-.. _envoy_api_field_admin.v2alpha.ListenersConfigDump.dynamic_draining_listeners:
-
-dynamic_draining_listeners
-  (:ref:`admin.v2alpha.ListenersConfigDump.DynamicListener <envoy_api_msg_admin.v2alpha.ListenersConfigDump.DynamicListener>`) The dynamically loaded draining listeners. These are listeners that are currently undergoing
-  draining in preparation to stop servicing data plane traffic. Note that if attempting to
-  recreate an Envoy configuration from a configuration dump, the draining listeners should
-  generally be discarded.
+dynamic_listeners
+  (:ref:`admin.v2alpha.ListenersConfigDump.DynamicListener <envoy_api_msg_admin.v2alpha.ListenersConfigDump.DynamicListener>`) State for any warming, active, or draining listeners.
   
   
 .. _envoy_api_msg_admin.v2alpha.ListenersConfigDump.StaticListener:
@@ -134,7 +149,7 @@ dynamic_draining_listeners
 admin.v2alpha.ListenersConfigDump.StaticListener
 ------------------------------------------------
 
-`[admin.v2alpha.ListenersConfigDump.StaticListener proto] <https://github.com/envoyproxy/envoy/blob/69cdcc58065b55fdc4a2ed430ed5b7998b02964d/api/envoy/admin/v2alpha/config_dump.proto#L53>`_
+`[admin.v2alpha.ListenersConfigDump.StaticListener proto] <https://github.com/envoyproxy/envoy/blob/0aed05aecd17576b0dd96f3e4126acd1c24a02bc/api/envoy/admin/v2alpha/config_dump.proto#L63>`_
 
 Describes a statically loaded listener.
 
@@ -154,19 +169,18 @@ listener
 .. _envoy_api_field_admin.v2alpha.ListenersConfigDump.StaticListener.last_updated:
 
 last_updated
-  (`Timestamp <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#timestamp>`_) The timestamp when the Listener was last updated.
+  (`Timestamp <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#timestamp>`_) The timestamp when the Listener was last successfully updated.
   
   
 
 
-.. _envoy_api_msg_admin.v2alpha.ListenersConfigDump.DynamicListener:
+.. _envoy_api_msg_admin.v2alpha.ListenersConfigDump.DynamicListenerState:
 
-admin.v2alpha.ListenersConfigDump.DynamicListener
--------------------------------------------------
+admin.v2alpha.ListenersConfigDump.DynamicListenerState
+------------------------------------------------------
 
-`[admin.v2alpha.ListenersConfigDump.DynamicListener proto] <https://github.com/envoyproxy/envoy/blob/69cdcc58065b55fdc4a2ed430ed5b7998b02964d/api/envoy/admin/v2alpha/config_dump.proto#L62>`_
+`[admin.v2alpha.ListenersConfigDump.DynamicListenerState proto] <https://github.com/envoyproxy/envoy/blob/0aed05aecd17576b0dd96f3e4126acd1c24a02bc/api/envoy/admin/v2alpha/config_dump.proto#L71>`_
 
-Describes a dynamically loaded cluster via the LDS API.
 
 .. code-block:: json
 
@@ -176,7 +190,7 @@ Describes a dynamically loaded cluster via the LDS API.
     "last_updated": "{...}"
   }
 
-.. _envoy_api_field_admin.v2alpha.ListenersConfigDump.DynamicListener.version_info:
+.. _envoy_api_field_admin.v2alpha.ListenersConfigDump.DynamicListenerState.version_info:
 
 version_info
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) This is the per-resource version information. This version is currently taken from the
@@ -185,16 +199,74 @@ version_info
   by the API.
   
   
-.. _envoy_api_field_admin.v2alpha.ListenersConfigDump.DynamicListener.listener:
+.. _envoy_api_field_admin.v2alpha.ListenersConfigDump.DynamicListenerState.listener:
 
 listener
   (:ref:`Listener <envoy_api_msg_Listener>`) The listener config.
   
   
-.. _envoy_api_field_admin.v2alpha.ListenersConfigDump.DynamicListener.last_updated:
+.. _envoy_api_field_admin.v2alpha.ListenersConfigDump.DynamicListenerState.last_updated:
 
 last_updated
-  (`Timestamp <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#timestamp>`_) The timestamp when the Listener was last updated.
+  (`Timestamp <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#timestamp>`_) The timestamp when the Listener was last successfully updated.
+  
+  
+
+
+.. _envoy_api_msg_admin.v2alpha.ListenersConfigDump.DynamicListener:
+
+admin.v2alpha.ListenersConfigDump.DynamicListener
+-------------------------------------------------
+
+`[admin.v2alpha.ListenersConfigDump.DynamicListener proto] <https://github.com/envoyproxy/envoy/blob/0aed05aecd17576b0dd96f3e4126acd1c24a02bc/api/envoy/admin/v2alpha/config_dump.proto#L87>`_
+
+Describes a dynamically loaded listener via the LDS API.
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "active_state": "{...}",
+    "warming_state": "{...}",
+    "draining_state": "{...}",
+    "error_state": "{...}"
+  }
+
+.. _envoy_api_field_admin.v2alpha.ListenersConfigDump.DynamicListener.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The name or unique id of this listener, pulled from the DynamicListenerState config.
+  
+  
+.. _envoy_api_field_admin.v2alpha.ListenersConfigDump.DynamicListener.active_state:
+
+active_state
+  (:ref:`admin.v2alpha.ListenersConfigDump.DynamicListenerState <envoy_api_msg_admin.v2alpha.ListenersConfigDump.DynamicListenerState>`) The listener state for any active listener by this name.
+  These are listeners that are available to service data plane traffic.
+  
+  
+.. _envoy_api_field_admin.v2alpha.ListenersConfigDump.DynamicListener.warming_state:
+
+warming_state
+  (:ref:`admin.v2alpha.ListenersConfigDump.DynamicListenerState <envoy_api_msg_admin.v2alpha.ListenersConfigDump.DynamicListenerState>`) The listener state for any warming listener by this name.
+  These are listeners that are currently undergoing warming in preparation to service data
+  plane traffic. Note that if attempting to recreate an Envoy configuration from a
+  configuration dump, the warming listeners should generally be discarded.
+  
+  
+.. _envoy_api_field_admin.v2alpha.ListenersConfigDump.DynamicListener.draining_state:
+
+draining_state
+  (:ref:`admin.v2alpha.ListenersConfigDump.DynamicListenerState <envoy_api_msg_admin.v2alpha.ListenersConfigDump.DynamicListenerState>`) The listener state for any draining listener by this name.
+  These are listeners that are currently undergoing draining in preparation to stop servicing
+  data plane traffic. Note that if attempting to recreate an Envoy configuration from a
+  configuration dump, the draining listeners should generally be discarded.
+  
+  
+.. _envoy_api_field_admin.v2alpha.ListenersConfigDump.DynamicListener.error_state:
+
+error_state
+  (:ref:`admin.v2alpha.UpdateFailureState <envoy_api_msg_admin.v2alpha.UpdateFailureState>`) Set if the last update failed, cleared after the next successful update.
   
   
 
@@ -205,7 +277,7 @@ last_updated
 admin.v2alpha.ClustersConfigDump
 --------------------------------
 
-`[admin.v2alpha.ClustersConfigDump proto] <https://github.com/envoyproxy/envoy/blob/69cdcc58065b55fdc4a2ed430ed5b7998b02964d/api/envoy/admin/v2alpha/config_dump.proto#L104>`_
+`[admin.v2alpha.ClustersConfigDump proto] <https://github.com/envoyproxy/envoy/blob/0aed05aecd17576b0dd96f3e4126acd1c24a02bc/api/envoy/admin/v2alpha/config_dump.proto#L126>`_
 
 Envoy's cluster manager fills this message with all currently known clusters. Cluster
 configuration information can be used to recreate an Envoy configuration by populating all
@@ -255,7 +327,7 @@ dynamic_warming_clusters
 admin.v2alpha.ClustersConfigDump.StaticCluster
 ----------------------------------------------
 
-`[admin.v2alpha.ClustersConfigDump.StaticCluster proto] <https://github.com/envoyproxy/envoy/blob/69cdcc58065b55fdc4a2ed430ed5b7998b02964d/api/envoy/admin/v2alpha/config_dump.proto#L106>`_
+`[admin.v2alpha.ClustersConfigDump.StaticCluster proto] <https://github.com/envoyproxy/envoy/blob/0aed05aecd17576b0dd96f3e4126acd1c24a02bc/api/envoy/admin/v2alpha/config_dump.proto#L128>`_
 
 Describes a statically loaded cluster.
 
@@ -285,7 +357,7 @@ last_updated
 admin.v2alpha.ClustersConfigDump.DynamicCluster
 -----------------------------------------------
 
-`[admin.v2alpha.ClustersConfigDump.DynamicCluster proto] <https://github.com/envoyproxy/envoy/blob/69cdcc58065b55fdc4a2ed430ed5b7998b02964d/api/envoy/admin/v2alpha/config_dump.proto#L115>`_
+`[admin.v2alpha.ClustersConfigDump.DynamicCluster proto] <https://github.com/envoyproxy/envoy/blob/0aed05aecd17576b0dd96f3e4126acd1c24a02bc/api/envoy/admin/v2alpha/config_dump.proto#L137>`_
 
 Describes a dynamically loaded cluster via the CDS API.
 
@@ -326,7 +398,7 @@ last_updated
 admin.v2alpha.RoutesConfigDump
 ------------------------------
 
-`[admin.v2alpha.RoutesConfigDump proto] <https://github.com/envoyproxy/envoy/blob/69cdcc58065b55fdc4a2ed430ed5b7998b02964d/api/envoy/admin/v2alpha/config_dump.proto#L153>`_
+`[admin.v2alpha.RoutesConfigDump proto] <https://github.com/envoyproxy/envoy/blob/0aed05aecd17576b0dd96f3e4126acd1c24a02bc/api/envoy/admin/v2alpha/config_dump.proto#L175>`_
 
 Envoy's RDS implementation fills this message with all currently loaded routes, as described by
 their RouteConfiguration objects. Static routes configured in the bootstrap configuration are
@@ -358,7 +430,7 @@ dynamic_route_configs
 admin.v2alpha.RoutesConfigDump.StaticRouteConfig
 ------------------------------------------------
 
-`[admin.v2alpha.RoutesConfigDump.StaticRouteConfig proto] <https://github.com/envoyproxy/envoy/blob/69cdcc58065b55fdc4a2ed430ed5b7998b02964d/api/envoy/admin/v2alpha/config_dump.proto#L154>`_
+`[admin.v2alpha.RoutesConfigDump.StaticRouteConfig proto] <https://github.com/envoyproxy/envoy/blob/0aed05aecd17576b0dd96f3e4126acd1c24a02bc/api/envoy/admin/v2alpha/config_dump.proto#L176>`_
 
 
 .. code-block:: json
@@ -387,7 +459,7 @@ last_updated
 admin.v2alpha.RoutesConfigDump.DynamicRouteConfig
 -------------------------------------------------
 
-`[admin.v2alpha.RoutesConfigDump.DynamicRouteConfig proto] <https://github.com/envoyproxy/envoy/blob/69cdcc58065b55fdc4a2ed430ed5b7998b02964d/api/envoy/admin/v2alpha/config_dump.proto#L162>`_
+`[admin.v2alpha.RoutesConfigDump.DynamicRouteConfig proto] <https://github.com/envoyproxy/envoy/blob/0aed05aecd17576b0dd96f3e4126acd1c24a02bc/api/envoy/admin/v2alpha/config_dump.proto#L184>`_
 
 
 .. code-block:: json
@@ -426,7 +498,7 @@ last_updated
 admin.v2alpha.ScopedRoutesConfigDump
 ------------------------------------
 
-`[admin.v2alpha.ScopedRoutesConfigDump proto] <https://github.com/envoyproxy/envoy/blob/69cdcc58065b55fdc4a2ed430ed5b7998b02964d/api/envoy/admin/v2alpha/config_dump.proto#L186>`_
+`[admin.v2alpha.ScopedRoutesConfigDump proto] <https://github.com/envoyproxy/envoy/blob/0aed05aecd17576b0dd96f3e4126acd1c24a02bc/api/envoy/admin/v2alpha/config_dump.proto#L208>`_
 
 Envoy's scoped RDS implementation fills this message with all currently loaded route
 configuration scopes (defined via ScopedRouteConfigurationsSet protos). This message lists both
@@ -457,7 +529,7 @@ dynamic_scoped_route_configs
 admin.v2alpha.ScopedRoutesConfigDump.InlineScopedRouteConfigs
 -------------------------------------------------------------
 
-`[admin.v2alpha.ScopedRoutesConfigDump.InlineScopedRouteConfigs proto] <https://github.com/envoyproxy/envoy/blob/69cdcc58065b55fdc4a2ed430ed5b7998b02964d/api/envoy/admin/v2alpha/config_dump.proto#L187>`_
+`[admin.v2alpha.ScopedRoutesConfigDump.InlineScopedRouteConfigs proto] <https://github.com/envoyproxy/envoy/blob/0aed05aecd17576b0dd96f3e4126acd1c24a02bc/api/envoy/admin/v2alpha/config_dump.proto#L209>`_
 
 
 .. code-block:: json
@@ -493,7 +565,7 @@ last_updated
 admin.v2alpha.ScopedRoutesConfigDump.DynamicScopedRouteConfigs
 --------------------------------------------------------------
 
-`[admin.v2alpha.ScopedRoutesConfigDump.DynamicScopedRouteConfigs proto] <https://github.com/envoyproxy/envoy/blob/69cdcc58065b55fdc4a2ed430ed5b7998b02964d/api/envoy/admin/v2alpha/config_dump.proto#L198>`_
+`[admin.v2alpha.ScopedRoutesConfigDump.DynamicScopedRouteConfigs proto] <https://github.com/envoyproxy/envoy/blob/0aed05aecd17576b0dd96f3e4126acd1c24a02bc/api/envoy/admin/v2alpha/config_dump.proto#L220>`_
 
 
 .. code-block:: json
@@ -539,7 +611,7 @@ last_updated
 admin.v2alpha.SecretsConfigDump
 -------------------------------
 
-`[admin.v2alpha.SecretsConfigDump proto] <https://github.com/envoyproxy/envoy/blob/69cdcc58065b55fdc4a2ed430ed5b7998b02964d/api/envoy/admin/v2alpha/config_dump.proto#L222>`_
+`[admin.v2alpha.SecretsConfigDump proto] <https://github.com/envoyproxy/envoy/blob/0aed05aecd17576b0dd96f3e4126acd1c24a02bc/api/envoy/admin/v2alpha/config_dump.proto#L244>`_
 
 Envoys SDS implementation fills this message with all secrets fetched dynamically via SDS.
 
@@ -576,7 +648,7 @@ dynamic_warming_secrets
 admin.v2alpha.SecretsConfigDump.DynamicSecret
 ---------------------------------------------
 
-`[admin.v2alpha.SecretsConfigDump.DynamicSecret proto] <https://github.com/envoyproxy/envoy/blob/69cdcc58065b55fdc4a2ed430ed5b7998b02964d/api/envoy/admin/v2alpha/config_dump.proto#L224>`_
+`[admin.v2alpha.SecretsConfigDump.DynamicSecret proto] <https://github.com/envoyproxy/envoy/blob/0aed05aecd17576b0dd96f3e4126acd1c24a02bc/api/envoy/admin/v2alpha/config_dump.proto#L246>`_
 
 DynamicSecret contains secret information fetched via SDS.
 
@@ -622,7 +694,7 @@ secret
 admin.v2alpha.SecretsConfigDump.StaticSecret
 --------------------------------------------
 
-`[admin.v2alpha.SecretsConfigDump.StaticSecret proto] <https://github.com/envoyproxy/envoy/blob/69cdcc58065b55fdc4a2ed430ed5b7998b02964d/api/envoy/admin/v2alpha/config_dump.proto#L241>`_
+`[admin.v2alpha.SecretsConfigDump.StaticSecret proto] <https://github.com/envoyproxy/envoy/blob/0aed05aecd17576b0dd96f3e4126acd1c24a02bc/api/envoy/admin/v2alpha/config_dump.proto#L263>`_
 
 StaticSecret specifies statically loaded secret in bootstrap.
 
