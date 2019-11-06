@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Listener discovery service (LDS) &mdash; envoy 1.13.0-dev-20ca0a documentation</title>
+  <title>Application logging &mdash; envoy 1.13.0-dev-20ca0a documentation</title>
   
 
   
@@ -38,8 +38,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="HTTP" href="../http/http.html" />
-    <link rel="prev" title="ZooKeeper proxy" href="network_filters/zookeeper_proxy_filter.html" /> 
+    <link rel="next" title="Access logging" href="access_log.html" />
+    <link rel="prev" title="Statistics" href="statistics.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -94,21 +94,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../../install/install.html">Building and installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../configuration.html">Configuration reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../overview/v2_overview.html">Overview</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="listeners.html">Listeners</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stats.html">Statistics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="listener_filters/listener_filters.html">Listener filters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="network_filters/network_filters.html">Network filters</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Listener discovery service (LDS)</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#configuration">Configuration</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#statistics">Statistics</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="../listeners/listeners.html">Listeners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../http/http.html">HTTP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../upstream/upstream.html">Upstream clusters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../observability/observability.html">Observability</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="observability.html">Observability</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="statistics.html">Statistics</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Application logging</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#stackdriver-logging-with-gke">Stackdriver Logging with GKE</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="access_log.html">Access logging</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../security/security.html">Security</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../operations/operations.html">Operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../other_features/other_features.html">Other features</a></li>
@@ -168,15 +165,15 @@
         
           <li><a href="../configuration.html">Configuration reference</a> &raquo;</li>
         
-          <li><a href="listeners.html">Listeners</a> &raquo;</li>
+          <li><a href="observability.html">Observability</a> &raquo;</li>
         
-      <li>Listener discovery service (LDS)</li>
+      <li>Application logging</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/configuration/listeners/lds.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/configuration/observability/application_logging.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -189,42 +186,26 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="listener-discovery-service-lds">
-<span id="config-listeners-lds"></span><h1>Listener discovery service (LDS)<a class="headerlink" href="#listener-discovery-service-lds" title="Permalink to this headline">¶</a></h1>
-<p>The listener discovery service (LDS) is an optional API that Envoy will call to dynamically fetch
-listeners. Envoy will reconcile the API response and add, modify, or remove known listeners
-depending on what is required.</p>
-<p>The semantics of listener updates are as follows:</p>
-<ul>
-<li><p>Every listener must have a unique <a class="reference internal" href="../../api-v2/api/v2/lds.proto.html#envoy-api-field-listener-name"><span class="std std-ref">name</span></a>. If a name is not
-provided, Envoy will create a UUID. Listeners that are to be dynamically updated should have a
-unique name supplied by the management server.</p></li>
-<li><p>When a listener is added, it will be “warmed” before taking traffic. For example, if the listener
-references an <a class="reference internal" href="../http/http_conn_man/rds.html#config-http-conn-man-rds"><span class="std std-ref">RDS</span></a> configuration, that configuration will be
-resolved and fetched before the listener is moved to “active.”</p></li>
-<li><p>Listeners are effectively constant once created. Thus, when a listener is updated, an entirely
-new listener is created (with the same listen socket). This listener goes through the same
-warming process described above for a newly added listener.</p></li>
-<li><p>When a listener is updated or removed, the old listener will be placed into a “draining” state
-much like when the entire server is drained for restart. Connections owned by the listener will
-be gracefully closed (if possible) for some period of time before the listener is removed and any
-remaining connections are closed. The drain time is set via the <a class="reference internal" href="../../operations/cli.html#cmdoption-drain-time-s"><code class="xref std std-option docutils literal notranslate"><span class="pre">--drain-time-s</span></code></a> option.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Any listeners that are statically defined within the Envoy configuration cannot be modified or
-removed via the LDS API.</p>
-</div>
-</li>
-</ul>
-<div class="section" id="configuration">
-<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="application-logging">
+<span id="config-application-logs"></span><h1>Application logging<a class="headerlink" href="#application-logging" title="Permalink to this headline">¶</a></h1>
+<p>Envoy and its filters write application logs for debuggability.
+Envoy can be configured to output application logs in a format that is compatible with common log viewers.
+This section documents how Envoy can be configured to enable integration with each log viewer.</p>
+<div class="section" id="stackdriver-logging-with-gke">
+<h2>Stackdriver Logging with GKE<a class="headerlink" href="#stackdriver-logging-with-gke" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://cloud.google.com/logging/">Stackdriver Logging</a> can read logs from containers running on
+<a class="reference external" href="https://cloud.google.com/kubernetes-engine/">Google Kubernetes Engine</a>. Envoy should be configured
+with the following <a class="reference internal" href="../../operations/cli.html#operations-cli"><span class="std std-ref">command line options</span></a>:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../overview/v2_overview.html#v2-grpc-streaming-endpoints"><span class="std std-ref">v2 LDS API</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--log-format</span> <span class="pre">'%L%m%d</span> <span class="pre">%T.%e</span> <span class="pre">%t</span> <span class="pre">envoy]</span> <span class="pre">[%t][%n]%v'</span></code>: Logs are formatted in <a class="reference external" href="https://github.com/google/glog">glog</a>
+format, allowing Stackdriver to parse the log severity and timestamp.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--log-format-escaped</span></code>: Each string that is logged will be printed in a single line.
+C-style escape sequences (such as <code class="docutils literal notranslate"><span class="pre">\n</span></code>) will be escaped and prevent a single string
+from spanning multiple lines. This ensures each log line is structured with the glog prefix.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--log-path</span></code> flag <strong>does not</strong> need to be set, since Stackdriver can read logs from STDERR.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--log-level</span></code> flag can be set to control the log severity logged to Stackdriver.</p></li>
 </ul>
-</div>
-<div class="section" id="statistics">
-<h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
-<p>LDS has a <a class="reference internal" href="../overview/v2_overview.html#subscription-statistics"><span class="std std-ref">statistics</span></a> tree rooted at <em>listener_manager.lds.</em></p>
+<p><a class="reference external" href="https://cloud.google.com/run/docs/logging#container-logs">Reference documentation</a> for Stackdriver on GKE.</p>
 </div>
 </div>
 
@@ -236,10 +217,10 @@ removed via the LDS API.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../http/http.html" class="btn btn-neutral float-right" title="HTTP" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="access_log.html" class="btn btn-neutral float-right" title="Access logging" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="network_filters/zookeeper_proxy_filter.html" class="btn btn-neutral float-left" title="ZooKeeper proxy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="statistics.html" class="btn btn-neutral float-left" title="Statistics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
