@@ -9,7 +9,7 @@ Dynamic forward proxy
 config.filter.http.dynamic_forward_proxy.v2alpha.FilterConfig
 -------------------------------------------------------------
 
-`[config.filter.http.dynamic_forward_proxy.v2alpha.FilterConfig proto] <https://github.com/envoyproxy/envoy/blob/17af0ba57a45bcd7711d4af4997f3c8365f8d69c/api/envoy/config/filter/http/dynamic_forward_proxy/v2alpha/dynamic_forward_proxy.proto#L16>`_
+`[config.filter.http.dynamic_forward_proxy.v2alpha.FilterConfig proto] <https://github.com/envoyproxy/envoy/blob/274f17cabe7f49f105c82919937ab710b9428261/api/envoy/config/filter/http/dynamic_forward_proxy/v2alpha/dynamic_forward_proxy.proto#L16>`_
 
 Configuration for the dynamic forward proxy HTTP filter. See the :ref:`architecture overview
 <arch_overview_http_dynamic_forward_proxy>` for more information.
@@ -35,14 +35,15 @@ dns_cache_config
 config.filter.http.dynamic_forward_proxy.v2alpha.PerRouteConfig
 ---------------------------------------------------------------
 
-`[config.filter.http.dynamic_forward_proxy.v2alpha.PerRouteConfig proto] <https://github.com/envoyproxy/envoy/blob/17af0ba57a45bcd7711d4af4997f3c8365f8d69c/api/envoy/config/filter/http/dynamic_forward_proxy/v2alpha/dynamic_forward_proxy.proto#L25>`_
+`[config.filter.http.dynamic_forward_proxy.v2alpha.PerRouteConfig proto] <https://github.com/envoyproxy/envoy/blob/274f17cabe7f49f105c82919937ab710b9428261/api/envoy/config/filter/http/dynamic_forward_proxy/v2alpha/dynamic_forward_proxy.proto#L25>`_
 
 Per route Configuration for the dynamic forward proxy HTTP filter.
 
 .. code-block:: json
 
   {
-    "host_rewrite": "..."
+    "host_rewrite": "...",
+    "auto_host_rewrite_header": "..."
   }
 
 .. _envoy_api_field_config.filter.http.dynamic_forward_proxy.v2alpha.PerRouteConfig.host_rewrite:
@@ -52,5 +53,33 @@ host_rewrite
   this value. If not set or empty, the original host header value
   will be used and no rewrite will happen.
   
+  Note: this rewrite affects both DNS lookup and host header forwarding. However, this
+  option shouldn't be used with
+  :ref:`HCM host rewrite <envoy_api_field_route.RouteAction.host_rewrite>` given that the
+  value set here would be used for DNS lookups whereas the value set in the HCM would be used
+  for host header forwarding which is not the desired outcome.
+  
+  
+  
+  
+  Only one of :ref:`host_rewrite <envoy_api_field_config.filter.http.dynamic_forward_proxy.v2alpha.PerRouteConfig.host_rewrite>`, :ref:`auto_host_rewrite_header <envoy_api_field_config.filter.http.dynamic_forward_proxy.v2alpha.PerRouteConfig.auto_host_rewrite_header>` may be set.
+  
+.. _envoy_api_field_config.filter.http.dynamic_forward_proxy.v2alpha.PerRouteConfig.auto_host_rewrite_header:
+
+auto_host_rewrite_header
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Indicates that before DNS lookup, the host header will be swapped with
+  the value of this header. If not set or empty, the original host header
+  value will be used and no rewrite will happen.
+  
+  Note: this rewrite affects both DNS lookup and host header forwarding. However, this
+  option shouldn't be used with
+  :ref:`HCM host rewrite header <envoy_api_field_route.RouteAction.auto_host_rewrite_header>`
+  given that the value set here would be used for DNS lookups whereas the value set in the HCM
+  would be used for host header forwarding which is not the desired outcome.
+  
+  
+  
+  
+  Only one of :ref:`host_rewrite <envoy_api_field_config.filter.http.dynamic_forward_proxy.v2alpha.PerRouteConfig.host_rewrite>`, :ref:`auto_host_rewrite_header <envoy_api_field_config.filter.http.dynamic_forward_proxy.v2alpha.PerRouteConfig.auto_host_rewrite_header>` may be set.
   
 
