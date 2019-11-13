@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Adaptive Concurrency &mdash; envoy 1.13.0-dev-ca320b documentation</title>
+  <title>Adaptive Concurrency &mdash; envoy 1.13.0-dev-74fbb9 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.13.0-dev-ca320b
+                1.13.0-dev-74fbb9
               </div>
             
           
@@ -237,15 +237,15 @@ time (minRTT) for an upstream.</p>
 <p><a class="reference internal" href="../../../api-v2/config/filter/http/adaptive_concurrency/v2alpha/adaptive_concurrency.proto.html#envoy-api-msg-config-filter-http-adaptive-concurrency-v2alpha-gradientcontrollerconfig"><span class="std std-ref">v2 API reference</span></a></p>
 <div class="section" id="calculating-the-minrtt">
 <h4>Calculating the minRTT<a class="headerlink" href="#calculating-the-minrtt" title="Permalink to this headline">¶</a></h4>
-<p>The minRTT is periodically measured by only allowing a single outstanding request at a time to an
+<p>The minRTT is periodically measured by only allowing a very low outstanding request count to an
 upstream cluster and measuring the latency under these ideal conditions. The length of this minRTT
 calculation window is variable depending on the number of requests the filter is configured to
 aggregate to represent the expected latency of an upstream.</p>
 <p>A configurable <em>jitter</em> value is used to randomly delay the start of the minRTT calculation window
 by some amount of time. This is not necessary and can be disabled; however, it is recommended to
 prevent all hosts in a cluster from being in a minRTT calculation window (and having a concurrency
-limit of 1) at the same time. The jitter helps negate the effect of the minRTT calculation on the
-downstream success rate if retries are enabled.</p>
+limit of 3 by default) at the same time. The jitter helps negate the effect of the minRTT
+calculation on the downstream success rate if retries are enabled.</p>
 <p>It is possible that there is a noticeable increase in request 503s during the minRTT measurement
 window because of the potentially significant drop in the concurrency limit. This is expected and it
 is recommended to enable retries for resets/503s.</p>
@@ -358,6 +358,8 @@ clamped to the range [0,100].</p>
 <dt>adaptive_concurrency.gradient_controller.sample_aggregate_percentile</dt><dd><p>Overrides the percentile value used to represent the collection of latency samples in
 calculations. A value of <cite>95</cite> indicates the 95th percentile. The runtime value specified is
 clamped to the range [0,100].</p>
+</dd>
+<dt>adaptive_concurrency.gradient_controller.min_concurrency</dt><dd><p>Overrides the concurrency that is pinned while measuring the minRTT.</p>
 </dd>
 </dl>
 </div>
