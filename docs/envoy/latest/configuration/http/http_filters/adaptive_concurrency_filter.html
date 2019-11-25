@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Adaptive Concurrency &mdash; envoy 1.13.0-dev-00ac6a documentation</title>
+  <title>Adaptive Concurrency &mdash; envoy 1.13.0-dev-be0d18 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.13.0-dev-00ac6a
+                1.13.0-dev-be0d18
               </div>
             
           
@@ -262,9 +262,15 @@ in the cluster will have a higher likelihood of success in this scenario.</p>
 <h4>The Gradient<a class="headerlink" href="#the-gradient" title="Permalink to this headline">¶</a></h4>
 <p>The gradient is calculated using summarized sampled request latencies (sampleRTT):</p>
 <div class="math notranslate nohighlight">
-\[gradient = \frac{minRTT}{sampleRTT}\]</div>
+\[gradient = \frac{minRTT + B}{sampleRTT}\]</div>
 <p>This gradient value has a useful property, such that it decreases as the sampled latencies increase.
-The gradient value is then used to update the concurrency limit via:</p>
+Notice that <em>B</em>, the buffer value added to the minRTT, allows for normal variance in the sampled
+latencies by requiring the sampled latencies the exceed the minRTT by some configurable threshold
+before decreasing the gradient value.</p>
+<p>The buffer will be a percentage of the measured minRTT value whose value is modified via the buffer field in the <a class="reference internal" href="../../../api-v2/config/filter/http/adaptive_concurrency/v2alpha/adaptive_concurrency.proto.html#envoy-api-msg-config-filter-http-adaptive-concurrency-v2alpha-gradientcontrollerconfig-minimumrttcalculationparams"><span class="std std-ref">minRTT calculation parameters</span></a>. The buffer is calculated as follows:</p>
+<div class="math notranslate nohighlight">
+\[B = minRTT * buffer_{pct}\]</div>
+<p>The gradient value is then used to update the concurrency limit via:</p>
 <div class="math notranslate nohighlight">
 \[limit_{new} = gradient * limit_{old} + headroom\]</div>
 </div>
@@ -353,7 +359,7 @@ clamped to the range [0,100].</p>
 </dd>
 <dt>adaptive_concurrency.gradient_controller.max_concurrency_limit</dt><dd><p>Overrides the maximum allowed concurrency limit.</p>
 </dd>
-<dt>adaptive_concurrency.gradient_controller.max_gradient</dt><dd><p>Overrides the maximum allowed gradient value.</p>
+<dt>adaptive_concurrency.gradient_controller.min_rtt_buffer</dt><dd><p>Overrides the padding added to the minRTT when calculating the concurrency limit.</p>
 </dd>
 <dt>adaptive_concurrency.gradient_controller.sample_aggregate_percentile</dt><dd><p>Overrides the percentile value used to represent the collection of latency samples in
 calculations. A value of <cite>95</cite> indicates the 95th percentile. The runtime value specified is
