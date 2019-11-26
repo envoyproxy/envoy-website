@@ -101,7 +101,7 @@ $ kubectl expose deployment --type=LoadBalancer --port=80 envoy-front-proxy
 ```
 
 You can also use an ingress controller like
-[Contour](https://github.com/heptio/contour) if you want to manage everything
+[Contour](https://projectcontour.io) if you want to manage everything
 through Kubernetes. These expose Envoy’s configuration as
 [Kubernetes Ingress Resources](https://kubernetes.io/docs/concepts/services-networking/ingress/).
 This is simple, but less expressive than configuring Envoy through a
