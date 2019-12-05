@@ -10,7 +10,7 @@ Listener :ref:`configuration overview <config_listeners>`
 Listener
 --------
 
-`[Listener proto] <https://github.com/envoyproxy/envoy/blob/ec0f23d7270638481d4e7807fa12e033775160fe/api/envoy/api/v2/lds.proto#L45>`_
+`[Listener proto] <https://github.com/envoyproxy/envoy/blob/8534ac8f810de72961b9e4399e14cf24fade7a60/api/envoy/api/v2/lds.proto#L45>`_
 
 
 .. code-block:: json
@@ -32,7 +32,8 @@ Listener
     "tcp_fast_open_queue_length": "{...}",
     "traffic_direction": "...",
     "udp_listener_config": "{...}",
-    "connection_balance_config": "{...}"
+    "connection_balance_config": "{...}",
+    "reuse_port": "..."
   }
 
 .. _envoy_api_field_Listener.name:
@@ -220,13 +221,29 @@ connection_balance_config
   worker threads.
   
   
+.. _envoy_api_field_Listener.reuse_port:
+
+reuse_port
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) When this flag is set to true, listeners set the *SO_REUSEPORT* socket option and
+  create one socket for each worker thread. This makes inbound connections
+  distribute among worker threads roughly evenly in cases where there are a high number
+  of connections. When this flag is set to false, all worker threads share one socket.
+  For UDP this flag is set to true forcibly.
+  
+  Before Linux v4.19-rc1, new TCP connections may be rejected during hot restart
+  (see `3rd paragraph in 'soreuseport' commit message
+  <https://github.com/torvalds/linux/commit/c617f398edd4db2b8567a28e89>`_).
+  This issue was fixed by `tcp: Avoid TCP syncookie rejected by SO_REUSEPORT socket
+  <https://github.com/torvalds/linux/commit/40a1227ea845a37ab197dd1caffb60b047fa36b1>`_.
+  
+  
 
 .. _envoy_api_msg_Listener.ConnectionBalanceConfig:
 
 Listener.ConnectionBalanceConfig
 --------------------------------
 
-`[Listener.ConnectionBalanceConfig proto] <https://github.com/envoyproxy/envoy/blob/ec0f23d7270638481d4e7807fa12e033775160fe/api/envoy/api/v2/lds.proto#L73>`_
+`[Listener.ConnectionBalanceConfig proto] <https://github.com/envoyproxy/envoy/blob/8534ac8f810de72961b9e4399e14cf24fade7a60/api/envoy/api/v2/lds.proto#L73>`_
 
 Configuration for listener connection balancing.
 
@@ -248,7 +265,7 @@ exact_balance
 Listener.ConnectionBalanceConfig.ExactBalance
 ---------------------------------------------
 
-`[Listener.ConnectionBalanceConfig.ExactBalance proto] <https://github.com/envoyproxy/envoy/blob/ec0f23d7270638481d4e7807fa12e033775160fe/api/envoy/api/v2/lds.proto#L80>`_
+`[Listener.ConnectionBalanceConfig.ExactBalance proto] <https://github.com/envoyproxy/envoy/blob/8534ac8f810de72961b9e4399e14cf24fade7a60/api/envoy/api/v2/lds.proto#L80>`_
 
 A connection balancer implementation that does exact balancing. This means that a lock is
 held during balancing so that connection counts are nearly exactly balanced between worker
@@ -270,7 +287,7 @@ connections that rarely cycle (e.g., service mesh gRPC egress).
 Enum Listener.DrainType
 -----------------------
 
-`[Listener.DrainType proto] <https://github.com/envoyproxy/envoy/blob/ec0f23d7270638481d4e7807fa12e033775160fe/api/envoy/api/v2/lds.proto#L46>`_
+`[Listener.DrainType proto] <https://github.com/envoyproxy/envoy/blob/8534ac8f810de72961b9e4399e14cf24fade7a60/api/envoy/api/v2/lds.proto#L46>`_
 
 
 .. _envoy_api_enum_value_Listener.DrainType.DEFAULT:
