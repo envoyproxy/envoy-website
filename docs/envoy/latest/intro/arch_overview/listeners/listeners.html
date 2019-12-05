@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Listeners &mdash; envoy 1.13.0-dev-281243 documentation</title>
+  <title>Listeners &mdash; envoy 1.13.0-dev-aa3cb5 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.13.0-dev-281243
+                1.13.0-dev-aa3cb5
               </div>
             
           
@@ -98,6 +98,7 @@
 <li class="toctree-l4"><a class="reference internal" href="listener_filters.html">Listener filters</a></li>
 <li class="toctree-l4"><a class="reference internal" href="network_filters.html">Network (L3/L4) filters</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcp_proxy.html">TCP proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="udp_proxy.html">UDP proxy</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../http/http.html">HTTP</a></li>
@@ -197,8 +198,10 @@
 <span id="arch-overview-listeners"></span><h1>Listeners<a class="headerlink" href="#listeners" title="Permalink to this headline">¶</a></h1>
 <p>The Envoy configuration supports any number of listeners within a single process. Generally we
 recommend running a single Envoy per machine regardless of the number of configured listeners. This
-allows for easier operation and a single source of statistics. Currently Envoy only supports TCP
+allows for easier operation and a single source of statistics. Envoy supports both TCP and UDP
 listeners.</p>
+<div class="section" id="tcp">
+<h2>TCP<a class="headerlink" href="#tcp" title="Permalink to this headline">¶</a></h2>
 <p>Each listener is independently configured with some number <a class="reference internal" href="../../../api-v2/api/v2/listener/listener.proto.html#envoy-api-msg-listener-filterchain"><span class="std std-ref">filter chains</span></a>, where an individual chain is selected based on its
 <a class="reference internal" href="../../../api-v2/api/v2/listener/listener.proto.html#envoy-api-msg-listener-filterchainmatch"><span class="std std-ref">match criteria</span></a>. An individual filter chain is
 composed of one or more network level (L3/L4) <a class="reference internal" href="network_filters.html#arch-overview-network-filters"><span class="std std-ref">filters</span></a>. When
@@ -212,6 +215,16 @@ and have the opportunity to manipulate the connection metadata, usually to influ
 connection is processed by later filters or clusters.</p>
 <p>Listeners can also be fetched dynamically via the <a class="reference internal" href="../../../configuration/listeners/lds.html#config-listeners-lds"><span class="std std-ref">listener discovery service (LDS)</span></a>.</p>
 <p>Listener <a class="reference internal" href="../../../configuration/listeners/listeners.html#config-listeners"><span class="std std-ref">configuration</span></a>.</p>
+</div>
+<div class="section" id="udp">
+<h2>UDP<a class="headerlink" href="#udp" title="Permalink to this headline">¶</a></h2>
+<p>Envoy also supports UDP listeners and specifically <a class="reference internal" href="../../../configuration/listeners/udp_filters/udp_filters.html#config-udp-listener-filters"><span class="std std-ref">UDP listener filters</span></a>. UDP listener filters are instantiated once per worker and are global
+to that worker. Each listener filter processes each UDP datagram that is received by the worker
+listening on the port. In practice, UDP listeners are configured with the SO_REUSEPORT kernel option
+which will cause the kernel to consistently hash each UDP 4-tuple to the same worker. This allows a
+UDP listener filter to be “session” oriented if it so desires. A built-in example of this
+functionality is the <a class="reference internal" href="../../../configuration/listeners/udp_filters/udp_proxy.html#config-udp-listener-filters-udp-proxy"><span class="std std-ref">UDP proxy</span></a> listener filter.</p>
+</div>
 </div>
 
 
