@@ -71,7 +71,7 @@ with your Envoy’s listener value.
 Outside of Kubernetes, you have much more flexibility in how you deploy Envoy.
 You can run either the Envoy container or the binary on your hosts. Similar to
 Kubernetes, by running Envoy on localhost, you only have to change your
-services to communicated with Envoy on the port you specify.
+services to communicate with Envoy on the port you specify.
 
 Docker, listening on port 8000:
 
