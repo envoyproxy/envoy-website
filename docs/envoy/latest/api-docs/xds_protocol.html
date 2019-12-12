@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xDS REST and gRPC protocol &mdash; envoy 1.13.0-dev-1a6b97 documentation</title>
+  <title>xDS REST and gRPC protocol &mdash; envoy 1.13.0-dev-fb8926 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.13.0-dev-1a6b97
+                1.13.0-dev-fb8926
               </div>
             
           
@@ -752,6 +752,15 @@ may be resource names or aliases.</p>
 names, which the server thought the client was already not subscribed
 to. The server must cleanly process such a request; it can simply ignore
 these phantom unsubscriptions.</p>
+</div>
+<div class="section" id="id2">
+<h4>Knowing When a Requested Resource Does Not Exist<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<p>When a resource subscribed to by a client does not exist, the server will send a <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-resource"><span class="std std-ref">Resource</span></a> whose <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-resource-name"><span class="std std-ref">name</span></a> field matches the
+name that the client subscribed to and whose <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-resource-resource"><span class="std std-ref">resource</span></a>
+field is unset. This allows the client to quickly determine when a resource does not exist without
+waiting for a timeout, as would be done in the SotW protocol variants. However, clients are still
+encouraged to use a timeout to protect against the case where the management server fails to send
+a response in a timely manner.</p>
 </div>
 </div>
 </div>
