@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP route configuration &mdash; envoy 1.13.0-dev-81f5a5 documentation</title>
+  <title>HTTP route configuration &mdash; envoy 1.13.0-dev-8ea6cc documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.13.0-dev-81f5a5
+                1.13.0-dev-8ea6cc
               </div>
             
           
@@ -196,10 +196,11 @@
 </ul>
 <div class="section" id="routeconfiguration">
 <span id="envoy-api-msg-routeconfiguration"></span><h2>RouteConfiguration<a class="headerlink" href="#routeconfiguration" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/81f5a531bddf92900259760ad1c20b6abf4108a4/api/envoy/api/v2/rds.proto#L57">[RouteConfiguration proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/8ea6ccb5c3e28479da1978b7376ddc9cf0c6eb3a/api/envoy/api/v2/rds.proto#L57">[RouteConfiguration proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;virtual_hosts&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;vhds&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;internal_only_headers&quot;</span><span class="p">:</span> <span class="p">[],</span>
   <span class="nt">&quot;response_headers_to_add&quot;</span><span class="p">:</span> <span class="p">[],</span>
   <span class="nt">&quot;response_headers_to_remove&quot;</span><span class="p">:</span> <span class="p">[],</span>
@@ -218,6 +219,15 @@
 </dl>
 <dl class="simple" id="envoy-api-field-routeconfiguration-virtual-hosts">
 <dt>virtual_hosts</dt><dd><p>(<a class="reference internal" href="route/route.proto.html#envoy-api-msg-route-virtualhost"><span class="std std-ref">route.VirtualHost</span></a>) An array of virtual hosts that make up the route table.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-api-field-routeconfiguration-vhds">
+<dt>vhds</dt><dd><p>(<a class="reference internal" href="#envoy-api-msg-vhds"><span class="std std-ref">Vhds</span></a>) An array of virtual hosts will be dynamically loaded via the VHDS API.
+Both <em>virtual_hosts</em> and <em>vhds</em> fields will be used when present. <em>virtual_hosts</em> can be used
+for a base routing table or for infrequently changing virtual hosts. <em>vhds</em> is used for
+on-demand discovery of virtual hosts. The contents of these two fields will be merged to
+generate a routing table for a given RouteConfiguration, with <em>vhds</em> derived configuration
+taking precedence.</p>
 </dd>
 </dl>
 <dl class="simple" id="envoy-api-field-routeconfiguration-internal-only-headers">
@@ -276,6 +286,19 @@ option. This setting default to false if the route table is loaded dynamically v
 <a class="reference internal" href="../../config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-rds"><span class="std std-ref">rds</span></a>
 option. Users may wish to override the default behavior in certain cases (for example when
 using CDS with a static route table).</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="vhds">
+<span id="envoy-api-msg-vhds"></span><h2>Vhds<a class="headerlink" href="#vhds" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/8ea6ccb5c3e28479da1978b7376ddc9cf0c6eb3a/api/envoy/api/v2/rds.proto#L135">[Vhds proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;config_source&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-api-field-vhds-config-source">
+<dt>config_source</dt><dd><p>(<a class="reference internal" href="core/config_source.proto.html#envoy-api-msg-core-configsource"><span class="std std-ref">core.ConfigSource</span></a>, <em>REQUIRED</em>) Configuration source specifier for VHDS.</p>
 </dd>
 </dl>
 </div>

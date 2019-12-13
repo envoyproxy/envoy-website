@@ -11,7 +11,7 @@ HTTP route configuration
 RouteConfiguration
 ------------------
 
-`[RouteConfiguration proto] <https://github.com/envoyproxy/envoy/blob/81f5a531bddf92900259760ad1c20b6abf4108a4/api/envoy/api/v2/rds.proto#L57>`_
+`[RouteConfiguration proto] <https://github.com/envoyproxy/envoy/blob/8ea6ccb5c3e28479da1978b7376ddc9cf0c6eb3a/api/envoy/api/v2/rds.proto#L57>`_
 
 
 .. code-block:: json
@@ -19,6 +19,7 @@ RouteConfiguration
   {
     "name": "...",
     "virtual_hosts": [],
+    "vhds": "{...}",
     "internal_only_headers": [],
     "response_headers_to_add": [],
     "response_headers_to_remove": [],
@@ -43,7 +44,17 @@ virtual_hosts
   (:ref:`route.VirtualHost <envoy_api_msg_route.VirtualHost>`) An array of virtual hosts that make up the route table.
   
   
+.. _envoy_api_field_RouteConfiguration.vhds:
 
+vhds
+  (:ref:`Vhds <envoy_api_msg_Vhds>`) An array of virtual hosts will be dynamically loaded via the VHDS API.
+  Both *virtual_hosts* and *vhds* fields will be used when present. *virtual_hosts* can be used
+  for a base routing table or for infrequently changing virtual hosts. *vhds* is used for
+  on-demand discovery of virtual hosts. The contents of these two fields will be merged to
+  generate a routing table for a given RouteConfiguration, with *vhds* derived configuration
+  taking precedence.
+  
+  
 .. _envoy_api_field_RouteConfiguration.internal_only_headers:
 
 internal_only_headers
@@ -122,4 +133,25 @@ validate_clusters
   
   
 
+
+.. _envoy_api_msg_Vhds:
+
+Vhds
+----
+
+`[Vhds proto] <https://github.com/envoyproxy/envoy/blob/8ea6ccb5c3e28479da1978b7376ddc9cf0c6eb3a/api/envoy/api/v2/rds.proto#L135>`_
+
+
+.. code-block:: json
+
+  {
+    "config_source": "{...}"
+  }
+
+.. _envoy_api_field_Vhds.config_source:
+
+config_source
+  (:ref:`core.ConfigSource <envoy_api_msg_core.ConfigSource>`, *REQUIRED*) Configuration source specifier for VHDS.
+  
+  
 
