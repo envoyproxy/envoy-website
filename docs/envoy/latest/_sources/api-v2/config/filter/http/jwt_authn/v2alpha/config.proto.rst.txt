@@ -20,7 +20,7 @@ JWT Authentication :ref:`configuration overview <config_http_filters_jwt_authn>`
 config.filter.http.jwt_authn.v2alpha.JwtProvider
 ------------------------------------------------
 
-`[config.filter.http.jwt_authn.v2alpha.JwtProvider proto] <https://github.com/envoyproxy/envoy/blob/70528bc5e407f56186fb860ca02c3e8df687d860/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L51>`_
+`[config.filter.http.jwt_authn.v2alpha.JwtProvider proto] <https://github.com/envoyproxy/envoy/blob/74436a6303825e0a6873222efff591ea1001cf87/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L51>`_
 
 Please see following for JWT authentication flow:
 
@@ -239,7 +239,7 @@ payload_in_metadata
 config.filter.http.jwt_authn.v2alpha.RemoteJwks
 -----------------------------------------------
 
-`[config.filter.http.jwt_authn.v2alpha.RemoteJwks proto] <https://github.com/envoyproxy/envoy/blob/70528bc5e407f56186fb860ca02c3e8df687d860/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L189>`_
+`[config.filter.http.jwt_authn.v2alpha.RemoteJwks proto] <https://github.com/envoyproxy/envoy/blob/74436a6303825e0a6873222efff591ea1001cf87/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L189>`_
 
 This message specifies how to fetch JWKS from remote and how to cache it.
 
@@ -277,7 +277,7 @@ cache_duration
 config.filter.http.jwt_authn.v2alpha.JwtHeader
 ----------------------------------------------
 
-`[config.filter.http.jwt_authn.v2alpha.JwtHeader proto] <https://github.com/envoyproxy/envoy/blob/70528bc5e407f56186fb860ca02c3e8df687d860/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L206>`_
+`[config.filter.http.jwt_authn.v2alpha.JwtHeader proto] <https://github.com/envoyproxy/envoy/blob/74436a6303825e0a6873222efff591ea1001cf87/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L206>`_
 
 This message specifies a header location to extract JWT token.
 
@@ -309,7 +309,7 @@ value_prefix
 config.filter.http.jwt_authn.v2alpha.ProviderWithAudiences
 ----------------------------------------------------------
 
-`[config.filter.http.jwt_authn.v2alpha.ProviderWithAudiences proto] <https://github.com/envoyproxy/envoy/blob/70528bc5e407f56186fb860ca02c3e8df687d860/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L217>`_
+`[config.filter.http.jwt_authn.v2alpha.ProviderWithAudiences proto] <https://github.com/envoyproxy/envoy/blob/74436a6303825e0a6873222efff591ea1001cf87/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L217>`_
 
 Specify a required provider with audiences.
 
@@ -339,7 +339,7 @@ audiences
 config.filter.http.jwt_authn.v2alpha.JwtRequirement
 ---------------------------------------------------
 
-`[config.filter.http.jwt_authn.v2alpha.JwtRequirement proto] <https://github.com/envoyproxy/envoy/blob/70528bc5e407f56186fb860ca02c3e8df687d860/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L266>`_
+`[config.filter.http.jwt_authn.v2alpha.JwtRequirement proto] <https://github.com/envoyproxy/envoy/blob/74436a6303825e0a6873222efff591ea1001cf87/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L282>`_
 
 This message specifies a Jwt requirement. An empty message means JWT verification is not
 required. Here are some config examples:
@@ -381,6 +381,22 @@ required. Here are some config examples:
          - provider_name: provider-B
          - provider_name: provider-C
 
+ # Example 7: A is optional (if token from A is provided, it must be valid, but also allows
+ missing token.)
+ requires_any:
+   requirements:
+   - provider_name: provider-A
+   - allow_missing: {}
+
+ # Example 8: A is optional and B is required.
+ requires_all:
+   requirements:
+   - requires_any:
+       requirements:
+       - provider_name: provider-A
+       - allow_missing: {}
+   - provider_name: provider-B
+
 
 .. code-block:: json
 
@@ -389,7 +405,8 @@ required. Here are some config examples:
     "provider_and_audiences": "{...}",
     "requires_any": "{...}",
     "requires_all": "{...}",
-    "allow_missing_or_failed": "{...}"
+    "allow_missing_or_failed": "{...}",
+    "allow_missing": "{...}"
   }
 
 .. _envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_name:
@@ -399,7 +416,7 @@ provider_name
   
   
   
-  Only one of :ref:`provider_name <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_name>`, :ref:`provider_and_audiences <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_and_audiences>`, :ref:`requires_any <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_any>`, :ref:`requires_all <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_all>`, :ref:`allow_missing_or_failed <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.allow_missing_or_failed>` may be set.
+  Only one of :ref:`provider_name <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_name>`, :ref:`provider_and_audiences <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_and_audiences>`, :ref:`requires_any <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_any>`, :ref:`requires_all <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_all>`, :ref:`allow_missing_or_failed <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.allow_missing_or_failed>`, :ref:`allow_missing <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.allow_missing>` may be set.
   
 .. _envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_and_audiences:
 
@@ -408,7 +425,7 @@ provider_and_audiences
   
   
   
-  Only one of :ref:`provider_name <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_name>`, :ref:`provider_and_audiences <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_and_audiences>`, :ref:`requires_any <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_any>`, :ref:`requires_all <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_all>`, :ref:`allow_missing_or_failed <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.allow_missing_or_failed>` may be set.
+  Only one of :ref:`provider_name <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_name>`, :ref:`provider_and_audiences <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_and_audiences>`, :ref:`requires_any <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_any>`, :ref:`requires_all <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_all>`, :ref:`allow_missing_or_failed <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.allow_missing_or_failed>`, :ref:`allow_missing <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.allow_missing>` may be set.
   
 .. _envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_any:
 
@@ -418,7 +435,7 @@ requires_any
   
   
   
-  Only one of :ref:`provider_name <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_name>`, :ref:`provider_and_audiences <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_and_audiences>`, :ref:`requires_any <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_any>`, :ref:`requires_all <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_all>`, :ref:`allow_missing_or_failed <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.allow_missing_or_failed>` may be set.
+  Only one of :ref:`provider_name <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_name>`, :ref:`provider_and_audiences <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_and_audiences>`, :ref:`requires_any <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_any>`, :ref:`requires_all <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_all>`, :ref:`allow_missing_or_failed <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.allow_missing_or_failed>`, :ref:`allow_missing <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.allow_missing>` may be set.
   
 .. _envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_all:
 
@@ -428,7 +445,7 @@ requires_all
   
   
   
-  Only one of :ref:`provider_name <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_name>`, :ref:`provider_and_audiences <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_and_audiences>`, :ref:`requires_any <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_any>`, :ref:`requires_all <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_all>`, :ref:`allow_missing_or_failed <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.allow_missing_or_failed>` may be set.
+  Only one of :ref:`provider_name <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_name>`, :ref:`provider_and_audiences <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_and_audiences>`, :ref:`requires_any <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_any>`, :ref:`requires_all <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_all>`, :ref:`allow_missing_or_failed <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.allow_missing_or_failed>`, :ref:`allow_missing <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.allow_missing>` may be set.
   
 .. _envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.allow_missing_or_failed:
 
@@ -440,7 +457,19 @@ allow_missing_or_failed
   
   
   
-  Only one of :ref:`provider_name <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_name>`, :ref:`provider_and_audiences <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_and_audiences>`, :ref:`requires_any <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_any>`, :ref:`requires_all <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_all>`, :ref:`allow_missing_or_failed <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.allow_missing_or_failed>` may be set.
+  Only one of :ref:`provider_name <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_name>`, :ref:`provider_and_audiences <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_and_audiences>`, :ref:`requires_any <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_any>`, :ref:`requires_all <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_all>`, :ref:`allow_missing_or_failed <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.allow_missing_or_failed>`, :ref:`allow_missing <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.allow_missing>` may be set.
+  
+.. _envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.allow_missing:
+
+allow_missing
+  (`Empty <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty>`_) The requirement is satisfied if JWT is missing, but failed if JWT is
+  presented but invalid. Similar to allow_missing_or_failed, this is used
+  to only verify JWTs and pass the verified payload to another filter. The
+  different is this mode will reject requests with invalid tokens.
+  
+  
+  
+  Only one of :ref:`provider_name <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_name>`, :ref:`provider_and_audiences <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.provider_and_audiences>`, :ref:`requires_any <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_any>`, :ref:`requires_all <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.requires_all>`, :ref:`allow_missing_or_failed <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.allow_missing_or_failed>`, :ref:`allow_missing <envoy_api_field_config.filter.http.jwt_authn.v2alpha.JwtRequirement.allow_missing>` may be set.
   
 
 
@@ -449,7 +478,7 @@ allow_missing_or_failed
 config.filter.http.jwt_authn.v2alpha.JwtRequirementOrList
 ---------------------------------------------------------
 
-`[config.filter.http.jwt_authn.v2alpha.JwtRequirementOrList proto] <https://github.com/envoyproxy/envoy/blob/70528bc5e407f56186fb860ca02c3e8df687d860/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L292>`_
+`[config.filter.http.jwt_authn.v2alpha.JwtRequirementOrList proto] <https://github.com/envoyproxy/envoy/blob/74436a6303825e0a6873222efff591ea1001cf87/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L314>`_
 
 This message specifies a list of RequiredProvider.
 Their results are OR-ed; if any one of them passes, the result is passed
@@ -473,7 +502,7 @@ requirements
 config.filter.http.jwt_authn.v2alpha.JwtRequirementAndList
 ----------------------------------------------------------
 
-`[config.filter.http.jwt_authn.v2alpha.JwtRequirementAndList proto] <https://github.com/envoyproxy/envoy/blob/70528bc5e407f56186fb860ca02c3e8df687d860/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L299>`_
+`[config.filter.http.jwt_authn.v2alpha.JwtRequirementAndList proto] <https://github.com/envoyproxy/envoy/blob/74436a6303825e0a6873222efff591ea1001cf87/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L321>`_
 
 This message specifies a list of RequiredProvider.
 Their results are AND-ed; all of them must pass, if one of them fails or missing, it fails.
@@ -497,7 +526,7 @@ requirements
 config.filter.http.jwt_authn.v2alpha.RequirementRule
 ----------------------------------------------------
 
-`[config.filter.http.jwt_authn.v2alpha.RequirementRule proto] <https://github.com/envoyproxy/envoy/blob/70528bc5e407f56186fb860ca02c3e8df687d860/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L325>`_
+`[config.filter.http.jwt_authn.v2alpha.RequirementRule proto] <https://github.com/envoyproxy/envoy/blob/74436a6303825e0a6873222efff591ea1001cf87/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L347>`_
 
 This message specifies a Jwt requirement for a specific Route condition.
 Example 1:
@@ -556,7 +585,7 @@ requires
 config.filter.http.jwt_authn.v2alpha.FilterStateRule
 ----------------------------------------------------
 
-`[config.filter.http.jwt_authn.v2alpha.FilterStateRule proto] <https://github.com/envoyproxy/envoy/blob/70528bc5e407f56186fb860ca02c3e8df687d860/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L359>`_
+`[config.filter.http.jwt_authn.v2alpha.FilterStateRule proto] <https://github.com/envoyproxy/envoy/blob/74436a6303825e0a6873222efff591ea1001cf87/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L381>`_
 
 This message specifies Jwt requirements based on stream_info.filterState.
 This FilterState should use `Router::StringAccessor` object to set a string value.
@@ -603,7 +632,7 @@ requires
 config.filter.http.jwt_authn.v2alpha.JwtAuthentication
 ------------------------------------------------------
 
-`[config.filter.http.jwt_authn.v2alpha.JwtAuthentication proto] <https://github.com/envoyproxy/envoy/blob/70528bc5e407f56186fb860ca02c3e8df687d860/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L409>`_
+`[config.filter.http.jwt_authn.v2alpha.JwtAuthentication proto] <https://github.com/envoyproxy/envoy/blob/74436a6303825e0a6873222efff591ea1001cf87/api/envoy/config/filter/http/jwt_authn/v2alpha/config.proto#L431>`_
 
 This is the Envoy HTTP filter config for JWT authentication.
 
