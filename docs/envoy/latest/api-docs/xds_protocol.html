@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xDS REST and gRPC protocol &mdash; envoy 1.13.0-dev-46fc47 documentation</title>
+  <title>xDS REST and gRPC protocol &mdash; envoy 1.13.0-dev-89aec8 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.13.0-dev-46fc47
+                1.13.0-dev-89aec8
               </div>
             
           
@@ -382,28 +382,55 @@ resources are available with a <a class="reference internal" href="../api-v2/api
 </div>
 <p>After processing the <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryresponse"><span class="std std-ref">DiscoveryResponse</span></a>, Envoy will send a new
 request on the stream, specifying the last version successfully applied
-and the nonce provided by the management server. If the update was
-successfully applied, the <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryresponse-version-info"><span class="std std-ref">version_info</span></a> will be <strong>X</strong>, as indicated
+and the nonce provided by the management server. The version provides Envoy and the
+management server a shared notion of the currently applied configuration,
+as well as a mechanism to ACK/NACK configuration updates.</p>
+</div>
+<div class="section" id="ack">
+<h4>ACK<a class="headerlink" href="#ack" title="Permalink to this headline">¶</a></h4>
+<p>If the update was successfully applied, the
+<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryresponse-version-info"><span class="std std-ref">version_info</span></a> will be <strong>X</strong>, as indicated
 in the sequence diagram:</p>
 <div class="figure align-default">
 <img alt="Version update after ACK" src="../_images/simple-ack.svg" /></div>
-<p>In this sequence diagram, and below, the following format is used to abbreviate messages:</p>
+</div>
+<div class="section" id="nack">
+<h4>NACK<a class="headerlink" href="#nack" title="Permalink to this headline">¶</a></h4>
+<p>If Envoy had instead rejected configuration
+update <strong>X</strong>, it would reply with <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-error-detail"><span class="std std-ref">error_detail</span></a>
+populated and its previous version, which in this case was the empty
+initial version. The <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-error-detail"><span class="std std-ref">error_detail</span></a> has
+more details around the exact error message populated in the message field:</p>
+<div class="figure align-default">
+<img alt="No version update after NACK" src="../_images/simple-nack.svg" /></div>
+<p>In the sequence diagrams, the following format is used to abbreviate messages:</p>
 <ul class="simple">
 <li><p><em>DiscoveryRequest</em>: (V=version_info,R=resource_names,N=response_nonce,T=type_url)</p></li>
 <li><p><em>DiscoveryResponse</em>: (V=version_info,R=resources,N=nonce,T=type_url)</p></li>
 </ul>
-<p>The version provides Envoy and the management server a shared notion of
-the currently applied configuration, as well as a mechanism to ACK/NACK
-configuration updates. If Envoy had instead rejected configuration
-update <strong>X</strong>, it would reply with <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-error-detail"><span class="std std-ref">error_detail</span></a>
-populated and its previous version, which in this case was the empty
-initial version. The <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-error-detail"><span class="std std-ref">error_detail</span></a> has more details around the exact
-error message populated in the message field:</p>
-<div class="figure align-default">
-<img alt="No version update after NACK" src="../_images/simple-nack.svg" /></div>
-<p>Later, an API update may succeed at a new version <strong>Y</strong>:</p>
+<p>After a NACK, an API update may succeed at a new version <strong>Y</strong>:</p>
 <div class="figure align-default">
 <img alt="ACK after NACK" src="../_images/later-ack.svg" /></div>
+</div>
+<div class="section" id="ack-and-nack-semantics-summary">
+<h4>ACK and NACK semantics summary<a class="headerlink" href="#ack-and-nack-semantics-summary" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>The xDS client should ACK or NACK every <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryresponse"><span class="std std-ref">DiscoveryResponse</span></a>
+received from the management server.</p></li>
+<li><p>Like all other requests, the nonce from the <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryresponse"><span class="std std-ref">DiscoveryResponse</span></a>
+is sent as <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-response-nonce"><span class="std std-ref">response_nonce</span></a>.
+As described in <a class="reference internal" href="#xds-protocol-resource-update"><span class="std std-ref">resource update</span></a> the nonce is
+used in certain race conditions to disambiguate between ACK and NACK.</p></li>
+<li><p>ACK signifies successful configuration update and contains the
+<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryresponse-version-info"><span class="std std-ref">version_info</span></a> from the
+<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryresponse"><span class="std std-ref">DiscoveryResponse</span></a>.</p></li>
+<li><p>NACK signifies unsuccessful configuration update and contains the previous (existing)
+<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryresponse-version-info"><span class="std std-ref">version_info</span></a>.</p></li>
+<li><p>Only the NACK should populate the <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-error-detail"><span class="std std-ref">error_detail</span></a>.</p></li>
+</ul>
+</div>
+<div class="section" id="versioning-and-node-identifier">
+<h4>Versioning and Node Identifier<a class="headerlink" href="#versioning-and-node-identifier" title="Permalink to this headline">¶</a></h4>
 <p>Each stream has its own notion of versioning, there is no shared
 versioning across resource types. When ADS is not used, even each
 resource of a given resource type may have a distinct version, since the
