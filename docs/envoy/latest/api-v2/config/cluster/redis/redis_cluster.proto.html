@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Redis Cluster Configuration &mdash; envoy 1.13.0-dev-d68e68 documentation</title>
+  <title>Redis Cluster Configuration &mdash; envoy 1.13.0-dev-3d252f documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.13.0-dev-d68e68
+                1.13.0-dev-3d252f
               </div>
             
           
@@ -239,12 +239,14 @@ refresh when they exceed a user-configured error threshold.</p>
 </div>
 <div class="section" id="config-cluster-redis-redisclusterconfig">
 <span id="envoy-api-msg-config-cluster-redis-redisclusterconfig"></span><h2>config.cluster.redis.RedisClusterConfig<a class="headerlink" href="#config-cluster-redis-redisclusterconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/d68e68b63e27571f64ea5518ac8b9d768fa0f4f3/api/envoy/config/cluster/redis/redis_cluster.proto#L52">[config.cluster.redis.RedisClusterConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/3d252f837b17a00406537514614022134d480b0d/api/envoy/config/cluster/redis/redis_cluster.proto#L53">[config.cluster.redis.RedisClusterConfig proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;cluster_refresh_rate&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;cluster_refresh_timeout&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;redirect_refresh_interval&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;redirect_refresh_threshold&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;redirect_refresh_threshold&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;failure_refresh_threshold&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;host_degraded_refresh_threshold&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -258,13 +260,25 @@ refresh when they exceed a user-configured error threshold.</p>
 </dl>
 <dl class="simple" id="envoy-api-field-config-cluster-redis-redisclusterconfig-redirect-refresh-interval">
 <dt>redirect_refresh_interval</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The minimum interval that must pass after triggering a topology refresh request before a new
-request can possibly be triggered again. Any redirection errors received during one of these
+request can possibly be triggered again. Any errors received during one of these
 time intervals are ignored. If not set, this defaults to 5s.</p>
 </dd>
 </dl>
 <dl class="simple" id="envoy-api-field-config-cluster-redis-redisclusterconfig-redirect-refresh-threshold">
 <dt>redirect_refresh_threshold</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The number of redirection errors that must be received before
-triggering a topology refresh request. If not set, this defaults to 5.</p>
+triggering a topology refresh request. If not set, this defaults to 5.
+If this is set to 0, topology refresh after redirect is disabled.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-api-field-config-cluster-redis-redisclusterconfig-failure-refresh-threshold">
+<dt>failure_refresh_threshold</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">uint32</a>) The number of failures that must be received before triggering a topology refresh request.
+If not set, this defaults to 0, which disables the topology refresh due to failure.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-api-field-config-cluster-redis-redisclusterconfig-host-degraded-refresh-threshold">
+<dt>host_degraded_refresh_threshold</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">uint32</a>) The number of hosts became degraded or unhealthy before triggering a topology refresh request.
+If not set, this defaults to 0, which disables the topology refresh due to degraded or
+unhealthy host.</p>
 </dd>
 </dl>
 </div>

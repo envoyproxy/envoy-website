@@ -55,7 +55,7 @@ Example:
 config.cluster.redis.RedisClusterConfig
 ---------------------------------------
 
-`[config.cluster.redis.RedisClusterConfig proto] <https://github.com/envoyproxy/envoy/blob/d68e68b63e27571f64ea5518ac8b9d768fa0f4f3/api/envoy/config/cluster/redis/redis_cluster.proto#L52>`_
+`[config.cluster.redis.RedisClusterConfig proto] <https://github.com/envoyproxy/envoy/blob/3d252f837b17a00406537514614022134d480b0d/api/envoy/config/cluster/redis/redis_cluster.proto#L53>`_
 
 
 .. code-block:: json
@@ -64,7 +64,9 @@ config.cluster.redis.RedisClusterConfig
     "cluster_refresh_rate": "{...}",
     "cluster_refresh_timeout": "{...}",
     "redirect_refresh_interval": "{...}",
-    "redirect_refresh_threshold": "{...}"
+    "redirect_refresh_threshold": "{...}",
+    "failure_refresh_threshold": "...",
+    "host_degraded_refresh_threshold": "..."
   }
 
 .. _envoy_api_field_config.cluster.redis.RedisClusterConfig.cluster_refresh_rate:
@@ -83,7 +85,7 @@ cluster_refresh_timeout
 
 redirect_refresh_interval
   (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The minimum interval that must pass after triggering a topology refresh request before a new
-  request can possibly be triggered again. Any redirection errors received during one of these
+  request can possibly be triggered again. Any errors received during one of these
   time intervals are ignored. If not set, this defaults to 5s.
   
   
@@ -92,6 +94,22 @@ redirect_refresh_interval
 redirect_refresh_threshold
   (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The number of redirection errors that must be received before
   triggering a topology refresh request. If not set, this defaults to 5.
+  If this is set to 0, topology refresh after redirect is disabled.
+  
+  
+.. _envoy_api_field_config.cluster.redis.RedisClusterConfig.failure_refresh_threshold:
+
+failure_refresh_threshold
+  (`uint32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The number of failures that must be received before triggering a topology refresh request.
+  If not set, this defaults to 0, which disables the topology refresh due to failure.
+  
+  
+.. _envoy_api_field_config.cluster.redis.RedisClusterConfig.host_degraded_refresh_threshold:
+
+host_degraded_refresh_threshold
+  (`uint32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The number of hosts became degraded or unhealthy before triggering a topology refresh request.
+  If not set, this defaults to 0, which disables the topology refresh due to degraded or
+  unhealthy host.
   
   
 
