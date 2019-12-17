@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Protocol options &mdash; envoy 1.13.0-dev-750431 documentation</title>
+  <title>Protocol options &mdash; envoy 1.13.0-dev-cbf565 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.13.0-dev-750431
+                1.13.0-dev-cbf565
               </div>
             
           
@@ -198,7 +198,7 @@
 <span id="envoy-api-file-envoy-api-v2-core-protocol-proto"></span><h1>Protocol options<a class="headerlink" href="#protocol-options" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="core-httpprotocoloptions">
 <span id="envoy-api-msg-core-httpprotocoloptions"></span><h2>core.HttpProtocolOptions<a class="headerlink" href="#core-httpprotocoloptions" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/750431ad659c86173b152de53fed1054f10270dd/api/envoy/api/v2/core/protocol.proto#L19">[core.HttpProtocolOptions proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/cbf565fed3ecf04df7be9b90c3f1384396c54012/api/envoy/api/v2/core/protocol.proto#L19">[core.HttpProtocolOptions proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;idle_timeout&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;max_connection_duration&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
@@ -238,12 +238,13 @@ a 431 response for HTTP/1.x and cause a stream reset for HTTP/2.</p>
 </div>
 <div class="section" id="core-http1protocoloptions">
 <span id="envoy-api-msg-core-http1protocoloptions"></span><h2>core.Http1ProtocolOptions<a class="headerlink" href="#core-http1protocoloptions" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/750431ad659c86173b152de53fed1054f10270dd/api/envoy/api/v2/core/protocol.proto#L48">[core.Http1ProtocolOptions proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/cbf565fed3ecf04df7be9b90c3f1384396c54012/api/envoy/api/v2/core/protocol.proto#L49">[core.Http1ProtocolOptions proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;allow_absolute_url&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;accept_http_10&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;default_host_for_http_10&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;header_key_format&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;header_key_format&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;enable_trailers&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -272,10 +273,22 @@ This is a no-op if <em>accept_http_10</em> is not true.</p>
 are lower cased.</p>
 </dd>
 </dl>
+<dl id="envoy-api-field-core-http1protocoloptions-enable-trailers">
+<dt>enable_trailers</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Enables trailers for HTTP/1. By default the HTTP/1 codec drops proxied trailers.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Note that this only happens when Envoy is chunk encoding which occurs when:
+- The request is HTTP/1.1.
+- Is neither a HEAD only request nor a HTTP Upgrade.
+- Not a response to a HEAD request.
+- The content length header is not present.</p>
+</div>
+</dd>
+</dl>
 </div>
 <div class="section" id="core-http1protocoloptions-headerkeyformat">
 <span id="envoy-api-msg-core-http1protocoloptions-headerkeyformat"></span><h2>core.Http1ProtocolOptions.HeaderKeyFormat<a class="headerlink" href="#core-http1protocoloptions-headerkeyformat" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/750431ad659c86173b152de53fed1054f10270dd/api/envoy/api/v2/core/protocol.proto#L49">[core.Http1ProtocolOptions.HeaderKeyFormat proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/cbf565fed3ecf04df7be9b90c3f1384396c54012/api/envoy/api/v2/core/protocol.proto#L50">[core.Http1ProtocolOptions.HeaderKeyFormat proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;proper_case_words&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
@@ -292,14 +305,14 @@ are not covered. For example, the “TE” header will be formatted as “Te”.
 </div>
 <div class="section" id="core-http1protocoloptions-headerkeyformat-propercasewords">
 <span id="envoy-api-msg-core-http1protocoloptions-headerkeyformat-propercasewords"></span><h2>core.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords<a class="headerlink" href="#core-http1protocoloptions-headerkeyformat-propercasewords" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/750431ad659c86173b152de53fed1054f10270dd/api/envoy/api/v2/core/protocol.proto#L50">[core.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/cbf565fed3ecf04df7be9b90c3f1384396c54012/api/envoy/api/v2/core/protocol.proto#L51">[core.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{}</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="core-http2protocoloptions">
 <span id="envoy-api-msg-core-http2protocoloptions"></span><h2>core.Http2ProtocolOptions<a class="headerlink" href="#core-http2protocoloptions" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/750431ad659c86173b152de53fed1054f10270dd/api/envoy/api/v2/core/protocol.proto#L88">[core.Http2ProtocolOptions proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/cbf565fed3ecf04df7be9b90c3f1384396c54012/api/envoy/api/v2/core/protocol.proto#L100">[core.Http2ProtocolOptions proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;hpack_table_size&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;max_concurrent_streams&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
