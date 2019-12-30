@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Global rate limiting &mdash; envoy 1.13.0-dev-9ba106 documentation</title>
+  <title>Global rate limiting &mdash; envoy 1.13.0-dev-9b3915 documentation</title>
   
 
   
@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Scripting" href="scripting.html" />
-    <link rel="prev" title="Other features" href="other_features.html" /> 
+    <link rel="prev" title="Local rate limiting" href="local_rate_limiting.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.13.0-dev-9ba106
+                1.13.0-dev-9b3915
               </div>
             
           
@@ -100,6 +100,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../security/security.html">Security</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../operations/operations.html">Operations &amp; configuration</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="other_features.html">Other features</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="local_rate_limiting.html">Local rate limiting</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Global rate limiting</a></li>
 <li class="toctree-l4"><a class="reference internal" href="scripting.html">Scripting</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ip_transparency.html">IP Transparency</a></li>
@@ -193,7 +194,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="global-rate-limiting">
-<span id="arch-overview-rate-limit"></span><h1>Global rate limiting<a class="headerlink" href="#global-rate-limiting" title="Permalink to this headline">¶</a></h1>
+<span id="arch-overview-global-rate-limit"></span><h1>Global rate limiting<a class="headerlink" href="#global-rate-limiting" title="Permalink to this headline">¶</a></h1>
 <p>Although distributed <a class="reference internal" href="../upstream/circuit_breaking.html#arch-overview-circuit-break"><span class="std std-ref">circuit breaking</span></a> is generally extremely
 effective in controlling throughput in distributed systems, there are times when it is not very
 effective and global rate limiting is desired. The most common case is when a large number of hosts
@@ -218,6 +219,12 @@ requests from the originating cluster to the target cluster can be rate limited.
 <a class="reference internal" href="../../../configuration/http/http_filters/rate_limit_filter.html#config-http-filters-rate-limit"><span class="std std-ref">Configuration reference</span></a></p></li>
 </ul>
 <p>Rate limit service <a class="reference internal" href="../../../configuration/other_features/rate_limit.html#config-rate-limit-service"><span class="std std-ref">configuration</span></a>.</p>
+<p>Note that Envoy also supports <a class="reference internal" href="../../../configuration/listeners/network_filters/local_rate_limit_filter.html#config-network-filters-local-rate-limit"><span class="std std-ref">local rate limiting</span></a>.
+Local rate limiting can be used in conjunction with global rate limiting to reduce load on the
+global rate limit service. For example, a local token bucket rate limit can absorb very large bursts
+in load that might otherwise overwhelm a global rate limit service. Thus, the rate limit is applied
+in two stages. The initial coarse grained limiting is performed by the token bucket limit before
+a fine grained global limit finishes the job.</p>
 </div>
 
 
@@ -231,7 +238,7 @@ requests from the originating cluster to the target cluster can be rate limited.
         <a href="scripting.html" class="btn btn-neutral float-right" title="Scripting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="other_features.html" class="btn btn-neutral float-left" title="Other features" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="local_rate_limiting.html" class="btn btn-neutral float-left" title="Local rate limiting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
