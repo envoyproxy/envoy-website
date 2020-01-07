@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Circuit breakers &mdash; envoy 1.13.0-dev-e7a7e8 documentation</title>
+  <title>Circuit breakers &mdash; envoy 1.13.0-dev-3ed917 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.13.0-dev-e7a7e8
+                1.13.0-dev-3ed917
               </div>
             
           
@@ -196,7 +196,7 @@
 <span id="envoy-api-file-envoy-api-v2-cluster-circuit-breaker-proto"></span><h1>Circuit breakers<a class="headerlink" href="#circuit-breakers" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="cluster-circuitbreakers">
 <span id="envoy-api-msg-cluster-circuitbreakers"></span><h2>cluster.CircuitBreakers<a class="headerlink" href="#cluster-circuitbreakers" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/e7a7e8bbf5aa2cb706f2f7eeb85fd91b33701e30/api/envoy/api/v2/cluster/circuit_breaker.proto#L22">[cluster.CircuitBreakers proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/3ed917f16b826fdfe3ce90d46fc8742bfff71a3e/api/envoy/api/v2/cluster/circuit_breaker.proto#L23">[cluster.CircuitBreakers proto]</a></p>
 <p><a class="reference internal" href="../../../../intro/arch_overview/upstream/circuit_breaking.html#arch-overview-circuit-break"><span class="std std-ref">Circuit breaking</span></a> settings can be
 specified individually for each defined priority.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -215,7 +215,7 @@ are used.</p>
 </div>
 <div class="section" id="cluster-circuitbreakers-thresholds">
 <span id="envoy-api-msg-cluster-circuitbreakers-thresholds"></span><h2>cluster.CircuitBreakers.Thresholds<a class="headerlink" href="#cluster-circuitbreakers-thresholds" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/e7a7e8bbf5aa2cb706f2f7eeb85fd91b33701e30/api/envoy/api/v2/cluster/circuit_breaker.proto#L26">[cluster.CircuitBreakers.Thresholds proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/3ed917f16b826fdfe3ce90d46fc8742bfff71a3e/api/envoy/api/v2/cluster/circuit_breaker.proto#L27">[cluster.CircuitBreakers.Thresholds proto]</a></p>
 <p>A Thresholds defines CircuitBreaker settings for a
 <a class="reference internal" href="../core/base.proto.html#envoy-api-enum-core-routingpriority"><span class="std std-ref">RoutingPriority</span></a>.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -224,6 +224,7 @@ are used.</p>
   <span class="nt">&quot;max_pending_requests&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;max_requests&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;max_retries&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;retry_budget&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;track_remaining&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;max_connection_pools&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
@@ -254,10 +255,25 @@ upstream cluster. If not specified, the default is 1024.</p>
 upstream cluster. If not specified, the default is 3.</p>
 </dd>
 </dl>
-<dl class="simple" id="envoy-api-field-cluster-circuitbreakers-thresholds-track-remaining">
+<dl id="envoy-api-field-cluster-circuitbreakers-thresholds-retry-budget">
+<dt>retry_budget</dt><dd><p>(<a class="reference internal" href="#envoy-api-msg-cluster-circuitbreakers-thresholds-retrybudget"><span class="std std-ref">cluster.CircuitBreakers.Thresholds.RetryBudget</span></a>) Specifies a limit on concurrent retries in relation to the number of active requests. This
+parameter is optional.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If this field is set, the retry budget will override any configured retry circuit
+breaker.</p>
+</div>
+</dd>
+</dl>
+<dl id="envoy-api-field-cluster-circuitbreakers-thresholds-track-remaining">
 <dt>track_remaining</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) If track_remaining is true, then stats will be published that expose
 the number of resources remaining until the circuit breakers open. If
 not specified, the default is false.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If a retry budget is used in lieu of the max_retries circuit breaker,
+the remaining retry resources remaining will not be tracked.</p>
+</div>
 </dd>
 </dl>
 <dl class="simple" id="envoy-api-field-cluster-circuitbreakers-thresholds-max-connection-pools">
@@ -266,6 +282,29 @@ once. If not specified, the default is unlimited. Set this for clusters which cr
 large number of connection pools. See
 <a class="reference internal" href="../../../../intro/arch_overview/upstream/circuit_breaking.html#arch-overview-circuit-break-cluster-maximum-connection-pools"><span class="std std-ref">Circuit Breaking</span></a> for
 more details.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="cluster-circuitbreakers-thresholds-retrybudget">
+<span id="envoy-api-msg-cluster-circuitbreakers-thresholds-retrybudget"></span><h2>cluster.CircuitBreakers.Thresholds.RetryBudget<a class="headerlink" href="#cluster-circuitbreakers-thresholds-retrybudget" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/3ed917f16b826fdfe3ce90d46fc8742bfff71a3e/api/envoy/api/v2/cluster/circuit_breaker.proto#L28">[cluster.CircuitBreakers.Thresholds.RetryBudget proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;budget_percent&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;min_retry_concurrency&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl id="envoy-api-field-cluster-circuitbreakers-thresholds-retrybudget-budget-percent">
+<dt>budget_percent</dt><dd><p>(<a class="reference internal" href="../../../type/percent.proto.html#envoy-api-msg-type-percent"><span class="std std-ref">type.Percent</span></a>) Specifies the limit on concurrent retries as a percentage of the sum of active requests and
+active pending requests. For example, if there are 100 active requests and the
+budget_percent is set to 25, there may be 25 active retries.</p>
+<p>This parameter is optional. Defaults to 20%.</p>
+</dd>
+</dl>
+<dl id="envoy-api-field-cluster-circuitbreakers-thresholds-retrybudget-min-retry-concurrency">
+<dt>min_retry_concurrency</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) Specifies the minimum retry concurrency allowed for the retry budget. The limit on the
+number of active retries may never go below this number.</p>
+<p>This parameter is optional. Defaults to 3.</p>
 </dd>
 </dl>
 </div>

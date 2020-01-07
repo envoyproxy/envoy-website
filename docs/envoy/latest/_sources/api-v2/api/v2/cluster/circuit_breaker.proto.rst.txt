@@ -9,7 +9,7 @@ Circuit breakers
 cluster.CircuitBreakers
 -----------------------
 
-`[cluster.CircuitBreakers proto] <https://github.com/envoyproxy/envoy/blob/e7a7e8bbf5aa2cb706f2f7eeb85fd91b33701e30/api/envoy/api/v2/cluster/circuit_breaker.proto#L22>`_
+`[cluster.CircuitBreakers proto] <https://github.com/envoyproxy/envoy/blob/3ed917f16b826fdfe3ce90d46fc8742bfff71a3e/api/envoy/api/v2/cluster/circuit_breaker.proto#L23>`_
 
 :ref:`Circuit breaking<arch_overview_circuit_break>` settings can be
 specified individually for each defined priority.
@@ -35,7 +35,7 @@ thresholds
 cluster.CircuitBreakers.Thresholds
 ----------------------------------
 
-`[cluster.CircuitBreakers.Thresholds proto] <https://github.com/envoyproxy/envoy/blob/e7a7e8bbf5aa2cb706f2f7eeb85fd91b33701e30/api/envoy/api/v2/cluster/circuit_breaker.proto#L26>`_
+`[cluster.CircuitBreakers.Thresholds proto] <https://github.com/envoyproxy/envoy/blob/3ed917f16b826fdfe3ce90d46fc8742bfff71a3e/api/envoy/api/v2/cluster/circuit_breaker.proto#L27>`_
 
 A Thresholds defines CircuitBreaker settings for a
 :ref:`RoutingPriority<envoy_api_enum_core.RoutingPriority>`.
@@ -48,6 +48,7 @@ A Thresholds defines CircuitBreaker settings for a
     "max_pending_requests": "{...}",
     "max_requests": "{...}",
     "max_retries": "{...}",
+    "retry_budget": "{...}",
     "track_remaining": "...",
     "max_connection_pools": "{...}"
   }
@@ -87,12 +88,29 @@ max_retries
   upstream cluster. If not specified, the default is 3.
   
   
+.. _envoy_api_field_cluster.CircuitBreakers.Thresholds.retry_budget:
+
+retry_budget
+  (:ref:`cluster.CircuitBreakers.Thresholds.RetryBudget <envoy_api_msg_cluster.CircuitBreakers.Thresholds.RetryBudget>`) Specifies a limit on concurrent retries in relation to the number of active requests. This
+  parameter is optional.
+  
+  .. note::
+  
+     If this field is set, the retry budget will override any configured retry circuit
+     breaker.
+  
+  
 .. _envoy_api_field_cluster.CircuitBreakers.Thresholds.track_remaining:
 
 track_remaining
   (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If track_remaining is true, then stats will be published that expose
   the number of resources remaining until the circuit breakers open. If
   not specified, the default is false.
+  
+  .. note::
+  
+     If a retry budget is used in lieu of the max_retries circuit breaker,
+     the remaining retry resources remaining will not be tracked.
   
   
 .. _envoy_api_field_cluster.CircuitBreakers.Thresholds.max_connection_pools:
@@ -105,5 +123,40 @@ max_connection_pools
   more details.
   
   
+.. _envoy_api_msg_cluster.CircuitBreakers.Thresholds.RetryBudget:
+
+cluster.CircuitBreakers.Thresholds.RetryBudget
+----------------------------------------------
+
+`[cluster.CircuitBreakers.Thresholds.RetryBudget proto] <https://github.com/envoyproxy/envoy/blob/3ed917f16b826fdfe3ce90d46fc8742bfff71a3e/api/envoy/api/v2/cluster/circuit_breaker.proto#L28>`_
+
+
+.. code-block:: json
+
+  {
+    "budget_percent": "{...}",
+    "min_retry_concurrency": "{...}"
+  }
+
+.. _envoy_api_field_cluster.CircuitBreakers.Thresholds.RetryBudget.budget_percent:
+
+budget_percent
+  (:ref:`type.Percent <envoy_api_msg_type.Percent>`) Specifies the limit on concurrent retries as a percentage of the sum of active requests and
+  active pending requests. For example, if there are 100 active requests and the
+  budget_percent is set to 25, there may be 25 active retries.
+  
+  This parameter is optional. Defaults to 20%.
+  
+  
+.. _envoy_api_field_cluster.CircuitBreakers.Thresholds.RetryBudget.min_retry_concurrency:
+
+min_retry_concurrency
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Specifies the minimum retry concurrency allowed for the retry budget. The limit on the
+  number of active retries may never go below this number.
+  
+  This parameter is optional. Defaults to 3.
+  
+  
+
 
 
