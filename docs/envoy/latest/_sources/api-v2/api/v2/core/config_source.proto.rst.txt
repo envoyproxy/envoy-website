@@ -9,7 +9,7 @@ Configuration sources
 core.ApiConfigSource
 --------------------
 
-`[core.ApiConfigSource proto] <https://github.com/envoyproxy/envoy/blob/d5772a92cefbf0933913c46f22bd14f688350b39/api/envoy/api/v2/core/config_source.proto#L22>`_
+`[core.ApiConfigSource proto] <https://github.com/envoyproxy/envoy/blob/df0582765f8cc01a2f5901b068783f6bba9366f0/api/envoy/api/v2/core/config_source.proto#L37>`_
 
 API configuration source. This identifies the API type and cluster that Envoy
 will use to fetch an xDS API.
@@ -18,6 +18,7 @@ will use to fetch an xDS API.
 
   {
     "api_type": "...",
+    "transport_api_version": "...",
     "cluster_names": [],
     "grpc_services": [],
     "refresh_delay": "{...}",
@@ -29,7 +30,15 @@ will use to fetch an xDS API.
 .. _envoy_api_field_core.ApiConfigSource.api_type:
 
 api_type
-  (:ref:`core.ApiConfigSource.ApiType <envoy_api_enum_core.ApiConfigSource.ApiType>`) 
+  (:ref:`core.ApiConfigSource.ApiType <envoy_api_enum_core.ApiConfigSource.ApiType>`) API type (gRPC, REST, delta gRPC)
+  
+  
+.. _envoy_api_field_core.ApiConfigSource.transport_api_version:
+
+transport_api_version
+  (:ref:`core.ApiVersion <envoy_api_enum_core.ApiVersion>`) API version for xDS transport protocol. This describes the xDS gRPC/REST
+  endpoint and version of [Delta]DiscoveryRequest/Response used on the wire.
+  
   
 .. _envoy_api_field_core.ApiConfigSource.cluster_names:
 
@@ -82,7 +91,7 @@ set_node_on_first_message_only
 Enum core.ApiConfigSource.ApiType
 ---------------------------------
 
-`[core.ApiConfigSource.ApiType proto] <https://github.com/envoyproxy/envoy/blob/d5772a92cefbf0933913c46f22bd14f688350b39/api/envoy/api/v2/core/config_source.proto#L24>`_
+`[core.ApiConfigSource.ApiType proto] <https://github.com/envoyproxy/envoy/blob/df0582765f8cc01a2f5901b068783f6bba9366f0/api/envoy/api/v2/core/config_source.proto#L39>`_
 
 APIs may be fetched via either REST or gRPC.
 
@@ -124,7 +133,7 @@ DELTA_GRPC
 core.AggregatedConfigSource
 ---------------------------
 
-`[core.AggregatedConfigSource proto] <https://github.com/envoyproxy/envoy/blob/d5772a92cefbf0933913c46f22bd14f688350b39/api/envoy/api/v2/core/config_source.proto#L80>`_
+`[core.AggregatedConfigSource proto] <https://github.com/envoyproxy/envoy/blob/df0582765f8cc01a2f5901b068783f6bba9366f0/api/envoy/api/v2/core/config_source.proto#L100>`_
 
 Aggregated Discovery Service (ADS) options. This is currently empty, but when
 set in :ref:`ConfigSource <envoy_api_msg_core.ConfigSource>` can be used to
@@ -143,7 +152,7 @@ specify that ADS is to be used.
 core.RateLimitSettings
 ----------------------
 
-`[core.RateLimitSettings proto] <https://github.com/envoyproxy/envoy/blob/d5772a92cefbf0933913c46f22bd14f688350b39/api/envoy/api/v2/core/config_source.proto#L91>`_
+`[core.RateLimitSettings proto] <https://github.com/envoyproxy/envoy/blob/df0582765f8cc01a2f5901b068783f6bba9366f0/api/envoy/api/v2/core/config_source.proto#L111>`_
 
 Rate Limit settings to be applied for discovery requests made by Envoy.
 
@@ -175,7 +184,7 @@ fill_rate
 core.ConfigSource
 -----------------
 
-`[core.ConfigSource proto] <https://github.com/envoyproxy/envoy/blob/d5772a92cefbf0933913c46f22bd14f688350b39/api/envoy/api/v2/core/config_source.proto#L108>`_
+`[core.ConfigSource proto] <https://github.com/envoyproxy/envoy/blob/df0582765f8cc01a2f5901b068783f6bba9366f0/api/envoy/api/v2/core/config_source.proto#L128>`_
 
 Configuration for :ref:`listeners <config_listeners>`, :ref:`clusters
 <config_cluster_manager>`, :ref:`routes
@@ -191,7 +200,7 @@ inotify for updates.
     "api_config_source": "{...}",
     "ads": "{...}",
     "initial_fetch_timeout": "{...}",
-    "xds_api_version": "..."
+    "resource_api_version": "..."
   }
 
 .. _envoy_api_field_core.ConfigSource.path:
@@ -245,37 +254,42 @@ initial_fetch_timeout
   timeout applies). The default is 15s.
   
   
-.. _envoy_api_field_core.ConfigSource.xds_api_version:
+.. _envoy_api_field_core.ConfigSource.resource_api_version:
 
-xds_api_version
-  (:ref:`core.ConfigSource.XdsApiVersion <envoy_api_enum_core.ConfigSource.XdsApiVersion>`) API version for xDS endpoint
+resource_api_version
+  (:ref:`core.ApiVersion <envoy_api_enum_core.ApiVersion>`) API version for xDS resources. This implies the type URLs that the client
+  will request for resources and the resource type that the client will in
+  turn expect to be delivered.
   
   
 
-.. _envoy_api_enum_core.ConfigSource.XdsApiVersion:
+.. _envoy_api_enum_core.ApiVersion:
 
-Enum core.ConfigSource.XdsApiVersion
-------------------------------------
+Enum core.ApiVersion
+--------------------
 
-`[core.ConfigSource.XdsApiVersion proto] <https://github.com/envoyproxy/envoy/blob/d5772a92cefbf0933913c46f22bd14f688350b39/api/envoy/api/v2/core/config_source.proto#L109>`_
+`[core.ApiVersion proto] <https://github.com/envoyproxy/envoy/blob/df0582765f8cc01a2f5901b068783f6bba9366f0/api/envoy/api/v2/core/config_source.proto#L21>`_
 
+xDS API version. This is used to describe both resource and transport
+protocol versions (in distinct configuration fields).
 
-.. _envoy_api_enum_value_core.ConfigSource.XdsApiVersion.AUTO:
+.. _envoy_api_enum_value_core.ApiVersion.AUTO:
 
 AUTO
-  *(DEFAULT)* ⁣use for describing explicitly that xDS API version is set automatically. In default, xDS API
-  version is V2
+  *(DEFAULT)* ⁣When not specified, we assume v2, to ease migration to Envoy's stable API
+  versioning. If a client does not support v2 (e.g. due to deprecation), this
+  is an invalid value.
   
   
-.. _envoy_api_enum_value_core.ConfigSource.XdsApiVersion.V2:
+.. _envoy_api_enum_value_core.ApiVersion.V2:
 
 V2
-  ⁣use xDS v2 API
+  ⁣Use xDS v2 API.
   
   
-.. _envoy_api_enum_value_core.ConfigSource.XdsApiVersion.V3ALPHA:
+.. _envoy_api_enum_value_core.ApiVersion.V3ALPHA:
 
 V3ALPHA
-  ⁣use xDS v3alpha API
+  ⁣Use xDS v3alpha API.
   
   
