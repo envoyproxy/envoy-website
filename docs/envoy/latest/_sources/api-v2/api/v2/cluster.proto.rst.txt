@@ -9,7 +9,7 @@ Cluster configuration
 Cluster
 -------
 
-`[Cluster proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L33>`_
+`[Cluster proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L33>`_
 
 Configuration for a single upstream cluster.
 
@@ -57,7 +57,8 @@ Configuration for a single upstream cluster.
     "upstream_connection_options": "{...}",
     "close_connections_on_host_health_failure": "...",
     "drain_connections_on_host_removal": "...",
-    "filters": []
+    "filters": [],
+    "track_timeout_budgets": "..."
   }
 
 .. _envoy_api_field_Cluster.transport_socket_matches:
@@ -519,12 +520,22 @@ filters
   
 
 
+.. _envoy_api_field_Cluster.track_timeout_budgets:
+
+track_timeout_budgets
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If track_timeout_budgets is true, the :ref:`timeout budget histograms
+  <config_cluster_manager_cluster_stats_timeout_budgets>` will be published for each
+  request. These show what percentage of a request's per try and global timeout was used. A value
+  of 0 would indicate that none of the timeout was used or that the timeout was infinite. A value
+  of 100 would indicate that the request took the entirety of the timeout given to it.
+  
+  
 .. _envoy_api_msg_Cluster.TransportSocketMatch:
 
 Cluster.TransportSocketMatch
 ----------------------------
 
-`[Cluster.TransportSocketMatch proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L139>`_
+`[Cluster.TransportSocketMatch proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L139>`_
 
 TransportSocketMatch specifies what transport socket config will be used
 when the match conditions are satisfied.
@@ -566,7 +577,7 @@ transport_socket
 Cluster.CustomClusterType
 -------------------------
 
-`[Cluster.CustomClusterType proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L155>`_
+`[Cluster.CustomClusterType proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L155>`_
 
 Extended cluster type.
 
@@ -597,7 +608,7 @@ typed_config
 Cluster.EdsClusterConfig
 ------------------------
 
-`[Cluster.EdsClusterConfig proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L165>`_
+`[Cluster.EdsClusterConfig proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L165>`_
 
 Only valid when discovery type is EDS.
 
@@ -629,7 +640,7 @@ service_name
 Cluster.LbSubsetConfig
 ----------------------
 
-`[Cluster.LbSubsetConfig proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L178>`_
+`[Cluster.LbSubsetConfig proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L178>`_
 
 Optionally divide the endpoints in this cluster into subsets defined by
 endpoint metadata and selected by route and weighted cluster metadata.
@@ -734,7 +745,7 @@ list_as_any
 Cluster.LbSubsetConfig.LbSubsetSelector
 ---------------------------------------
 
-`[Cluster.LbSubsetConfig.LbSubsetSelector proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L191>`_
+`[Cluster.LbSubsetConfig.LbSubsetSelector proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L191>`_
 
 Specifications for subsets.
 
@@ -779,7 +790,7 @@ fallback_keys_subset
 Enum Cluster.LbSubsetConfig.LbSubsetSelector.LbSubsetSelectorFallbackPolicy
 ---------------------------------------------------------------------------
 
-`[Cluster.LbSubsetConfig.LbSubsetSelector.LbSubsetSelectorFallbackPolicy proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L193>`_
+`[Cluster.LbSubsetConfig.LbSubsetSelector.LbSubsetSelectorFallbackPolicy proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L193>`_
 
 Allows to override top level fallback policy per selector.
 
@@ -825,7 +836,7 @@ KEYS_SUBSET
 Enum Cluster.LbSubsetConfig.LbSubsetFallbackPolicy
 --------------------------------------------------
 
-`[Cluster.LbSubsetConfig.LbSubsetFallbackPolicy proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L184>`_
+`[Cluster.LbSubsetConfig.LbSubsetFallbackPolicy proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L184>`_
 
 If NO_FALLBACK is selected, a result
 equivalent to no healthy hosts is reported. If ANY_ENDPOINT is selected,
@@ -854,7 +865,7 @@ DEFAULT_SUBSET
 Cluster.LeastRequestLbConfig
 ----------------------------
 
-`[Cluster.LeastRequestLbConfig proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L300>`_
+`[Cluster.LeastRequestLbConfig proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L300>`_
 
 Specific configuration for the LeastRequest load balancing policy.
 
@@ -878,7 +889,7 @@ choice_count
 Cluster.RingHashLbConfig
 ------------------------
 
-`[Cluster.RingHashLbConfig proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L308>`_
+`[Cluster.RingHashLbConfig proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L308>`_
 
 Specific configuration for the :ref:`RingHash<arch_overview_load_balancing_types_ring_hash>`
 load balancing policy.
@@ -921,7 +932,7 @@ maximum_ring_size
 Enum Cluster.RingHashLbConfig.HashFunction
 ------------------------------------------
 
-`[Cluster.RingHashLbConfig.HashFunction proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L310>`_
+`[Cluster.RingHashLbConfig.HashFunction proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L310>`_
 
 The hash function used to hash hosts onto the ketama ring.
 
@@ -945,7 +956,7 @@ MURMUR_HASH_2
 Cluster.OriginalDstLbConfig
 ---------------------------
 
-`[Cluster.OriginalDstLbConfig proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L341>`_
+`[Cluster.OriginalDstLbConfig proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L341>`_
 
 Specific configuration for the
 :ref:`Original Destination <arch_overview_load_balancing_types_original_destination>`
@@ -978,7 +989,7 @@ use_http_header
 Cluster.CommonLbConfig
 ----------------------
 
-`[Cluster.CommonLbConfig proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L356>`_
+`[Cluster.CommonLbConfig proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L356>`_
 
 Common configuration for all load balancer implementations.
 
@@ -1075,7 +1086,7 @@ close_connections_on_host_set_change
 Cluster.CommonLbConfig.ZoneAwareLbConfig
 ----------------------------------------
 
-`[Cluster.CommonLbConfig.ZoneAwareLbConfig proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L359>`_
+`[Cluster.CommonLbConfig.ZoneAwareLbConfig proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L359>`_
 
 Configuration for :ref:`zone aware routing
 <arch_overview_load_balancing_zone_aware_routing>`.
@@ -1123,7 +1134,7 @@ fail_traffic_on_panic
 Cluster.CommonLbConfig.LocalityWeightedLbConfig
 -----------------------------------------------
 
-`[Cluster.CommonLbConfig.LocalityWeightedLbConfig proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L382>`_
+`[Cluster.CommonLbConfig.LocalityWeightedLbConfig proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L382>`_
 
 Configuration for :ref:`locality weighted load balancing
 <arch_overview_load_balancing_locality_weighted_lb>`
@@ -1141,7 +1152,7 @@ Configuration for :ref:`locality weighted load balancing
 Cluster.RefreshRate
 -------------------
 
-`[Cluster.RefreshRate proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L441>`_
+`[Cluster.RefreshRate proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L441>`_
 
 
 .. code-block:: json
@@ -1177,7 +1188,7 @@ max_interval
 Enum Cluster.DiscoveryType
 --------------------------
 
-`[Cluster.DiscoveryType proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L36>`_
+`[Cluster.DiscoveryType proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L36>`_
 
 Refer to :ref:`service discovery type <arch_overview_service_discovery_types>`
 for an explanation on each type.
@@ -1226,7 +1237,7 @@ ORIGINAL_DST
 Enum Cluster.LbPolicy
 ---------------------
 
-`[Cluster.LbPolicy proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L63>`_
+`[Cluster.LbPolicy proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L63>`_
 
 Refer to :ref:`load balancer type <arch_overview_load_balancing_types>` architecture
 overview section for information on each type.
@@ -1298,7 +1309,7 @@ CLUSTER_PROVIDED
 Enum Cluster.DnsLookupFamily
 ----------------------------
 
-`[Cluster.DnsLookupFamily proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L121>`_
+`[Cluster.DnsLookupFamily proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L121>`_
 
 When V4_ONLY is selected, the DNS resolver will only perform a lookup for
 addresses in the IPv4 family. If V6_ONLY is selected, the DNS resolver will
@@ -1332,7 +1343,7 @@ V6_ONLY
 Enum Cluster.ClusterProtocolSelection
 -------------------------------------
 
-`[Cluster.ClusterProtocolSelection proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L127>`_
+`[Cluster.ClusterProtocolSelection proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L127>`_
 
 
 .. _envoy_api_enum_value_Cluster.ClusterProtocolSelection.USE_CONFIGURED_PROTOCOL:
@@ -1356,7 +1367,7 @@ USE_DOWNSTREAM_PROTOCOL
 UpstreamBindConfig
 ------------------
 
-`[UpstreamBindConfig proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L832>`_
+`[UpstreamBindConfig proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L839>`_
 
 An extensible structure containing the address Envoy should bind to when
 establishing upstream connections.
@@ -1380,7 +1391,7 @@ source_address
 UpstreamConnectionOptions
 -------------------------
 
-`[UpstreamConnectionOptions proto] <https://github.com/envoyproxy/envoy/blob/b8cdb31fe342eea494609ec4912ac2e93aa257c7/api/envoy/api/v2/cluster.proto#L837>`_
+`[UpstreamConnectionOptions proto] <https://github.com/envoyproxy/envoy/blob/ebab713091fc21818d229e1f9f99b1ee8334eb87/api/envoy/api/v2/cluster.proto#L844>`_
 
 
 .. code-block:: json
