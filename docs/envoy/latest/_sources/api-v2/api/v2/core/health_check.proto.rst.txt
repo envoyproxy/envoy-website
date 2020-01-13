@@ -12,7 +12,7 @@ Health check
 core.HealthCheck
 ----------------
 
-`[core.HealthCheck proto] <https://github.com/envoyproxy/envoy/blob/1f208984f1eb6253c3f2ee49139831f6766b673e/api/envoy/api/v2/core/health_check.proto#L54>`_
+`[core.HealthCheck proto] <https://github.com/envoyproxy/envoy/blob/3e30f21c23597cb9a27d8e938c13b408118ab46e/api/envoy/api/v2/core/health_check.proto#L54>`_
 
 
 .. code-block:: json
@@ -35,7 +35,8 @@ core.HealthCheck
     "unhealthy_edge_interval": "{...}",
     "healthy_edge_interval": "{...}",
     "event_log_path": "...",
-    "always_log_health_check_failures": "..."
+    "always_log_health_check_failures": "...",
+    "tls_options": "{...}"
   }
 
 .. _envoy_api_field_core.HealthCheck.timeout:
@@ -195,12 +196,18 @@ always_log_health_check_failures
   The default value is false.
   
   
+.. _envoy_api_field_core.HealthCheck.tls_options:
+
+tls_options
+  (:ref:`core.HealthCheck.TlsOptions <envoy_api_msg_core.HealthCheck.TlsOptions>`) This allows overriding the cluster TLS settings, just for health check connections.
+  
+  
 .. _envoy_api_msg_core.HealthCheck.Payload:
 
 core.HealthCheck.Payload
 ------------------------
 
-`[core.HealthCheck.Payload proto] <https://github.com/envoyproxy/envoy/blob/1f208984f1eb6253c3f2ee49139831f6766b673e/api/envoy/api/v2/core/health_check.proto#L56>`_
+`[core.HealthCheck.Payload proto] <https://github.com/envoyproxy/envoy/blob/3e30f21c23597cb9a27d8e938c13b408118ab46e/api/envoy/api/v2/core/health_check.proto#L56>`_
 
 Describes the encoding of the payload bytes in the payload.
 
@@ -225,7 +232,7 @@ text
 core.HealthCheck.HttpHealthCheck
 --------------------------------
 
-`[core.HealthCheck.HttpHealthCheck proto] <https://github.com/envoyproxy/envoy/blob/1f208984f1eb6253c3f2ee49139831f6766b673e/api/envoy/api/v2/core/health_check.proto#L69>`_
+`[core.HealthCheck.HttpHealthCheck proto] <https://github.com/envoyproxy/envoy/blob/3e30f21c23597cb9a27d8e938c13b408118ab46e/api/envoy/api/v2/core/health_check.proto#L69>`_
 
 
 .. code-block:: json
@@ -330,7 +337,7 @@ service_name_matcher
 core.HealthCheck.TcpHealthCheck
 -------------------------------
 
-`[core.HealthCheck.TcpHealthCheck proto] <https://github.com/envoyproxy/envoy/blob/1f208984f1eb6253c3f2ee49139831f6766b673e/api/envoy/api/v2/core/health_check.proto#L130>`_
+`[core.HealthCheck.TcpHealthCheck proto] <https://github.com/envoyproxy/envoy/blob/3e30f21c23597cb9a27d8e938c13b408118ab46e/api/envoy/api/v2/core/health_check.proto#L130>`_
 
 
 .. code-block:: json
@@ -361,7 +368,7 @@ receive
 core.HealthCheck.RedisHealthCheck
 ---------------------------------
 
-`[core.HealthCheck.RedisHealthCheck proto] <https://github.com/envoyproxy/envoy/blob/1f208984f1eb6253c3f2ee49139831f6766b673e/api/envoy/api/v2/core/health_check.proto#L140>`_
+`[core.HealthCheck.RedisHealthCheck proto] <https://github.com/envoyproxy/envoy/blob/3e30f21c23597cb9a27d8e938c13b408118ab46e/api/envoy/api/v2/core/health_check.proto#L140>`_
 
 
 .. code-block:: json
@@ -386,7 +393,7 @@ key
 core.HealthCheck.GrpcHealthCheck
 --------------------------------
 
-`[core.HealthCheck.GrpcHealthCheck proto] <https://github.com/envoyproxy/envoy/blob/1f208984f1eb6253c3f2ee49139831f6766b673e/api/envoy/api/v2/core/health_check.proto#L152>`_
+`[core.HealthCheck.GrpcHealthCheck proto] <https://github.com/envoyproxy/envoy/blob/3e30f21c23597cb9a27d8e938c13b408118ab46e/api/envoy/api/v2/core/health_check.proto#L152>`_
 
 `grpc.health.v1.Health
 <https://github.com/grpc/grpc/blob/master/src/proto/grpc/health/v1/health.proto>`_-based
@@ -425,7 +432,7 @@ authority
 core.HealthCheck.CustomHealthCheck
 ----------------------------------
 
-`[core.HealthCheck.CustomHealthCheck proto] <https://github.com/envoyproxy/envoy/blob/1f208984f1eb6253c3f2ee49139831f6766b673e/api/envoy/api/v2/core/health_check.proto#L167>`_
+`[core.HealthCheck.CustomHealthCheck proto] <https://github.com/envoyproxy/envoy/blob/3e30f21c23597cb9a27d8e938c13b408118ab46e/api/envoy/api/v2/core/health_check.proto#L167>`_
 
 Custom health check.
 
@@ -465,12 +472,41 @@ typed_config
   
 
 
+.. _envoy_api_msg_core.HealthCheck.TlsOptions:
+
+core.HealthCheck.TlsOptions
+---------------------------
+
+`[core.HealthCheck.TlsOptions proto] <https://github.com/envoyproxy/envoy/blob/3e30f21c23597cb9a27d8e938c13b408118ab46e/api/envoy/api/v2/core/health_check.proto#L184>`_
+
+Health checks occur over the transport socket specified for the cluster. This implies that if a
+cluster is using a TLS-enabled transport socket, the health check will also occur over TLS.
+
+This allows overriding the cluster TLS settings, just for health check connections.
+
+.. code-block:: json
+
+  {
+    "alpn_protocols": []
+  }
+
+.. _envoy_api_field_core.HealthCheck.TlsOptions.alpn_protocols:
+
+alpn_protocols
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies the ALPN protocols for health check connections. This is useful if the
+  corresponding upstream is using ALPN-based :ref:`FilterChainMatch
+  <envoy_api_msg_listener.FilterChainMatch>` along with different protocols for health checks
+  versus data connections. If empty, no ALPN protocols will be set on health check connections.
+  
+  
+
+
 .. _envoy_api_enum_core.HealthStatus:
 
 Enum core.HealthStatus
 ----------------------
 
-`[core.HealthStatus proto] <https://github.com/envoyproxy/envoy/blob/1f208984f1eb6253c3f2ee49139831f6766b673e/api/envoy/api/v2/core/health_check.proto#L28>`_
+`[core.HealthStatus proto] <https://github.com/envoyproxy/envoy/blob/3e30f21c23597cb9a27d8e938c13b408118ab46e/api/envoy/api/v2/core/health_check.proto#L28>`_
 
 Endpoint health status.
 
