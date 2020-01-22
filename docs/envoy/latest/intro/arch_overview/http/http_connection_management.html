@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP connection management &mdash; envoy 1.14.0-dev-188810 documentation</title>
+  <title>HTTP connection management &mdash; envoy 1.14.0-dev-e2fdf7 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.14.0-dev-188810
+                1.14.0-dev-e2fdf7
               </div>
             
           
@@ -245,6 +245,8 @@ hosts that have already been attempted.</p></li>
 <li><p><em>envoy.retry_host_predicates.omit_canary_hosts</em>: This will reject any host that is a marked as canary host.
 Hosts are marked by setting <code class="docutils literal notranslate"><span class="pre">canary:</span> <span class="pre">true</span></code> for the <code class="docutils literal notranslate"><span class="pre">envoy.lb</span></code> filter in the endpoint’s filter metadata.
 See <a class="reference internal" href="../../../api-v2/api/v2/endpoint/endpoint_components.proto.html#envoy-api-msg-endpoint-lbendpoint"><span class="std std-ref">LbEndpoint</span></a> for more details.</p></li>
+<li><p><em>envoy.retry_host_predicates.omit_host_metadata</em>: This will reject any host based on predefined metadata match criteria.
+See the configuration example below for more details.</p></li>
 </ul>
 </li>
 <li><p><a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-retrypolicy-retry-priority"><span class="std std-ref">Priority Predicates</span></a>: These predicates can
@@ -274,6 +276,19 @@ with custom retry plugins similar to how custom filters can be added.</p>
 on attempts is necessary in order to deal with scenarios in which finding an acceptable host is either
 impossible (no hosts satisfy the predicate) or very unlikely (the only suitable host has a very low
 relative weight).</p>
+<p>To reject a host based on its metadata, <code class="docutils literal notranslate"><span class="pre">envoy.retry_host_predicates.omit_host_metadata</span></code> can be used:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">retry_policy</span><span class="p">:</span>
+  <span class="nt">retry_host_predicate</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.retry_host_predicates.omit_host_metadata</span>
+    <span class="nt">typed_config</span><span class="p">:</span>
+      <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.retry.omit_host_metadata.v2.OmitHostMetadataConfig</span>
+      <span class="nt">metadata_match</span><span class="p">:</span>
+        <span class="nt">filter_metadata</span><span class="p">:</span>
+          <span class="nt">envoy.lb</span><span class="p">:</span>
+            <span class="nt">key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">value</span>
+</pre></div>
+</div>
+<p>This will reject any host with matching (key, value) in its metadata.</p>
 <p>To configure retries to attempt other priorities during retries, the built-in
 <code class="docutils literal notranslate"><span class="pre">envoy.retry_priority.previous_priorities</span></code> can be used.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">retry_policy</span><span class="p">:</span>
