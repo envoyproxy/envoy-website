@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Draining &mdash; envoy 1.14.0-dev-08ec4d documentation</title>
+  <title>Draining &mdash; envoy 1.14.0-dev-d1baa2 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.14.0-dev-08ec4d
+                1.14.0-dev-d1baa2
               </div>
             
           
@@ -206,12 +206,11 @@ various events. Draining occurs at the following times:</p>
 <li><p>The server has been manually health check failed via the <a class="reference internal" href="../../../operations/admin.html#operations-admin-interface-healthcheck-fail"><span class="std std-ref">healthcheck/fail</span></a> admin endpoint. See the <a class="reference internal" href="../upstream/health_checking.html#arch-overview-health-checking-filter"><span class="std std-ref">health check filter</span></a> architecture overview for more information.</p></li>
 <li><p>The server is being <a class="reference internal" href="hot_restart.html#arch-overview-hot-restart"><span class="std std-ref">hot restarted</span></a>.</p></li>
 <li><p>Individual listeners are being modified or removed via <a class="reference internal" href="dynamic_configuration.html#arch-overview-dynamic-config-lds"><span class="std std-ref">LDS</span></a>.</p></li>
-<li><p>Admin initiated drain via <a class="reference internal" href="../../../operations/admin.html#operations-admin-interface-drain"><span class="std std-ref">drain_listeners</span></a>.</p></li>
 </ul>
 <p>Each <a class="reference internal" href="../listeners/listeners.html#arch-overview-listeners"><span class="std std-ref">configured listener</span></a> has a <a class="reference internal" href="../../../api-v2/api/v2/listener.proto.html#envoy-api-enum-listener-draintype"><span class="std std-ref">drain_type</span></a> setting which controls when draining takes place. The currently
 supported values are:</p>
 <dl class="simple">
-<dt>default</dt><dd><p>Envoy will drain listeners in response to all three cases above (admin drain, hot restart, and
+<dt>default</dt><dd><p>Envoy will drain listeners in response to all three cases above (admin health fail, hot restart, and
 LDS update/remove). This is the default setting.</p>
 </dd>
 <dt>modify_only</dt><dd><p>Envoy will drain listeners only in response to the 2nd and 3rd cases above (hot restart and
@@ -226,6 +225,9 @@ level. Currently the only filters that support graceful draining are
 <a class="reference internal" href="../../../configuration/http/http_conn_man/http_conn_man.html#config-http-conn-man"><span class="std std-ref">HTTP connection manager</span></a>,
 <a class="reference internal" href="../../../configuration/listeners/network_filters/redis_proxy_filter.html#config-network-filters-redis-proxy"><span class="std std-ref">Redis</span></a>, and
 <a class="reference internal" href="../../../configuration/listeners/network_filters/mongo_proxy_filter.html#config-network-filters-mongo-proxy"><span class="std std-ref">Mongo</span></a>.</p>
+<p>Listeners can also be stopped via <a class="reference internal" href="../../../operations/admin.html#operations-admin-interface-drain"><span class="std std-ref">drain_listeners</span></a>. In this case,
+they are directly stopped (with out going through the actual draining process) on worker threads,
+so that they will not accept any new requests.</p>
 </div>
 
 
