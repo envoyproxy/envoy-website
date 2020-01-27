@@ -64,6 +64,17 @@ file or an HTML file.
 The new file should contain what Jekyll calls [front matter](https://jekyllrb.com/docs/frontmatter/), which is essentially
 YAML markup that lets you set options like the template, the permalink, and the title of the page.
 
+### Add Envoy Adopter Logo
+
+Envoy is happy to recognize projects that use the software in production. These are not intended to be an advertisement, but a show of support for the project. All supporting organizations will be listed in alphabetical order. To be added to our adopter list, you must meet these criteria:
+
+*   Be a participant and active contributor in the community, this can be contributing code, issues or sponsoring EnvoyCon
+*   Publicly disclose your usage of Envoy via a [talk](https://www.youtube.com/watch?v=4x5WjxAMvKY), [blog](https://monzo.com/blog/2019/04/03/deploying-envoy-proxy) [CNCF case study](https://www.cncf.io/newsroom/case-studies/?_sft_cstudies_project=envoy) or [social media](https://twitter.com/suhailpatel/status/1113425967144476672)
+*   Submit a high quality grayscale vector SVG logo, we scale the height to 52px (see [example](https://d33wubrfki0l68.cloudfront.net/c814eec20d8e4de39697c7b5790284babe86b248/d1091/img/logos/lyft.svg))
+*   Have an existing Envoy maintainer vouch for and approve your pull request 
+
+To add your logo, please send a [pull request](https://github.com/envoyproxy/envoyproxy.github.io) (see this as an [example](https://github.com/envoyproxy/envoyproxy.github.io/pull/102)).
+
 ### The Envoy blog
 
 The official Envoy blog is hosted on [Medium](https://medium.com) at https://blog.envoyproxy.io.
