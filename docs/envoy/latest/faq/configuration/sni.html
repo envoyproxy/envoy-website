@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>How do I configure SNI? &mdash; envoy 1.14.0-dev-efd5d2 documentation</title>
+  <title>How do I configure SNI for listeners? &mdash; envoy 1.14.0-dev-210915 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.14.0-dev-efd5d2
+                1.14.0-dev-210915
               </div>
             
           
@@ -105,7 +105,8 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../overview.html#configuration">Configuration</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="edge.html">How do I configure Envoy as an edge proxy?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="level_two.html">How do I configure Envoy as a level two proxy?</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">How do I configure SNI?</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">How do I configure SNI for listeners?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-do-i-configure-sni-for-clusters">How do I configure SNI for clusters?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="zone_aware_routing.html">How do I configure zone aware routing?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">How do I configure Zipkin tracing?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="flow_control.html">How do I configure flow control?</a></li>
@@ -163,7 +164,7 @@
         
           <li><a href="../overview.html">FAQ</a> &raquo;</li>
         
-      <li>How do I configure SNI?</li>
+      <li>How do I configure SNI for listeners?</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -182,8 +183,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="how-do-i-configure-sni">
-<span id="faq-how-to-setup-sni"></span><h1>How do I configure SNI?<a class="headerlink" href="#how-do-i-configure-sni" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="how-do-i-configure-sni-for-listeners">
+<span id="faq-how-to-setup-sni"></span><h1>How do I configure SNI for listeners?<a class="headerlink" href="#how-do-i-configure-sni-for-listeners" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://en.wikipedia.org/wiki/Server_Name_Indication">SNI</a> is only supported in the <a class="reference internal" href="../../configuration/overview/overview.html#config-overview"><span class="std std-ref">v2
 configuration/API</span></a>.</p>
 <div class="admonition attention">
@@ -244,6 +245,15 @@ in order to detect requested SNI.</p>
             <span class="nt">route</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> cluster</span><span class="p">:</span> <span class="nv">service_foo</span> <span class="p p-Indicator">}</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="how-do-i-configure-sni-for-clusters">
+<h1>How do I configure SNI for clusters?<a class="headerlink" href="#how-do-i-configure-sni-for-clusters" title="Permalink to this headline">¶</a></h1>
+<p>For clusters, a fixed SNI can be set in <a class="reference external" href="envoy_api_field_auth.UpstreamTlsContext.sni">UpstreamTlsContext</a>.
+To derive SNI from HTTP <cite>host</cite> or <cite>:authority</cite> header, turn on
+<a class="reference external" href="envoy_api_field_core.UpstreamHttpProtocolOptions.auto_sni">auto_sni</a> to override the fixed SNI in
+<cite>UpstreamTlsContext</cite>. If upstream will present certificates with the hostname in SAN, turn on
+<a class="reference external" href="envoy_api_field_core.UpstreamHttpProtocolOptions.auto_san_validation">auto_san_validation</a> too.
+It still needs a trust CA in validation context in <cite>UpstreamTlsContext</cite> for trust anchor.</p>
 </div>
 
 
