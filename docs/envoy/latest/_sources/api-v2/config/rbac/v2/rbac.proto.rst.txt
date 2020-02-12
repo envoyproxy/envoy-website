@@ -9,7 +9,7 @@ Role Based Access Control (RBAC)
 config.rbac.v2.RBAC
 -------------------
 
-`[config.rbac.v2.RBAC proto] <https://github.com/envoyproxy/envoy/blob/acdc6c7658638891253b2a49e74535de11984a72/api/envoy/config/rbac/v2/rbac.proto#L58>`_
+`[config.rbac.v2.RBAC proto] <https://github.com/envoyproxy/envoy/blob/7ea52d5e2b0bccbd3263a805e38778fa132b715d/api/envoy/config/rbac/v2/rbac.proto#L60>`_
 
 Role Based Access Control (RBAC) provides service-level and method-level access control for a
 service. RBAC policies are additive. The policies are examined in order. A request is allowed
@@ -42,7 +42,8 @@ Here is an example of RBAC configuration. It has two policies:
           - and_rules:
               rules:
                 - header: { name: ":method", exact_match: "GET" }
-                - header: { name: ":path", regex_match: "/products(/.*)?" }
+                - url_path:
+                    path: { prefix: "/products" }
                 - or_rules:
                     rules:
                       - destination_port: 80
@@ -79,7 +80,7 @@ policies
 Enum config.rbac.v2.RBAC.Action
 -------------------------------
 
-`[config.rbac.v2.RBAC.Action proto] <https://github.com/envoyproxy/envoy/blob/acdc6c7658638891253b2a49e74535de11984a72/api/envoy/config/rbac/v2/rbac.proto#L60>`_
+`[config.rbac.v2.RBAC.Action proto] <https://github.com/envoyproxy/envoy/blob/7ea52d5e2b0bccbd3263a805e38778fa132b715d/api/envoy/config/rbac/v2/rbac.proto#L62>`_
 
 Should we do safe-list or block-list style access control?
 
@@ -103,7 +104,7 @@ DENY
 config.rbac.v2.Policy
 ---------------------
 
-`[config.rbac.v2.Policy proto] <https://github.com/envoyproxy/envoy/blob/acdc6c7658638891253b2a49e74535de11984a72/api/envoy/config/rbac/v2/rbac.proto#L83>`_
+`[config.rbac.v2.Policy proto] <https://github.com/envoyproxy/envoy/blob/7ea52d5e2b0bccbd3263a805e38778fa132b715d/api/envoy/config/rbac/v2/rbac.proto#L85>`_
 
 Policy specifies a role and the principals that are assigned/denied the role. A policy matches if
 and only if at least one of its permissions match the action taking place AND at least one of its
@@ -148,7 +149,7 @@ condition
 config.rbac.v2.Permission
 -------------------------
 
-`[config.rbac.v2.Permission proto] <https://github.com/envoyproxy/envoy/blob/acdc6c7658638891253b2a49e74535de11984a72/api/envoy/config/rbac/v2/rbac.proto#L102>`_
+`[config.rbac.v2.Permission proto] <https://github.com/envoyproxy/envoy/blob/7ea52d5e2b0bccbd3263a805e38778fa132b715d/api/envoy/config/rbac/v2/rbac.proto#L104>`_
 
 Permission defines an action (or actions) that a principal can take.
 
@@ -159,6 +160,7 @@ Permission defines an action (or actions) that a principal can take.
     "or_rules": "{...}",
     "any": "...",
     "header": "{...}",
+    "url_path": "{...}",
     "destination_ip": "{...}",
     "destination_port": "...",
     "metadata": "{...}",
@@ -173,7 +175,7 @@ and_rules
   
   
   
-  Precisely one of :ref:`and_rules <envoy_api_field_config.rbac.v2.Permission.and_rules>`, :ref:`or_rules <envoy_api_field_config.rbac.v2.Permission.or_rules>`, :ref:`any <envoy_api_field_config.rbac.v2.Permission.any>`, :ref:`header <envoy_api_field_config.rbac.v2.Permission.header>`, :ref:`destination_ip <envoy_api_field_config.rbac.v2.Permission.destination_ip>`, :ref:`destination_port <envoy_api_field_config.rbac.v2.Permission.destination_port>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Permission.metadata>`, :ref:`not_rule <envoy_api_field_config.rbac.v2.Permission.not_rule>`, :ref:`requested_server_name <envoy_api_field_config.rbac.v2.Permission.requested_server_name>` must be set.
+  Precisely one of :ref:`and_rules <envoy_api_field_config.rbac.v2.Permission.and_rules>`, :ref:`or_rules <envoy_api_field_config.rbac.v2.Permission.or_rules>`, :ref:`any <envoy_api_field_config.rbac.v2.Permission.any>`, :ref:`header <envoy_api_field_config.rbac.v2.Permission.header>`, :ref:`url_path <envoy_api_field_config.rbac.v2.Permission.url_path>`, :ref:`destination_ip <envoy_api_field_config.rbac.v2.Permission.destination_ip>`, :ref:`destination_port <envoy_api_field_config.rbac.v2.Permission.destination_port>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Permission.metadata>`, :ref:`not_rule <envoy_api_field_config.rbac.v2.Permission.not_rule>`, :ref:`requested_server_name <envoy_api_field_config.rbac.v2.Permission.requested_server_name>` must be set.
   
 .. _envoy_api_field_config.rbac.v2.Permission.or_rules:
 
@@ -182,7 +184,7 @@ or_rules
   
   
   
-  Precisely one of :ref:`and_rules <envoy_api_field_config.rbac.v2.Permission.and_rules>`, :ref:`or_rules <envoy_api_field_config.rbac.v2.Permission.or_rules>`, :ref:`any <envoy_api_field_config.rbac.v2.Permission.any>`, :ref:`header <envoy_api_field_config.rbac.v2.Permission.header>`, :ref:`destination_ip <envoy_api_field_config.rbac.v2.Permission.destination_ip>`, :ref:`destination_port <envoy_api_field_config.rbac.v2.Permission.destination_port>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Permission.metadata>`, :ref:`not_rule <envoy_api_field_config.rbac.v2.Permission.not_rule>`, :ref:`requested_server_name <envoy_api_field_config.rbac.v2.Permission.requested_server_name>` must be set.
+  Precisely one of :ref:`and_rules <envoy_api_field_config.rbac.v2.Permission.and_rules>`, :ref:`or_rules <envoy_api_field_config.rbac.v2.Permission.or_rules>`, :ref:`any <envoy_api_field_config.rbac.v2.Permission.any>`, :ref:`header <envoy_api_field_config.rbac.v2.Permission.header>`, :ref:`url_path <envoy_api_field_config.rbac.v2.Permission.url_path>`, :ref:`destination_ip <envoy_api_field_config.rbac.v2.Permission.destination_ip>`, :ref:`destination_port <envoy_api_field_config.rbac.v2.Permission.destination_port>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Permission.metadata>`, :ref:`not_rule <envoy_api_field_config.rbac.v2.Permission.not_rule>`, :ref:`requested_server_name <envoy_api_field_config.rbac.v2.Permission.requested_server_name>` must be set.
   
 .. _envoy_api_field_config.rbac.v2.Permission.any:
 
@@ -191,17 +193,28 @@ any
   
   
   
-  Precisely one of :ref:`and_rules <envoy_api_field_config.rbac.v2.Permission.and_rules>`, :ref:`or_rules <envoy_api_field_config.rbac.v2.Permission.or_rules>`, :ref:`any <envoy_api_field_config.rbac.v2.Permission.any>`, :ref:`header <envoy_api_field_config.rbac.v2.Permission.header>`, :ref:`destination_ip <envoy_api_field_config.rbac.v2.Permission.destination_ip>`, :ref:`destination_port <envoy_api_field_config.rbac.v2.Permission.destination_port>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Permission.metadata>`, :ref:`not_rule <envoy_api_field_config.rbac.v2.Permission.not_rule>`, :ref:`requested_server_name <envoy_api_field_config.rbac.v2.Permission.requested_server_name>` must be set.
+  Precisely one of :ref:`and_rules <envoy_api_field_config.rbac.v2.Permission.and_rules>`, :ref:`or_rules <envoy_api_field_config.rbac.v2.Permission.or_rules>`, :ref:`any <envoy_api_field_config.rbac.v2.Permission.any>`, :ref:`header <envoy_api_field_config.rbac.v2.Permission.header>`, :ref:`url_path <envoy_api_field_config.rbac.v2.Permission.url_path>`, :ref:`destination_ip <envoy_api_field_config.rbac.v2.Permission.destination_ip>`, :ref:`destination_port <envoy_api_field_config.rbac.v2.Permission.destination_port>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Permission.metadata>`, :ref:`not_rule <envoy_api_field_config.rbac.v2.Permission.not_rule>`, :ref:`requested_server_name <envoy_api_field_config.rbac.v2.Permission.requested_server_name>` must be set.
   
 .. _envoy_api_field_config.rbac.v2.Permission.header:
 
 header
   (:ref:`route.HeaderMatcher <envoy_api_msg_route.HeaderMatcher>`) A header (or pseudo-header such as :path or :method) on the incoming HTTP request. Only
   available for HTTP request.
+  Note: the pseudo-header :path includes the query and fragment string. Use the `url_path`
+  field if you want to match the URL path without the query and fragment string.
   
   
   
-  Precisely one of :ref:`and_rules <envoy_api_field_config.rbac.v2.Permission.and_rules>`, :ref:`or_rules <envoy_api_field_config.rbac.v2.Permission.or_rules>`, :ref:`any <envoy_api_field_config.rbac.v2.Permission.any>`, :ref:`header <envoy_api_field_config.rbac.v2.Permission.header>`, :ref:`destination_ip <envoy_api_field_config.rbac.v2.Permission.destination_ip>`, :ref:`destination_port <envoy_api_field_config.rbac.v2.Permission.destination_port>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Permission.metadata>`, :ref:`not_rule <envoy_api_field_config.rbac.v2.Permission.not_rule>`, :ref:`requested_server_name <envoy_api_field_config.rbac.v2.Permission.requested_server_name>` must be set.
+  Precisely one of :ref:`and_rules <envoy_api_field_config.rbac.v2.Permission.and_rules>`, :ref:`or_rules <envoy_api_field_config.rbac.v2.Permission.or_rules>`, :ref:`any <envoy_api_field_config.rbac.v2.Permission.any>`, :ref:`header <envoy_api_field_config.rbac.v2.Permission.header>`, :ref:`url_path <envoy_api_field_config.rbac.v2.Permission.url_path>`, :ref:`destination_ip <envoy_api_field_config.rbac.v2.Permission.destination_ip>`, :ref:`destination_port <envoy_api_field_config.rbac.v2.Permission.destination_port>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Permission.metadata>`, :ref:`not_rule <envoy_api_field_config.rbac.v2.Permission.not_rule>`, :ref:`requested_server_name <envoy_api_field_config.rbac.v2.Permission.requested_server_name>` must be set.
+  
+.. _envoy_api_field_config.rbac.v2.Permission.url_path:
+
+url_path
+  (:ref:`type.matcher.PathMatcher <envoy_api_msg_type.matcher.PathMatcher>`) A URL path on the incoming HTTP request. Only available for HTTP.
+  
+  
+  
+  Precisely one of :ref:`and_rules <envoy_api_field_config.rbac.v2.Permission.and_rules>`, :ref:`or_rules <envoy_api_field_config.rbac.v2.Permission.or_rules>`, :ref:`any <envoy_api_field_config.rbac.v2.Permission.any>`, :ref:`header <envoy_api_field_config.rbac.v2.Permission.header>`, :ref:`url_path <envoy_api_field_config.rbac.v2.Permission.url_path>`, :ref:`destination_ip <envoy_api_field_config.rbac.v2.Permission.destination_ip>`, :ref:`destination_port <envoy_api_field_config.rbac.v2.Permission.destination_port>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Permission.metadata>`, :ref:`not_rule <envoy_api_field_config.rbac.v2.Permission.not_rule>`, :ref:`requested_server_name <envoy_api_field_config.rbac.v2.Permission.requested_server_name>` must be set.
   
 .. _envoy_api_field_config.rbac.v2.Permission.destination_ip:
 
@@ -210,7 +223,7 @@ destination_ip
   
   
   
-  Precisely one of :ref:`and_rules <envoy_api_field_config.rbac.v2.Permission.and_rules>`, :ref:`or_rules <envoy_api_field_config.rbac.v2.Permission.or_rules>`, :ref:`any <envoy_api_field_config.rbac.v2.Permission.any>`, :ref:`header <envoy_api_field_config.rbac.v2.Permission.header>`, :ref:`destination_ip <envoy_api_field_config.rbac.v2.Permission.destination_ip>`, :ref:`destination_port <envoy_api_field_config.rbac.v2.Permission.destination_port>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Permission.metadata>`, :ref:`not_rule <envoy_api_field_config.rbac.v2.Permission.not_rule>`, :ref:`requested_server_name <envoy_api_field_config.rbac.v2.Permission.requested_server_name>` must be set.
+  Precisely one of :ref:`and_rules <envoy_api_field_config.rbac.v2.Permission.and_rules>`, :ref:`or_rules <envoy_api_field_config.rbac.v2.Permission.or_rules>`, :ref:`any <envoy_api_field_config.rbac.v2.Permission.any>`, :ref:`header <envoy_api_field_config.rbac.v2.Permission.header>`, :ref:`url_path <envoy_api_field_config.rbac.v2.Permission.url_path>`, :ref:`destination_ip <envoy_api_field_config.rbac.v2.Permission.destination_ip>`, :ref:`destination_port <envoy_api_field_config.rbac.v2.Permission.destination_port>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Permission.metadata>`, :ref:`not_rule <envoy_api_field_config.rbac.v2.Permission.not_rule>`, :ref:`requested_server_name <envoy_api_field_config.rbac.v2.Permission.requested_server_name>` must be set.
   
 .. _envoy_api_field_config.rbac.v2.Permission.destination_port:
 
@@ -219,7 +232,7 @@ destination_port
   
   
   
-  Precisely one of :ref:`and_rules <envoy_api_field_config.rbac.v2.Permission.and_rules>`, :ref:`or_rules <envoy_api_field_config.rbac.v2.Permission.or_rules>`, :ref:`any <envoy_api_field_config.rbac.v2.Permission.any>`, :ref:`header <envoy_api_field_config.rbac.v2.Permission.header>`, :ref:`destination_ip <envoy_api_field_config.rbac.v2.Permission.destination_ip>`, :ref:`destination_port <envoy_api_field_config.rbac.v2.Permission.destination_port>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Permission.metadata>`, :ref:`not_rule <envoy_api_field_config.rbac.v2.Permission.not_rule>`, :ref:`requested_server_name <envoy_api_field_config.rbac.v2.Permission.requested_server_name>` must be set.
+  Precisely one of :ref:`and_rules <envoy_api_field_config.rbac.v2.Permission.and_rules>`, :ref:`or_rules <envoy_api_field_config.rbac.v2.Permission.or_rules>`, :ref:`any <envoy_api_field_config.rbac.v2.Permission.any>`, :ref:`header <envoy_api_field_config.rbac.v2.Permission.header>`, :ref:`url_path <envoy_api_field_config.rbac.v2.Permission.url_path>`, :ref:`destination_ip <envoy_api_field_config.rbac.v2.Permission.destination_ip>`, :ref:`destination_port <envoy_api_field_config.rbac.v2.Permission.destination_port>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Permission.metadata>`, :ref:`not_rule <envoy_api_field_config.rbac.v2.Permission.not_rule>`, :ref:`requested_server_name <envoy_api_field_config.rbac.v2.Permission.requested_server_name>` must be set.
   
 .. _envoy_api_field_config.rbac.v2.Permission.metadata:
 
@@ -228,7 +241,7 @@ metadata
   
   
   
-  Precisely one of :ref:`and_rules <envoy_api_field_config.rbac.v2.Permission.and_rules>`, :ref:`or_rules <envoy_api_field_config.rbac.v2.Permission.or_rules>`, :ref:`any <envoy_api_field_config.rbac.v2.Permission.any>`, :ref:`header <envoy_api_field_config.rbac.v2.Permission.header>`, :ref:`destination_ip <envoy_api_field_config.rbac.v2.Permission.destination_ip>`, :ref:`destination_port <envoy_api_field_config.rbac.v2.Permission.destination_port>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Permission.metadata>`, :ref:`not_rule <envoy_api_field_config.rbac.v2.Permission.not_rule>`, :ref:`requested_server_name <envoy_api_field_config.rbac.v2.Permission.requested_server_name>` must be set.
+  Precisely one of :ref:`and_rules <envoy_api_field_config.rbac.v2.Permission.and_rules>`, :ref:`or_rules <envoy_api_field_config.rbac.v2.Permission.or_rules>`, :ref:`any <envoy_api_field_config.rbac.v2.Permission.any>`, :ref:`header <envoy_api_field_config.rbac.v2.Permission.header>`, :ref:`url_path <envoy_api_field_config.rbac.v2.Permission.url_path>`, :ref:`destination_ip <envoy_api_field_config.rbac.v2.Permission.destination_ip>`, :ref:`destination_port <envoy_api_field_config.rbac.v2.Permission.destination_port>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Permission.metadata>`, :ref:`not_rule <envoy_api_field_config.rbac.v2.Permission.not_rule>`, :ref:`requested_server_name <envoy_api_field_config.rbac.v2.Permission.requested_server_name>` must be set.
   
 .. _envoy_api_field_config.rbac.v2.Permission.not_rule:
 
@@ -239,7 +252,7 @@ not_rule
   
   
   
-  Precisely one of :ref:`and_rules <envoy_api_field_config.rbac.v2.Permission.and_rules>`, :ref:`or_rules <envoy_api_field_config.rbac.v2.Permission.or_rules>`, :ref:`any <envoy_api_field_config.rbac.v2.Permission.any>`, :ref:`header <envoy_api_field_config.rbac.v2.Permission.header>`, :ref:`destination_ip <envoy_api_field_config.rbac.v2.Permission.destination_ip>`, :ref:`destination_port <envoy_api_field_config.rbac.v2.Permission.destination_port>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Permission.metadata>`, :ref:`not_rule <envoy_api_field_config.rbac.v2.Permission.not_rule>`, :ref:`requested_server_name <envoy_api_field_config.rbac.v2.Permission.requested_server_name>` must be set.
+  Precisely one of :ref:`and_rules <envoy_api_field_config.rbac.v2.Permission.and_rules>`, :ref:`or_rules <envoy_api_field_config.rbac.v2.Permission.or_rules>`, :ref:`any <envoy_api_field_config.rbac.v2.Permission.any>`, :ref:`header <envoy_api_field_config.rbac.v2.Permission.header>`, :ref:`url_path <envoy_api_field_config.rbac.v2.Permission.url_path>`, :ref:`destination_ip <envoy_api_field_config.rbac.v2.Permission.destination_ip>`, :ref:`destination_port <envoy_api_field_config.rbac.v2.Permission.destination_port>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Permission.metadata>`, :ref:`not_rule <envoy_api_field_config.rbac.v2.Permission.not_rule>`, :ref:`requested_server_name <envoy_api_field_config.rbac.v2.Permission.requested_server_name>` must be set.
   
 .. _envoy_api_field_config.rbac.v2.Permission.requested_server_name:
 
@@ -266,14 +279,14 @@ requested_server_name
   
   
   
-  Precisely one of :ref:`and_rules <envoy_api_field_config.rbac.v2.Permission.and_rules>`, :ref:`or_rules <envoy_api_field_config.rbac.v2.Permission.or_rules>`, :ref:`any <envoy_api_field_config.rbac.v2.Permission.any>`, :ref:`header <envoy_api_field_config.rbac.v2.Permission.header>`, :ref:`destination_ip <envoy_api_field_config.rbac.v2.Permission.destination_ip>`, :ref:`destination_port <envoy_api_field_config.rbac.v2.Permission.destination_port>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Permission.metadata>`, :ref:`not_rule <envoy_api_field_config.rbac.v2.Permission.not_rule>`, :ref:`requested_server_name <envoy_api_field_config.rbac.v2.Permission.requested_server_name>` must be set.
+  Precisely one of :ref:`and_rules <envoy_api_field_config.rbac.v2.Permission.and_rules>`, :ref:`or_rules <envoy_api_field_config.rbac.v2.Permission.or_rules>`, :ref:`any <envoy_api_field_config.rbac.v2.Permission.any>`, :ref:`header <envoy_api_field_config.rbac.v2.Permission.header>`, :ref:`url_path <envoy_api_field_config.rbac.v2.Permission.url_path>`, :ref:`destination_ip <envoy_api_field_config.rbac.v2.Permission.destination_ip>`, :ref:`destination_port <envoy_api_field_config.rbac.v2.Permission.destination_port>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Permission.metadata>`, :ref:`not_rule <envoy_api_field_config.rbac.v2.Permission.not_rule>`, :ref:`requested_server_name <envoy_api_field_config.rbac.v2.Permission.requested_server_name>` must be set.
   
 .. _envoy_api_msg_config.rbac.v2.Permission.Set:
 
 config.rbac.v2.Permission.Set
 -----------------------------
 
-`[config.rbac.v2.Permission.Set proto] <https://github.com/envoyproxy/envoy/blob/acdc6c7658638891253b2a49e74535de11984a72/api/envoy/config/rbac/v2/rbac.proto#L105>`_
+`[config.rbac.v2.Permission.Set proto] <https://github.com/envoyproxy/envoy/blob/7ea52d5e2b0bccbd3263a805e38778fa132b715d/api/envoy/config/rbac/v2/rbac.proto#L107>`_
 
 Used in the `and_rules` and `or_rules` fields in the `rule` oneof. Depending on the context,
 each are applied with the associated behavior.
@@ -297,7 +310,7 @@ rules
 config.rbac.v2.Principal
 ------------------------
 
-`[config.rbac.v2.Principal proto] <https://github.com/envoyproxy/envoy/blob/acdc6c7658638891253b2a49e74535de11984a72/api/envoy/config/rbac/v2/rbac.proto#L164>`_
+`[config.rbac.v2.Principal proto] <https://github.com/envoyproxy/envoy/blob/7ea52d5e2b0bccbd3263a805e38778fa132b715d/api/envoy/config/rbac/v2/rbac.proto#L171>`_
 
 Principal defines an identity or a group of identities for a downstream subject.
 
@@ -310,6 +323,7 @@ Principal defines an identity or a group of identities for a downstream subject.
     "authenticated": "{...}",
     "source_ip": "{...}",
     "header": "{...}",
+    "url_path": "{...}",
     "metadata": "{...}",
     "not_id": "{...}"
   }
@@ -321,7 +335,7 @@ and_ids
   
   
   
-  Precisely one of :ref:`and_ids <envoy_api_field_config.rbac.v2.Principal.and_ids>`, :ref:`or_ids <envoy_api_field_config.rbac.v2.Principal.or_ids>`, :ref:`any <envoy_api_field_config.rbac.v2.Principal.any>`, :ref:`authenticated <envoy_api_field_config.rbac.v2.Principal.authenticated>`, :ref:`source_ip <envoy_api_field_config.rbac.v2.Principal.source_ip>`, :ref:`header <envoy_api_field_config.rbac.v2.Principal.header>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Principal.metadata>`, :ref:`not_id <envoy_api_field_config.rbac.v2.Principal.not_id>` must be set.
+  Precisely one of :ref:`and_ids <envoy_api_field_config.rbac.v2.Principal.and_ids>`, :ref:`or_ids <envoy_api_field_config.rbac.v2.Principal.or_ids>`, :ref:`any <envoy_api_field_config.rbac.v2.Principal.any>`, :ref:`authenticated <envoy_api_field_config.rbac.v2.Principal.authenticated>`, :ref:`source_ip <envoy_api_field_config.rbac.v2.Principal.source_ip>`, :ref:`header <envoy_api_field_config.rbac.v2.Principal.header>`, :ref:`url_path <envoy_api_field_config.rbac.v2.Principal.url_path>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Principal.metadata>`, :ref:`not_id <envoy_api_field_config.rbac.v2.Principal.not_id>` must be set.
   
 .. _envoy_api_field_config.rbac.v2.Principal.or_ids:
 
@@ -330,7 +344,7 @@ or_ids
   
   
   
-  Precisely one of :ref:`and_ids <envoy_api_field_config.rbac.v2.Principal.and_ids>`, :ref:`or_ids <envoy_api_field_config.rbac.v2.Principal.or_ids>`, :ref:`any <envoy_api_field_config.rbac.v2.Principal.any>`, :ref:`authenticated <envoy_api_field_config.rbac.v2.Principal.authenticated>`, :ref:`source_ip <envoy_api_field_config.rbac.v2.Principal.source_ip>`, :ref:`header <envoy_api_field_config.rbac.v2.Principal.header>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Principal.metadata>`, :ref:`not_id <envoy_api_field_config.rbac.v2.Principal.not_id>` must be set.
+  Precisely one of :ref:`and_ids <envoy_api_field_config.rbac.v2.Principal.and_ids>`, :ref:`or_ids <envoy_api_field_config.rbac.v2.Principal.or_ids>`, :ref:`any <envoy_api_field_config.rbac.v2.Principal.any>`, :ref:`authenticated <envoy_api_field_config.rbac.v2.Principal.authenticated>`, :ref:`source_ip <envoy_api_field_config.rbac.v2.Principal.source_ip>`, :ref:`header <envoy_api_field_config.rbac.v2.Principal.header>`, :ref:`url_path <envoy_api_field_config.rbac.v2.Principal.url_path>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Principal.metadata>`, :ref:`not_id <envoy_api_field_config.rbac.v2.Principal.not_id>` must be set.
   
 .. _envoy_api_field_config.rbac.v2.Principal.any:
 
@@ -339,7 +353,7 @@ any
   
   
   
-  Precisely one of :ref:`and_ids <envoy_api_field_config.rbac.v2.Principal.and_ids>`, :ref:`or_ids <envoy_api_field_config.rbac.v2.Principal.or_ids>`, :ref:`any <envoy_api_field_config.rbac.v2.Principal.any>`, :ref:`authenticated <envoy_api_field_config.rbac.v2.Principal.authenticated>`, :ref:`source_ip <envoy_api_field_config.rbac.v2.Principal.source_ip>`, :ref:`header <envoy_api_field_config.rbac.v2.Principal.header>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Principal.metadata>`, :ref:`not_id <envoy_api_field_config.rbac.v2.Principal.not_id>` must be set.
+  Precisely one of :ref:`and_ids <envoy_api_field_config.rbac.v2.Principal.and_ids>`, :ref:`or_ids <envoy_api_field_config.rbac.v2.Principal.or_ids>`, :ref:`any <envoy_api_field_config.rbac.v2.Principal.any>`, :ref:`authenticated <envoy_api_field_config.rbac.v2.Principal.authenticated>`, :ref:`source_ip <envoy_api_field_config.rbac.v2.Principal.source_ip>`, :ref:`header <envoy_api_field_config.rbac.v2.Principal.header>`, :ref:`url_path <envoy_api_field_config.rbac.v2.Principal.url_path>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Principal.metadata>`, :ref:`not_id <envoy_api_field_config.rbac.v2.Principal.not_id>` must be set.
   
 .. _envoy_api_field_config.rbac.v2.Principal.authenticated:
 
@@ -348,7 +362,7 @@ authenticated
   
   
   
-  Precisely one of :ref:`and_ids <envoy_api_field_config.rbac.v2.Principal.and_ids>`, :ref:`or_ids <envoy_api_field_config.rbac.v2.Principal.or_ids>`, :ref:`any <envoy_api_field_config.rbac.v2.Principal.any>`, :ref:`authenticated <envoy_api_field_config.rbac.v2.Principal.authenticated>`, :ref:`source_ip <envoy_api_field_config.rbac.v2.Principal.source_ip>`, :ref:`header <envoy_api_field_config.rbac.v2.Principal.header>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Principal.metadata>`, :ref:`not_id <envoy_api_field_config.rbac.v2.Principal.not_id>` must be set.
+  Precisely one of :ref:`and_ids <envoy_api_field_config.rbac.v2.Principal.and_ids>`, :ref:`or_ids <envoy_api_field_config.rbac.v2.Principal.or_ids>`, :ref:`any <envoy_api_field_config.rbac.v2.Principal.any>`, :ref:`authenticated <envoy_api_field_config.rbac.v2.Principal.authenticated>`, :ref:`source_ip <envoy_api_field_config.rbac.v2.Principal.source_ip>`, :ref:`header <envoy_api_field_config.rbac.v2.Principal.header>`, :ref:`url_path <envoy_api_field_config.rbac.v2.Principal.url_path>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Principal.metadata>`, :ref:`not_id <envoy_api_field_config.rbac.v2.Principal.not_id>` must be set.
   
 .. _envoy_api_field_config.rbac.v2.Principal.source_ip:
 
@@ -357,17 +371,28 @@ source_ip
   
   
   
-  Precisely one of :ref:`and_ids <envoy_api_field_config.rbac.v2.Principal.and_ids>`, :ref:`or_ids <envoy_api_field_config.rbac.v2.Principal.or_ids>`, :ref:`any <envoy_api_field_config.rbac.v2.Principal.any>`, :ref:`authenticated <envoy_api_field_config.rbac.v2.Principal.authenticated>`, :ref:`source_ip <envoy_api_field_config.rbac.v2.Principal.source_ip>`, :ref:`header <envoy_api_field_config.rbac.v2.Principal.header>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Principal.metadata>`, :ref:`not_id <envoy_api_field_config.rbac.v2.Principal.not_id>` must be set.
+  Precisely one of :ref:`and_ids <envoy_api_field_config.rbac.v2.Principal.and_ids>`, :ref:`or_ids <envoy_api_field_config.rbac.v2.Principal.or_ids>`, :ref:`any <envoy_api_field_config.rbac.v2.Principal.any>`, :ref:`authenticated <envoy_api_field_config.rbac.v2.Principal.authenticated>`, :ref:`source_ip <envoy_api_field_config.rbac.v2.Principal.source_ip>`, :ref:`header <envoy_api_field_config.rbac.v2.Principal.header>`, :ref:`url_path <envoy_api_field_config.rbac.v2.Principal.url_path>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Principal.metadata>`, :ref:`not_id <envoy_api_field_config.rbac.v2.Principal.not_id>` must be set.
   
 .. _envoy_api_field_config.rbac.v2.Principal.header:
 
 header
   (:ref:`route.HeaderMatcher <envoy_api_msg_route.HeaderMatcher>`) A header (or pseudo-header such as :path or :method) on the incoming HTTP request. Only
   available for HTTP request.
+  Note: the pseudo-header :path includes the query and fragment string. Use the `url_path`
+  field if you want to match the URL path without the query and fragment string.
   
   
   
-  Precisely one of :ref:`and_ids <envoy_api_field_config.rbac.v2.Principal.and_ids>`, :ref:`or_ids <envoy_api_field_config.rbac.v2.Principal.or_ids>`, :ref:`any <envoy_api_field_config.rbac.v2.Principal.any>`, :ref:`authenticated <envoy_api_field_config.rbac.v2.Principal.authenticated>`, :ref:`source_ip <envoy_api_field_config.rbac.v2.Principal.source_ip>`, :ref:`header <envoy_api_field_config.rbac.v2.Principal.header>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Principal.metadata>`, :ref:`not_id <envoy_api_field_config.rbac.v2.Principal.not_id>` must be set.
+  Precisely one of :ref:`and_ids <envoy_api_field_config.rbac.v2.Principal.and_ids>`, :ref:`or_ids <envoy_api_field_config.rbac.v2.Principal.or_ids>`, :ref:`any <envoy_api_field_config.rbac.v2.Principal.any>`, :ref:`authenticated <envoy_api_field_config.rbac.v2.Principal.authenticated>`, :ref:`source_ip <envoy_api_field_config.rbac.v2.Principal.source_ip>`, :ref:`header <envoy_api_field_config.rbac.v2.Principal.header>`, :ref:`url_path <envoy_api_field_config.rbac.v2.Principal.url_path>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Principal.metadata>`, :ref:`not_id <envoy_api_field_config.rbac.v2.Principal.not_id>` must be set.
+  
+.. _envoy_api_field_config.rbac.v2.Principal.url_path:
+
+url_path
+  (:ref:`type.matcher.PathMatcher <envoy_api_msg_type.matcher.PathMatcher>`) A URL path on the incoming HTTP request. Only available for HTTP.
+  
+  
+  
+  Precisely one of :ref:`and_ids <envoy_api_field_config.rbac.v2.Principal.and_ids>`, :ref:`or_ids <envoy_api_field_config.rbac.v2.Principal.or_ids>`, :ref:`any <envoy_api_field_config.rbac.v2.Principal.any>`, :ref:`authenticated <envoy_api_field_config.rbac.v2.Principal.authenticated>`, :ref:`source_ip <envoy_api_field_config.rbac.v2.Principal.source_ip>`, :ref:`header <envoy_api_field_config.rbac.v2.Principal.header>`, :ref:`url_path <envoy_api_field_config.rbac.v2.Principal.url_path>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Principal.metadata>`, :ref:`not_id <envoy_api_field_config.rbac.v2.Principal.not_id>` must be set.
   
 .. _envoy_api_field_config.rbac.v2.Principal.metadata:
 
@@ -376,7 +401,7 @@ metadata
   
   
   
-  Precisely one of :ref:`and_ids <envoy_api_field_config.rbac.v2.Principal.and_ids>`, :ref:`or_ids <envoy_api_field_config.rbac.v2.Principal.or_ids>`, :ref:`any <envoy_api_field_config.rbac.v2.Principal.any>`, :ref:`authenticated <envoy_api_field_config.rbac.v2.Principal.authenticated>`, :ref:`source_ip <envoy_api_field_config.rbac.v2.Principal.source_ip>`, :ref:`header <envoy_api_field_config.rbac.v2.Principal.header>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Principal.metadata>`, :ref:`not_id <envoy_api_field_config.rbac.v2.Principal.not_id>` must be set.
+  Precisely one of :ref:`and_ids <envoy_api_field_config.rbac.v2.Principal.and_ids>`, :ref:`or_ids <envoy_api_field_config.rbac.v2.Principal.or_ids>`, :ref:`any <envoy_api_field_config.rbac.v2.Principal.any>`, :ref:`authenticated <envoy_api_field_config.rbac.v2.Principal.authenticated>`, :ref:`source_ip <envoy_api_field_config.rbac.v2.Principal.source_ip>`, :ref:`header <envoy_api_field_config.rbac.v2.Principal.header>`, :ref:`url_path <envoy_api_field_config.rbac.v2.Principal.url_path>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Principal.metadata>`, :ref:`not_id <envoy_api_field_config.rbac.v2.Principal.not_id>` must be set.
   
 .. _envoy_api_field_config.rbac.v2.Principal.not_id:
 
@@ -387,14 +412,14 @@ not_id
   
   
   
-  Precisely one of :ref:`and_ids <envoy_api_field_config.rbac.v2.Principal.and_ids>`, :ref:`or_ids <envoy_api_field_config.rbac.v2.Principal.or_ids>`, :ref:`any <envoy_api_field_config.rbac.v2.Principal.any>`, :ref:`authenticated <envoy_api_field_config.rbac.v2.Principal.authenticated>`, :ref:`source_ip <envoy_api_field_config.rbac.v2.Principal.source_ip>`, :ref:`header <envoy_api_field_config.rbac.v2.Principal.header>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Principal.metadata>`, :ref:`not_id <envoy_api_field_config.rbac.v2.Principal.not_id>` must be set.
+  Precisely one of :ref:`and_ids <envoy_api_field_config.rbac.v2.Principal.and_ids>`, :ref:`or_ids <envoy_api_field_config.rbac.v2.Principal.or_ids>`, :ref:`any <envoy_api_field_config.rbac.v2.Principal.any>`, :ref:`authenticated <envoy_api_field_config.rbac.v2.Principal.authenticated>`, :ref:`source_ip <envoy_api_field_config.rbac.v2.Principal.source_ip>`, :ref:`header <envoy_api_field_config.rbac.v2.Principal.header>`, :ref:`url_path <envoy_api_field_config.rbac.v2.Principal.url_path>`, :ref:`metadata <envoy_api_field_config.rbac.v2.Principal.metadata>`, :ref:`not_id <envoy_api_field_config.rbac.v2.Principal.not_id>` must be set.
   
 .. _envoy_api_msg_config.rbac.v2.Principal.Set:
 
 config.rbac.v2.Principal.Set
 ----------------------------
 
-`[config.rbac.v2.Principal.Set proto] <https://github.com/envoyproxy/envoy/blob/acdc6c7658638891253b2a49e74535de11984a72/api/envoy/config/rbac/v2/rbac.proto#L167>`_
+`[config.rbac.v2.Principal.Set proto] <https://github.com/envoyproxy/envoy/blob/7ea52d5e2b0bccbd3263a805e38778fa132b715d/api/envoy/config/rbac/v2/rbac.proto#L174>`_
 
 Used in the `and_ids` and `or_ids` fields in the `identifier` oneof. Depending on the context,
 each are applied with the associated behavior.
@@ -417,7 +442,7 @@ ids
 config.rbac.v2.Principal.Authenticated
 --------------------------------------
 
-`[config.rbac.v2.Principal.Authenticated proto] <https://github.com/envoyproxy/envoy/blob/acdc6c7658638891253b2a49e74535de11984a72/api/envoy/config/rbac/v2/rbac.proto#L172>`_
+`[config.rbac.v2.Principal.Authenticated proto] <https://github.com/envoyproxy/envoy/blob/7ea52d5e2b0bccbd3263a805e38778fa132b715d/api/envoy/config/rbac/v2/rbac.proto#L179>`_
 
 Authentication attributes for a downstream.
 
