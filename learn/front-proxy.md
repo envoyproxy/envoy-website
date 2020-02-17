@@ -138,7 +138,7 @@ send request-level access logs to a centralized server. Be aware that the
 volume of traffic at the edge can make logging expensive or slow, so this may
 not be cost-effective if it’s not a critical capability.
 
-Similarly, Envoy provides drop-in configuration for tracing, and and the front
+Similarly, Envoy provides drop-in configuration for tracing, and the front
 proxy is a great place to generate those tracing headers.
 
 ## Multiple Data Centers Made Simple
