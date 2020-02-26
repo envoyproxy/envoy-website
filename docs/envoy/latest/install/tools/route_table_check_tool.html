@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Route table check tool &mdash; envoy 1.14.0-dev-dd7786 documentation</title>
+  <title>Route table check tool &mdash; envoy 1.14.0-dev-e9171c documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.14.0-dev-dd7786
+                1.14.0-dev-e9171c
               </div>
             
           
@@ -190,18 +190,7 @@ match what is expected.</p>
 <a class="reference internal" href="../../configuration/operations/tools/router_check.html#config-tools-router-check-tool"><span class="std std-ref">config</span></a>.
 The tool config input file specifies urls (composed of authorities and paths)
 and expected route parameter values. Additional parameters such as additional headers are optional.</p>
-<p>Schema: All internal schemas in the tool are based on <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/dd7786a4707a037daaf36c079b027c884f86fbd7/test/tools/router_check/validation.proto">proto3</a>.
-This is enabled by an extra optional parameter <code class="docutils literal notranslate"><span class="pre">--useproto</span></code>.
-This parameter will become the default in the future releases and enables more validation features in the tool.
-Any new feature addition in validations will be added behind this parameter.</p>
-<p>Migration: If you are currently using the tool and plan to migrate to use <code class="docutils literal notranslate"><span class="pre">--useproto</span></code>,
-change the yaml/json test’s schema based on the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/dd7786a4707a037daaf36c079b027c884f86fbd7/test/tools/router_check/validation.proto">proto</a>.
-Few known changes necessary are:
-<code class="docutils literal notranslate"><span class="pre">:authority</span></code> input is now <code class="docutils literal notranslate"><span class="pre">authority</span></code>.
-<code class="docutils literal notranslate"><span class="pre">:path</span></code> input is now <code class="docutils literal notranslate"><span class="pre">path</span></code>.
-<code class="docutils literal notranslate"><span class="pre">:method</span></code> input is now <code class="docutils literal notranslate"><span class="pre">method</span></code>. This is a required property.
-<code class="docutils literal notranslate"><span class="pre">additional_headers</span></code>, <code class="docutils literal notranslate"><span class="pre">header_fields</span></code> and <code class="docutils literal notranslate"><span class="pre">custom_header_fields</span></code> contain <code class="docutils literal notranslate"><span class="pre">key</span></code> instead of <code class="docutils literal notranslate"><span class="pre">field</span></code>.
-<code class="docutils literal notranslate"><span class="pre">tests</span></code> is a root level field in the yaml/json.</p>
+<p>Schema: All internal schemas in the tool are based on <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/e9171c5b0afd7fec076a5ee67fda0b942de3cc82/test/tools/router_check/validation.proto">proto3</a>.</p>
 </dd>
 <dt>-c &lt;string&gt;,  –config-path &lt;string&gt;</dt><dd><p>Path to a v2 router config file (YAML or JSON). The router config file schema is found in
 <a class="reference internal" href="../../api-v2/api/v2/route/route.proto.html#envoy-api-file-envoy-api-v2-route-route-proto"><span class="std std-ref">config</span></a> and the config file extension
@@ -214,12 +203,6 @@ must reflect its file type (for instance, .json for JSON and .yaml for YAML).</p
 <dt><kbd><span class="option">--only-show-failures</span></kbd></dt>
 <dd><p>Displays test results for failed tests. Omits test names for passing tests if the details flag is set.</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>-p,  –useproto</dt><dd><p>Use Proto test file schema</p>
-</dd>
-</dl>
-<dl class="option-list">
 <dt><kbd><span class="option">-f</span>, <span class="option">--fail-under</span></kbd></dt>
 <dd><p>Represents a percent value for route test coverage under which the run should fail.</p>
 </dd>
@@ -233,10 +216,6 @@ asserts. Displays missing tests.</p>
 </dl>
 <dl class="simple">
 <dt>-h,  –help</dt><dd><p>Displays usage information and exits.</p>
-</dd>
-<dt>&lt;unlabelledConfigStrings&gt;  (accepted multiple times)</dt><dd><p>If you haven’t migrated to the proto schema, the binary accepts the paths to the
-router config file and the tool config JSON file in that particular order.
-The <code class="docutils literal notranslate"><span class="pre">--details</span></code> parameter can be appended at the end to show the detailed test results.</p>
 </dd>
 </dl>
 </dd>
@@ -265,12 +244,8 @@ passed. In the failed test cases, conflict details are printed.</p>
 </pre></div>
 </div>
 </dd>
-<dt>Running</dt><dd><p>Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bazel</span><span class="o">-</span><span class="nb">bin</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">router_check</span><span class="o">/</span><span class="n">router_check_tool</span> <span class="n">router_config</span><span class="o">.</span><span class="p">(</span><span class="n">yaml</span><span class="o">|</span><span class="n">json</span><span class="p">)</span> <span class="n">tool_config</span><span class="o">.</span><span class="n">json</span>
-
-<span class="n">bazel</span><span class="o">-</span><span class="nb">bin</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">router_check</span><span class="o">/</span><span class="n">router_check_tool</span> <span class="n">router_config</span><span class="o">.</span><span class="p">(</span><span class="n">yaml</span><span class="o">|</span><span class="n">json</span><span class="p">)</span> <span class="n">tool_config</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">details</span>
-
-<span class="n">bazel</span><span class="o">-</span><span class="nb">bin</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">router_check</span><span class="o">/</span><span class="n">router_check_tool</span> <span class="o">-</span><span class="n">c</span> <span class="n">router_config</span><span class="o">.</span><span class="p">(</span><span class="n">yaml</span><span class="o">|</span><span class="n">json</span><span class="p">)</span> <span class="o">-</span><span class="n">t</span> <span class="n">tool_config</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">details</span> <span class="o">--</span><span class="n">useproto</span>
+<dt>Running</dt><dd><p>Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bazel</span><span class="o">-</span><span class="nb">bin</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">router_check</span><span class="o">/</span><span class="n">router_check_tool</span> <span class="o">-</span><span class="n">c</span> <span class="n">router_config</span><span class="o">.</span><span class="p">(</span><span class="n">yaml</span><span class="o">|</span><span class="n">json</span><span class="p">)</span> <span class="o">-</span><span class="n">t</span> <span class="n">tool_config</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">details</span>
 </pre></div>
 </div>
 </dd>
