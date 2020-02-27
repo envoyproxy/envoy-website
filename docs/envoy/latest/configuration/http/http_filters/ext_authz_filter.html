@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>External Authorization &mdash; envoy 1.14.0-dev-10d40f documentation</title>
+  <title>External Authorization &mdash; envoy 1.14.0-dev-c5c1e5 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.14.0-dev-10d40f
+                1.14.0-dev-c5c1e5
               </div>
             
           
@@ -222,7 +222,7 @@
 <ul class="simple">
 <li><p>External authorization <a class="reference internal" href="../../../intro/arch_overview/security/ext_authz_filter.html#arch-overview-ext-authz"><span class="std std-ref">architecture overview</span></a></p></li>
 <li><p><a class="reference internal" href="../../../api-v2/config/filter/http/ext_authz/v2/ext_authz.proto.html#envoy-api-msg-config-filter-http-ext-authz-v2-extauthz"><span class="std std-ref">HTTP filter v2 API reference</span></a></p></li>
-<li><p>This filter should be configured with the name <em>envoy.ext_authz</em>.</p></li>
+<li><p>This filter should be configured with the name <em>envoy.filters.http.ext_authz</em>.</p></li>
 </ul>
 <p>The external authorization filter calls an external gRPC or HTTP service to check whether an incoming
 HTTP request is authorized or not.
@@ -238,7 +238,7 @@ configuration options at
 <h2>Configuration Examples<a class="headerlink" href="#configuration-examples" title="Permalink to this headline">¶</a></h2>
 <p>A sample filter configuration for a gRPC authorization server:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">http_filters</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.ext_authz</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.ext_authz</span>
     <span class="nt">typed_config</span><span class="p">:</span>
       <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.filter.http.ext_authz.v2.ExtAuthz</span>
       <span class="nt">grpc_service</span><span class="p">:</span>
@@ -271,7 +271,7 @@ configuration options at
 </div>
 <p>A sample filter configuration for a raw HTTP authorization server:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">http_filters</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.ext_authz</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.ext_authz</span>
     <span class="nt">typed_config</span><span class="p">:</span>
       <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.filter.http.ext_authz.v2.ExtAuthz</span>
       <span class="nt">http_service</span><span class="p">:</span>
@@ -310,7 +310,7 @@ In this example we add additional context on the virtual host, and disabled the 
   <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_service</span>
     <span class="nt">domains</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;*&quot;</span><span class="p p-Indicator">]</span>
     <span class="nt">per_filter_config</span><span class="p">:</span>
-      <span class="nt">envoy.ext_authz</span><span class="p">:</span>
+      <span class="nt">envoy.filters.http.ext_authz</span><span class="p">:</span>
         <span class="nt">check_settings</span><span class="p">:</span>
           <span class="nt">context_extensions</span><span class="p">:</span>
             <span class="nt">virtual_host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_service</span>
@@ -318,7 +318,7 @@ In this example we add additional context on the virtual host, and disabled the 
     <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> prefix</span><span class="p">:</span> <span class="s">&quot;/static&quot;</span> <span class="p p-Indicator">}</span>
       <span class="nt">route</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> cluster</span><span class="p">:</span> <span class="nv">some_service</span> <span class="p p-Indicator">}</span>
       <span class="nt">per_filter_config</span><span class="p">:</span>
-        <span class="nt">envoy.ext_authz</span><span class="p">:</span>
+        <span class="nt">envoy.filters.http.ext_authz</span><span class="p">:</span>
           <span class="nt">disabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
     <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> prefix</span><span class="p">:</span> <span class="s">&quot;/&quot;</span> <span class="p p-Indicator">}</span>
       <span class="nt">route</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> cluster</span><span class="p">:</span> <span class="nv">some_service</span> <span class="p p-Indicator">}</span>
