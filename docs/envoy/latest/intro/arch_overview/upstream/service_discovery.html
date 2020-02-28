@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Service discovery &mdash; envoy 1.14.0-dev-c5f430 documentation</title>
+  <title>Service discovery &mdash; envoy 1.14.0-dev-64d91b documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.14.0-dev-c5f430
+                1.14.0-dev-64d91b
               </div>
             
           
@@ -219,8 +219,10 @@ specified DNS targets. Each returned IP address in the DNS result will be consid
 host in the upstream cluster. This means that if the query returns three IP addresses, Envoy will
 assume the cluster has three hosts, and all three should be load balanced to. If a host is removed
 from the result Envoy assumes it no longer exists and will drain traffic from any existing
-connection pools. Note that Envoy never synchronously resolves DNS in the forwarding path. At the
-expense of eventual consistency, there is never a worry of blocking on a long running DNS query.</p>
+connection pools. Consequently, if a successful DNS resolution returns 0 hosts, Envoy will assume
+that the cluster does not have any hosts. Note that Envoy never synchronously resolves DNS in the
+forwarding path. At the expense of eventual consistency, there is never a worry of blocking on a
+long running DNS query.</p>
 <p>If a single DNS name resolves to the same IP multiple times, these IPs will be de-duplicated.</p>
 <p>If multiple DNS names resolve to the same IP, health checking will <em>not</em> be shared.
 This means that care should be taken if active health checking is used with DNS names that resolve
@@ -239,7 +241,9 @@ controls the refresh frequency during failures, and, if not configured, the DNS 
 strictly taking the results of the DNS query and assuming that they comprise the entire upstream
 cluster, a logical DNS cluster only uses the first IP address returned <em>when a new connection needs
 to be initiated</em>. Thus, a single logical connection pool may contain physical connections to a
-variety of different upstream hosts. Connections are never drained. This service discovery type is
+variety of different upstream hosts. Connections are never drained,
+including on a successful DNS resolution that returns 0 hosts.</p>
+<p>This service discovery type is
 optimal for large scale web services that must be accessed via DNS. Such services typically use
 round robin DNS to return many different IP addresses. Typically a different result is returned for
 each query. If strict DNS were used in this scenario, Envoy would assume that the cluster’s members
