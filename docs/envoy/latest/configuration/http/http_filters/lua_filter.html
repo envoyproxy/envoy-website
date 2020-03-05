@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Lua &mdash; envoy 1.14.0-dev-884bc7 documentation</title>
+  <title>Lua &mdash; envoy 1.14.0-dev-429271 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.14.0-dev-884bc7
+                1.14.0-dev-429271
               </div>
             
           
@@ -223,7 +223,7 @@
 <p class="admonition-title">Attention</p>
 <p>By default Envoy is built without exporting symbols that you may need when interacting with Lua
 modules installed as shared objects. Envoy may need to be built with support for exported symbols.
-Please see the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/884bc7d13c06ca5c6f59e35ed0a8726b474e1d38/bazel/README.md">Bazel docs</a> for more information.</p>
+Please see the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/4292718b9c473061ffbd5e378f36893de2953387/bazel/README.md">Bazel docs</a> for more information.</p>
 </div>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
@@ -335,7 +335,7 @@ more details on the supported API.</p>
 </div>
 <div class="section" id="complete-example">
 <span id="config-http-filters-lua-stream-handle-api"></span><h2>Complete example<a class="headerlink" href="#complete-example" title="Permalink to this headline">¶</a></h2>
-<p>A complete example using Docker is available in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/884bc7d13c06ca5c6f59e35ed0a8726b474e1d38//examples/lua">/examples/lua</a>.</p>
+<p>A complete example using Docker is available in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/4292718b9c473061ffbd5e378f36893de2953387//examples/lua">/examples/lua</a>.</p>
 </div>
 <div class="section" id="stream-handle-api">
 <h2>Stream handle API<a class="headerlink" href="#stream-handle-api" title="Permalink to this headline">¶</a></h2>
@@ -417,14 +417,16 @@ modified before they are sent to the next filter.</p>
 </div>
 <div class="section" id="httpcall">
 <h3>httpCall()<a class="headerlink" href="#httpcall" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">headers</span><span class="p">,</span> <span class="n">body</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">httpCall</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">headers</span><span class="p">,</span> <span class="n">body</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">httpCall</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">asynchronous</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Makes an HTTP call to an upstream host. Envoy will yield the script until the call completes or
-has an error. <em>cluster</em> is a string which maps to a configured cluster manager cluster. <em>headers</em>
+<p>Makes an HTTP call to an upstream host. <em>cluster</em> is a string which maps to a configured cluster manager cluster. <em>headers</em>
 is a table of key/value pairs to send (the value can be a string or table of strings). Note that
 the <em>:method</em>, <em>:path</em>, and <em>:authority</em> headers must be set. <em>body</em> is an optional string of body
 data to send. <em>timeout</em> is an integer that specifies the call timeout in milliseconds.</p>
+<p><em>asynchronous</em> is a boolean flag. If asynchronous is set to true, Envoy will make the HTTP request and continue,
+regardless of response success or failure. If this is set to false, or not set, Envoy will yield the script
+until the call completes or has an error.</p>
 <p>Returns <em>headers</em> which is a table of response headers. Returns <em>body</em> which is the string response
 body. May be nil if there is no body.</p>
 </div>
@@ -473,7 +475,7 @@ under the filter name i.e. <em>envoy.filters.http.lua</em>. Below is an example 
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">streamInfo</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">streamInfo</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/884bc7d13c06ca5c6f59e35ed0a8726b474e1d38/include/envoy/stream_info/stream_info.h">information</a> related to the current request.</p>
+<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/4292718b9c473061ffbd5e378f36893de2953387/include/envoy/stream_info/stream_info.h">information</a> related to the current request.</p>
 <p>Returns a <a class="reference internal" href="#config-http-filters-lua-stream-info-wrapper"><span class="std std-ref">stream info object</span></a>.</p>
 </div>
 <div class="section" id="connection">
@@ -481,7 +483,7 @@ under the filter name i.e. <em>envoy.filters.http.lua</em>. Below is an example 
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">connection</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">connection</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Returns the current request’s underlying <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/884bc7d13c06ca5c6f59e35ed0a8726b474e1d38/include/envoy/network/connection.h">connection</a>.</p>
+<p>Returns the current request’s underlying <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/4292718b9c473061ffbd5e378f36893de2953387/include/envoy/network/connection.h">connection</a>.</p>
 <p>Returns a <a class="reference internal" href="#config-http-filters-lua-connection-wrapper"><span class="std std-ref">connection object</span></a>.</p>
 </div>
 <div class="section" id="importpublickey">
@@ -601,7 +603,7 @@ key. <em>value</em> is <em>metadata</em> entry value.</p>
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">streamInfo</span><span class="p">:</span><span class="n">protocol</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Returns the string representation of <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/884bc7d13c06ca5c6f59e35ed0a8726b474e1d38/include/envoy/http/protocol.h">HTTP protocol</a>
+<p>Returns the string representation of <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/4292718b9c473061ffbd5e378f36893de2953387/include/envoy/http/protocol.h">HTTP protocol</a>
 used by the current request. The possible values are: <em>HTTP/1.0</em>, <em>HTTP/1.1</em>, and <em>HTTP/2</em>.</p>
 </div>
 <div class="section" id="dynamicmetadata">
@@ -670,7 +672,7 @@ key. <em>value</em> is <em>dynamicMetadata</em> entry value.</p>
 <span class="kr">end</span>
 </pre></div>
 </div>
-<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/884bc7d13c06ca5c6f59e35ed0a8726b474e1d38/include/envoy/ssl/connection.h">SSL connection</a> object when the connection is
+<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/4292718b9c473061ffbd5e378f36893de2953387/include/envoy/ssl/connection.h">SSL connection</a> object when the connection is
 secured and <em>nil</em> when it is not.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
