@@ -20,7 +20,7 @@ AwsRequestSigning :ref:`configuration overview <config_http_filters_aws_request_
 extensions.filters.http.aws_request_signing.v3.AwsRequestSigning
 ----------------------------------------------------------------
 
-`[extensions.filters.http.aws_request_signing.v3.AwsRequestSigning proto] <https://github.com/envoyproxy/envoy/blob/6b88303242ec070d28f734077e4a25c2abcd27e1/api/envoy/extensions/filters/http/aws_request_signing/v3/aws_request_signing.proto#L17>`_
+`[extensions.filters.http.aws_request_signing.v3.AwsRequestSigning proto] <https://github.com/envoyproxy/envoy/blob/28f33a776960dd717d4b57da73b0dbce7dbb3e85/api/envoy/extensions/filters/http/aws_request_signing/v3/aws_request_signing.proto#L17>`_
 
 Top level configuration for the AWS request signing filter.
 
@@ -28,7 +28,8 @@ Top level configuration for the AWS request signing filter.
 
   {
     "service_name": "...",
-    "region": "..."
+    "region": "...",
+    "host_rewrite": "..."
   }
 
 .. _envoy_v3_api_field_extensions.filters.http.aws_request_signing.v3.AwsRequestSigning.service_name:
@@ -48,6 +49,20 @@ region
   endpoint.
   
   Example: us-west-2
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.aws_request_signing.v3.AwsRequestSigning.host_rewrite:
+
+host_rewrite
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Indicates that before signing headers, the host header will be swapped with
+  this value. If not set or empty, the original host header value
+  will be used and no rewrite will happen.
+  
+  Note: this rewrite affects both signing and host header forwarding. However, this
+  option shouldn't be used with
+  :ref:`HCM host rewrite <envoy_v3_api_field_config.route.v3.RouteAction.host_rewrite_literal>` given that the
+  value set here would be used for signing whereas the value set in the HCM would be used
+  for host header forwarding which is not the desired outcome.
   
   
 
