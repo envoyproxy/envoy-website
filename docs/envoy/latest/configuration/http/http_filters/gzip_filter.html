@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Gzip &mdash; envoy 1.14.0-dev-5a3542 documentation</title>
+  <title>Gzip &mdash; envoy 1.14.0-dev-c85bf3 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.14.0-dev-5a3542
+                1.14.0-dev-c85bf3
               </div>
             
           
@@ -262,7 +262,8 @@ response and request allow.</p>
 that the “gzip” will have a higher weight then “*”. For example, if <em>accept-encoding</em>
 is “gzip;q=0,*;q=1”, the filter will not compress. But if the header is set to
 “*;q=0,gzip;q=1”, the filter will compress.</p></li>
-<li><p>A request whose <em>accept-encoding</em> header includes “identity”.</p></li>
+<li><p>A request whose <em>accept-encoding</em> header includes any encoding type with a higher
+weight than “gzip“‘s given the corresponding compression filter is present in the chain.</p></li>
 <li><p>A response contains a <em>content-encoding</em> header.</p></li>
 <li><p>A response contains a <em>cache-control</em> header whose value includes “no-transform”.</p></li>
 <li><p>A response contains a <em>transfer-encoding</em> header whose value includes “gzip”.</p></li>
@@ -317,7 +318,15 @@ is not chunked).</p></li>
 </tr>
 <tr class="row-even"><td><p>header_gzip</p></td>
 <td><p>Counter</p></td>
+<td><p>Number of requests sent with “gzip” set as the <em>accept-encoding</em>. This counter is deprecated in favour of <em>header_compressor_used</em>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>header_compressor_used</p></td>
+<td><p>Counter</p></td>
 <td><p>Number of requests sent with “gzip” set as the <em>accept-encoding</em>.</p></td>
+</tr>
+<tr class="row-even"><td><p>header_compressor_overshadowed</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of requests skipped by this filter instance because they were handled by another filter in the same filter chain.</p></td>
 </tr>
 <tr class="row-odd"><td><p>header_wildcard</p></td>
 <td><p>Counter</p></td>

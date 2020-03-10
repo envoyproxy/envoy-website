@@ -20,20 +20,17 @@ Gzip :ref:`configuration overview <config_http_filters_gzip>`.
 extensions.filters.http.gzip.v3.Gzip
 ------------------------------------
 
-`[extensions.filters.http.gzip.v3.Gzip proto] <https://github.com/envoyproxy/envoy/blob/5a3542c8d1f092aaee0fcc8737f350e4050e3701/api/envoy/extensions/filters/http/gzip/v3/gzip.proto#L19>`_
+`[extensions.filters.http.gzip.v3.Gzip proto] <https://github.com/envoyproxy/envoy/blob/c85bf324753414c205f1006724d2f5e67dec2d76/api/envoy/extensions/filters/http/gzip/v3/gzip.proto#L21>`_
 
 
 .. code-block:: json
 
   {
     "memory_level": "{...}",
-    "content_length": "{...}",
     "compression_level": "...",
     "compression_strategy": "...",
-    "content_type": [],
-    "disable_on_etag_header": "...",
-    "remove_accept_encoding_header": "...",
-    "window_bits": "{...}"
+    "window_bits": "{...}",
+    "compressor": "{...}"
   }
 
 .. _envoy_v3_api_field_extensions.filters.http.gzip.v3.Gzip.memory_level:
@@ -41,12 +38,6 @@ extensions.filters.http.gzip.v3.Gzip
 memory_level
   (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Value from 1 to 9 that controls the amount of internal memory used by zlib. Higher values
   use more memory, but are faster and produce better compression results. The default value is 5.
-  
-  
-.. _envoy_v3_api_field_extensions.filters.http.gzip.v3.Gzip.content_length:
-
-content_length
-  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Minimum response length, in bytes, which will trigger compression. The default value is 30.
   
   
 .. _envoy_v3_api_field_extensions.filters.http.gzip.v3.Gzip.compression_level:
@@ -70,29 +61,6 @@ compression_strategy
   refer to zlib manual.
   
   
-.. _envoy_v3_api_field_extensions.filters.http.gzip.v3.Gzip.content_type:
-
-content_type
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Set of strings that allows specifying which mime-types yield compression; e.g.,
-  application/json, text/html, etc. When this field is not defined, compression will be applied
-  to the following mime-types: "application/javascript", "application/json",
-  "application/xhtml+xml", "image/svg+xml", "text/css", "text/html", "text/plain", "text/xml".
-  
-  
-.. _envoy_v3_api_field_extensions.filters.http.gzip.v3.Gzip.disable_on_etag_header:
-
-disable_on_etag_header
-  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If true, disables compression when the response contains an etag header. When it is false, the
-  filter will preserve weak etags and remove the ones that require strong validation.
-  
-  
-.. _envoy_v3_api_field_extensions.filters.http.gzip.v3.Gzip.remove_accept_encoding_header:
-
-remove_accept_encoding_header
-  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If true, removes accept-encoding from the request headers before dispatching it to the upstream
-  so that responses do not get compressed before reaching the filter.
-  
-  
 .. _envoy_v3_api_field_extensions.filters.http.gzip.v3.Gzip.window_bits:
 
 window_bits
@@ -102,12 +70,20 @@ window_bits
   zlib manual > deflateInit2.
   
   
+.. _envoy_v3_api_field_extensions.filters.http.gzip.v3.Gzip.compressor:
+
+compressor
+  (:ref:`extensions.filters.http.compressor.v3.Compressor <envoy_v3_api_msg_extensions.filters.http.compressor.v3.Compressor>`) Set of configuration parameters common for all compression filters. If this field is set then
+  the fields `content_length`, `content_type`, `disable_on_etag_header` and
+  `remove_accept_encoding_header` are ignored.
+  
+  
 .. _envoy_v3_api_msg_extensions.filters.http.gzip.v3.Gzip.CompressionLevel:
 
 extensions.filters.http.gzip.v3.Gzip.CompressionLevel
 -----------------------------------------------------
 
-`[extensions.filters.http.gzip.v3.Gzip.CompressionLevel proto] <https://github.com/envoyproxy/envoy/blob/5a3542c8d1f092aaee0fcc8737f350e4050e3701/api/envoy/extensions/filters/http/gzip/v3/gzip.proto#L30>`_
+`[extensions.filters.http.gzip.v3.Gzip.CompressionLevel proto] <https://github.com/envoyproxy/envoy/blob/c85bf324753414c205f1006724d2f5e67dec2d76/api/envoy/extensions/filters/http/gzip/v3/gzip.proto#L32>`_
 
 
 .. code-block:: json
@@ -121,7 +97,7 @@ extensions.filters.http.gzip.v3.Gzip.CompressionLevel
 Enum extensions.filters.http.gzip.v3.Gzip.CompressionLevel.Enum
 ---------------------------------------------------------------
 
-`[extensions.filters.http.gzip.v3.Gzip.CompressionLevel.Enum proto] <https://github.com/envoyproxy/envoy/blob/5a3542c8d1f092aaee0fcc8737f350e4050e3701/api/envoy/extensions/filters/http/gzip/v3/gzip.proto#L34>`_
+`[extensions.filters.http.gzip.v3.Gzip.CompressionLevel.Enum proto] <https://github.com/envoyproxy/envoy/blob/c85bf324753414c205f1006724d2f5e67dec2d76/api/envoy/extensions/filters/http/gzip/v3/gzip.proto#L36>`_
 
 
 .. _envoy_v3_api_enum_value_extensions.filters.http.gzip.v3.Gzip.CompressionLevel.Enum.DEFAULT:
@@ -145,7 +121,7 @@ SPEED
 Enum extensions.filters.http.gzip.v3.Gzip.CompressionStrategy
 -------------------------------------------------------------
 
-`[extensions.filters.http.gzip.v3.Gzip.CompressionStrategy proto] <https://github.com/envoyproxy/envoy/blob/5a3542c8d1f092aaee0fcc8737f350e4050e3701/api/envoy/extensions/filters/http/gzip/v3/gzip.proto#L23>`_
+`[extensions.filters.http.gzip.v3.Gzip.CompressionStrategy proto] <https://github.com/envoyproxy/envoy/blob/c85bf324753414c205f1006724d2f5e67dec2d76/api/envoy/extensions/filters/http/gzip/v3/gzip.proto#L25>`_
 
 
 .. _envoy_v3_api_enum_value_extensions.filters.http.gzip.v3.Gzip.CompressionStrategy.DEFAULT:
