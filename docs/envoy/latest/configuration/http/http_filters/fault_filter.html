@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Fault Injection &mdash; envoy 1.14.0-dev-a22b93 documentation</title>
+  <title>Fault Injection &mdash; envoy 1.14.0-dev-55971b documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.14.0-dev-a22b93
+                1.14.0-dev-55971b
               </div>
             
           
@@ -249,10 +249,15 @@ including the router filter.</p>
 This is useful in certain scenarios in which it is desired to allow the client to specify its own
 fault configuration. The currently supported header controls are:</p>
 <ul class="simple">
+<li><p>Request abort configuration via the <em>x-envoy-fault-abort-request</em> header. The header value
+should be an integer that specifies the HTTP status code to return in response to a request
+and must be in the range [200, 600). In order for the header to work, <a class="reference internal" href="../../../api-v2/config/filter/http/fault/v2/fault.proto.html#envoy-api-field-config-filter-http-fault-v2-faultabort-header-abort"><span class="std std-ref">header_abort</span></a> needs to be set.</p></li>
 <li><p>Request delay configuration via the <em>x-envoy-fault-delay-request</em> header. The header value
-should be an integer that specifies the number of milliseconds to throttle the latency for.</p></li>
+should be an integer that specifies the number of milliseconds to throttle the latency for.
+In order for the header to work, <a class="reference internal" href="../../../api-v2/config/filter/fault/v2/fault.proto.html#envoy-api-field-config-filter-fault-v2-faultdelay-header-delay"><span class="std std-ref">header_delay</span></a> needs to be set.</p></li>
 <li><p>Response rate limit configuration via the <em>x-envoy-fault-throughput-response</em> header. The
-header value should be an integer that specified the limit in KiB/s and must be &gt; 0.</p></li>
+header value should be an integer that specified the limit in KiB/s and must be &gt; 0. In order
+for the header to work, <a class="reference internal" href="../../../api-v2/config/filter/fault/v2/fault.proto.html#envoy-api-field-config-filter-fault-v2-faultratelimit-header-limit"><span class="std std-ref">header_limit</span></a> needs to be set.</p></li>
 </ul>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
@@ -266,6 +271,10 @@ options:</p>
 <span class="nt">typed_config</span><span class="p">:</span>
   <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.filter.http.fault.v2.HTTPFault</span>
   <span class="nt">max_active_faults</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
+  <span class="nt">abort</span><span class="p">:</span>
+    <span class="nt">header_abort</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+    <span class="nt">percentage</span><span class="p">:</span>
+      <span class="nt">numerator</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
   <span class="nt">delay</span><span class="p">:</span>
     <span class="nt">header_delay</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
     <span class="nt">percentage</span><span class="p">:</span>
