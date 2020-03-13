@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Lua &mdash; envoy 1.14.0-dev-660891 documentation</title>
+  <title>Lua &mdash; envoy 1.14.0-dev-2c0349 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.14.0-dev-660891
+                1.14.0-dev-2c0349
               </div>
             
           
@@ -224,13 +224,19 @@
 <p class="admonition-title">Attention</p>
 <p>By default Envoy is built without exporting symbols that you may need when interacting with Lua
 modules installed as shared objects. Envoy may need to be built with support for exported symbols.
-Please see the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/660891ee6ea4f1cff3fe74e6faaa0deae90dfe84/bazel/README.md">Bazel docs</a> for more information.</p>
+Please see the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2c03496a6b5e9e32bc10db40b3fb85e4610bdde1/bazel/README.md">Bazel docs</a> for more information.</p>
 </div>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>The HTTP Lua filter allows <a class="reference external" href="https://www.lua.org/">Lua</a> scripts to be run during both the request
 and response flows. <a class="reference external" href="https://luajit.org/">LuaJIT</a> is used as the runtime. Because of this, the
 supported Lua version is mostly 5.1 with some 5.2 features. See the <a class="reference external" href="https://luajit.org/extensions.html">LuaJIT documentation</a> for more details.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference external" href="https://github.com/moonjit/moonjit/">moonjit</a> is a continuation of LuaJIT development, which
+supports more 5.2 features and additional architectures. Envoy can be built with moonjit support
+by using the following bazel option: <code class="docutils literal notranslate"><span class="pre">--//source/extensions/filters/common/lua:moonjit=1</span></code>.</p>
+</div>
 <p>The filter only supports loading Lua code in-line in the configuration. If local filesystem code
 is desired, a trivial in-line script can be used to load the rest of the code from the local
 environment.</p>
@@ -336,7 +342,7 @@ more details on the supported API.</p>
 </div>
 <div class="section" id="complete-example">
 <span id="config-http-filters-lua-stream-handle-api"></span><h2>Complete example<a class="headerlink" href="#complete-example" title="Permalink to this headline">¶</a></h2>
-<p>A complete example using Docker is available in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/660891ee6ea4f1cff3fe74e6faaa0deae90dfe84//examples/lua">/examples/lua</a>.</p>
+<p>A complete example using Docker is available in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2c03496a6b5e9e32bc10db40b3fb85e4610bdde1//examples/lua">/examples/lua</a>.</p>
 </div>
 <div class="section" id="stream-handle-api">
 <h2>Stream handle API<a class="headerlink" href="#stream-handle-api" title="Permalink to this headline">¶</a></h2>
@@ -476,7 +482,7 @@ under the filter name i.e. <em>envoy.filters.http.lua</em>. Below is an example 
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">streamInfo</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">streamInfo</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/660891ee6ea4f1cff3fe74e6faaa0deae90dfe84/include/envoy/stream_info/stream_info.h">information</a> related to the current request.</p>
+<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2c03496a6b5e9e32bc10db40b3fb85e4610bdde1/include/envoy/stream_info/stream_info.h">information</a> related to the current request.</p>
 <p>Returns a <a class="reference internal" href="#config-http-filters-lua-stream-info-wrapper"><span class="std std-ref">stream info object</span></a>.</p>
 </div>
 <div class="section" id="connection">
@@ -484,7 +490,7 @@ under the filter name i.e. <em>envoy.filters.http.lua</em>. Below is an example 
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">connection</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">connection</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Returns the current request’s underlying <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/660891ee6ea4f1cff3fe74e6faaa0deae90dfe84/include/envoy/network/connection.h">connection</a>.</p>
+<p>Returns the current request’s underlying <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2c03496a6b5e9e32bc10db40b3fb85e4610bdde1/include/envoy/network/connection.h">connection</a>.</p>
 <p>Returns a <a class="reference internal" href="#config-http-filters-lua-connection-wrapper"><span class="std std-ref">connection object</span></a>.</p>
 </div>
 <div class="section" id="importpublickey">
@@ -604,7 +610,7 @@ key. <em>value</em> is <em>metadata</em> entry value.</p>
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">streamInfo</span><span class="p">:</span><span class="n">protocol</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Returns the string representation of <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/660891ee6ea4f1cff3fe74e6faaa0deae90dfe84/include/envoy/http/protocol.h">HTTP protocol</a>
+<p>Returns the string representation of <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2c03496a6b5e9e32bc10db40b3fb85e4610bdde1/include/envoy/http/protocol.h">HTTP protocol</a>
 used by the current request. The possible values are: <em>HTTP/1.0</em>, <em>HTTP/1.1</em>, and <em>HTTP/2</em>.</p>
 </div>
 <div class="section" id="dynamicmetadata">
@@ -673,7 +679,7 @@ key. <em>value</em> is <em>dynamicMetadata</em> entry value.</p>
 <span class="kr">end</span>
 </pre></div>
 </div>
-<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/660891ee6ea4f1cff3fe74e6faaa0deae90dfe84/include/envoy/ssl/connection.h">SSL connection</a> object when the connection is
+<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2c03496a6b5e9e32bc10db40b3fb85e4610bdde1/include/envoy/ssl/connection.h">SSL connection</a> object when the connection is
 secured and <em>nil</em> when it is not.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
