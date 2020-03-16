@@ -20,7 +20,7 @@ Outlier Detection (passive monitoring).
 
 A healthy host is one that can respond positively to a request. Envoy can be
 configured to actively test hosts with
-[Health Checking](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/health_checking.html#arch-overview-health-checking),
+[Health Checking](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/upstream/health_checking#arch-overview-health-checking),
 and it is defined on a per-[cluster](https://www.envoyproxy.io/docs/envoy/latest/api-v2/api/v2/cds.proto) (i.e. service)
 basis. The simplest health check, or L3/L4 check, just ensures each
 [endpoint](https://www.envoyproxy.io/docs/envoy/latest/api-v2/api/v2/endpoint/endpoint.proto) (i.e. port on a host or container)
