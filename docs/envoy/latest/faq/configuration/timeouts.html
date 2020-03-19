@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>How do I configure timeouts? &mdash; envoy 1.14.0-dev-56e5b8 documentation</title>
+  <title>How do I configure timeouts? &mdash; envoy 1.14.0-dev-7478c8 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.14.0-dev-56e5b8
+                1.14.0-dev-7478c8
               </div>
             
           
@@ -234,6 +234,16 @@ received by the client.</p>
 is the amount of time that the connection manager will allow a stream to exist with no upstream
 or downstream activity. The default stream idle timeout is <em>5 minutes</em>. This timeout is strongly
 recommended for streaming APIs (requests or responses that never end).</p></li>
+<li><p>The HTTP protocol <a class="reference internal" href="../../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-httpprotocoloptions-max-stream-duration"><span class="std std-ref">max_stream_duration</span></a>
+is defined in a generic message used by the HTTP connection manager. The max stream duration is the
+maximum time that a stream’s lifetime will span. You can use this functionality when you want to reset
+HTTP request/response streams periodically. You can’t use <a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-request-timeout"><span class="std std-ref">request_timeout</span></a>
+in this situation because this timer will be disarmed if a response header is received on the request/response streams.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>The current implementation implements this timeout on downstream connections only.</p>
+</div>
+</li>
 </ul>
 </div>
 <div class="section" id="route-timeouts">
