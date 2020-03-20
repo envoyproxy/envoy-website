@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>AWS Lambda &mdash; envoy 1.14.0-dev-30bd2d documentation</title>
+  <title>AWS Lambda &mdash; envoy 1.14.0-dev-c3a569 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.14.0-dev-30bd2d
+                1.14.0-dev-c3a569
               </div>
             
           
@@ -235,10 +235,70 @@ schema.</p>
 <code class="docutils literal notranslate"><span class="pre">true</span></code>, then the payload is sent to Lambda without any transformations.
 <em>Note</em>: This means you lose access to all the HTTP headers in the Lambda function.</p>
 <p>However, if <a class="reference internal" href="../../../api-v2/config/filter/http/aws_lambda/v2alpha/aws_lambda.proto.html#envoy-api-msg-config-filter-http-aws-lambda-v2alpha-config"><span class="std std-ref">payload_passthrough</span></a>
-is set to <code class="docutils literal notranslate"><span class="pre">false</span></code>, then the HTTP request is transformed to a JSON (the details of the JSON transformation will be
-documented once that feature is implemented).</p>
-<p>The filter supports <a class="reference internal" href="../../../api-v2/config/filter/http/aws_lambda/v2alpha/aws_lambda.proto.html#envoy-api-msg-config-filter-http-aws-lambda-v2alpha-perrouteconfig"><span class="std std-ref">per-filter configuration</span></a>.
-Below are some examples the show how the filter can be used in different deployment scenarios.</p>
+is set to <code class="docutils literal notranslate"><span class="pre">false</span></code>, then the HTTP request is transformed to a JSON payload with the following schema:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;rawPath&quot;</span><span class="p">:</span> <span class="s2">&quot;/path/to/resource&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;GET|POST|HEAD|...&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;header-key&quot;</span><span class="p">:</span> <span class="s2">&quot;header-value&quot;</span><span class="p">,</span> <span class="o">...</span> <span class="p">},</span>
+    <span class="s2">&quot;queryStringParameters&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">},</span>
+    <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;isBase64Encoded&quot;</span><span class="p">:</span> <span class="n">true</span><span class="o">|</span><span class="n">false</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">rawPath</span></code> is the HTTP request resource path (including the query string)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">method</span></code> is the HTTP request method. For example <code class="docutils literal notranslate"><span class="pre">GET</span></code>, <code class="docutils literal notranslate"><span class="pre">PUT</span></code>, etc.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">headers</span></code> are the HTTP request headers. If multiple headers share the same name, their values are
+coalesced into a single comma-separated value.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">queryStringParameters</span></code> are the HTTP request query string parameters. If multiple parameters share the same name,
+the last one wins. That is, parameters are _not_ coalesced into a single value if they share the same key name.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">body</span></code> the body of the HTTP request is base64-encoded by the filter if the <code class="docutils literal notranslate"><span class="pre">content-type</span></code> header exists and is _not_ one of the following:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>text/*</p></li>
+<li><p>application/json</p></li>
+<li><p>application/xml</p></li>
+<li><p>application/javascript</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>Otherwise, the body of HTTP request is added to the JSON payload as is.</p>
+<p>On the other end, the response of the Lambda function must conform to the following schema:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;statusCode&quot;</span><span class="p">:</span> <span class="o">...</span>
+    <span class="s2">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;header-key&quot;</span><span class="p">:</span> <span class="s2">&quot;header-value&quot;</span><span class="p">,</span> <span class="o">...</span> <span class="p">},</span>
+    <span class="s2">&quot;cookies&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;key1=value1; HttpOnly; ...&quot;</span><span class="p">,</span> <span class="s2">&quot;key2=value2; Secure; ...&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+    <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;isBase64Encoded&quot;</span><span class="p">:</span> <span class="n">true</span><span class="o">|</span><span class="n">false</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">statusCode</span></code> field is an integer used as the HTTP response code. If this key is missing, Envoy returns a <code class="docutils literal notranslate"><span class="pre">200</span>
+<span class="pre">OK</span></code>.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">headers</span></code> are used as the HTTP response headers.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">cookies</span></code> are used as <code class="docutils literal notranslate"><span class="pre">Set-Cookie</span></code> response headers. Unlike the request headers, cookies are _not_ part of the
+response headers because the <code class="docutils literal notranslate"><span class="pre">Set-Cookie</span></code> header cannot contain more than one value per the <a class="reference external" href="https://tools.ietf.org/html/rfc6265#section-4.1">RFC</a>. Therefore, Each
+key/value pair in this JSON array will translate to a single <code class="docutils literal notranslate"><span class="pre">Set-Cookie</span></code> header.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">body</span></code> is base64-decoded if it is marked as base64-encoded and sent as the body of the HTTP response.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The target cluster must have its endpoint set to the <a class="reference external" href="https://docs.aws.amazon.com/general/latest/gr/lambda-service.html">regional Lambda endpoint</a>. Use the same region as the Lambda
+function.</p>
+<p>AWS IAM credentials must be defined in either environment variables, EC2 metadata or ECS task metadata.</p>
+</div>
+<p>The filter supports <a class="reference internal" href="../../../api-v2/config/filter/http/aws_lambda/v2alpha/aws_lambda.proto.html#envoy-api-msg-config-filter-http-aws-lambda-v2alpha-perrouteconfig"><span class="std std-ref">per-filter configuration</span></a>.</p>
+<p>If you use the per-filter configuration, the target cluster _must_ have the following metadata:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">filter_metadata</span><span class="p">:</span>
+    <span class="nt">com.amazonaws.lambda</span><span class="p">:</span>
+      <span class="nt">egress_gateway</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+<p>Below are some examples that show how the filter can be used in different deployment scenarios.</p>
 <div class="section" id="example-configuration">
 <h2>Example configuration<a class="headerlink" href="#example-configuration" title="Permalink to this headline">¶</a></h2>
 <p>In this configuration, the filter applies to all routes in the filter chain of the http connection manager:</p>
