@@ -21,14 +21,16 @@ gRPC statistics filter
 config.filter.http.grpc_stats.v2alpha.FilterConfig
 --------------------------------------------------
 
-`[config.filter.http.grpc_stats.v2alpha.FilterConfig proto] <https://github.com/envoyproxy/envoy/blob/986e9413da9b8a03050e3e587bc0cc54a44078fa/api/envoy/config/filter/http/grpc_stats/v2alpha/config.proto#L20>`_
+`[config.filter.http.grpc_stats.v2alpha.FilterConfig proto] <https://github.com/envoyproxy/envoy/blob/715992f3ac891d87e67566ffbfd6b3af8d8a4e1d/api/envoy/config/filter/http/grpc_stats/v2alpha/config.proto#L24>`_
 
 gRPC statistics filter configuration
 
 .. code-block:: json
 
   {
-    "emit_filter_state": "..."
+    "emit_filter_state": "...",
+    "individual_method_stats_allowlist": "{...}",
+    "stats_for_all_methods": "{...}"
   }
 
 .. _envoy_api_field_config.filter.http.grpc_stats.v2alpha.FilterConfig.emit_filter_state:
@@ -38,6 +40,43 @@ emit_filter_state
   counts.
   
   
+.. _envoy_api_field_config.filter.http.grpc_stats.v2alpha.FilterConfig.individual_method_stats_allowlist:
+
+individual_method_stats_allowlist
+  (:ref:`core.GrpcMethodList <envoy_api_msg_core.GrpcMethodList>`) If set, specifies an allowlist of service/methods that will have individual stats
+  emitted for them. Any call that does not match the allowlist will be counted
+  in a stat with no method specifier: `cluster.<name>.grpc.*`.
+  
+  
+  
+  Only one of :ref:`individual_method_stats_allowlist <envoy_api_field_config.filter.http.grpc_stats.v2alpha.FilterConfig.individual_method_stats_allowlist>`, :ref:`stats_for_all_methods <envoy_api_field_config.filter.http.grpc_stats.v2alpha.FilterConfig.stats_for_all_methods>` may be set.
+  
+.. _envoy_api_field_config.filter.http.grpc_stats.v2alpha.FilterConfig.stats_for_all_methods:
+
+stats_for_all_methods
+  (`BoolValue <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue>`_) If set to true, emit stats for all service/method names.
+  
+  If set to false, emit stats for all service/message types to the same stats without including
+  the service/method in the name, with prefix `cluster.<name>.grpc`. This can be useful if
+  service/method granularity is not needed, or if each cluster only receives a single method.
+  
+  .. attention::
+    This option is only safe if all clients are trusted. If this option is enabled
+    with untrusted clients, the clients could cause unbounded growth in the number of stats in
+    Envoy, using unbounded memory and potentially slowing down stats pipelines.
+  
+  .. attention::
+    If neither `individual_method_stats_allowlist` nor `stats_for_all_methods` is set, the
+    behavior will default to `stats_for_all_methods=true`. This default value is deprecated,
+    and in a future release, if neither field is set, it will default to
+    `stats_for_all_methods=false` in order to be safe by default. This behavior can be
+    controlled with runtime override
+    `envoy.deprecated_features.grpc_stats_filter_enable_stats_for_all_methods_by_default`.
+  
+  
+  
+  Only one of :ref:`individual_method_stats_allowlist <envoy_api_field_config.filter.http.grpc_stats.v2alpha.FilterConfig.individual_method_stats_allowlist>`, :ref:`stats_for_all_methods <envoy_api_field_config.filter.http.grpc_stats.v2alpha.FilterConfig.stats_for_all_methods>` may be set.
+  
 
 
 .. _envoy_api_msg_config.filter.http.grpc_stats.v2alpha.FilterObject:
@@ -45,7 +84,7 @@ emit_filter_state
 config.filter.http.grpc_stats.v2alpha.FilterObject
 --------------------------------------------------
 
-`[config.filter.http.grpc_stats.v2alpha.FilterObject proto] <https://github.com/envoyproxy/envoy/blob/986e9413da9b8a03050e3e587bc0cc54a44078fa/api/envoy/config/filter/http/grpc_stats/v2alpha/config.proto#L27>`_
+`[config.filter.http.grpc_stats.v2alpha.FilterObject proto] <https://github.com/envoyproxy/envoy/blob/715992f3ac891d87e67566ffbfd6b3af8d8a4e1d/api/envoy/config/filter/http/grpc_stats/v2alpha/config.proto#L58>`_
 
 gRPC statistics filter state object in protobuf form.
 
