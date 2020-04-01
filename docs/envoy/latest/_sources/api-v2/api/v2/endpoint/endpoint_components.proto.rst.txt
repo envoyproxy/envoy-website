@@ -9,7 +9,7 @@ Endpoints
 endpoint.Endpoint
 -----------------
 
-`[endpoint.Endpoint proto] <https://github.com/envoyproxy/envoy/blob/0daa0fd25da801e256402004125d5fbd015c2539/api/envoy/api/v2/endpoint/endpoint_components.proto#L23>`_
+`[endpoint.Endpoint proto] <https://github.com/envoyproxy/envoy/blob/b5a3405b2725e979a93e7410fce7c57a0c66d8db/api/envoy/api/v2/endpoint/endpoint_components.proto#L23>`_
 
 Upstream host identifier.
 
@@ -17,7 +17,8 @@ Upstream host identifier.
 
   {
     "address": "{...}",
-    "health_check_config": "{...}"
+    "health_check_config": "{...}",
+    "hostname": "..."
   }
 
 .. _envoy_api_field_endpoint.Endpoint.address:
@@ -46,19 +47,29 @@ health_check_config
     :ref:`active health checking <arch_overview_health_checking>` enabled.
   
   
+.. _envoy_api_field_endpoint.Endpoint.hostname:
+
+hostname
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The hostname associated with this endpoint. This hostname is not used for routing or address
+  resolution. If provided, it will be associated with the endpoint, and can be used for features
+  that require a hostname, like
+  :ref:`auto_host_rewrite <envoy_api_field_route.RouteAction.auto_host_rewrite>`.
+  
+  
 .. _envoy_api_msg_endpoint.Endpoint.HealthCheckConfig:
 
 endpoint.Endpoint.HealthCheckConfig
 -----------------------------------
 
-`[endpoint.Endpoint.HealthCheckConfig proto] <https://github.com/envoyproxy/envoy/blob/0daa0fd25da801e256402004125d5fbd015c2539/api/envoy/api/v2/endpoint/endpoint_components.proto#L25>`_
+`[endpoint.Endpoint.HealthCheckConfig proto] <https://github.com/envoyproxy/envoy/blob/b5a3405b2725e979a93e7410fce7c57a0c66d8db/api/envoy/api/v2/endpoint/endpoint_components.proto#L25>`_
 
 The optional health check configuration.
 
 .. code-block:: json
 
   {
-    "port_value": "..."
+    "port_value": "...",
+    "hostname": "..."
   }
 
 .. _envoy_api_field_endpoint.Endpoint.HealthCheckConfig.port_value:
@@ -72,6 +83,16 @@ port_value
   to have different health check address port.
   
   
+.. _envoy_api_field_endpoint.Endpoint.HealthCheckConfig.hostname:
+
+hostname
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) By default, the host header for L7 health checks is controlled by cluster level configuration
+  (see: :ref:`host <envoy_api_field_core.HealthCheck.HttpHealthCheck.host>` and
+  :ref:`authority <envoy_api_field_core.HealthCheck.GrpcHealthCheck.authority>`). Setting this
+  to a non-empty value allows overriding the cluster level configuration for a specific
+  endpoint.
+  
+  
 
 
 
@@ -80,7 +101,7 @@ port_value
 endpoint.LbEndpoint
 -------------------
 
-`[endpoint.LbEndpoint proto] <https://github.com/envoyproxy/envoy/blob/0daa0fd25da801e256402004125d5fbd015c2539/api/envoy/api/v2/endpoint/endpoint_components.proto#L58>`_
+`[endpoint.LbEndpoint proto] <https://github.com/envoyproxy/envoy/blob/b5a3405b2725e979a93e7410fce7c57a0c66d8db/api/envoy/api/v2/endpoint/endpoint_components.proto#L71>`_
 
 An Endpoint that Envoy can route traffic to.
 
@@ -139,7 +160,7 @@ load_balancing_weight
 endpoint.LocalityLbEndpoints
 ----------------------------
 
-`[endpoint.LocalityLbEndpoints proto] <https://github.com/envoyproxy/envoy/blob/0daa0fd25da801e256402004125d5fbd015c2539/api/envoy/api/v2/endpoint/endpoint_components.proto#L95>`_
+`[endpoint.LocalityLbEndpoints proto] <https://github.com/envoyproxy/envoy/blob/b5a3405b2725e979a93e7410fce7c57a0c66d8db/api/envoy/api/v2/endpoint/endpoint_components.proto#L108>`_
 
 A group of endpoints belonging to a Locality.
 One can have multiple LocalityLbEndpoints for a locality, but this is
