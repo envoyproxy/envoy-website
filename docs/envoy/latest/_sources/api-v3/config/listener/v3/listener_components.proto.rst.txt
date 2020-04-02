@@ -10,7 +10,7 @@ Listener :ref:`configuration overview <config_listeners>`
 config.listener.v3.Filter
 -------------------------
 
-`[config.listener.v3.Filter proto] <https://github.com/envoyproxy/envoy/blob/6a5c3c2b43b83044ccba3510ec6c725cbdc12f2e/api/envoy/config/listener/v3/listener_components.proto#L24>`_
+`[config.listener.v3.Filter proto] <https://github.com/envoyproxy/envoy/blob/e6ce1909fd2f6d6c85faa892e09d5840b23774cb/api/envoy/config/listener/v3/listener_components.proto#L24>`_
 
 
 .. code-block:: json
@@ -42,7 +42,7 @@ typed_config
 config.listener.v3.FilterChainMatch
 -----------------------------------
 
-`[config.listener.v3.FilterChainMatch proto] <https://github.com/envoyproxy/envoy/blob/6a5c3c2b43b83044ccba3510ec6c725cbdc12f2e/api/envoy/config/listener/v3/listener_components.proto#L71>`_
+`[config.listener.v3.FilterChainMatch proto] <https://github.com/envoyproxy/envoy/blob/e6ce1909fd2f6d6c85faa892e09d5840b23774cb/api/envoy/config/listener/v3/listener_components.proto#L71>`_
 
 Specifies the match criteria for selecting a specific filter chain for a
 listener.
@@ -183,7 +183,7 @@ application_protocols
 Enum config.listener.v3.FilterChainMatch.ConnectionSourceType
 -------------------------------------------------------------
 
-`[config.listener.v3.FilterChainMatch.ConnectionSourceType proto] <https://github.com/envoyproxy/envoy/blob/6a5c3c2b43b83044ccba3510ec6c725cbdc12f2e/api/envoy/config/listener/v3/listener_components.proto#L75>`_
+`[config.listener.v3.FilterChainMatch.ConnectionSourceType proto] <https://github.com/envoyproxy/envoy/blob/e6ce1909fd2f6d6c85faa892e09d5840b23774cb/api/envoy/config/listener/v3/listener_components.proto#L75>`_
 
 
 .. _envoy_v3_api_enum_value_config.listener.v3.FilterChainMatch.ConnectionSourceType.ANY:
@@ -210,7 +210,7 @@ EXTERNAL
 config.listener.v3.FilterChain
 ------------------------------
 
-`[config.listener.v3.FilterChain proto] <https://github.com/envoyproxy/envoy/blob/6a5c3c2b43b83044ccba3510ec6c725cbdc12f2e/api/envoy/config/listener/v3/listener_components.proto#L170>`_
+`[config.listener.v3.FilterChain proto] <https://github.com/envoyproxy/envoy/blob/e6ce1909fd2f6d6c85faa892e09d5840b23774cb/api/envoy/config/listener/v3/listener_components.proto#L170>`_
 
 A filter chain wraps a set of match criteria, an option TLS context, a set of filters, and
 various other parameters.
@@ -264,20 +264,136 @@ transport_socket
 
 
 
+.. _envoy_v3_api_msg_config.listener.v3.ListenerFilterChainMatchPredicate:
+
+config.listener.v3.ListenerFilterChainMatchPredicate
+----------------------------------------------------
+
+`[config.listener.v3.ListenerFilterChainMatchPredicate proto] <https://github.com/envoyproxy/envoy/blob/e6ce1909fd2f6d6c85faa892e09d5840b23774cb/api/envoy/config/listener/v3/listener_components.proto#L237>`_
+
+Listener filter chain match configuration. This is a recursive structure which allows complex
+nested match configurations to be built using various logical operators.
+
+Examples:
+
+* Matches if the destination port is 3306.
+
+.. code-block:: yaml
+
+ destination_port_range:
+  start: 3306
+  end: 3307
+
+* Matches if the destination port is 3306 or 15000.
+
+.. code-block:: yaml
+
+ or_match:
+   rules:
+     - destination_port_range:
+         start: 3306
+         end: 3306
+     - destination_port_range:
+         start: 15000
+         end: 15001
+
+
+.. code-block:: json
+
+  {
+    "or_match": "{...}",
+    "and_match": "{...}",
+    "not_match": "{...}",
+    "any_match": "...",
+    "destination_port_range": "{...}"
+  }
+
+.. _envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.or_match:
+
+or_match
+  (:ref:`config.listener.v3.ListenerFilterChainMatchPredicate.MatchSet <envoy_v3_api_msg_config.listener.v3.ListenerFilterChainMatchPredicate.MatchSet>`) A set that describes a logical OR. If any member of the set matches, the match configuration
+  matches.
+  
+  
+  
+  Precisely one of :ref:`or_match <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.or_match>`, :ref:`and_match <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.and_match>`, :ref:`not_match <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.not_match>`, :ref:`any_match <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.any_match>`, :ref:`destination_port_range <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.destination_port_range>` must be set.
+  
+.. _envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.and_match:
+
+and_match
+  (:ref:`config.listener.v3.ListenerFilterChainMatchPredicate.MatchSet <envoy_v3_api_msg_config.listener.v3.ListenerFilterChainMatchPredicate.MatchSet>`) A set that describes a logical AND. If all members of the set match, the match configuration
+  matches.
+  
+  
+  
+  Precisely one of :ref:`or_match <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.or_match>`, :ref:`and_match <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.and_match>`, :ref:`not_match <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.not_match>`, :ref:`any_match <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.any_match>`, :ref:`destination_port_range <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.destination_port_range>` must be set.
+  
+.. _envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.not_match:
+
+not_match
+  (:ref:`config.listener.v3.ListenerFilterChainMatchPredicate <envoy_v3_api_msg_config.listener.v3.ListenerFilterChainMatchPredicate>`) A negation match. The match configuration will match if the negated match condition matches.
+  
+  
+  
+  Precisely one of :ref:`or_match <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.or_match>`, :ref:`and_match <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.and_match>`, :ref:`not_match <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.not_match>`, :ref:`any_match <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.any_match>`, :ref:`destination_port_range <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.destination_port_range>` must be set.
+  
+.. _envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.any_match:
+
+any_match
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The match configuration will always match.
+  
+  
+  
+  Precisely one of :ref:`or_match <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.or_match>`, :ref:`and_match <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.and_match>`, :ref:`not_match <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.not_match>`, :ref:`any_match <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.any_match>`, :ref:`destination_port_range <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.destination_port_range>` must be set.
+  
+.. _envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.destination_port_range:
+
+destination_port_range
+  (:ref:`type.v3.Int32Range <envoy_v3_api_msg_type.v3.Int32Range>`) Match destination port. Particularly, the match evaluation must use the recovered local port if
+  the owning listener filter is after :ref:`an original_dst listener filter <config_listener_filters_original_dst>`.
+  
+  
+  
+  Precisely one of :ref:`or_match <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.or_match>`, :ref:`and_match <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.and_match>`, :ref:`not_match <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.not_match>`, :ref:`any_match <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.any_match>`, :ref:`destination_port_range <envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.destination_port_range>` must be set.
+  
+.. _envoy_v3_api_msg_config.listener.v3.ListenerFilterChainMatchPredicate.MatchSet:
+
+config.listener.v3.ListenerFilterChainMatchPredicate.MatchSet
+-------------------------------------------------------------
+
+`[config.listener.v3.ListenerFilterChainMatchPredicate.MatchSet proto] <https://github.com/envoyproxy/envoy/blob/e6ce1909fd2f6d6c85faa892e09d5840b23774cb/api/envoy/config/listener/v3/listener_components.proto#L242>`_
+
+A set of match configurations used for logical operations.
+
+.. code-block:: json
+
+  {
+    "rules": []
+  }
+
+.. _envoy_v3_api_field_config.listener.v3.ListenerFilterChainMatchPredicate.MatchSet.rules:
+
+rules
+  (:ref:`config.listener.v3.ListenerFilterChainMatchPredicate <envoy_v3_api_msg_config.listener.v3.ListenerFilterChainMatchPredicate>`, *REQUIRED*) The list of rules that make up the set.
+  
+  
+
+
 
 .. _envoy_v3_api_msg_config.listener.v3.ListenerFilter:
 
 config.listener.v3.ListenerFilter
 ---------------------------------
 
-`[config.listener.v3.ListenerFilter proto] <https://github.com/envoyproxy/envoy/blob/6a5c3c2b43b83044ccba3510ec6c725cbdc12f2e/api/envoy/config/listener/v3/listener_components.proto#L251>`_
+`[config.listener.v3.ListenerFilter proto] <https://github.com/envoyproxy/envoy/blob/e6ce1909fd2f6d6c85faa892e09d5840b23774cb/api/envoy/config/listener/v3/listener_components.proto#L274>`_
 
 
 .. code-block:: json
 
   {
     "name": "...",
-    "typed_config": "{...}"
+    "typed_config": "{...}",
+    "filter_disabled": "{...}"
   }
 
 .. _envoy_v3_api_field_config.listener.v3.ListenerFilter.name:
@@ -295,5 +411,12 @@ typed_config
   See the supported filters for further documentation.
   
   
+.. _envoy_v3_api_field_config.listener.v3.ListenerFilter.filter_disabled:
 
+filter_disabled
+  (:ref:`config.listener.v3.ListenerFilterChainMatchPredicate <envoy_v3_api_msg_config.listener.v3.ListenerFilterChainMatchPredicate>`) Optional match predicate used to disable the filter. The filter is enabled when this field is empty.
+  See :ref:`ListenerFilterChainMatchPredicate <envoy_v3_api_msg_config.listener.v3.ListenerFilterChainMatchPredicate>`
+  for further examples.
+  
+  
 
