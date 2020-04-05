@@ -10,7 +10,7 @@ Protocol options
 core.UpstreamHttpProtocolOptions
 --------------------------------
 
-`[core.UpstreamHttpProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/a4f0af552b41181c4d5795395971abcff59c5e64/api/envoy/api/v2/core/protocol.proto#L23>`_
+`[core.UpstreamHttpProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/44499397cb08d683705c2cf1b70b47028de159da/api/envoy/api/v2/core/protocol.proto#L23>`_
 
 
 .. code-block:: json
@@ -44,7 +44,7 @@ auto_san_validation
 core.HttpProtocolOptions
 ------------------------
 
-`[core.HttpProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/a4f0af552b41181c4d5795395971abcff59c5e64/api/envoy/api/v2/core/protocol.proto#L36>`_
+`[core.HttpProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/44499397cb08d683705c2cf1b70b47028de159da/api/envoy/api/v2/core/protocol.proto#L37>`_
 
 
 .. code-block:: json
@@ -53,7 +53,8 @@ core.HttpProtocolOptions
     "idle_timeout": "{...}",
     "max_connection_duration": "{...}",
     "max_headers_count": "{...}",
-    "max_stream_duration": "{...}"
+    "max_stream_duration": "{...}",
+    "headers_with_underscores_action": "..."
   }
 
 .. _envoy_api_field_core.HttpProtocolOptions.idle_timeout:
@@ -100,14 +101,57 @@ max_stream_duration
   The current implementation implements this timeout on downstream connections only.
   
   
+.. _envoy_api_field_core.HttpProtocolOptions.headers_with_underscores_action:
 
+headers_with_underscores_action
+  (:ref:`core.HttpProtocolOptions.HeadersWithUnderscoresAction <envoy_api_enum_core.HttpProtocolOptions.HeadersWithUnderscoresAction>`) Action to take when a client request with a header name containing underscore characters is received.
+  If this setting is not specified, the value defaults to ALLOW.
+  Note: upstream responses are not affected by this setting.
+  
+  
+
+.. _envoy_api_enum_core.HttpProtocolOptions.HeadersWithUnderscoresAction:
+
+Enum core.HttpProtocolOptions.HeadersWithUnderscoresAction
+----------------------------------------------------------
+
+`[core.HttpProtocolOptions.HeadersWithUnderscoresAction proto] <https://github.com/envoyproxy/envoy/blob/44499397cb08d683705c2cf1b70b47028de159da/api/envoy/api/v2/core/protocol.proto#L43>`_
+
+Action to take when Envoy receives client request with header names containing underscore
+characters.
+Underscore character is allowed in header names by the RFC-7230 and this behavior is implemented
+as a security measure due to systems that treat '_' and '-' as interchangeable. Envoy by default allows client request headers with underscore
+characters.
+
+.. _envoy_api_enum_value_core.HttpProtocolOptions.HeadersWithUnderscoresAction.ALLOW:
+
+ALLOW
+  *(DEFAULT)* ⁣Allow headers with underscores. This is the default behavior.
+  
+  
+.. _envoy_api_enum_value_core.HttpProtocolOptions.HeadersWithUnderscoresAction.REJECT_REQUEST:
+
+REJECT_REQUEST
+  ⁣Reject client request. HTTP/1 requests are rejected with the 400 status. HTTP/2 requests
+  end with the stream reset. The "httpN.requests_rejected_with_underscores_in_headers" counter
+  is incremented for each rejected request.
+  
+  
+.. _envoy_api_enum_value_core.HttpProtocolOptions.HeadersWithUnderscoresAction.DROP_HEADER:
+
+DROP_HEADER
+  ⁣Drop the header with name containing underscores. The header is dropped before the filter chain is
+  invoked and as such filters will not see dropped headers. The
+  "httpN.dropped_headers_with_underscores" is incremented for each dropped header.
+  
+  
 
 .. _envoy_api_msg_core.Http1ProtocolOptions:
 
 core.Http1ProtocolOptions
 -------------------------
 
-`[core.Http1ProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/a4f0af552b41181c4d5795395971abcff59c5e64/api/envoy/api/v2/core/protocol.proto#L72>`_
+`[core.Http1ProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/44499397cb08d683705c2cf1b70b47028de159da/api/envoy/api/v2/core/protocol.proto#L98>`_
 
 
 .. code-block:: json
@@ -172,7 +216,7 @@ enable_trailers
 core.Http1ProtocolOptions.HeaderKeyFormat
 -----------------------------------------
 
-`[core.Http1ProtocolOptions.HeaderKeyFormat proto] <https://github.com/envoyproxy/envoy/blob/a4f0af552b41181c4d5795395971abcff59c5e64/api/envoy/api/v2/core/protocol.proto#L73>`_
+`[core.Http1ProtocolOptions.HeaderKeyFormat proto] <https://github.com/envoyproxy/envoy/blob/44499397cb08d683705c2cf1b70b47028de159da/api/envoy/api/v2/core/protocol.proto#L99>`_
 
 
 .. code-block:: json
@@ -197,7 +241,7 @@ proper_case_words
 core.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords
 ---------------------------------------------------------
 
-`[core.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords proto] <https://github.com/envoyproxy/envoy/blob/a4f0af552b41181c4d5795395971abcff59c5e64/api/envoy/api/v2/core/protocol.proto#L74>`_
+`[core.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords proto] <https://github.com/envoyproxy/envoy/blob/44499397cb08d683705c2cf1b70b47028de159da/api/envoy/api/v2/core/protocol.proto#L100>`_
 
 
 .. code-block:: json
@@ -214,7 +258,7 @@ core.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords
 core.Http2ProtocolOptions
 -------------------------
 
-`[core.Http2ProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/a4f0af552b41181c4d5795395971abcff59c5e64/api/envoy/api/v2/core/protocol.proto#L123>`_
+`[core.Http2ProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/44499397cb08d683705c2cf1b70b47028de159da/api/envoy/api/v2/core/protocol.proto#L149>`_
 
 
 .. code-block:: json
@@ -359,7 +403,7 @@ stream_error_on_invalid_http_messaging
 core.Http2ProtocolOptions.SettingsParameter
 -------------------------------------------
 
-`[core.Http2ProtocolOptions.SettingsParameter proto] <https://github.com/envoyproxy/envoy/blob/a4f0af552b41181c4d5795395971abcff59c5e64/api/envoy/api/v2/core/protocol.proto#L126>`_
+`[core.Http2ProtocolOptions.SettingsParameter proto] <https://github.com/envoyproxy/envoy/blob/44499397cb08d683705c2cf1b70b47028de159da/api/envoy/api/v2/core/protocol.proto#L152>`_
 
 Defines a parameter to be sent in the SETTINGS frame.
 See `RFC7540, sec. 6.5.1 <https://tools.ietf.org/html/rfc7540#section-6.5.1>`_ for details.
