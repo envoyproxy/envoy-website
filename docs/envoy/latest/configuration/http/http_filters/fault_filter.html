@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Fault Injection &mdash; envoy 1.15.0-dev-2413b8 documentation</title>
+  <title>Fault Injection &mdash; envoy 1.15.0-dev-6cbbe0 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-2413b8
+                1.15.0-dev-6cbbe0
               </div>
             
           
@@ -249,17 +249,48 @@ including the router filter.</p>
 <p>The fault filter has the capability to allow fault configuration to be specified by the caller.
 This is useful in certain scenarios in which it is desired to allow the client to specify its own
 fault configuration. The currently supported header controls are:</p>
-<ul class="simple">
-<li><p>Request abort configuration via the <em>x-envoy-fault-abort-request</em> header. The header value
-should be an integer that specifies the HTTP status code to return in response to a request
-and must be in the range [200, 600). In order for the header to work, <a class="reference internal" href="../../../api-v2/config/filter/http/fault/v2/fault.proto.html#envoy-api-field-config-filter-http-fault-v2-faultabort-header-abort"><span class="std std-ref">header_abort</span></a> needs to be set.</p></li>
-<li><p>Request delay configuration via the <em>x-envoy-fault-delay-request</em> header. The header value
-should be an integer that specifies the number of milliseconds to throttle the latency for.
-In order for the header to work, <a class="reference internal" href="../../../api-v2/config/filter/fault/v2/fault.proto.html#envoy-api-field-config-filter-fault-v2-faultdelay-header-delay"><span class="std std-ref">header_delay</span></a> needs to be set.</p></li>
-<li><p>Response rate limit configuration via the <em>x-envoy-fault-throughput-response</em> header. The
-header value should be an integer that specifies the limit in KiB/s and must be &gt; 0. In order
-for the header to work, <a class="reference internal" href="../../../api-v2/config/filter/fault/v2/fault.proto.html#envoy-api-field-config-filter-fault-v2-faultratelimit-header-limit"><span class="std std-ref">header_limit</span></a> needs to be set.</p></li>
-</ul>
+<dl class="simple">
+<dt>x-envoy-fault-abort-request</dt><dd><p>HTTP status code to abort a request with. The header value should be an integer that specifies
+the HTTP status code to return in response to a request and must be in the range [200, 600).
+In order for the header to work, <a class="reference internal" href="../../../api-v2/config/filter/http/fault/v2/fault.proto.html#envoy-api-field-config-filter-http-fault-v2-faultabort-header-abort"><span class="std std-ref">header_abort</span></a> needs to be set.</p>
+</dd>
+<dt>x-envoy-fault-abort-request-percentage</dt><dd><p>The percentage of requests that should be failed with a status code that’s defined
+by the value of <em>x-envoy-fault-abort-request</em> HTTP header. The header value should be an integer
+that specifies the numerator of the percentage of request to apply aborts to and must be greater
+or equal to 0 and its maximum value is capped by the value of the numerator of
+<a class="reference internal" href="../../../api-v2/config/filter/http/fault/v2/fault.proto.html#envoy-api-field-config-filter-http-fault-v2-faultabort-percentage"><span class="std std-ref">percentage</span></a> field.
+Percentage’s denominator is equal to default percentage’s denominator
+<a class="reference internal" href="../../../api-v2/config/filter/http/fault/v2/fault.proto.html#envoy-api-field-config-filter-http-fault-v2-faultabort-percentage"><span class="std std-ref">percentage</span></a> field.
+In order for the header to work, <a class="reference internal" href="../../../api-v2/config/filter/http/fault/v2/fault.proto.html#envoy-api-field-config-filter-http-fault-v2-faultabort-header-abort"><span class="std std-ref">header_abort</span></a> needs to be set and
+<em>x-envoy-fault-abort-request</em> HTTP header needs to be a part of a request.</p>
+</dd>
+<dt>x-envoy-fault-delay-request</dt><dd><p>The duration to delay a request by. The header value should be an integer that specifies the number
+of milliseconds to throttle the latency for. In order for the header to work, <a class="reference internal" href="../../../api-v2/config/filter/fault/v2/fault.proto.html#envoy-api-field-config-filter-fault-v2-faultdelay-header-delay"><span class="std std-ref">header_delay</span></a> needs to be set.</p>
+</dd>
+<dt>x-envoy-fault-delay-request-percentage</dt><dd><p>The percentage of requests that should be delayed by a duration that’s defined by the value of
+<em>x-envoy-fault-delay-request</em> HTTP header. The header value should be an integer that
+specifies the percentage of request to apply delays to and must be greater
+or equal to 0 and its maximum value is capped by the value of the numerator of
+<a class="reference internal" href="../../../api-v2/config/filter/fault/v2/fault.proto.html#envoy-api-field-config-filter-fault-v2-faultdelay-percentage"><span class="std std-ref">percentage</span></a> field.
+Percentage’s denominator is equal to default percentage’s denominator
+<a class="reference internal" href="../../../api-v2/config/filter/fault/v2/fault.proto.html#envoy-api-field-config-filter-fault-v2-faultdelay-percentage"><span class="std std-ref">percentage</span></a> field.
+In order for the header to work, <a class="reference internal" href="../../../api-v2/config/filter/fault/v2/fault.proto.html#envoy-api-field-config-filter-fault-v2-faultdelay-header-delay"><span class="std std-ref">header_delay</span></a> needs to be set and
+<em>x-envoy-fault-delay-request</em> HTTP header needs to be a part of a request.</p>
+</dd>
+<dt>x-envoy-fault-throughput-response</dt><dd><p>The rate limit to use when a response to a caller is sent. The header value should be an integer
+that specifies the limit in KiB/s and must be &gt; 0. In order for the header to work, <a class="reference internal" href="../../../api-v2/config/filter/fault/v2/fault.proto.html#envoy-api-field-config-filter-fault-v2-faultratelimit-header-limit"><span class="std std-ref">header_limit</span></a> needs to be set.</p>
+</dd>
+<dt>x-envoy-fault-throughput-response-percentage</dt><dd><p>The percentage of requests whose response rate should be limited to the value of
+<em>x-envoy-fault-throughput-response</em> HTTP header. The header value should be an integer that
+specifies the percentage of request to apply delays to and must be greater
+or equal to 0 and its maximum value is capped by the value of the numerator of
+<a class="reference internal" href="../../../api-v2/config/filter/fault/v2/fault.proto.html#envoy-api-field-config-filter-fault-v2-faultratelimit-percentage"><span class="std std-ref">percentage</span></a> field.
+Percentage’s denominator is equal to default percentage’s denominator
+<a class="reference internal" href="../../../api-v2/config/filter/fault/v2/fault.proto.html#envoy-api-field-config-filter-fault-v2-faultratelimit-percentage"><span class="std std-ref">percentage</span></a> field.
+In order for the header to work, <a class="reference internal" href="../../../api-v2/config/filter/fault/v2/fault.proto.html#envoy-api-field-config-filter-fault-v2-faultratelimit-header-limit"><span class="std std-ref">header_limit</span></a> needs to be set and
+<em>x-envoy-fault-delay-request</em> HTTP header needs to be a part of a request.</p>
+</dd>
+</dl>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
 <p>Allowing header control is inherently dangerous if exposed to untrusted clients. In this case,
@@ -301,7 +332,7 @@ type and some do not. Please consult the documentation for each key for more inf
 <em>abort</em> block, then <em>abort_percent</em> defaults to 0. For historic reasons, this runtime key is
 available regardless of whether the filter is <a class="reference internal" href="../../../api-v2/config/filter/http/fault/v2/fault.proto.html#envoy-api-field-config-filter-http-fault-v2-httpfault-abort"><span class="std std-ref">configured for abort</span></a>.</p>
 </dd>
-<dt>fault.http.abort.http_status</dt><dd><p>HTTP status code that will be used as the  of requests that will be
+<dt>fault.http.abort.http_status</dt><dd><p>HTTP status code that will be used as the response status code of requests that will be
 aborted if the headers match. Defaults to the HTTP status code specified
 in the config. If the config does not contain an <em>abort</em> block, then
 <em>http_status</em> defaults to 0. For historic reasons, this runtime key is
