@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Tracing &mdash; envoy 1.15.0-dev-fa880c documentation</title>
+  <title>HTTP Tracers &mdash; envoy 1.15.0-dev-432594 documentation</title>
   
 
   
@@ -38,8 +38,8 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Tracing" href="../../config/trace/v2/trace.proto.html" />
-    <link rel="prev" title="Rate limit service" href="../../config/ratelimit/v2/rls.proto.html" /> 
+    <link rel="next" title="Datadog tracer" href="v3/datadog.proto.html" />
+    <link rel="prev" title="Previous priorities retry selector" href="../../extensions/retry/priority/previous_priorities/v3/previous_priorities_config.proto.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-fa880c
+                1.15.0-dev-432594
               </div>
             
           
@@ -101,20 +101,26 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../../api/api.html">API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../../../api/api_supported_versions.html">Supported API versions</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../../api.html">v2 API reference</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="../bootstrap.html">Bootstrap</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="../../config/bootstrap/v2/bootstrap.proto.html">Bootstrap</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../config/metrics/v2/stats.proto.html">Stats</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../config/metrics/v2/metrics_service.proto.html">Metrics service</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../config/overload/v2alpha/overload.proto.html">Overload Manager</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../config/ratelimit/v2/rls.proto.html">Rate limit service</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Tracing</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api-v2/api.html">v2 API reference</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../api.html">v3 API reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../bootstrap/bootstrap.html">Bootstrap</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../listeners/listeners.html">Listeners</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../clusters/clusters.html">Clusters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../http_routes/http_routes.html">HTTP route management</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../config/config.html">Extensions</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../config.html">Extensions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../filter/filter.html">Filters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../accesslog/accesslog.html">Access loggers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../rbac/rbac.html">RBAC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../health_checker/health_checker.html">Health checkers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../transport_socket/transport_socket.html">Transport sockets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../resource_monitor/resource_monitor.html">Resource monitors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../common/common.html">Common</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cluster/cluster.html">Cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../grpc_credential/grpc_credential.html">Grpc Credentials</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../retry/retry.html">Retry Predicates</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">HTTP Tracers</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../admin/admin.html">Admin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../data/data.html">Envoy data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../service/service.html">Services</a></li>
@@ -122,7 +128,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../types/types.html">Types</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api-v3/api.html">v3 API reference</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api-docs/xds_protocol.html">xDS REST and gRPC protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/client_features.html">Well Known Client Features</a></li>
 </ul>
@@ -175,17 +180,17 @@
         
           <li><a href="../../../api/api.html">API</a> &raquo;</li>
         
-          <li><a href="../../api.html">v2 API reference</a> &raquo;</li>
+          <li><a href="../../api.html">v3 API reference</a> &raquo;</li>
         
-          <li><a href="../bootstrap.html">Bootstrap</a> &raquo;</li>
+          <li><a href="../config.html">Extensions</a> &raquo;</li>
         
-      <li>Tracing</li>
+      <li>HTTP Tracers</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../../_sources/api-v2/bootstrap/tracing/tracing.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/api-v3/config/trace/trace.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -198,26 +203,45 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="tracing">
-<h1>Tracing<a class="headerlink" href="#tracing" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="http-tracers">
+<h1>HTTP Tracers<a class="headerlink" href="#http-tracers" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../config/trace/v2/trace.proto.html">Tracing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../config/trace/v2/trace.proto.html#config-trace-v2-tracing">config.trace.v2.Tracing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../config/trace/v2/trace.proto.html#config-trace-v2-tracing-http">config.trace.v2.Tracing.Http</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../config/trace/v2/trace.proto.html#config-trace-v2-lightstepconfig">config.trace.v2.LightstepConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../config/trace/v2/trace.proto.html#enum-config-trace-v2-lightstepconfig-propagationmode">Enum config.trace.v2.LightstepConfig.PropagationMode</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../config/trace/v2/trace.proto.html#config-trace-v2-zipkinconfig">config.trace.v2.ZipkinConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../config/trace/v2/trace.proto.html#enum-config-trace-v2-zipkinconfig-collectorendpointversion">Enum config.trace.v2.ZipkinConfig.CollectorEndpointVersion</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../config/trace/v2/trace.proto.html#config-trace-v2-dynamicotconfig">config.trace.v2.DynamicOtConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../config/trace/v2/trace.proto.html#config-trace-v2-datadogconfig">config.trace.v2.DatadogConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../config/trace/v2/trace.proto.html#config-trace-v2-opencensusconfig">config.trace.v2.OpenCensusConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../config/trace/v2/trace.proto.html#enum-config-trace-v2-opencensusconfig-tracecontext">Enum config.trace.v2.OpenCensusConfig.TraceContext</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../config/trace/v2/trace.proto.html#config-trace-v2-traceserviceconfig">config.trace.v2.TraceServiceConfig</a></li>
+<li class="toctree-l1"><a class="reference internal" href="v3/datadog.proto.html">Datadog tracer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="v3/datadog.proto.html#config-trace-v3-datadogconfig">config.trace.v3.DatadogConfig</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../config/trace/v2alpha/xray.proto.html">AWS X-Ray Tracer Configuration</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../config/trace/v2alpha/xray.proto.html#config-trace-v2alpha-xrayconfig">config.trace.v2alpha.XRayConfig</a></li>
+<li class="toctree-l1"><a class="reference internal" href="v3/dynamic_ot.proto.html">Dynamically loadable OpenTracing tracer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="v3/dynamic_ot.proto.html#config-trace-v3-dynamicotconfig">config.trace.v3.DynamicOtConfig</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="v3/http_tracer.proto.html">Tracing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="v3/http_tracer.proto.html#config-trace-v3-tracing">config.trace.v3.Tracing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v3/http_tracer.proto.html#config-trace-v3-tracing-http">config.trace.v3.Tracing.Http</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="v3/lightstep.proto.html">LightStep tracer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="v3/lightstep.proto.html#config-trace-v3-lightstepconfig">config.trace.v3.LightstepConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v3/lightstep.proto.html#enum-config-trace-v3-lightstepconfig-propagationmode">Enum config.trace.v3.LightstepConfig.PropagationMode</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="v3/opencensus.proto.html">OpenCensus tracer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="v3/opencensus.proto.html#config-trace-v3-opencensusconfig">config.trace.v3.OpenCensusConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v3/opencensus.proto.html#enum-config-trace-v3-opencensusconfig-tracecontext">Enum config.trace.v3.OpenCensusConfig.TraceContext</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="v3/service.proto.html">Trace Service</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="v3/service.proto.html#config-trace-v3-traceserviceconfig">config.trace.v3.TraceServiceConfig</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="v3/trace.proto.html">envoy/config/trace/v3/trace.proto</a></li>
+<li class="toctree-l1"><a class="reference internal" href="v3/xray.proto.html">AWS X-Ray Tracer Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="v3/xray.proto.html#config-trace-v3-xrayconfig">config.trace.v3.XRayConfig</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="v3/zipkin.proto.html">Zipkin tracer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="v3/zipkin.proto.html#config-trace-v3-zipkinconfig">config.trace.v3.ZipkinConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v3/zipkin.proto.html#enum-config-trace-v3-zipkinconfig-collectorendpointversion">Enum config.trace.v3.ZipkinConfig.CollectorEndpointVersion</a></li>
 </ul>
 </li>
 </ul>
@@ -232,10 +256,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../config/trace/v2/trace.proto.html" class="btn btn-neutral float-right" title="Tracing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="v3/datadog.proto.html" class="btn btn-neutral float-right" title="Datadog tracer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../../config/ratelimit/v2/rls.proto.html" class="btn btn-neutral float-left" title="Rate limit service" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../../extensions/retry/priority/previous_priorities/v3/previous_priorities_config.proto.html" class="btn btn-neutral float-left" title="Previous priorities retry selector" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
