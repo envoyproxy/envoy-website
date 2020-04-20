@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Envoy Header-To-Metadata Filter &mdash; envoy 1.15.0-dev-557f63 documentation</title>
+  <title>Envoy Header-To-Metadata Filter &mdash; envoy 1.15.0-dev-5c4182 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-557f63
+                1.15.0-dev-5c4182
               </div>
             
           
@@ -271,6 +271,30 @@ absence of a version header could be:</p>
 <p>This would then allow requests with the <cite>x-version</cite> header set to be matched against
 endpoints with the corresponding version. Whereas requests with that header missing
 would be matched with the default endpoints.</p>
+<p>Note that this filter also supports per route configuration:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">route_config</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_route</span>
+  <span class="nt">virtual_hosts</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_service</span>
+    <span class="nt">domains</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;*&quot;</span><span class="p p-Indicator">]</span>
+    <span class="nt">routes</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> prefix</span><span class="p">:</span> <span class="s">&quot;/version-to-metadata&quot;</span> <span class="p p-Indicator">}</span>
+      <span class="nt">route</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> cluster</span><span class="p">:</span> <span class="nv">service</span> <span class="p p-Indicator">}</span>
+      <span class="nt">per_filter_config</span><span class="p">:</span>
+        <span class="nt">envoy.filters.http.header_to_metadata</span><span class="p">:</span>
+          <span class="nt">request_rules</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="nt">header</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">x-version</span>
+              <span class="nt">on_header_present</span><span class="p">:</span>
+                <span class="nt">metadata_namespace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.lb</span>
+                <span class="nt">key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">version</span>
+                <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">STRING</span>
+              <span class="nt">remove</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+    <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> prefix</span><span class="p">:</span> <span class="s">&quot;/&quot;</span> <span class="p p-Indicator">}</span>
+      <span class="nt">route</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> cluster</span><span class="p">:</span> <span class="nv">some_service</span> <span class="p p-Indicator">}</span>
+</pre></div>
+</div>
+<p>This can be used to either override the global configuration or if the global configuration
+is empty (no rules), it can be used to only enable the filter at a per route level.</p>
 </div>
 <div class="section" id="statistics">
 <h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
