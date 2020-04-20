@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Access logging &mdash; envoy 1.15.0-dev-108a17 documentation</title>
+  <title>Access logging &mdash; envoy 1.15.0-dev-3a603a documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-108a17
+                1.15.0-dev-3a603a
               </div>
             
           
@@ -544,7 +544,7 @@ none of the headers are present ‘-‘ symbol will be in the log.</p>
 where NAMESPACE is the filter namespace used when setting the metadata, KEY is an optional
 lookup up key in the namespace with the option of specifying nested keys separated by ‘:’,
 and Z is an optional parameter denoting string truncation up to Z characters long. Dynamic Metadata
-can be set by filters using the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/108a176d1cf9af9927f1b564da138629a8377cfe/include/envoy/stream_info/stream_info.h">StreamInfo</a> API:
+can be set by filters using the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/3a603ad3efe6d1124a73728bb5d7bfa51d0f8f52/include/envoy/stream_info/stream_info.h">StreamInfo</a> API:
 <em>setDynamicMetadata</em>. The data will be logged as a JSON string. For example, for the following dynamic metadata:</p>
 <p><code class="docutils literal notranslate"><span class="pre">com.test.my_filter:</span> <span class="pre">{&quot;test_key&quot;:</span> <span class="pre">&quot;foo&quot;,</span> <span class="pre">&quot;test_object&quot;:</span> <span class="pre">{&quot;inner_key&quot;:</span> <span class="pre">&quot;bar&quot;}}</span></code></p>
 <ul class="simple">
@@ -568,11 +568,16 @@ JSON struct or list is rendered. Structs and lists may be nested. In any event, 
 length is ignored</p>
 </div>
 </dd>
-<dt>%FILTER_STATE(KEY):Z%</dt><dd><dl class="simple">
+</dl>
+<dl id="config-access-log-format-filter-state">
+<dt>%FILTER_STATE(KEY:F):Z%</dt><dd><dl class="simple">
 <dt>HTTP</dt><dd><p><a class="reference internal" href="../../intro/arch_overview/advanced/data_sharing_between_filters.html#arch-overview-data-sharing-between-filters"><span class="std std-ref">Filter State</span></a> info, where the KEY is required to
 look up the filter state object. The serialized proto will be logged as JSON string if possible.
 If the serialized proto is unknown to Envoy it will be logged as protobuf debug string.
-Z is an optional parameter denoting string truncation up to Z characters long.</p>
+Z is an optional parameter denoting string truncation up to Z characters long.
+F is an optional parameter used to indicate which method FilterState uses for serialization.
+If ‘PLAIN’ is set, the filter state object will be serialized as an unstructured string.
+If ‘TYPED’ is set or no F provided, the filter state object will be serialized as an JSON string.</p>
 </dd>
 <dt>TCP</dt><dd><p>Same as HTTP, the filter state is from connection instead of a L7 request.</p>
 </dd>
