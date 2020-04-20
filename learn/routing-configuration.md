@@ -26,7 +26,7 @@ other major system changes.
 ## Serving Routes via RDS
 
 Envoy’s dynamic configuration allows these routing configurations to execute
-rules defined in a control plan with its Route Discovery Service, or
+rules defined in a control plane with its Route Discovery Service, or
 [RDS](https://www.envoyproxy.io/docs/envoy/latest/configuration/http_conn_man/rds). The
 control plane holds a mapping between a domain + path and an Envoy “cluster.”
 The control plane serves config definitions via RDS, and the Envoy instances
