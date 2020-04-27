@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Fault Injection &mdash; envoy 1.15.0-dev-8951b3 documentation</title>
+  <title>Fault Injection &mdash; envoy 1.15.0-dev-fd3666 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-8951b3
+                1.15.0-dev-fd3666
               </div>
             
           
@@ -254,15 +254,23 @@ fault configuration. The currently supported header controls are:</p>
 the HTTP status code to return in response to a request and must be in the range [200, 600).
 In order for the header to work, <a class="reference internal" href="../../../api-v2/config/filter/http/fault/v2/fault.proto.html#envoy-api-field-config-filter-http-fault-v2-faultabort-header-abort"><span class="std std-ref">header_abort</span></a> needs to be set.</p>
 </dd>
+<dt>x-envoy-fault-abort-grpc-request</dt><dd><p>gRPC status code to abort a request with. The header value should be a non-negative integer that specifies
+the gRPC status code to return in response to a request. Its value range is [0, UInt32.Max] instead of [0, 16]
+to allow testing even not well-defined gRPC status codes. When this header is set, the HTTP response status code
+will be set to 200. In order for the header to work, <a class="reference internal" href="../../../api-v2/config/filter/http/fault/v2/fault.proto.html#envoy-api-field-config-filter-http-fault-v2-faultabort-header-abort"><span class="std std-ref">header_abort</span></a> needs to be set. If both
+<em>x-envoy-fault-abort-request</em> and <em>x-envoy-fault-abort-grpc-request</em> headers are set then
+<em>x-envoy-fault-abort-grpc-request</em> header will be <strong>ignored</strong> and fault response http status code will be
+set to <em>x-envoy-fault-abort-request</em> header value.</p>
+</dd>
 <dt>x-envoy-fault-abort-request-percentage</dt><dd><p>The percentage of requests that should be failed with a status code that’s defined
-by the value of <em>x-envoy-fault-abort-request</em> HTTP header. The header value should be an integer
-that specifies the numerator of the percentage of request to apply aborts to and must be greater
-or equal to 0 and its maximum value is capped by the value of the numerator of
+by the value of <em>x-envoy-fault-abort-request</em> or <em>x-envoy-fault-abort-grpc-request</em> HTTP headers.
+The header value should be an integer that specifies the numerator of the percentage of request to apply aborts
+to and must be greater or equal to 0 and its maximum value is capped by the value of the numerator of
 <a class="reference internal" href="../../../api-v2/config/filter/http/fault/v2/fault.proto.html#envoy-api-field-config-filter-http-fault-v2-faultabort-percentage"><span class="std std-ref">percentage</span></a> field.
 Percentage’s denominator is equal to default percentage’s denominator
 <a class="reference internal" href="../../../api-v2/config/filter/http/fault/v2/fault.proto.html#envoy-api-field-config-filter-http-fault-v2-faultabort-percentage"><span class="std std-ref">percentage</span></a> field.
 In order for the header to work, <a class="reference internal" href="../../../api-v2/config/filter/http/fault/v2/fault.proto.html#envoy-api-field-config-filter-http-fault-v2-faultabort-header-abort"><span class="std std-ref">header_abort</span></a> needs to be set and
-<em>x-envoy-fault-abort-request</em> HTTP header needs to be a part of a request.</p>
+either <em>x-envoy-fault-abort-request</em> or <em>x-envoy-fault-abort-grpc-request</em> HTTP header needs to be a part of the request.</p>
 </dd>
 <dt>x-envoy-fault-delay-request</dt><dd><p>The duration to delay a request by. The header value should be an integer that specifies the number
 of milliseconds to throttle the latency for. In order for the header to work, <a class="reference internal" href="../../../api-v2/config/filter/fault/v2/fault.proto.html#envoy-api-field-config-filter-fault-v2-faultdelay-header-delay"><span class="std std-ref">header_delay</span></a> needs to be set.</p>
@@ -337,6 +345,12 @@ aborted if the headers match. Defaults to the HTTP status code specified
 in the config. If the config does not contain an <em>abort</em> block, then
 <em>http_status</em> defaults to 0. For historic reasons, this runtime key is
 available regardless of whether the filter is <a class="reference internal" href="../../../api-v2/config/filter/http/fault/v2/fault.proto.html#envoy-api-field-config-filter-http-fault-v2-httpfault-abort"><span class="std std-ref">configured for abort</span></a>.</p>
+</dd>
+<dt>fault.http.abort.grpc_status</dt><dd><p>gRPC status code that will be used as the response status code of requests that will be
+aborted if the headers match. Defaults to the gRPC status code specified in the config.
+If this field is missing from both the runtime and the config, gRPC status code in the response
+will be derived from <em>fault.http.abort.http_status</em> field. This runtime key is only available when
+the filter is <a class="reference internal" href="../../../api-v2/config/filter/http/fault/v2/fault.proto.html#envoy-api-field-config-filter-http-fault-v2-httpfault-abort"><span class="std std-ref">configured for abort</span></a>.</p>
 </dd>
 <dt>fault.http.delay.fixed_delay_percent</dt><dd><p>% of requests that will be delayed if the headers match. Defaults to the
 <em>delay_percent</em> specified in the config or 0 otherwise. This runtime key is only available when
