@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TLS &mdash; envoy 1.15.0-dev-b6c8bb documentation</title>
+  <title>TLS &mdash; envoy 1.15.0-dev-ab32f5 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-b6c8bb
+                1.15.0-dev-ab32f5
               </div>
             
           
@@ -210,7 +210,7 @@ to server certificate verification.</p></li>
 <li><p><strong>Certificate verification and pinning</strong>: Certificate verification options include basic chain
 verification, subject name verification, and hash pinning.</p></li>
 <li><p><strong>Certificate revocation</strong>: Envoy can check peer certificates against a certificate revocation list
-(CRL) if one is <a class="reference internal" href="../../../api-v2/api/v2/auth/cert.proto.html#envoy-api-field-auth-certificatevalidationcontext-crl"><span class="std std-ref">provided</span></a>.</p></li>
+(CRL) if one is <a class="reference internal" href="../../../api-v2/api/v2/auth/common.proto.html#envoy-api-field-auth-certificatevalidationcontext-crl"><span class="std std-ref">provided</span></a>.</p></li>
 <li><p><strong>ALPN</strong>: TLS listeners support ALPN. The HTTP connection manager uses this information (in
 addition to protocol inference) to determine whether a client is speaking HTTP/1.1 or HTTP/2.</p></li>
 <li><p><strong>SNI</strong>: SNI is supported for both server (listener) and client (upstream) connections.</p></li>
@@ -296,8 +296,8 @@ validation context specifies one or more trusted authority certificates.</p>
 </pre></div>
 </div>
 <p><em>/etc/ssl/certs/ca-certificates.crt</em> is the default path for the system CA bundle on Debian systems.
-<a class="reference internal" href="../../../api-v2/api/v2/auth/cert.proto.html#envoy-api-field-auth-certificatevalidationcontext-trusted-ca"><span class="std std-ref">trusted_ca</span></a> along with
-<a class="reference internal" href="../../../api-v2/api/v2/auth/cert.proto.html#envoy-api-field-auth-certificatevalidationcontext-verify-subject-alt-name"><span class="std std-ref">verify_subject_alt_name</span></a>
+<a class="reference internal" href="../../../api-v2/api/v2/auth/common.proto.html#envoy-api-field-auth-certificatevalidationcontext-trusted-ca"><span class="std std-ref">trusted_ca</span></a> along with
+<a class="reference internal" href="../../../api-v2/api/v2/auth/common.proto.html#envoy-api-field-auth-certificatevalidationcontext-verify-subject-alt-name"><span class="std std-ref">verify_subject_alt_name</span></a>
 makes Envoy verify the server identity of <em>127.0.0.2:1234</em> as “foo” in the same way as e.g. cURL
 does on standard Debian installations. Common paths for system CA bundles on Linux and BSD are:</p>
 <ul class="simple">
@@ -308,11 +308,11 @@ does on standard Debian installations. Common paths for system CA bundles on Lin
 <li><p>/usr/local/etc/ssl/cert.pem (FreeBSD)</p></li>
 <li><p>/etc/ssl/cert.pem (OpenBSD)</p></li>
 </ul>
-<p>See the reference for <a class="reference internal" href="../../../api-v2/api/v2/auth/cert.proto.html#envoy-api-msg-auth-upstreamtlscontext"><span class="std std-ref">UpstreamTlsContexts</span></a> and
-<a class="reference internal" href="../../../api-v2/api/v2/auth/cert.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContexts</span></a> for other TLS options.</p>
+<p>See the reference for <a class="reference internal" href="../../../api-v2/api/v2/auth/tls.proto.html#envoy-api-msg-auth-upstreamtlscontext"><span class="std std-ref">UpstreamTlsContexts</span></a> and
+<a class="reference internal" href="../../../api-v2/api/v2/auth/tls.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContexts</span></a> for other TLS options.</p>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
-<p>If only <a class="reference internal" href="../../../api-v2/api/v2/auth/cert.proto.html#envoy-api-field-auth-certificatevalidationcontext-trusted-ca"><span class="std std-ref">trusted_ca</span></a> is
+<p>If only <a class="reference internal" href="../../../api-v2/api/v2/auth/common.proto.html#envoy-api-field-auth-certificatevalidationcontext-trusted-ca"><span class="std std-ref">trusted_ca</span></a> is
 specified, Envoy will verify the certificate chain of the presented certificate, but not its
 subject name, hash, etc. Other validation context configuration is typically required depending
 on the deployment.</p>
@@ -321,20 +321,20 @@ on the deployment.</p>
 </div>
 <div class="section" id="certificate-selection">
 <span id="arch-overview-ssl-cert-select"></span><h2>Certificate selection<a class="headerlink" href="#certificate-selection" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="../../../api-v2/api/v2/auth/cert.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContexts</span></a> support multiple TLS
+<p><a class="reference internal" href="../../../api-v2/api/v2/auth/tls.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContexts</span></a> support multiple TLS
 certificates. These may be a mix of RSA and P-256 ECDSA certificates. The following rules apply:</p>
 <ul class="simple">
 <li><p>Only one certificate of a particular type (RSA or ECDSA) may be specified.</p></li>
 <li><p>Non-P-256 server ECDSA certificates are rejected.</p></li>
 <li><p>If the client supports P-256 ECDSA, a P-256 ECDSA certificate will be selected if present in the
-<a class="reference internal" href="../../../api-v2/api/v2/auth/cert.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContext</span></a>.</p></li>
+<a class="reference internal" href="../../../api-v2/api/v2/auth/tls.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContext</span></a>.</p></li>
 <li><p>If the client only supports RSA certificates, a RSA certificate will be selected if present in the
-<a class="reference internal" href="../../../api-v2/api/v2/auth/cert.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContext</span></a>.</p></li>
+<a class="reference internal" href="../../../api-v2/api/v2/auth/tls.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContext</span></a>.</p></li>
 <li><p>Otherwise, the first certificate listed is used. This will result in a failed handshake if the
 client only supports RSA certificates and the server only has ECDSA certificates.</p></li>
-<li><p>Static and SDS certificates may not be mixed in a given <a class="reference internal" href="../../../api-v2/api/v2/auth/cert.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContext</span></a>.</p></li>
+<li><p>Static and SDS certificates may not be mixed in a given <a class="reference internal" href="../../../api-v2/api/v2/auth/tls.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContext</span></a>.</p></li>
 </ul>
-<p>Only a single TLS certificate is supported today for <a class="reference internal" href="../../../api-v2/api/v2/auth/cert.proto.html#envoy-api-msg-auth-upstreamtlscontext"><span class="std std-ref">UpstreamTlsContexts</span></a>.</p>
+<p>Only a single TLS certificate is supported today for <a class="reference internal" href="../../../api-v2/api/v2/auth/tls.proto.html#envoy-api-msg-auth-upstreamtlscontext"><span class="std std-ref">UpstreamTlsContexts</span></a>.</p>
 </div>
 <div class="section" id="secret-discovery-service-sds">
 <h2>Secret discovery service (SDS)<a class="headerlink" href="#secret-discovery-service-sds" title="Permalink to this headline">¶</a></h2>
