@@ -9,7 +9,7 @@ Metrics service
 config.metrics.v3.MetricsServiceConfig
 --------------------------------------
 
-`[config.metrics.v3.MetricsServiceConfig proto] <https://github.com/envoyproxy/envoy/blob/ab32f5fd01ca8b23ee16dcffb55b1276e55bf1fa/api/envoy/config/metrics/v3/metrics_service.proto#L21>`_
+`[config.metrics.v3.MetricsServiceConfig proto] <https://github.com/envoyproxy/envoy/blob/048f4231310fbbead0cbe03d43ffb4307fff0517/api/envoy/config/metrics/v3/metrics_service.proto#L23>`_
 
 Metrics Service is configured as a built-in *envoy.stat_sinks.metrics_service* :ref:`StatsSink
 <envoy_v3_api_msg_config.metrics.v3.StatsSink>`. This opaque configuration will be used to create
@@ -28,13 +28,23 @@ This extension may be referenced by the qualified name *envoy.stat_sinks.metrics
 .. code-block:: json
 
   {
-    "grpc_service": "{...}"
+    "grpc_service": "{...}",
+    "report_counters_as_deltas": "{...}"
   }
 
 .. _envoy_v3_api_field_config.metrics.v3.MetricsServiceConfig.grpc_service:
 
 grpc_service
   (:ref:`config.core.v3.GrpcService <envoy_v3_api_msg_config.core.v3.GrpcService>`, *REQUIRED*) The upstream gRPC cluster that hosts the metrics service.
+  
+  
+.. _envoy_v3_api_field_config.metrics.v3.MetricsServiceConfig.report_counters_as_deltas:
+
+report_counters_as_deltas
+  (`BoolValue <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue>`_) If true, counters are reported as the delta between flushing intervals. Otherwise, the current
+  counter value is reported. Defaults to false.
+  Eventually (https://github.com/envoyproxy/envoy/issues/10968) if this value is not set, the
+  sink will take updates from the :ref:`MetricsResponse <envoy_v3_api_msg_service.metrics.v3.StreamMetricsResponse>`.
   
   
 
