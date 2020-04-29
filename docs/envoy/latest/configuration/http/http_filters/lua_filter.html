@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Lua &mdash; envoy 1.15.0-dev-74c805 documentation</title>
+  <title>Lua &mdash; envoy 1.15.0-dev-f8fe08 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-74c805
+                1.15.0-dev-f8fe08
               </div>
             
           
@@ -225,7 +225,7 @@
 <p class="admonition-title">Attention</p>
 <p>By default Envoy is built without exporting symbols that you may need when interacting with Lua
 modules installed as shared objects. Envoy may need to be built with support for exported symbols.
-Please see the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/74c8054e84b37e8c315835cc5c2cf39a80631f26/bazel/README.md">Bazel docs</a> for more information.</p>
+Please see the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f8fe08bc2be45692e2c7064e5fd75cdebd53dc3a/bazel/README.md">Bazel docs</a> for more information.</p>
 </div>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
@@ -249,7 +249,7 @@ from each worker thread in isolation. True global support may be added via an AP
 <li><p>All scripts are run as coroutines. This means that they are written in a synchronous style even
 though they may perform complex asynchronous tasks. This makes the scripts substantially easier
 to write. All network/async processing is performed by Envoy via a set of APIs. Envoy will
-yield the script as appropriate and resume it when async tasks are complete.</p></li>
+suspend execution of the script as appropriate and resume it when async tasks are complete.</p></li>
 <li><p><strong>Do not perform blocking operations from scripts.</strong> It is critical for performance that
 Envoy APIs are used for all IO.</p></li>
 </ul>
@@ -343,7 +343,7 @@ more details on the supported API.</p>
 </div>
 <div class="section" id="complete-example">
 <span id="config-http-filters-lua-stream-handle-api"></span><h2>Complete example<a class="headerlink" href="#complete-example" title="Permalink to this headline">¶</a></h2>
-<p>A complete example using Docker is available in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/74c8054e84b37e8c315835cc5c2cf39a80631f26//examples/lua">/examples/lua</a>.</p>
+<p>A complete example using Docker is available in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f8fe08bc2be45692e2c7064e5fd75cdebd53dc3a//examples/lua">/examples/lua</a>.</p>
 </div>
 <div class="section" id="stream-handle-api">
 <h2>Stream handle API<a class="headerlink" href="#stream-handle-api" title="Permalink to this headline">¶</a></h2>
@@ -357,8 +357,9 @@ script defines:</p>
 </pre></div>
 </div>
 <p>A script can define either or both of these functions. During the request path, Envoy will
-run <em>envoy_on_request</em> as a coroutine, passing an API handle. During the response path, Envoy will
-run <em>envoy_on_response</em> as a coroutine, passing an API handle.</p>
+run <em>envoy_on_request</em> as a coroutine, passing a handle to the request API. During the
+response path, Envoy will run <em>envoy_on_response</em> as a coroutine, passing handle to the
+response API.</p>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
 <p>It is critical that all interaction with Envoy occur through the passed stream handle. The stream
@@ -382,9 +383,10 @@ situation.</p>
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span> <span class="n">body</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">body</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Returns the stream’s body. This call will cause Envoy to yield the script until the entire body
-has been buffered. Note that all buffering must adhere to the flow control policies in place.
-Envoy will not buffer more data than is allowed by the connection manager.</p>
+<p>Returns the stream’s body. This call will cause Envoy to suspend execution of the script until
+the entire body has been received in a buffer. Note that all buffering must adhere to the
+flow-control policies in place. Envoy will not buffer more data than is allowed by the connection
+manager.</p>
 <p>Returns a <a class="reference internal" href="#config-http-filters-lua-buffer-wrapper"><span class="std std-ref">buffer object</span></a>.</p>
 </div>
 <div class="section" id="bodychunks">
@@ -393,8 +395,8 @@ Envoy will not buffer more data than is allowed by the connection manager.</p>
 </pre></div>
 </div>
 <p>Returns an iterator that can be used to iterate through all received body chunks as they arrive.
-Envoy will yield the script in between chunks, but <em>will not buffer</em> them. This can be used by
-a script to inspect data as it is streaming by.</p>
+Envoy will suspend executing the script in between chunks, but <em>will not buffer</em> them. This can be
+used by a script to inspect data as it is streaming by.</p>
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">for</span> <span class="n">chunk</span> <span class="kr">in</span> <span class="n">request_handle</span><span class="p">:</span><span class="n">bodyChunks</span><span class="p">()</span> <span class="kr">do</span>
   <span class="n">request_handle</span><span class="p">:</span><span class="n">log</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">chunk</span><span class="p">:</span><span class="n">length</span><span class="p">())</span>
 <span class="kr">end</span>
@@ -433,7 +435,7 @@ is a table of key/value pairs to send (the value can be a string or table of str
 the <em>:method</em>, <em>:path</em>, and <em>:authority</em> headers must be set. <em>body</em> is an optional string of body
 data to send. <em>timeout</em> is an integer that specifies the call timeout in milliseconds.</p>
 <p><em>asynchronous</em> is a boolean flag. If asynchronous is set to true, Envoy will make the HTTP request and continue,
-regardless of response success or failure. If this is set to false, or not set, Envoy will yield the script
+regardless of response success or failure. If this is set to false, or not set, Envoy will suspend executing the script
 until the call completes or has an error.</p>
 <p>Returns <em>headers</em> which is a table of response headers. Returns <em>body</em> which is the string response
 body. May be nil if there is no body.</p>
@@ -483,7 +485,7 @@ under the filter name i.e. <em>envoy.filters.http.lua</em>. Below is an example 
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span> <span class="n">streamInfo</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">streamInfo</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/74c8054e84b37e8c315835cc5c2cf39a80631f26/include/envoy/stream_info/stream_info.h">information</a> related to the current request.</p>
+<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f8fe08bc2be45692e2c7064e5fd75cdebd53dc3a/include/envoy/stream_info/stream_info.h">information</a> related to the current request.</p>
 <p>Returns a <a class="reference internal" href="#config-http-filters-lua-stream-info-wrapper"><span class="std std-ref">stream info object</span></a>.</p>
 </div>
 <div class="section" id="connection">
@@ -491,7 +493,7 @@ under the filter name i.e. <em>envoy.filters.http.lua</em>. Below is an example 
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span> <span class="n">connection</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">connection</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Returns the current request’s underlying <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/74c8054e84b37e8c315835cc5c2cf39a80631f26/include/envoy/network/connection.h">connection</a>.</p>
+<p>Returns the current request’s underlying <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f8fe08bc2be45692e2c7064e5fd75cdebd53dc3a/include/envoy/network/connection.h">connection</a>.</p>
 <p>Returns a <a class="reference internal" href="#config-http-filters-lua-connection-wrapper"><span class="std std-ref">connection object</span></a>.</p>
 </div>
 <div class="section" id="importpublickey">
@@ -611,7 +613,7 @@ key. <em>value</em> is <em>metadata</em> entry value.</p>
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">streamInfo</span><span class="p">:</span><span class="n">protocol</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Returns the string representation of <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/74c8054e84b37e8c315835cc5c2cf39a80631f26/include/envoy/http/protocol.h">HTTP protocol</a>
+<p>Returns the string representation of <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f8fe08bc2be45692e2c7064e5fd75cdebd53dc3a/include/envoy/http/protocol.h">HTTP protocol</a>
 used by the current request. The possible values are: <em>HTTP/1.0</em>, <em>HTTP/1.1</em>, and <em>HTTP/2</em>.</p>
 </div>
 <div class="section" id="dynamicmetadata">
@@ -680,7 +682,7 @@ key. <em>value</em> is <em>dynamicMetadata</em> entry value.</p>
 <span class="kr">end</span>
 </pre></div>
 </div>
-<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/74c8054e84b37e8c315835cc5c2cf39a80631f26/include/envoy/ssl/connection.h">SSL connection</a> object when the connection is
+<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f8fe08bc2be45692e2c7064e5fd75cdebd53dc3a/include/envoy/ssl/connection.h">SSL connection</a> object when the connection is
 secured and <em>nil</em> when it is not.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
