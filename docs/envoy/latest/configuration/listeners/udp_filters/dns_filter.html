@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>DNS Filter &mdash; envoy 1.15.0-dev-85a678 documentation</title>
+  <title>DNS Filter &mdash; envoy 1.15.0-dev-54cd4d documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-85a678
+                1.15.0-dev-54cd4d
               </div>
             
           
@@ -203,15 +203,19 @@
 <p>DNS Filter is under active development and should be considered alpha and not production ready.</p>
 </div>
 <ul class="simple">
-<li><p><a class="reference internal" href="../../../api-v2/config/filter/udp/dns_filter/v2alpha/dns_filter.proto.html#envoy-api-msg-config-filter-udp-dns-filter-v2alpha-dnsfilterconfig"><span class="std std-ref">v2 API reference</span></a></p></li>
+<li><p><a class="reference internal" href="../../../api-v3/extensions/filters/udp/dns_filter/v3alpha/dns_filter.proto.html#envoy-v3-api-msg-extensions-filters-udp-dns-filter-v3alpha-dnsfilterconfig"><span class="std std-ref">v3 API reference</span></a></p></li>
 <li><p>This filter should be configured with the name <em>envoy.filters.udp_listener.dns_filter</em></p></li>
 </ul>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<p>The DNS filter allows Envoy to respond to DNS queries as an authoritative server for any configured
-domains. The filter’s configuration specifies the names and addresses for which Envoy will answer
-as well as the configuration needed to send queries externally for unknown domains.</p>
-<p>The filter supports <a class="reference internal" href="../../../api-v2/config/filter/udp/dns_filter/v2alpha/dns_filter.proto.html#envoy-api-msg-config-filter-udp-dns-filter-v2alpha-dnsfilterconfig"><span class="std std-ref">per-filter configuration</span></a>.
+<p>The DNS filter allows Envoy to resolve forward DNS queries as an authoritative server for all
+configured domains. The filter’s configuration specifies the names and addresses for which Envoy
+will answer as well as the configuration needed to send queries externally for unknown domains.</p>
+<p>The filter supports local and external DNS resolution. If a lookup for a name does not match a
+statically configured domain, or a provisioned cluster name, Envoy can refer the query to an
+external resolver for an answer. Users have the option of specifying the DNS servers that Envoy
+will use for external resolution.</p>
+<p>The filter supports <a class="reference internal" href="../../../api-v3/extensions/filters/udp/dns_filter/v3alpha/dns_filter.proto.html#envoy-v3-api-msg-extensions-filters-udp-dns-filter-v3alpha-dnsfilterconfig"><span class="std std-ref">per-filter configuration</span></a>.
 An Example configuration follows that illustrates how the filter can be used.</p>
 </div>
 <div class="section" id="example-configuration">
@@ -219,23 +223,27 @@ An Example configuration follows that illustrates how the filter can be used.</p
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">listener_filters</span><span class="p">:</span>
   <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;envoy.filters.udp.dns_filter&quot;</span>
   <span class="nt">typed_config</span><span class="p">:</span>
-    <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="s">&quot;type.googleapis.com/envoy.config.filter.udp.dns_filter.v2alpha.DnsFilterConfig&quot;</span>
+    <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="s">&quot;type.googleapis.com/envoy.extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig&quot;</span>
     <span class="nt">stat_prefix</span><span class="p">:</span> <span class="s">&quot;dns_filter_prefix&quot;</span>
+    <span class="nt">client_config</span><span class="p">:</span>
+      <span class="nt">resolution_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5s</span>
+      <span class="nt">upstream_resolvers</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;8.8.8.8&quot;</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;8.8.4.4&quot;</span>
     <span class="nt">server_config</span><span class="p">:</span>
       <span class="nt">inline_dns_table</span><span class="p">:</span>
-        <span class="nt">external_retry_count</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
         <span class="nt">known_suffixes</span><span class="p">:</span>
-          <span class="p p-Indicator">-</span> <span class="nt">suffix</span><span class="p">:</span> <span class="s">&quot;domain1.com&quot;</span>
-          <span class="p p-Indicator">-</span> <span class="nt">suffix</span><span class="p">:</span> <span class="s">&quot;domain2.com&quot;</span>
-          <span class="p p-Indicator">-</span> <span class="nt">suffix</span><span class="p">:</span> <span class="s">&quot;domain3.com&quot;</span>
+        <span class="p p-Indicator">-</span> <span class="nt">suffix</span><span class="p">:</span> <span class="s">&quot;domain1.com&quot;</span>
+        <span class="p p-Indicator">-</span> <span class="nt">suffix</span><span class="p">:</span> <span class="s">&quot;domain2.com&quot;</span>
+        <span class="p p-Indicator">-</span> <span class="nt">suffix</span><span class="p">:</span> <span class="s">&quot;domain3.com&quot;</span>
         <span class="nt">virtual_domains</span><span class="p">:</span>
-          <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;www.domain1.com&quot;</span>
-            <span class="nt">endpoint</span><span class="p">:</span>
-              <span class="nt">address_list</span><span class="p">:</span>
-                <span class="nt">address</span><span class="p">:</span>
-                  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">10.0.0.1</span>
-                  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">10.0.0.2</span>
-          <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;www.domain2.com&quot;</span>
+         <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;www.domain1.com&quot;</span>
+           <span class="nt">endpoint</span><span class="p">:</span>
+             <span class="nt">address_list</span><span class="p">:</span>
+               <span class="nt">address</span><span class="p">:</span>
+               <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">10.0.0.1</span>
+               <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">10.0.0.2</span>
+         <span class=" -Error"> </span><span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;www.domain2.com&quot;</span>
             <span class="nt">endpoint</span><span class="p">:</span>
               <span class="nt">address_list</span><span class="p">:</span>
                 <span class="nt">address</span><span class="p">:</span>
@@ -244,11 +252,67 @@ An Example configuration follows that illustrates how the filter can be used.</p
             <span class="nt">endpoint</span><span class="p">:</span>
               <span class="nt">address_list</span><span class="p">:</span>
                 <span class="nt">address</span><span class="p">:</span>
-                  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">10.0.3.1</span>
+                <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">10.0.3.1</span>
 </pre></div>
 </div>
 <p>In this example, Envoy is configured to respond to client queries for three domains. For any
-other query, it will forward upstream to external resolvers.</p>
+other query, it will forward upstream to external resolvers. The filter will return an address
+matching the input query type. If the query is for type A records and no A records are configured,
+Envoy will return no addresses and set the response code appropriately. Conversely, if there are
+matching records for the query type, each configured address is returned. This is also true for
+AAAA records. Only A and AAAA records are supported. If the filter parses other queries for other
+record types, the filter immediately responds indicating that the query is not supported.</p>
+<p>To disable external resolution, one can omit the <cite>client_config</cite> section of the config. Envoy interprets
+this configuration to mean that name resolution should be done only from the data appearing in the
+<cite>server_config</cite> section. A query for a name not appearing in the DNS table will receive a “No Answer”
+DNS response.</p>
+<p>The filter can also consume its configuration from an external dns table. The same configuration
+that appears in the static configuration can be stored in a Proto3-conformant JSON file and
+referenced in the configuration using the <a class="reference internal" href="../../../api-v2/api/v2/core/base.proto.html#envoy-api-msg-core-datasource"><span class="std std-ref">external_dns_table DataSource</span></a>
+directive:</p>
+</div>
+<div class="section" id="example-external-dnstable-configuration">
+<h2>Example External DnsTable Configuration<a class="headerlink" href="#example-external-dnstable-configuration" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">listener_filters</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;envoy.filters.udp.dns_filter&quot;</span>
+  <span class="nt">typed_config</span><span class="p">:</span>
+    <span class="s">&#39;@type&#39;</span><span class="p p-Indicator">:</span> <span class="s">&#39;type.googleapis.com/envoy.extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig&#39;</span>
+    <span class="nt">stat_prefix</span><span class="p">:</span> <span class="s">&quot;my_prefix&quot;</span>
+    <span class="nt">server_config</span><span class="p">:</span>
+      <span class="nt">external_dns_table</span><span class="p">:</span>
+        <span class="nt">filename</span><span class="p">:</span> <span class="s">&quot;/home/ubuntu/configs/dns_table.json&quot;</span>
+</pre></div>
+</div>
+<p>In the file, the table can be defined as follows:</p>
+</div>
+<div class="section" id="dnstable-json-configuration">
+<h2>DnsTable JSON Configuration<a class="headerlink" href="#dnstable-json-configuration" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>known_suffixes: [
+  { suffix: &quot;suffix1.com&quot; },
+  { suffix: &quot;suffix2.com&quot; }
+],
+virtual_domains: [
+  {
+    name: &quot;www.suffix1.com&quot;,
+    endpoint: {
+      address_list: {
+        address: [ &quot;10.0.0.1&quot;, &quot;10.0.0.2&quot; ]
+      }
+    }
+  },
+  {
+    name: &quot;www.suffix2.com&quot;,
+    endpoint: {
+      address_list: {
+        address: [ &quot;2001:8a:c1::2800:7&quot; ]
+      }
+    }
+  }
+]
+</pre></div>
+</div>
+<p>By utilizing this configuration, the DNS responses can be configured separately from the Envoy
+configuration.</p>
 </div>
 </div>
 
