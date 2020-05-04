@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Tap &mdash; envoy 1.15.0-dev-319158 documentation</title>
+  <title>Tap &mdash; envoy 1.15.0-dev-6151a6 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-319158
+                1.15.0-dev-6151a6
               </div>
             
           
@@ -222,7 +222,7 @@
   <div class="section" id="tap">
 <span id="config-http-filters-tap"></span><h1>Tap<a class="headerlink" href="#tap" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><p><a class="reference internal" href="../../../api-v2/config/filter/http/tap/v2alpha/tap.proto.html#envoy-api-msg-config-filter-http-tap-v2alpha-tap"><span class="std std-ref">v2 API reference</span></a></p></li>
+<li><p><a class="reference internal" href="../../../api-v3/extensions/filters/http/tap/v3/tap.proto.html#envoy-v3-api-msg-extensions-filters-http-tap-v3-tap"><span class="std std-ref">v3 API reference</span></a></p></li>
 <li><p>This filter should be configured with the name <em>envoy.filters.http.tap</em>.</p></li>
 </ul>
 <div class="admonition attention">
@@ -234,9 +234,9 @@ be expanded over time and the configuration structures are likely to change.</p>
 <p>The HTTP tap filter is used to interpose on and record HTTP traffic. At a high level, the
 configuration is composed of two pieces:</p>
 <ol class="arabic simple">
-<li><p><a class="reference internal" href="../../../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-msg-service-tap-v2alpha-matchpredicate"><span class="std std-ref">Match configuration</span></a>: a list of
+<li><p><a class="reference internal" href="../../../api-v3/config/tap/v3/common.proto.html#envoy-v3-api-msg-config-tap-v3-matchpredicate"><span class="std std-ref">Match configuration</span></a>: a list of
 conditions under which the filter will match an HTTP request and begin a tap session.</p></li>
-<li><p><a class="reference internal" href="../../../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-msg-service-tap-v2alpha-outputconfig"><span class="std std-ref">Output configuration</span></a>: a list of output
+<li><p><a class="reference internal" href="../../../api-v3/config/tap/v3/common.proto.html#envoy-v3-api-msg-config-tap-v3-outputconfig"><span class="std std-ref">Output configuration</span></a>: a list of output
 sinks that the filter will write the matched and tapped data to.</p></li>
 </ol>
 <p>Each of these concepts will be covered incrementally over the course of several example
@@ -246,7 +246,7 @@ configurations in the following section.</p>
 <p>Example filter configuration:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.tap</span>
 <span class="nt">typed_config</span><span class="p">:</span>
-  <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.filter.http.tap.v2alpha.Tap</span>
+  <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.tap.v3.Tap</span>
   <span class="nt">common_config</span><span class="p">:</span>
     <span class="nt">admin_config</span><span class="p">:</span>
       <span class="nt">config_id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test_config_id</span>
@@ -257,13 +257,13 @@ See the following section for more details.</p>
 </div>
 <div class="section" id="admin-handler">
 <span id="config-http-filters-tap-admin-handler"></span><h2>Admin handler<a class="headerlink" href="#admin-handler" title="Permalink to this headline">¶</a></h2>
-<p>When the HTTP filter specifies an <a class="reference internal" href="../../../api-v2/config/common/tap/v2alpha/common.proto.html#envoy-api-msg-config-common-tap-v2alpha-adminconfig"><span class="std std-ref">admin_config</span></a>, it is configured for admin control and
+<p>When the HTTP filter specifies an <a class="reference internal" href="../../../api-v3/extensions/common/tap/v3/common.proto.html#envoy-v3-api-msg-extensions-common-tap-v3-adminconfig"><span class="std std-ref">admin_config</span></a>, it is configured for admin control and
 the <a class="reference internal" href="../../../operations/admin.html#post--tap" title="POST /tap"><code class="xref http http-post docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/tap</span></code></a> admin handler will be installed. The admin handler can be used for live
 tapping and debugging of HTTP traffic. It works as follows:</p>
 <ol class="arabic simple">
 <li><p>A POST request is used to provide a valid tap configuration. The POST request body can be either
-the JSON or YAML representation of the <a class="reference internal" href="../../../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-msg-service-tap-v2alpha-tapconfig"><span class="std std-ref">TapConfig</span></a> message.</p></li>
-<li><p>If the POST request is accepted, Envoy will stream <a class="reference internal" href="../../../api-v2/data/tap/v2alpha/http.proto.html#envoy-api-msg-data-tap-v2alpha-httpbufferedtrace"><span class="std std-ref">HttpBufferedTrace</span></a> messages (serialized to JSON) until the admin
+the JSON or YAML representation of the <a class="reference internal" href="../../../api-v3/config/tap/v3/common.proto.html#envoy-v3-api-msg-config-tap-v3-tapconfig"><span class="std std-ref">TapConfig</span></a> message.</p></li>
+<li><p>If the POST request is accepted, Envoy will stream <a class="reference internal" href="../../../api-v3/data/tap/v3/http.proto.html#envoy-v3-api-msg-data-tap-v3-httpbufferedtrace"><span class="std std-ref">HttpBufferedTrace</span></a> messages (serialized to JSON) until the admin
 request is terminated.</p></li>
 </ol>
 <p>An example POST body:</p>
@@ -325,12 +325,12 @@ be tapped and streamed out the admin endpoint.</p>
 </div>
 <div class="section" id="output-format">
 <h2>Output format<a class="headerlink" href="#output-format" title="Permalink to this headline">¶</a></h2>
-<p>Each output sink has an associated <a class="reference internal" href="../../../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-enum-service-tap-v2alpha-outputsink-format"><span class="std std-ref">format</span></a>. The default format is
-<a class="reference internal" href="../../../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-enum-value-service-tap-v2alpha-outputsink-format-json-body-as-bytes"><span class="std std-ref">JSON_BODY_AS_BYTES</span></a>. This format is
+<p>Each output sink has an associated <a class="reference internal" href="../../../api-v3/config/tap/v3/common.proto.html#envoy-v3-api-enum-config-tap-v3-outputsink-format"><span class="std std-ref">format</span></a>. The default format is
+<a class="reference internal" href="../../../api-v3/config/tap/v3/common.proto.html#envoy-v3-api-enum-value-config-tap-v3-outputsink-format-json-body-as-bytes"><span class="std std-ref">JSON_BODY_AS_BYTES</span></a>. This format is
 easy to read JSON, but has the downside that body data is base64 encoded. In the case that the tap
-is known to be on human readable data, the <a class="reference internal" href="../../../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-enum-value-service-tap-v2alpha-outputsink-format-json-body-as-string"><span class="std std-ref">JSON_BODY_AS_STRING</span></a> format may be
+is known to be on human readable data, the <a class="reference internal" href="../../../api-v3/config/tap/v3/common.proto.html#envoy-v3-api-enum-value-config-tap-v3-outputsink-format-json-body-as-string"><span class="std std-ref">JSON_BODY_AS_STRING</span></a> format may be
 more user friendly. See the reference documentation for more information on other available formats.</p>
-<p>An example of a streaming admin tap configuration that uses the <a class="reference internal" href="../../../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-enum-value-service-tap-v2alpha-outputsink-format-json-body-as-string"><span class="std std-ref">JSON_BODY_AS_STRING</span></a> format:</p>
+<p>An example of a streaming admin tap configuration that uses the <a class="reference internal" href="../../../api-v3/config/tap/v3/common.proto.html#envoy-v3-api-enum-value-config-tap-v3-outputsink-format-json-body-as-string"><span class="std std-ref">JSON_BODY_AS_STRING</span></a> format:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">config_id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test_config_id</span>
 <span class="nt">tap_config</span><span class="p">:</span>
   <span class="nt">match_config</span><span class="p">:</span>
@@ -346,8 +346,8 @@ more user friendly. See the reference documentation for more information on othe
 <h2>Buffered body limits<a class="headerlink" href="#buffered-body-limits" title="Permalink to this headline">¶</a></h2>
 <p>For buffered taps, Envoy will limit the amount of body data that is tapped to avoid OOM situations.
 The default limit is 1KiB for both received (request) and transmitted (response) data. This is
-configurable via the <a class="reference internal" href="../../../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-field-service-tap-v2alpha-outputconfig-max-buffered-rx-bytes"><span class="std std-ref">max_buffered_rx_bytes</span></a> and
-<a class="reference internal" href="../../../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-field-service-tap-v2alpha-outputconfig-max-buffered-tx-bytes"><span class="std std-ref">max_buffered_tx_bytes</span></a> settings.</p>
+configurable via the <a class="reference internal" href="../../../api-v3/config/tap/v3/common.proto.html#envoy-v3-api-field-config-tap-v3-outputconfig-max-buffered-rx-bytes"><span class="std std-ref">max_buffered_rx_bytes</span></a> and
+<a class="reference internal" href="../../../api-v3/config/tap/v3/common.proto.html#envoy-v3-api-field-config-tap-v3-outputconfig-max-buffered-tx-bytes"><span class="std std-ref">max_buffered_tx_bytes</span></a> settings.</p>
 </div>
 <div class="section" id="streaming-matching">
 <span id="config-http-filters-tap-streaming"></span><h2>Streaming matching<a class="headerlink" href="#streaming-matching" title="Permalink to this headline">¶</a></h2>
@@ -355,20 +355,20 @@ configurable via the <a class="reference internal" href="../../../api-v2/service
 the request/response sequence, the filter will match incrementally as the request proceeds. I.e.,
 first the request headers will be matched, then the request body if present, then the request
 trailers if present, then the response headers if present, etc.</p>
-<p>The filter additionally supports optional streamed output which is governed by the <a class="reference internal" href="../../../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-field-service-tap-v2alpha-outputconfig-streaming"><span class="std std-ref">streaming</span></a> setting. If this setting is false
-(the default), Envoy will emit <a class="reference internal" href="../../../api-v2/data/tap/v2alpha/http.proto.html#envoy-api-msg-data-tap-v2alpha-httpbufferedtrace"><span class="std std-ref">fully buffered traces</span></a>. Users are likely to find this format easier
+<p>The filter additionally supports optional streamed output which is governed by the <a class="reference internal" href="../../../api-v3/config/tap/v3/common.proto.html#envoy-v3-api-field-config-tap-v3-outputconfig-streaming"><span class="std std-ref">streaming</span></a> setting. If this setting is false
+(the default), Envoy will emit <a class="reference internal" href="../../../api-v3/data/tap/v3/http.proto.html#envoy-v3-api-msg-data-tap-v3-httpbufferedtrace"><span class="std std-ref">fully buffered traces</span></a>. Users are likely to find this format easier
 to interact with for simple cases.</p>
 <p>In cases where fully buffered traces are not practical (e.g., very large request and responses,
 long lived streaming APIs, etc.), the streaming setting can be set to true, and Envoy will emit
-multiple <a class="reference internal" href="../../../api-v2/data/tap/v2alpha/http.proto.html#envoy-api-msg-data-tap-v2alpha-httpstreamedtracesegment"><span class="std std-ref">streamed trace segments</span></a> for
+multiple <a class="reference internal" href="../../../api-v3/data/tap/v3/http.proto.html#envoy-v3-api-msg-data-tap-v3-httpstreamedtracesegment"><span class="std std-ref">streamed trace segments</span></a> for
 each tap. In this case, it is required that post-processing is performed to stitch all of the trace
 segments back together into a usable form. Also note that binary protobuf is not a self-delimiting
-format. If binary protobuf output is desired, the <a class="reference internal" href="../../../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-enum-value-service-tap-v2alpha-outputsink-format-proto-binary-length-delimited"><span class="std std-ref">PROTO_BINARY_LENGTH_DELIMITED</span></a> output
+format. If binary protobuf output is desired, the <a class="reference internal" href="../../../api-v3/config/tap/v3/common.proto.html#envoy-v3-api-enum-value-config-tap-v3-outputsink-format-proto-binary-length-delimited"><span class="std std-ref">PROTO_BINARY_LENGTH_DELIMITED</span></a> output
 format should be used.</p>
 <p>An static filter configuration to enable streaming output looks like:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.tap</span>
 <span class="nt">typed_config</span><span class="p">:</span>
-  <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.filter.http.tap.v2alpha.Tap</span>
+  <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.tap.v3.Tap</span>
   <span class="nt">common_config</span><span class="p">:</span>
     <span class="nt">static_config</span><span class="p">:</span>
       <span class="nt">match_config</span><span class="p">:</span>
@@ -407,7 +407,7 @@ might look like this:</p>
 </div>
 <div class="section" id="statistics">
 <h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
-<p>The tap filter outputs statistics in the <em>http.&lt;stat_prefix&gt;.tap.</em> namespace. The <a class="reference internal" href="../../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-stat-prefix"><span class="std std-ref">stat prefix</span></a>
+<p>The tap filter outputs statistics in the <em>http.&lt;stat_prefix&gt;.tap.</em> namespace. The <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-stat-prefix"><span class="std std-ref">stat prefix</span></a>
 comes from the owning HTTP connection manager.</p>
 <table class="colwidths-given docutils align-default">
 <colgroup>

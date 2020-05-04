@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Sharing data between filters &mdash; envoy 1.15.0-dev-319158 documentation</title>
+  <title>Sharing data between filters &mdash; envoy 1.15.0-dev-6151a6 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-319158
+                1.15.0-dev-6151a6
               </div>
             
           
@@ -204,7 +204,7 @@ well as to other core subsystems (e.g., access logging).</p>
 <div class="section" id="metadata">
 <h3>Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h3>
 <p>Several parts of Envoy configuration (e.g. listeners, routes, clusters)
-contain a <a class="reference internal" href="../../../api-v2/api/v2/core/base.proto.html#envoy-api-msg-core-metadata"><span class="std std-ref">metadata</span></a> where arbitrary
+contain a <a class="reference internal" href="../../../api-v3/config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-metadata"><span class="std std-ref">metadata</span></a> where arbitrary
 key-value pairs can be encoded. The typical pattern is to use the filter
 names in reverse DNS format as the key and encode filter specific
 configuration metadata in the value. This metadata is immutable and shared
@@ -217,7 +217,7 @@ weighted cluster to select appropriate endpoints in a cluster</p>
 </div>
 <div class="section" id="typed-metadata">
 <h3>Typed Metadata<a class="headerlink" href="#typed-metadata" title="Permalink to this headline">¶</a></h3>
-<p><a class="reference internal" href="../../../api-v2/api/v2/core/base.proto.html#envoy-api-msg-core-metadata"><span class="std std-ref">Metadata</span></a> as such is untyped. Before
+<p><a class="reference internal" href="../../../api-v3/config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-metadata"><span class="std std-ref">Metadata</span></a> as such is untyped. Before
 acting on the metadata, callers typically convert it to a typed class
 object. The cost of conversion becomes non-negligible when performed
 repeatedly (e.g., for each request stream or connection). Typed Metadata
@@ -241,16 +241,16 @@ is specified as part of the configuration. A <cite>FilterState::Object</cite> im
 </div>
 <div class="section" id="http-per-route-filter-configuration">
 <h3>HTTP Per-Route Filter Configuration<a class="headerlink" href="#http-per-route-filter-configuration" title="Permalink to this headline">¶</a></h3>
-<p>In HTTP routes, <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-virtualhost-per-filter-config"><span class="std std-ref">per_filter_config</span></a> allows HTTP filters
+<p>In HTTP routes, <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-virtualhost-typed-per-filter-config"><span class="std std-ref">typed_per_filter_config</span></a> allows HTTP filters
 to have virtualhost/route-specific configuration in addition to a global
 filter config common to all virtual hosts. This configuration is converted
 and embedded into the route table. It is up to the HTTP filter
 implementation to treat the route-specific filter config as a replacement
 to global config or an enhancement. For example, the HTTP fault filter uses
 this technique to provide per-route fault configuration.</p>
-<p><cite>per_filter_config</cite> is a <cite>map&lt;string, ProtobufWkt::Struct&gt;</cite>. The Connection
+<p><cite>typed_per_filter_config</cite> is a <cite>map&lt;string, google.protobuf.Any&gt;</cite>. The Connection
 manager iterates over this map and invokes the filter factory interface
-<cite>createRouteSpecificFilterConfig</cite> to parse/validate the struct value and
+<cite>createRouteSpecificFilterConfigTyped</cite> to parse/validate the struct value and
 convert it into a typed class object that’s stored with the route
 itself. HTTP filters can then query the route-specific filter config during
 request processing.</p>

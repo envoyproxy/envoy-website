@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Adaptive Concurrency &mdash; envoy 1.15.0-dev-319158 documentation</title>
+  <title>Adaptive Concurrency &mdash; envoy 1.15.0-dev-6151a6 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-319158
+                1.15.0-dev-6151a6
               </div>
             
           
@@ -226,7 +226,7 @@
 <p>The adaptive concurrency filter is experimental and is currently under active development.</p>
 </div>
 <p>This filter should be configured with the name <cite>envoy.filters.http.adaptive_concurrency</cite>.</p>
-<p>See the <a class="reference internal" href="../../../api-v2/config/filter/http/adaptive_concurrency/v2alpha/adaptive_concurrency.proto.html#envoy-api-msg-config-filter-http-adaptive-concurrency-v2alpha-adaptiveconcurrency"><span class="std std-ref">v2 API reference</span></a> for details on each configuration parameter.</p>
+<p>See the <a class="reference internal" href="../../../api-v3/extensions/filters/http/adaptive_concurrency/v3/adaptive_concurrency.proto.html#envoy-v3-api-msg-extensions-filters-http-adaptive-concurrency-v3-adaptiveconcurrency"><span class="std std-ref">v3 API reference</span></a> for details on each configuration parameter.</p>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>The adaptive concurrency filter dynamically adjusts the allowed number of requests that can be
@@ -242,7 +242,7 @@ request and recording latency samples to use in the calculation of the concurren
 <h3>Gradient Controller<a class="headerlink" href="#gradient-controller" title="Permalink to this headline">¶</a></h3>
 <p>The gradient controller makes forwarding decisions based on a periodically measured ideal round-trip
 time (minRTT) for an upstream.</p>
-<p><a class="reference internal" href="../../../api-v2/config/filter/http/adaptive_concurrency/v2alpha/adaptive_concurrency.proto.html#envoy-api-msg-config-filter-http-adaptive-concurrency-v2alpha-gradientcontrollerconfig"><span class="std std-ref">v2 API reference</span></a></p>
+<p><a class="reference internal" href="../../../api-v3/extensions/filters/http/adaptive_concurrency/v3/adaptive_concurrency.proto.html#envoy-v3-api-msg-extensions-filters-http-adaptive-concurrency-v3-gradientcontrollerconfig"><span class="std std-ref">v3 API reference</span></a></p>
 <div class="section" id="calculating-the-minrtt">
 <h4>Calculating the minRTT<a class="headerlink" href="#calculating-the-minrtt" title="Permalink to this headline">¶</a></h4>
 <p>The minRTT is periodically measured by only allowing a very low outstanding request count to an
@@ -277,7 +277,7 @@ in the cluster will have a higher likelihood of success in this scenario.</p>
 Notice that <em>B</em>, the buffer value added to the minRTT, allows for normal variance in the sampled
 latencies by requiring the sampled latencies the exceed the minRTT by some configurable threshold
 before decreasing the gradient value.</p>
-<p>The buffer will be a percentage of the measured minRTT value whose value is modified via the buffer field in the <a class="reference internal" href="../../../api-v2/config/filter/http/adaptive_concurrency/v2alpha/adaptive_concurrency.proto.html#envoy-api-msg-config-filter-http-adaptive-concurrency-v2alpha-gradientcontrollerconfig-minimumrttcalculationparams"><span class="std std-ref">minRTT calculation parameters</span></a>. The buffer is calculated as follows:</p>
+<p>The buffer will be a percentage of the measured minRTT value whose value is modified via the buffer field in the <a class="reference internal" href="../../../api-v3/extensions/filters/http/adaptive_concurrency/v3/adaptive_concurrency.proto.html#envoy-v3-api-msg-extensions-filters-http-adaptive-concurrency-v3-gradientcontrollerconfig-minimumrttcalculationparams"><span class="std std-ref">minRTT calculation parameters</span></a>. The buffer is calculated as follows:</p>
 <div class="math notranslate nohighlight">
 \[B = minRTT * buffer_{pct}\]</div>
 <p>The gradient value is then used to update the concurrency limit via:</p>
@@ -317,7 +317,7 @@ the adaptive concurrency filter.</p></li>
 fields can be overridden via runtime settings.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.adaptive_concurrency</span>
 <span class="nt">typed_config</span><span class="p">:</span>
-  <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.filter.http.adaptive_concurrency.v2alpha.AdaptiveConcurrency</span>
+  <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.adaptive_concurrency.v3.AdaptiveConcurrency</span>
   <span class="nt">gradient_controller_config</span><span class="p">:</span>
     <span class="nt">sample_aggregate_percentile</span><span class="p">:</span>
       <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">90</span>
@@ -383,7 +383,7 @@ clamped to the range [0,100].</p>
 <div class="section" id="statistics">
 <h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
 <p>The adaptive concurrency filter outputs statistics in the
-<em>http.&lt;stat_prefix&gt;.adaptive_concurrency.</em> namespace. The <a class="reference internal" href="../../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-stat-prefix"><span class="std std-ref">stat prefix</span></a>
+<em>http.&lt;stat_prefix&gt;.adaptive_concurrency.</em> namespace. The <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-stat-prefix"><span class="std std-ref">stat prefix</span></a>
 comes from the owning HTTP connection manager. Statistics are specific to the concurrency
 controllers.</p>
 <div class="section" id="gradient-controller-statistics">

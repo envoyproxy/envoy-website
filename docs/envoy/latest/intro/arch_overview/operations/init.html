@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Initialization &mdash; envoy 1.15.0-dev-319158 documentation</title>
+  <title>Initialization &mdash; envoy 1.15.0-dev-6151a6 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-319158
+                1.15.0-dev-6151a6
               </div>
             
           
@@ -207,16 +207,16 @@ accepting new connections.</p>
 multi-phase initialization where it first initializes static/DNS clusters, then predefined
 <a class="reference internal" href="dynamic_configuration.html#arch-overview-dynamic-config-eds"><span class="std std-ref">EDS</span></a> clusters. Then it initializes
 <a class="reference internal" href="dynamic_configuration.html#arch-overview-dynamic-config-cds"><span class="std std-ref">CDS</span></a> if applicable, waits for one response (or failure)
-for a <a class="reference internal" href="../../../api-v2/api/v2/core/config_source.proto.html#envoy-api-field-core-configsource-initial-fetch-timeout"><span class="std std-ref">bounded period of time</span></a>,
+for a <a class="reference internal" href="../../../api-v3/config/core/v3/config_source.proto.html#envoy-v3-api-field-config-core-v3-configsource-initial-fetch-timeout"><span class="std std-ref">bounded period of time</span></a>,
 and does the same primary/secondary initialization of CDS provided clusters.</p></li>
 <li><p>If clusters use <a class="reference internal" href="../upstream/health_checking.html#arch-overview-health-checking"><span class="std std-ref">active health checking</span></a>, Envoy also does a
 single active health check round.</p></li>
 <li><p>Once cluster manager initialization is done, <a class="reference internal" href="dynamic_configuration.html#arch-overview-dynamic-config-rds"><span class="std std-ref">RDS</span></a> and
 <a class="reference internal" href="dynamic_configuration.html#arch-overview-dynamic-config-lds"><span class="std std-ref">LDS</span></a> initialize (if applicable). The server waits
-for a <a class="reference internal" href="../../../api-v2/api/v2/core/config_source.proto.html#envoy-api-field-core-configsource-initial-fetch-timeout"><span class="std std-ref">bounded period of time</span></a>
+for a <a class="reference internal" href="../../../api-v3/config/core/v3/config_source.proto.html#envoy-v3-api-field-config-core-v3-configsource-initial-fetch-timeout"><span class="std std-ref">bounded period of time</span></a>
 for at least one response (or failure) for LDS/RDS requests. After which, it starts accepting connections.</p></li>
 <li><p>If LDS itself returns a listener that needs an RDS response, Envoy further waits for
-a <a class="reference internal" href="../../../api-v2/api/v2/core/config_source.proto.html#envoy-api-field-core-configsource-initial-fetch-timeout"><span class="std std-ref">bounded period of time</span></a> until an RDS
+a <a class="reference internal" href="../../../api-v3/config/core/v3/config_source.proto.html#envoy-v3-api-field-config-core-v3-configsource-initial-fetch-timeout"><span class="std std-ref">bounded period of time</span></a> until an RDS
 response (or failure) is received. Note that this process takes place on every future listener
 addition via LDS and is known as <a class="reference internal" href="../../../configuration/listeners/lds.html#config-listeners-lds"><span class="std std-ref">listener warming</span></a>.</p></li>
 <li><p>After all of the previous steps have taken place, the listeners start accepting new connections.
@@ -224,7 +224,7 @@ This flow ensures that during hot restart the new process is fully capable of ac
 processing new connections before the draining of the old process begins.</p></li>
 </ul>
 <p>A key design principle of initialization is that an Envoy is always guaranteed to initialize within
-<a class="reference internal" href="../../../api-v2/api/v2/core/config_source.proto.html#envoy-api-field-core-configsource-initial-fetch-timeout"><span class="std std-ref">initial_fetch_timeout</span></a>,
+<a class="reference internal" href="../../../api-v3/config/core/v3/config_source.proto.html#envoy-v3-api-field-config-core-v3-configsource-initial-fetch-timeout"><span class="std std-ref">initial_fetch_timeout</span></a>,
 with a best effort made to obtain the complete set of xDS configuration within that subject to the
 management server availability.</p>
 </div>

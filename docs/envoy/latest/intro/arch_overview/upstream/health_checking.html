@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Health checking &mdash; envoy 1.15.0-dev-319158 documentation</title>
+  <title>Health checking &mdash; envoy 1.15.0-dev-6151a6 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-319158
+                1.15.0-dev-6151a6
               </div>
             
           
@@ -211,7 +211,7 @@ unhealthy, successes required before marking a host healthy, etc.):</p>
 <ul class="simple">
 <li><p><strong>HTTP</strong>: During HTTP health checking Envoy will send an HTTP request to the upstream host. By
 default, it expects a 200 response if the host is healthy. Expected response codes are
-<a class="reference internal" href="../../../api-v2/api/v2/core/health_check.proto.html#envoy-api-msg-core-healthcheck-httphealthcheck"><span class="std std-ref">configurable</span></a>. The
+<a class="reference internal" href="../../../api-v3/config/core/v3/health_check.proto.html#envoy-v3-api-msg-config-core-v3-healthcheck-httphealthcheck"><span class="std std-ref">configurable</span></a>. The
 upstream host can return 503 if it wants to immediately notify downstream hosts to no longer
 forward traffic to it.</p></li>
 <li><p><strong>L3/L4</strong>: During L3/L4 health checking, Envoy will send a configurable byte buffer to the
@@ -222,25 +222,25 @@ server can respond with anything other than PONG to cause an immediate active he
 failure. Optionally, Envoy can perform EXISTS on a user-specified key. If the key does not exist
 it is considered a passing healthcheck. This allows the user to mark a Redis instance for
 maintenance by setting the specified key to any value and waiting for traffic to drain. See
-<a class="reference internal" href="../../../api-v2/config/health_checker/redis/v2/redis.proto.html#envoy-api-msg-config-health-checker-redis-v2-redis"><span class="std std-ref">redis_key</span></a>.</p></li>
+<a class="reference internal" href="../../../api-v3/config/health_checker/redis/v2/redis.proto.html#envoy-v3-api-msg-config-health-checker-redis-v2-redis"><span class="std std-ref">redis_key</span></a>.</p></li>
 </ul>
 <p>Health checks occur over the transport socket specified for the cluster. This implies that if a cluster is
 using a TLS-enabled transport socket, the health check will also occur over TLS. The
-<a class="reference internal" href="../../../api-v2/api/v2/core/health_check.proto.html#envoy-api-msg-core-healthcheck-tlsoptions"><span class="std std-ref">TLS options</span></a> used for health check connections
+<a class="reference internal" href="../../../api-v3/config/core/v3/health_check.proto.html#envoy-v3-api-msg-config-core-v3-healthcheck-tlsoptions"><span class="std std-ref">TLS options</span></a> used for health check connections
 can be specified, which is useful if the corresponding upstream is using ALPN-based
-<a class="reference internal" href="../../../api-v2/api/v2/listener/listener_components.proto.html#envoy-api-msg-listener-filterchainmatch"><span class="std std-ref">FilterChainMatch</span></a> with different protocols for
+<a class="reference internal" href="../../../api-v3/config/listener/v3/listener_components.proto.html#envoy-v3-api-msg-config-listener-v3-filterchainmatch"><span class="std std-ref">FilterChainMatch</span></a> with different protocols for
 health checks versus data connections.</p>
 <div class="section" id="per-cluster-member-health-check-config">
 <span id="arch-overview-per-cluster-health-check-config"></span><h2>Per cluster member health check config<a class="headerlink" href="#per-cluster-member-health-check-config" title="Permalink to this headline">¶</a></h2>
 <p>If active health checking is configured for an upstream cluster, a specific additional configuration
 for each registered member can be specified by setting the
-<a class="reference internal" href="../../../api-v2/api/v2/endpoint/endpoint_components.proto.html#envoy-api-msg-endpoint-endpoint-healthcheckconfig"><span class="std std-ref">HealthCheckConfig</span></a>
-in the <a class="reference internal" href="../../../api-v2/api/v2/endpoint/endpoint_components.proto.html#envoy-api-msg-endpoint-endpoint"><span class="std std-ref">Endpoint</span></a> of an <a class="reference internal" href="../../../api-v2/api/v2/endpoint/endpoint_components.proto.html#envoy-api-msg-endpoint-lbendpoint"><span class="std std-ref">LbEndpoint</span></a>
-of each defined <a class="reference internal" href="../../../api-v2/api/v2/endpoint/endpoint_components.proto.html#envoy-api-msg-endpoint-localitylbendpoints"><span class="std std-ref">LocalityLbEndpoints</span></a> in a
-<a class="reference internal" href="../../../api-v2/api/v2/endpoint.proto.html#envoy-api-msg-clusterloadassignment"><span class="std std-ref">ClusterLoadAssignment</span></a>.</p>
-<p>An example of setting up <a class="reference internal" href="../../../api-v2/api/v2/endpoint/endpoint_components.proto.html#envoy-api-msg-endpoint-endpoint-healthcheckconfig"><span class="std std-ref">health check config</span></a>
-to set a <a class="reference internal" href="../../../api-v2/api/v2/endpoint/endpoint_components.proto.html#envoy-api-msg-endpoint-endpoint"><span class="std std-ref">cluster member</span></a>’s alternative health check
-<a class="reference internal" href="../../../api-v2/api/v2/endpoint/endpoint_components.proto.html#envoy-api-field-endpoint-endpoint-healthcheckconfig-port-value"><span class="std std-ref">port</span></a> is:</p>
+<a class="reference internal" href="../../../api-v3/config/endpoint/v3/endpoint_components.proto.html#envoy-v3-api-msg-config-endpoint-v3-endpoint-healthcheckconfig"><span class="std std-ref">HealthCheckConfig</span></a>
+in the <a class="reference internal" href="../../../api-v3/config/endpoint/v3/endpoint_components.proto.html#envoy-v3-api-msg-config-endpoint-v3-endpoint"><span class="std std-ref">Endpoint</span></a> of an <a class="reference internal" href="../../../api-v3/config/endpoint/v3/endpoint_components.proto.html#envoy-v3-api-msg-config-endpoint-v3-lbendpoint"><span class="std std-ref">LbEndpoint</span></a>
+of each defined <a class="reference internal" href="../../../api-v3/config/endpoint/v3/endpoint_components.proto.html#envoy-v3-api-msg-config-endpoint-v3-localitylbendpoints"><span class="std std-ref">LocalityLbEndpoints</span></a> in a
+<a class="reference internal" href="../../../api-v3/config/endpoint/v3/endpoint.proto.html#envoy-v3-api-msg-config-endpoint-v3-clusterloadassignment"><span class="std std-ref">ClusterLoadAssignment</span></a>.</p>
+<p>An example of setting up <a class="reference internal" href="../../../api-v3/config/endpoint/v3/endpoint_components.proto.html#envoy-v3-api-msg-config-endpoint-v3-endpoint-healthcheckconfig"><span class="std std-ref">health check config</span></a>
+to set a <a class="reference internal" href="../../../api-v3/config/endpoint/v3/endpoint_components.proto.html#envoy-v3-api-msg-config-endpoint-v3-endpoint"><span class="std std-ref">cluster member</span></a>’s alternative health check
+<a class="reference internal" href="../../../api-v3/config/endpoint/v3/endpoint_components.proto.html#envoy-v3-api-field-config-endpoint-v3-endpoint-healthcheckconfig-port-value"><span class="std std-ref">port</span></a> is:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">load_assignment</span><span class="p">:</span>
   <span class="nt">endpoints</span><span class="p">:</span>
   <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
@@ -257,10 +257,10 @@ to set a <a class="reference internal" href="../../../api-v2/api/v2/endpoint/end
 <div class="section" id="health-check-event-logging">
 <span id="arch-overview-health-check-logging"></span><h2>Health check event logging<a class="headerlink" href="#health-check-event-logging" title="Permalink to this headline">¶</a></h2>
 <p>A per-healthchecker log of ejection and addition events can optionally be produced by Envoy by
-specifying a log file path in <a class="reference internal" href="../../../api-v2/api/v2/core/health_check.proto.html#envoy-api-field-core-healthcheck-event-log-path"><span class="std std-ref">the HealthCheck config</span></a>.
+specifying a log file path in <a class="reference internal" href="../../../api-v3/config/core/v3/health_check.proto.html#envoy-v3-api-field-config-core-v3-healthcheck-event-log-path"><span class="std std-ref">the HealthCheck config</span></a>.
 The log is structured as JSON dumps of
-<a class="reference internal" href="../../../api-v2/data/core/v2alpha/health_check_event.proto.html#envoy-api-msg-data-core-v2alpha-healthcheckevent"><span class="std std-ref">HealthCheckEvent messages</span></a>.</p>
-<p>Envoy can be configured to log all health check failure events by setting the <a class="reference internal" href="../../../api-v2/api/v2/core/health_check.proto.html#envoy-api-field-core-healthcheck-always-log-health-check-failures"><span class="std std-ref">always_log_health_check_failures
+<a class="reference internal" href="../../../api-v3/data/core/v3/health_check_event.proto.html#envoy-v3-api-msg-data-core-v3-healthcheckevent"><span class="std std-ref">HealthCheckEvent messages</span></a>.</p>
+<p>Envoy can be configured to log all health check failure events by setting the <a class="reference internal" href="../../../api-v3/config/core/v3/health_check.proto.html#envoy-v3-api-field-config-core-v3-healthcheck-always-log-health-check-failures"><span class="std std-ref">always_log_health_check_failures
 flag</span></a> to true.</p>
 </div>
 <div class="section" id="passive-health-checking">
@@ -281,7 +281,7 @@ operation:</p>
 <li><p><strong>No pass through</strong>: In this mode, the health check request is never passed to the local service.
 Envoy will respond with a 200 or a 503 depending on the current draining state of the server.</p></li>
 <li><p><strong>No pass through, computed from upstream cluster health</strong>: In this mode, the health checking
-filter will return a 200 or a 503 depending on whether at least a <a class="reference internal" href="../../../api-v2/config/filter/http/health_check/v2/health_check.proto.html#envoy-api-field-config-filter-http-health-check-v2-healthcheck-cluster-min-healthy-percentages"><span class="std std-ref">specified percentage</span></a>
+filter will return a 200 or a 503 depending on whether at least a <a class="reference internal" href="../../../api-v3/extensions/filters/http/health_check/v3/health_check.proto.html#envoy-v3-api-field-extensions-filters-http-health-check-v3-healthcheck-cluster-min-healthy-percentages"><span class="std std-ref">specified percentage</span></a>
 of the servers are available (healthy + degraded) in one or more upstream clusters. (If the Envoy
 server is in a draining state, though, it will respond with a 503 regardless of the upstream
 cluster health.)</p></li>
@@ -322,7 +322,7 @@ discovery in a cloud auto scaling or container environment, it’s possible for 
 then come back with the same IP address, but as a different host type. One solution to this problem
 is having a different HTTP health checking URL for every service type. The downside of that approach
 is that overall configuration becomes more complicated as every health check URL is fully custom.</p>
-<p>The Envoy HTTP health checker supports the <a class="reference internal" href="../../../api-v2/api/v2/core/health_check.proto.html#envoy-api-field-core-healthcheck-httphealthcheck-service-name-matcher"><span class="std std-ref">service_name_matcher</span></a> option. If this option is set,
+<p>The Envoy HTTP health checker supports the <a class="reference internal" href="../../../api-v3/config/core/v3/health_check.proto.html#envoy-v3-api-field-config-core-v3-healthcheck-httphealthcheck-service-name-matcher"><span class="std std-ref">service_name_matcher</span></a> option. If this option is set,
 the health checker additionally compares the value of the <em>x-envoy-upstream-healthchecked-cluster</em>
 response header to <em>service_name_matcher</em>. If the values do not match, the health check does not pass.
 The upstream health check filter appends <em>x-envoy-upstream-healthchecked-cluster</em> to the response headers.

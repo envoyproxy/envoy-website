@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Dynamic forward proxy &mdash; envoy 1.15.0-dev-319158 documentation</title>
+  <title>Dynamic forward proxy &mdash; envoy 1.15.0-dev-6151a6 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-319158
+                1.15.0-dev-6151a6
               </div>
             
           
@@ -227,22 +227,22 @@
 </div>
 <ul class="simple">
 <li><p>HTTP dynamic forward proxy <a class="reference internal" href="../../../intro/arch_overview/http/http_proxy.html#arch-overview-http-dynamic-forward-proxy"><span class="std std-ref">architecture overview</span></a></p></li>
-<li><p><a class="reference internal" href="../../../api-v2/config/filter/http/dynamic_forward_proxy/v2alpha/dynamic_forward_proxy.proto.html#envoy-api-msg-config-filter-http-dynamic-forward-proxy-v2alpha-filterconfig"><span class="std std-ref">v2 API reference</span></a></p></li>
+<li><p><a class="reference internal" href="../../../api-v3/extensions/filters/http/dynamic_forward_proxy/v3/dynamic_forward_proxy.proto.html#envoy-v3-api-msg-extensions-filters-http-dynamic-forward-proxy-v3-filterconfig"><span class="std std-ref">v3 API reference</span></a></p></li>
 <li><p>This filter should be configured with the name <em>envoy.filters.http.dynamic_forward_proxy</em></p></li>
 </ul>
 <p>The following is a complete configuration that configures both the
-<a class="reference internal" href="../../../api-v2/config/filter/http/dynamic_forward_proxy/v2alpha/dynamic_forward_proxy.proto.html#envoy-api-msg-config-filter-http-dynamic-forward-proxy-v2alpha-filterconfig"><span class="std std-ref">dynamic forward proxy HTTP filter</span></a>
-as well as the <a class="reference internal" href="../../../api-v2/config/cluster/dynamic_forward_proxy/v2alpha/cluster.proto.html#envoy-api-msg-config-cluster-dynamic-forward-proxy-v2alpha-clusterconfig"><span class="std std-ref">dynamic forward proxy cluster</span></a>. Both filter and cluster
+<a class="reference internal" href="../../../api-v3/extensions/filters/http/dynamic_forward_proxy/v3/dynamic_forward_proxy.proto.html#envoy-v3-api-msg-extensions-filters-http-dynamic-forward-proxy-v3-filterconfig"><span class="std std-ref">dynamic forward proxy HTTP filter</span></a>
+as well as the <a class="reference internal" href="../../../api-v3/extensions/clusters/dynamic_forward_proxy/v3/cluster.proto.html#envoy-v3-api-msg-extensions-clusters-dynamic-forward-proxy-v3-clusterconfig"><span class="std std-ref">dynamic forward proxy cluster</span></a>. Both filter and cluster
 must be configured together and point to the same DNS cache parameters for Envoy to operate as an
 HTTP dynamic forward proxy.</p>
-<p>This filter supports <a class="reference internal" href="../../../api-v2/config/filter/http/dynamic_forward_proxy/v2alpha/dynamic_forward_proxy.proto.html#envoy-api-msg-config-filter-http-dynamic-forward-proxy-v2alpha-filterconfig"><span class="std std-ref">host rewrite</span></a>
-via the <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-virtualhost-per-filter-config"><span class="std std-ref">virtual host’s per_filter_config</span></a> or the
-<a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-route-per-filter-config"><span class="std std-ref">route’s per_filter_config</span></a>. This can be used to rewrite
+<p>This filter supports <a class="reference internal" href="../../../api-v3/extensions/filters/http/dynamic_forward_proxy/v3/dynamic_forward_proxy.proto.html#envoy-v3-api-msg-extensions-filters-http-dynamic-forward-proxy-v3-filterconfig"><span class="std std-ref">host rewrite</span></a>
+via the <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-virtualhost-typed-per-filter-config"><span class="std std-ref">virtual host’s typed_per_filter_config</span></a> or the
+<a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-route-typed-per-filter-config"><span class="std std-ref">route’s typed_per_filter_config</span></a>. This can be used to rewrite
 the host header with the provided value before DNS lookup, thus allowing to route traffic to the rewritten
 host when forwarding. See the example below within the configured routes.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Configuring a <a class="reference internal" href="../../../api-v2/api/v2/cluster.proto.html#envoy-api-field-cluster-tls-context"><span class="std std-ref">tls_context</span></a> on the cluster with
+<p>Configuring a <a class="reference internal" href="../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-transport-socket"><span class="std std-ref">transport_socket with name envoy.transport_sockets.tls</span></a> on the cluster with
 <em>trusted_ca</em> certificates instructs Envoy to use TLS when connecting to upstream hosts and verify
 the certificate chain. Additionally, Envoy will automatically perform SAN verification for the
 resolved host name as well as specify the host name via SNI.</p>
@@ -266,7 +266,7 @@ resolved host name as well as specify the host name via SNI.</p>
     <span class="p p-Indicator">-</span> <span class="nt">filters</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.network.http_connection_manager</span>
         <span class="nt">typed_config</span><span class="p">:</span>
-          <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager</span>
+          <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager</span>
           <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ingress_http</span>
           <span class="nt">route_config</span><span class="p">:</span>
             <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_route</span>
@@ -278,9 +278,10 @@ resolved host name as well as specify the host name via SNI.</p>
                   <span class="nt">prefix</span><span class="p">:</span> <span class="s">&quot;/force-host-rewrite&quot;</span>
                 <span class="nt">route</span><span class="p">:</span>
                   <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">dynamic_forward_proxy_cluster</span>
-                <span class="nt">per_filter_config</span><span class="p">:</span>
+                <span class="nt">typed_per_filter_config</span><span class="p">:</span>
                   <span class="nt">envoy.filters.http.dynamic_forward_proxy</span><span class="p">:</span>
-                    <span class="nt">host_rewrite</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">www.example.org</span>
+                    <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.dynamic_forward_proxy.v3.PerRouteConfig</span>
+                    <span class="nt">host_rewrite_literal</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">www.example.org</span>
               <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span>
                   <span class="nt">prefix</span><span class="p">:</span> <span class="s">&quot;/&quot;</span>
                 <span class="nt">route</span><span class="p">:</span>
@@ -293,6 +294,8 @@ resolved host name as well as specify the host name via SNI.</p>
                 <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">dynamic_forward_proxy_cache_config</span>
                 <span class="nt">dns_lookup_family</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">V4_ONLY</span>
           <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.router</span>
+            <span class="nt">typed_config</span><span class="p">:</span>
+              <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.router.v3.Router</span>
   <span class="nt">clusters</span><span class="p">:</span>
   <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">dynamic_forward_proxy_cluster</span>
     <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1s</span>
@@ -300,14 +303,14 @@ resolved host name as well as specify the host name via SNI.</p>
     <span class="nt">cluster_type</span><span class="p">:</span>
       <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.clusters.dynamic_forward_proxy</span>
       <span class="nt">typed_config</span><span class="p">:</span>
-        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.cluster.dynamic_forward_proxy.v2alpha.ClusterConfig</span>
+        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.clusters.dynamic_forward_proxy.v3.ClusterConfig</span>
         <span class="nt">dns_cache_config</span><span class="p">:</span>
           <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">dynamic_forward_proxy_cache_config</span>
           <span class="nt">dns_lookup_family</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">V4_ONLY</span>
     <span class="nt">transport_socket</span><span class="p">:</span>
       <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.tls</span>
       <span class="nt">typed_config</span><span class="p">:</span>
-        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.api.v2.auth.UpstreamTlsContext</span>
+        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext</span>
         <span class="nt">common_tls_context</span><span class="p">:</span>
           <span class="nt">validation_context</span><span class="p">:</span>
             <span class="nt">trusted_ca</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt">filename</span><span class="p">:</span> <span class="nv">/etc/ssl/certs/ca-certificates.crt</span><span class="p p-Indicator">}</span>

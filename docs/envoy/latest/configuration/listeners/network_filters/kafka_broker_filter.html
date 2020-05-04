@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Kafka Broker filter &mdash; envoy 1.15.0-dev-319158 documentation</title>
+  <title>Kafka Broker filter &mdash; envoy 1.15.0-dev-6151a6 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-319158
+                1.15.0-dev-6151a6
               </div>
             
           
@@ -223,7 +223,7 @@ The filter attempts not to influence the communication between client and broker
 that could not be decoded (due to Kafka client or broker running a newer version than supported by
 this filter) are forwarded as-is.</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../../../api-v2/config/filter/network/kafka_broker/v2alpha1/kafka_broker.proto.html#envoy-api-msg-config-filter-network-kafka-broker-v2alpha1-kafkabroker"><span class="std std-ref">v2 API reference</span></a></p></li>
+<li><p><a class="reference internal" href="../../../api-v3/extensions/filters/network/kafka_broker/v3/kafka_broker.proto.html#envoy-v3-api-msg-extensions-filters-network-kafka-broker-v3-kafkabroker"><span class="std std-ref">v3 API reference</span></a></p></li>
 <li><p>This filter should be configured with the name <em>envoy.filters.network.kafka_broker</em>.</p></li>
 </ul>
 <div class="admonition attention">
@@ -244,11 +244,11 @@ in the configuration snippet below:</p>
   <span class="p p-Indicator">-</span> <span class="nt">filters</span><span class="p">:</span>
     <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.network.kafka_broker</span>
       <span class="nt">typed_config</span><span class="p">:</span>
-        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.filter.network.kafka_broker.v2alpha1.KafkaBroker</span>
+        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.kafka_broker.v3.KafkaBroker</span>
         <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">exampleprefix</span>
     <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.network.tcp_proxy</span>
       <span class="nt">typed_config</span><span class="p">:</span>
-        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.filter.network.tcp_proxy.v2.TcpProxy</span>
+        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.tcp_proxy.v3.TcpProxy</span>
         <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">tcp</span>
         <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">localkafka</span>
 <span class="nt">clusters</span><span class="p">:</span>
@@ -256,10 +256,15 @@ in the configuration snippet below:</p>
   <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25s</span>
   <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">strict_dns</span>
   <span class="nt">lb_policy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">round_robin</span>
-  <span class="nt">hosts</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">socket_address</span><span class="p">:</span>
-      <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span> <span class="c1"># Kafka broker&#39;s host.</span>
-      <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">9092</span>   <span class="c1"># Kafka broker&#39;s port.</span>
+  <span class="nt">load_assignment</span><span class="p">:</span>
+    <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_service</span>
+    <span class="nt">endpoints</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="nt">endpoint</span><span class="p">:</span>
+            <span class="nt">address</span><span class="p">:</span>
+              <span class="nt">socket_address</span><span class="p">:</span>
+                <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span> <span class="c1"># Kafka broker&#39;s host</span>
+                <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">9092</span> <span class="c1"># Kafka broker&#39;s port.</span>
 </pre></div>
 </div>
 <p>The Kafka broker needs to advertise the Envoy listener port instead of its own.</p>

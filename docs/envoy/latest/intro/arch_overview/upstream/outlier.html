@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Outlier detection &mdash; envoy 1.15.0-dev-319158 documentation</title>
+  <title>Outlier detection &mdash; envoy 1.15.0-dev-6151a6 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-319158
+                1.15.0-dev-6151a6
               </div>
             
           
@@ -208,7 +208,7 @@ hosts in an upstream cluster are performing unlike the others and removing them 
 such as consecutive failures, temporal success rate, temporal latency, etc. Outlier detection is a
 form of <em>passive</em> health checking. Envoy also supports <a class="reference internal" href="health_checking.html#arch-overview-health-checking"><span class="std std-ref">active health checking</span></a>. <em>Passive</em> and <em>active</em> health checking can be enabled together or
 independently, and form the basis for an overall upstream health checking solution.
-Outlier detection is part of <a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-msg-cluster-outlierdetection"><span class="std std-ref">cluster configuration</span></a>
+Outlier detection is part of <a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-msg-config-cluster-v3-outlierdetection"><span class="std std-ref">cluster configuration</span></a>
 and it needs filters to report errors, timeouts, resets. Currently the following filters support
 outlier detection: <a class="reference internal" href="../../../configuration/http/http_filters/router_filter.html#config-http-filters-router"><span class="std std-ref">http router</span></a>,
 <a class="reference internal" href="../../../configuration/listeners/network_filters/tcp_proxy_filter.html#config-network-filters-tcp-proxy"><span class="std std-ref">tcp proxy</span></a>  and <a class="reference internal" href="../../../configuration/listeners/network_filters/redis_proxy_filter.html#config-network-filters-redis-proxy"><span class="std std-ref">redis proxy</span></a>.</p>
@@ -222,17 +222,17 @@ errors returned by HTTP server (externally generated errors). In such scenario, 
 transaction with the server may fail.
 On the contrary, <a class="reference internal" href="../../../configuration/listeners/network_filters/tcp_proxy_filter.html#config-network-filters-tcp-proxy"><span class="std std-ref">tcp proxy</span></a> filter does not understand any protocol above
 TCP layer and reports only locally originated errors.</p>
-<p>In default configuration (<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">outlier_detection.split_external_local_origin_errors</span></a> is <em>false</em>)
+<p>In default configuration (<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">outlier_detection.split_external_local_origin_errors</span></a> is <em>false</em>)
 locally originated errors are not distinguished from externally generated (transaction) errors and all end up
 in the same bucket and are compared against
-<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-consecutive-5xx"><span class="std std-ref">outlier_detection.consecutive_5xx</span></a>,
-<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-consecutive-gateway-failure"><span class="std std-ref">outlier_detection.consecutive_gateway_failure</span></a> and
-<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-success-rate-stdev-factor"><span class="std std-ref">outlier_detection.success_rate_stdev_factor</span></a>
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-consecutive-5xx"><span class="std std-ref">outlier_detection.consecutive_5xx</span></a>,
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-consecutive-gateway-failure"><span class="std std-ref">outlier_detection.consecutive_gateway_failure</span></a> and
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-success-rate-stdev-factor"><span class="std std-ref">outlier_detection.success_rate_stdev_factor</span></a>
 configuration items. For example, if connection to an upstream HTTP server fails twice because of timeout and
 then, after successful connection, the server returns error code 500, the total error count will be 3.</p>
 <p>Outlier detection may also be configured to distinguish locally originated errors from externally originated (transaction) errors.
 It is done via
-<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">outlier_detection.split_external_local_origin_errors</span></a> configuration item.
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">outlier_detection.split_external_local_origin_errors</span></a> configuration item.
 In that mode locally originated errors are tracked by separate counters than externally originated
 (transaction) errors and
 the outlier detector may be configured to react to locally originated errors and ignore externally originated errors
@@ -249,12 +249,12 @@ ejection algorithm works as follows:</p>
 <li><p>A host is determined to be an outlier.</p></li>
 <li><p>If no hosts have been ejected, Envoy will eject the host immediately. Otherwise, it checks to make
 sure the number of ejected hosts is below the allowed threshold (specified via the
-<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-max-ejection-percent"><span class="std std-ref">outlier_detection.max_ejection_percent</span></a>
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-max-ejection-percent"><span class="std std-ref">outlier_detection.max_ejection_percent</span></a>
 setting). If the number of ejected hosts is above the threshold, the host is not ejected.</p></li>
 <li><p>The host is ejected for some number of milliseconds. Ejection means that the host is marked
 unhealthy and will not be used during load balancing unless the load balancer is in a
 <a class="reference internal" href="load_balancing/panic_threshold.html#arch-overview-load-balancing-panic-threshold"><span class="std std-ref">panic</span></a> scenario. The number of milliseconds
-is equal to the <a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-base-ejection-time"><span class="std std-ref">outlier_detection.base_ejection_time_ms</span></a> value
+is equal to the <a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-base-ejection-time"><span class="std std-ref">outlier_detection.base_ejection_time_ms</span></a> value
 multiplied by the number of times the host has been ejected. This causes hosts to get ejected
 for longer and longer periods if they continue to fail.</p></li>
 <li><p>An ejected host will automatically be brought back into service after the ejection time has
@@ -266,18 +266,18 @@ been satisfied. Generally, outlier detection is used alongside <a class="referen
 <p>Envoy supports the following outlier detection types:</p>
 <div class="section" id="consecutive-5xx">
 <h3>Consecutive 5xx<a class="headerlink" href="#consecutive-5xx" title="Permalink to this headline">¶</a></h3>
-<p>In default mode (<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">outlier_detection.split_external_local_origin_errors</span></a> is <em>false</em>) this detection type takes into account all generated errors: locally
+<p>In default mode (<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">outlier_detection.split_external_local_origin_errors</span></a> is <em>false</em>) this detection type takes into account all generated errors: locally
 originated and externally originated (transaction) type of errors.
 Errors generated by non-HTTP filters, like <a class="reference internal" href="../../../configuration/listeners/network_filters/tcp_proxy_filter.html#config-network-filters-tcp-proxy"><span class="std std-ref">tcp proxy</span></a> or
 <a class="reference internal" href="../../../configuration/listeners/network_filters/redis_proxy_filter.html#config-network-filters-redis-proxy"><span class="std std-ref">redis proxy</span></a> are internally mapped to HTTP 5xx codes and treated as such.</p>
-<p>In split mode (<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">outlier_detection.split_external_local_origin_errors</span></a> is <em>true</em>) this detection type takes into account only externally originated (transaction) errors ignoring locally originated errors.
+<p>In split mode (<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">outlier_detection.split_external_local_origin_errors</span></a> is <em>true</em>) this detection type takes into account only externally originated (transaction) errors ignoring locally originated errors.
 If an upstream host is HTTP-server, only 5xx types of error are taken into account (see <a class="reference internal" href="#consecutive-gateway-failure"><span class="std std-ref">Consecutive Gateway Failure</span></a> for exceptions).
 For redis servers, served via
 <a class="reference internal" href="../../../configuration/listeners/network_filters/redis_proxy_filter.html#config-network-filters-redis-proxy"><span class="std std-ref">redis proxy</span></a> only malformed responses from the server are taken into account.
 Properly formatted responses, even when they carry operational error (like index not found, access denied) are not taken into account.</p>
 <p>If an upstream host returns some number of errors which are treated as consecutive 5xx type errors, it will be ejected.
 The number of consecutive 5xx required for ejection is controlled by
-the <a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-consecutive-5xx"><span class="std std-ref">outlier_detection.consecutive_5xx</span></a> value.</p>
+the <a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-consecutive-5xx"><span class="std std-ref">outlier_detection.consecutive_5xx</span></a> value.</p>
 </div>
 <div class="section" id="consecutive-gateway-failure">
 <span id="id1"></span><h3>Consecutive Gateway Failure<a class="headerlink" href="#consecutive-gateway-failure" title="Permalink to this headline">¶</a></h3>
@@ -286,15 +286,15 @@ and is supported only by <a class="reference internal" href="../../../configurat
 <p>If an upstream host returns some number of consecutive “gateway errors” (502, 503 or 504 status
 code), it will be ejected.
 The number of consecutive gateway failures required for ejection is controlled by
-the <a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-consecutive-gateway-failure"><span class="std std-ref">outlier_detection.consecutive_gateway_failure</span></a> value.</p>
+the <a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-consecutive-gateway-failure"><span class="std std-ref">outlier_detection.consecutive_gateway_failure</span></a> value.</p>
 </div>
 <div class="section" id="consecutive-local-origin-failure">
 <h3>Consecutive Local Origin Failure<a class="headerlink" href="#consecutive-local-origin-failure" title="Permalink to this headline">¶</a></h3>
-<p>This detection type is enabled only when <a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">outlier_detection.split_external_local_origin_errors</span></a> is <em>true</em> and takes into account only locally originated errors (timeout, reset, etc).
+<p>This detection type is enabled only when <a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">outlier_detection.split_external_local_origin_errors</span></a> is <em>true</em> and takes into account only locally originated errors (timeout, reset, etc).
 If Envoy repeatedly cannot connect to an upstream host or communication with the upstream host is repeatedly interrupted, it will be ejected.
 Various locally originated problems are detected: timeout, TCP reset, ICMP errors, etc. The number of consecutive
 locally originated failures required for ejection is controlled
-by the <a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-consecutive-local-origin-failure"><span class="std std-ref">outlier_detection.consecutive_local_origin_failure</span></a> value.
+by the <a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-consecutive-local-origin-failure"><span class="std std-ref">outlier_detection.consecutive_local_origin_failure</span></a> value.
 This detection type is supported by <a class="reference internal" href="../../../configuration/http/http_filters/router_filter.html#config-http-filters-router"><span class="std std-ref">http router</span></a>,
 <a class="reference internal" href="../../../configuration/listeners/network_filters/tcp_proxy_filter.html#config-network-filters-tcp-proxy"><span class="std std-ref">tcp proxy</span></a>  and <a class="reference internal" href="../../../configuration/listeners/network_filters/redis_proxy_filter.html#config-network-filters-redis-proxy"><span class="std std-ref">redis proxy</span></a>.</p>
 </div>
@@ -303,22 +303,22 @@ This detection type is supported by <a class="reference internal" href="../../..
 <p>Success Rate based outlier ejection aggregates success rate data from every host in a cluster. Then at given
 intervals ejects hosts based on statistical outlier detection. Success Rate outlier ejection will not be
 calculated for a host if its request volume over the aggregation interval is less than the
-<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-success-rate-request-volume"><span class="std std-ref">outlier_detection.success_rate_request_volume</span></a>
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-success-rate-request-volume"><span class="std std-ref">outlier_detection.success_rate_request_volume</span></a>
 value. Moreover, detection will not be performed for a cluster if the number of hosts
 with the minimum required request volume in an interval is less than the
-<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-success-rate-minimum-hosts"><span class="std std-ref">outlier_detection.success_rate_minimum_hosts</span></a>
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-success-rate-minimum-hosts"><span class="std std-ref">outlier_detection.success_rate_minimum_hosts</span></a>
 value.</p>
-<p>In default configuration mode (<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">outlier_detection.split_external_local_origin_errors</span></a> is <em>false</em>)
+<p>In default configuration mode (<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">outlier_detection.split_external_local_origin_errors</span></a> is <em>false</em>)
 this detection type takes into account all type of errors: locally and externally originated.
-<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-enforcing-local-origin-success-rate"><span class="std std-ref">outlier_detection.enforcing_local_origin_success</span></a> config item is ignored.</p>
-<p>In split mode (<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">outlier_detection.split_external_local_origin_errors</span></a> is <em>true</em>),
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-enforcing-local-origin-success-rate"><span class="std std-ref">outlier_detection.enforcing_local_origin_success</span></a> config item is ignored.</p>
+<p>In split mode (<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">outlier_detection.split_external_local_origin_errors</span></a> is <em>true</em>),
 locally originated errors and externally originated (transaction) errors are counted and treated separately.
 Most configuration items, namely
-<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-success-rate-minimum-hosts"><span class="std std-ref">outlier_detection.success_rate_minimum_hosts</span></a>,
-<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-success-rate-request-volume"><span class="std std-ref">outlier_detection.success_rate_request_volume</span></a>,
-<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-success-rate-stdev-factor"><span class="std std-ref">outlier_detection.success_rate_stdev_factor</span></a> apply to both
-types of errors, but <a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-enforcing-success-rate"><span class="std std-ref">outlier_detection.enforcing_success_rate</span></a> applies
-to externally originated errors only and <a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-enforcing-local-origin-success-rate"><span class="std std-ref">outlier_detection.enforcing_local_origin_success_rate</span></a>  applies to locally originated errors only.</p>
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-success-rate-minimum-hosts"><span class="std std-ref">outlier_detection.success_rate_minimum_hosts</span></a>,
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-success-rate-request-volume"><span class="std std-ref">outlier_detection.success_rate_request_volume</span></a>,
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-success-rate-stdev-factor"><span class="std std-ref">outlier_detection.success_rate_stdev_factor</span></a> apply to both
+types of errors, but <a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-enforcing-success-rate"><span class="std std-ref">outlier_detection.enforcing_success_rate</span></a> applies
+to externally originated errors only and <a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-enforcing-local-origin-success-rate"><span class="std std-ref">outlier_detection.enforcing_local_origin_success_rate</span></a>  applies to locally originated errors only.</p>
 </div>
 <div class="section" id="failure-percentage">
 <span id="arch-overview-outlier-detection-failure-percentage"></span><h3>Failure Percentage<a class="headerlink" href="#failure-percentage" title="Permalink to this headline">¶</a></h3>
@@ -326,21 +326,21 @@ to externally originated errors only and <a class="reference internal" href="../
 that it relies on success rate data from each host in a cluster. However, rather than compare those
 values to the mean success rate of the cluster as a whole, they are compared to a flat
 user-configured threshold. This threshold is configured via the
-<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-failure-percentage-threshold"><span class="std std-ref">outlier_detection.failure_percentage_threshold</span></a>
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-failure-percentage-threshold"><span class="std std-ref">outlier_detection.failure_percentage_threshold</span></a>
 field.</p>
 <p>The other configuration fields for failure percentage based ejection are similar to the fields for
 success rate ejection. Failure percentage based ejection also obeys
-<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">outlier_detection.split_external_local_origin_errors</span></a>;
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">outlier_detection.split_external_local_origin_errors</span></a>;
 the enforcement percentages for externally- and locally-originated errors are controlled by
-<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-enforcing-failure-percentage"><span class="std std-ref">outlier_detection.enforcing_failure_percentage</span></a>
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-enforcing-failure-percentage"><span class="std std-ref">outlier_detection.enforcing_failure_percentage</span></a>
 and
-<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-enforcing-failure-percentage-local-origin"><span class="std std-ref">outlier_detection.enforcing_failure_percentage_local_origin</span></a>,
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-enforcing-failure-percentage-local-origin"><span class="std std-ref">outlier_detection.enforcing_failure_percentage_local_origin</span></a>,
 respectively. As with success rate detection, detection will not be performed for a host if its
 request volume over the aggregation interval is less than the
-<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-failure-percentage-request-volume"><span class="std std-ref">outlier_detection.failure_percentage_request_volume</span></a>
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-failure-percentage-request-volume"><span class="std std-ref">outlier_detection.failure_percentage_request_volume</span></a>
 value. Detection also will not be performed for a cluster if the number of hosts with the minimum
 required request volume in an interval is less than the
-<a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-field-cluster-outlierdetection-failure-percentage-minimum-hosts"><span class="std std-ref">outlier_detection.failure_percentage_minimum_hosts</span></a>
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-failure-percentage-minimum-hosts"><span class="std std-ref">outlier_detection.failure_percentage_minimum_hosts</span></a>
 value.</p>
 </div>
 </div>
@@ -353,14 +353,14 @@ value.</p>
 <p>A log of outlier ejection events can optionally be produced by Envoy. This is extremely useful
 during daily operations since global stats do not provide enough information on which hosts are
 being ejected and for what reasons. The log is structured as protobuf-based dumps of
-<a class="reference internal" href="../../../api-v2/data/cluster/v2alpha/outlier_detection_event.proto.html#envoy-api-msg-data-cluster-v2alpha-outlierdetectionevent"><span class="std std-ref">OutlierDetectionEvent messages</span></a>.
-Ejection event logging is configured in the Cluster manager <a class="reference internal" href="../../../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-field-config-bootstrap-v2-clustermanager-outlier-detection"><span class="std std-ref">outlier detection configuration</span></a>.</p>
+<a class="reference internal" href="../../../api-v3/data/cluster/v3/outlier_detection_event.proto.html#envoy-v3-api-msg-data-cluster-v3-outlierdetectionevent"><span class="std std-ref">OutlierDetectionEvent messages</span></a>.
+Ejection event logging is configured in the Cluster manager <a class="reference internal" href="../../../api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-clustermanager-outlier-detection"><span class="std std-ref">outlier detection configuration</span></a>.</p>
 </div>
 <div class="section" id="configuration-reference">
 <h2>Configuration reference<a class="headerlink" href="#configuration-reference" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>Cluster manager <a class="reference internal" href="../../../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-field-config-bootstrap-v2-clustermanager-outlier-detection"><span class="std std-ref">global configuration</span></a></p></li>
-<li><p>Per cluster <a class="reference internal" href="../../../api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-msg-cluster-outlierdetection"><span class="std std-ref">configuration</span></a></p></li>
+<li><p>Cluster manager <a class="reference internal" href="../../../api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-clustermanager-outlier-detection"><span class="std std-ref">global configuration</span></a></p></li>
+<li><p>Per cluster <a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-msg-config-cluster-v3-outlierdetection"><span class="std std-ref">configuration</span></a></p></li>
 <li><p>Runtime <a class="reference internal" href="../../../configuration/upstream/cluster_manager/cluster_runtime.html#config-cluster-manager-cluster-runtime-outlier-detection"><span class="std std-ref">settings</span></a></p></li>
 <li><p>Statistics <a class="reference internal" href="../../../configuration/upstream/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats-outlier-detection"><span class="std std-ref">reference</span></a></p></li>
 </ul>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TLS &mdash; envoy 1.15.0-dev-319158 documentation</title>
+  <title>TLS &mdash; envoy 1.15.0-dev-6151a6 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-319158
+                1.15.0-dev-6151a6
               </div>
             
           
@@ -198,8 +198,8 @@
             
   <div class="section" id="tls">
 <span id="arch-overview-ssl"></span><h1>TLS<a class="headerlink" href="#tls" title="Permalink to this headline">¶</a></h1>
-<p>Envoy supports both <a class="reference internal" href="../../../api-v2/api/v2/listener/listener_components.proto.html#envoy-api-field-listener-filterchain-transport-socket"><span class="std std-ref">TLS termination</span></a> in listeners as well as
-<a class="reference internal" href="../../../api-v2/api/v2/cluster.proto.html#envoy-api-field-cluster-transport-socket"><span class="std std-ref">TLS origination</span></a> when making connections to upstream
+<p>Envoy supports both <a class="reference internal" href="../../../api-v3/config/listener/v3/listener_components.proto.html#envoy-v3-api-field-config-listener-v3-filterchain-transport-socket"><span class="std std-ref">TLS termination</span></a> in listeners as well as
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-transport-socket"><span class="std std-ref">TLS origination</span></a> when making connections to upstream
 clusters. Support is sufficient for Envoy to perform standard edge proxy duties for modern web
 services as well as to initiate connections with external services that have advanced TLS
 requirements (TLS1.2, SNI, etc.). Envoy supports the following TLS features:</p>
@@ -210,7 +210,7 @@ to server certificate verification.</p></li>
 <li><p><strong>Certificate verification and pinning</strong>: Certificate verification options include basic chain
 verification, subject name verification, and hash pinning.</p></li>
 <li><p><strong>Certificate revocation</strong>: Envoy can check peer certificates against a certificate revocation list
-(CRL) if one is <a class="reference internal" href="../../../api-v2/api/v2/auth/common.proto.html#envoy-api-field-auth-certificatevalidationcontext-crl"><span class="std std-ref">provided</span></a>.</p></li>
+(CRL) if one is <a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tls/v3/common.proto.html#envoy-v3-api-field-extensions-transport-sockets-tls-v3-certificatevalidationcontext-crl"><span class="std std-ref">provided</span></a>.</p></li>
 <li><p><strong>ALPN</strong>: TLS listeners support ALPN. The HTTP connection manager uses this information (in
 addition to protocol inference) to determine whether a client is speaking HTTP/1.1 or HTTP/2.</p></li>
 <li><p><strong>SNI</strong>: SNI is supported for both server (listener) and client (upstream) connections.</p></li>
@@ -262,7 +262,7 @@ validation context specifies one or more trusted authority certificates.</p>
       <span class="nt">transport_socket</span><span class="p">:</span>
         <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.tls</span>
         <span class="nt">typed_config</span><span class="p">:</span>
-          <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.api.v2.auth.DownstreamTlsContext</span>
+          <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext</span>
           <span class="nt">common_tls_context</span><span class="p">:</span>
             <span class="nt">validation_context</span><span class="p">:</span>
               <span class="nt">trusted_ca</span><span class="p">:</span>
@@ -284,20 +284,21 @@ validation context specifies one or more trusted authority certificates.</p>
     <span class="nt">transport_socket</span><span class="p">:</span>
       <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.tls</span>
       <span class="nt">typed_config</span><span class="p">:</span>
-        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.api.v2.auth.UpstreamTlsContext</span>
+        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext</span>
         <span class="nt">common_tls_context</span><span class="p">:</span>
           <span class="nt">tls_certificates</span><span class="p">:</span>
             <span class="nt">certificate_chain</span><span class="p">:</span> <span class="p p-Indicator">{</span> <span class="s">&quot;filename&quot;</span><span class="p p-Indicator">:</span> <span class="s">&quot;/cert.crt&quot;</span> <span class="p p-Indicator">}</span>
             <span class="nt">private_key</span><span class="p">:</span> <span class="p p-Indicator">{</span> <span class="s">&quot;filename&quot;</span><span class="p p-Indicator">:</span> <span class="s">&quot;/cert.key&quot;</span> <span class="p p-Indicator">}</span>
           <span class="nt">validation_context</span><span class="p">:</span>
-            <span class="nt">verify_subject_alt_name</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="nv">foo</span> <span class="p p-Indicator">]</span>
+            <span class="nt">match_subject_alt_names</span><span class="p">:</span>
+              <span class="nt">exact</span><span class="p">:</span> <span class="s">&quot;foo&quot;</span>
             <span class="nt">trusted_ca</span><span class="p">:</span>
               <span class="nt">filename</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/etc/ssl/certs/ca-certificates.crt</span>
 </pre></div>
 </div>
 <p><em>/etc/ssl/certs/ca-certificates.crt</em> is the default path for the system CA bundle on Debian systems.
-<a class="reference internal" href="../../../api-v2/api/v2/auth/common.proto.html#envoy-api-field-auth-certificatevalidationcontext-trusted-ca"><span class="std std-ref">trusted_ca</span></a> along with
-<a class="reference internal" href="../../../api-v2/api/v2/auth/common.proto.html#envoy-api-field-auth-certificatevalidationcontext-verify-subject-alt-name"><span class="std std-ref">verify_subject_alt_name</span></a>
+<a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tls/v3/common.proto.html#envoy-v3-api-field-extensions-transport-sockets-tls-v3-certificatevalidationcontext-trusted-ca"><span class="std std-ref">trusted_ca</span></a> along with
+<a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tls/v3/common.proto.html#envoy-v3-api-field-extensions-transport-sockets-tls-v3-certificatevalidationcontext-match-subject-alt-names"><span class="std std-ref">match_subject_alt_names</span></a>
 makes Envoy verify the server identity of <em>127.0.0.2:1234</em> as “foo” in the same way as e.g. cURL
 does on standard Debian installations. Common paths for system CA bundles on Linux and BSD are:</p>
 <ul class="simple">
@@ -308,11 +309,11 @@ does on standard Debian installations. Common paths for system CA bundles on Lin
 <li><p>/usr/local/etc/ssl/cert.pem (FreeBSD)</p></li>
 <li><p>/etc/ssl/cert.pem (OpenBSD)</p></li>
 </ul>
-<p>See the reference for <a class="reference internal" href="../../../api-v2/api/v2/auth/tls.proto.html#envoy-api-msg-auth-upstreamtlscontext"><span class="std std-ref">UpstreamTlsContexts</span></a> and
-<a class="reference internal" href="../../../api-v2/api/v2/auth/tls.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContexts</span></a> for other TLS options.</p>
+<p>See the reference for <a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-upstreamtlscontext"><span class="std std-ref">UpstreamTlsContexts</span></a> and
+<a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContexts</span></a> for other TLS options.</p>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
-<p>If only <a class="reference internal" href="../../../api-v2/api/v2/auth/common.proto.html#envoy-api-field-auth-certificatevalidationcontext-trusted-ca"><span class="std std-ref">trusted_ca</span></a> is
+<p>If only <a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tls/v3/common.proto.html#envoy-v3-api-field-extensions-transport-sockets-tls-v3-certificatevalidationcontext-trusted-ca"><span class="std std-ref">trusted_ca</span></a> is
 specified, Envoy will verify the certificate chain of the presented certificate, but not its
 subject name, hash, etc. Other validation context configuration is typically required depending
 on the deployment.</p>
@@ -321,20 +322,20 @@ on the deployment.</p>
 </div>
 <div class="section" id="certificate-selection">
 <span id="arch-overview-ssl-cert-select"></span><h2>Certificate selection<a class="headerlink" href="#certificate-selection" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="../../../api-v2/api/v2/auth/tls.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContexts</span></a> support multiple TLS
+<p><a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContexts</span></a> support multiple TLS
 certificates. These may be a mix of RSA and P-256 ECDSA certificates. The following rules apply:</p>
 <ul class="simple">
 <li><p>Only one certificate of a particular type (RSA or ECDSA) may be specified.</p></li>
 <li><p>Non-P-256 server ECDSA certificates are rejected.</p></li>
 <li><p>If the client supports P-256 ECDSA, a P-256 ECDSA certificate will be selected if present in the
-<a class="reference internal" href="../../../api-v2/api/v2/auth/tls.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContext</span></a>.</p></li>
+<a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContext</span></a>.</p></li>
 <li><p>If the client only supports RSA certificates, a RSA certificate will be selected if present in the
-<a class="reference internal" href="../../../api-v2/api/v2/auth/tls.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContext</span></a>.</p></li>
+<a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContext</span></a>.</p></li>
 <li><p>Otherwise, the first certificate listed is used. This will result in a failed handshake if the
 client only supports RSA certificates and the server only has ECDSA certificates.</p></li>
-<li><p>Static and SDS certificates may not be mixed in a given <a class="reference internal" href="../../../api-v2/api/v2/auth/tls.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContext</span></a>.</p></li>
+<li><p>Static and SDS certificates may not be mixed in a given <a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContext</span></a>.</p></li>
 </ul>
-<p>Only a single TLS certificate is supported today for <a class="reference internal" href="../../../api-v2/api/v2/auth/tls.proto.html#envoy-api-msg-auth-upstreamtlscontext"><span class="std std-ref">UpstreamTlsContexts</span></a>.</p>
+<p>Only a single TLS certificate is supported today for <a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-upstreamtlscontext"><span class="std std-ref">UpstreamTlsContexts</span></a>.</p>
 </div>
 <div class="section" id="secret-discovery-service-sds">
 <h2>Secret discovery service (SDS)<a class="headerlink" href="#secret-discovery-service-sds" title="Permalink to this headline">¶</a></h2>
@@ -355,7 +356,7 @@ infrastructure.</p>
 <span id="arch-overview-ssl-trouble-shooting"></span><h2>Trouble shooting<a class="headerlink" href="#trouble-shooting" title="Permalink to this headline">¶</a></h2>
 <p>When Envoy originates TLS when making connections to upstream clusters, any errors will be logged into
 <a class="reference internal" href="../../../configuration/observability/access_log/usage.html#config-access-log-format-upstream-transport-failure-reason"><span class="std std-ref">UPSTREAM_TRANSPORT_FAILURE_REASON</span></a> field or
-<a class="reference internal" href="../../../api-v2/data/accesslog/v2/accesslog.proto.html#envoy-api-field-data-accesslog-v2-accesslogcommon-upstream-transport-failure-reason"><span class="std std-ref">AccessLogCommon.upstream_transport_failure_reason</span></a> field.
+<a class="reference internal" href="../../../api-v3/data/accesslog/v3/accesslog.proto.html#envoy-v3-api-field-data-accesslog-v3-accesslogcommon-upstream-transport-failure-reason"><span class="std std-ref">AccessLogCommon.upstream_transport_failure_reason</span></a> field.
 Common errors are:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">Secret</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">supplied</span> <span class="pre">by</span> <span class="pre">SDS</span></code>: Envoy is still waiting SDS to deliver key/cert or root CA.</p></li>

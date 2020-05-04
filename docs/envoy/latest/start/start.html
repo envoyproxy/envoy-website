@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Getting Started &mdash; envoy 1.15.0-dev-319158 documentation</title>
+  <title>Getting Started &mdash; envoy 1.15.0-dev-6151a6 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-319158
+                1.15.0-dev-6151a6
               </div>
             
           
@@ -195,7 +195,7 @@
 <p>This section gets you started with a very simple configuration and provides some example configurations.</p>
 <p>The fastest way to get started using Envoy is <a class="reference internal" href="../install/building.html#install-binaries"><span class="std std-ref">installing pre-built binaries</span></a>.
 You can also <a class="reference internal" href="../install/building.html#building"><span class="std std-ref">build it</span></a> from source.</p>
-<p>These examples use the <a class="reference internal" href="../api-v2/api.html#envoy-api-reference"><span class="std std-ref">v2 Envoy API</span></a>, but use only the static configuration
+<p>These examples use the <a class="reference internal" href="../api-v2/api.html#envoy-api-reference"><span class="std std-ref">v3 Envoy API</span></a>, but use only the static configuration
 feature of the API, which is most useful for simple requirements. For more complex requirements
 <a class="reference internal" href="../intro/arch_overview/operations/dynamic_configuration.html#arch-overview-dynamic-config"><span class="std std-ref">Dynamic Configuration</span></a> is supported.</p>
 <div class="section" id="quick-start-to-run-simple-example">
@@ -204,10 +204,10 @@ feature of the API, which is most useful for simple requirements. For more compl
 more detailed explanation of the configuration file and execution steps for
 the same configuration.</p>
 <p>A very minimal Envoy configuration that can be used to validate basic plain HTTP
-proxying is available in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/31915818188fab5c095b86aa307a50c3caf68c6a/configs/google_com_proxy.v2.yaml">configs/google_com_proxy.v2.yaml</a>. This is not
+proxying is available in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/6151a69f9c0dc4aa7938d987036ec00eedb818d5/configs/google_com_proxy.v2.yaml">configs/google_com_proxy.v2.yaml</a>. This is not
 intended to represent a realistic Envoy deployment:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ docker pull envoyproxy/envoy-dev:31915818188fab5c095b86aa307a50c3caf68c6a
-$ docker run --rm -d -p 10000:10000 envoyproxy/envoy-dev:31915818188fab5c095b86aa307a50c3caf68c6a
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ docker pull envoyproxy/envoy-dev:6151a69f9c0dc4aa7938d987036ec00eedb818d5
+$ docker run --rm -d -p 10000:10000 envoyproxy/envoy-dev:6151a69f9c0dc4aa7938d987036ec00eedb818d5
 $ curl -v localhost:10000
 </pre></div>
 </div>
@@ -218,9 +218,9 @@ Envoy to route incoming requests to *.google.com.</p>
 <div class="section" id="simple-configuration">
 <h2>Simple Configuration<a class="headerlink" href="#simple-configuration" title="Permalink to this headline">¶</a></h2>
 <p>Envoy can be configured using a single YAML file passed in as an argument on the command line.</p>
-<p>The <a class="reference internal" href="../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-msg-config-bootstrap-v2-admin"><span class="std std-ref">admin message</span></a> is required to configure
+<p>The <a class="reference internal" href="../api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-msg-config-bootstrap-v3-admin"><span class="std std-ref">admin message</span></a> is required to configure
 the administration server. The <cite>address</cite> key specifies the
-listening <a class="reference internal" href="../api-v2/api/v2/core/address.proto.html#envoy-api-file-envoy-api-v2-core-address-proto"><span class="std std-ref">address</span></a>
+listening <a class="reference internal" href="../api-v3/config/core/v3/address.proto.html#envoy-v3-api-file-envoy-config-core-v3-address-proto"><span class="std std-ref">address</span></a>
 which in this case is simply <cite>0.0.0.0:9901</cite>.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">admin</span><span class="p">:</span>
   <span class="nt">access_log_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/tmp/admin_access.log</span>
@@ -228,13 +228,13 @@ which in this case is simply <cite>0.0.0.0:9901</cite>.</p>
     <span class="nt">socket_address</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> address</span><span class="p">:</span> <span class="nv">0.0.0.0</span><span class="p p-Indicator">,</span><span class="nt"> port_value</span><span class="p">:</span> <span class="nv">9901</span> <span class="p p-Indicator">}</span>
 </pre></div>
 </div>
-<p>The <a class="reference internal" href="../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-field-config-bootstrap-v2-bootstrap-static-resources"><span class="std std-ref">static_resources</span></a> contains everything that is configured statically when Envoy starts,
+<p>The <a class="reference internal" href="../api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-bootstrap-static-resources"><span class="std std-ref">static_resources</span></a> contains everything that is configured statically when Envoy starts,
 as opposed to the means of configuring resources dynamically when Envoy is running.
 The <a class="reference internal" href="../configuration/overview/overview.html#config-overview"><span class="std std-ref">v2 API Overview</span></a> describes this.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">static_resources</span><span class="p">:</span>
 </pre></div>
 </div>
-<p>The specification of the <a class="reference internal" href="../api-v2/api/v2/listener/listener.proto.html#envoy-api-file-envoy-api-v2-listener-listener-proto"><span class="std std-ref">listeners</span></a>.</p>
+<p>The specification of the <a class="reference internal" href="../api-v3/config/listener/v3/listener.proto.html#envoy-v3-api-file-envoy-config-listener-v3-listener-proto"><span class="std std-ref">listeners</span></a>.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">listeners</span><span class="p">:</span>
 <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">listener_0</span>
   <span class="nt">address</span><span class="p">:</span>
@@ -243,7 +243,7 @@ The <a class="reference internal" href="../configuration/overview/overview.html#
   <span class="p p-Indicator">-</span> <span class="nt">filters</span><span class="p">:</span>
     <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.network.http_connection_manager</span>
       <span class="nt">typed_config</span><span class="p">:</span>
-        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager</span>
+        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager</span>
         <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ingress_http</span>
         <span class="nt">codec_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">AUTO</span>
         <span class="nt">route_config</span><span class="p">:</span>
@@ -258,7 +258,7 @@ The <a class="reference internal" href="../configuration/overview/overview.html#
         <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.router</span>
 </pre></div>
 </div>
-<p>The specification of the <a class="reference internal" href="../api-v2/api/v2/cds.proto.html#envoy-api-file-envoy-api-v2-cds-proto"><span class="std std-ref">clusters</span></a>.</p>
+<p>The specification of the <a class="reference internal" href="../api-v3/service/cluster/v3/cds.proto.html#envoy-v3-api-file-envoy-service-cluster-v3-cds-proto"><span class="std std-ref">clusters</span></a>.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">clusters</span><span class="p">:</span>
 <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service_google</span>
   <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25s</span>
@@ -278,7 +278,7 @@ The <a class="reference internal" href="../configuration/overview/overview.html#
   <span class="nt">transport_socket</span><span class="p">:</span>
     <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.tls</span>
     <span class="nt">typed_config</span><span class="p">:</span>
-      <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.api.v2.auth.UpstreamTlsContext</span>
+      <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext</span>
       <span class="nt">sni</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">www.google.com</span>
 </pre></div>
 </div>
@@ -287,7 +287,7 @@ The <a class="reference internal" href="../configuration/overview/overview.html#
 <h2>Using the Envoy Docker Image<a class="headerlink" href="#using-the-envoy-docker-image" title="Permalink to this headline">¶</a></h2>
 <p>Create a simple Dockerfile to execute Envoy, which assumes that envoy.yaml (described above) is in your local directory.
 You can refer to the <a class="reference internal" href="../operations/cli.html#operations-cli"><span class="std std-ref">Command line options</span></a>.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>FROM envoyproxy/envoy-dev:31915818188fab5c095b86aa307a50c3caf68c6a
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>FROM envoyproxy/envoy-dev:6151a69f9c0dc4aa7938d987036ec00eedb818d5
 COPY envoy.yaml /etc/envoy/envoy.yaml
 </pre></div>
 </div>

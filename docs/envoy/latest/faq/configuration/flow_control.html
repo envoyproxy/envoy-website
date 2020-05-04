@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>How do I configure flow control? &mdash; envoy 1.15.0-dev-319158 documentation</title>
+  <title>How do I configure flow control? &mdash; envoy 1.15.0-dev-6151a6 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-319158
+                1.15.0-dev-6151a6
               </div>
             
           
@@ -195,9 +195,9 @@ response body must be buffered and exceeds the limit, Envoy will increment the
 <a class="reference internal" href="../../configuration/http/http_conn_man/stats.html#config-http-conn-man-stats"><span class="std std-ref">rs_too_large</span></a> metric and either disconnect mid-response
 (if headers have already been sent downstream) or send a 500 response.</p>
 <p>There are three knobs for configuring Envoy flow control:
-<a class="reference internal" href="../../api-v2/api/v2/listener.proto.html#envoy-api-field-listener-per-connection-buffer-limit-bytes"><span class="std std-ref">listener limits</span></a>,
-<a class="reference internal" href="../../api-v2/api/v2/cluster.proto.html#envoy-api-field-cluster-per-connection-buffer-limit-bytes"><span class="std std-ref">cluster limits</span></a> and
-<a class="reference internal" href="../../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-http2protocoloptions-initial-connection-window-size"><span class="std std-ref">http2 stream limits</span></a></p>
+<a class="reference internal" href="../../api-v3/config/listener/v3/listener.proto.html#envoy-v3-api-field-config-listener-v3-listener-per-connection-buffer-limit-bytes"><span class="std std-ref">listener limits</span></a>,
+<a class="reference internal" href="../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-per-connection-buffer-limit-bytes"><span class="std std-ref">cluster limits</span></a> and
+<a class="reference internal" href="../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-http2protocoloptions-initial-connection-window-size"><span class="std std-ref">http2 stream limits</span></a></p>
 <p>The listener limits apply to how much raw data will be read per read() call from
 downstream, as well as how much data may be buffered in userspace between Envoy
 and downstream.</p>
@@ -205,7 +205,7 @@ and downstream.</p>
 basis to HTTP/1.1 L7 buffers described below. As such they limit the size of HTTP/1 requests and
 response bodies that can be buffered. For HTTP/2, as many streams can be multiplexed over one TCP
 connection, the L7 and L4 buffer limits can be tuned separately, and the configuration option
-<a class="reference internal" href="../../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-http2protocoloptions-initial-connection-window-size"><span class="std std-ref">http2 stream limits</span></a>
+<a class="reference internal" href="../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-http2protocoloptions-initial-connection-window-size"><span class="std std-ref">http2 stream limits</span></a>
 is applied to all of the L7 buffers. Note that for both HTTP/1 and
 HTTP/2 Envoy can and will proxy arbitrarily large bodies on routes where all L7 filters are
 streaming, but many filters such as the transcoder or buffer filters require the full HTTP body to
@@ -214,7 +214,7 @@ be buffered, so limit the request and response size based on the listener limit.
 well as how much data may be buffered in userspace between Envoy and upstream.</p>
 <p>The following code block shows how to adjust all three fields mentioned above, though generally
 the only one which needs to be amended is the listener
-<a class="reference internal" href="../../api-v2/api/v2/listener.proto.html#envoy-api-field-listener-per-connection-buffer-limit-bytes"><span class="std std-ref">per_connection_buffer_limit_bytes</span></a></p>
+<a class="reference internal" href="../../api-v3/config/listener/v3/listener.proto.html#envoy-v3-api-field-config-listener-v3-listener-per-connection-buffer-limit-bytes"><span class="std std-ref">per_connection_buffer_limit_bytes</span></a></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">static_resources</span><span class="p">:</span>
   <span class="nt">listeners</span><span class="p">:</span>
     <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">http</span>
@@ -226,7 +226,7 @@ the only one which needs to be amended is the listener
       <span class="nt">filters</span><span class="p">:</span>
         <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.network.http_connection_manager</span>
         <span class="nt">typed_config</span><span class="p">:</span>
-          <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager</span>
+          <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager</span>
           <span class="nt">http2_protocol_options</span><span class="p">:</span>
             <span class="nt">initial_stream_window_size</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">65535</span>
           <span class="nt">route_config</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
@@ -238,10 +238,15 @@ the only one which needs to be amended is the listener
     <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">cluster_0</span>
     <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5s</span>
     <span class="nt">per_connection_buffer_limit_bytes</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1024</span>
-    <span class="nt">hosts</span><span class="p">:</span>
-      <span class="nt">socket_address</span><span class="p">:</span>
-        <span class="nt">address</span><span class="p">:</span> <span class="s">&#39;::1&#39;</span>
-        <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">46685</span>
+    <span class="nt">load_assignment</span><span class="p">:</span>
+      <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_service</span>
+      <span class="nt">endpoints</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="nt">endpoint</span><span class="p">:</span>
+              <span class="nt">address</span><span class="p">:</span>
+                <span class="nt">socket_address</span><span class="p">:</span>
+                  <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">::1</span>
+                  <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">46685</span>
 </pre></div>
 </div>
 </div>

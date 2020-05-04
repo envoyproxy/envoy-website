@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>How do I configure timeouts? &mdash; envoy 1.15.0-dev-319158 documentation</title>
+  <title>How do I configure timeouts? &mdash; envoy 1.15.0-dev-6151a6 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-319158
+                1.15.0-dev-6151a6
               </div>
             
           
@@ -204,15 +204,15 @@ on the deployment additional configuration may be required.</p>
 <h3>Connection timeouts<a class="headerlink" href="#connection-timeouts" title="Permalink to this headline">¶</a></h3>
 <p>Connection timeouts apply to the entire HTTP connection and all streams the connection carries.</p>
 <ul class="simple">
-<li><p>The HTTP protocol <a class="reference internal" href="../../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-httpprotocoloptions-idle-timeout"><span class="std std-ref">idle timeout</span></a>
+<li><p>The HTTP protocol <a class="reference internal" href="../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-httpprotocoloptions-idle-timeout"><span class="std std-ref">idle timeout</span></a>
 is defined in a generic message used by both the HTTP connection manager as well as upstream
 cluster HTTP connections. The idle timeout is the time at which a downstream or upstream
 connection will be terminated if there are no active streams. The default idle timeout if not
 otherwise specified is <em>1 hour</em>. To modify the idle timeout for downstream connections use the
-<a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-common-http-protocol-options"><span class="std std-ref">common_http_protocol_options</span></a>
+<a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-common-http-protocol-options"><span class="std std-ref">common_http_protocol_options</span></a>
 field in the HTTP connection manager configuration. To modify the idle timeout for upstream
 connections use the
-<a class="reference internal" href="../../api-v2/api/v2/cluster.proto.html#envoy-api-field-cluster-common-http-protocol-options"><span class="std std-ref">common_http_protocol_options</span></a> field
+<a class="reference internal" href="../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-common-http-protocol-options"><span class="std std-ref">common_http_protocol_options</span></a> field
 in the cluster configuration.</p></li>
 </ul>
 </div>
@@ -222,7 +222,7 @@ in the cluster configuration.</p></li>
 an HTTP/2 and HTTP/3 concept, however internally Envoy maps HTTP/1 requests to streams so in this
 context request/stream is interchangeable.</p>
 <ul>
-<li><p>The HTTP connection manager <a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-request-timeout"><span class="std std-ref">request_timeout</span></a>
+<li><p>The HTTP connection manager <a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-request-timeout"><span class="std std-ref">request_timeout</span></a>
 is the amount of time the connection manager will allow for the <em>entire request stream</em> to be
 received from the client.</p>
 <div class="admonition attention">
@@ -232,20 +232,16 @@ received from the client.</p>
 <a class="reference internal" href="../../configuration/http/http_filters/buffer_filter.html#config-http-filters-buffer"><span class="std std-ref">buffer filter</span></a>, it is recommended to configure this timeout.</p>
 </div>
 </li>
-<li><p>The HTTP connection manager <a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-stream-idle-timeout"><span class="std std-ref">stream_idle_timeout</span></a>
+<li><p>The HTTP connection manager <a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-stream-idle-timeout"><span class="std std-ref">stream_idle_timeout</span></a>
 is the amount of time that the connection manager will allow a stream to exist with no upstream
 or downstream activity. The default stream idle timeout is <em>5 minutes</em>. This timeout is strongly
 recommended for streaming APIs (requests or responses that never end).</p></li>
-<li><p>The HTTP protocol <a class="reference internal" href="../../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-httpprotocoloptions-max-stream-duration"><span class="std std-ref">max_stream_duration</span></a>
+<li><p>The HTTP protocol <a class="reference internal" href="../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-httpprotocoloptions-max-stream-duration"><span class="std std-ref">max_stream_duration</span></a>
 is defined in a generic message used by the HTTP connection manager. The max stream duration is the
 maximum time that a stream’s lifetime will span. You can use this functionality when you want to reset
-HTTP request/response streams periodically. You can’t use <a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-request-timeout"><span class="std std-ref">request_timeout</span></a>
-in this situation because this timer will be disarmed if a response header is received on the request/response streams.</p>
-<div class="admonition attention">
-<p class="admonition-title">Attention</p>
-<p>The current implementation implements this timeout on downstream connections only.</p>
-</div>
-</li>
+HTTP request/response streams periodically. You can’t use <a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-request-timeout"><span class="std std-ref">request_timeout</span></a>
+in this situation because this timer will be disarmed if a response header is received on the request/response streams.
+This timeout is available on both upstream and downstream connections.</p></li>
 </ul>
 </div>
 <div class="section" id="route-timeouts">
@@ -253,7 +249,7 @@ in this situation because this timer will be disarmed if a response header is re
 <p>Envoy supports additional stream timeouts at the route level, as well as overriding some of the
 stream timeouts already introduced above.</p>
 <ul>
-<li><p>A route <a class="reference internal" href="../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-routeaction-timeout"><span class="std std-ref">timeout</span></a> is the amount of time that
+<li><p>A route <a class="reference internal" href="../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-timeout"><span class="std std-ref">timeout</span></a> is the amount of time that
 Envoy will wait for the upstream to respond with a complete response. <em>This timeout does not
 start until the entire downstream request stream has been received</em>.</p>
 <div class="admonition attention">
@@ -263,10 +259,10 @@ start until the entire downstream request stream has been received</em>.</p>
 in the case of streaming APIs as described elsewhere on this page.</p>
 </div>
 </li>
-<li><p>The route <a class="reference internal" href="../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-routeaction-idle-timeout"><span class="std std-ref">idle_timeout</span></a> allows overriding
-of the HTTP connection manager <a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-stream-idle-timeout"><span class="std std-ref">stream_idle_timeout</span></a>
+<li><p>The route <a class="reference internal" href="../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-idle-timeout"><span class="std std-ref">idle_timeout</span></a> allows overriding
+of the HTTP connection manager <a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-stream-idle-timeout"><span class="std std-ref">stream_idle_timeout</span></a>
 and does the same thing.</p></li>
-<li><p>The route <a class="reference internal" href="../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-retrypolicy-per-try-timeout"><span class="std std-ref">per_try_timeout</span></a> can be
+<li><p>The route <a class="reference internal" href="../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-retrypolicy-per-try-timeout"><span class="std std-ref">per_try_timeout</span></a> can be
 configured when using retries so that individual tries using a shorter timeout than the overall
 request timeout described above. This timeout only applies before any part of the response
 is sent to the downstream, which normally happens after the upstream has sent response headers.
@@ -278,7 +274,7 @@ response within the timeout.</p></li>
 <div class="section" id="tcp">
 <h2>TCP<a class="headerlink" href="#tcp" title="Permalink to this headline">¶</a></h2>
 <ul>
-<li><p>The cluster <a class="reference internal" href="../../api-v2/api/v2/cluster.proto.html#envoy-api-field-cluster-connect-timeout"><span class="std std-ref">connect_timeout</span></a> specifies the amount
+<li><p>The cluster <a class="reference internal" href="../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-connect-timeout"><span class="std std-ref">connect_timeout</span></a> specifies the amount
 of time Envoy will wait for an upstream TCP connection to be established. This timeout has no
 default, but is required in the configuration.</p>
 <div class="admonition attention">
@@ -286,7 +282,7 @@ default, but is required in the configuration.</p>
 <p>For TLS connections, the connect timeout includes the TLS handshake.</p>
 </div>
 </li>
-<li><p>The TCP proxy <a class="reference internal" href="../../api-v2/config/filter/network/tcp_proxy/v2/tcp_proxy.proto.html#envoy-api-field-config-filter-network-tcp-proxy-v2-tcpproxy-idle-timeout"><span class="std std-ref">idle_timeout</span></a>
+<li><p>The TCP proxy <a class="reference internal" href="../../api-v3/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto.html#envoy-v3-api-field-extensions-filters-network-tcp-proxy-v3-tcpproxy-idle-timeout"><span class="std std-ref">idle_timeout</span></a>
 is the amount of time that the TCP proxy will allow a connection to exist with no upstream
 or downstream activity. The default idle timeout if not otherwise specified is <em>1 hour</em>.</p></li>
 </ul>

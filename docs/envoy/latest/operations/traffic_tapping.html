@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Traffic tapping &mdash; envoy 1.15.0-dev-319158 documentation</title>
+  <title>Traffic tapping &mdash; envoy 1.15.0-dev-6151a6 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-319158
+                1.15.0-dev-6151a6
               </div>
             
           
@@ -191,8 +191,8 @@
 <div><ul class="simple">
 <li><p><a class="reference internal" href="../configuration/http/http_filters/tap_filter.html#config-http-filters-tap"><span class="std std-ref">HTTP tap filter</span></a>. See the linked filter documentation for more
 information.</p></li>
-<li><p><a class="reference internal" href="../api-v2/api/v2/core/base.proto.html#envoy-api-msg-core-transportsocket"><span class="std std-ref">Tap transport socket extension</span></a> that can intercept
-traffic and write to a <a class="reference internal" href="../api-v2/data/tap/v2alpha/wrapper.proto.html#envoy-api-msg-data-tap-v2alpha-tracewrapper"><span class="std std-ref">protobuf trace file</span></a>. The remainder of this document describes
+<li><p><a class="reference internal" href="../api-v3/config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-transportsocket"><span class="std std-ref">Tap transport socket extension</span></a> that can intercept
+traffic and write to a <a class="reference internal" href="../api-v3/data/tap/v3/wrapper.proto.html#envoy-v3-api-msg-data-tap-v3-tracewrapper"><span class="std std-ref">protobuf trace file</span></a>. The remainder of this document describes
 the configuration of the tap transport socket.</p></li>
 </ul>
 </div></blockquote>
@@ -204,15 +204,15 @@ the configuration of the tap transport socket.</p></li>
 currently a very limited set of match conditions, output configuration, output sinks, etc.
 Capabilities will be expanded over time and the configuration structures are likely to change.</p>
 </div>
-<p>Tapping can be configured on <a class="reference internal" href="../api-v2/api/v2/listener/listener_components.proto.html#envoy-api-field-listener-filterchain-transport-socket"><span class="std std-ref">Listener</span></a> and <a class="reference internal" href="../api-v2/api/v2/cluster.proto.html#envoy-api-field-cluster-transport-socket"><span class="std std-ref">Cluster</span></a> transport sockets, providing the ability to interpose on
+<p>Tapping can be configured on <a class="reference internal" href="../api-v3/config/listener/v3/listener_components.proto.html#envoy-v3-api-field-config-listener-v3-filterchain-transport-socket"><span class="std std-ref">Listener</span></a> and <a class="reference internal" href="../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-transport-socket"><span class="std std-ref">Cluster</span></a> transport sockets, providing the ability to interpose on
 downstream and upstream L4 connections respectively.</p>
 <p>To configure traffic tapping, add an <cite>envoy.transport_sockets.tap</cite> transport socket
-<a class="reference internal" href="../api-v2/config/transport_socket/tap/v2alpha/tap.proto.html#envoy-api-msg-config-transport-socket-tap-v2alpha-tap"><span class="std std-ref">configuration</span></a> to the listener
+<a class="reference internal" href="../api-v3/extensions/filters/http/tap/v3/tap.proto.html#envoy-v3-api-msg-extensions-filters-http-tap-v3-tap"><span class="std std-ref">configuration</span></a> to the listener
 or cluster. For a plain text socket this might look like:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">transport_socket</span><span class="p">:</span>
   <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.tap</span>
   <span class="nt">typed_config</span><span class="p">:</span>
-    <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.transport_socket.tap.v2alpha.Tap</span>
+    <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.transport_sockets.tap.v3.Tap</span>
     <span class="nt">common_config</span><span class="p">:</span>
       <span class="nt">static_config</span><span class="p">:</span>
         <span class="nt">match_config</span><span class="p">:</span>
@@ -230,7 +230,7 @@ or cluster. For a plain text socket this might look like:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">transport_socket</span><span class="p">:</span>
   <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.tap</span>
   <span class="nt">typed_config</span><span class="p">:</span>
-    <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.transport_socket.tap.v2alpha.Tap</span>
+    <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.transport_sockets.tap.v3.Tap</span>
     <span class="nt">common_config</span><span class="p">:</span>
       <span class="nt">static_config</span><span class="p">:</span>
         <span class="nt">match_config</span><span class="p">:</span>
@@ -245,7 +245,7 @@ or cluster. For a plain text socket this might look like:</p>
       <span class="nt">typed_config</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;TLS context&gt;</span>
 </pre></div>
 </div>
-<p>where the TLS context configuration replaces any existing <a class="reference internal" href="../api-v2/api/v2/auth/tls.proto.html#envoy-api-msg-auth-downstreamtlscontext"><span class="std std-ref">downstream</span></a> or <a class="reference internal" href="../api-v2/api/v2/auth/tls.proto.html#envoy-api-msg-auth-upstreamtlscontext"><span class="std std-ref">upstream</span></a>
+<p>where the TLS context configuration replaces any existing <a class="reference internal" href="../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-downstreamtlscontext"><span class="std std-ref">downstream</span></a> or <a class="reference internal" href="../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-upstreamtlscontext"><span class="std std-ref">upstream</span></a>
 TLS configuration on the listener or cluster, respectively.</p>
 <p>Each unique socket instance will generate a trace file prefixed with <cite>path_prefix</cite>. E.g.
 <cite>/some/tap/path_0.pb</cite>.</p>
@@ -254,16 +254,16 @@ TLS configuration on the listener or cluster, respectively.</p>
 <h2>Buffered data limits<a class="headerlink" href="#buffered-data-limits" title="Permalink to this headline">¶</a></h2>
 <p>For buffered socket taps, Envoy will limit the amount of body data that is tapped to avoid OOM
 situations. The default limit is 1KiB for both received and transmitted data.
-This is configurable via the <a class="reference internal" href="../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-field-service-tap-v2alpha-outputconfig-max-buffered-rx-bytes"><span class="std std-ref">max_buffered_rx_bytes</span></a> and
-<a class="reference internal" href="../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-field-service-tap-v2alpha-outputconfig-max-buffered-tx-bytes"><span class="std std-ref">max_buffered_tx_bytes</span></a> settings. When a buffered
-socket tap is truncated, the trace will indicate truncation via the <a class="reference internal" href="../api-v2/data/tap/v2alpha/transport.proto.html#envoy-api-field-data-tap-v2alpha-socketbufferedtrace-read-truncated"><span class="std std-ref">read_truncated</span></a> and <a class="reference internal" href="../api-v2/data/tap/v2alpha/transport.proto.html#envoy-api-field-data-tap-v2alpha-socketbufferedtrace-write-truncated"><span class="std std-ref">write_truncated</span></a> fields as well as the body
-<a class="reference internal" href="../api-v2/data/tap/v2alpha/common.proto.html#envoy-api-field-data-tap-v2alpha-body-truncated"><span class="std std-ref">truncated</span></a> field.</p>
+This is configurable via the <a class="reference internal" href="../api-v3/config/tap/v3/common.proto.html#envoy-v3-api-field-config-tap-v3-outputconfig-max-buffered-rx-bytes"><span class="std std-ref">max_buffered_rx_bytes</span></a> and
+<a class="reference internal" href="../api-v3/config/tap/v3/common.proto.html#envoy-v3-api-field-config-tap-v3-outputconfig-max-buffered-tx-bytes"><span class="std std-ref">max_buffered_tx_bytes</span></a> settings. When a buffered
+socket tap is truncated, the trace will indicate truncation via the <a class="reference internal" href="../api-v3/data/tap/v3/transport.proto.html#envoy-v3-api-field-data-tap-v3-socketbufferedtrace-read-truncated"><span class="std std-ref">read_truncated</span></a> and <a class="reference internal" href="../api-v3/data/tap/v3/transport.proto.html#envoy-v3-api-field-data-tap-v3-socketbufferedtrace-write-truncated"><span class="std std-ref">write_truncated</span></a> fields as well as the body
+<a class="reference internal" href="../api-v3/data/tap/v3/common.proto.html#envoy-v3-api-field-data-tap-v3-body-truncated"><span class="std std-ref">truncated</span></a> field.</p>
 </div>
 <div class="section" id="streaming">
 <h2>Streaming<a class="headerlink" href="#streaming" title="Permalink to this headline">¶</a></h2>
-<p>The tap transport socket supports both buffered and streaming, controlled by the <a class="reference internal" href="../api-v2/service/tap/v2alpha/common.proto.html#envoy-api-field-service-tap-v2alpha-outputconfig-streaming"><span class="std std-ref">streaming</span></a> setting. When buffering,
-<a class="reference internal" href="../api-v2/data/tap/v2alpha/transport.proto.html#envoy-api-msg-data-tap-v2alpha-socketbufferedtrace"><span class="std std-ref">SocketBufferedTrace</span></a> messages are
-emitted. When streaming, a series of <a class="reference internal" href="../api-v2/data/tap/v2alpha/transport.proto.html#envoy-api-msg-data-tap-v2alpha-socketstreamedtracesegment"><span class="std std-ref">SocketStreamedTraceSegment</span></a> are emitted.</p>
+<p>The tap transport socket supports both buffered and streaming, controlled by the <a class="reference internal" href="../api-v3/config/tap/v3/common.proto.html#envoy-v3-api-field-config-tap-v3-outputconfig-streaming"><span class="std std-ref">streaming</span></a> setting. When buffering,
+<a class="reference internal" href="../api-v3/data/tap/v3/transport.proto.html#envoy-v3-api-msg-data-tap-v3-socketbufferedtrace"><span class="std std-ref">SocketBufferedTrace</span></a> messages are
+emitted. When streaming, a series of <a class="reference internal" href="../api-v3/data/tap/v3/transport.proto.html#envoy-v3-api-msg-data-tap-v3-socketstreamedtracesegment"><span class="std std-ref">SocketStreamedTraceSegment</span></a> are emitted.</p>
 <p>See the <a class="reference internal" href="../configuration/http/http_filters/tap_filter.html#config-http-filters-tap-streaming"><span class="std std-ref">HTTP tap filter streaming</span></a> documentation for more
 information. Most of the concepts overlap between the HTTP filter and the transport socket.</p>
 </div>

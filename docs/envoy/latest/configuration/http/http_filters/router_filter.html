@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Router &mdash; envoy 1.15.0-dev-319158 documentation</title>
+  <title>Router &mdash; envoy 1.15.0-dev-6151a6 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-319158
+                1.15.0-dev-6151a6
               </div>
             
           
@@ -223,10 +223,10 @@
 <span id="config-http-filters-router"></span><h1>Router<a class="headerlink" href="#router" title="Permalink to this headline">¶</a></h1>
 <p>The router filter implements HTTP forwarding. It will be used in almost all HTTP proxy scenarios
 that Envoy is deployed for. The filter’s main job is to follow the instructions specified in the
-configured <a class="reference internal" href="../../../api-v2/api/v2/route.proto.html#envoy-api-msg-routeconfiguration"><span class="std std-ref">route table</span></a>. In addition to forwarding and
+configured <a class="reference internal" href="../../../api-v3/config/route/v3/route.proto.html#envoy-v3-api-msg-config-route-v3-routeconfiguration"><span class="std std-ref">route table</span></a>. In addition to forwarding and
 redirection, the filter also handles retry, statistics, etc.</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../../../api-v2/config/filter/http/router/v2/router.proto.html#envoy-api-msg-config-filter-http-router-v2-router"><span class="std std-ref">v2 API reference</span></a></p></li>
+<li><p><a class="reference internal" href="../../../api-v3/extensions/filters/http/router/v3/router.proto.html#envoy-v3-api-msg-extensions-filters-http-router-v3-router"><span class="std std-ref">v3 API reference</span></a></p></li>
 <li><p>This filter should be configured with the name <em>envoy.filters.http.router</em>.</p></li>
 </ul>
 <div class="section" id="http-headers-consumed">
@@ -253,8 +253,8 @@ ingress/response path. They are documented in this section.</p>
 </div>
 <div class="section" id="x-envoy-max-retries">
 <span id="config-http-filters-router-x-envoy-max-retries"></span><h3><a class="toc-backref" href="#id3">x-envoy-max-retries</a><a class="headerlink" href="#x-envoy-max-retries" title="Permalink to this headline">¶</a></h3>
-<p>If a <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-routeaction-retry-policy"><span class="std std-ref">route config retry policy</span></a> or a
-<a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-virtualhost-retry-policy"><span class="std std-ref">virtual host retry policy</span></a> is in place, Envoy will default to retrying
+<p>If a <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-retry-policy"><span class="std std-ref">route config retry policy</span></a> or a
+<a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-virtualhost-retry-policy"><span class="std std-ref">virtual host retry policy</span></a> is in place, Envoy will default to retrying
 one time unless explicitly specified. The number of retries can be explicitly set in the virtual host retry config,
 the route retry config, or by using this header. If this header is used, its value takes precedence over the number of
 retries set in either retry policy. If a retry policy is not configured and <a class="reference internal" href="#config-http-filters-router-x-envoy-retry-on"><span class="std std-ref">x-envoy-retry-on</span></a>
@@ -262,9 +262,9 @@ or <a class="reference internal" href="#config-http-filters-router-x-envoy-retry
 <p>A few notes on how Envoy does retries:</p>
 <ul class="simple">
 <li><p>The route timeout (set via <a class="reference internal" href="#config-http-filters-router-x-envoy-upstream-rq-timeout-ms"><span class="std std-ref">x-envoy-upstream-rq-timeout-ms</span></a> or the
-<a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-routeaction-timeout"><span class="std std-ref">timeout</span></a> in route configuration or set via
+<a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-timeout"><span class="std std-ref">timeout</span></a> in route configuration or set via
 <a class="reference external" href="https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md">grpc-timeout header</a>  by specifying
-<a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-routeaction-timeout"><span class="std std-ref">max_grpc_timeout</span></a> in route configuration) <strong>includes</strong> all
+<a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-timeout"><span class="std std-ref">max_grpc_timeout</span></a> in route configuration) <strong>includes</strong> all
 retries. Thus if the request timeout is set to 3s, and the first request attempt takes 2.7s, the
 retry (including back-off) has .3s to complete. This is by design to avoid an exponential
 retry/timeout explosion.</p></li>
@@ -276,7 +276,7 @@ interval is capped at a maximum interval, which defaults to 10 times the base in
 The default base interval (and therefore the maximum interval) can be manipulated by setting the
 upstream.base_retry_backoff_ms runtime parameter. The back-off intervals can also be modified
 by configuring the retry policy’s
-<a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-retrypolicy-retry-back-off"><span class="std std-ref">retry back-off</span></a>.</p></li>
+<a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-retrypolicy-retry-back-off"><span class="std std-ref">retry back-off</span></a>.</p></li>
 <li><p>If max retries is set both by header as well as in the route configuration, the maximum value is
 taken when determining the max retries to use for the request.</p></li>
 </ul>
@@ -284,7 +284,7 @@ taken when determining the max retries to use for the request.</p></li>
 <div class="section" id="x-envoy-retry-on">
 <span id="config-http-filters-router-x-envoy-retry-on"></span><h3><a class="toc-backref" href="#id4">x-envoy-retry-on</a><a class="headerlink" href="#x-envoy-retry-on" title="Permalink to this headline">¶</a></h3>
 <p>Setting this header on egress requests will cause Envoy to attempt to retry failed requests (number
-of retries defaults to 1 and can be controlled by <a class="reference internal" href="#config-http-filters-router-x-envoy-max-retries"><span class="std std-ref">x-envoy-max-retries</span></a> header or the <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-routeaction-retry-policy"><span class="std std-ref">route config retry policy</span></a> or the <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-virtualhost-retry-policy"><span class="std std-ref">virtual host retry policy</span></a>).
+of retries defaults to 1 and can be controlled by <a class="reference internal" href="#config-http-filters-router-x-envoy-max-retries"><span class="std std-ref">x-envoy-max-retries</span></a> header or the <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-retry-policy"><span class="std std-ref">route config retry policy</span></a> or the <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-virtualhost-retry-policy"><span class="std std-ref">virtual host retry policy</span></a>).
 The value to which the x-envoy-retry-on header is set indicates the retry policy. One or more policies
 can be specified using a ‘,’ delimited list. The supported policies are:</p>
 <dl class="simple">
@@ -309,9 +309,9 @@ server (connect timeout, etc.). (Included in <em>5xx</em>)</p>
 <ul class="simple">
 <li><p><strong>NOTE:</strong> A connection failure/timeout is a the TCP level, not the request level. This does not
 include upstream request timeouts specified via
-<a class="reference internal" href="#config-http-filters-router-x-envoy-upstream-rq-timeout-ms"><span class="std std-ref">x-envoy-upstream-rq-timeout-ms</span></a> or via <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-routeaction-retry-policy"><span class="std std-ref">route
+<a class="reference internal" href="#config-http-filters-router-x-envoy-upstream-rq-timeout-ms"><span class="std std-ref">x-envoy-upstream-rq-timeout-ms</span></a> or via <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-retry-policy"><span class="std std-ref">route
 configuration</span></a> or via
-<a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-virtualhost-retry-policy"><span class="std std-ref">virtual host retry policy</span></a>.</p></li>
+<a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-virtualhost-retry-policy"><span class="std std-ref">virtual host retry policy</span></a>.</p></li>
 </ul>
 </dd>
 <dt>retriable-4xx</dt><dd><p>Envoy will attempt a retry if the upstream server responds with a retriable 4xx response code.
@@ -327,20 +327,20 @@ fail with another 409.</p></li>
 code. This reset type indicates that a request is safe to retry. (Included in <em>5xx</em>)</p>
 </dd>
 <dt>retriable-status-codes</dt><dd><p>Envoy will attempt a retry if the upstream server responds with any response code matching one defined
-in either <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-retrypolicy-retriable-status-codes"><span class="std std-ref">the retry policy</span></a>
+in either <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-retrypolicy-retriable-status-codes"><span class="std std-ref">the retry policy</span></a>
 or in the <a class="reference internal" href="#config-http-filters-router-x-envoy-retriable-status-codes"><span class="std std-ref">x-envoy-retriable-status-codes</span></a> header.</p>
 </dd>
 <dt>retriable-headers</dt><dd><p>Envoy will attempt a retry if the upstream server response includes any headers matching in either
-<a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-retrypolicy-retriable-headers"><span class="std std-ref">the retry policy</span></a> or in the
+<a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-retrypolicy-retriable-headers"><span class="std std-ref">the retry policy</span></a> or in the
 <a class="reference internal" href="#config-http-filters-router-x-envoy-retriable-header-names"><span class="std std-ref">x-envoy-retriable-header-names</span></a> header.</p>
 </dd>
 </dl>
 <p>The number of retries can be controlled via the
-<a class="reference internal" href="#config-http-filters-router-x-envoy-max-retries"><span class="std std-ref">x-envoy-max-retries</span></a> header or via the <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-routeaction-retry-policy"><span class="std std-ref">route
+<a class="reference internal" href="#config-http-filters-router-x-envoy-max-retries"><span class="std std-ref">x-envoy-max-retries</span></a> header or via the <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-retry-policy"><span class="std std-ref">route
 configuration</span></a> or via the
-<a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-virtualhost-retry-policy"><span class="std std-ref">virtual host retry policy</span></a>.</p>
-<p>Note that retry policies can also be applied at the <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-routeaction-retry-policy"><span class="std std-ref">route level</span></a> or the
-<a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-virtualhost-retry-policy"><span class="std std-ref">virtual host level</span></a>.</p>
+<a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-virtualhost-retry-policy"><span class="std std-ref">virtual host retry policy</span></a>.</p>
+<p>Note that retry policies can also be applied at the <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-retry-policy"><span class="std std-ref">route level</span></a> or the
+<a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-virtualhost-retry-policy"><span class="std std-ref">virtual host level</span></a>.</p>
 <p>By default, Envoy will <em>not</em> perform retries unless you’ve configured them per above.</p>
 </div>
 <div class="section" id="x-envoy-retry-grpc-on">
@@ -348,8 +348,8 @@ configuration</span></a> or via the
 <p>Setting this header on egress requests will cause Envoy to attempt to retry failed requests (number of
 retries defaults to 1, and can be controlled by
 <a class="reference internal" href="#config-http-filters-router-x-envoy-max-retries"><span class="std std-ref">x-envoy-max-retries</span></a>
-header or the <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-routeaction-retry-policy"><span class="std std-ref">route config retry policy</span></a>) or the
-<a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-virtualhost-retry-policy"><span class="std std-ref">virtual host retry policy</span></a>.
+header or the <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-retry-policy"><span class="std std-ref">route config retry policy</span></a>) or the
+<a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-virtualhost-retry-policy"><span class="std std-ref">virtual host retry policy</span></a>.
 gRPC retries are currently only supported for gRPC status codes in response headers. gRPC status codes in
 trailers will not trigger retry logic. One or more policies can be specified  using a ‘,’ delimited
 list. The supported policies are:</p>
@@ -367,8 +367,8 @@ list. The supported policies are:</p>
 </dl>
 <p>As with the x-envoy-retry-grpc-on header, the number of retries can be controlled via the
 <a class="reference internal" href="#config-http-filters-router-x-envoy-max-retries"><span class="std std-ref">x-envoy-max-retries</span></a> header</p>
-<p>Note that retry policies can also be applied at the <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-routeaction-retry-policy"><span class="std std-ref">route level</span></a> or the
-<a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-virtualhost-retry-policy"><span class="std std-ref">virtual host level</span></a>.</p>
+<p>Note that retry policies can also be applied at the <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-retry-policy"><span class="std std-ref">route level</span></a> or the
+<a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-virtualhost-retry-policy"><span class="std std-ref">virtual host level</span></a>.</p>
 <p>By default, Envoy will <em>not</em> perform retries unless you’ve configured them per above.</p>
 </div>
 <div class="section" id="x-envoy-retriable-header-names">
@@ -382,7 +382,7 @@ responses containing either one of the specified headers to be retriable if ‘r
 is enabled. Header names are case-insensitive.</p>
 <p>Only the names of retriable response headers can be specified via the request header. A more sophisticated
 retry policy based on the response headers can be specified by using arbitrary header matching rules
-via <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-retrypolicy-retriable-headers"><span class="std std-ref">retry policy configuration</span></a>.</p>
+via <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-retrypolicy-retriable-headers"><span class="std std-ref">retry policy configuration</span></a>.</p>
 <p>This header will only be honored for requests from internal clients.</p>
 </div>
 <div class="section" id="x-envoy-retriable-status-codes">
@@ -400,7 +400,7 @@ would consider both 504 and 409 retriable.</p>
 <p>Setting this header on egress requests will cause Envoy to emit upstream response code/timing
 statistics to a dual stat tree. This can be useful for application level categories that Envoy
 doesn’t know about. The output tree is documented <a class="reference internal" href="../../upstream/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats-alt-tree"><span class="std std-ref">here</span></a>.</p>
-<p>This should not be confused with <a class="reference internal" href="../../../api-v2/api/v2/cluster.proto.html#envoy-api-field-cluster-alt-stat-name"><span class="std std-ref">alt_stat_name</span></a> which
+<p>This should not be confused with <a class="reference internal" href="../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-alt-stat-name"><span class="std std-ref">alt_stat_name</span></a> which
 is specified while defining the cluster and when provided specifies an alternative name for the
 cluster at the root of the statistic tree.</p>
 </div>
@@ -417,7 +417,7 @@ is considered. See also <a class="reference internal" href="#config-http-filters
 </div>
 <div class="section" id="x-envoy-upstream-rq-timeout-ms">
 <span id="config-http-filters-router-x-envoy-upstream-rq-timeout-ms"></span><h3><a class="toc-backref" href="#id11">x-envoy-upstream-rq-timeout-ms</a><a class="headerlink" href="#x-envoy-upstream-rq-timeout-ms" title="Permalink to this headline">¶</a></h3>
-<p>Setting this header on egress requests will cause Envoy to override the <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-routeaction-timeout"><span class="std std-ref">route configuration timeout</span></a> or gRPC client timeout set via <a class="reference external" href="https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md">grpc-timeout header</a>  by specifying <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-routeaction-timeout"><span class="std std-ref">max_grpc_timeout</span></a>. The timeout must be specified in millisecond
+<p>Setting this header on egress requests will cause Envoy to override the <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-timeout"><span class="std std-ref">route configuration timeout</span></a> or gRPC client timeout set via <a class="reference external" href="https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md">grpc-timeout header</a>  by specifying <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-timeout"><span class="std std-ref">max_grpc_timeout</span></a>. The timeout must be specified in millisecond
 units. See also <a class="reference internal" href="#config-http-filters-router-x-envoy-upstream-rq-per-try-timeout-ms"><span class="std std-ref">x-envoy-upstream-rq-per-try-timeout-ms</span></a>.</p>
 </div>
 <div class="section" id="x-envoy-upstream-rq-per-try-timeout-ms">
@@ -433,7 +433,7 @@ the downstream, which normally happens after the upstream has sent response head
 <h3><a class="toc-backref" href="#id13">x-envoy-hedge-on-per-try-timeout</a><a class="headerlink" href="#x-envoy-hedge-on-per-try-timeout" title="Permalink to this headline">¶</a></h3>
 <p>Setting this header on egress requests will cause Envoy to use a request
 hedging strategy in the case of a per try timeout. This overrides the value set
-in the <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-hedgepolicy-hedge-on-per-try-timeout"><span class="std std-ref">route configuration</span></a>. This means that a retry
+in the <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-hedgepolicy-hedge-on-per-try-timeout"><span class="std std-ref">route configuration</span></a>. This means that a retry
 will be issued without resetting the original request, leaving multiple upstream requests
 in flight.</p>
 <p>The value of the header should be “true” or “false”, and is ignored if invalid.</p>
@@ -479,12 +479,12 @@ ingress/response path. They are documented in this section.</p>
 <span id="config-http-filters-router-x-envoy-attempt-count"></span><h3><a class="toc-backref" href="#id17">x-envoy-attempt-count</a><a class="headerlink" href="#x-envoy-attempt-count" title="Permalink to this headline">¶</a></h3>
 <p>Sent to the upstream to indicate which attempt the current request is in a series of retries. The value
 will be “1” on the initial request, incrementing by one for each retry. Only set if the
-<a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-virtualhost-include-request-attempt-count"><span class="std std-ref">include_request_attempt_count</span></a>
+<a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-virtualhost-include-request-attempt-count"><span class="std std-ref">include_request_attempt_count</span></a>
 flag is set to true.</p>
 <p>Sent to the downstream to indicate how many upstream requests took place. The header will be absent if
 the router did not send any upstream requests. The value will be “1” if only the original upstream
 request was sent, incrementing by one for each retry. Only set if the
-<a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-virtualhost-include-attempt-count-in-response"><span class="std std-ref">include_attempt_count_in_response</span></a>
+<a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-virtualhost-include-attempt-count-in-response"><span class="std std-ref">include_attempt_count_in_response</span></a>
 flag is set to true.</p>
 </div>
 <div class="section" id="x-envoy-expected-rq-timeout-ms">
@@ -492,7 +492,7 @@ flag is set to true.</p>
 <p>This is the time in milliseconds the router expects the request to be completed. Envoy sets this
 header so that the upstream host receiving the request can make decisions based on the request
 timeout, e.g., early exit. This is set on internal requests and is either taken from the
-<a class="reference internal" href="#config-http-filters-router-x-envoy-upstream-rq-timeout-ms"><span class="std std-ref">x-envoy-upstream-rq-timeout-ms</span></a> header or the <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-routeaction-timeout"><span class="std std-ref">route timeout</span></a>, in that order.</p>
+<a class="reference internal" href="#config-http-filters-router-x-envoy-upstream-rq-timeout-ms"><span class="std std-ref">x-envoy-upstream-rq-timeout-ms</span></a> header or the <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-timeout"><span class="std std-ref">route timeout</span></a>, in that order.</p>
 </div>
 <div class="section" id="x-envoy-upstream-service-time">
 <h3><a class="toc-backref" href="#id19">x-envoy-upstream-service-time</a><a class="headerlink" href="#x-envoy-upstream-service-time" title="Permalink to this headline">¶</a></h3>
@@ -502,8 +502,8 @@ responses.</p>
 </div>
 <div class="section" id="x-envoy-original-path">
 <span id="config-http-filters-router-x-envoy-original-path"></span><h3><a class="toc-backref" href="#id20">x-envoy-original-path</a><a class="headerlink" href="#x-envoy-original-path" title="Permalink to this headline">¶</a></h3>
-<p>If the route utilizes <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-routeaction-prefix-rewrite"><span class="std std-ref">prefix_rewrite</span></a>
-or <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-routeaction-regex-rewrite"><span class="std std-ref">regex_rewrite</span></a>,
+<p>If the route utilizes <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-prefix-rewrite"><span class="std std-ref">prefix_rewrite</span></a>
+or <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-regex-rewrite"><span class="std std-ref">regex_rewrite</span></a>,
 Envoy will put the original path header in this header. This can be useful for logging and
 debugging.</p>
 </div>
@@ -517,7 +517,7 @@ if a request was dropped due to either <a class="reference internal" href="#conf
 <span id="config-http-filters-router-stats"></span><h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
 <p>The router outputs many statistics in the cluster namespace (depending on the cluster specified in
 the chosen route). See <a class="reference internal" href="../../upstream/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats"><span class="std std-ref">here</span></a> for more information.</p>
-<p>The router filter outputs statistics in the <em>http.&lt;stat_prefix&gt;.</em> namespace. The <a class="reference internal" href="../../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-stat-prefix"><span class="std std-ref">stat prefix</span></a> comes from the
+<p>The router filter outputs statistics in the <em>http.&lt;stat_prefix&gt;.</em> namespace. The <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-stat-prefix"><span class="std std-ref">stat prefix</span></a> comes from the
 owning HTTP connection manager.</p>
 <table class="colwidths-given docutils align-default">
 <colgroup>
@@ -594,7 +594,7 @@ statistics:</p>
 </tr>
 <tr class="row-even"><td><p>upstream_rq_retry_overflow</p></td>
 <td><p>Counter</p></td>
-<td><p>Total requests not retried due to circuit breaking or exceeding the <a class="reference internal" href="../../../api-v2/api/v2/cluster/circuit_breaker.proto.html#envoy-api-field-cluster-circuitbreakers-thresholds-retry-budget"><span class="std std-ref">retry budgets</span></a></p></td>
+<td><p>Total requests not retried due to circuit breaking or exceeding the <a class="reference internal" href="../../../api-v3/config/cluster/v3/circuit_breaker.proto.html#envoy-v3-api-field-config-cluster-v3-circuitbreakers-thresholds-retry-budget"><span class="std std-ref">retry budgets</span></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>upstream_rq_retry_success</p></td>
 <td><p>Counter</p></td>

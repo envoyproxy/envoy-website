@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Rate limit &mdash; envoy 1.15.0-dev-319158 documentation</title>
+  <title>Rate limit &mdash; envoy 1.15.0-dev-6151a6 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-319158
+                1.15.0-dev-6151a6
               </div>
             
           
@@ -223,21 +223,21 @@
 <span id="config-http-filters-rate-limit"></span><h1>Rate limit<a class="headerlink" href="#rate-limit" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
 <li><p>Global rate limiting <a class="reference internal" href="../../../intro/arch_overview/other_features/global_rate_limiting.html#arch-overview-global-rate-limit"><span class="std std-ref">architecture overview</span></a></p></li>
-<li><p><a class="reference internal" href="../../../api-v2/config/filter/http/rate_limit/v2/rate_limit.proto.html#envoy-api-msg-config-filter-http-rate-limit-v2-ratelimit"><span class="std std-ref">v2 API reference</span></a></p></li>
+<li><p><a class="reference internal" href="../../../api-v3/extensions/filters/http/ratelimit/v3/rate_limit.proto.html#envoy-v3-api-msg-extensions-filters-http-ratelimit-v3-ratelimit"><span class="std std-ref">v3 API reference</span></a></p></li>
 <li><p>This filter should be configured with the name <em>envoy.filters.http.ratelimit</em>.</p></li>
 </ul>
 <p>The HTTP rate limit filter will call the rate limit service when the request’s route or virtual host
-has one or more <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-virtualhost-rate-limits"><span class="std std-ref">rate limit configurations</span></a>
-that match the filter stage setting. The <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-routeaction-include-vh-rate-limits"><span class="std std-ref">route</span></a>
+has one or more <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-virtualhost-rate-limits"><span class="std std-ref">rate limit configurations</span></a>
+that match the filter stage setting. The <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-include-vh-rate-limits"><span class="std std-ref">route</span></a>
 can optionally include the virtual host rate limit configurations. More than one configuration can
 apply to a request. Each configuration results in a descriptor being sent to the rate limit service.</p>
 <p>If the rate limit service is called, and the response for any of the descriptors is over limit, a
 429 response is returned. The rate limit filter also sets the <a class="reference internal" href="router_filter.html#config-http-filters-router-x-envoy-ratelimited"><span class="std std-ref">x-envoy-ratelimited</span></a> header.</p>
-<p>If there is an error in calling rate limit service or rate limit service returns an error and <a class="reference internal" href="../../../api-v2/config/filter/http/rate_limit/v2/rate_limit.proto.html#envoy-api-msg-config-filter-http-rate-limit-v2-ratelimit"><span class="std std-ref">failure_mode_deny</span></a> is
+<p>If there is an error in calling rate limit service or rate limit service returns an error and <a class="reference internal" href="../../../api-v3/extensions/filters/http/ratelimit/v3/rate_limit.proto.html#envoy-v3-api-field-extensions-filters-http-ratelimit-v3-ratelimit-failure-mode-deny"><span class="std std-ref">failure_mode_deny</span></a> is
 set to true, a 500 response is returned.</p>
 <div class="section" id="composing-actions">
 <span id="config-http-filters-rate-limit-composing-actions"></span><h2>Composing Actions<a class="headerlink" href="#composing-actions" title="Permalink to this headline">¶</a></h2>
-<p>Each <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-msg-route-ratelimit"><span class="std std-ref">rate limit action</span></a> on the route or
+<p>Each <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-msg-config-route-v3-ratelimit"><span class="std std-ref">rate limit action</span></a> on the route or
 virtual host populates a descriptor entry. A vector of descriptor entries compose a descriptor. To
 create more complex rate limit descriptors, actions can be composed in any order. The descriptor
 will be populated in the order the actions are specified in the configuration.</p>
@@ -309,7 +309,7 @@ the following descriptor is generated:</p>
 <tr class="row-odd"><td><p>failure_mode_allowed</p></td>
 <td><p>Counter</p></td>
 <td><p>Total requests that were error(s) but were allowed through because
-of <a class="reference internal" href="../../../api-v2/config/filter/http/rate_limit/v2/rate_limit.proto.html#envoy-api-msg-config-filter-http-rate-limit-v2-ratelimit"><span class="std std-ref">failure_mode_deny</span></a> set to false.</p></td>
+of <a class="reference internal" href="../../../api-v3/extensions/filters/http/ratelimit/v3/rate_limit.proto.html#envoy-v3-api-field-extensions-filters-http-ratelimit-v3-ratelimit-failure-mode-deny"><span class="std std-ref">failure_mode_deny</span></a> set to false.</p></td>
 </tr>
 </tbody>
 </table>
@@ -324,7 +324,7 @@ of <a class="reference internal" href="../../../api-v2/config/filter/http/rate_l
 This can be used to test what would happen before fully enforcing the outcome.</p>
 </dd>
 <dt>ratelimit.&lt;route_key&gt;.http_filter_enabled</dt><dd><p>% of requests that will call the rate limit service for a given <em>route_key</em> specified in the
-<a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-msg-route-ratelimit"><span class="std std-ref">rate limit configuration</span></a>. Defaults to 100.</p>
+<a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-msg-config-route-v3-ratelimit"><span class="std std-ref">rate limit configuration</span></a>. Defaults to 100.</p>
 </dd>
 </dl>
 </div>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Access logging &mdash; envoy 1.15.0-dev-319158 documentation</title>
+  <title>Access logging &mdash; envoy 1.15.0-dev-6151a6 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-319158
+                1.15.0-dev-6151a6
               </div>
             
           
@@ -200,7 +200,7 @@
 <h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
 <p>Access logs are configured as part of the <a class="reference internal" href="../../http/http_conn_man/http_conn_man.html#config-http-conn-man"><span class="std std-ref">HTTP connection manager config</span></a> or <a class="reference internal" href="../../listeners/network_filters/tcp_proxy_filter.html#config-network-filters-tcp-proxy"><span class="std std-ref">TCP Proxy</span></a>.</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../../../api-v2/config/filter/accesslog/v2/accesslog.proto.html#envoy-api-msg-config-filter-accesslog-v2-accesslog"><span class="std std-ref">v2 API reference</span></a></p></li>
+<li><p><a class="reference internal" href="../../../api-v3/config/accesslog/v3/accesslog.proto.html#envoy-v3-api-msg-config-accesslog-v3-accesslog"><span class="std std-ref">v3 API reference</span></a></p></li>
 </ul>
 </div>
 <div class="section" id="format-rules">
@@ -423,7 +423,7 @@ the descriptions do not apply. Possible values are:</p>
 <li><p><strong>UF</strong>: Upstream connection failure in addition to 503 response code.</p></li>
 <li><p><strong>UO</strong>: Upstream overflow (<a class="reference internal" href="../../../intro/arch_overview/upstream/circuit_breaking.html#arch-overview-circuit-break"><span class="std std-ref">circuit breaking</span></a>) in addition to 503 response code.</p></li>
 <li><p><strong>NR</strong>: No <a class="reference internal" href="../../../intro/arch_overview/http/http_routing.html#arch-overview-http-routing"><span class="std std-ref">route configured</span></a> for a given request in addition to 404 response code, or no matching filter chain for a downstream connection.</p></li>
-<li><p><strong>URX</strong>: The request was rejected because the <a class="reference internal" href="../../../api-v2/api/v2/route/route_components.proto.html#envoy-api-field-route-retrypolicy-num-retries"><span class="std std-ref">upstream retry limit (HTTP)</span></a>  or <a class="reference internal" href="../../../api-v2/config/filter/network/tcp_proxy/v2/tcp_proxy.proto.html#envoy-api-field-config-filter-network-tcp-proxy-v2-tcpproxy-max-connect-attempts"><span class="std std-ref">maximum connect attempts (TCP)</span></a> was reached.</p></li>
+<li><p><strong>URX</strong>: The request was rejected because the <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-retrypolicy-num-retries"><span class="std std-ref">upstream retry limit (HTTP)</span></a>  or <a class="reference internal" href="../../../api-v3/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto.html#envoy-v3-api-field-extensions-filters-network-tcp-proxy-v3-tcpproxy-max-connect-attempts"><span class="std std-ref">maximum connect attempts (TCP)</span></a> was reached.</p></li>
 </ul>
 </dd>
 <dt>HTTP only</dt><dd><ul class="simple">
@@ -439,9 +439,10 @@ the descriptions do not apply. Possible values are:</p>
 <li><p><strong>UAEX</strong>: The request was denied by the external authorization service.</p></li>
 <li><p><strong>RLSE</strong>: The request was rejected because there was an error in rate limit service.</p></li>
 <li><p><strong>IH</strong>: The request was rejected because it set an invalid value for a
-<a class="reference internal" href="../../../api-v2/config/filter/http/router/v2/router.proto.html#envoy-api-field-config-filter-http-router-v2-router-strict-check-headers"><span class="std std-ref">strictly-checked header</span></a> in addition to 400 response code.</p></li>
+<a class="reference internal" href="../../../api-v3/extensions/filters/http/router/v3/router.proto.html#envoy-v3-api-field-extensions-filters-http-router-v3-router-strict-check-headers"><span class="std std-ref">strictly-checked header</span></a> in addition to 400 response code.</p></li>
 <li><p><strong>SI</strong>: Stream idle timeout in addition to 408 response code.</p></li>
 <li><p><strong>DPE</strong>: The downstream request had an HTTP protocol error.</p></li>
+<li><p><strong>UMSDR</strong>: The upstream request reached to max stream duration.</p></li>
 </ul>
 </dd>
 </dl>
@@ -471,7 +472,7 @@ address and port.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This may not be the physical remote address of the peer if the address has been inferred from
-<a class="reference internal" href="../../../api-v2/api/v2/listener/listener_components.proto.html#envoy-api-field-listener-filterchain-use-proxy-proto"><span class="std std-ref">proxy proto</span></a> or <a class="reference internal" href="../../http/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a>.</p>
+<a class="reference internal" href="../../../api-v3/config/listener/v3/listener_components.proto.html#envoy-v3-api-field-config-listener-v3-filterchain-use-proxy-proto"><span class="std std-ref">proxy proto</span></a> or <a class="reference internal" href="../../http/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a>.</p>
 </div>
 </dd>
 <dt>%DOWNSTREAM_REMOTE_ADDRESS_WITHOUT_PORT%</dt><dd><p>Remote address of the downstream connection. If the address is an IP address the output does
@@ -479,7 +480,7 @@ address and port.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This may not be the physical remote address of the peer if the address has been inferred from
-<a class="reference internal" href="../../../api-v2/api/v2/listener/listener_components.proto.html#envoy-api-field-listener-filterchain-use-proxy-proto"><span class="std std-ref">proxy proto</span></a> or <a class="reference internal" href="../../http/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a>.</p>
+<a class="reference internal" href="../../../api-v3/config/listener/v3/listener_components.proto.html#envoy-v3-api-field-config-listener-v3-filterchain-use-proxy-proto"><span class="std std-ref">proxy proto</span></a> or <a class="reference internal" href="../../http/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a>.</p>
 </div>
 </dd>
 <dt>%DOWNSTREAM_DIRECT_REMOTE_ADDRESS%</dt><dd><p>Direct remote address of the downstream connection. If the address is an IP address it includes both
@@ -487,7 +488,7 @@ address and port.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This is always the physical remote address of the peer even if the downstream remote address has
-been inferred from <a class="reference internal" href="../../../api-v2/api/v2/listener/listener_components.proto.html#envoy-api-field-listener-filterchain-use-proxy-proto"><span class="std std-ref">proxy proto</span></a>
+been inferred from <a class="reference internal" href="../../../api-v3/config/listener/v3/listener_components.proto.html#envoy-v3-api-field-config-listener-v3-filterchain-use-proxy-proto"><span class="std std-ref">proxy proto</span></a>
 or <a class="reference internal" href="../../http/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a>.</p>
 </div>
 </dd>
@@ -496,7 +497,7 @@ or <a class="reference internal" href="../../http/http_conn_man/headers.html#con
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This is always the physical remote address of the peer even if the downstream remote address has
-been inferred from <a class="reference internal" href="../../../api-v2/api/v2/listener/listener_components.proto.html#envoy-api-field-listener-filterchain-use-proxy-proto"><span class="std std-ref">proxy proto</span></a>
+been inferred from <a class="reference internal" href="../../../api-v3/config/listener/v3/listener_components.proto.html#envoy-v3-api-field-config-listener-v3-filterchain-use-proxy-proto"><span class="std std-ref">proxy proto</span></a>
 or <a class="reference internal" href="../../http/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a>.</p>
 </div>
 </dd>
@@ -539,11 +540,11 @@ none of the headers are present ‘-‘ symbol will be in the log.</p>
 </dl>
 </dd>
 <dt>%DYNAMIC_METADATA(NAMESPACE:KEY*):Z%</dt><dd><dl>
-<dt>HTTP</dt><dd><p><a class="reference internal" href="../../../api-v2/api/v2/core/base.proto.html#envoy-api-msg-core-metadata"><span class="std std-ref">Dynamic Metadata</span></a> info,
+<dt>HTTP</dt><dd><p><a class="reference internal" href="../../../api-v3/config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-metadata"><span class="std std-ref">Dynamic Metadata</span></a> info,
 where NAMESPACE is the filter namespace used when setting the metadata, KEY is an optional
 lookup up key in the namespace with the option of specifying nested keys separated by ‘:’,
 and Z is an optional parameter denoting string truncation up to Z characters long. Dynamic Metadata
-can be set by filters using the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/31915818188fab5c095b86aa307a50c3caf68c6a/include/envoy/stream_info/stream_info.h">StreamInfo</a> API:
+can be set by filters using the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/6151a69f9c0dc4aa7938d987036ec00eedb818d5/include/envoy/stream_info/stream_info.h">StreamInfo</a> API:
 <em>setDynamicMetadata</em>. The data will be logged as a JSON string. For example, for the following dynamic metadata:</p>
 <p><code class="docutils literal notranslate"><span class="pre">com.test.my_filter:</span> <span class="pre">{&quot;test_key&quot;:</span> <span class="pre">&quot;foo&quot;,</span> <span class="pre">&quot;test_object&quot;:</span> <span class="pre">{&quot;inner_key&quot;:</span> <span class="pre">&quot;bar&quot;}}</span></code></p>
 <ul class="simple">

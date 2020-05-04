@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Original Source &mdash; envoy 1.15.0-dev-319158 documentation</title>
+  <title>Original Source &mdash; envoy 1.15.0-dev-6151a6 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-319158
+                1.15.0-dev-6151a6
               </div>
             
           
@@ -202,7 +202,7 @@
   <div class="section" id="original-source">
 <span id="config-listener-filters-original-src"></span><h1>Original Source<a class="headerlink" href="#original-source" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><p><a class="reference internal" href="../../../api-v2/config/filter/listener/original_src/v2alpha1/original_src.proto.html#envoy-api-msg-config-filter-listener-original-src-v2alpha1-originalsrc"><span class="std std-ref">Listener filter v2 API reference</span></a></p></li>
+<li><p><a class="reference internal" href="../../../api-v3/extensions/filters/listener/original_src/v3/original_src.proto.html#envoy-v3-api-msg-extensions-filters-listener-original-src-v3-originalsrc"><span class="std std-ref">Listener filter v3 API reference</span></a></p></li>
 <li><p>This filter should be configured with the name <em>envoy.filters.listener.original_src</em>.</p></li>
 </ul>
 <p>The original source listener filter replicates the downstream remote address of the connection on
@@ -228,10 +228,10 @@ to forcefully route any traffic whose IP was replicated by Envoy back through th
 <p>If Envoy and the upstream are on the same host – e.g. in an sidecar deployment –, then iptables
 and routing rules can be used to ensure correct behaviour. The filter has an unsigned integer
 configuration,
-<a class="reference internal" href="../../../api-v2/config/filter/listener/original_src/v2alpha1/original_src.proto.html#envoy-api-field-config-filter-listener-original-src-v2alpha1-originalsrc-mark"><span class="std std-ref">mark</span></a>. Setting
+<a class="reference internal" href="../../../api-v3/extensions/filters/listener/original_src/v3/original_src.proto.html#envoy-v3-api-field-extensions-filters-listener-original-src-v3-originalsrc-mark"><span class="std std-ref">mark</span></a>. Setting
 this to <em>X</em> causes Envoy to <em>mark</em> all upstream packets originating from this listener with value
 <em>X</em>. Note that if
-<a class="reference internal" href="../../../api-v2/config/filter/listener/original_src/v2alpha1/original_src.proto.html#envoy-api-field-config-filter-listener-original-src-v2alpha1-originalsrc-mark"><span class="std std-ref">mark</span></a> is set
+<a class="reference internal" href="../../../api-v3/extensions/filters/listener/original_src/v3/original_src.proto.html#envoy-v3-api-field-extensions-filters-listener-original-src-v3-originalsrc-mark"><span class="std std-ref">mark</span></a> is set
 to 0, Envoy will not mark upstream packets.</p>
 <p>We can use the following set of commands to ensure that all ipv4 and ipv6 traffic marked with <em>X</em>
 (assumed to be 123 in the example) routes correctly. Note that this example assumes that <em>eth0</em> is
@@ -260,9 +260,11 @@ marked with 123.</p>
       <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8888</span>
   <span class="nt">listener_filters</span><span class="p">:</span>
     <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.listener.proxy_protocol</span>
+      <span class="nt">typed_config</span><span class="p">:</span>
+        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.listener.proxy_protocol.v3.ProxyProtocol</span>
     <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.listener.original_src</span>
       <span class="nt">typed_config</span><span class="p">:</span>
-        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.filter.listener.original_src.v2alpha1.OriginalSrc</span>
+        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.listener.original_src.v3.OriginalSrc</span>
         <span class="nt">mark</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">123</span>
 </pre></div>
 </div>
