@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP filters &mdash; envoy 1.15.0-dev-893ed5 documentation</title>
+  <title>HTTP filters &mdash; envoy 1.15.0-dev-4abe68 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-893ed5
+                1.15.0-dev-4abe68
               </div>
             
           
@@ -220,6 +220,24 @@ themselves within the context of a single request stream. Refer to <a class="ref
 between filters</span></a> for more details. Envoy already
 includes several HTTP level filters that are documented in this architecture overview as well as
 the <a class="reference internal" href="../../../configuration/http/http_filters/http_filters.html#config-http-filters"><span class="std std-ref">configuration reference</span></a>.</p>
+<div class="section" id="filter-ordering">
+<span id="arch-overview-http-filters-ordering"></span><h2>Filter ordering<a class="headerlink" href="#filter-ordering" title="Permalink to this headline">¶</a></h2>
+<p>Filter ordering in the <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-http-filters"><span class="std std-ref">http_filters field</span></a>
+matters. If filters are configured in the following order (and assuming all three filters are
+decoder/encoder filters):</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">http_filters</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">A</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">B</span>
+  <span class="c1"># The last configured filter has to be a terminal filter, as determined by the</span>
+  <span class="c1"># NamedHttpFilterConfigFactory::isTerminalFilter() function. This is most likely the router</span>
+  <span class="c1"># filter.</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">C</span>
+</pre></div>
+</div>
+<p>The connection manager will invoke decoder filters in the order: <code class="docutils literal notranslate"><span class="pre">A</span></code>, <code class="docutils literal notranslate"><span class="pre">B</span></code>, <code class="docutils literal notranslate"><span class="pre">C</span></code>.
+On the other hand, the connection manager will invoke encoder filters in the <strong>reverse</strong>
+order: <code class="docutils literal notranslate"><span class="pre">C</span></code>, <code class="docutils literal notranslate"><span class="pre">B</span></code>, <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p>
+</div>
 </div>
 
 
