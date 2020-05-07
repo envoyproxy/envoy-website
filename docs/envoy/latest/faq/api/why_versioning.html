@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Why are the Envoy xDS APIs versioned? What is the benefit? &mdash; envoy 1.15.0-dev-a250a8 documentation</title>
+  <title>Why are the Envoy xDS APIs versioned? What is the benefit? &mdash; envoy 1.15.0-dev-e6e37d documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-a250a8
+                1.15.0-dev-e6e37d
               </div>
             
           
@@ -107,6 +107,7 @@
 <li class="toctree-l3"><a class="reference internal" href="envoy_v3.html">How do I configure Envoy to use the v3 API?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="envoy_upgrade_v3.html">If I upgrade to Envoy 1.13+, do I need to use the v3 API?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="extensions.html">How does API versioning interact with a new extension?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control_plane_version_support.html">Which xDS transport and resource versions does my control plane need to support?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="control_plane.html">How do I support multiple xDS API major versions in my control plane?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="package_naming.html">What do the v2, v3, vN etc. mean in API package names?</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Why are the Envoy xDS APIs versioned? What is the benefit?</a></li>
@@ -191,9 +192,32 @@ improve ergonomics and address new use cases. At the same time, we need a discip
 turning down stale functionality and removing APIs and their supporting code that are no longer
 maintained. If we don’t do this, we lose the ability in the long term to provide a reliable,
 maintainable, scalable code base and set of APIs for our users.</p>
-<p>We had previously put in place policies around <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a250a871571f18dffd13732da83cbd4a677b1f03/CONTRIBUTING.md#breaking-change-policy">breaking changes</a> across releases, the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a250a871571f18dffd13732da83cbd4a677b1f03/api/API_VERSIONING.md">API versioning policy</a> takes this a step further, articulating a guaranteed multi-year support
+<p>We had previously put in place policies around <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/e6e37da3d9854410cfc2b46f193b265563ee5580/CONTRIBUTING.md#breaking-change-policy">breaking changes</a> across releases, the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/e6e37da3d9854410cfc2b46f193b265563ee5580/api/API_VERSIONING.md">API versioning policy</a> takes this a step further, articulating a guaranteed multi-year support
 window for APIs that provides control plane authors a predictable clock when considering support
 for a range of Envoy versions.</p>
+<p>For the v3 xDS APIs, a brief list of the key improvements that were made with a clean break from v2:</p>
+<ul class="simple">
+<li><p>Packages organization was improved to reflect a more logical grouping of related APIs:</p>
+<ul>
+<li><p>The legacy <cite>envoy.api.v2</cite> tree was eliminated, with protos moved to their logical groupings,
+e.g. <cite>envoy.config.core.v3</cite>, <cite>envoy.server.listener.v3</cite>.</p></li>
+<li><p>All packages are now versioned with a <cite>vN</cite> at the end. This allows for type-level identification
+of major version.</p></li>
+<li><p>xDS service endpoints/transport and configuration are split between <cite>envoy.service</cite> and
+<cite>envoy.config</cite>.</p></li>
+<li><p>Extensions now reflect the Envoy source tree layout under <cite>envoy.extensions</cite>.</p></li>
+</ul>
+</li>
+<li><p><cite>std::regex</cite> regular expressions were dropped from the API, in favor of RE2. The former have dangerous
+security implications.</p></li>
+<li><p><cite>google.protobug.Struct</cite> configuration of extensions was dropped from the API, in favor of
+typed configuration. This provides for better support for multiple instances of extensions, e.g.
+in filter chains, and more flexible naming of extension instances.</p></li>
+<li><p>Over 60 deprecated fields were removed from the API.</p></li>
+<li><p>Tooling and processes were established for API versioning support. This has now been reflected in
+the bootstrap <cite>Node</cite>, providing a long term notion of API support that control planes can depend
+upon for client negotiation.</p></li>
+</ul>
 </div>
 
 
