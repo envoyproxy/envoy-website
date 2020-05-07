@@ -10,7 +10,7 @@ Endpoint discovery :ref:`architecture overview <arch_overview_service_discovery_
 config.endpoint.v3.ClusterLoadAssignment
 ----------------------------------------
 
-`[config.endpoint.v3.ClusterLoadAssignment proto] <https://github.com/envoyproxy/envoy/blob/10e7c9de4c210fd801aa487d3a35f8fa9ff9be0a/api/envoy/config/endpoint/v3/endpoint.proto#L33>`_
+`[config.endpoint.v3.ClusterLoadAssignment proto] <https://github.com/envoyproxy/envoy/blob/a250a871571f18dffd13732da83cbd4a677b1f03/api/envoy/config/endpoint/v3/endpoint.proto#L33>`_
 
 Each route from RDS will map to a single cluster or traffic split across
 clusters using weights expressed in the RDS WeightedCluster.
@@ -57,42 +57,18 @@ policy
 config.endpoint.v3.ClusterLoadAssignment.Policy
 -----------------------------------------------
 
-`[config.endpoint.v3.ClusterLoadAssignment.Policy proto] <https://github.com/envoyproxy/envoy/blob/10e7c9de4c210fd801aa487d3a35f8fa9ff9be0a/api/envoy/config/endpoint/v3/endpoint.proto#L38>`_
+`[config.endpoint.v3.ClusterLoadAssignment.Policy proto] <https://github.com/envoyproxy/envoy/blob/a250a871571f18dffd13732da83cbd4a677b1f03/api/envoy/config/endpoint/v3/endpoint.proto#L38>`_
 
 Load balancing policy settings.
 
 .. code-block:: json
 
   {
-    "drop_overloads": [],
     "overprovisioning_factor": "{...}",
     "endpoint_stale_after": "{...}"
   }
 
-.. _envoy_v3_api_field_config.endpoint.v3.ClusterLoadAssignment.Policy.drop_overloads:
 
-drop_overloads
-  (:ref:`config.endpoint.v3.ClusterLoadAssignment.Policy.DropOverload <envoy_v3_api_msg_config.endpoint.v3.ClusterLoadAssignment.Policy.DropOverload>`) Action to trim the overall incoming traffic to protect the upstream
-  hosts. This action allows protection in case the hosts are unable to
-  recover from an outage, or unable to autoscale or unable to handle
-  incoming traffic volume for any reason.
-  
-  At the client each category is applied one after the other to generate
-  the 'actual' drop percentage on all outgoing traffic. For example:
-  
-  .. code-block:: json
-  
-   { "drop_overloads": [
-       { "category": "throttle", "drop_percentage": 60 }
-       { "category": "lb", "drop_percentage": 50 }
-   ]}
-  
-  The actual drop percentages applied to the traffic at the clients will be
-     "throttle"_drop = 60%
-     "lb"_drop = 20%  // 50% of the remaining 'actual' load, which is 40%.
-     actual_outgoing_load = 20% // remaining after applying all categories.
-  
-  
 .. _envoy_v3_api_field_config.endpoint.v3.ClusterLoadAssignment.Policy.overprovisioning_factor:
 
 overprovisioning_factor
@@ -121,34 +97,6 @@ endpoint_stale_after
   Defaults to 0 which means endpoints never go stale.
   
   
-.. _envoy_v3_api_msg_config.endpoint.v3.ClusterLoadAssignment.Policy.DropOverload:
-
-config.endpoint.v3.ClusterLoadAssignment.Policy.DropOverload
-------------------------------------------------------------
-
-`[config.endpoint.v3.ClusterLoadAssignment.Policy.DropOverload proto] <https://github.com/envoyproxy/envoy/blob/10e7c9de4c210fd801aa487d3a35f8fa9ff9be0a/api/envoy/config/endpoint/v3/endpoint.proto#L42>`_
-
-
-.. code-block:: json
-
-  {
-    "category": "...",
-    "drop_percentage": "{...}"
-  }
-
-.. _envoy_v3_api_field_config.endpoint.v3.ClusterLoadAssignment.Policy.DropOverload.category:
-
-category
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Identifier for the policy specifying the drop.
-  
-  
-.. _envoy_v3_api_field_config.endpoint.v3.ClusterLoadAssignment.Policy.DropOverload.drop_percentage:
-
-drop_percentage
-  (:ref:`type.v3.FractionalPercent <envoy_v3_api_msg_type.v3.FractionalPercent>`) Percentage of traffic that should be dropped for the category.
-  
-  
-
 
 
 

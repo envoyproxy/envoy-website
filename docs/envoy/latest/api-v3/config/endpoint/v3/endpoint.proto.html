@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Endpoint configuration &mdash; envoy 1.15.0-dev-10e7c9 documentation</title>
+  <title>Endpoint configuration &mdash; envoy 1.15.0-dev-a250a8 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-10e7c9
+                1.15.0-dev-a250a8
               </div>
             
           
@@ -204,7 +204,7 @@
 <p>Endpoint discovery <a class="reference internal" href="../../../../intro/arch_overview/upstream/service_discovery.html#arch-overview-service-discovery-types-eds"><span class="std std-ref">architecture overview</span></a></p>
 <div class="section" id="config-endpoint-v3-clusterloadassignment">
 <span id="envoy-v3-api-msg-config-endpoint-v3-clusterloadassignment"></span><h2>config.endpoint.v3.ClusterLoadAssignment<a class="headerlink" href="#config-endpoint-v3-clusterloadassignment" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/10e7c9de4c210fd801aa487d3a35f8fa9ff9be0a/api/envoy/config/endpoint/v3/endpoint.proto#L33">[config.endpoint.v3.ClusterLoadAssignment proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a250a871571f18dffd13732da83cbd4a677b1f03/api/envoy/config/endpoint/v3/endpoint.proto#L33">[config.endpoint.v3.ClusterLoadAssignment proto]</a></p>
 <p>Each route from RDS will map to a single cluster or traffic split across
 clusters using weights expressed in the RDS WeightedCluster.</p>
 <p>With EDS, each cluster is treated independently from a LB perspective, with
@@ -236,36 +236,14 @@ in the cluster <a class="reference internal" href="../../cluster/v3/cluster.prot
 </div>
 <div class="section" id="config-endpoint-v3-clusterloadassignment-policy">
 <span id="envoy-v3-api-msg-config-endpoint-v3-clusterloadassignment-policy"></span><h2>config.endpoint.v3.ClusterLoadAssignment.Policy<a class="headerlink" href="#config-endpoint-v3-clusterloadassignment-policy" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/10e7c9de4c210fd801aa487d3a35f8fa9ff9be0a/api/envoy/config/endpoint/v3/endpoint.proto#L38">[config.endpoint.v3.ClusterLoadAssignment.Policy proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a250a871571f18dffd13732da83cbd4a677b1f03/api/envoy/config/endpoint/v3/endpoint.proto#L38">[config.endpoint.v3.ClusterLoadAssignment.Policy proto]</a></p>
 <p>Load balancing policy settings.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;drop_overloads&quot;</span><span class="p">:</span> <span class="p">[],</span>
   <span class="nt">&quot;overprovisioning_factor&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;endpoint_stale_after&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<dl id="envoy-v3-api-field-config-endpoint-v3-clusterloadassignment-policy-drop-overloads">
-<dt>drop_overloads</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-endpoint-v3-clusterloadassignment-policy-dropoverload"><span class="std std-ref">config.endpoint.v3.ClusterLoadAssignment.Policy.DropOverload</span></a>) Action to trim the overall incoming traffic to protect the upstream
-hosts. This action allows protection in case the hosts are unable to
-recover from an outage, or unable to autoscale or unable to handle
-incoming traffic volume for any reason.</p>
-<p>At the client each category is applied one after the other to generate
-the ‘actual’ drop percentage on all outgoing traffic. For example:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="nt">&quot;drop_overloads&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span> <span class="nt">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;throttle&quot;</span><span class="p">,</span> <span class="nt">&quot;drop_percentage&quot;</span><span class="p">:</span> <span class="mi">60</span> <span class="p">}</span>
-    <span class="p">{</span> <span class="nt">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;lb&quot;</span><span class="p">,</span> <span class="nt">&quot;drop_percentage&quot;</span><span class="p">:</span> <span class="mi">50</span> <span class="p">}</span>
-<span class="p">]}</span>
-</pre></div>
-</div>
-<dl class="simple">
-<dt>The actual drop percentages applied to the traffic at the clients will be</dt><dd><p>“throttle”_drop = 60%
-“lb”_drop = 20%  // 50% of the remaining ‘actual’ load, which is 40%.
-actual_outgoing_load = 20% // remaining after applying all categories.</p>
-</dd>
-</dl>
-</dd>
-</dl>
 <dl id="envoy-v3-api-field-config-endpoint-v3-clusterloadassignment-policy-overprovisioning-factor">
 <dt>overprovisioning_factor</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) Priority levels and localities are considered overprovisioned with this
 factor (in percentage). This means that we don’t consider a priority
@@ -286,24 +264,6 @@ below 72%. For example:</p>
 If no new assignments are received before this time expires the endpoints
 are considered stale and should be marked unhealthy.
 Defaults to 0 which means endpoints never go stale.</p>
-</dd>
-</dl>
-</div>
-<div class="section" id="config-endpoint-v3-clusterloadassignment-policy-dropoverload">
-<span id="envoy-v3-api-msg-config-endpoint-v3-clusterloadassignment-policy-dropoverload"></span><h2>config.endpoint.v3.ClusterLoadAssignment.Policy.DropOverload<a class="headerlink" href="#config-endpoint-v3-clusterloadassignment-policy-dropoverload" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/10e7c9de4c210fd801aa487d3a35f8fa9ff9be0a/api/envoy/config/endpoint/v3/endpoint.proto#L42">[config.endpoint.v3.ClusterLoadAssignment.Policy.DropOverload proto]</a></p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;drop_percentage&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<dl class="simple" id="envoy-v3-api-field-config-endpoint-v3-clusterloadassignment-policy-dropoverload-category">
-<dt>category</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) Identifier for the policy specifying the drop.</p>
-</dd>
-</dl>
-<dl class="simple" id="envoy-v3-api-field-config-endpoint-v3-clusterloadassignment-policy-dropoverload-drop-percentage">
-<dt>drop_percentage</dt><dd><p>(<a class="reference internal" href="../../../type/v3/percent.proto.html#envoy-v3-api-msg-type-v3-fractionalpercent"><span class="std std-ref">type.v3.FractionalPercent</span></a>) Percentage of traffic that should be dropped for the category.</p>
 </dd>
 </dl>
 </div>
