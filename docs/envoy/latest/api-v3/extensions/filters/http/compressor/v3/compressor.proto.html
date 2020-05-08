@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Compressor &mdash; envoy 1.15.0-dev-6a2c28 documentation</title>
+  <title>Compressor &mdash; envoy 1.15.0-dev-49efb9 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-6a2c28
+                1.15.0-dev-49efb9
               </div>
             
           
@@ -115,6 +115,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../config/transport_socket/transport_socket.html">Transport sockets</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../config/resource_monitor/resource_monitor.html">Resource monitors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../config/common/common.html">Common</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/compression/compression.html">Compression</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../config/cluster/cluster.html">Cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../config/grpc_credential/grpc_credential.html">Grpc Credentials</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../config/retry/retry.html">Retry Predicates</a></li>
@@ -209,15 +210,22 @@
             
   <div class="section" id="compressor">
 <span id="envoy-v3-api-file-envoy-extensions-filters-http-compressor-v3-compressor-proto"></span><h1>Compressor<a class="headerlink" href="#compressor" title="Permalink to this headline">¶</a></h1>
+<p id="extension-envoy-filters-http-compressor">This extension may be referenced by the qualified name <em>envoy.filters.http.compressor</em></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This extension is intended to be robust against untrusted downstream traffic. It assumes that the upstream is trusted.</p>
+</div>
+<p>Compressor <a class="reference internal" href="../../../../../../configuration/http/http_filters/compressor_filter.html#config-http-filters-compressor"><span class="std std-ref">configuration overview</span></a>.</p>
 <div class="section" id="extensions-filters-http-compressor-v3-compressor">
 <span id="envoy-v3-api-msg-extensions-filters-http-compressor-v3-compressor"></span><h2>extensions.filters.http.compressor.v3.Compressor<a class="headerlink" href="#extensions-filters-http-compressor-v3-compressor" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/6a2c28a2383f47966e308536047de7f977d6450e/api/envoy/extensions/filters/http/compressor/v3/compressor.proto#L19">[extensions.filters.http.compressor.v3.Compressor proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/49efb9841a58ebdc43a666f55c445911c8e4181c/api/envoy/extensions/filters/http/compressor/v3/compressor.proto#L24">[extensions.filters.http.compressor.v3.Compressor proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;content_length&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;content_type&quot;</span><span class="p">:</span> <span class="p">[],</span>
   <span class="nt">&quot;disable_on_etag_header&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;remove_accept_encoding_header&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;runtime_enabled&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;runtime_enabled&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;compressor_library&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -251,6 +259,13 @@ the filter closest to the upstream.</p>
 <dl class="simple" id="envoy-v3-api-field-extensions-filters-http-compressor-v3-compressor-runtime-enabled">
 <dt>runtime_enabled</dt><dd><p>(<a class="reference internal" href="../../../../../config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-runtimefeatureflag"><span class="std std-ref">config.core.v3.RuntimeFeatureFlag</span></a>) Runtime flag that controls whether the filter is enabled or not. If set to false, the
 filter will operate as a pass-through filter. If not specified, defaults to enabled.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-http-compressor-v3-compressor-compressor-library">
+<dt>compressor_library</dt><dd><p>(<a class="reference internal" href="../../../../../config/core/v3/extension.proto.html#envoy-v3-api-msg-config-core-v3-typedextensionconfig"><span class="std std-ref">config.core.v3.TypedExtensionConfig</span></a>) A compressor library to use for compression. Currently only
+<a class="reference internal" href="../../../../compression/gzip/compressor/v3/gzip.proto.html#envoy-v3-api-msg-extensions-compression-gzip-compressor-v3-gzip"><span class="std std-ref">envoy.filters.http.compressor.gzip</span></a>
+is included in Envoy.
+This field is ignored if used in the context of the gzip http-filter, but is mandatory otherwise.</p>
 </dd>
 </dl>
 </div>

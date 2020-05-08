@@ -3,13 +3,24 @@
 Compressor
 ==========
 
+.. _extension_envoy.filters.http.compressor:
+
+
+This extension may be referenced by the qualified name *envoy.filters.http.compressor*
+
+.. note::
+  
+
+  This extension is intended to be robust against untrusted downstream traffic. It assumes that the upstream is trusted.
+
+Compressor :ref:`configuration overview <config_http_filters_compressor>`.
 
 .. _envoy_v3_api_msg_extensions.filters.http.compressor.v3.Compressor:
 
 extensions.filters.http.compressor.v3.Compressor
 ------------------------------------------------
 
-`[extensions.filters.http.compressor.v3.Compressor proto] <https://github.com/envoyproxy/envoy/blob/6a2c28a2383f47966e308536047de7f977d6450e/api/envoy/extensions/filters/http/compressor/v3/compressor.proto#L19>`_
+`[extensions.filters.http.compressor.v3.Compressor proto] <https://github.com/envoyproxy/envoy/blob/49efb9841a58ebdc43a666f55c445911c8e4181c/api/envoy/extensions/filters/http/compressor/v3/compressor.proto#L24>`_
 
 
 .. code-block:: json
@@ -19,7 +30,8 @@ extensions.filters.http.compressor.v3.Compressor
     "content_type": [],
     "disable_on_etag_header": "...",
     "remove_accept_encoding_header": "...",
-    "runtime_enabled": "{...}"
+    "runtime_enabled": "{...}",
+    "compressor_library": "{...}"
   }
 
 .. _envoy_v3_api_field_extensions.filters.http.compressor.v3.Compressor.content_length:
@@ -61,6 +73,15 @@ remove_accept_encoding_header
 runtime_enabled
   (:ref:`config.core.v3.RuntimeFeatureFlag <envoy_v3_api_msg_config.core.v3.RuntimeFeatureFlag>`) Runtime flag that controls whether the filter is enabled or not. If set to false, the
   filter will operate as a pass-through filter. If not specified, defaults to enabled.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.compressor.v3.Compressor.compressor_library:
+
+compressor_library
+  (:ref:`config.core.v3.TypedExtensionConfig <envoy_v3_api_msg_config.core.v3.TypedExtensionConfig>`) A compressor library to use for compression. Currently only
+  :ref:`envoy.filters.http.compressor.gzip<envoy_v3_api_msg_extensions.compression.gzip.compressor.v3.Gzip>`
+  is included in Envoy.
+  This field is ignored if used in the context of the gzip http-filter, but is mandatory otherwise.
   
   
 
