@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP upgrades &mdash; envoy 1.15.0-dev-593d32 documentation</title>
+  <title>HTTP upgrades &mdash; envoy 1.15.0-dev-c07e5c documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-593d32
+                1.15.0-dev-c07e5c
               </div>
             
           
@@ -199,7 +199,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="http-upgrades">
-<span id="arch-overview-websocket"></span><h1>HTTP upgrades<a class="headerlink" href="#http-upgrades" title="Permalink to this headline">¶</a></h1>
+<span id="arch-overview-upgrades"></span><h1>HTTP upgrades<a class="headerlink" href="#http-upgrades" title="Permalink to this headline">¶</a></h1>
 <p>Envoy Upgrade support is intended mainly for WebSocket and CONNECT support, but may be used for
 arbitrary upgrades as well. Upgrades pass both the HTTP headers and the upgrade payload
 through an HTTP filter chain. One may configure the
@@ -269,6 +269,43 @@ upgrade/downgrade mechanism will drop the original method and transform the Upgr
 a GET method on the final Envoy-Upstream hop.</p>
 <p>Note that the HTTP/2 upgrade path has very strict HTTP/1.1 compliance, so will not proxy WebSocket
 upgrade requests or responses with bodies.</p>
+</div>
+<div class="section" id="connect-support">
+<h2>CONNECT support<a class="headerlink" href="#connect-support" title="Permalink to this headline">¶</a></h2>
+<p>Envoy CONNECT support is off by default (Envoy will send an internally generated 403 in response to
+CONNECT requests). CONNECT support can be enabled via the upgrade options described above, setting
+the upgrade value to the special keyword “CONNECT”.</p>
+<p>While for HTTP/2, CONNECT request may have a path, in general and for HTTP/1.1 CONNECT requests do
+not have a path, and can only be matched using a
+<a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-msg-config-route-v3-routematch-connectmatcher"><span class="std std-ref">connect_matcher</span></a></p>
+<p>Envoy can handle CONNECT in one of two ways, either proxying the CONNECT headers through as if they
+were any other request, and letting the upstream terminate the CONNECT request, or by terminating the
+CONNECT request, and forwarding the payload as raw TCP data. When CONNECT upgrade configuration is
+set up, the default behavior is to proxy the CONNECT request, treating it like any other request using
+the upgrade path.
+If termination is desired, this can be accomplished by setting
+<a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-upgradeconfig-connect-config"><span class="std std-ref">connect_config</span></a>
+If it that message is present for CONNECT requests, the router filter will strip the request headers,
+and forward the HTTP payload upstream. On receipt of initial TCP data from upstream, the router
+will synthesize 200 response headers, and then forward the TCP data as the HTTP response body.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This mode of CONNECT support can create major security holes if configured correctly, as the upstream
+will be forwarded <em>unsanitized</em> headers if they are in the body payload. Please use with caution</p>
+</div>
+</div>
+<div class="section" id="tunneling-tcp-over-http-2">
+<h2>Tunneling TCP over HTTP/2<a class="headerlink" href="#tunneling-tcp-over-http-2" title="Permalink to this headline">¶</a></h2>
+<p>Envoy also has support for transforming raw TCP into HTTP/2 CONNECT requests. This can be used to
+proxy multiplexed TCP over pre-warmed secure connections and amortize the cost of any TLS handshake.
+An example set up proxying SMTP would look something like this</p>
+<p>[SMTP Upstream] — raw SMTP — [L2 Envoy]  — SMTP tunneled over HTTP/2  — [L1 Envoy]  — raw SMTP  — [Client]</p>
+<p>Examples of such a set up can be found in the Envoy example config <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/c07e5c84437124921df24b001c93802f6bc39c1c/configs/">directory</a>
+If you run <cite>bazel-bin/source/exe/envoy-static –config-path configs/encapsulate_in_connect.yaml –base-id 1</cite>
+and <cite>bazel-bin/source/exe/envoy-static –config-path  configs/terminate_connect.yaml</cite>
+you will be running two Envoys, the first listening for TCP traffic on port 10000 and encapsulating it in an HTTP/2
+CONNECT request, and the second listening for HTTP/2 on 10001, stripping the CONNECT headers, and forwarding the
+original TCP upstream, in this case to google.com.</p>
 </div>
 </div>
 
