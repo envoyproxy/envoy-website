@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP connection management &mdash; envoy 1.15.0-dev-3550a7 documentation</title>
+  <title>HTTP connection management &mdash; envoy 1.15.0-dev-1ce010 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-3550a7
+                1.15.0-dev-1ce010
               </div>
             
           
@@ -318,33 +318,44 @@ previously attempted priorities.</p>
 </div>
 <div class="section" id="internal-redirects">
 <span id="arch-overview-internal-redirects"></span><h2>Internal redirects<a class="headerlink" href="#internal-redirects" title="Permalink to this headline">¶</a></h2>
-<p>Envoy supports handling 302 redirects internally, that is capturing a 302 redirect response,
-synthesizing a new request, sending it to the upstream specified by the new route match, and
-returning the redirected response as the response to the original request.</p>
-<p>Internal redirects are configured via the ref:<cite>internal redirect action
-&lt;envoy_v3_api_field_config.route.v3.RouteAction.internal_redirect_action&gt;</cite> field and
-<cite>max internal redirects &lt;envoy_v3_api_field_config.route.v3.RouteAction.max_internal_redirects&gt;</cite> field in
-route configuration. When redirect handling is on, any 302 response from upstream is
-subject to the redirect being handled by Envoy.</p>
+<p>Envoy supports handling 3xx redirects internally, that is capturing a configurable 3xx redirect
+response, synthesizing a new request, sending it to the upstream specified by the new route match,
+and returning the redirected response as the response to the original request.</p>
+<p>Internal redirects are configured via the <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-internal-redirect-policy"><span class="std std-ref">internal redirect policy</span></a> field in route configuration.
+When redirect handling is on, any 3xx response from upstream, that matches
+<a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-internalredirectpolicy-redirect-response-codes"><span class="std std-ref">redirect_response_codes</span></a>
+is subject to the redirect being handled by Envoy.</p>
 <p>For a redirect to be handled successfully it must pass the following checks:</p>
 <ol class="arabic simple">
-<li><p>Be a 302 response.</p></li>
-<li><p>Have a <em>location</em> header with a valid, fully qualified URL matching the scheme of the original request.</p></li>
+<li><p>Have a response code matching one of <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-internalredirectpolicy-redirect-response-codes"><span class="std std-ref">redirect_response_codes</span></a>, which is
+either 302 (by default), or a set of 3xx codes (301, 302, 303, 307, 308).</p></li>
+<li><p>Have a <em>location</em> header with a valid, fully qualified URL.</p></li>
 <li><p>The request must have been fully processed by Envoy.</p></li>
 <li><p>The request must not have a body.</p></li>
-<li><p>The number of previously handled internal redirect within a given downstream request does not exceed
-<cite>max internal redirects &lt;envoy_v3_api_field_config.route.v3.RouteAction.max_internal_redirects&gt;</cite> of the route
-that the request or redirected request is hitting.</p></li>
+<li><p><a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-internalredirectpolicy-allow-cross-scheme-redirect"><span class="std std-ref">allow_cross_scheme_redirect</span></a> is true (default to false),
+or the scheme of the downstream request and the <em>location</em> header are the same.</p></li>
+<li><p>The number of previously handled internal redirect within a given downstream request does not
+exceed <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-internalredirectpolicy-max-internal-redirects"><span class="std std-ref">max internal redirects</span></a>
+of the route that the request or redirected request is hitting.</p></li>
+<li><p>All <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-internalredirectpolicy-predicates"><span class="std std-ref">predicates</span></a> accept
+the target route.</p></li>
 </ol>
 <p>Any failure will result in redirect being passed downstream instead.</p>
 <p>Since a redirected request may be bounced between different routes, any route in the chain of redirects that</p>
 <ol class="arabic simple">
 <li><p>does not have internal redirect enabled</p></li>
-<li><p>or has a <cite>max internal redirects
-&lt;envoy_v3_api_field_config.route.v3.RouteAction.max_internal_redirects&gt;</cite>
+<li><p>or has a <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-internalredirectpolicy-max-internal-redirects"><span class="std std-ref">max internal redirects</span></a>
 smaller or equal to the redirect chain length when the redirect chain hits it</p></li>
+<li><p>or is disallowed by any of the <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-internalredirectpolicy-predicates"><span class="std std-ref">predicates</span></a></p></li>
 </ol>
 <p>will cause the redirect to be passed downstream.</p>
+<p>Two predicates can be used to create a DAG that defines the redirect chain, the <a class="reference internal" href="../../../api-v3/extensions/internal_redirect/previous_routes/v3/previous_routes_config.proto.html#envoy-v3-api-msg-extensions-internal-redirect-previous-routes-v3-previousroutesconfig"><span class="std std-ref">previous routes</span></a> predicate, and
+the <a class="reference internal" href="../../../api-v3/extensions/internal_redirect/allow_listed_routes/v3/allow_listed_routes_config.proto.html#envoy-v3-api-msg-extensions-internal-redirect-allow-listed-routes-v3-allowlistedroutesconfig"><span class="std std-ref">allow_listed_routes</span></a>.
+Specifically, the <em>allow listed routes</em> predicate defines edges of individual node in the DAG
+and the <em>previous routes</em> predicate defines “visited” state of the edges, so that loop can be avoided
+if so desired.</p>
+<p>A third predicate <a class="reference internal" href="../../../api-v3/extensions/internal_redirect/safe_cross_scheme/v3/safe_cross_scheme_config.proto.html#envoy-v3-api-msg-extensions-internal-redirect-safe-cross-scheme-v3-safecrossschemeconfig"><span class="std std-ref">safe_cross_scheme</span></a>
+can be used to prevent HTTP -&gt; HTTPS redirect.</p>
 <p>Once the redirect has passed these checks, the request headers which were shipped to the original
 upstream will be modified by:</p>
 <ol class="arabic simple">
