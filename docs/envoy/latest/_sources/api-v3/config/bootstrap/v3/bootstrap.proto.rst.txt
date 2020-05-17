@@ -12,7 +12,7 @@ of the Envoy v2 configuration. See the :ref:`v2 configuration overview
 config.bootstrap.v3.Bootstrap
 -----------------------------
 
-`[config.bootstrap.v3.Bootstrap proto] <https://github.com/envoyproxy/envoy/blob/11c9223aac10834b7d5d2e399b0b4b59e0a3b3a1/api/envoy/config/bootstrap/v3/bootstrap.proto#L37>`_
+`[config.bootstrap.v3.Bootstrap proto] <https://github.com/envoyproxy/envoy/blob/31128e7dc22355876020188bc8feb99304663041/api/envoy/config/bootstrap/v3/bootstrap.proto#L38>`_
 
 Bootstrap :ref:`configuration overview <config_overview_bootstrap>`.
 
@@ -135,7 +135,34 @@ admin
 overload_manager
   (:ref:`config.overload.v3.OverloadManager <envoy_v3_api_msg_config.overload.v3.OverloadManager>`) Optional overload manager configuration.
   
-  
+  .. attention::
+    This field should be configured in the presence of untrusted *downstreams*.
+
+    This field should be configured in the presence of untrusted *upstreams*.
+
+    Example configuration for untrusted environments:
+
+    .. code-block:: yaml
+
+      overload_manager:
+        actions:
+        - name: envoy.overload_actions.shrink_heap
+          triggers:
+          - name: envoy.resource_monitors.fixed_heap
+            threshold:
+              value: 0.95
+        - name: envoy.overload_actions.stop_accepting_requests
+          triggers:
+          - name: envoy.resource_monitors.fixed_heap
+            threshold:
+              value: 0.98
+        refresh_interval: 0.25s
+        resource_monitors:
+        - name: envoy.resource_monitors.fixed_heap
+          typed_config:
+            '@type': type.googleapis.com/envoy.config.resource_monitor.fixed_heap.v2alpha.FixedHeapConfig
+            max_heap_size_bytes: 2147483648
+      
 .. _envoy_v3_api_field_config.bootstrap.v3.Bootstrap.enable_dispatcher_stats:
 
 enable_dispatcher_stats
@@ -184,7 +211,7 @@ use_tcp_for_dns_lookups
 config.bootstrap.v3.Bootstrap.StaticResources
 ---------------------------------------------
 
-`[config.bootstrap.v3.Bootstrap.StaticResources proto] <https://github.com/envoyproxy/envoy/blob/11c9223aac10834b7d5d2e399b0b4b59e0a3b3a1/api/envoy/config/bootstrap/v3/bootstrap.proto#L41>`_
+`[config.bootstrap.v3.Bootstrap.StaticResources proto] <https://github.com/envoyproxy/envoy/blob/31128e7dc22355876020188bc8feb99304663041/api/envoy/config/bootstrap/v3/bootstrap.proto#L42>`_
 
 
 .. code-block:: json
@@ -227,7 +254,7 @@ secrets
 config.bootstrap.v3.Bootstrap.DynamicResources
 ----------------------------------------------
 
-`[config.bootstrap.v3.Bootstrap.DynamicResources proto] <https://github.com/envoyproxy/envoy/blob/11c9223aac10834b7d5d2e399b0b4b59e0a3b3a1/api/envoy/config/bootstrap/v3/bootstrap.proto#L62>`_
+`[config.bootstrap.v3.Bootstrap.DynamicResources proto] <https://github.com/envoyproxy/envoy/blob/31128e7dc22355876020188bc8feb99304663041/api/envoy/config/bootstrap/v3/bootstrap.proto#L63>`_
 
 
 .. code-block:: json
@@ -273,7 +300,7 @@ ads_config
 config.bootstrap.v3.Admin
 -------------------------
 
-`[config.bootstrap.v3.Admin proto] <https://github.com/envoyproxy/envoy/blob/11c9223aac10834b7d5d2e399b0b4b59e0a3b3a1/api/envoy/config/bootstrap/v3/bootstrap.proto#L183>`_
+`[config.bootstrap.v3.Admin proto] <https://github.com/envoyproxy/envoy/blob/31128e7dc22355876020188bc8feb99304663041/api/envoy/config/bootstrap/v3/bootstrap.proto#L187>`_
 
 Administration interface :ref:`operations documentation
 <operations_admin_interface>`.
@@ -323,7 +350,7 @@ socket_options
 config.bootstrap.v3.ClusterManager
 ----------------------------------
 
-`[config.bootstrap.v3.ClusterManager proto] <https://github.com/envoyproxy/envoy/blob/11c9223aac10834b7d5d2e399b0b4b59e0a3b3a1/api/envoy/config/bootstrap/v3/bootstrap.proto#L205>`_
+`[config.bootstrap.v3.ClusterManager proto] <https://github.com/envoyproxy/envoy/blob/31128e7dc22355876020188bc8feb99304663041/api/envoy/config/bootstrap/v3/bootstrap.proto#L209>`_
 
 Cluster manager :ref:`architecture overview <arch_overview_cluster_manager>`.
 
@@ -377,7 +404,7 @@ load_stats_config
 config.bootstrap.v3.ClusterManager.OutlierDetection
 ---------------------------------------------------
 
-`[config.bootstrap.v3.ClusterManager.OutlierDetection proto] <https://github.com/envoyproxy/envoy/blob/11c9223aac10834b7d5d2e399b0b4b59e0a3b3a1/api/envoy/config/bootstrap/v3/bootstrap.proto#L209>`_
+`[config.bootstrap.v3.ClusterManager.OutlierDetection proto] <https://github.com/envoyproxy/envoy/blob/31128e7dc22355876020188bc8feb99304663041/api/envoy/config/bootstrap/v3/bootstrap.proto#L213>`_
 
 
 .. code-block:: json
@@ -401,7 +428,7 @@ event_log_path
 config.bootstrap.v3.Watchdog
 ----------------------------
 
-`[config.bootstrap.v3.Watchdog proto] <https://github.com/envoyproxy/envoy/blob/11c9223aac10834b7d5d2e399b0b4b59e0a3b3a1/api/envoy/config/bootstrap/v3/bootstrap.proto#L250>`_
+`[config.bootstrap.v3.Watchdog proto] <https://github.com/envoyproxy/envoy/blob/31128e7dc22355876020188bc8feb99304663041/api/envoy/config/bootstrap/v3/bootstrap.proto#L254>`_
 
 Envoy process watchdog configuration. When configured, this monitors for
 nonresponsive threads and kills the process after the configured thresholds.
@@ -454,7 +481,7 @@ multikill_timeout
 config.bootstrap.v3.Runtime
 ---------------------------
 
-`[config.bootstrap.v3.Runtime proto] <https://github.com/envoyproxy/envoy/blob/11c9223aac10834b7d5d2e399b0b4b59e0a3b3a1/api/envoy/config/bootstrap/v3/bootstrap.proto#L274>`_
+`[config.bootstrap.v3.Runtime proto] <https://github.com/envoyproxy/envoy/blob/31128e7dc22355876020188bc8feb99304663041/api/envoy/config/bootstrap/v3/bootstrap.proto#L278>`_
 
 Runtime :ref:`configuration overview <config_runtime>` (deprecated).
 
@@ -513,7 +540,7 @@ base
 config.bootstrap.v3.RuntimeLayer
 --------------------------------
 
-`[config.bootstrap.v3.RuntimeLayer proto] <https://github.com/envoyproxy/envoy/blob/11c9223aac10834b7d5d2e399b0b4b59e0a3b3a1/api/envoy/config/bootstrap/v3/bootstrap.proto#L306>`_
+`[config.bootstrap.v3.RuntimeLayer proto] <https://github.com/envoyproxy/envoy/blob/31128e7dc22355876020188bc8feb99304663041/api/envoy/config/bootstrap/v3/bootstrap.proto#L310>`_
 
 
 .. code-block:: json
@@ -574,7 +601,7 @@ rtds_layer
 config.bootstrap.v3.RuntimeLayer.DiskLayer
 ------------------------------------------
 
-`[config.bootstrap.v3.RuntimeLayer.DiskLayer proto] <https://github.com/envoyproxy/envoy/blob/11c9223aac10834b7d5d2e399b0b4b59e0a3b3a1/api/envoy/config/bootstrap/v3/bootstrap.proto#L311>`_
+`[config.bootstrap.v3.RuntimeLayer.DiskLayer proto] <https://github.com/envoyproxy/envoy/blob/31128e7dc22355876020188bc8feb99304663041/api/envoy/config/bootstrap/v3/bootstrap.proto#L315>`_
 
 :ref:`Disk runtime <config_runtime_local_disk>` layer.
 
@@ -620,7 +647,7 @@ append_service_cluster
 config.bootstrap.v3.RuntimeLayer.AdminLayer
 -------------------------------------------
 
-`[config.bootstrap.v3.RuntimeLayer.AdminLayer proto] <https://github.com/envoyproxy/envoy/blob/11c9223aac10834b7d5d2e399b0b4b59e0a3b3a1/api/envoy/config/bootstrap/v3/bootstrap.proto#L335>`_
+`[config.bootstrap.v3.RuntimeLayer.AdminLayer proto] <https://github.com/envoyproxy/envoy/blob/31128e7dc22355876020188bc8feb99304663041/api/envoy/config/bootstrap/v3/bootstrap.proto#L339>`_
 
 :ref:`Admin console runtime <config_runtime_admin>` layer.
 
@@ -636,7 +663,7 @@ config.bootstrap.v3.RuntimeLayer.AdminLayer
 config.bootstrap.v3.RuntimeLayer.RtdsLayer
 ------------------------------------------
 
-`[config.bootstrap.v3.RuntimeLayer.RtdsLayer proto] <https://github.com/envoyproxy/envoy/blob/11c9223aac10834b7d5d2e399b0b4b59e0a3b3a1/api/envoy/config/bootstrap/v3/bootstrap.proto#L341>`_
+`[config.bootstrap.v3.RuntimeLayer.RtdsLayer proto] <https://github.com/envoyproxy/envoy/blob/31128e7dc22355876020188bc8feb99304663041/api/envoy/config/bootstrap/v3/bootstrap.proto#L345>`_
 
 :ref:`Runtime Discovery Service (RTDS) <config_runtime_rtds>` layer.
 
@@ -667,7 +694,7 @@ rtds_config
 config.bootstrap.v3.LayeredRuntime
 ----------------------------------
 
-`[config.bootstrap.v3.LayeredRuntime proto] <https://github.com/envoyproxy/envoy/blob/11c9223aac10834b7d5d2e399b0b4b59e0a3b3a1/api/envoy/config/bootstrap/v3/bootstrap.proto#L374>`_
+`[config.bootstrap.v3.LayeredRuntime proto] <https://github.com/envoyproxy/envoy/blob/31128e7dc22355876020188bc8feb99304663041/api/envoy/config/bootstrap/v3/bootstrap.proto#L378>`_
 
 Runtime :ref:`configuration overview <config_runtime>`.
 
