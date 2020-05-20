@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1.15.0 (Pending) &mdash; envoy 1.15.0-dev-a5f2f1 documentation</title>
+  <title>1.15.0 (Pending) &mdash; envoy 1.15.0-dev-e3f150 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-a5f2f1
+                1.15.0-dev-e3f150
               </div>
             
           
@@ -97,7 +97,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../install/install.html">Building and installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="version_history.html">Version history</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">1.15.0 (Pending)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#changes">Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#incompatible-behavior-changes">Incompatible Behavior Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#minor-behavior-changes">Minor Behavior Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bug-fixes">Bug Fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#removed-config-or-runtime">Removed Config or Runtime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#new-features">New Features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deprecated">Deprecated</a></li>
 </ul>
 </li>
@@ -200,15 +204,53 @@
             
   <div class="section" id="pending">
 <h1>1.15.0 (Pending)<a class="headerlink" href="#pending" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="changes">
-<h2>Changes<a class="headerlink" href="#changes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="incompatible-behavior-changes">
+<h2>Incompatible Behavior Changes<a class="headerlink" href="#incompatible-behavior-changes" title="Permalink to this headline">¶</a></h2>
+<p><em>Changes that are expected to cause an incompatibility if applicable; deployment changes are likely required</em></p>
+<ul class="simple">
+<li><p>build: official released binary is now built on Ubuntu 18.04, requires glibc &gt;= 2.27.</p></li>
+</ul>
+</div>
+<div class="section" id="minor-behavior-changes">
+<h2>Minor Behavior Changes<a class="headerlink" href="#minor-behavior-changes" title="Permalink to this headline">¶</a></h2>
+<p><em>Changes that may cause incompatibilities for some users, but should not for most</em></p>
+<ul class="simple">
+<li><p>access loggers: applied existing buffer limits to access logs, as well as <a class="reference internal" href="../configuration/observability/access_log/stats.html#config-access-log-stats"><span class="std std-ref">stats</span></a> for logged / dropped logs. This can be reverted temporarily by setting runtime feature <cite>envoy.reloadable_features.disallow_unbounded_access_logs</cite> to false.</p></li>
+<li><p>http: fixed several bugs with applying correct connection close behavior across the http connection manager, health checker, and connection pool. This behavior may be temporarily reverted by setting runtime feature <cite>envoy.reloadable_features.fix_connection_close</cite> to false.</p></li>
+<li><p>http: fixed a bug where the upgrade header was not cleared on responses to non-upgrade requests.
+Can be reverted temporarily by setting runtime feature <cite>envoy.reloadable_features.fix_upgrade_response</cite> to false.</p></li>
+<li><p>http: stopped overwriting <cite>date</cite> response headers. Responses without a <cite>date</cite> header will still have the header properly set. This behavior can be temporarily reverted by setting <cite>envoy.reloadable_features.preserve_upstream_date</cite> to false.</p></li>
+<li><p>http: stopped adding a synthetic path to CONNECT requests, meaning unconfigured CONNECT requests will now return 404 instead of 403. This behavior can be temporarily reverted by setting <cite>envoy.reloadable_features.stop_faking_paths</cite> to false.</p></li>
+<li><p>router: allow retries of streaming or incomplete requests. This removes stat <cite>rq_retry_skipped_request_not_complete</cite>.</p></li>
+<li><p>router: allow retries by default when upstream responds with <a class="reference internal" href="../configuration/http/http_filters/router_filter.html#config-http-filters-router-x-envoy-overloaded-set"><span class="std std-ref">x-envoy-overloaded</span></a>.</p></li>
+</ul>
+</div>
+<div class="section" id="bug-fixes">
+<h2>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this headline">¶</a></h2>
+<p><em>Changes expected to improve the state of the world and are unlikely to have negative effects</em></p>
+<ul class="simple">
+<li><p>http: fixed a bug in the grpc_http1_reverse_bridge filter where header-only requests were forwarded with a non-zero content length.</p></li>
+<li><p>http: fixed a bug where in some cases slash was moved from path to query string when <a class="reference internal" href="../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-merge-slashes"><span class="std std-ref">merging of adjacent slashes</span></a> is enabled.</p></li>
+<li><p>http: fixed several bugs with applying correct connection close behavior across the http connection manager, health checker, and connection pool. This behavior may be temporarily reverted by setting runtime feature <cite>envoy.reloadable_features.fix_connection_close</cite> to false.</p></li>
+<li><p>prometheus stats: fix the sort order of output lines to comply with the standard.</p></li>
+<li><p>upstream: fixed a bug where Envoy would panic when receiving a GRPC SERVICE_UNKNOWN status on the health check.</p></li>
+</ul>
+</div>
+<div class="section" id="removed-config-or-runtime">
+<h2>Removed Config or Runtime<a class="headerlink" href="#removed-config-or-runtime" title="Permalink to this headline">¶</a></h2>
+<p><em>Normally occurs at the end of the</em> <a class="reference internal" href="version_history.html#deprecated"><span class="std std-ref">deprecation period</span></a></p>
+<ul class="simple">
+<li><p>http: remove legacy connection pool code and their runtime features: <cite>envoy.reloadable_features.new_http1_connection_pool_behavior</cite> and
+<cite>envoy.reloadable_features.new_http2_connection_pool_behavior</cite>.</p></li>
+</ul>
+</div>
+<div class="section" id="new-features">
+<h2>New Features<a class="headerlink" href="#new-features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>access loggers: added GRPC_STATUS operator on logging format.</p></li>
-<li><p>access loggers: applied existing buffer limits to access logs, as well as <a class="reference internal" href="../configuration/observability/access_log/stats.html#config-access-log-stats"><span class="std std-ref">stats</span></a> for logged / dropped logs. This can be reverted temporarily by setting runtime feature <cite>envoy.reloadable_features.disallow_unbounded_access_logs</cite> to false.</p></li>
 <li><p>access loggers: extened specifier for FilterStateFormatter to output <a class="reference internal" href="../configuration/observability/access_log/usage.html#config-access-log-format-filter-state"><span class="std std-ref">unstructured log string</span></a>.</p></li>
 <li><p>access loggers: file access logger config added <a class="reference internal" href="../api-v3/extensions/access_loggers/file/v3/file.proto.html#envoy-v3-api-field-extensions-access-loggers-file-v3-fileaccesslog-log-format"><span class="std std-ref">log_format</span></a>.</p></li>
 <li><p>aggregate cluster: make route <a class="reference internal" href="../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-retrypolicy-retry-priority"><span class="std std-ref">retry_priority</span></a> predicates work with <a class="reference internal" href="../api-v3/extensions/clusters/aggregate/v3/cluster.proto.html#envoy-v3-api-msg-extensions-clusters-aggregate-v3-clusterconfig"><span class="std std-ref">this cluster type</span></a>.</p></li>
-<li><p>build: official released binary is now built on Ubuntu 18.04, requires glibc &gt;= 2.27.</p></li>
 <li><p>compressor: generic <a class="reference internal" href="../configuration/http/http_filters/compressor_filter.html#config-http-filters-compressor"><span class="std std-ref">compressor</span></a> filter exposed to users.</p></li>
 <li><p>config: added <a class="reference internal" href="../configuration/upstream/cluster_manager/cds.html#config-cluster-manager-cds"><span class="std std-ref">version_text</span></a> stat that reflects xDS version.</p></li>
 <li><p>dynamic forward proxy: added <a class="reference internal" href="../configuration/listeners/network_filters/sni_dynamic_forward_proxy_filter.html#config-network-filters-sni-dynamic-forward-proxy"><span class="std std-ref">SNI based dynamic forward proxy</span></a> support.</p></li>
@@ -224,15 +266,6 @@ Disabled by default and can be enabled via <a class="reference internal" href=".
 <li><p>health checks: allow configuring health check transport sockets by specifying <a class="reference internal" href="../api-v3/config/core/v3/health_check.proto.html#envoy-v3-api-field-config-core-v3-healthcheck-transport-socket-match-criteria"><span class="std std-ref">transport socket match criteria</span></a>.</p></li>
 <li><p>http: added <a class="reference internal" href="../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-strip-matching-host-port"><span class="std std-ref">stripping port from host header</span></a> support.</p></li>
 <li><p>http: added support for proxying CONNECT requests, terminating CONNECT requests, and converting raw TCP streams into HTTP/2 CONNECT requests. See <a class="reference internal" href="../intro/arch_overview/http/upgrades.html#arch-overview-upgrades"><span class="std std-ref">upgrade documentation</span></a> for details.</p></li>
-<li><p>http: fixed a bug in the grpc_http1_reverse_bridge filter where header-only requests were forwarded with a non-zero content length.</p></li>
-<li><p>http: fixed a bug where in some cases slash was moved from path to query string when <a class="reference internal" href="../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-merge-slashes"><span class="std std-ref">merging of adjacent slashes</span></a> is enabled.</p></li>
-<li><p>http: fixed several bugs with applying correct connection close behavior across the http connection manager, health checker, and connection pool. This behavior may be temporarily reverted by setting runtime feature <cite>envoy.reloadable_features.fix_connection_close</cite> to false.</p></li>
-<li><p>http: fixed a bug where the upgrade header was not cleared on responses to non-upgrade requests.
-Can be reverted temporarily by setting runtime feature <cite>envoy.reloadable_features.fix_upgrade_response</cite> to false.</p></li>
-<li><p>http: remove legacy connection pool code and their runtime features: <cite>envoy.reloadable_features.new_http1_connection_pool_behavior</cite> and
-<cite>envoy.reloadable_features.new_http2_connection_pool_behavior</cite>.</p></li>
-<li><p>http: stopped adding a synthetic path to CONNECT requests, meaning unconfigured CONNECT requests will now return 404 instead of 403. This behavior can be temporarily reverted by setting <cite>envoy.reloadable_features.stop_faking_paths</cite> to false.</p></li>
-<li><p>http: stopped overwriting <cite>date</cite> response headers. Responses without a <cite>date</cite> header will still have the header properly set. This behavior can be temporarily reverted by setting <cite>envoy.reloadable_features.preserve_upstream_date</cite> to false.</p></li>
 <li><p>listener: added in place filter chain update flow for tcp listener update which doesn’t close connections if the corresponding network filter chain is equivalent during the listener update.
 Can be disabled by setting runtime feature <cite>envoy.reloadable_features.listener_in_place_filterchain_update</cite> to false.
 Also added additional draining filter chain stat for <a class="reference internal" href="../configuration/listeners/stats.html#config-listener-manager-stats"><span class="std std-ref">listener manager</span></a> to track the number of draining filter chains and the number of in place update attempts.</p></li>
@@ -243,19 +276,15 @@ interested in; behavior is allowed based on new “envoy.lrs.supports_send_all_c
 in <a class="reference internal" href="../api-v3/config/core/v3/base.proto.html#envoy-v3-api-field-config-core-v3-node-client-features"><span class="std std-ref">client_features</span></a> field.</p></li>
 <li><p>network filters: added a <a class="reference internal" href="../configuration/listeners/network_filters/postgres_proxy_filter.html#config-network-filters-postgres-proxy"><span class="std std-ref">postgres proxy filter</span></a>.</p></li>
 <li><p>network filters: added a <a class="reference internal" href="../configuration/listeners/network_filters/rocketmq_proxy_filter.html#config-network-filters-rocketmq-proxy"><span class="std std-ref">rocketmq proxy filter</span></a>.</p></li>
-<li><p>prometheus stats: fix the sort order of output lines to comply with the standard.</p></li>
 <li><p>request_id: added to <a class="reference internal" href="../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-always-set-request-id-in-response"><span class="std std-ref">always_set_request_id_in_response setting</span></a>
 to set <a class="reference internal" href="../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a> header in response even if
 tracing is not forced.</p></li>
-<li><p>router: allow retries of streaming or incomplete requests. This removes stat <cite>rq_retry_skipped_request_not_complete</cite>.</p></li>
-<li><p>router: allow retries by default when upstream responds with <a class="reference internal" href="../configuration/http/http_filters/router_filter.html#config-http-filters-router-x-envoy-overloaded-set"><span class="std std-ref">x-envoy-overloaded</span></a>.</p></li>
 <li><p>router: more fine grained internal redirect configs are added to the :ref`internal_redirect_policy
 &lt;envoy_api_field_router.RouterAction.internal_redirect_policy&gt;` field.</p></li>
 <li><p>runtime: add new gauge <a class="reference internal" href="../configuration/operations/runtime.html#runtime-stats"><span class="std std-ref">deprecated_feature_seen_since_process_start</span></a> that gets reset across hot restarts.</p></li>
 <li><p>stats: added the option to <a class="reference internal" href="../api-v3/config/metrics/v3/metrics_service.proto.html#envoy-v3-api-field-config-metrics-v3-metricsserviceconfig-report-counters-as-deltas"><span class="std std-ref">report counters as deltas</span></a> to the metrics service stats sink.</p></li>
 <li><p>tracing: tracing configuration has been made fully dynamic and every HTTP connection manager
 can now have a separate <a class="reference internal" href="../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-tracing-provider"><span class="std std-ref">tracing provider</span></a>.</p></li>
-<li><p>upstream: fixed a bug where Envoy would panic when receiving a GRPC SERVICE_UNKNOWN status on the health check.</p></li>
 </ul>
 </div>
 <div class="section" id="deprecated">
