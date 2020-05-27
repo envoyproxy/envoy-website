@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Configuring Envoy as an edge proxy &mdash; envoy 1.15.0-dev-f13ea5 documentation</title>
+  <title>Configuring Envoy as an edge proxy &mdash; envoy 1.15.0-dev-1ef01c documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-f13ea5
+                1.15.0-dev-1ef01c
               </div>
             
           
@@ -209,7 +209,7 @@ for details),</p></li>
 <li><p><a class="reference internal" href="../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-http2protocoloptions-initial-connection-window-size"><span class="std std-ref">HTTP/2 initial connection window size limit</span></a> to 1 MiB.</p></li>
 <li><p><a class="reference internal" href="../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-httpprotocoloptions-headers-with-underscores-action"><span class="std std-ref">headers_with_underscores_action setting</span></a> to REJECT_REQUEST, to protect upstream services that treat ‘_’ and ‘-‘ as interchangeable.</p></li>
 </ul>
-<p>The following is a YAML example of the above recommendation.</p>
+<p>The following is a YAML example of the above recommendation (taken from the <a class="reference internal" href="../../intro/arch_overview/security/google_vrp.html#arch-overview-google-vrp"><span class="std std-ref">Google VRP</span></a> edge server configuration):</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">overload_manager</span><span class="p">:</span>
   <span class="nt">refresh_interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25s</span>
   <span class="nt">resource_monitors</span><span class="p">:</span>
@@ -217,47 +217,37 @@ for details),</p></li>
     <span class="nt">typed_config</span><span class="p">:</span>
       <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.resource_monitor.fixed_heap.v2alpha.FixedHeapConfig</span>
       <span class="c1"># TODO: Tune for your system.</span>
-      <span class="nt">max_heap_size_bytes</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2147483648</span> <span class="c1"># 2 GiB</span>
+      <span class="nt">max_heap_size_bytes</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1073741824</span> <span class="c1"># 1 GiB</span>
   <span class="nt">actions</span><span class="p">:</span>
   <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;envoy.overload_actions.shrink_heap&quot;</span>
     <span class="nt">triggers</span><span class="p">:</span>
     <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;envoy.resource_monitors.fixed_heap&quot;</span>
       <span class="nt">threshold</span><span class="p">:</span>
-        <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.95</span>
+        <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.90</span>
   <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;envoy.overload_actions.stop_accepting_requests&quot;</span>
     <span class="nt">triggers</span><span class="p">:</span>
     <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;envoy.resource_monitors.fixed_heap&quot;</span>
       <span class="nt">threshold</span><span class="p">:</span>
-        <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.98</span>
-
-<span class="nt">admin</span><span class="p">:</span>
-  <span class="nt">access_log_path</span><span class="p">:</span> <span class="s">&quot;/var/log/envoy_admin.log&quot;</span>
-  <span class="nt">address</span><span class="p">:</span>
-    <span class="nt">socket_address</span><span class="p">:</span>
-      <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span>
-      <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">9090</span>
+        <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.95</span>
 
 <span class="nt">static_resources</span><span class="p">:</span>
   <span class="nt">listeners</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">address</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">listener_https</span>
+    <span class="nt">address</span><span class="p">:</span>
       <span class="nt">socket_address</span><span class="p">:</span>
+        <span class="nt">protocol</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TCP</span>
         <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.0.0.0</span>
-        <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">443</span>
-    <span class="nt">listener_filters</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;envoy.filters.listener.tls_inspector&quot;</span>
-      <span class="nt">typed_config</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+        <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10000</span>
     <span class="nt">per_connection_buffer_limit_bytes</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">32768</span> <span class="c1"># 32 KiB</span>
     <span class="nt">filter_chains</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="nt">filter_chain_match</span><span class="p">:</span>
-        <span class="nt">server_names</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;example.com&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;www.example.com&quot;</span><span class="p p-Indicator">]</span>
-      <span class="nt">transport_socket</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">transport_socket</span><span class="p">:</span>
         <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.tls</span>
         <span class="nt">typed_config</span><span class="p">:</span>
           <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext</span>
           <span class="nt">common_tls_context</span><span class="p">:</span>
             <span class="nt">tls_certificates</span><span class="p">:</span>
-            <span class="p p-Indicator">-</span> <span class="nt">certificate_chain</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> filename</span><span class="p">:</span> <span class="s">&quot;example_com_cert.pem&quot;</span> <span class="p p-Indicator">}</span>
-              <span class="nt">private_key</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> filename</span><span class="p">:</span> <span class="s">&quot;example_com_key.pem&quot;</span> <span class="p p-Indicator">}</span>
+            <span class="p p-Indicator">-</span> <span class="nt">certificate_chain</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> filename</span><span class="p">:</span> <span class="s">&quot;certs/servercert.pem&quot;</span> <span class="p p-Indicator">}</span>
+              <span class="nt">private_key</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> filename</span><span class="p">:</span> <span class="s">&quot;certs/serverkey.pem&quot;</span> <span class="p p-Indicator">}</span>
       <span class="c1"># Uncomment if Envoy is behind a load balancer that exposes client IP address using the PROXY protocol.</span>
       <span class="c1"># use_proxy_proto: true</span>
       <span class="nt">filters</span><span class="p">:</span>
@@ -276,27 +266,39 @@ for details),</p></li>
           <span class="nt">stream_idle_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">300s</span> <span class="c1"># 5 mins, must be disabled for long-lived and streaming requests</span>
           <span class="nt">request_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">300s</span> <span class="c1"># 5 mins, must be disabled for long-lived and streaming requests</span>
           <span class="nt">route_config</span><span class="p">:</span>
+            <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_route</span>
             <span class="nt">virtual_hosts</span><span class="p">:</span>
-            <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
-              <span class="nt">domains</span><span class="p">:</span> <span class="s">&quot;*&quot;</span>
+            <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_service</span>
+              <span class="nt">domains</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;*&quot;</span><span class="p p-Indicator">]</span>
+              <span class="c1"># The exact route table is not super important in this example (this is the model</span>
+              <span class="c1"># for the Google VRP scenario).</span>
               <span class="nt">routes</span><span class="p">:</span>
-              <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> prefix</span><span class="p">:</span> <span class="s">&quot;/&quot;</span> <span class="p p-Indicator">}</span>
+              <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span>
+                  <span class="nt">prefix</span><span class="p">:</span> <span class="s">&quot;/content&quot;</span>
                 <span class="nt">route</span><span class="p">:</span>
                   <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service_foo</span>
                   <span class="nt">idle_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">15s</span> <span class="c1"># must be disabled for long-lived and streaming requests</span>
+              <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span>
+                  <span class="nt">prefix</span><span class="p">:</span> <span class="s">&quot;/&quot;</span>
+                <span class="nt">direct_response</span><span class="p">:</span>
+                  <span class="nt">status</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">403</span>
+                  <span class="nt">body</span><span class="p">:</span>
+                    <span class="nt">inline_string</span><span class="p">:</span> <span class="s">&quot;denied\n&quot;</span>
+          <span class="nt">http_filters</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.router</span>
   <span class="nt">clusters</span><span class="p">:</span>
     <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service_foo</span>
-    <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">15s</span>
+    <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5s</span>
     <span class="nt">per_connection_buffer_limit_bytes</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">32768</span> <span class="c1"># 32 KiB</span>
     <span class="nt">load_assignment</span><span class="p">:</span>
-      <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_service</span>
+      <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service_foo</span>
       <span class="nt">endpoints</span><span class="p">:</span>
-        <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
-          <span class="p p-Indicator">-</span> <span class="nt">endpoint</span><span class="p">:</span>
-              <span class="nt">address</span><span class="p">:</span>
-                <span class="nt">socket_address</span><span class="p">:</span>
-                  <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span>
-                  <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8080</span>
+      <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="nt">endpoint</span><span class="p">:</span>
+            <span class="nt">address</span><span class="p">:</span>
+              <span class="nt">socket_address</span><span class="p">:</span>
+                <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span>
+                <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10002</span>
     <span class="nt">http2_protocol_options</span><span class="p">:</span>
       <span class="nt">initial_stream_window_size</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">65536</span> <span class="c1"># 64 KiB</span>
       <span class="nt">initial_connection_window_size</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1048576</span> <span class="c1"># 1 MiB</span>
