@@ -17,9 +17,9 @@ You can get Envoy set up on your laptop with a bootstrap config, then extend it 
 
 Envoy's powerful configuration model is miles ahead of other open-source serving layers. Envoy uses pluggable, dynamic APIs instead of static files, allowing changes to your environment to be applied instantly, with no service interruption. You can get Envoy set up on your laptop with a bootstrap config, then extend it as you need more functionality. As your Envoy fleet grows, centralize configuration in a control plane that implements Envoy's xDS APIs. 
 
-* [Service Discovery Integration](service-discovery) — No more hard-coding IP addresses and ports. [CDS](https://www.envoyproxy.io/docs/envoy/latest/configuration/cluster_manager/cds.html) and [EDS](https://www.envoyproxy.io/docs/envoy/latest/api-v2/api/v2/eds.proto.html) let you integrate with your service registry to automatically populate which hosts are available for each services
-* [Routing Configuration](routing-configuration) — [RDS](https://www.envoyproxy.io/docs/envoy/latest/configuration/http_conn_man/rds) lets you move routing configuration out of static configs and into a type-safe API, making typos and merge conflicts a thing of the past.
-* [Securing with SSL](ssl) — Configure Envoy to terminate [SSL or TLS](https://www.envoyproxy.io/docs/envoy/v1.6.0/intro/arch_overview/ssl.html) when used as a public-facing proxy.
+* [Service Discovery Integration](service-discovery) — No more hard-coding IP addresses and ports. [CDS](https://www.envoyproxy.io/docs/envoy/latest/configuration/upstream/cluster_manager/cds) and [EDS](https://www.envoyproxy.io/docs/envoy/latest/api-v2/api/v2/eds.proto) let you integrate with your service registry to automatically populate which hosts are available for each services
+* [Routing Configuration](routing-configuration) — [RDS](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_conn_man/rds) lets you move routing configuration out of static configs and into a type-safe API, making typos and merge conflicts a thing of the past.
+* [Securing with SSL](ssl) — Configure Envoy to terminate [SSL or TLS](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/security/ssl) when used as a public-facing proxy.
 
 ## Observability
 
