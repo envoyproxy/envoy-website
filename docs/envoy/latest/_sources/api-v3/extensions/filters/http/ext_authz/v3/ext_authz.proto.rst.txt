@@ -20,7 +20,7 @@ External Authorization :ref:`configuration overview <config_http_filters_ext_aut
 extensions.filters.http.ext_authz.v3.ExtAuthz
 ---------------------------------------------
 
-`[extensions.filters.http.ext_authz.v3.ExtAuthz proto] <https://github.com/envoyproxy/envoy/blob/8d288144ff6d7e83d6455499652d7c2f5ba68803/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L25>`_
+`[extensions.filters.http.ext_authz.v3.ExtAuthz proto] <https://github.com/envoyproxy/envoy/blob/97ba1684a8c85395fdad43a35615915ff086193c/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L25>`_
 
 
 .. code-block:: json
@@ -34,6 +34,7 @@ extensions.filters.http.ext_authz.v3.ExtAuthz
     "status_on_error": "{...}",
     "metadata_context_namespaces": [],
     "filter_enabled": "{...}",
+    "deny_at_disable": "{...}",
     "include_peer_certificate": "..."
   }
 
@@ -132,6 +133,18 @@ filter_enabled
   If this field is not specified, the filter will be enabled for all requests.
   
   
+.. _envoy_v3_api_field_extensions.filters.http.ext_authz.v3.ExtAuthz.deny_at_disable:
+
+deny_at_disable
+  (:ref:`config.core.v3.RuntimeFeatureFlag <envoy_v3_api_msg_config.core.v3.RuntimeFeatureFlag>`) Specifies whether to deny the requests, when the filter is disabled.
+  If :ref:`runtime_key <envoy_v3_api_field_config.core.v3.RuntimeFeatureFlag.runtime_key>` is specified,
+  Envoy will lookup the runtime key to determine whether to deny request for
+  filter protected path at filter disabling. If filter is disabled in
+  typed_per_filter_config for the path, requests will not be denied.
+  
+  If this field is not specified, all requests will be allowed when disabled.
+  
+  
 .. _envoy_v3_api_field_extensions.filters.http.ext_authz.v3.ExtAuthz.include_peer_certificate:
 
 include_peer_certificate
@@ -148,7 +161,7 @@ include_peer_certificate
 extensions.filters.http.ext_authz.v3.BufferSettings
 ---------------------------------------------------
 
-`[extensions.filters.http.ext_authz.v3.BufferSettings proto] <https://github.com/envoyproxy/envoy/blob/8d288144ff6d7e83d6455499652d7c2f5ba68803/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L107>`_
+`[extensions.filters.http.ext_authz.v3.BufferSettings proto] <https://github.com/envoyproxy/envoy/blob/97ba1684a8c85395fdad43a35615915ff086193c/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L116>`_
 
 Configuration for buffering the request data.
 
@@ -183,7 +196,7 @@ allow_partial_message
 extensions.filters.http.ext_authz.v3.HttpService
 ------------------------------------------------
 
-`[extensions.filters.http.ext_authz.v3.HttpService proto] <https://github.com/envoyproxy/envoy/blob/8d288144ff6d7e83d6455499652d7c2f5ba68803/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L148>`_
+`[extensions.filters.http.ext_authz.v3.HttpService proto] <https://github.com/envoyproxy/envoy/blob/97ba1684a8c85395fdad43a35615915ff086193c/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L157>`_
 
 HttpService is used for raw HTTP communication between the filter and the authorization service.
 When configured, the filter will parse the client request and use these attributes to call the
@@ -250,7 +263,7 @@ authorization_response
 extensions.filters.http.ext_authz.v3.AuthorizationRequest
 ---------------------------------------------------------
 
-`[extensions.filters.http.ext_authz.v3.AuthorizationRequest proto] <https://github.com/envoyproxy/envoy/blob/8d288144ff6d7e83d6455499652d7c2f5ba68803/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L167>`_
+`[extensions.filters.http.ext_authz.v3.AuthorizationRequest proto] <https://github.com/envoyproxy/envoy/blob/97ba1684a8c85395fdad43a35615915ff086193c/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L176>`_
 
 
 .. code-block:: json
@@ -292,7 +305,7 @@ headers_to_add
 extensions.filters.http.ext_authz.v3.AuthorizationResponse
 ----------------------------------------------------------
 
-`[extensions.filters.http.ext_authz.v3.AuthorizationResponse proto] <https://github.com/envoyproxy/envoy/blob/8d288144ff6d7e83d6455499652d7c2f5ba68803/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L191>`_
+`[extensions.filters.http.ext_authz.v3.AuthorizationResponse proto] <https://github.com/envoyproxy/envoy/blob/97ba1684a8c85395fdad43a35615915ff086193c/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L200>`_
 
 
 .. code-block:: json
@@ -327,7 +340,7 @@ allowed_client_headers
 extensions.filters.http.ext_authz.v3.ExtAuthzPerRoute
 -----------------------------------------------------
 
-`[extensions.filters.http.ext_authz.v3.ExtAuthzPerRoute proto] <https://github.com/envoyproxy/envoy/blob/8d288144ff6d7e83d6455499652d7c2f5ba68803/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L209>`_
+`[extensions.filters.http.ext_authz.v3.ExtAuthzPerRoute proto] <https://github.com/envoyproxy/envoy/blob/97ba1684a8c85395fdad43a35615915ff086193c/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L218>`_
 
 Extra settings on a per virtualhost/route/weighted-cluster level.
 
@@ -364,7 +377,7 @@ check_settings
 extensions.filters.http.ext_authz.v3.CheckSettings
 --------------------------------------------------
 
-`[extensions.filters.http.ext_authz.v3.CheckSettings proto] <https://github.com/envoyproxy/envoy/blob/8d288144ff6d7e83d6455499652d7c2f5ba68803/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L230>`_
+`[extensions.filters.http.ext_authz.v3.CheckSettings proto] <https://github.com/envoyproxy/envoy/blob/97ba1684a8c85395fdad43a35615915ff086193c/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L239>`_
 
 Extra settings for the check request. You can use this to provide extra context for the
 external authorization server on specific virtual hosts \ routes. For example, adding a context
