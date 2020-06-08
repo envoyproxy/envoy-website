@@ -1,0 +1,177 @@
+.. _envoy_v3_api_file_envoy/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto:
+
+TCP Proxy
+=========
+
+.. _extension_envoy.filters.network.tcp_proxy:
+
+
+This extension may be referenced by the qualified name *envoy.filters.network.tcp_proxy*
+
+.. note::
+  
+
+  This extension is intended to be robust against untrusted downstream traffic. It assumes that the upstream is trusted.
+
+TCP Proxy :ref:`configuration overview <config_network_filters_tcp_proxy>`.
+
+.. _envoy_v3_api_msg_extensions.filters.network.tcp_proxy.v3.TcpProxy:
+
+extensions.filters.network.tcp_proxy.v3.TcpProxy
+------------------------------------------------
+
+`[extensions.filters.network.tcp_proxy.v3.TcpProxy proto] <https://github.com/envoyproxy/envoy/blob/v1.13.2/api/envoy/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto#L25>`_
+
+
+.. code-block:: json
+
+  {
+    "stat_prefix": "...",
+    "cluster": "...",
+    "weighted_clusters": "{...}",
+    "metadata_match": "{...}",
+    "idle_timeout": "{...}",
+    "access_log": [],
+    "max_connect_attempts": "{...}",
+    "hash_policy": []
+  }
+
+.. _envoy_v3_api_field_extensions.filters.network.tcp_proxy.v3.TcpProxy.stat_prefix:
+
+stat_prefix
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The prefix to use when emitting :ref:`statistics
+  <config_network_filters_tcp_proxy_stats>`.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.network.tcp_proxy.v3.TcpProxy.cluster:
+
+cluster
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The upstream cluster to connect to.
+  
+  
+  
+  Precisely one of :ref:`cluster <envoy_v3_api_field_extensions.filters.network.tcp_proxy.v3.TcpProxy.cluster>`, :ref:`weighted_clusters <envoy_v3_api_field_extensions.filters.network.tcp_proxy.v3.TcpProxy.weighted_clusters>` must be set.
+  
+.. _envoy_v3_api_field_extensions.filters.network.tcp_proxy.v3.TcpProxy.weighted_clusters:
+
+weighted_clusters
+  (:ref:`extensions.filters.network.tcp_proxy.v3.TcpProxy.WeightedCluster <envoy_v3_api_msg_extensions.filters.network.tcp_proxy.v3.TcpProxy.WeightedCluster>`) Multiple upstream clusters can be specified for a given route. The
+  request is routed to one of the upstream clusters based on weights
+  assigned to each cluster.
+  
+  
+  
+  Precisely one of :ref:`cluster <envoy_v3_api_field_extensions.filters.network.tcp_proxy.v3.TcpProxy.cluster>`, :ref:`weighted_clusters <envoy_v3_api_field_extensions.filters.network.tcp_proxy.v3.TcpProxy.weighted_clusters>` must be set.
+  
+.. _envoy_v3_api_field_extensions.filters.network.tcp_proxy.v3.TcpProxy.metadata_match:
+
+metadata_match
+  (:ref:`config.core.v3.Metadata <envoy_v3_api_msg_config.core.v3.Metadata>`) Optional endpoint metadata match criteria. Only endpoints in the upstream
+  cluster with metadata matching that set in metadata_match will be
+  considered. The filter name should be specified as *envoy.lb*.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.network.tcp_proxy.v3.TcpProxy.idle_timeout:
+
+idle_timeout
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The idle timeout for connections managed by the TCP proxy filter. The idle timeout
+  is defined as the period in which there are no bytes sent or received on either
+  the upstream or downstream connection. If not set, the default idle timeout is 1 hour. If set
+  to 0s, the timeout will be disabled.
+  
+  .. warning::
+    Disabling this timeout has a highly likelihood of yielding connection leaks due to lost TCP
+    FIN packets, etc.
+  
+  
+
+
+.. _envoy_v3_api_field_extensions.filters.network.tcp_proxy.v3.TcpProxy.access_log:
+
+access_log
+  (:ref:`config.accesslog.v3.AccessLog <envoy_v3_api_msg_config.accesslog.v3.AccessLog>`) Configuration for :ref:`access logs <arch_overview_access_logs>`
+  emitted by the this tcp_proxy.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.network.tcp_proxy.v3.TcpProxy.max_connect_attempts:
+
+max_connect_attempts
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The maximum number of unsuccessful connection attempts that will be made before
+  giving up. If the parameter is not specified, 1 connection attempt will be made.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.network.tcp_proxy.v3.TcpProxy.hash_policy:
+
+hash_policy
+  (:ref:`type.v3.HashPolicy <envoy_v3_api_msg_type.v3.HashPolicy>`) Optional configuration for TCP proxy hash policy. If hash_policy is not set, the hash-based
+  load balancing algorithms will select a host randomly. Currently the number of hash policies is
+  limited to 1.
+  
+  
+.. _envoy_v3_api_msg_extensions.filters.network.tcp_proxy.v3.TcpProxy.WeightedCluster:
+
+extensions.filters.network.tcp_proxy.v3.TcpProxy.WeightedCluster
+----------------------------------------------------------------
+
+`[extensions.filters.network.tcp_proxy.v3.TcpProxy.WeightedCluster proto] <https://github.com/envoyproxy/envoy/blob/v1.13.2/api/envoy/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto#L32>`_
+
+Allows for specification of multiple upstream clusters along with weights
+that indicate the percentage of traffic to be forwarded to each cluster.
+The router selects an upstream cluster based on these weights.
+
+.. code-block:: json
+
+  {
+    "clusters": []
+  }
+
+.. _envoy_v3_api_field_extensions.filters.network.tcp_proxy.v3.TcpProxy.WeightedCluster.clusters:
+
+clusters
+  (:ref:`extensions.filters.network.tcp_proxy.v3.TcpProxy.WeightedCluster.ClusterWeight <envoy_v3_api_msg_extensions.filters.network.tcp_proxy.v3.TcpProxy.WeightedCluster.ClusterWeight>`, *REQUIRED*) Specifies one or more upstream clusters associated with the route.
+  
+  
+.. _envoy_v3_api_msg_extensions.filters.network.tcp_proxy.v3.TcpProxy.WeightedCluster.ClusterWeight:
+
+extensions.filters.network.tcp_proxy.v3.TcpProxy.WeightedCluster.ClusterWeight
+------------------------------------------------------------------------------
+
+`[extensions.filters.network.tcp_proxy.v3.TcpProxy.WeightedCluster.ClusterWeight proto] <https://github.com/envoyproxy/envoy/blob/v1.13.2/api/envoy/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto#L36>`_
+
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "weight": "...",
+    "metadata_match": "{...}"
+  }
+
+.. _envoy_v3_api_field_extensions.filters.network.tcp_proxy.v3.TcpProxy.WeightedCluster.ClusterWeight.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Name of the upstream cluster.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.network.tcp_proxy.v3.TcpProxy.WeightedCluster.ClusterWeight.weight:
+
+weight
+  (`uint32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) When a request matches the route, the choice of an upstream cluster is
+  determined by its weight. The sum of weights across all entries in the
+  clusters array determines the total weight.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.network.tcp_proxy.v3.TcpProxy.WeightedCluster.ClusterWeight.metadata_match:
+
+metadata_match
+  (:ref:`config.core.v3.Metadata <envoy_v3_api_msg_config.core.v3.Metadata>`) Optional endpoint metadata match criteria used by the subset load balancer. Only endpoints
+  in the upstream cluster with metadata matching what is set in this field will be considered
+  for load balancing. Note that this will be merged with what's provided in
+  :ref:`TcpProxy.metadata_match
+  <envoy_v3_api_field_extensions.filters.network.tcp_proxy.v3.TcpProxy.metadata_match>`, with values
+  here taking precedence. The filter name should be specified as *envoy.lb*.
+  
+  
+
+
+

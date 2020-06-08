@@ -1,0 +1,168 @@
+.. _envoy_v3_api_file_envoy/config/overload/v3/overload.proto:
+
+Overload Manager
+================
+
+
+
+The Overload Manager provides an extensible framework to protect Envoy instances
+from overload of various resources (memory, cpu, file descriptors, etc).
+It monitors a configurable set of resources and notifies registered listeners
+when triggers related to those resources fire.
+
+.. _envoy_v3_api_msg_config.overload.v3.ResourceMonitor:
+
+config.overload.v3.ResourceMonitor
+----------------------------------
+
+`[config.overload.v3.ResourceMonitor proto] <https://github.com/envoyproxy/envoy/blob/v1.13.2/api/envoy/config/overload/v3/overload.proto#L23>`_
+
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "typed_config": "{...}"
+  }
+
+.. _envoy_v3_api_field_config.overload.v3.ResourceMonitor.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The name of the resource monitor to instantiate. Must match a registered
+  resource monitor type. The built-in resource monitors are:
+  
+  * :ref:`envoy.resource_monitors.fixed_heap
+    <envoy_v3_api_msg_config.resource_monitor.fixed_heap.v2alpha.FixedHeapConfig>`
+  * :ref:`envoy.resource_monitors.injected_resource
+    <envoy_v3_api_msg_config.resource_monitor.injected_resource.v2alpha.InjectedResourceConfig>`
+  
+  
+.. _envoy_v3_api_field_config.overload.v3.ResourceMonitor.typed_config:
+
+typed_config
+  (`Any <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any>`_) 
+  Configuration for the resource monitor being instantiated.
+  
+  
+
+
+.. _envoy_v3_api_msg_config.overload.v3.ThresholdTrigger:
+
+config.overload.v3.ThresholdTrigger
+-----------------------------------
+
+`[config.overload.v3.ThresholdTrigger proto] <https://github.com/envoyproxy/envoy/blob/v1.13.2/api/envoy/config/overload/v3/overload.proto#L46>`_
+
+
+.. code-block:: json
+
+  {
+    "value": "..."
+  }
+
+.. _envoy_v3_api_field_config.overload.v3.ThresholdTrigger.value:
+
+value
+  (`double <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If the resource pressure is greater than or equal to this value, the trigger
+  will fire.
+  
+  
+
+
+.. _envoy_v3_api_msg_config.overload.v3.Trigger:
+
+config.overload.v3.Trigger
+--------------------------
+
+`[config.overload.v3.Trigger proto] <https://github.com/envoyproxy/envoy/blob/v1.13.2/api/envoy/config/overload/v3/overload.proto#L55>`_
+
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "threshold": "{...}"
+  }
+
+.. _envoy_v3_api_field_config.overload.v3.Trigger.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The name of the resource this is a trigger for.
+  
+  
+.. _envoy_v3_api_field_config.overload.v3.Trigger.threshold:
+
+threshold
+  (:ref:`config.overload.v3.ThresholdTrigger <envoy_v3_api_msg_config.overload.v3.ThresholdTrigger>`, *REQUIRED*) 
+  
+  
+
+
+.. _envoy_v3_api_msg_config.overload.v3.OverloadAction:
+
+config.overload.v3.OverloadAction
+---------------------------------
+
+`[config.overload.v3.OverloadAction proto] <https://github.com/envoyproxy/envoy/blob/v1.13.2/api/envoy/config/overload/v3/overload.proto#L69>`_
+
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "triggers": []
+  }
+
+.. _envoy_v3_api_field_config.overload.v3.OverloadAction.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The name of the overload action. This is just a well-known string that listeners can
+  use for registering callbacks. Custom overload actions should be named using reverse
+  DNS to ensure uniqueness.
+  
+  
+.. _envoy_v3_api_field_config.overload.v3.OverloadAction.triggers:
+
+triggers
+  (:ref:`config.overload.v3.Trigger <envoy_v3_api_msg_config.overload.v3.Trigger>`, *REQUIRED*) A set of triggers for this action. If any of these triggers fire the overload action
+  is activated. Listeners are notified when the overload action transitions from
+  inactivated to activated, or vice versa.
+  
+  
+
+
+.. _envoy_v3_api_msg_config.overload.v3.OverloadManager:
+
+config.overload.v3.OverloadManager
+----------------------------------
+
+`[config.overload.v3.OverloadManager proto] <https://github.com/envoyproxy/envoy/blob/v1.13.2/api/envoy/config/overload/v3/overload.proto#L84>`_
+
+
+.. code-block:: json
+
+  {
+    "refresh_interval": "{...}",
+    "resource_monitors": [],
+    "actions": []
+  }
+
+.. _envoy_v3_api_field_config.overload.v3.OverloadManager.refresh_interval:
+
+refresh_interval
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The interval for refreshing resource usage.
+  
+  
+.. _envoy_v3_api_field_config.overload.v3.OverloadManager.resource_monitors:
+
+resource_monitors
+  (:ref:`config.overload.v3.ResourceMonitor <envoy_v3_api_msg_config.overload.v3.ResourceMonitor>`, *REQUIRED*) The set of resources to monitor.
+  
+  
+.. _envoy_v3_api_field_config.overload.v3.OverloadManager.actions:
+
+actions
+  (:ref:`config.overload.v3.OverloadAction <envoy_v3_api_msg_config.overload.v3.OverloadAction>`) The set of overload actions.
+  
+  
+
