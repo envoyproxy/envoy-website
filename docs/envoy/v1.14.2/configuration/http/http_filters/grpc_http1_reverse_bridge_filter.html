@@ -1,0 +1,389 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gRPC HTTP/1.1 reverse bridge &mdash; envoy tag-v1.14.2 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="gRPC-JSON transcoder" href="grpc_json_transcoder_filter.html" />
+    <link rel="prev" title="gRPC HTTP/1.1 bridge" href="grpc_http1_bridge_filter.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                tag-v1.14.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../install/install.html">Building and installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../configuration.html">Configuration reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../overview/overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../http.html">HTTP</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../http_conn_man/http_conn_man.html">HTTP connection manager</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="http_filters.html">HTTP filters</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="adaptive_concurrency_filter.html">Adaptive Concurrency</a></li>
+<li class="toctree-l4"><a class="reference internal" href="aws_lambda_filter.html">AWS Lambda</a></li>
+<li class="toctree-l4"><a class="reference internal" href="aws_request_signing_filter.html">AWS Request Signing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="buffer_filter.html">Buffer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cors_filter.html">CORS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="csrf_filter.html">CSRF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dynamic_forward_proxy_filter.html">Dynamic forward proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dynamodb_filter.html">DynamoDB</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ext_authz_filter.html">External Authorization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fault_filter.html">Fault Injection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grpc_http1_bridge_filter.html">gRPC HTTP/1.1 bridge</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">gRPC HTTP/1.1 reverse bridge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grpc_json_transcoder_filter.html">gRPC-JSON transcoder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grpc_stats_filter.html">gRPC Statistics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grpc_web_filter.html">gRPC-Web</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gzip_filter.html">Gzip</a></li>
+<li class="toctree-l4"><a class="reference internal" href="health_check_filter.html">Health check</a></li>
+<li class="toctree-l4"><a class="reference internal" href="header_to_metadata_filter.html">Envoy Header-To-Metadata Filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ip_tagging_filter.html">IP Tagging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jwt_authn_filter.html">JWT Authentication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lua_filter.html">Lua</a></li>
+<li class="toctree-l4"><a class="reference internal" href="on_demand_updates_filter.html">On-demand VHDS Updates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="original_src_filter.html">Original Source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rate_limit_filter.html">Rate limit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rbac_filter.html">Role Based Access Control (RBAC) Filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="router_filter.html">Router</a></li>
+<li class="toctree-l4"><a class="reference internal" href="squash_filter.html">Squash</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tap_filter.html">Tap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api-v3/extensions/filters/http/cache/v3alpha/cache.proto.html">HTTP Cache Filter</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../upstream/upstream.html">Upstream clusters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../observability/observability.html">Observability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../security/security.html">Security</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../operations/operations.html">Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../other_features/other_features.html">Other features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/advanced.html">Advanced</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../best_practices/best_practices.html">Configuration best practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq/overview.html">FAQ</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../configuration.html">Configuration reference</a> &raquo;</li>
+        
+          <li><a href="../http.html">HTTP</a> &raquo;</li>
+        
+          <li><a href="http_filters.html">HTTP filters</a> &raquo;</li>
+        
+      <li>gRPC HTTP/1.1 reverse bridge</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/configuration/http/http_filters/grpc_http1_reverse_bridge_filter.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="grpc-http-1-1-reverse-bridge">
+<span id="config-http-filters-grpc-http1-reverse-bridge"></span><h1>gRPC HTTP/1.1 reverse bridge<a class="headerlink" href="#grpc-http-1-1-reverse-bridge" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>gRPC <a class="reference internal" href="../../../intro/arch_overview/other_protocols/grpc.html#arch-overview-grpc"><span class="std std-ref">architecture overview</span></a></p></li>
+<li><p><a class="reference internal" href="../../../api-v2/config/filter/http/grpc_http1_reverse_bridge/v2alpha1/config.proto.html#envoy-api-msg-config-filter-http-grpc-http1-reverse-bridge-v2alpha1-filterconfig"><span class="std std-ref">v2 API reference</span></a></p></li>
+<li><p>This filter should be configured with the name <em>envoy.filters.http.grpc_http1_reverse_bridge</em>.</p></li>
+</ul>
+<p>This is a filter that enables converting an incoming gRPC request into a HTTP/1.1 request to allow
+a server that does not understand HTTP/2 or gRPC semantics to handle the request.</p>
+<p>The filter works by:</p>
+<ul class="simple">
+<li><p>Checking the content type of the incoming request. If it’s a gRPC request, the filter is enabled.</p></li>
+<li><p>The content type is modified to a configurable value. This can be a noop by configuring
+<code class="docutils literal notranslate"><span class="pre">application/grpc</span></code>.</p></li>
+<li><p>The gRPC frame header is optionally stripped from the request body. The content length header
+will be adjusted if so.</p></li>
+<li><p>On receiving a response, the content type of the response is validated and the status code is
+mapped to a grpc-status which is inserted into the response trailers.</p></li>
+<li><p>The response body is optionally prefixed by the gRPC frame header, again adjusting the content
+length header if necessary.</p></li>
+</ul>
+<p>Due to being mapped to HTTP/1.1, this filter will only work with unary gRPC calls.</p>
+<div class="section" id="grpc-frame-header-management">
+<h2>gRPC frame header management<a class="headerlink" href="#grpc-frame-header-management" title="Permalink to this headline">¶</a></h2>
+<p>By setting the withhold_grpc_frame option, the filter will assume that the upstream does not
+understand any gRPC semantics and will convert the request body into a simple binary encoding
+of the request body and perform the reverse conversion on the response body. This ends up
+simplifying the server side handling of these requests, as they no longer need to be concerned
+with parsing and generating gRPC formatted data.</p>
+<p>This works by stripping the gRPC frame header from the request body, while injecting a gRPC
+frame header in the response.</p>
+<p>If this feature is not used, the upstream must be ready to receive HTTP/1.1 requests prefixed
+with the gRPC frame header and respond with gRPC formatted responses.</p>
+</div>
+<div class="section" id="how-to-disable-http-1-1-reverse-bridge-filter-per-route">
+<h2>How to disable HTTP/1.1 reverse bridge filter per route<a class="headerlink" href="#how-to-disable-http-1-1-reverse-bridge-filter-per-route" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">admin</span><span class="p">:</span>
+  <span class="nt">access_log_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/dev/stdout</span>
+  <span class="nt">address</span><span class="p">:</span>
+    <span class="nt">socket_address</span><span class="p">:</span>
+      <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.0.0.0</span>
+      <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">9901</span>
+<span class="nt">static_resources</span><span class="p">:</span>
+  <span class="nt">listeners</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">listener_0</span>
+    <span class="nt">address</span><span class="p">:</span>
+      <span class="nt">socket_address</span><span class="p">:</span>
+        <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.0.0.0</span>
+        <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
+    <span class="nt">filter_chains</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">filters</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.network.http_connection_manager</span>
+        <span class="nt">typed_config</span><span class="p">:</span>
+          <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager</span>
+          <span class="nt">access_log</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.access_loggers.file</span>
+            <span class="nt">typed_config</span><span class="p">:</span>
+              <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.accesslog.v2.FileAccessLog</span>
+              <span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/dev/stdout</span>
+          <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ingress_http</span>
+          <span class="nt">route_config</span><span class="p">:</span>
+            <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_route</span>
+            <span class="nt">virtual_hosts</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_service</span>
+              <span class="nt">domains</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;*&quot;</span><span class="p p-Indicator">]</span>
+              <span class="nt">routes</span><span class="p">:</span>
+              <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span>
+                  <span class="nt">prefix</span><span class="p">:</span> <span class="s">&quot;/route-with-filter-disabled&quot;</span>
+                <span class="nt">route</span><span class="p">:</span>
+                  <span class="nt">host_rewrite</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
+                  <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">grpc</span>
+                  <span class="nt">timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5.00s</span>
+                <span class="c1"># per_filter_config disables the filter for this route</span>
+                <span class="nt">per_filter_config</span><span class="p">:</span>
+                  <span class="nt">envoy.filters.http.grpc_http1_reverse_bridge</span><span class="p">:</span>
+                    <span class="nt">disabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+              <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span>
+                  <span class="nt">prefix</span><span class="p">:</span> <span class="s">&quot;/route-with-filter-enabled&quot;</span>
+                <span class="nt">route</span><span class="p">:</span>
+                  <span class="nt">host_rewrite</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
+                  <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">other</span>
+                  <span class="nt">timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5.00s</span>
+          <span class="nt">http_filters</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.grpc_http1_reverse_bridge</span>
+            <span class="nt">typed_config</span><span class="p">:</span>
+              <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.filter.http.grpc_http1_reverse_bridge.v2alpha1.FilterConfig</span>
+              <span class="nt">content_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">application/grpc+proto</span>
+              <span class="nt">withhold_grpc_frames</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+          <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.router</span>
+            <span class="nt">typed_config</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+  <span class="nt">clusters</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">other</span>
+    <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5.00s</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">LOGICAL_DNS</span>
+    <span class="nt">dns_lookup_family</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">V4_ONLY</span>
+    <span class="nt">lb_policy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ROUND_ROBIN</span>
+    <span class="nt">hosts</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">socket_address</span><span class="p">:</span>
+          <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
+          <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4630</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">grpc</span>
+    <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5.00s</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">strict_dns</span>
+    <span class="nt">lb_policy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">round_robin</span>
+    <span class="nt">http2_protocol_options</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+    <span class="nt">load_assignment</span><span class="p">:</span>
+      <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">grpc</span>
+      <span class="nt">endpoints</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="nt">endpoint</span><span class="p">:</span>
+                <span class="nt">address</span><span class="p">:</span>
+                  <span class="nt">socket_address</span><span class="p">:</span>
+                    <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
+                    <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10005</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="grpc_json_transcoder_filter.html" class="btn btn-neutral float-right" title="gRPC-JSON transcoder" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="grpc_http1_bridge_filter.html" class="btn btn-neutral float-left" title="gRPC HTTP/1.1 bridge" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2020, Envoy Project Authors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,306 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Circuit breaking &mdash; envoy tag-v1.14.2 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Upstream network filters" href="upstream_filters.html" />
+    <link rel="prev" title="Outlier detection" href="outlier.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                tag-v1.14.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../intro.html">Introduction</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../what_is_envoy.html">What is Envoy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../arch_overview.html">Architecture overview</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../intro/intro.html">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../listeners/listeners_toc.html">Listeners</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../http/http.html">HTTP</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="upstream.html">Upstream clusters</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="cluster_manager.html">Cluster manager</a></li>
+<li class="toctree-l4"><a class="reference internal" href="service_discovery.html">Service discovery</a></li>
+<li class="toctree-l4"><a class="reference internal" href="health_checking.html">Health checking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="connection_pooling.html">Connection pooling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="load_balancing/load_balancing.html">Load Balancing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="aggregate_cluster.html">Aggregate Cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="outlier.html">Outlier detection</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Circuit breaking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="upstream_filters.html">Upstream network filters</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../observability/observability.html">Observability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../security/security.html">Security</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../operations/operations.html">Operations &amp; configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../other_features/other_features.html">Other features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../advanced/advanced.html">Advanced</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../deployment_types/deployment_types.html">Deployment types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_help.html">Getting help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../version_history.html">Version history</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../deprecated.html">Deprecated</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../install/install.html">Building and installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq/overview.html">FAQ</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../intro.html">Introduction</a> &raquo;</li>
+        
+          <li><a href="../arch_overview.html">Architecture overview</a> &raquo;</li>
+        
+          <li><a href="upstream.html">Upstream clusters</a> &raquo;</li>
+        
+      <li>Circuit breaking</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/intro/arch_overview/upstream/circuit_breaking.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="circuit-breaking">
+<span id="arch-overview-circuit-break"></span><h1>Circuit breaking<a class="headerlink" href="#circuit-breaking" title="Permalink to this headline">¶</a></h1>
+<p>Circuit breaking is a critical component of distributed systems. It’s nearly always better to fail
+quickly and apply back pressure downstream as soon as possible. One of the main benefits of an Envoy
+mesh is that Envoy enforces circuit breaking limits at the network level as opposed to having to
+configure and code each application independently. Envoy supports various types of fully distributed
+(not coordinated) circuit breaking:</p>
+<ul class="simple" id="arch-overview-circuit-break-cluster-maximum-connections">
+<li><p><strong>Cluster maximum connections</strong>: The maximum number of connections that Envoy will establish to
+all hosts in an upstream cluster. If this circuit breaker overflows the <a class="reference internal" href="../../../configuration/upstream/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats"><span class="std std-ref">upstream_cx_overflow</span></a> counter for the cluster will increment.</p></li>
+<li><p><strong>Cluster maximum pending requests</strong>: The maximum number of requests that will be queued while
+waiting for a ready connection pool connection. Requests are added to the list
+of pending requests whenever there aren’t enough upstream connections available to immediately dispatch
+the request. For HTTP/2 connections, if <a class="reference internal" href="../../../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-http2protocoloptions-max-concurrent-streams"><span class="std std-ref">max concurrent streams</span></a>
+and <a class="reference internal" href="../../../api-v2/api/v2/cluster.proto.html#envoy-api-field-cluster-max-requests-per-connection"><span class="std std-ref">max requests per connection</span></a> are not
+configured, all requests will be multiplexed over the same connection so this circuit breaker
+will only be hit when no connection is already established. If this circuit breaker overflows the
+<a class="reference internal" href="../../../configuration/upstream/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats"><span class="std std-ref">upstream_rq_pending_overflow</span></a> counter for the cluster will
+increment.</p></li>
+<li><p><strong>Cluster maximum requests</strong>: The maximum number of requests that can be outstanding to all hosts
+in a cluster at any given time. If this circuit breaker overflows the <a class="reference internal" href="../../../configuration/upstream/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats"><span class="std std-ref">upstream_rq_pending_overflow</span></a>
+counter for the cluster will increment.</p></li>
+<li><p><strong>Cluster maximum active retries</strong>: The maximum number of retries that can be outstanding to all
+hosts in a cluster at any given time. In general we recommend using <a class="reference internal" href="../../../api-v2/api/v2/cluster/circuit_breaker.proto.html#envoy-api-field-cluster-circuitbreakers-thresholds-retry-budget"><span class="std std-ref">retry budgets</span></a>; however, if static circuit breaking is preferred it should aggressively circuit break
+retries. This is so that retries for sporadic failures are allowed, but the overall retry volume cannot
+explode and cause large scale cascading failure. If this circuit breaker overflows the
+<a class="reference internal" href="../../../configuration/upstream/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats"><span class="std std-ref">upstream_rq_retry_overflow</span></a> counter for the cluster
+will increment.</p>
+</li>
+<li id="arch-overview-circuit-break-cluster-maximum-connection-pools"><p><strong>Cluster maximum concurrent connection pools</strong>: The maximum number of connection pools that can be
+concurrently instantiated. Some features, such as the
+<a class="reference internal" href="../other_features/ip_transparency.html#arch-overview-ip-transparency-original-src-listener"><span class="std std-ref">Original Src Listener Filter</span></a>, can
+create an unbounded number of connection pools. When a cluster has exhausted its concurrent
+connection pools, it will attempt to reclaim an idle one. If it cannot, then the circuit breaker
+will overflow. This differs from
+<a class="reference internal" href="#arch-overview-circuit-break-cluster-maximum-connections"><span class="std std-ref">Cluster maximum connections</span></a> in that
+connection pools never time out, whereas connections typically will. Connections automatically
+clean up; connection pools do not. Note that in order for a connection pool to function it needs
+at least one upstream connection, so this value should likely be no greater than
+<a class="reference internal" href="#arch-overview-circuit-break-cluster-maximum-connections"><span class="std std-ref">Cluster maximum connections</span></a>.
+If this circuit breaker overflows the
+<a class="reference internal" href="../../../configuration/upstream/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats"><span class="std std-ref">upstream_cx_pool_overflow</span></a> counter for the cluster
+will increment.</p></li>
+</ul>
+<p>Each circuit breaking limit is <a class="reference internal" href="../../../configuration/upstream/cluster_manager/cluster_circuit_breakers.html#config-cluster-manager-cluster-circuit-breakers"><span class="std std-ref">configurable</span></a>
+and tracked on a per upstream cluster and per priority basis. This allows different components of
+the distributed system to be tuned independently and have different limits. The live state of these
+circuit breakers, including the number of resources remaining until a circuit breaker opens, can
+be observed via <a class="reference internal" href="../../../configuration/upstream/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats-circuit-breakers"><span class="std std-ref">statistics</span></a>.</p>
+<p>Note that circuit breaking will cause the <a class="reference internal" href="../../../configuration/http/http_filters/router_filter.html#config-http-filters-router-x-envoy-overloaded-set"><span class="std std-ref">x-envoy-overloaded</span></a> header to be set by the router filter in the
+case of HTTP requests.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="upstream_filters.html" class="btn btn-neutral float-right" title="Upstream network filters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="outlier.html" class="btn btn-neutral float-left" title="Outlier detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2020, Envoy Project Authors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
