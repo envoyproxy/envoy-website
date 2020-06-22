@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Threat model &mdash; envoy 1.15.0-dev-7f251d documentation</title>
+  <title>Threat model &mdash; envoy 1.15.0-dev-6c0f88 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-7f251d
+                1.15.0-dev-6c0f88
               </div>
             
           
@@ -210,16 +210,36 @@ security researchers. We detail our security release process at
 highest priority concerns. Availability, in particular in areas relating to DoS and resource
 exhaustion, is also a serious security concern for Envoy operators, in particular those utilizing
 Envoy in edge deployments.</p>
-<p>The Envoy availability stance around CPU and memory DoS, as well as Query-of-Death (QoD), is still
-evolving. We will continue to iterate and fix well known resource issues in the open, e.g. overload
-manager and watermark improvements. We will activate the security process for disclosures that
-appear to present a risk profile that is significantly greater than the current Envoy availability
-hardening status quo. Examples of disclosures that would elicit this response:</p>
+<p>We will activate the security release process for disclosures that meet the following criteria:</p>
 <ul class="simple">
-<li><p>QoD; where a single query from a client can bring down an Envoy server.</p></li>
-<li><p>Highly asymmetric resource exhaustion attacks, where very little traffic can cause resource exhaustion,
-e.g. that delivered by a single client.</p></li>
+<li><p>All issues that lead to loss of data confidentiality or integrity trigger the security release process.</p></li>
+<li><p>An availability issue, such as Query-of-Death (QoD) or resource exhaustion needs to meet all of the
+following criteria to trigger the security release process:</p>
+<ul>
+<li><p>A component tagged as hardened is affected (see <a class="reference internal" href="#core-and-extensions">Core and extensions</a> for the list of hardened components).</p></li>
+<li><p>The type of traffic (upstream or downstream) that exhibits the issue matches the component’s hardening tag.
+I.e. component tagged as “hardened to untrusted downstream” is affected by downstream request.</p></li>
+<li><p>A resource exhaustion issue needs to meet these additional criteria:</p>
+<ul>
+<li><p>Not covered by an existing timeout or where applying short timeout values is impractical and either</p>
+<ul>
+<li><p>Memory exhaustion, including out of memory conditions, where per-request memory use 100x or more above
+the configured header or high watermark limit. I.e. 10 KiB client request leading to 1 MiB bytes of
+memory consumed by Envoy;</p></li>
+<li><p>Highly asymmetric CPU utilization where Envoy uses 100x or more CPU compared to client.</p></li>
 </ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>The Envoy availability stance around CPU and memory DoS is still evolving, especially for brute force
+attacks. We acknowledge that brute force (i.e. these with amplification factor less than 100) attacks are
+likely for Envoy deployments as part of cloud infrastructure or with the use of botnets. We will continue
+to iterate and fix well known resource issues in the open, e.g. overload manager and watermark improvements.
+We will activate the security process for brute force disclosures that appear to present a risk to
+existing Envoy deployments.</p>
 <p>Note that we do not currently consider the default settings for Envoy to be safe from an availability
 perspective. It is necessary for operators to explicitly <a class="reference internal" href="../../../configuration/best_practices/edge.html#best-practices-edge"><span class="std std-ref">configure</span></a>
 watermarks, the overload manager, circuit breakers and other resource related features in Envoy to
