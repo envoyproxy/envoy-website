@@ -20,7 +20,7 @@ Redis Proxy :ref:`configuration overview <config_network_filters_redis_proxy>`.
 extensions.filters.network.redis_proxy.v3.RedisProxy
 ----------------------------------------------------
 
-`[extensions.filters.network.redis_proxy.v3.RedisProxy proto] <https://github.com/envoyproxy/envoy/blob/8ff0471c501f4cd9f0a27a537fc55c6a0c38329e/api/envoy/extensions/filters/network/redis_proxy/v3/redis_proxy.proto#L25>`_
+`[extensions.filters.network.redis_proxy.v3.RedisProxy proto] <https://github.com/envoyproxy/envoy/blob/85491294f335b1e2a4c12247dc87a7545457f0be/api/envoy/extensions/filters/network/redis_proxy/v3/redis_proxy.proto#L25>`_
 
 
 .. code-block:: json
@@ -30,7 +30,8 @@ extensions.filters.network.redis_proxy.v3.RedisProxy
     "settings": "{...}",
     "latency_in_micros": "...",
     "prefix_routes": "{...}",
-    "downstream_auth_password": "{...}"
+    "downstream_auth_password": "{...}",
+    "downstream_auth_username": "{...}"
   }
 
 .. _envoy_v3_api_field_extensions.filters.network.redis_proxy.v3.RedisProxy.stat_prefix:
@@ -97,12 +98,27 @@ downstream_auth_password
   AUTH, but no password is set" error will be returned.
   
   
+.. _envoy_v3_api_field_extensions.filters.network.redis_proxy.v3.RedisProxy.downstream_auth_username:
+
+downstream_auth_username
+  (:ref:`config.core.v3.DataSource <envoy_v3_api_msg_config.core.v3.DataSource>`) If a username is provided an ACL style AUTH command will be required with a username and password.
+  Authenticate Redis client connections locally by forcing downstream clients to issue a `Redis
+  AUTH command <https://redis.io/commands/auth>`_ with this username and the *downstream_auth_password*
+  before enabling any other command. If an AUTH command's username and password matches this username
+  and the *downstream_auth_password* , an "OK" response will be returned to the client. If the AUTH
+  command username or password does not match this username or the *downstream_auth_password*, then an
+  "WRONGPASS invalid username-password pair" error will be returned. If any other command is received before AUTH when this
+  password is set, then a "NOAUTH Authentication required." error response will be sent to the
+  client. If an AUTH command is received when the password is not set, then an "ERR Client sent
+  AUTH, but no ACL is set" error will be returned.
+  
+  
 .. _envoy_v3_api_msg_extensions.filters.network.redis_proxy.v3.RedisProxy.ConnPoolSettings:
 
 extensions.filters.network.redis_proxy.v3.RedisProxy.ConnPoolSettings
 ---------------------------------------------------------------------
 
-`[extensions.filters.network.redis_proxy.v3.RedisProxy.ConnPoolSettings proto] <https://github.com/envoyproxy/envoy/blob/8ff0471c501f4cd9f0a27a537fc55c6a0c38329e/api/envoy/extensions/filters/network/redis_proxy/v3/redis_proxy.proto#L31>`_
+`[extensions.filters.network.redis_proxy.v3.RedisProxy.ConnPoolSettings proto] <https://github.com/envoyproxy/envoy/blob/85491294f335b1e2a4c12247dc87a7545457f0be/api/envoy/extensions/filters/network/redis_proxy/v3/redis_proxy.proto#L31>`_
 
 Redis connection pool settings.
 
@@ -211,7 +227,7 @@ read_policy
 Enum extensions.filters.network.redis_proxy.v3.RedisProxy.ConnPoolSettings.ReadPolicy
 -------------------------------------------------------------------------------------
 
-`[extensions.filters.network.redis_proxy.v3.RedisProxy.ConnPoolSettings.ReadPolicy proto] <https://github.com/envoyproxy/envoy/blob/8ff0471c501f4cd9f0a27a537fc55c6a0c38329e/api/envoy/extensions/filters/network/redis_proxy/v3/redis_proxy.proto#L39>`_
+`[extensions.filters.network.redis_proxy.v3.RedisProxy.ConnPoolSettings.ReadPolicy proto] <https://github.com/envoyproxy/envoy/blob/85491294f335b1e2a4c12247dc87a7545457f0be/api/envoy/extensions/filters/network/redis_proxy/v3/redis_proxy.proto#L39>`_
 
 ReadPolicy controls how Envoy routes read commands to Redis nodes. This is currently
 supported for Redis Cluster. All ReadPolicy settings except MASTER may return stale data
@@ -257,7 +273,7 @@ ANY
 extensions.filters.network.redis_proxy.v3.RedisProxy.PrefixRoutes
 -----------------------------------------------------------------
 
-`[extensions.filters.network.redis_proxy.v3.RedisProxy.PrefixRoutes proto] <https://github.com/envoyproxy/envoy/blob/8ff0471c501f4cd9f0a27a537fc55c6a0c38329e/api/envoy/extensions/filters/network/redis_proxy/v3/redis_proxy.proto#L122>`_
+`[extensions.filters.network.redis_proxy.v3.RedisProxy.PrefixRoutes proto] <https://github.com/envoyproxy/envoy/blob/85491294f335b1e2a4c12247dc87a7545457f0be/api/envoy/extensions/filters/network/redis_proxy/v3/redis_proxy.proto#L122>`_
 
 
 .. code-block:: json
@@ -292,7 +308,7 @@ catch_all_route
 extensions.filters.network.redis_proxy.v3.RedisProxy.PrefixRoutes.Route
 -----------------------------------------------------------------------
 
-`[extensions.filters.network.redis_proxy.v3.RedisProxy.PrefixRoutes.Route proto] <https://github.com/envoyproxy/envoy/blob/8ff0471c501f4cd9f0a27a537fc55c6a0c38329e/api/envoy/extensions/filters/network/redis_proxy/v3/redis_proxy.proto#L126>`_
+`[extensions.filters.network.redis_proxy.v3.RedisProxy.PrefixRoutes.Route proto] <https://github.com/envoyproxy/envoy/blob/85491294f335b1e2a4c12247dc87a7545457f0be/api/envoy/extensions/filters/network/redis_proxy/v3/redis_proxy.proto#L126>`_
 
 
 .. code-block:: json
@@ -334,7 +350,7 @@ request_mirror_policy
 extensions.filters.network.redis_proxy.v3.RedisProxy.PrefixRoutes.Route.RequestMirrorPolicy
 -------------------------------------------------------------------------------------------
 
-`[extensions.filters.network.redis_proxy.v3.RedisProxy.PrefixRoutes.Route.RequestMirrorPolicy proto] <https://github.com/envoyproxy/envoy/blob/8ff0471c501f4cd9f0a27a537fc55c6a0c38329e/api/envoy/extensions/filters/network/redis_proxy/v3/redis_proxy.proto#L134>`_
+`[extensions.filters.network.redis_proxy.v3.RedisProxy.PrefixRoutes.Route.RequestMirrorPolicy proto] <https://github.com/envoyproxy/envoy/blob/85491294f335b1e2a4c12247dc87a7545457f0be/api/envoy/extensions/filters/network/redis_proxy/v3/redis_proxy.proto#L134>`_
 
 The router is capable of shadowing traffic from one cluster to another. The current
 implementation is "fire and forget," meaning Envoy will not wait for the shadow cluster to
@@ -383,7 +399,7 @@ exclude_read_commands
 extensions.filters.network.redis_proxy.v3.RedisProtocolOptions
 --------------------------------------------------------------
 
-`[extensions.filters.network.redis_proxy.v3.RedisProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/8ff0471c501f4cd9f0a27a537fc55c6a0c38329e/api/envoy/extensions/filters/network/redis_proxy/v3/redis_proxy.proto#L241>`_
+`[extensions.filters.network.redis_proxy.v3.RedisProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/85491294f335b1e2a4c12247dc87a7545457f0be/api/envoy/extensions/filters/network/redis_proxy/v3/redis_proxy.proto#L253>`_
 
 RedisProtocolOptions specifies Redis upstream protocol options. This object is used in
 :ref:`typed_extension_protocol_options<envoy_v3_api_field_config.cluster.v3.Cluster.typed_extension_protocol_options>`,
@@ -392,7 +408,8 @@ keyed by the name `envoy.filters.network.redis_proxy`.
 .. code-block:: json
 
   {
-    "auth_password": "{...}"
+    "auth_password": "{...}",
+    "auth_username": "{...}"
   }
 
 .. _envoy_v3_api_field_extensions.filters.network.redis_proxy.v3.RedisProtocolOptions.auth_password:
@@ -400,6 +417,13 @@ keyed by the name `envoy.filters.network.redis_proxy`.
 auth_password
   (:ref:`config.core.v3.DataSource <envoy_v3_api_msg_config.core.v3.DataSource>`) Upstream server password as defined by the `requirepass` directive
   <https://redis.io/topics/config>`_ in the server's configuration file.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.network.redis_proxy.v3.RedisProtocolOptions.auth_username:
+
+auth_username
+  (:ref:`config.core.v3.DataSource <envoy_v3_api_msg_config.core.v3.DataSource>`) Upstream server username as defined by the `user` directive
+  <https://redis.io/topics/acl>`_ in the server's configuration file.
   
   
 
