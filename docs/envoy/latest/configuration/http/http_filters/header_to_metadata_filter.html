@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Envoy Header-To-Metadata Filter &mdash; envoy 1.15.0-dev-fc8c79 documentation</title>
+  <title>Envoy Header-To-Metadata Filter &mdash; envoy 1.15.0-dev-5f1348 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-fc8c79
+                1.15.0-dev-5f1348
               </div>
             
           
@@ -274,6 +274,24 @@ absence of a version header could be:</p>
 <p>This would then allow requests with the <cite>x-version</cite> header set to be matched against
 endpoints with the corresponding version. Whereas requests with that header missing
 would be matched with the default endpoints.</p>
+<p>If the header’s value needs to be transformed before it’s added to the request as
+dynamic metadata, this filter supports regex matching and substitution:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">http_filters</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.header_to_metadata</span>
+    <span class="nt">typed_config</span><span class="p">:</span>
+      <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.header_to_metadata.v3.Config</span>
+      <span class="nt">request_rules</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="nt">header</span><span class="p">:</span> <span class="s">&quot;:path&quot;</span>
+          <span class="nt">on_header_present</span><span class="p">:</span>
+            <span class="nt">metadata_namespace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.lb</span>
+            <span class="nt">key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">cluster</span>
+            <span class="nt">regex_value_rewrite</span><span class="p">:</span>
+              <span class="nt">pattern</span><span class="p">:</span>
+                <span class="nt">google_re2</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+                <span class="nt">regex</span><span class="p">:</span> <span class="s">&quot;^/(cluster[\\d\\w-]+)/?.*$&quot;</span>
+              <span class="nt">substitution</span><span class="p">:</span> <span class="s">&quot;\\1&quot;</span>
+</pre></div>
+</div>
 <p>Note that this filter also supports per route configuration:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">route_config</span><span class="p">:</span>
   <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_route</span>

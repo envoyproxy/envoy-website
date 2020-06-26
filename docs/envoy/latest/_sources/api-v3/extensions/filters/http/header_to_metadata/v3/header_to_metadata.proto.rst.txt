@@ -24,7 +24,7 @@ Header to Metadata :ref:`configuration overview <config_http_filters_header_to_m
 extensions.filters.http.header_to_metadata.v3.Config
 ----------------------------------------------------
 
-`[extensions.filters.http.header_to_metadata.v3.Config proto] <https://github.com/envoyproxy/envoy/blob/fc8c79ad4196d7b4422d8917b07c673d353328db/api/envoy/extensions/filters/http/header_to_metadata/v3/header_to_metadata.proto#L21>`_
+`[extensions.filters.http.header_to_metadata.v3.Config proto] <https://github.com/envoyproxy/envoy/blob/5f1348bbc6c530b6adf118f41718bc4200fb55e1/api/envoy/extensions/filters/http/header_to_metadata/v3/header_to_metadata.proto#L24>`_
 
 
 .. code-block:: json
@@ -51,7 +51,7 @@ response_rules
 extensions.filters.http.header_to_metadata.v3.Config.KeyValuePair
 -----------------------------------------------------------------
 
-`[extensions.filters.http.header_to_metadata.v3.Config.KeyValuePair proto] <https://github.com/envoyproxy/envoy/blob/fc8c79ad4196d7b4422d8917b07c673d353328db/api/envoy/extensions/filters/http/header_to_metadata/v3/header_to_metadata.proto#L47>`_
+`[extensions.filters.http.header_to_metadata.v3.Config.KeyValuePair proto] <https://github.com/envoyproxy/envoy/blob/5f1348bbc6c530b6adf118f41718bc4200fb55e1/api/envoy/extensions/filters/http/header_to_metadata/v3/header_to_metadata.proto#L50>`_
 
 
 .. code-block:: json
@@ -60,6 +60,7 @@ extensions.filters.http.header_to_metadata.v3.Config.KeyValuePair
     "metadata_namespace": "...",
     "key": "...",
     "value": "...",
+    "regex_value_rewrite": "{...}",
     "type": "...",
     "encode": "..."
   }
@@ -81,11 +82,23 @@ key
 value
   (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The value to pair with the given key.
   
-  When used for a `on_header_present` case, if value is non-empty it'll be used
-  instead of the header value. If both are empty, no metadata is added.
+  When used for a
+  :ref:`on_header_present <envoy_v3_api_field_extensions.filters.http.header_to_metadata.v3.Config.Rule.on_header_present>`
+  case, if value is non-empty it'll be used instead of the header value. If both are empty, no metadata is added.
   
-  When used for a `on_header_missing` case, a non-empty value must be provided
-  otherwise no metadata is added.
+  When used for a :ref:`on_header_missing <envoy_v3_api_field_extensions.filters.http.header_to_metadata.v3.Config.Rule.on_header_missing>`
+  case, a non-empty value must be provided otherwise no metadata is added.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.header_to_metadata.v3.Config.KeyValuePair.regex_value_rewrite:
+
+regex_value_rewrite
+  (:ref:`type.matcher.v3.RegexMatchAndSubstitute <envoy_v3_api_msg_type.matcher.v3.RegexMatchAndSubstitute>`) If present, the header's value will be matched and substituted with this. If there is no match or substitution, the header value
+  is used as-is.
+  
+  This is only used for :ref:`on_header_present <envoy_v3_api_field_extensions.filters.http.header_to_metadata.v3.Config.Rule.on_header_present>`.
+  
+  Note: if the `value` field is non-empty this field should be empty.
   
   
 .. _envoy_v3_api_field_extensions.filters.http.header_to_metadata.v3.Config.KeyValuePair.type:
@@ -108,7 +121,7 @@ encode
 extensions.filters.http.header_to_metadata.v3.Config.Rule
 ---------------------------------------------------------
 
-`[extensions.filters.http.header_to_metadata.v3.Config.Rule proto] <https://github.com/envoyproxy/envoy/blob/fc8c79ad4196d7b4422d8917b07c673d353328db/api/envoy/extensions/filters/http/header_to_metadata/v3/header_to_metadata.proto#L75>`_
+`[extensions.filters.http.header_to_metadata.v3.Config.Rule proto] <https://github.com/envoyproxy/envoy/blob/5f1348bbc6c530b6adf118f41718bc4200fb55e1/api/envoy/extensions/filters/http/header_to_metadata/v3/header_to_metadata.proto#L88>`_
 
 A Rule defines what metadata to apply when a header is present or missing.
 
@@ -160,7 +173,7 @@ remove
 Enum extensions.filters.http.header_to_metadata.v3.Config.ValueType
 -------------------------------------------------------------------
 
-`[extensions.filters.http.header_to_metadata.v3.Config.ValueType proto] <https://github.com/envoyproxy/envoy/blob/fc8c79ad4196d7b4422d8917b07c673d353328db/api/envoy/extensions/filters/http/header_to_metadata/v3/header_to_metadata.proto#L25>`_
+`[extensions.filters.http.header_to_metadata.v3.Config.ValueType proto] <https://github.com/envoyproxy/envoy/blob/5f1348bbc6c530b6adf118f41718bc4200fb55e1/api/envoy/extensions/filters/http/header_to_metadata/v3/header_to_metadata.proto#L28>`_
 
 
 .. _envoy_v3_api_enum_value_extensions.filters.http.header_to_metadata.v3.Config.ValueType.STRING:
@@ -186,7 +199,7 @@ PROTOBUF_VALUE
 Enum extensions.filters.http.header_to_metadata.v3.Config.ValueEncode
 ---------------------------------------------------------------------
 
-`[extensions.filters.http.header_to_metadata.v3.Config.ValueEncode proto] <https://github.com/envoyproxy/envoy/blob/fc8c79ad4196d7b4422d8917b07c673d353328db/api/envoy/extensions/filters/http/header_to_metadata/v3/header_to_metadata.proto#L36>`_
+`[extensions.filters.http.header_to_metadata.v3.Config.ValueEncode proto] <https://github.com/envoyproxy/envoy/blob/5f1348bbc6c530b6adf118f41718bc4200fb55e1/api/envoy/extensions/filters/http/header_to_metadata/v3/header_to_metadata.proto#L39>`_
 
 ValueEncode defines the encoding algorithm.
 
