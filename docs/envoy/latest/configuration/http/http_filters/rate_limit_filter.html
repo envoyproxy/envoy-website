@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Rate limit &mdash; envoy 1.15.0-dev-836ebf documentation</title>
+  <title>Rate limit &mdash; envoy 1.15.0-dev-7ea1f2 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-836ebf
+                1.15.0-dev-7ea1f2
               </div>
             
           
@@ -276,6 +276,38 @@ the following descriptor is generated:</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="s">&quot;generic_key&quot;</span><span class="p">,</span> <span class="s">&quot;some_value&quot;</span><span class="p">)</span>
 <span class="p">(</span><span class="s">&quot;remote_address&quot;</span><span class="p">,</span> <span class="s">&quot;&lt;trusted address from x-forwarded-for&gt;&quot;</span><span class="p">)</span>
 <span class="p">(</span><span class="s">&quot;source_cluster&quot;</span><span class="p">,</span> <span class="s">&quot;from_cluster&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="rate-limit-override">
+<span id="config-http-filters-rate-limit-rate-limit-override"></span><h2>Rate Limit Override<a class="headerlink" href="#rate-limit-override" title="Permalink to this headline">¶</a></h2>
+<p>A <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-msg-config-route-v3-ratelimit"><span class="std std-ref">rate limit action</span></a> can optionally contain
+a <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-msg-config-route-v3-ratelimit-override"><span class="std std-ref">limit override</span></a>. The limit value
+will be appended to the descriptor produced by the action and sent to the ratelimit service,
+overriding the static service configuration.</p>
+<p>The override can be configured to be taken from the <a class="reference internal" href="../../../api-v3/config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-metadata"><span class="std std-ref">Dynamic Metadata</span></a> under a specified :ref: <cite>key
+&lt;envoy_v3_api_msg_config.type.metadata.v3.MetadataKey&gt;</cite>. If the value is misconfigured
+or key does not exist, the override configuration is ignored.</p>
+<div class="section" id="example-3">
+<h3>Example 3<a class="headerlink" href="#example-3" title="Permalink to this headline">¶</a></h3>
+<p>The following configuration</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">actions</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="p p-Indicator">{</span><span class="nt">generic_key</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt">descriptor_value</span><span class="p">:</span> <span class="nv">some_value</span><span class="p p-Indicator">}}</span>
+<span class="nt">limit</span><span class="p">:</span>
+   <span class="nt">metadata_key</span><span class="p">:</span>
+       <span class="nt">key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test.filter.key</span>
+       <span class="nt">path</span><span class="p">:</span>
+           <span class="p p-Indicator">-</span> <span class="nt">key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test</span>
+</pre></div>
+</div>
+<p id="config-http-filters-rate-limit-override-dynamic-metadata">Will lookup the value of the dynamic metadata. The value must be a structure with integer field
+“requests_per_unit” and a string field “unit” which is parseable to <a class="reference internal" href="../../../api-v3/type/v3/ratelimit_unit.proto.html#envoy-v3-api-enum-type-v3-ratelimitunit"><span class="std std-ref">RateLimitUnit enum</span></a>. For example, with the following dynamic metadata
+the rate limit override of 42 requests per hour will be appended to the rate limit descriptor.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">test.filter.key</span><span class="p">:</span>
+    <span class="nt">test</span><span class="p">:</span>
+        <span class="nt">requests_per_unit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">42</span>
+        <span class="nt">unit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">HOUR</span>
 </pre></div>
 </div>
 </div>
