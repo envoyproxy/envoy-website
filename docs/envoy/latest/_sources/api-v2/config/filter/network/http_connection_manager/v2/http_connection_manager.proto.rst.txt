@@ -20,7 +20,7 @@ HTTP connection manager :ref:`configuration overview <config_http_conn_man>`.
 config.filter.network.http_connection_manager.v2.HttpConnectionManager
 ----------------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.HttpConnectionManager proto] <https://github.com/envoyproxy/envoy/blob/89d6c6c6fa202aa7a01e85d2d887b56c8a3268ad/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L35>`_
+`[config.filter.network.http_connection_manager.v2.HttpConnectionManager proto] <https://github.com/envoyproxy/envoy/blob/57c425f861bf2bee11b44c265c81d8933f7eca0e/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L35>`_
 
 
 .. code-block:: json
@@ -205,6 +205,16 @@ stream_idle_timeout
   for the stream, the timer will be reset. If the timeout fires, the stream
   is terminated with a 408 Request Timeout error code if no upstream response
   header has been received, otherwise a stream reset occurs.
+  
+  This timeout also specifies the amount of time that Envoy will wait for the peer to open enough
+  window to write any remaining stream data once the entirety of stream data (local end stream is
+  true) has been buffered pending available window. In other words, this timeout defends against
+  a peer that does not release enough window to completely write the stream, even though all
+  data has been proxied within available flow control windows. If the timeout is hit in this
+  case, the :ref:`tx_flush_timeout <config_http_conn_man_stats_per_codec>` counter will be
+  incremented. Note that :ref:`max_stream_duration
+  <envoy_api_field_core.HttpProtocolOptions.max_stream_duration>` does not apply to this corner
+  case.
   
   Note that it is possible to idle timeout even if the wire traffic for a stream is non-idle, due
   to the granularity of events presented to the connection manager. For example, while receiving
@@ -430,7 +440,7 @@ request_id_extension
 config.filter.network.http_connection_manager.v2.HttpConnectionManager.Tracing
 ------------------------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.Tracing proto] <https://github.com/envoyproxy/envoy/blob/89d6c6c6fa202aa7a01e85d2d887b56c8a3268ad/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L95>`_
+`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.Tracing proto] <https://github.com/envoyproxy/envoy/blob/57c425f861bf2bee11b44c265c81d8933f7eca0e/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L95>`_
 
 
 .. code-block:: json
@@ -546,7 +556,7 @@ provider
 Enum config.filter.network.http_connection_manager.v2.HttpConnectionManager.Tracing.OperationName
 -------------------------------------------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.Tracing.OperationName proto] <https://github.com/envoyproxy/envoy/blob/89d6c6c6fa202aa7a01e85d2d887b56c8a3268ad/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L96>`_
+`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.Tracing.OperationName proto] <https://github.com/envoyproxy/envoy/blob/57c425f861bf2bee11b44c265c81d8933f7eca0e/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L96>`_
 
 
 .. _envoy_api_enum_value_config.filter.network.http_connection_manager.v2.HttpConnectionManager.Tracing.OperationName.INGRESS:
@@ -567,7 +577,7 @@ EGRESS
 config.filter.network.http_connection_manager.v2.HttpConnectionManager.InternalAddressConfig
 --------------------------------------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.InternalAddressConfig proto] <https://github.com/envoyproxy/envoy/blob/89d6c6c6fa202aa7a01e85d2d887b56c8a3268ad/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L175>`_
+`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.InternalAddressConfig proto] <https://github.com/envoyproxy/envoy/blob/57c425f861bf2bee11b44c265c81d8933f7eca0e/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L175>`_
 
 
 .. code-block:: json
@@ -589,7 +599,7 @@ unix_sockets
 config.filter.network.http_connection_manager.v2.HttpConnectionManager.SetCurrentClientCertDetails
 --------------------------------------------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.SetCurrentClientCertDetails proto] <https://github.com/envoyproxy/envoy/blob/89d6c6c6fa202aa7a01e85d2d887b56c8a3268ad/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L181>`_
+`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.SetCurrentClientCertDetails proto] <https://github.com/envoyproxy/envoy/blob/57c425f861bf2bee11b44c265c81d8933f7eca0e/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L181>`_
 
 
 .. code-block:: json
@@ -646,7 +656,7 @@ uri
 config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfig
 ------------------------------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfig proto] <https://github.com/envoyproxy/envoy/blob/89d6c6c6fa202aa7a01e85d2d887b56c8a3268ad/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L219>`_
+`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.UpgradeConfig proto] <https://github.com/envoyproxy/envoy/blob/57c425f861bf2bee11b44c265c81d8933f7eca0e/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L219>`_
 
 The configuration for HTTP upgrades.
 For each upgrade type desired, an UpgradeConfig must be added.
@@ -702,7 +712,7 @@ enabled
 Enum config.filter.network.http_connection_manager.v2.HttpConnectionManager.CodecType
 -------------------------------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.CodecType proto] <https://github.com/envoyproxy/envoy/blob/89d6c6c6fa202aa7a01e85d2d887b56c8a3268ad/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L36>`_
+`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.CodecType proto] <https://github.com/envoyproxy/envoy/blob/57c425f861bf2bee11b44c265c81d8933f7eca0e/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L36>`_
 
 
 .. _envoy_api_enum_value_config.filter.network.http_connection_manager.v2.HttpConnectionManager.CodecType.AUTO:
@@ -736,7 +746,7 @@ HTTP2
 Enum config.filter.network.http_connection_manager.v2.HttpConnectionManager.ServerHeaderTransformation
 ------------------------------------------------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.ServerHeaderTransformation proto] <https://github.com/envoyproxy/envoy/blob/89d6c6c6fa202aa7a01e85d2d887b56c8a3268ad/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L58>`_
+`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.ServerHeaderTransformation proto] <https://github.com/envoyproxy/envoy/blob/57c425f861bf2bee11b44c265c81d8933f7eca0e/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L58>`_
 
 
 .. _envoy_api_enum_value_config.filter.network.http_connection_manager.v2.HttpConnectionManager.ServerHeaderTransformation.OVERWRITE:
@@ -765,7 +775,7 @@ PASS_THROUGH
 Enum config.filter.network.http_connection_manager.v2.HttpConnectionManager.ForwardClientCertDetails
 ----------------------------------------------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.ForwardClientCertDetails proto] <https://github.com/envoyproxy/envoy/blob/89d6c6c6fa202aa7a01e85d2d887b56c8a3268ad/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L73>`_
+`[config.filter.network.http_connection_manager.v2.HttpConnectionManager.ForwardClientCertDetails proto] <https://github.com/envoyproxy/envoy/blob/57c425f861bf2bee11b44c265c81d8933f7eca0e/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L73>`_
 
 How to handle the :ref:`config_http_conn_man_headers_x-forwarded-client-cert` (XFCC) HTTP
 header.
@@ -810,7 +820,7 @@ ALWAYS_FORWARD_ONLY
 config.filter.network.http_connection_manager.v2.Rds
 ----------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.Rds proto] <https://github.com/envoyproxy/envoy/blob/89d6c6c6fa202aa7a01e85d2d887b56c8a3268ad/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L515>`_
+`[config.filter.network.http_connection_manager.v2.Rds proto] <https://github.com/envoyproxy/envoy/blob/57c425f861bf2bee11b44c265c81d8933f7eca0e/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L525>`_
 
 
 .. code-block:: json
@@ -842,7 +852,7 @@ route_config_name
 config.filter.network.http_connection_manager.v2.ScopedRouteConfigurationsList
 ------------------------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.ScopedRouteConfigurationsList proto] <https://github.com/envoyproxy/envoy/blob/89d6c6c6fa202aa7a01e85d2d887b56c8a3268ad/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L527>`_
+`[config.filter.network.http_connection_manager.v2.ScopedRouteConfigurationsList proto] <https://github.com/envoyproxy/envoy/blob/57c425f861bf2bee11b44c265c81d8933f7eca0e/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L537>`_
 
 This message is used to work around the limitations with 'oneof' and repeated fields.
 
@@ -864,7 +874,7 @@ scoped_route_configurations
 config.filter.network.http_connection_manager.v2.ScopedRoutes
 -------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.ScopedRoutes proto] <https://github.com/envoyproxy/envoy/blob/89d6c6c6fa202aa7a01e85d2d887b56c8a3268ad/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L533>`_
+`[config.filter.network.http_connection_manager.v2.ScopedRoutes proto] <https://github.com/envoyproxy/envoy/blob/57c425f861bf2bee11b44c265c81d8933f7eca0e/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L543>`_
 
 
 .. code-block:: json
@@ -928,7 +938,7 @@ scoped_rds
 config.filter.network.http_connection_manager.v2.ScopedRoutes.ScopeKeyBuilder
 -----------------------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.ScopedRoutes.ScopeKeyBuilder proto] <https://github.com/envoyproxy/envoy/blob/89d6c6c6fa202aa7a01e85d2d887b56c8a3268ad/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L543>`_
+`[config.filter.network.http_connection_manager.v2.ScopedRoutes.ScopeKeyBuilder proto] <https://github.com/envoyproxy/envoy/blob/57c425f861bf2bee11b44c265c81d8933f7eca0e/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L553>`_
 
 Specifies the mechanism for constructing "scope keys" based on HTTP request attributes. These
 keys are matched against a set of :ref:`Key<envoy_api_msg_ScopedRouteConfiguration.Key>`
@@ -959,7 +969,7 @@ fragments
 config.filter.network.http_connection_manager.v2.ScopedRoutes.ScopeKeyBuilder.FragmentBuilder
 ---------------------------------------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.ScopedRoutes.ScopeKeyBuilder.FragmentBuilder proto] <https://github.com/envoyproxy/envoy/blob/89d6c6c6fa202aa7a01e85d2d887b56c8a3268ad/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L545>`_
+`[config.filter.network.http_connection_manager.v2.ScopedRoutes.ScopeKeyBuilder.FragmentBuilder proto] <https://github.com/envoyproxy/envoy/blob/57c425f861bf2bee11b44c265c81d8933f7eca0e/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L555>`_
 
 Specifies the mechanism for constructing key fragments which are composed into scope keys.
 
@@ -981,7 +991,7 @@ header_value_extractor
 config.filter.network.http_connection_manager.v2.ScopedRoutes.ScopeKeyBuilder.FragmentBuilder.HeaderValueExtractor
 ------------------------------------------------------------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.ScopedRoutes.ScopeKeyBuilder.FragmentBuilder.HeaderValueExtractor proto] <https://github.com/envoyproxy/envoy/blob/89d6c6c6fa202aa7a01e85d2d887b56c8a3268ad/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L563>`_
+`[config.filter.network.http_connection_manager.v2.ScopedRoutes.ScopeKeyBuilder.FragmentBuilder.HeaderValueExtractor proto] <https://github.com/envoyproxy/envoy/blob/57c425f861bf2bee11b44c265c81d8933f7eca0e/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L573>`_
 
 Specifies how the value of a header should be extracted.
 The following example maps the structure of a header to the fields in this message.
@@ -1050,7 +1060,7 @@ element
 config.filter.network.http_connection_manager.v2.ScopedRoutes.ScopeKeyBuilder.FragmentBuilder.HeaderValueExtractor.KvElement
 ----------------------------------------------------------------------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.ScopedRoutes.ScopeKeyBuilder.FragmentBuilder.HeaderValueExtractor.KvElement proto] <https://github.com/envoyproxy/envoy/blob/89d6c6c6fa202aa7a01e85d2d887b56c8a3268ad/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L565>`_
+`[config.filter.network.http_connection_manager.v2.ScopedRoutes.ScopeKeyBuilder.FragmentBuilder.HeaderValueExtractor.KvElement proto] <https://github.com/envoyproxy/envoy/blob/57c425f861bf2bee11b44c265c81d8933f7eca0e/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L575>`_
 
 Specifies a header field's key value pair to match on.
 
@@ -1088,7 +1098,7 @@ key
 config.filter.network.http_connection_manager.v2.ScopedRds
 ----------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.ScopedRds proto] <https://github.com/envoyproxy/envoy/blob/89d6c6c6fa202aa7a01e85d2d887b56c8a3268ad/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L641>`_
+`[config.filter.network.http_connection_manager.v2.ScopedRds proto] <https://github.com/envoyproxy/envoy/blob/57c425f861bf2bee11b44c265c81d8933f7eca0e/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L651>`_
 
 
 .. code-block:: json
@@ -1110,7 +1120,7 @@ scoped_rds_config_source
 config.filter.network.http_connection_manager.v2.HttpFilter
 -----------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.HttpFilter proto] <https://github.com/envoyproxy/envoy/blob/89d6c6c6fa202aa7a01e85d2d887b56c8a3268ad/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L647>`_
+`[config.filter.network.http_connection_manager.v2.HttpFilter proto] <https://github.com/envoyproxy/envoy/blob/57c425f861bf2bee11b44c265c81d8933f7eca0e/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L657>`_
 
 
 .. code-block:: json
@@ -1155,7 +1165,7 @@ typed_config
 config.filter.network.http_connection_manager.v2.RequestIDExtension
 -------------------------------------------------------------------
 
-`[config.filter.network.http_connection_manager.v2.RequestIDExtension proto] <https://github.com/envoyproxy/envoy/blob/89d6c6c6fa202aa7a01e85d2d887b56c8a3268ad/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L663>`_
+`[config.filter.network.http_connection_manager.v2.RequestIDExtension proto] <https://github.com/envoyproxy/envoy/blob/57c425f861bf2bee11b44c265c81d8933f7eca0e/api/envoy/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#L673>`_
 
 
 .. code-block:: json

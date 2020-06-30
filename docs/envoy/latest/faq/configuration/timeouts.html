@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>How do I configure timeouts? &mdash; envoy 1.15.0-dev-89d6c6 documentation</title>
+  <title>How do I configure timeouts? &mdash; envoy 1.15.0-dev-57c425 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-89d6c6
+                1.15.0-dev-57c425
               </div>
             
           
@@ -119,6 +119,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="deprecation.html">How are configuration deprecations handled?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="resource_limits.html">How does Envoy prevent file descriptor exhaustion?</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../overview.html#load-balancing">Load balancing</a></li>
@@ -237,7 +238,9 @@ received from the client.</p>
 <li><p>The HTTP connection manager <a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-stream-idle-timeout"><span class="std std-ref">stream_idle_timeout</span></a>
 is the amount of time that the connection manager will allow a stream to exist with no upstream
 or downstream activity. The default stream idle timeout is <em>5 minutes</em>. This timeout is strongly
-recommended for streaming APIs (requests or responses that never end).</p></li>
+recommended for all requests (not just streaming requests/responses) as it additionally defends
+against an HTTP/2 peer that does not open stream window once an entire response has been buffered
+to be sent to a downstream client.</p></li>
 <li><p>The HTTP protocol <a class="reference internal" href="../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-httpprotocoloptions-max-stream-duration"><span class="std std-ref">max_stream_duration</span></a>
 is defined in a generic message used by the HTTP connection manager. The max stream duration is the
 maximum time that a stream’s lifetime will span. You can use this functionality when you want to reset

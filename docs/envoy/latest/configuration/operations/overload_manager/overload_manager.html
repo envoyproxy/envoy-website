@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Overload manager &mdash; envoy 1.15.0-dev-89d6c6 documentation</title>
+  <title>Overload manager &mdash; envoy 1.15.0-dev-57c425 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-89d6c6
+                1.15.0-dev-57c425
               </div>
             
           
@@ -108,6 +108,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Overload manager</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#resource-monitors">Resource monitors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#overload-actions">Overload actions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#limiting-active-connections">Limiting Active Connections</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#statistics">Statistics</a></li>
 </ul>
 </li>
@@ -255,6 +256,26 @@ resource monitors. Envoy’s builtin resource monitors are listed
 </tr>
 </tbody>
 </table>
+</div>
+<div class="section" id="limiting-active-connections">
+<h2>Limiting Active Connections<a class="headerlink" href="#limiting-active-connections" title="Permalink to this headline">¶</a></h2>
+<p>Currently, the only supported way to limit the total number of active connections allowed across all
+listeners is via specifying an integer through the runtime key
+<code class="docutils literal notranslate"><span class="pre">overload.global_downstream_max_connections</span></code>. The connection limit is recommended to be less than
+half of the system’s file descriptor limit, to account for upstream connections, files, and other
+usage of file descriptors.
+If the value is unspecified, there is no global limit on the number of active downstream connections
+and Envoy will emit a warning indicating this at startup. To disable the warning without setting a
+limit on the number of active downstream connections, the runtime value may be set to a very large
+limit (~2e9).</p>
+<p>If it is desired to only limit the number of downstream connections for a particular listener,
+per-listener limits can be set via the <a class="reference internal" href="../../listeners/listeners.html#config-listeners"><span class="std std-ref">listener configuration</span></a>.</p>
+<p>One may simultaneously specify both per-listener and global downstream connection limits and the
+conditions will be enforced independently. For instance, if it is known that a particular listener
+should have a smaller number of open connections than others, one may specify a smaller connection
+limit for that specific listener and allow the global limit to enforce resource utilization among
+all listeners.</p>
+<p>An example configuration can be found in the <a class="reference internal" href="../../best_practices/edge.html#best-practices-edge"><span class="std std-ref">edge best practices document</span></a>.</p>
 </div>
 <div class="section" id="statistics">
 <h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
