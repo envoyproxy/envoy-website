@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Dynamic forward proxy common configuration &mdash; envoy 1.15.0-dev-c2f9d9 documentation</title>
+  <title>Dynamic forward proxy common configuration &mdash; envoy 1.15.0-dev-de247a documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.15.0-dev-c2f9d9
+                1.15.0-dev-de247a
               </div>
             
           
@@ -211,9 +211,24 @@
             
   <div class="section" id="dynamic-forward-proxy-common-configuration">
 <span id="envoy-v3-api-file-envoy-extensions-common-dynamic-forward-proxy-v3-dns-cache-proto"></span><h1>Dynamic forward proxy common configuration<a class="headerlink" href="#dynamic-forward-proxy-common-configuration" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="extensions-common-dynamic-forward-proxy-v3-dnscachecircuitbreakers">
+<span id="envoy-v3-api-msg-extensions-common-dynamic-forward-proxy-v3-dnscachecircuitbreakers"></span><h2>extensions.common.dynamic_forward_proxy.v3.DnsCacheCircuitBreakers<a class="headerlink" href="#extensions-common-dynamic-forward-proxy-v3-dnscachecircuitbreakers" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/de247a8140f4230726eaa4ea732d6d01bc530911/api/envoy/extensions/common/dynamic_forward_proxy/v3/dns_cache.proto#L21">[extensions.common.dynamic_forward_proxy.v3.DnsCacheCircuitBreakers proto]</a></p>
+<p>Configuration of circuit breakers for resolver.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;max_pending_requests&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-extensions-common-dynamic-forward-proxy-v3-dnscachecircuitbreakers-max-pending-requests">
+<dt>max_pending_requests</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The maximum number of pending requests that Envoy will allow to the
+resolver. If not specified, the default is 1024.</p>
+</dd>
+</dl>
+</div>
 <div class="section" id="extensions-common-dynamic-forward-proxy-v3-dnscacheconfig">
 <span id="envoy-v3-api-msg-extensions-common-dynamic-forward-proxy-v3-dnscacheconfig"></span><h2>extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig<a class="headerlink" href="#extensions-common-dynamic-forward-proxy-v3-dnscacheconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/c2f9d9907c34d00f7a7b0b7090f400bb74b51b8a/api/envoy/extensions/common/dynamic_forward_proxy/v3/dns_cache.proto#L23">[extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/de247a8140f4230726eaa4ea732d6d01bc530911/api/envoy/extensions/common/dynamic_forward_proxy/v3/dns_cache.proto#L30">[extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig proto]</a></p>
 <p>Configuration for the dynamic forward proxy DNS cache. See the <a class="reference internal" href="../../../../../intro/arch_overview/http/http_proxy.html#arch-overview-http-dynamic-forward-proxy"><span class="std std-ref">architecture overview</span></a> for more information.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
@@ -221,7 +236,8 @@
   <span class="nt">&quot;dns_refresh_rate&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;host_ttl&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;max_hosts&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;dns_failure_refresh_rate&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;dns_failure_refresh_rate&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;dns_cache_circuit_breaker&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -255,6 +271,12 @@ interval will be purged. If not specified defaults to 5m.</p>
 <dt>dns_failure_refresh_rate</dt><dd><p>(<a class="reference internal" href="../../../../config/cluster/v3/cluster.proto.html#envoy-v3-api-msg-config-cluster-v3-cluster-refreshrate"><span class="std std-ref">config.cluster.v3.Cluster.RefreshRate</span></a>) If the DNS failure refresh rate is specified,
 this is used as the cache’s DNS refresh rate when DNS requests are failing. If this setting is
 not specified, the failure refresh rate defaults to the dns_refresh_rate.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-common-dynamic-forward-proxy-v3-dnscacheconfig-dns-cache-circuit-breaker">
+<dt>dns_cache_circuit_breaker</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-extensions-common-dynamic-forward-proxy-v3-dnscachecircuitbreakers"><span class="std std-ref">extensions.common.dynamic_forward_proxy.v3.DnsCacheCircuitBreakers</span></a>) The config of circuit breakers for resolver. It provides a configurable threshold.
+If <cite>envoy.reloadable_features.enable_dns_cache_circuit_breakers</cite> is enabled,
+envoy will use dns cache circuit breakers with default settings even if this value is not set.</p>
 </dd>
 </dl>
 </div>

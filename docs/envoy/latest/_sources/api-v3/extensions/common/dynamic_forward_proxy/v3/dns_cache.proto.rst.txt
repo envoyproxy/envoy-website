@@ -4,12 +4,36 @@ Dynamic forward proxy common configuration
 ==========================================
 
 
+.. _envoy_v3_api_msg_extensions.common.dynamic_forward_proxy.v3.DnsCacheCircuitBreakers:
+
+extensions.common.dynamic_forward_proxy.v3.DnsCacheCircuitBreakers
+------------------------------------------------------------------
+
+`[extensions.common.dynamic_forward_proxy.v3.DnsCacheCircuitBreakers proto] <https://github.com/envoyproxy/envoy/blob/de247a8140f4230726eaa4ea732d6d01bc530911/api/envoy/extensions/common/dynamic_forward_proxy/v3/dns_cache.proto#L21>`_
+
+Configuration of circuit breakers for resolver.
+
+.. code-block:: json
+
+  {
+    "max_pending_requests": "{...}"
+  }
+
+.. _envoy_v3_api_field_extensions.common.dynamic_forward_proxy.v3.DnsCacheCircuitBreakers.max_pending_requests:
+
+max_pending_requests
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The maximum number of pending requests that Envoy will allow to the
+  resolver. If not specified, the default is 1024.
+  
+  
+
+
 .. _envoy_v3_api_msg_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig:
 
 extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig
 ---------------------------------------------------------
 
-`[extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig proto] <https://github.com/envoyproxy/envoy/blob/c2f9d9907c34d00f7a7b0b7090f400bb74b51b8a/api/envoy/extensions/common/dynamic_forward_proxy/v3/dns_cache.proto#L23>`_
+`[extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig proto] <https://github.com/envoyproxy/envoy/blob/de247a8140f4230726eaa4ea732d6d01bc530911/api/envoy/extensions/common/dynamic_forward_proxy/v3/dns_cache.proto#L30>`_
 
 Configuration for the dynamic forward proxy DNS cache. See the :ref:`architecture overview
 <arch_overview_http_dynamic_forward_proxy>` for more information.
@@ -22,7 +46,8 @@ Configuration for the dynamic forward proxy DNS cache. See the :ref:`architectur
     "dns_refresh_rate": "{...}",
     "host_ttl": "{...}",
     "max_hosts": "{...}",
-    "dns_failure_refresh_rate": "{...}"
+    "dns_failure_refresh_rate": "{...}",
+    "dns_cache_circuit_breaker": "{...}"
   }
 
 .. _envoy_v3_api_field_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig.name:
@@ -92,6 +117,14 @@ dns_failure_refresh_rate
   (:ref:`config.cluster.v3.Cluster.RefreshRate <envoy_v3_api_msg_config.cluster.v3.Cluster.RefreshRate>`) If the DNS failure refresh rate is specified,
   this is used as the cache's DNS refresh rate when DNS requests are failing. If this setting is
   not specified, the failure refresh rate defaults to the dns_refresh_rate.
+  
+  
+.. _envoy_v3_api_field_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig.dns_cache_circuit_breaker:
+
+dns_cache_circuit_breaker
+  (:ref:`extensions.common.dynamic_forward_proxy.v3.DnsCacheCircuitBreakers <envoy_v3_api_msg_extensions.common.dynamic_forward_proxy.v3.DnsCacheCircuitBreakers>`) The config of circuit breakers for resolver. It provides a configurable threshold.
+  If `envoy.reloadable_features.enable_dns_cache_circuit_breakers` is enabled,
+  envoy will use dns cache circuit breakers with default settings even if this value is not set.
   
   
 
