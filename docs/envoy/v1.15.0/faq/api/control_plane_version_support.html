@@ -1,0 +1,269 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Which xDS transport and resource versions does my control plane need to support? &mdash; envoy tag-v1.15.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="How do I support multiple xDS API major versions in my control plane?" href="control_plane.html" />
+    <link rel="prev" title="How does API versioning interact with a new extension?" href="extensions.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                tag-v1.15.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/install.html">Building and installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version_history/version_history.html">Version history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../overview.html">FAQ</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#build">Build</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../overview.html#api">API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="envoy_v2_support.html">How long will the v2 APIs be supported?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="envoy_v3.html">How do I configure Envoy to use the v3 API?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="envoy_upgrade_v3.html">If I upgrade to Envoy 1.13+, do I need to use the v3 API?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions.html">How does API versioning interact with a new extension?</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Which xDS transport and resource versions does my control plane need to support?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control_plane.html">How do I support multiple xDS API major versions in my control plane?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="package_naming.html">What do the v2, v3, vN etc. mean in API package names?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="why_versioning.html">Why are the Envoy xDS APIs versioned? What is the benefit?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="incremental.html">What is the status of incremental xDS support?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#debugging">Debugging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#performance">Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#load-balancing">Load balancing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#extensions">Extensions</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../overview.html">FAQ</a> &raquo;</li>
+        
+      <li>Which xDS transport and resource versions does my control plane need to support?</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/faq/api/control_plane_version_support.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="which-xds-transport-and-resource-versions-does-my-control-plane-need-to-support">
+<span id="control-plane-version-support"></span><h1>Which xDS transport and resource versions does my control plane need to support?<a class="headerlink" href="#which-xds-transport-and-resource-versions-does-my-control-plane-need-to-support" title="Permalink to this headline">¶</a></h1>
+<p>If a control plane is serving a well known set of clients at a given API major version, it only
+needs to support that version (both transport and resource version). However, even in this
+relatively basic scenario, if the set of clients straddles a major version drop or the control plane
+wishes to move from v2/v3, there are considerations around rollout of client and server binaries.</p>
+<p>One approach to this problem is to add temporary support to the management server for both v2 and v3
+transport versions (see <a class="reference external" href="https://github.com/envoyproxy/go-control-plane">https://github.com/envoyproxy/go-control-plane</a>). For resources, messages
+are binary compatible modulo deprecated or new fields between API major versions. If the control
+plane no longer emits resources with deprecated fields, this allows for a trivial replacement of
+type URL based on the requested resource from the client to serve the same resource for v2 and v3. A
+typical rollout sequence might look like:</p>
+<ol class="arabic simple">
+<li><p>Clients with a mix of v2 and v3 support are in operation, with a v2 management server. The
+client bootstraps will reference v2 API transport endpoints.</p></li>
+<li><p>A management server with dual v2/v3 API support is rolled out. Both v2 and v3 transport endpoints
+are supported, while a trivial type URL replacement in the returned resource is sufficient for
+matching the requested v2 or v3 resource type URL with the existing v2 resource in the control
+plane. When returning resources with embedded <cite>ConfigSource</cite> messages pointing at xDS resources
+for a v3 request, it will be necessary to set the <cite>transport_api_version</cite> and
+<cite>resource_api_version</cite> to v3. No deprecated v2 fields or new v3 fields can be used at this point.</p></li>
+<li><p>Client bootstraps are upgraded to v3 API transport endpoints and v3 API resource versions.</p></li>
+<li><p>Support for v2 is removed in the management server. The management server moves to v3 exclusively
+internally and can support newer fields.</p></li>
+</ol>
+<p>If you are operating a managed control plane as-a-service, you will likely need to support a wide
+range of client versions. In this scenario, you will require long term support for multiple major
+API transport and resource versions. Strategies for managing this support are described <a class="reference internal" href="control_plane.html#control-plane"><span class="std std-ref">here</span></a>.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="control_plane.html" class="btn btn-neutral float-right" title="How do I support multiple xDS API major versions in my control plane?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="extensions.html" class="btn btn-neutral float-left" title="How does API versioning interact with a new extension?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2020, Envoy Project Authors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
