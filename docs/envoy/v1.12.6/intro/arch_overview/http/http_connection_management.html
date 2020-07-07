@@ -1,0 +1,399 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>HTTP connection management &mdash; envoy tag-v1.12.6 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="HTTP filters" href="http_filters.html" />
+    <link rel="prev" title="HTTP" href="http.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> envoy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                tag-v1.12.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../intro.html">Introduction</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../what_is_envoy.html">What is Envoy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../arch_overview.html">Architecture overview</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../intro/intro.html">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../listeners/listeners_toc.html">Listeners</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="http.html">HTTP</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">HTTP connection management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="http_filters.html">HTTP filters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="http_routing.html">HTTP routing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="websocket.html">WebSocket and HTTP upgrades</a></li>
+<li class="toctree-l4"><a class="reference internal" href="http_proxy.html">HTTP dynamic forward proxy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../upstream/upstream.html">Upstream clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../observability/observability.html">Observability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../security/security.html">Security</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../operations/operations.html">Operations &amp; configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../other_features/other_features.html">Other features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../advanced/advanced.html">Advanced</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../deployment_types/deployment_types.html">Deployment types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_help.html">Getting help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../version_history.html">Version history</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../deprecated.html">Deprecated</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../install/install.html">Building and installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq/overview.html">FAQ</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../intro.html">Introduction</a> &raquo;</li>
+        
+          <li><a href="../arch_overview.html">Architecture overview</a> &raquo;</li>
+        
+          <li><a href="http.html">HTTP</a> &raquo;</li>
+        
+      <li>HTTP connection management</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/intro/arch_overview/http/http_connection_management.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="http-connection-management">
+<span id="arch-overview-http-conn-man"></span><h1>HTTP connection management<a class="headerlink" href="#http-connection-management" title="Permalink to this headline">¶</a></h1>
+<p>HTTP is such a critical component of modern service oriented architectures that Envoy implements a
+large amount of HTTP specific functionality. Envoy has a built in network level filter called the
+<a class="reference internal" href="../../../configuration/http/http_conn_man/http_conn_man.html#config-http-conn-man"><span class="std std-ref">HTTP connection manager</span></a>. This filter translates raw bytes into HTTP
+level messages and events (e.g., headers received, body data received, trailers received, etc.). It
+also handles functionality common to all HTTP connections and requests such as <a class="reference internal" href="../observability/access_logging.html#arch-overview-access-logs"><span class="std std-ref">access logging</span></a>, <a class="reference internal" href="../observability/tracing.html#arch-overview-tracing"><span class="std std-ref">request ID generation and tracing</span></a>,
+<a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers"><span class="std std-ref">request/response header manipulation</span></a>, <a class="reference internal" href="http_routing.html#arch-overview-http-routing"><span class="std std-ref">route table</span></a> management, and <a class="reference internal" href="../../../configuration/http/http_conn_man/stats.html#config-http-conn-man-stats"><span class="std std-ref">statistics</span></a>.</p>
+<p>HTTP connection manager <a class="reference internal" href="../../../configuration/http/http_conn_man/http_conn_man.html#config-http-conn-man"><span class="std std-ref">configuration</span></a>.</p>
+<div class="section" id="http-protocols">
+<span id="arch-overview-http-protocols"></span><h2>HTTP protocols<a class="headerlink" href="#http-protocols" title="Permalink to this headline">¶</a></h2>
+<p>Envoy’s HTTP connection manager has native support for HTTP/1.1, WebSockets, and HTTP/2. It does not support
+SPDY. Envoy’s HTTP support was designed to first and foremost be an HTTP/2 multiplexing proxy.
+Internally, HTTP/2 terminology is used to describe system components. For example, an HTTP request
+and response take place on a <em>stream</em>. A codec API is used to translate from different wire
+protocols into a protocol agnostic form for streams, requests, responses, etc. In the case of
+HTTP/1.1, the codec translates the serial/pipelining capabilities of the protocol into something
+that looks like HTTP/2 to higher layers. This means that the majority of the code does not need to
+understand whether a stream originated on an HTTP/1.1 or HTTP/2 connection.</p>
+</div>
+<div class="section" id="http-header-sanitizing">
+<h2>HTTP header sanitizing<a class="headerlink" href="#http-header-sanitizing" title="Permalink to this headline">¶</a></h2>
+<p>The HTTP connection manager performs various <a class="reference internal" href="../../../configuration/http/http_conn_man/header_sanitizing.html#config-http-conn-man-header-sanitizing"><span class="std std-ref">header sanitizing</span></a> actions for security reasons.</p>
+</div>
+<div class="section" id="route-table-configuration">
+<h2>Route table configuration<a class="headerlink" href="#route-table-configuration" title="Permalink to this headline">¶</a></h2>
+<p>Each <a class="reference internal" href="../../../configuration/http/http_conn_man/http_conn_man.html#config-http-conn-man"><span class="std std-ref">HTTP connection manager filter</span></a> has an associated <a class="reference internal" href="http_routing.html#arch-overview-http-routing"><span class="std std-ref">route
+table</span></a>. The route table can be specified in one of two ways:</p>
+<ul class="simple">
+<li><p>Statically.</p></li>
+<li><p>Dynamically via the <a class="reference internal" href="../../../configuration/http/http_conn_man/rds.html#config-http-conn-man-rds"><span class="std std-ref">RDS API</span></a>.</p></li>
+</ul>
+</div>
+<div class="section" id="retry-plugin-configuration">
+<span id="arch-overview-http-retry-plugins"></span><h2>Retry plugin configuration<a class="headerlink" href="#retry-plugin-configuration" title="Permalink to this headline">¶</a></h2>
+<p>Normally during retries, host selection follows the same process as the original request. Retry plugins
+can be used to modify this behavior, and they fall into two categories:</p>
+<ul>
+<li><p><a class="reference internal" href="../../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-retrypolicy-retry-host-predicate"><span class="std std-ref">Host Predicates</span></a>:
+These predicates can be used to “reject” a host, which will cause host selection to be reattempted.
+Any number of these predicates can be specified, and the host will be rejected if any of the predicates reject the host.</p>
+<p>Envoy supports the following built-in host predicates</p>
+<ul class="simple">
+<li><p><em>envoy.retry_host_predicates.previous_hosts</em>: This will keep track of previously attempted hosts, and rejects
+hosts that have already been attempted.</p></li>
+<li><p><em>envoy.retry_host_predicates.omit_canary_hosts</em>: This will reject any host that is a marked as canary host.
+Hosts are marked by setting <code class="docutils literal notranslate"><span class="pre">canary:</span> <span class="pre">true</span></code> for the <code class="docutils literal notranslate"><span class="pre">envoy.lb</span></code> filter in the endpoint’s filter metadata.
+See <a class="reference internal" href="../../../api-v2/api/v2/endpoint/endpoint.proto.html#envoy-api-msg-endpoint-lbendpoint"><span class="std std-ref">LbEndpoint</span></a> for more details.</p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="../../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-retrypolicy-retry-priority"><span class="std std-ref">Priority Predicates</span></a>: These predicates can
+be used to adjust the priority load used when selecting a priority for a retry attempt. Only one such
+predicate may be specified.</p>
+<p>Envoy supports the following built-in priority predicates</p>
+<ul class="simple">
+<li><p><em>envoy.retry_priority.previous_priorities</em>: This will keep track of previously attempted priorities,
+and adjust the priority load such that other priorities will be targeted in subsequent retry attempts.</p></li>
+</ul>
+</li>
+</ul>
+<p>Host selection will continue until either the configured predicates accept the host or a configurable
+<a class="reference internal" href="../../../api-v2/api/v2/route/route.proto.html#envoy-api-field-route-retrypolicy-host-selection-retry-max-attempts"><span class="std std-ref">max attempts</span></a> has been reached.</p>
+<p>These plugins can be combined to affect both host selection and priority load. Envoy can also be extended
+with custom retry plugins similar to how custom filters can be added.</p>
+<p><strong>Configuration Example</strong></p>
+<p>For example, to configure retries to prefer hosts that haven’t been attempted already, the built-in
+<code class="docutils literal notranslate"><span class="pre">envoy.retry_host_predicates.previous_hosts</span></code> predicate can be used:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">retry_policy</span><span class="p">:</span>
+  <span class="nt">retry_host_predicate</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.retry_host_predicates.previous_hosts</span>
+  <span class="nt">host_selection_retry_max_attempts</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
+</pre></div>
+</div>
+<p>This will reject hosts previously attempted, retrying host selection a maximum of 3 times. The bound
+on attempts is necessary in order to deal with scenarios in which finding an acceptable host is either
+impossible (no hosts satisfy the predicate) or very unlikely (the only suitable host has a very low
+relative weight).</p>
+<p>To configure retries to attempt other priorities during retries, the built-in
+<code class="docutils literal notranslate"><span class="pre">envoy.retry_priority.previous_priorities</span></code> can be used.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">retry_policy</span><span class="p">:</span>
+  <span class="nt">retry_priority</span><span class="p">:</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.retry_priorities.previous_priorities</span>
+    <span class="nt">config</span><span class="p">:</span>
+      <span class="nt">update_frequency</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+</pre></div>
+</div>
+<p>This will target priorities in subsequent retry attempts that haven’t been already used. The <code class="docutils literal notranslate"><span class="pre">update_frequency</span></code> parameter decides how
+often the priority load should be recalculated.</p>
+<p>These plugins can be combined, which will exclude both previously attempted hosts as well as
+previously attempted priorities.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">retry_policy</span><span class="p">:</span>
+  <span class="nt">retry_host_predicate</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.retry_host_predicates.previous_hosts</span>
+  <span class="nt">host_selection_retry_max_attempts</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
+  <span class="nt">retry_priority</span><span class="p">:</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.retry_priorities.previous_priorities</span>
+    <span class="nt">config</span><span class="p">:</span>
+      <span class="nt">update_frequency</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="internal-redirects">
+<span id="arch-overview-internal-redirects"></span><h2>Internal redirects<a class="headerlink" href="#internal-redirects" title="Permalink to this headline">¶</a></h2>
+<p>Envoy supports handling 302 redirects internally, that is capturing a 302 redirect response,
+synthesizing a new request, sending it to the upstream specified by the new route match, and
+returning the redirected response as the response to the original request.</p>
+<p>Internal redirects are configured via the ref:<cite>redirect action
+&lt;envoy_api_field_route.RouteAction.redirect_action&gt;</cite> field in
+route configuration. When redirect handling is on, any 302 response from upstream is
+subject to the redirect being handled by Envoy.</p>
+<p>For a redirect to be handled successfully it must pass the following checks:</p>
+<ol class="arabic simple">
+<li><p>Be a 302 response.</p></li>
+<li><p>Have a <em>location</em> header with a valid, fully qualified URL matching the scheme of the original request.</p></li>
+<li><p>The request must have been fully processed by Envoy.</p></li>
+<li><p>The request must not have a body.</p></li>
+<li><p>The request must have not been previously redirected, as determined by the presence of an x-envoy-original-url header.</p></li>
+</ol>
+<p>Any failure will result in redirect being passed downstream instead.</p>
+<p>Once the redirect has passed these checks, the request headers which were shipped to the original
+upstream will be modified by:</p>
+<ol class="arabic simple">
+<li><p>Putting the fully qualified original request URL in the x-envoy-original-url header.</p></li>
+<li><p>Replacing the Authority/Host, Scheme, and Path headers with the values from the Location header.</p></li>
+</ol>
+<p>The altered request headers will then have a new route selected, be sent through a new filter chain,
+and then shipped upstream with all of the normal Envoy request sanitization taking place.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Note that HTTP connection manager sanitization such as clearing untrusted headers will only be
+applied once. Per-route header modifications will be applied on both the original route and the
+second route, even if they are the same, so be careful configuring header modification rules to
+avoid duplicating undesired header values.</p>
+</div>
+<p>A sample redirect flow might look like this:</p>
+<ol class="arabic simple">
+<li><p>Client sends a GET request for <em>http://foo.com/bar</em></p></li>
+<li><p>Upstream 1 sends a 302 with  <em>“location: http://baz.com/eep”</em></p></li>
+<li><p>Envoy is configured to allow redirects on the original route, and sends a new GET request to
+Upstream 2, to fetch <em>http://baz.com/eep</em> with the additional request header
+<em>“x-envoy-original-url: http://foo.com/bar”</em></p></li>
+<li><p>Envoy proxies the response data for <em>http://baz.com/eep</em> to the client as the response to the original
+request.</p></li>
+</ol>
+</div>
+<div class="section" id="timeouts">
+<h2>Timeouts<a class="headerlink" href="#timeouts" title="Permalink to this headline">¶</a></h2>
+<p>Various configurable timeouts apply to an HTTP connection and its constituent streams. Please see
+<a class="reference internal" href="../../../faq/configuration/timeouts.html#faq-configuration-timeouts"><span class="std std-ref">this FAQ entry</span></a> for an overview of important timeout
+configuration.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="http_filters.html" class="btn btn-neutral float-right" title="HTTP filters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="http.html" class="btn btn-neutral float-left" title="HTTP" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2020, Envoy Project Authors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

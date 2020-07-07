@@ -1,0 +1,912 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Overview &mdash; envoy tag-v1.12.6 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Listeners" href="../listeners/listeners.html" />
+    <link rel="prev" title="Configuration reference" href="../configuration.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> envoy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                tag-v1.12.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/install.html">Building and installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../configuration.html">Configuration reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bootstrap-configuration">Bootstrap configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example">Example</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#static">Static</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mostly-static-with-dynamic-eds">Mostly static with dynamic EDS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dynamic">Dynamic</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#xds-api-endpoints">xDS API endpoints</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#grpc-streaming-endpoints">gRPC streaming endpoints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rest-endpoints">REST endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#aggregated-discovery-service">Aggregated Discovery Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#delta-endpoints">Delta endpoints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#management-server-unreachability">Management Server Unreachability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#statistics">Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xds-subscription-statistics">xDS subscription statistics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../http/http.html">HTTP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../upstream/upstream.html">Upstream clusters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../observability/observability.html">Observability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../security/security.html">Security</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../operations/operations.html">Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../other_features/other_features.html">Other features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced/advanced.html">Advanced</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../best_practices/best_practices.html">Configuration best practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/overview.html">FAQ</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../configuration.html">Configuration reference</a> &raquo;</li>
+        
+      <li>Overview</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/configuration/overview/v2_overview.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="overview">
+<span id="config-overview-v2"></span><h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<p>The Envoy v2 APIs are defined as <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto3">proto3</a> <a class="reference external" href="https://developers.google.com/protocol-buffers/">Protocol Buffers</a> in the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.12.6/api/">api tree</a>. They
+support:</p>
+<ul class="simple">
+<li><p>Streaming delivery of <a class="reference internal" href="../../api-docs/xds_protocol.html#xds-protocol"><span class="std std-ref">xDS</span></a> API updates via gRPC. This reduces
+resource requirements and can lower the update latency.</p></li>
+<li><p>A new REST-JSON API in which the JSON/YAML formats are derived mechanically via the <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto3#json">proto3
+canonical JSON mapping</a>.</p></li>
+<li><p>Delivery of updates via the filesystem, REST-JSON or gRPC endpoints.</p></li>
+<li><p>Advanced load balancing through an extended endpoint assignment API and load
+and resource utilization reporting to management servers.</p></li>
+<li><p><a class="reference internal" href="../../api-docs/xds_protocol.html#xds-protocol-eventual-consistency-considerations"><span class="std std-ref">Stronger consistency and ordering properties</span></a>
+when needed. The v2 APIs still maintain a baseline eventual consistency model.</p></li>
+</ul>
+<p>See the <a class="reference internal" href="../../api-docs/xds_protocol.html#xds-protocol"><span class="std std-ref">xDS protocol description</span></a> for
+further details on aspects of v2 message exchange between Envoy and the management server.</p>
+<div class="section" id="bootstrap-configuration">
+<span id="config-overview-v2-bootstrap"></span><h2>Bootstrap configuration<a class="headerlink" href="#bootstrap-configuration" title="Permalink to this headline">¶</a></h2>
+<p>To use the v2 API, it’s necessary to supply a bootstrap configuration file. This
+provides static server configuration and configures Envoy to access <a class="reference internal" href="../../intro/arch_overview/operations/dynamic_configuration.html#arch-overview-dynamic-config"><span class="std std-ref">dynamic
+configuration if needed</span></a>. This is supplied on the command-line via
+the <a class="reference internal" href="../../operations/cli.html#cmdoption-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">-c</span></code></a> flag, i.e.:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">./envoy -c &lt;path to config&gt;.{json,yaml,pb,pb_text}</span>
+</pre></div>
+</div>
+<p>where the extension reflects the underlying v2 config representation.</p>
+<p>The <a class="reference internal" href="../../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-msg-config-bootstrap-v2-bootstrap"><span class="std std-ref">Bootstrap</span></a> message is the root of the
+configuration. A key concept in the <a class="reference internal" href="../../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-msg-config-bootstrap-v2-bootstrap"><span class="std std-ref">Bootstrap</span></a>
+message is the distinction between static and dynamic resources. Resources such
+as a <a class="reference internal" href="../../api-v2/api/v2/lds.proto.html#envoy-api-msg-listener"><span class="std std-ref">Listener</span></a> or <a class="reference internal" href="../../api-v2/api/v2/cds.proto.html#envoy-api-msg-cluster"><span class="std std-ref">Cluster</span></a> may be supplied either statically in
+<a class="reference internal" href="../../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-field-config-bootstrap-v2-bootstrap-static-resources"><span class="std std-ref">static_resources</span></a> or have
+an xDS service such as <a class="reference internal" href="../listeners/lds.html#config-listeners-lds"><span class="std std-ref">LDS</span></a> or <a class="reference internal" href="../upstream/cluster_manager/cds.html#config-cluster-manager-cds"><span class="std std-ref">CDS</span></a> configured in
+<a class="reference internal" href="../../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-field-config-bootstrap-v2-bootstrap-dynamic-resources"><span class="std std-ref">dynamic_resources</span></a>.</p>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>Below we will use YAML representation of the config protos and a running example
+of a service proxying HTTP from 127.0.0.1:10000 to 127.0.0.2:1234.</p>
+<div class="section" id="static">
+<h3>Static<a class="headerlink" href="#static" title="Permalink to this headline">¶</a></h3>
+<p>A minimal fully static bootstrap config is provided below:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">admin</span><span class="p">:</span>
+  <span class="nt">access_log_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/tmp/admin_access.log</span>
+  <span class="nt">address</span><span class="p">:</span>
+    <span class="nt">socket_address</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> address</span><span class="p">:</span> <span class="nv">127.0.0.1</span><span class="p p-Indicator">,</span><span class="nt"> port_value</span><span class="p">:</span> <span class="nv">9901</span> <span class="p p-Indicator">}</span>
+
+<span class="nt">static_resources</span><span class="p">:</span>
+  <span class="nt">listeners</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">listener_0</span>
+    <span class="nt">address</span><span class="p">:</span>
+      <span class="nt">socket_address</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> address</span><span class="p">:</span> <span class="nv">127.0.0.1</span><span class="p p-Indicator">,</span><span class="nt"> port_value</span><span class="p">:</span> <span class="nv">10000</span> <span class="p p-Indicator">}</span>
+    <span class="nt">filter_chains</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">filters</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.http_connection_manager</span>
+        <span class="nt">typed_config</span><span class="p">:</span>
+          <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager</span>
+          <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ingress_http</span>
+          <span class="nt">codec_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">AUTO</span>
+          <span class="nt">route_config</span><span class="p">:</span>
+            <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_route</span>
+            <span class="nt">virtual_hosts</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_service</span>
+              <span class="nt">domains</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;*&quot;</span><span class="p p-Indicator">]</span>
+              <span class="nt">routes</span><span class="p">:</span>
+              <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> prefix</span><span class="p">:</span> <span class="s">&quot;/&quot;</span> <span class="p p-Indicator">}</span>
+                <span class="nt">route</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> cluster</span><span class="p">:</span> <span class="nv">some_service</span> <span class="p p-Indicator">}</span>
+          <span class="nt">http_filters</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.router</span>
+  <span class="nt">clusters</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_service</span>
+    <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25s</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">STATIC</span>
+    <span class="nt">lb_policy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ROUND_ROBIN</span>
+    <span class="nt">load_assignment</span><span class="p">:</span>
+      <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_service</span>
+      <span class="nt">endpoints</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="nt">endpoint</span><span class="p">:</span>
+            <span class="nt">address</span><span class="p">:</span>
+              <span class="nt">socket_address</span><span class="p">:</span>
+                <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span>
+                <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1234</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="mostly-static-with-dynamic-eds">
+<h3>Mostly static with dynamic EDS<a class="headerlink" href="#mostly-static-with-dynamic-eds" title="Permalink to this headline">¶</a></h3>
+<p>A bootstrap config that continues from the above example with <a class="reference internal" href="../../intro/arch_overview/operations/dynamic_configuration.html#arch-overview-dynamic-config-eds"><span class="std std-ref">dynamic endpoint
+discovery</span></a> via an
+<a class="reference internal" href="../../api-v2/api/v2/eds.proto.html#envoy-api-file-envoy-api-v2-eds-proto"><span class="std std-ref">EDS</span></a> gRPC management server listening
+on 127.0.0.1:5678 is provided below:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">admin</span><span class="p">:</span>
+  <span class="nt">access_log_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/tmp/admin_access.log</span>
+  <span class="nt">address</span><span class="p">:</span>
+    <span class="nt">socket_address</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> address</span><span class="p">:</span> <span class="nv">127.0.0.1</span><span class="p p-Indicator">,</span><span class="nt"> port_value</span><span class="p">:</span> <span class="nv">9901</span> <span class="p p-Indicator">}</span>
+
+<span class="nt">static_resources</span><span class="p">:</span>
+  <span class="nt">listeners</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">listener_0</span>
+    <span class="nt">address</span><span class="p">:</span>
+      <span class="nt">socket_address</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> address</span><span class="p">:</span> <span class="nv">127.0.0.1</span><span class="p p-Indicator">,</span><span class="nt"> port_value</span><span class="p">:</span> <span class="nv">10000</span> <span class="p p-Indicator">}</span>
+    <span class="nt">filter_chains</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">filters</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.http_connection_manager</span>
+        <span class="nt">typed_config</span><span class="p">:</span>
+          <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager</span>
+          <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ingress_http</span>
+          <span class="nt">codec_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">AUTO</span>
+          <span class="nt">route_config</span><span class="p">:</span>
+            <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_route</span>
+            <span class="nt">virtual_hosts</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_service</span>
+              <span class="nt">domains</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;*&quot;</span><span class="p p-Indicator">]</span>
+              <span class="nt">routes</span><span class="p">:</span>
+              <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> prefix</span><span class="p">:</span> <span class="s">&quot;/&quot;</span> <span class="p p-Indicator">}</span>
+                <span class="nt">route</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> cluster</span><span class="p">:</span> <span class="nv">some_service</span> <span class="p p-Indicator">}</span>
+          <span class="nt">http_filters</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.router</span>
+  <span class="nt">clusters</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_service</span>
+    <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25s</span>
+    <span class="nt">lb_policy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ROUND_ROBIN</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">EDS</span>
+    <span class="nt">eds_cluster_config</span><span class="p">:</span>
+      <span class="nt">eds_config</span><span class="p">:</span>
+        <span class="nt">api_config_source</span><span class="p">:</span>
+          <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GRPC</span>
+          <span class="nt">grpc_services</span><span class="p">:</span>
+            <span class="nt">envoy_grpc</span><span class="p">:</span>
+              <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xds_cluster</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xds_cluster</span>
+    <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25s</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">STATIC</span>
+    <span class="nt">lb_policy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ROUND_ROBIN</span>
+    <span class="nt">http2_protocol_options</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+    <span class="nt">upstream_connection_options</span><span class="p">:</span>
+      <span class="c1"># configure a TCP keep-alive to detect and reconnect to the admin</span>
+      <span class="c1"># server in the event of a TCP socket half open connection</span>
+      <span class="nt">tcp_keepalive</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+    <span class="nt">load_assignment</span><span class="p">:</span>
+      <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xds_cluster</span>
+      <span class="nt">endpoints</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="nt">endpoint</span><span class="p">:</span>
+            <span class="nt">address</span><span class="p">:</span>
+              <span class="nt">socket_address</span><span class="p">:</span>
+                <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span>
+                <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5678</span>
+</pre></div>
+</div>
+<p>Notice above that <em>xds_cluster</em> is defined to point Envoy at the management server. Even in
+an otherwise completely dynamic configurations, some static resources need to
+be defined to point Envoy at its xDS management server(s).</p>
+<p>It’s important to set appropriate <a class="reference internal" href="../../api-v2/api/v2/core/address.proto.html#envoy-api-msg-core-tcpkeepalive"><span class="std std-ref">TCP Keep-Alive options</span></a>
+in the <cite>tcp_keepalive</cite> block. This will help detect TCP half open connections to the xDS management
+server and re-establish a full connection.</p>
+<p>In the above example, the EDS management server could then return a proto encoding of a
+<a class="reference internal" href="../../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryresponse"><span class="std std-ref">DiscoveryResponse</span></a>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version_info</span><span class="p">:</span> <span class="s">&quot;0&quot;</span>
+<span class="nt">resources</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.api.v2.ClusterLoadAssignment</span>
+  <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_service</span>
+  <span class="nt">endpoints</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">endpoint</span><span class="p">:</span>
+        <span class="nt">address</span><span class="p">:</span>
+          <span class="nt">socket_address</span><span class="p">:</span>
+            <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.2</span>
+            <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1234</span>
+</pre></div>
+</div>
+<p>The versioning and type URL scheme that appear above are explained in more
+detail in the <a class="reference internal" href="../../api-docs/xds_protocol.html#xds-protocol-streaming-grpc-subscriptions"><span class="std std-ref">streaming gRPC subscription protocol</span></a>
+documentation.</p>
+</div>
+<div class="section" id="dynamic">
+<h3>Dynamic<a class="headerlink" href="#dynamic" title="Permalink to this headline">¶</a></h3>
+<p>A fully dynamic bootstrap configuration, in which all resources other than
+those belonging to the management server are discovered via xDS is provided
+below:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">admin</span><span class="p">:</span>
+  <span class="nt">access_log_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/tmp/admin_access.log</span>
+  <span class="nt">address</span><span class="p">:</span>
+    <span class="nt">socket_address</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> address</span><span class="p">:</span> <span class="nv">127.0.0.1</span><span class="p p-Indicator">,</span><span class="nt"> port_value</span><span class="p">:</span> <span class="nv">9901</span> <span class="p p-Indicator">}</span>
+
+<span class="nt">dynamic_resources</span><span class="p">:</span>
+  <span class="nt">lds_config</span><span class="p">:</span>
+    <span class="nt">api_config_source</span><span class="p">:</span>
+      <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GRPC</span>
+      <span class="nt">grpc_services</span><span class="p">:</span>
+        <span class="nt">envoy_grpc</span><span class="p">:</span>
+          <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xds_cluster</span>
+  <span class="nt">cds_config</span><span class="p">:</span>
+    <span class="nt">api_config_source</span><span class="p">:</span>
+      <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GRPC</span>
+      <span class="nt">grpc_services</span><span class="p">:</span>
+        <span class="nt">envoy_grpc</span><span class="p">:</span>
+          <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xds_cluster</span>
+
+<span class="nt">static_resources</span><span class="p">:</span>
+  <span class="nt">clusters</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xds_cluster</span>
+    <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25s</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">STATIC</span>
+    <span class="nt">lb_policy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ROUND_ROBIN</span>
+    <span class="nt">http2_protocol_options</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+    <span class="nt">upstream_connection_options</span><span class="p">:</span>
+      <span class="c1"># configure a TCP keep-alive to detect and reconnect to the admin</span>
+      <span class="c1"># server in the event of a TCP socket half open connection</span>
+      <span class="nt">tcp_keepalive</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+    <span class="nt">load_assignment</span><span class="p">:</span>
+      <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xds_cluster</span>
+      <span class="nt">endpoints</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="nt">endpoint</span><span class="p">:</span>
+            <span class="nt">address</span><span class="p">:</span>
+              <span class="nt">socket_address</span><span class="p">:</span>
+                <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span>
+                <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5678</span>
+</pre></div>
+</div>
+<p>The management server could respond to LDS requests with:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version_info</span><span class="p">:</span> <span class="s">&quot;0&quot;</span>
+<span class="nt">resources</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.api.v2.Listener</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">listener_0</span>
+  <span class="nt">address</span><span class="p">:</span>
+    <span class="nt">socket_address</span><span class="p">:</span>
+      <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span>
+      <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10000</span>
+  <span class="nt">filter_chains</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">filters</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.http_connection_manager</span>
+      <span class="nt">typed_config</span><span class="p">:</span>
+        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager</span>
+        <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ingress_http</span>
+        <span class="nt">codec_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">AUTO</span>
+        <span class="nt">rds</span><span class="p">:</span>
+          <span class="nt">route_config_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_route</span>
+          <span class="nt">config_source</span><span class="p">:</span>
+            <span class="nt">api_config_source</span><span class="p">:</span>
+              <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GRPC</span>
+              <span class="nt">grpc_services</span><span class="p">:</span>
+                <span class="nt">envoy_grpc</span><span class="p">:</span>
+                  <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xds_cluster</span>
+        <span class="nt">http_filters</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.router</span>
+</pre></div>
+</div>
+<p>The management server could respond to RDS requests with:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version_info</span><span class="p">:</span> <span class="s">&quot;0&quot;</span>
+<span class="nt">resources</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.api.v2.RouteConfiguration</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_route</span>
+  <span class="nt">virtual_hosts</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_service</span>
+    <span class="nt">domains</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;*&quot;</span><span class="p p-Indicator">]</span>
+    <span class="nt">routes</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> prefix</span><span class="p">:</span> <span class="s">&quot;/&quot;</span> <span class="p p-Indicator">}</span>
+      <span class="nt">route</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> cluster</span><span class="p">:</span> <span class="nv">some_service</span> <span class="p p-Indicator">}</span>
+</pre></div>
+</div>
+<p>The management server could respond to CDS requests with:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version_info</span><span class="p">:</span> <span class="s">&quot;0&quot;</span>
+<span class="nt">resources</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.api.v2.Cluster</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_service</span>
+  <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25s</span>
+  <span class="nt">lb_policy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ROUND_ROBIN</span>
+  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">EDS</span>
+  <span class="nt">eds_cluster_config</span><span class="p">:</span>
+    <span class="nt">eds_config</span><span class="p">:</span>
+      <span class="nt">api_config_source</span><span class="p">:</span>
+        <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GRPC</span>
+        <span class="nt">grpc_services</span><span class="p">:</span>
+          <span class="nt">envoy_grpc</span><span class="p">:</span>
+            <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xds_cluster</span>
+</pre></div>
+</div>
+<p>The management server could respond to EDS requests with:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version_info</span><span class="p">:</span> <span class="s">&quot;0&quot;</span>
+<span class="nt">resources</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.api.v2.ClusterLoadAssignment</span>
+  <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_service</span>
+  <span class="nt">endpoints</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">endpoint</span><span class="p">:</span>
+        <span class="nt">address</span><span class="p">:</span>
+          <span class="nt">socket_address</span><span class="p">:</span>
+            <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.2</span>
+            <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1234</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="xds-api-endpoints">
+<span id="config-overview-v2-management-server"></span><h2>xDS API endpoints<a class="headerlink" href="#xds-api-endpoints" title="Permalink to this headline">¶</a></h2>
+<p>A v2 xDS management server will implement the below endpoints as required for
+gRPC and/or REST serving. In both streaming gRPC and
+REST-JSON cases, a <a class="reference internal" href="../../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryrequest"><span class="std std-ref">DiscoveryRequest</span></a> is sent and a
+<a class="reference internal" href="../../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryresponse"><span class="std std-ref">DiscoveryResponse</span></a> received following the
+<a class="reference internal" href="../../api-docs/xds_protocol.html#xds-protocol"><span class="std std-ref">xDS protocol</span></a>.</p>
+<div class="section" id="grpc-streaming-endpoints">
+<span id="v2-grpc-streaming-endpoints"></span><h3>gRPC streaming endpoints<a class="headerlink" href="#grpc-streaming-endpoints" title="Permalink to this headline">¶</a></h3>
+<dl class="post">
+<dt id="post--envoy.api.v2.ClusterDiscoveryService-StreamClusters">
+<code class="sig-name descname">POST </code><code class="sig-name descname">/envoy.api.v2.ClusterDiscoveryService/StreamClusters</code><a class="headerlink" href="#post--envoy.api.v2.ClusterDiscoveryService-StreamClusters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.12.6/api/envoy/api/v2/cds.proto">cds.proto</a> for the service definition. This is used by Envoy
+as a client when</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">cds_config</span><span class="p">:</span>
+  <span class="nt">api_config_source</span><span class="p">:</span>
+    <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GRPC</span>
+    <span class="nt">grpc_services</span><span class="p">:</span>
+      <span class="nt">envoy_grpc</span><span class="p">:</span>
+        <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_xds_cluster</span>
+</pre></div>
+</div>
+<p>is set in the <a class="reference internal" href="../../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-field-config-bootstrap-v2-bootstrap-dynamic-resources"><span class="std std-ref">dynamic_resources</span></a> of the <a class="reference internal" href="../../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-msg-config-bootstrap-v2-bootstrap"><span class="std std-ref">Bootstrap</span></a> config.</p>
+<dl class="post">
+<dt id="post--envoy.api.v2.EndpointDiscoveryService-StreamEndpoints">
+<code class="sig-name descname">POST </code><code class="sig-name descname">/envoy.api.v2.EndpointDiscoveryService/StreamEndpoints</code><a class="headerlink" href="#post--envoy.api.v2.EndpointDiscoveryService-StreamEndpoints" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.12.6/api/envoy/api/v2/eds.proto">eds.proto</a>
+for the service definition. This is used by Envoy as a client when</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">eds_config</span><span class="p">:</span>
+  <span class="nt">api_config_source</span><span class="p">:</span>
+    <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GRPC</span>
+    <span class="nt">grpc_services</span><span class="p">:</span>
+      <span class="nt">envoy_grpc</span><span class="p">:</span>
+        <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_xds_cluster</span>
+</pre></div>
+</div>
+<p>is set in the <a class="reference internal" href="../../api-v2/api/v2/cds.proto.html#envoy-api-field-cluster-eds-cluster-config"><span class="std std-ref">eds_cluster_config</span></a> field of the <a class="reference internal" href="../../api-v2/api/v2/cds.proto.html#envoy-api-msg-cluster"><span class="std std-ref">Cluster</span></a> config.</p>
+<dl class="post">
+<dt id="post--envoy.api.v2.ListenerDiscoveryService-StreamListeners">
+<code class="sig-name descname">POST </code><code class="sig-name descname">/envoy.api.v2.ListenerDiscoveryService/StreamListeners</code><a class="headerlink" href="#post--envoy.api.v2.ListenerDiscoveryService-StreamListeners" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.12.6/api/envoy/api/v2/lds.proto">lds.proto</a>
+for the service definition. This is used by Envoy as a client when</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">lds_config</span><span class="p">:</span>
+  <span class="nt">api_config_source</span><span class="p">:</span>
+    <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GRPC</span>
+    <span class="nt">grpc_services</span><span class="p">:</span>
+      <span class="nt">envoy_grpc</span><span class="p">:</span>
+        <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_xds_cluster</span>
+</pre></div>
+</div>
+<p>is set in the <a class="reference internal" href="../../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-field-config-bootstrap-v2-bootstrap-dynamic-resources"><span class="std std-ref">dynamic_resources</span></a> of the <a class="reference internal" href="../../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-msg-config-bootstrap-v2-bootstrap"><span class="std std-ref">Bootstrap</span></a> config.</p>
+<dl class="post">
+<dt id="post--envoy.api.v2.RouteDiscoveryService-StreamRoutes">
+<code class="sig-name descname">POST </code><code class="sig-name descname">/envoy.api.v2.RouteDiscoveryService/StreamRoutes</code><a class="headerlink" href="#post--envoy.api.v2.RouteDiscoveryService-StreamRoutes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.12.6/api/envoy/api/v2/rds.proto">rds.proto</a>
+for the service definition. This is used by Envoy as a client when</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">route_config_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_route_name</span>
+<span class="nt">config_source</span><span class="p">:</span>
+  <span class="nt">api_config_source</span><span class="p">:</span>
+    <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GRPC</span>
+    <span class="nt">grpc_services</span><span class="p">:</span>
+      <span class="nt">envoy_grpc</span><span class="p">:</span>
+        <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_xds_cluster</span>
+</pre></div>
+</div>
+<p>is set in the <a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-rds"><span class="std std-ref">rds</span></a> field
+of the <a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-msg-config-filter-network-http-connection-manager-v2-httpconnectionmanager"><span class="std std-ref">HttpConnectionManager</span></a> config.</p>
+<dl class="post">
+<dt id="post--envoy.api.v2.ScopedRoutesDiscoveryService-StreamScopedRoutes">
+<code class="sig-name descname">POST </code><code class="sig-name descname">/envoy.api.v2.ScopedRoutesDiscoveryService/StreamScopedRoutes</code><a class="headerlink" href="#post--envoy.api.v2.ScopedRoutesDiscoveryService-StreamScopedRoutes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.12.6/api/envoy/api/v2/srds.proto">srds.proto</a>
+for the service definition. This is used by Envoy as a client when</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_scoped_route_name</span>
+<span class="nt">scoped_rds</span><span class="p">:</span>
+  <span class="nt">config_source</span><span class="p">:</span>
+    <span class="nt">api_config_source</span><span class="p">:</span>
+      <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GRPC</span>
+      <span class="nt">grpc_services</span><span class="p">:</span>
+        <span class="nt">envoy_grpc</span><span class="p">:</span>
+          <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_xds_cluster</span>
+</pre></div>
+</div>
+<p>is set in the <a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-scoped-routes"><span class="std std-ref">scoped_routes</span></a>
+field of the <a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-msg-config-filter-network-http-connection-manager-v2-httpconnectionmanager"><span class="std std-ref">HttpConnectionManager</span></a> config.</p>
+<dl class="post">
+<dt id="post--envoy.service.discovery.v2.SecretDiscoveryService-StreamSecrets">
+<code class="sig-name descname">POST </code><code class="sig-name descname">/envoy.service.discovery.v2.SecretDiscoveryService/StreamSecrets</code><a class="headerlink" href="#post--envoy.service.discovery.v2.SecretDiscoveryService-StreamSecrets" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.12.6/api/envoy/service/discovery/v2/srds.proto">sds.proto</a>
+for the service definition. This is used by Envoy as a client when</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_secret_name</span>
+<span class="nt">config_source</span><span class="p">:</span>
+  <span class="nt">api_config_source</span><span class="p">:</span>
+    <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GRPC</span>
+    <span class="nt">grpc_services</span><span class="p">:</span>
+      <span class="nt">envoy_grpc</span><span class="p">:</span>
+        <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_xds_cluster</span>
+</pre></div>
+</div>
+<p>is set inside a <a class="reference internal" href="../../api-v2/api/v2/auth/cert.proto.html#envoy-api-msg-auth-sdssecretconfig"><span class="std std-ref">SdsSecretConfig</span></a> message. This message
+is used in various places such as the <a class="reference internal" href="../../api-v2/api/v2/auth/cert.proto.html#envoy-api-msg-auth-commontlscontext"><span class="std std-ref">CommonTlsContext</span></a>.</p>
+<dl class="post">
+<dt id="post--envoy.service.discovery.v2.RuntimeDiscoveryService-StreamRuntime">
+<code class="sig-name descname">POST </code><code class="sig-name descname">/envoy.service.discovery.v2.RuntimeDiscoveryService/StreamRuntime</code><a class="headerlink" href="#post--envoy.service.discovery.v2.RuntimeDiscoveryService-StreamRuntime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.12.6/api/envoy/service/discovery/v2/rtds.proto">rtds.proto</a>
+for the service definition. This is used by Envoy as a client when</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_runtime_layer_name</span>
+<span class="nt">config_source</span><span class="p">:</span>
+  <span class="nt">api_config_source</span><span class="p">:</span>
+    <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GRPC</span>
+    <span class="nt">grpc_services</span><span class="p">:</span>
+      <span class="nt">envoy_grpc</span><span class="p">:</span>
+        <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_xds_cluster</span>
+</pre></div>
+</div>
+<p>is set inside the <a class="reference internal" href="../../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-field-config-bootstrap-v2-runtimelayer-rtds-layer"><span class="std std-ref">rtds_layer</span></a>
+field.</p>
+</div>
+<div class="section" id="rest-endpoints">
+<h3>REST endpoints<a class="headerlink" href="#rest-endpoints" title="Permalink to this headline">¶</a></h3>
+<dl class="post">
+<dt id="post--v2-discovery-clusters">
+<code class="sig-name descname">POST </code><code class="sig-name descname">/v2/discovery:clusters</code><a class="headerlink" href="#post--v2-discovery-clusters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.12.6/api/envoy/api/v2/cds.proto">cds.proto</a>
+for the service definition. This is used by Envoy as a client when</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">cds_config</span><span class="p">:</span>
+  <span class="nt">api_config_source</span><span class="p">:</span>
+    <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">REST</span>
+    <span class="nt">cluster_names</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">some_xds_cluster</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<p>is set in the <a class="reference internal" href="../../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-field-config-bootstrap-v2-bootstrap-dynamic-resources"><span class="std std-ref">dynamic_resources</span></a> of the <a class="reference internal" href="../../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-msg-config-bootstrap-v2-bootstrap"><span class="std std-ref">Bootstrap</span></a> config.</p>
+<dl class="post">
+<dt id="post--v2-discovery-endpoints">
+<code class="sig-name descname">POST </code><code class="sig-name descname">/v2/discovery:endpoints</code><a class="headerlink" href="#post--v2-discovery-endpoints" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.12.6/api/envoy/api/v2/eds.proto">eds.proto</a>
+for the service definition. This is used by Envoy as a client when</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">eds_config</span><span class="p">:</span>
+  <span class="nt">api_config_source</span><span class="p">:</span>
+    <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">REST</span>
+    <span class="nt">cluster_names</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">some_xds_cluster</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<p>is set in the <a class="reference internal" href="../../api-v2/api/v2/cds.proto.html#envoy-api-field-cluster-eds-cluster-config"><span class="std std-ref">eds_cluster_config</span></a> field of the <a class="reference internal" href="../../api-v2/api/v2/cds.proto.html#envoy-api-msg-cluster"><span class="std std-ref">Cluster</span></a> config.</p>
+<dl class="post">
+<dt id="post--v2-discovery-listeners">
+<code class="sig-name descname">POST </code><code class="sig-name descname">/v2/discovery:listeners</code><a class="headerlink" href="#post--v2-discovery-listeners" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.12.6/api/envoy/api/v2/lds.proto">lds.proto</a>
+for the service definition. This is used by Envoy as a client when</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">lds_config</span><span class="p">:</span>
+  <span class="nt">api_config_source</span><span class="p">:</span>
+    <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">REST</span>
+    <span class="nt">cluster_names</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">some_xds_cluster</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<p>is set in the <a class="reference internal" href="../../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-field-config-bootstrap-v2-bootstrap-dynamic-resources"><span class="std std-ref">dynamic_resources</span></a> of the <a class="reference internal" href="../../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-msg-config-bootstrap-v2-bootstrap"><span class="std std-ref">Bootstrap</span></a> config.</p>
+<dl class="post">
+<dt id="post--v2-discovery-routes">
+<code class="sig-name descname">POST </code><code class="sig-name descname">/v2/discovery:routes</code><a class="headerlink" href="#post--v2-discovery-routes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.12.6/api/envoy/api/v2/rds.proto">rds.proto</a>
+for the service definition. This is used by Envoy as a client when</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">route_config_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_route_name</span>
+<span class="nt">config_source</span><span class="p">:</span>
+  <span class="nt">api_config_source</span><span class="p">:</span>
+    <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">REST</span>
+    <span class="nt">cluster_names</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">some_xds_cluster</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<p>is set in the <a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-rds"><span class="std std-ref">rds</span></a> field of the <a class="reference internal" href="../../api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto.html#envoy-api-msg-config-filter-network-http-connection-manager-v2-httpconnectionmanager"><span class="std std-ref">HttpConnectionManager</span></a> config.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The management server responding to these endpoints must respond with a <a class="reference internal" href="../../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryresponse"><span class="std std-ref">DiscoveryResponse</span></a>
+along with a HTTP status of 200. Additionally, if the configuration that would be supplied has not changed (as indicated by the version
+supplied by the Envoy client) then the management server can respond with an empty body and a HTTP status of 304.</p>
+</div>
+</div>
+</div>
+<div class="section" id="aggregated-discovery-service">
+<span id="config-overview-v2-ads"></span><h2>Aggregated Discovery Service<a class="headerlink" href="#aggregated-discovery-service" title="Permalink to this headline">¶</a></h2>
+<p>While Envoy fundamentally employs an eventual consistency model, ADS provides an
+opportunity to sequence API update pushes and ensure affinity of a single
+management server for an Envoy node for API updates. ADS allows one or more APIs
+and their resources to be delivered on a single, bidirectional gRPC stream by
+the management server. Without this, some APIs such as RDS and EDS may require
+the management of multiple streams and connections to distinct management
+servers.</p>
+<p>ADS will allow for hitless updates of configuration by appropriate sequencing.
+For example, suppose <em>foo.com</em> was mapped to cluster <em>X</em>. We wish to change the
+mapping in the route table to point <em>foo.com</em> at cluster <em>Y</em>. In order to do
+this, a CDS/EDS update must first be delivered containing both clusters <em>X</em> and
+<em>Y</em>.</p>
+<p>Without ADS, the CDS/EDS/RDS streams may point at distinct management servers,
+or when on the same management server at distinct gRPC streams/connections that
+require coordination. The EDS resource requests may be split across two distinct
+streams, one for <em>X</em> and one for <em>Y</em>. ADS allows these to be coalesced to a
+single stream to a single management server, avoiding the need for distributed
+synchronization to correctly sequence the update. With ADS, the management
+server would deliver the CDS, EDS and then RDS updates on a single stream.</p>
+<p>ADS is only available for gRPC streaming (not REST) and is described more fully
+in <a class="reference internal" href="../../api-docs/xds_protocol.html#xds-protocol-ads"><span class="std std-ref">xDS</span></a>
+document. The gRPC endpoint is:</p>
+<dl class="post">
+<dt id="post--envoy.service.discovery.v2.AggregatedDiscoveryService-StreamAggregatedResources">
+<code class="sig-name descname">POST </code><code class="sig-name descname">/envoy.service.discovery.v2.AggregatedDiscoveryService/StreamAggregatedResources</code><a class="headerlink" href="#post--envoy.service.discovery.v2.AggregatedDiscoveryService-StreamAggregatedResources" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.12.6/api/envoy/api/v2/discovery.proto">discovery.proto</a>
+for the service definition. This is used by Envoy as a client when</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">ads_config</span><span class="p">:</span>
+  <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GRPC</span>
+  <span class="nt">grpc_services</span><span class="p">:</span>
+    <span class="nt">envoy_grpc</span><span class="p">:</span>
+      <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_ads_cluster</span>
+</pre></div>
+</div>
+<p>is set in the <a class="reference internal" href="../../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-field-config-bootstrap-v2-bootstrap-dynamic-resources"><span class="std std-ref">dynamic_resources</span></a> of the <a class="reference internal" href="../../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-msg-config-bootstrap-v2-bootstrap"><span class="std std-ref">Bootstrap</span></a> config.</p>
+<p>When this is set, any of the configuration sources <a class="reference internal" href="#v2-grpc-streaming-endpoints"><span class="std std-ref">above</span></a> can
+be set to use the ADS channel. For example, a LDS config could be changed from</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">lds_config</span><span class="p">:</span>
+  <span class="nt">api_config_source</span><span class="p">:</span>
+    <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">REST</span>
+    <span class="nt">cluster_names</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">some_xds_cluster</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<p>to</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">lds_config</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt">ads</span><span class="p">:</span> <span class="p p-Indicator">{}}</span>
+</pre></div>
+</div>
+<p>with the effect that the LDS stream will be directed to <em>some_ads_cluster</em> over
+the shared ADS channel.</p>
+</div>
+<div class="section" id="delta-endpoints">
+<span id="config-overview-v2-delta"></span><h2>Delta endpoints<a class="headerlink" href="#delta-endpoints" title="Permalink to this headline">¶</a></h2>
+<p>The REST, filesystem, and original gRPC xDS implementations all deliver “state of the world” updates:
+every CDS update must contain every cluster, with the absence of a cluster from an update implying
+that the cluster is gone. For Envoy deployments with huge amounts of resources and even a trickle of
+churn, these state-of-the-world updates can be cumbersome.</p>
+<p>As of 1.12.0, Envoy supports a “delta” variant of xDS (including ADS), where updates only contain
+resources added/changed/removed. Delta xDS is a gRPC (only) protocol. Delta uses different
+request/response protos than SotW (DeltaDiscovery{Request,Response}); see
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.12.6/api/envoy/api/v2/discovery.proto">discovery.proto</a>. Conceptually, delta should be viewed as
+a new xDS transport type: there is static, filesystem, REST, gRPC-SotW, and now gRPC-delta.
+(Envoy’s implementation of the gRPC-SotW/delta client happens to share most of its code between the
+two, and something similar is likely possible on the server side. However, they are in fact
+incompatible protocols.
+<a class="reference internal" href="../../api-docs/xds_protocol.html#xds-protocol-delta"><span class="std std-ref">The specification of the delta xDS protocol’s behavior is here</span></a>.)</p>
+<p>To use delta, simply set the api_type field of your
+<a class="reference internal" href="../../api-v2/api/v2/core/config_source.proto.html#envoy-api-msg-core-apiconfigsource"><span class="std std-ref">ApiConfigSource</span></a> proto(s) to DELTA_GRPC.
+That works for both xDS and ADS; for ADS, it’s the api_type field of
+<a class="reference internal" href="../../api-v2/config/bootstrap/v2/bootstrap.proto.html#envoy-api-field-config-bootstrap-v2-bootstrap-dynamic-resources"><span class="std std-ref">DynamicResources.ads_config</span></a>,
+as described in the previous section.</p>
+</div>
+<div class="section" id="management-server-unreachability">
+<span id="config-overview-v2-mgmt-con-issues"></span><h2>Management Server Unreachability<a class="headerlink" href="#management-server-unreachability" title="Permalink to this headline">¶</a></h2>
+<p>When an Envoy instance loses connectivity with the management server, Envoy will latch on to
+the previous configuration while actively retrying in the background to reestablish the
+connection with the management server.</p>
+<p>Envoy debug logs the fact that it is not able to establish a connection with the management server
+every time it attempts a connection.</p>
+<p><a class="reference internal" href="#management-server-stats"><span class="std std-ref">connected_state</span></a> statistic provides a signal for monitoring this behavior.</p>
+</div>
+<div class="section" id="statistics">
+<span id="management-server-stats"></span><h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
+<p>Management Server has a statistics tree rooted at <em>control_plane.</em> with the following statistics:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>connected_state</p></td>
+<td><p>Gauge</p></td>
+<td><p>A boolean (1 for connected and 0 for disconnected) that indicates the current connection state with management server</p></td>
+</tr>
+<tr class="row-odd"><td><p>rate_limit_enforced</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of times rate limit was enforced for management server requests</p></td>
+</tr>
+<tr class="row-even"><td><p>pending_requests</p></td>
+<td><p>Gauge</p></td>
+<td><p>Total number of pending requests when the rate limit was enforced</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="xds-subscription-statistics">
+<span id="subscription-statistics"></span><h2>xDS subscription statistics<a class="headerlink" href="#xds-subscription-statistics" title="Permalink to this headline">¶</a></h2>
+<p>Envoy discovers its various dynamic resources via discovery
+services referred to as <em>xDS</em>. Resources are requested via <a class="reference internal" href="../../api-docs/xds_protocol.html#xds-protocol"><span class="std std-ref">subscriptions</span></a>,
+by specifying a filesystem path to watch, initiating gRPC streams or polling a REST-JSON URL.</p>
+<p>The following statistics are generated for all subscriptions.</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>config_reload</p></td>
+<td><p>Counter</p></td>
+<td><p>Total API fetches that resulted in a config reload due to a different config</p></td>
+</tr>
+<tr class="row-odd"><td><p>init_fetch_timeout</p></td>
+<td><p>Counter</p></td>
+<td><p>Total <a class="reference internal" href="../../api-v2/api/v2/core/config_source.proto.html#envoy-api-field-core-configsource-initial-fetch-timeout"><span class="std std-ref">initial fetch timeouts</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>update_attempt</p></td>
+<td><p>Counter</p></td>
+<td><p>Total API fetches attempted</p></td>
+</tr>
+<tr class="row-odd"><td><p>update_success</p></td>
+<td><p>Counter</p></td>
+<td><p>Total API fetches completed successfully</p></td>
+</tr>
+<tr class="row-even"><td><p>update_failure</p></td>
+<td><p>Counter</p></td>
+<td><p>Total API fetches that failed because of network errors</p></td>
+</tr>
+<tr class="row-odd"><td><p>update_rejected</p></td>
+<td><p>Counter</p></td>
+<td><p>Total API fetches that failed because of schema/validation errors</p></td>
+</tr>
+<tr class="row-even"><td><p>version</p></td>
+<td><p>Gauge</p></td>
+<td><p>Hash of the contents from the last successful API fetch</p></td>
+</tr>
+<tr class="row-odd"><td><p>control_plane.connected_state</p></td>
+<td><p>Gauge</p></td>
+<td><p>A boolean (1 for connected and 0 for disconnected) that indicates the current connection state with management server</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../listeners/listeners.html" class="btn btn-neutral float-right" title="Listeners" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../configuration.html" class="btn btn-neutral float-left" title="Configuration reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2020, Envoy Project Authors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
