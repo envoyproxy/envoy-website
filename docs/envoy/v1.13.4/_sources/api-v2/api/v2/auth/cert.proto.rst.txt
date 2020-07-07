@@ -1,0 +1,755 @@
+.. _envoy_api_file_envoy/api/v2/auth/cert.proto:
+
+Common TLS configuration
+========================
+
+
+.. _envoy_api_msg_auth.TlsParameters:
+
+auth.TlsParameters
+------------------
+
+`[auth.TlsParameters proto] <https://github.com/envoyproxy/envoy/blob/v1.13.4/api/envoy/api/v2/auth/cert.proto#L26>`_
+
+
+.. code-block:: json
+
+  {
+    "tls_minimum_protocol_version": "...",
+    "tls_maximum_protocol_version": "...",
+    "cipher_suites": [],
+    "ecdh_curves": []
+  }
+
+.. _envoy_api_field_auth.TlsParameters.tls_minimum_protocol_version:
+
+tls_minimum_protocol_version
+  (:ref:`auth.TlsParameters.TlsProtocol <envoy_api_enum_auth.TlsParameters.TlsProtocol>`) Minimum TLS protocol version. By default, it's ``TLSv1_2`` for clients and ``TLSv1_0`` for
+  servers.
+  
+  
+.. _envoy_api_field_auth.TlsParameters.tls_maximum_protocol_version:
+
+tls_maximum_protocol_version
+  (:ref:`auth.TlsParameters.TlsProtocol <envoy_api_enum_auth.TlsParameters.TlsProtocol>`) Maximum TLS protocol version. By default, it's ``TLSv1_3`` for servers in non-FIPS builds, and
+  ``TLSv1_2`` for clients and for servers using :ref:`BoringSSL FIPS <arch_overview_ssl_fips>`.
+  
+  
+.. _envoy_api_field_auth.TlsParameters.cipher_suites:
+
+cipher_suites
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If specified, the TLS listener will only support the specified `cipher list
+  <https://commondatastorage.googleapis.com/chromium-boringssl-docs/ssl.h.html#Cipher-suite-configuration>`_
+  when negotiating TLS 1.0-1.2 (this setting has no effect when negotiating TLS 1.3). If not
+  specified, the default list will be used.
+  
+  In non-FIPS builds, the default cipher list is:
+  
+  .. code-block:: none
+  
+    [ECDHE-ECDSA-AES128-GCM-SHA256|ECDHE-ECDSA-CHACHA20-POLY1305]
+    [ECDHE-RSA-AES128-GCM-SHA256|ECDHE-RSA-CHACHA20-POLY1305]
+    ECDHE-ECDSA-AES128-SHA
+    ECDHE-RSA-AES128-SHA
+    AES128-GCM-SHA256
+    AES128-SHA
+    ECDHE-ECDSA-AES256-GCM-SHA384
+    ECDHE-RSA-AES256-GCM-SHA384
+    ECDHE-ECDSA-AES256-SHA
+    ECDHE-RSA-AES256-SHA
+    AES256-GCM-SHA384
+    AES256-SHA
+  
+  In builds using :ref:`BoringSSL FIPS <arch_overview_ssl_fips>`, the default cipher list is:
+  
+  .. code-block:: none
+  
+    ECDHE-ECDSA-AES128-GCM-SHA256
+    ECDHE-RSA-AES128-GCM-SHA256
+    ECDHE-ECDSA-AES128-SHA
+    ECDHE-RSA-AES128-SHA
+    AES128-GCM-SHA256
+    AES128-SHA
+    ECDHE-ECDSA-AES256-GCM-SHA384
+    ECDHE-RSA-AES256-GCM-SHA384
+    ECDHE-ECDSA-AES256-SHA
+    ECDHE-RSA-AES256-SHA
+    AES256-GCM-SHA384
+    AES256-SHA
+  
+  
+.. _envoy_api_field_auth.TlsParameters.ecdh_curves:
+
+ecdh_curves
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If specified, the TLS connection will only support the specified ECDH
+  curves. If not specified, the default curves will be used.
+  
+  In non-FIPS builds, the default curves are:
+  
+  .. code-block:: none
+  
+    X25519
+    P-256
+  
+  In builds using :ref:`BoringSSL FIPS <arch_overview_ssl_fips>`, the default curve is:
+  
+  .. code-block:: none
+  
+    P-256
+  
+  
+
+.. _envoy_api_enum_auth.TlsParameters.TlsProtocol:
+
+Enum auth.TlsParameters.TlsProtocol
+-----------------------------------
+
+`[auth.TlsParameters.TlsProtocol proto] <https://github.com/envoyproxy/envoy/blob/v1.13.4/api/envoy/api/v2/auth/cert.proto#L27>`_
+
+
+.. _envoy_api_enum_value_auth.TlsParameters.TlsProtocol.TLS_AUTO:
+
+TLS_AUTO
+  *(DEFAULT)* ⁣Envoy will choose the optimal TLS version.
+  
+  
+.. _envoy_api_enum_value_auth.TlsParameters.TlsProtocol.TLSv1_0:
+
+TLSv1_0
+  ⁣TLS 1.0
+  
+  
+.. _envoy_api_enum_value_auth.TlsParameters.TlsProtocol.TLSv1_1:
+
+TLSv1_1
+  ⁣TLS 1.1
+  
+  
+.. _envoy_api_enum_value_auth.TlsParameters.TlsProtocol.TLSv1_2:
+
+TLSv1_2
+  ⁣TLS 1.2
+  
+  
+.. _envoy_api_enum_value_auth.TlsParameters.TlsProtocol.TLSv1_3:
+
+TLSv1_3
+  ⁣TLS 1.3
+  
+  
+
+.. _envoy_api_msg_auth.PrivateKeyProvider:
+
+auth.PrivateKeyProvider
+-----------------------
+
+`[auth.PrivateKeyProvider proto] <https://github.com/envoyproxy/envoy/blob/v1.13.4/api/envoy/api/v2/auth/cert.proto#L113>`_
+
+BoringSSL private key method configuration. The private key methods are used for external
+(potentially asynchronous) signing and decryption operations. Some use cases for private key
+methods would be TPM support and TLS acceleration.
+
+.. code-block:: json
+
+  {
+    "provider_name": "...",
+    "config": "{...}",
+    "typed_config": "{...}"
+  }
+
+.. _envoy_api_field_auth.PrivateKeyProvider.provider_name:
+
+provider_name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Private key method provider name. The name must match a
+  supported private key method provider type.
+  
+  
+.. _envoy_api_field_auth.PrivateKeyProvider.config:
+
+config
+  (`Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_) 
+  Private key method provider specific configuration.
+  
+  
+  Only one of :ref:`config <envoy_api_field_auth.PrivateKeyProvider.config>`, :ref:`typed_config <envoy_api_field_auth.PrivateKeyProvider.typed_config>` may be set.
+  
+.. _envoy_api_field_auth.PrivateKeyProvider.typed_config:
+
+typed_config
+  (`Any <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any>`_) 
+  Private key method provider specific configuration.
+  
+  
+  Only one of :ref:`config <envoy_api_field_auth.PrivateKeyProvider.config>`, :ref:`typed_config <envoy_api_field_auth.PrivateKeyProvider.typed_config>` may be set.
+  
+
+
+.. _envoy_api_msg_auth.TlsCertificate:
+
+auth.TlsCertificate
+-------------------
+
+`[auth.TlsCertificate proto] <https://github.com/envoyproxy/envoy/blob/v1.13.4/api/envoy/api/v2/auth/cert.proto#L127>`_
+
+
+.. code-block:: json
+
+  {
+    "certificate_chain": "{...}",
+    "private_key": "{...}",
+    "private_key_provider": "{...}",
+    "password": "{...}"
+  }
+
+.. _envoy_api_field_auth.TlsCertificate.certificate_chain:
+
+certificate_chain
+  (:ref:`core.DataSource <envoy_api_msg_core.DataSource>`) The TLS certificate chain.
+  
+  
+.. _envoy_api_field_auth.TlsCertificate.private_key:
+
+private_key
+  (:ref:`core.DataSource <envoy_api_msg_core.DataSource>`) The TLS private key.
+  
+  
+.. _envoy_api_field_auth.TlsCertificate.private_key_provider:
+
+private_key_provider
+  (:ref:`auth.PrivateKeyProvider <envoy_api_msg_auth.PrivateKeyProvider>`) BoringSSL private key method provider. This is an alternative to :ref:`private_key
+  <envoy_api_field_auth.TlsCertificate.private_key>` field. This can't be
+  marked as ``oneof`` due to API compatibility reasons. Setting both :ref:`private_key
+  <envoy_api_field_auth.TlsCertificate.private_key>` and
+  :ref:`private_key_provider
+  <envoy_api_field_auth.TlsCertificate.private_key_provider>` fields will result in an
+  error.
+  
+  
+.. _envoy_api_field_auth.TlsCertificate.password:
+
+password
+  (:ref:`core.DataSource <envoy_api_msg_core.DataSource>`) The password to decrypt the TLS private key. If this field is not set, it is assumed that the
+  TLS private key is not password encrypted.
+  
+  
+
+
+
+
+.. _envoy_api_msg_auth.TlsSessionTicketKeys:
+
+auth.TlsSessionTicketKeys
+-------------------------
+
+`[auth.TlsSessionTicketKeys proto] <https://github.com/envoyproxy/envoy/blob/v1.13.4/api/envoy/api/v2/auth/cert.proto#L154>`_
+
+
+.. code-block:: json
+
+  {
+    "keys": []
+  }
+
+.. _envoy_api_field_auth.TlsSessionTicketKeys.keys:
+
+keys
+  (:ref:`core.DataSource <envoy_api_msg_core.DataSource>`, *REQUIRED*) Keys for encrypting and decrypting TLS session tickets. The
+  first key in the array contains the key to encrypt all new sessions created by this context.
+  All keys are candidates for decrypting received tickets. This allows for easy rotation of keys
+  by, for example, putting the new key first, and the previous key second.
+  
+  If :ref:`session_ticket_keys <envoy_api_field_auth.DownstreamTlsContext.session_ticket_keys>`
+  is not specified, the TLS library will still support resuming sessions via tickets, but it will
+  use an internally-generated and managed key, so sessions cannot be resumed across hot restarts
+  or on different hosts.
+  
+  Each key must contain exactly 80 bytes of cryptographically-secure random data. For
+  example, the output of ``openssl rand 80``.
+  
+  .. attention::
+  
+    Using this feature has serious security considerations and risks. Improper handling of keys
+    may result in loss of secrecy in connections, even if ciphers supporting perfect forward
+    secrecy are used. See https://www.imperialviolet.org/2013/06/27/botchingpfs.html for some
+    discussion. To minimize the risk, you must:
+  
+    * Keep the session ticket keys at least as secure as your TLS certificate private keys
+    * Rotate session ticket keys at least daily, and preferably hourly
+    * Always generate keys using a cryptographically-secure random data source
+  
+  
+
+
+.. _envoy_api_msg_auth.CertificateValidationContext:
+
+auth.CertificateValidationContext
+---------------------------------
+
+`[auth.CertificateValidationContext proto] <https://github.com/envoyproxy/envoy/blob/v1.13.4/api/envoy/api/v2/auth/cert.proto#L183>`_
+
+
+.. code-block:: json
+
+  {
+    "trusted_ca": "{...}",
+    "verify_certificate_spki": [],
+    "verify_certificate_hash": [],
+    "verify_subject_alt_name": [],
+    "match_subject_alt_names": [],
+    "crl": "{...}",
+    "allow_expired_certificate": "..."
+  }
+
+.. _envoy_api_field_auth.CertificateValidationContext.trusted_ca:
+
+trusted_ca
+  (:ref:`core.DataSource <envoy_api_msg_core.DataSource>`) TLS certificate data containing certificate authority certificates to use in verifying
+  a presented peer certificate (e.g. server certificate for clusters or client certificate
+  for listeners). If not specified and a peer certificate is presented it will not be
+  verified. By default, a client certificate is optional, unless one of the additional
+  options (:ref:`require_client_certificate
+  <envoy_api_field_auth.DownstreamTlsContext.require_client_certificate>`,
+  :ref:`verify_certificate_spki
+  <envoy_api_field_auth.CertificateValidationContext.verify_certificate_spki>`,
+  :ref:`verify_certificate_hash
+  <envoy_api_field_auth.CertificateValidationContext.verify_certificate_hash>`, or
+  :ref:`match_subject_alt_names
+  <envoy_api_field_auth.CertificateValidationContext.match_subject_alt_names>`) is also
+  specified.
+  
+  It can optionally contain certificate revocation lists, in which case Envoy will verify
+  that the presented peer certificate has not been revoked by one of the included CRLs.
+  
+  See :ref:`the TLS overview <arch_overview_ssl_enabling_verification>` for a list of common
+  system CA locations.
+  
+  
+.. _envoy_api_field_auth.CertificateValidationContext.verify_certificate_spki:
+
+verify_certificate_spki
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) An optional list of base64-encoded SHA-256 hashes. If specified, Envoy will verify that the
+  SHA-256 of the DER-encoded Subject Public Key Information (SPKI) of the presented certificate
+  matches one of the specified values.
+  
+  A base64-encoded SHA-256 of the Subject Public Key Information (SPKI) of the certificate
+  can be generated with the following command:
+  
+  .. code-block:: bash
+  
+    $ openssl x509 -in path/to/client.crt -noout -pubkey
+      | openssl pkey -pubin -outform DER
+      | openssl dgst -sha256 -binary
+      | openssl enc -base64
+    NvqYIYSbgK2vCJpQhObf77vv+bQWtc5ek5RIOwPiC9A=
+  
+  This is the format used in HTTP Public Key Pinning.
+  
+  When both:
+  :ref:`verify_certificate_hash
+  <envoy_api_field_auth.CertificateValidationContext.verify_certificate_hash>` and
+  :ref:`verify_certificate_spki
+  <envoy_api_field_auth.CertificateValidationContext.verify_certificate_spki>` are specified,
+  a hash matching value from either of the lists will result in the certificate being accepted.
+  
+  .. attention::
+  
+    This option is preferred over :ref:`verify_certificate_hash
+    <envoy_api_field_auth.CertificateValidationContext.verify_certificate_hash>`,
+    because SPKI is tied to a private key, so it doesn't change when the certificate
+    is renewed using the same private key.
+  
+  
+.. _envoy_api_field_auth.CertificateValidationContext.verify_certificate_hash:
+
+verify_certificate_hash
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) An optional list of hex-encoded SHA-256 hashes. If specified, Envoy will verify that
+  the SHA-256 of the DER-encoded presented certificate matches one of the specified values.
+  
+  A hex-encoded SHA-256 of the certificate can be generated with the following command:
+  
+  .. code-block:: bash
+  
+    $ openssl x509 -in path/to/client.crt -outform DER | openssl dgst -sha256 | cut -d" " -f2
+    df6ff72fe9116521268f6f2dd4966f51df479883fe7037b39f75916ac3049d1a
+  
+  A long hex-encoded and colon-separated SHA-256 (a.k.a. "fingerprint") of the certificate
+  can be generated with the following command:
+  
+  .. code-block:: bash
+  
+    $ openssl x509 -in path/to/client.crt -noout -fingerprint -sha256 | cut -d"=" -f2
+    DF:6F:F7:2F:E9:11:65:21:26:8F:6F:2D:D4:96:6F:51:DF:47:98:83:FE:70:37:B3:9F:75:91:6A:C3:04:9D:1A
+  
+  Both of those formats are acceptable.
+  
+  When both:
+  :ref:`verify_certificate_hash
+  <envoy_api_field_auth.CertificateValidationContext.verify_certificate_hash>` and
+  :ref:`verify_certificate_spki
+  <envoy_api_field_auth.CertificateValidationContext.verify_certificate_spki>` are specified,
+  a hash matching value from either of the lists will result in the certificate being accepted.
+  
+  
+.. _envoy_api_field_auth.CertificateValidationContext.verify_subject_alt_name:
+
+verify_subject_alt_name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) An optional list of Subject Alternative Names. If specified, Envoy will verify that the
+  Subject Alternative Name of the presented certificate matches one of the specified values.
+  
+  .. attention::
+  
+    Subject Alternative Names are easily spoofable and verifying only them is insecure,
+    therefore this option must be used together with :ref:`trusted_ca
+    <envoy_api_field_auth.CertificateValidationContext.trusted_ca>`.
+  
+  
+.. _envoy_api_field_auth.CertificateValidationContext.match_subject_alt_names:
+
+match_subject_alt_names
+  (:ref:`type.matcher.StringMatcher <envoy_api_msg_type.matcher.StringMatcher>`) An optional list of Subject Alternative name matchers. Envoy will verify that the
+  Subject Alternative Name of the presented certificate matches one of the specified matches.
+  
+  .. attention::
+  
+    Subject Alternative Names are easily spoofable and verifying only them is insecure,
+    therefore this option must be used together with :ref:`trusted_ca
+    <envoy_api_field_auth.CertificateValidationContext.trusted_ca>`.
+  
+  
+
+
+.. _envoy_api_field_auth.CertificateValidationContext.crl:
+
+crl
+  (:ref:`core.DataSource <envoy_api_msg_core.DataSource>`) An optional `certificate revocation list
+  <https://en.wikipedia.org/wiki/Certificate_revocation_list>`_
+  (in PEM format). If specified, Envoy will verify that the presented peer
+  certificate has not been revoked by this CRL. If this DataSource contains
+  multiple CRLs, all of them will be used.
+  
+  
+.. _envoy_api_field_auth.CertificateValidationContext.allow_expired_certificate:
+
+allow_expired_certificate
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If specified, Envoy will not reject expired certificates.
+  
+  
+
+
+.. _envoy_api_msg_auth.CommonTlsContext:
+
+auth.CommonTlsContext
+---------------------
+
+`[auth.CommonTlsContext proto] <https://github.com/envoyproxy/envoy/blob/v1.13.4/api/envoy/api/v2/auth/cert.proto#L306>`_
+
+TLS context shared by both client and server TLS contexts.
+
+.. code-block:: json
+
+  {
+    "tls_params": "{...}",
+    "tls_certificates": [],
+    "tls_certificate_sds_secret_configs": [],
+    "validation_context": "{...}",
+    "validation_context_sds_secret_config": "{...}",
+    "combined_validation_context": "{...}",
+    "alpn_protocols": []
+  }
+
+.. _envoy_api_field_auth.CommonTlsContext.tls_params:
+
+tls_params
+  (:ref:`auth.TlsParameters <envoy_api_msg_auth.TlsParameters>`) TLS protocol versions, cipher suites etc.
+  
+  
+.. _envoy_api_field_auth.CommonTlsContext.tls_certificates:
+
+tls_certificates
+  (:ref:`auth.TlsCertificate <envoy_api_msg_auth.TlsCertificate>`) :ref:`Multiple TLS certificates <arch_overview_ssl_cert_select>` can be associated with the
+  same context to allow both RSA and ECDSA certificates.
+  
+  Only a single TLS certificate is supported in client contexts. In server contexts, the first
+  RSA certificate is used for clients that only support RSA and the first ECDSA certificate is
+  used for clients that support ECDSA.
+  
+  
+.. _envoy_api_field_auth.CommonTlsContext.tls_certificate_sds_secret_configs:
+
+tls_certificate_sds_secret_configs
+  (:ref:`auth.SdsSecretConfig <envoy_api_msg_auth.SdsSecretConfig>`) Configs for fetching TLS certificates via SDS API.
+  
+  
+.. _envoy_api_field_auth.CommonTlsContext.validation_context:
+
+validation_context
+  (:ref:`auth.CertificateValidationContext <envoy_api_msg_auth.CertificateValidationContext>`) How to validate peer certificates.
+  
+  
+  
+  Only one of :ref:`validation_context <envoy_api_field_auth.CommonTlsContext.validation_context>`, :ref:`validation_context_sds_secret_config <envoy_api_field_auth.CommonTlsContext.validation_context_sds_secret_config>`, :ref:`combined_validation_context <envoy_api_field_auth.CommonTlsContext.combined_validation_context>` may be set.
+  
+.. _envoy_api_field_auth.CommonTlsContext.validation_context_sds_secret_config:
+
+validation_context_sds_secret_config
+  (:ref:`auth.SdsSecretConfig <envoy_api_msg_auth.SdsSecretConfig>`) Config for fetching validation context via SDS API.
+  
+  
+  
+  Only one of :ref:`validation_context <envoy_api_field_auth.CommonTlsContext.validation_context>`, :ref:`validation_context_sds_secret_config <envoy_api_field_auth.CommonTlsContext.validation_context_sds_secret_config>`, :ref:`combined_validation_context <envoy_api_field_auth.CommonTlsContext.combined_validation_context>` may be set.
+  
+.. _envoy_api_field_auth.CommonTlsContext.combined_validation_context:
+
+combined_validation_context
+  (:ref:`auth.CommonTlsContext.CombinedCertificateValidationContext <envoy_api_msg_auth.CommonTlsContext.CombinedCertificateValidationContext>`) Combined certificate validation context holds a default CertificateValidationContext
+  and SDS config. When SDS server returns dynamic CertificateValidationContext, both dynamic
+  and default CertificateValidationContext are merged into a new CertificateValidationContext
+  for validation. This merge is done by Message::MergeFrom(), so dynamic
+  CertificateValidationContext overwrites singular fields in default
+  CertificateValidationContext, and concatenates repeated fields to default
+  CertificateValidationContext, and logical OR is applied to boolean fields.
+  
+  
+  
+  Only one of :ref:`validation_context <envoy_api_field_auth.CommonTlsContext.validation_context>`, :ref:`validation_context_sds_secret_config <envoy_api_field_auth.CommonTlsContext.validation_context_sds_secret_config>`, :ref:`combined_validation_context <envoy_api_field_auth.CommonTlsContext.combined_validation_context>` may be set.
+  
+.. _envoy_api_field_auth.CommonTlsContext.alpn_protocols:
+
+alpn_protocols
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Supplies the list of ALPN protocols that the listener should expose. In
+  practice this is likely to be set to one of two values (see the
+  :ref:`codec_type
+  <envoy_api_field_config.filter.network.http_connection_manager.v2.HttpConnectionManager.codec_type>`
+  parameter in the HTTP connection manager for more information):
+  
+  * "h2,http/1.1" If the listener is going to support both HTTP/2 and HTTP/1.1.
+  * "http/1.1" If the listener is only going to support HTTP/1.1.
+  
+  There is no default for this parameter. If empty, Envoy will not expose ALPN.
+  
+  
+.. _envoy_api_msg_auth.CommonTlsContext.CombinedCertificateValidationContext:
+
+auth.CommonTlsContext.CombinedCertificateValidationContext
+----------------------------------------------------------
+
+`[auth.CommonTlsContext.CombinedCertificateValidationContext proto] <https://github.com/envoyproxy/envoy/blob/v1.13.4/api/envoy/api/v2/auth/cert.proto#L307>`_
+
+
+.. code-block:: json
+
+  {
+    "default_validation_context": "{...}",
+    "validation_context_sds_secret_config": "{...}"
+  }
+
+.. _envoy_api_field_auth.CommonTlsContext.CombinedCertificateValidationContext.default_validation_context:
+
+default_validation_context
+  (:ref:`auth.CertificateValidationContext <envoy_api_msg_auth.CertificateValidationContext>`, *REQUIRED*) How to validate peer certificates.
+  
+  
+.. _envoy_api_field_auth.CommonTlsContext.CombinedCertificateValidationContext.validation_context_sds_secret_config:
+
+validation_context_sds_secret_config
+  (:ref:`auth.SdsSecretConfig <envoy_api_msg_auth.SdsSecretConfig>`, *REQUIRED*) Config for fetching validation context via SDS API.
+  
+  
+
+
+
+.. _envoy_api_msg_auth.UpstreamTlsContext:
+
+auth.UpstreamTlsContext
+-----------------------
+
+`[auth.UpstreamTlsContext proto] <https://github.com/envoyproxy/envoy/blob/v1.13.4/api/envoy/api/v2/auth/cert.proto#L364>`_
+
+
+.. code-block:: json
+
+  {
+    "common_tls_context": "{...}",
+    "sni": "...",
+    "allow_renegotiation": "...",
+    "max_session_keys": "{...}"
+  }
+
+.. _envoy_api_field_auth.UpstreamTlsContext.common_tls_context:
+
+common_tls_context
+  (:ref:`auth.CommonTlsContext <envoy_api_msg_auth.CommonTlsContext>`) Common TLS context settings.
+  
+  .. attention::
+  
+    Server certificate verification is not enabled by default. Configure
+    :ref:`trusted_ca<envoy_api_field_auth.CertificateValidationContext.trusted_ca>` to enable
+    verification.
+  
+  
+.. _envoy_api_field_auth.UpstreamTlsContext.sni:
+
+sni
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) SNI string to use when creating TLS backend connections.
+  
+  
+.. _envoy_api_field_auth.UpstreamTlsContext.allow_renegotiation:
+
+allow_renegotiation
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If true, server-initiated TLS renegotiation will be allowed.
+  
+  .. attention::
+  
+    TLS renegotiation is considered insecure and shouldn't be used unless absolutely necessary.
+  
+  
+.. _envoy_api_field_auth.UpstreamTlsContext.max_session_keys:
+
+max_session_keys
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Maximum number of session keys (Pre-Shared Keys for TLSv1.3+, Session IDs and Session Tickets
+  for TLSv1.2 and older) to store for the purpose of session resumption.
+  
+  Defaults to 1, setting this to 0 disables session resumption.
+  
+  
+
+
+.. _envoy_api_msg_auth.DownstreamTlsContext:
+
+auth.DownstreamTlsContext
+-------------------------
+
+`[auth.DownstreamTlsContext proto] <https://github.com/envoyproxy/envoy/blob/v1.13.4/api/envoy/api/v2/auth/cert.proto#L392>`_
+
+
+.. code-block:: json
+
+  {
+    "common_tls_context": "{...}",
+    "require_client_certificate": "{...}",
+    "session_ticket_keys": "{...}",
+    "session_ticket_keys_sds_secret_config": "{...}",
+    "session_timeout": "{...}"
+  }
+
+.. _envoy_api_field_auth.DownstreamTlsContext.common_tls_context:
+
+common_tls_context
+  (:ref:`auth.CommonTlsContext <envoy_api_msg_auth.CommonTlsContext>`) Common TLS context settings.
+  
+  
+.. _envoy_api_field_auth.DownstreamTlsContext.require_client_certificate:
+
+require_client_certificate
+  (`BoolValue <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue>`_) If specified, Envoy will reject connections without a valid client
+  certificate.
+  
+  
+
+.. _envoy_api_field_auth.DownstreamTlsContext.session_ticket_keys:
+
+session_ticket_keys
+  (:ref:`auth.TlsSessionTicketKeys <envoy_api_msg_auth.TlsSessionTicketKeys>`) TLS session ticket key settings.
+  
+  
+  
+  Only one of :ref:`session_ticket_keys <envoy_api_field_auth.DownstreamTlsContext.session_ticket_keys>`, :ref:`session_ticket_keys_sds_secret_config <envoy_api_field_auth.DownstreamTlsContext.session_ticket_keys_sds_secret_config>` may be set.
+  
+.. _envoy_api_field_auth.DownstreamTlsContext.session_ticket_keys_sds_secret_config:
+
+session_ticket_keys_sds_secret_config
+  (:ref:`auth.SdsSecretConfig <envoy_api_msg_auth.SdsSecretConfig>`) Config for fetching TLS session ticket keys via SDS API.
+  
+  
+  
+  Only one of :ref:`session_ticket_keys <envoy_api_field_auth.DownstreamTlsContext.session_ticket_keys>`, :ref:`session_ticket_keys_sds_secret_config <envoy_api_field_auth.DownstreamTlsContext.session_ticket_keys_sds_secret_config>` may be set.
+  
+.. _envoy_api_field_auth.DownstreamTlsContext.session_timeout:
+
+session_timeout
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) If specified, session_timeout will change maximum lifetime (in seconds) of TLS session
+  Currently this value is used as a hint to `TLS session ticket lifetime (for TLSv1.2)
+  <https://tools.ietf.org/html/rfc5077#section-5.6>`
+  only seconds could be specified (fractional seconds are going to be ignored).
+  
+  
+
+
+.. _envoy_api_msg_auth.SdsSecretConfig:
+
+auth.SdsSecretConfig
+--------------------
+
+`[auth.SdsSecretConfig proto] <https://github.com/envoyproxy/envoy/blob/v1.13.4/api/envoy/api/v2/auth/cert.proto#L422>`_
+
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "sds_config": "{...}"
+  }
+
+.. _envoy_api_field_auth.SdsSecretConfig.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Name (FQDN, UUID, SPKI, SHA256, etc.) by which the secret can be uniquely referred to.
+  When both name and config are specified, then secret can be fetched and/or reloaded via
+  SDS. When only name is specified, then secret will be loaded from static resources.
+  
+  
+.. _envoy_api_field_auth.SdsSecretConfig.sds_config:
+
+sds_config
+  (:ref:`core.ConfigSource <envoy_api_msg_core.ConfigSource>`) 
+  
+
+
+.. _envoy_api_msg_auth.Secret:
+
+auth.Secret
+-----------
+
+`[auth.Secret proto] <https://github.com/envoyproxy/envoy/blob/v1.13.4/api/envoy/api/v2/auth/cert.proto#L431>`_
+
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "tls_certificate": "{...}",
+    "session_ticket_keys": "{...}",
+    "validation_context": "{...}"
+  }
+
+.. _envoy_api_field_auth.Secret.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Name (FQDN, UUID, SPKI, SHA256, etc.) by which the secret can be uniquely referred to.
+  
+  
+.. _envoy_api_field_auth.Secret.tls_certificate:
+
+tls_certificate
+  (:ref:`auth.TlsCertificate <envoy_api_msg_auth.TlsCertificate>`) 
+  
+  
+  Only one of :ref:`tls_certificate <envoy_api_field_auth.Secret.tls_certificate>`, :ref:`session_ticket_keys <envoy_api_field_auth.Secret.session_ticket_keys>`, :ref:`validation_context <envoy_api_field_auth.Secret.validation_context>` may be set.
+  
+.. _envoy_api_field_auth.Secret.session_ticket_keys:
+
+session_ticket_keys
+  (:ref:`auth.TlsSessionTicketKeys <envoy_api_msg_auth.TlsSessionTicketKeys>`) 
+  
+  
+  Only one of :ref:`tls_certificate <envoy_api_field_auth.Secret.tls_certificate>`, :ref:`session_ticket_keys <envoy_api_field_auth.Secret.session_ticket_keys>`, :ref:`validation_context <envoy_api_field_auth.Secret.validation_context>` may be set.
+  
+.. _envoy_api_field_auth.Secret.validation_context:
+
+validation_context
+  (:ref:`auth.CertificateValidationContext <envoy_api_msg_auth.CertificateValidationContext>`) 
+  
+  
+  Only one of :ref:`tls_certificate <envoy_api_field_auth.Secret.tls_certificate>`, :ref:`session_ticket_keys <envoy_api_field_auth.Secret.session_ticket_keys>`, :ref:`validation_context <envoy_api_field_auth.Secret.validation_context>` may be set.
+  
+
