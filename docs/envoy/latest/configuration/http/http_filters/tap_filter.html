@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Tap &mdash; envoy 1.16.0-dev-356fe4 documentation</title>
+  <title>Tap &mdash; envoy 1.16.0-dev-c02fe0 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.16.0-dev-356fe4
+                1.16.0-dev-c02fe0
               </div>
             
           
@@ -325,40 +325,6 @@ conditions are met, the request will be tapped and streamed out the admin endpoi
 </div>
 <p>The preceding configuration instructs the tap filter to match any HTTP requests. All requests will
 be tapped and streamed out the admin endpoint.</p>
-<p>Another example POST body:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">config_id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test_config_id</span>
-<span class="nt">tap_config</span><span class="p">:</span>
-  <span class="nt">match_config</span><span class="p">:</span>
-    <span class="nt">and_match</span><span class="p">:</span>
-      <span class="nt">rules</span><span class="p">:</span>
-        <span class="p p-Indicator">-</span> <span class="nt">http_request_headers_match</span><span class="p">:</span>
-            <span class="nt">headers</span><span class="p">:</span>
-              <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">foo</span>
-                <span class="nt">exact_match</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">bar</span>
-        <span class="p p-Indicator">-</span> <span class="nt">http_request_generic_body_match</span><span class="p">:</span>
-            <span class="nt">patterns</span><span class="p">:</span>
-              <span class="p p-Indicator">-</span> <span class="nt">string_match</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test</span>
-              <span class="p p-Indicator">-</span> <span class="nt">binary_match</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3q2+7w==</span>
-            <span class="nt">bytes_limit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">128</span>
-        <span class="p p-Indicator">-</span> <span class="nt">http_response_generic_body_match</span><span class="p">:</span>
-            <span class="nt">patterns</span><span class="p">:</span>
-              <span class="p p-Indicator">-</span> <span class="nt">binary_match</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">vu8=</span>
-            <span class="nt">bytes_limit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">64</span>
-  <span class="nt">output_config</span><span class="p">:</span>
-    <span class="nt">sinks</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">streaming_admin</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
-</pre></div>
-</div>
-<p>The preceding configuration instructs the tap filter to match any HTTP requests in which a request
-header <code class="docutils literal notranslate"><span class="pre">foo:</span> <span class="pre">bar</span></code> is present AND request body contains string <code class="docutils literal notranslate"><span class="pre">test</span></code> and hex bytes <code class="docutils literal notranslate"><span class="pre">deadbeef</span></code> (<code class="docutils literal notranslate"><span class="pre">3q2+7w==</span></code> in base64 format)
-in the first 128 bytes AND response body contains hex bytes <code class="docutils literal notranslate"><span class="pre">beef</span></code> (<code class="docutils literal notranslate"><span class="pre">vu8=</span></code> in base64 format) in the first 64 bytes. If all of these
-conditions are met, the request will be tapped and streamed out to the admin endpoint.</p>
-<div class="admonition attention">
-<p class="admonition-title">Attention</p>
-<p>Searching for patterns in HTTP body is potentially cpu intensive. For each specified pattern, http body is scanned byte by byte to find a match.
-If multiple patterns are specified, the process is repeated for each pattern. If location of a pattern is known, <code class="docutils literal notranslate"><span class="pre">bytes_limit</span></code> should be specified
-to scan only part of the http body.</p>
-</div>
 </div>
 <div class="section" id="output-format">
 <h2>Output format<a class="headerlink" href="#output-format" title="Permalink to this headline">¶</a></h2>
