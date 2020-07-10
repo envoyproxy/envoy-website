@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>External Authorization Filter &mdash; envoy 1.16.0-dev-9e854a documentation</title>
+  <title>External Authorization Filter &mdash; envoy 1.16.0-dev-7b2698 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.16.0-dev-9e854a
+                1.16.0-dev-7b2698
               </div>
             
           
@@ -291,6 +291,90 @@ example, the <code class="docutils literal notranslate"><span class="pre">token1
 &lt;
 * Connection #0 to host localhost left intact
 Hello user1 from behind Envoy!
+</pre></div>
+</div>
+<p>We can also employ <a class="reference external" href="https://www.openpolicyagent.org/">Open Policy Agent</a> server
+(with <a class="reference external" href="https://github.com/open-policy-agent/opa-istio-plugin">envoy_ext_authz_grpc</a> plugin enabled)
+as the authorization server. To run this example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pwd
+envoy/examples/ext_authz
+$ docker-compose pull
+$ # Tearing down the currently running setup
+$ docker-compose down
+$ FRONT_ENVOY_YAML=config/opa-service/v2.yaml docker-compose up --build -d
+</pre></div>
+</div>
+<p>And sending a request to the upstream service (via the Front Envoy) gives:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl localhost:8000/service --verbose
+*   Trying ::1...
+* TCP_NODELAY set
+* Connected to localhost (::1) port 8000 (#0)
+&gt; GET /service HTTP/1.1
+&gt; Host: localhost:8000
+&gt; User-Agent: curl/7.64.1
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 200 OK
+&lt; content-type: text/html; charset=utf-8
+&lt; content-length: 28
+&lt; server: envoy
+&lt; date: Thu, 02 Jul 2020 06:29:58 GMT
+&lt; x-envoy-upstream-service-time: 2
+&lt;
+* Connection #0 to host localhost left intact
+Hello OPA from behind Envoy!
+</pre></div>
+</div>
+<p>From the logs, we can observe the policy decision message from the Open Policy Agent server (for
+the above request against the defined policy in <code class="docutils literal notranslate"><span class="pre">config/opa-service/policy.rego</span></code>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker-compose logs ext_authz-opa-service | grep decision_id -A 30
+ext_authz-opa-service_1   |   &quot;decision_id&quot;: &quot;8143ca68-42d8-43e6-ade6-d1169bf69110&quot;,
+ext_authz-opa-service_1   |   &quot;input&quot;: {
+ext_authz-opa-service_1   |     &quot;attributes&quot;: {
+ext_authz-opa-service_1   |       &quot;destination&quot;: {
+ext_authz-opa-service_1   |         &quot;address&quot;: {
+ext_authz-opa-service_1   |           &quot;Address&quot;: {
+ext_authz-opa-service_1   |             &quot;SocketAddress&quot;: {
+ext_authz-opa-service_1   |               &quot;PortSpecifier&quot;: {
+ext_authz-opa-service_1   |                 &quot;PortValue&quot;: 8000
+ext_authz-opa-service_1   |               },
+ext_authz-opa-service_1   |               &quot;address&quot;: &quot;172.28.0.6&quot;
+ext_authz-opa-service_1   |             }
+ext_authz-opa-service_1   |           }
+ext_authz-opa-service_1   |         }
+ext_authz-opa-service_1   |       },
+ext_authz-opa-service_1   |       &quot;metadata_context&quot;: {},
+ext_authz-opa-service_1   |       &quot;request&quot;: {
+ext_authz-opa-service_1   |         &quot;http&quot;: {
+ext_authz-opa-service_1   |           &quot;headers&quot;: {
+ext_authz-opa-service_1   |             &quot;:authority&quot;: &quot;localhost:8000&quot;,
+ext_authz-opa-service_1   |             &quot;:method&quot;: &quot;GET&quot;,
+ext_authz-opa-service_1   |             &quot;:path&quot;: &quot;/service&quot;,
+ext_authz-opa-service_1   |             &quot;accept&quot;: &quot;*/*&quot;,
+ext_authz-opa-service_1   |             &quot;user-agent&quot;: &quot;curl/7.64.1&quot;,
+ext_authz-opa-service_1   |             &quot;x-forwarded-proto&quot;: &quot;http&quot;,
+ext_authz-opa-service_1   |             &quot;x-request-id&quot;: &quot;b77919c0-f1d4-4b06-b444-5a8b32d5daf4&quot;
+ext_authz-opa-service_1   |           },
+ext_authz-opa-service_1   |           &quot;host&quot;: &quot;localhost:8000&quot;,
+ext_authz-opa-service_1   |           &quot;id&quot;: &quot;16617514055874272263&quot;,
+ext_authz-opa-service_1   |           &quot;method&quot;: &quot;GET&quot;,
+ext_authz-opa-service_1   |           &quot;path&quot;: &quot;/service&quot;,
+</pre></div>
+</div>
+<p>Trying to send a request with method other than <code class="docutils literal notranslate"><span class="pre">GET</span></code> gives a rejection:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl -X POST localhost:8000/service --verbose
+*   Trying ::1...
+* TCP_NODELAY set
+* Connected to localhost (::1) port 8000 (#0)
+&gt; PUT /service HTTP/1.1
+&gt; Host: localhost:8000
+&gt; User-Agent: curl/7.64.1
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 403 Forbidden
+&lt; date: Thu, 02 Jul 2020 06:46:13 GMT
+&lt; server: envoy
+&lt; content-length: 0
 </pre></div>
 </div>
 </div>
