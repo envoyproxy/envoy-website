@@ -20,7 +20,7 @@ simply a load balancer.
 Starting with a front proxy is straightforward, because the first step is
 simply to port whatever existing configuration you have to Envoy. When you
 deploy your Envoy-based front proxy, you can set it up in parallel to your
-current setup, giving you the change to test and evaluate Envoy before sending
+current setup, giving you the chance to test and evaluate Envoy before sending
 production traffic through it. Once Envoy is stable and tested, it provides a
 high-leverage place to start enabling Envoy’s more advanced features around
 resilience and observability for your whole organization.
