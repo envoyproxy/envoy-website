@@ -78,7 +78,3 @@ To add your logo, please send a [pull request](https://github.com/envoyproxy/env
 ### The Envoy blog
 
 The official Envoy blog is hosted on [Medium](https://medium.com) at https://blog.envoyproxy.io.
-
-### The "Learn Envoy" series
-
-The company [TurbineLabs](https://www.turbinelabs.io/) created an educational series about Envoy called [Learn Envoy](https://www.learnenvoy.io/). Upon the team's acquihire by [Slack](https://slack.com) they generously donated the Learn Envoy documentation to the Envoy project. You can now find Learn Envoy at https://envoyproxy.io/learn. The underlying Markdown assets are in the [`learn`](./learn) folder in this repository.
