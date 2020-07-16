@@ -10,7 +10,7 @@ Protocol options
 config.core.v3.UpstreamHttpProtocolOptions
 ------------------------------------------
 
-`[config.core.v3.UpstreamHttpProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/acb884768f257c32af4a17cc5b00b4fb274e30af/api/envoy/config/core/v3/protocol.proto#L24>`_
+`[config.core.v3.UpstreamHttpProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/88dcb292817946510bb87f8f379a954962cece79/api/envoy/config/core/v3/protocol.proto#L24>`_
 
 
 .. code-block:: json
@@ -44,7 +44,7 @@ auto_san_validation
 config.core.v3.HttpProtocolOptions
 ----------------------------------
 
-`[config.core.v3.HttpProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/acb884768f257c32af4a17cc5b00b4fb274e30af/api/envoy/config/core/v3/protocol.proto#L41>`_
+`[config.core.v3.HttpProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/88dcb292817946510bb87f8f379a954962cece79/api/envoy/config/core/v3/protocol.proto#L41>`_
 
 
 .. code-block:: json
@@ -114,7 +114,7 @@ headers_with_underscores_action
 Enum config.core.v3.HttpProtocolOptions.HeadersWithUnderscoresAction
 --------------------------------------------------------------------
 
-`[config.core.v3.HttpProtocolOptions.HeadersWithUnderscoresAction proto] <https://github.com/envoyproxy/envoy/blob/acb884768f257c32af4a17cc5b00b4fb274e30af/api/envoy/config/core/v3/protocol.proto#L50>`_
+`[config.core.v3.HttpProtocolOptions.HeadersWithUnderscoresAction proto] <https://github.com/envoyproxy/envoy/blob/88dcb292817946510bb87f8f379a954962cece79/api/envoy/config/core/v3/protocol.proto#L50>`_
 
 Action to take when Envoy receives client request with header names containing underscore
 characters.
@@ -150,7 +150,7 @@ DROP_HEADER
 config.core.v3.Http1ProtocolOptions
 -----------------------------------
 
-`[config.core.v3.Http1ProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/acb884768f257c32af4a17cc5b00b4fb274e30af/api/envoy/config/core/v3/protocol.proto#L103>`_
+`[config.core.v3.Http1ProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/88dcb292817946510bb87f8f379a954962cece79/api/envoy/config/core/v3/protocol.proto#L103>`_
 
 
 .. code-block:: json
@@ -215,7 +215,7 @@ enable_trailers
 config.core.v3.Http1ProtocolOptions.HeaderKeyFormat
 ---------------------------------------------------
 
-`[config.core.v3.Http1ProtocolOptions.HeaderKeyFormat proto] <https://github.com/envoyproxy/envoy/blob/acb884768f257c32af4a17cc5b00b4fb274e30af/api/envoy/config/core/v3/protocol.proto#L107>`_
+`[config.core.v3.Http1ProtocolOptions.HeaderKeyFormat proto] <https://github.com/envoyproxy/envoy/blob/88dcb292817946510bb87f8f379a954962cece79/api/envoy/config/core/v3/protocol.proto#L107>`_
 
 
 .. code-block:: json
@@ -240,7 +240,7 @@ proper_case_words
 config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords
 -------------------------------------------------------------------
 
-`[config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords proto] <https://github.com/envoyproxy/envoy/blob/acb884768f257c32af4a17cc5b00b4fb274e30af/api/envoy/config/core/v3/protocol.proto#L111>`_
+`[config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords proto] <https://github.com/envoyproxy/envoy/blob/88dcb292817946510bb87f8f379a954962cece79/api/envoy/config/core/v3/protocol.proto#L111>`_
 
 
 .. code-block:: json
@@ -257,7 +257,7 @@ config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords
 config.core.v3.Http2ProtocolOptions
 -----------------------------------
 
-`[config.core.v3.Http2ProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/acb884768f257c32af4a17cc5b00b4fb274e30af/api/envoy/config/core/v3/protocol.proto#L162>`_
+`[config.core.v3.Http2ProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/88dcb292817946510bb87f8f379a954962cece79/api/envoy/config/core/v3/protocol.proto#L162>`_
 
 
 .. code-block:: json
@@ -273,7 +273,8 @@ config.core.v3.Http2ProtocolOptions
     "max_consecutive_inbound_frames_with_empty_payload": "{...}",
     "max_inbound_priority_frames_per_stream": "{...}",
     "max_inbound_window_update_frames_per_data_frame_sent": "{...}",
-    "stream_error_on_invalid_http_messaging": "..."
+    "stream_error_on_invalid_http_messaging": "...",
+    "override_stream_error_on_invalid_http_message": "{...}"
   }
 
 .. _envoy_v3_api_field_config.core.v3.Http2ProtocolOptions.hpack_table_size:
@@ -393,6 +394,26 @@ stream_error_on_invalid_http_messaging
   the whole HTTP/2 connection is terminated upon receiving invalid HEADERS frame. However,
   when this option is enabled, only the offending stream is terminated.
   
+  This is overridden by HCM :ref:`stream_error_on_invalid_http_messaging
+  <envoy_v3_api_field_extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.stream_error_on_invalid_http_message>`
+  iff present.
+  
+  This is deprecated in favor of :ref:`override_stream_error_on_invalid_http_message
+  <envoy_v3_api_field_config.core.v3.Http2ProtocolOptions.override_stream_error_on_invalid_http_message>`
+  
+  See `RFC7540, sec. 8.1 <https://tools.ietf.org/html/rfc7540#section-8.1>`_ for details.
+  
+  
+.. _envoy_v3_api_field_config.core.v3.Http2ProtocolOptions.override_stream_error_on_invalid_http_message:
+
+override_stream_error_on_invalid_http_message
+  (`BoolValue <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue>`_) Allows invalid HTTP messaging and headers. When this option is disabled (default), then
+  the whole HTTP/2 connection is terminated upon receiving invalid HEADERS frame. However,
+  when this option is enabled, only the offending stream is terminated.
+  
+  This overrides any HCM :ref:`stream_error_on_invalid_http_messaging
+  <envoy_v3_api_field_extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.stream_error_on_invalid_http_message>`
+  
   See `RFC7540, sec. 8.1 <https://tools.ietf.org/html/rfc7540#section-8.1>`_ for details.
   
   
@@ -402,7 +423,7 @@ stream_error_on_invalid_http_messaging
 config.core.v3.Http2ProtocolOptions.SettingsParameter
 -----------------------------------------------------
 
-`[config.core.v3.Http2ProtocolOptions.SettingsParameter proto] <https://github.com/envoyproxy/envoy/blob/acb884768f257c32af4a17cc5b00b4fb274e30af/api/envoy/config/core/v3/protocol.proto#L168>`_
+`[config.core.v3.Http2ProtocolOptions.SettingsParameter proto] <https://github.com/envoyproxy/envoy/blob/88dcb292817946510bb87f8f379a954962cece79/api/envoy/config/core/v3/protocol.proto#L168>`_
 
 Defines a parameter to be sent in the SETTINGS frame.
 See `RFC7540, sec. 6.5.1 <https://tools.ietf.org/html/rfc7540#section-6.5.1>`_ for details.

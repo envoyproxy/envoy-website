@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Configuring Envoy as a level two proxy &mdash; envoy 1.16.0-dev-acb884 documentation</title>
+  <title>Configuring Envoy as a level two proxy &mdash; envoy 1.16.0-dev-88dcb2 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.16.0-dev-acb884
+                1.16.0-dev-88dcb2
               </div>
             
           
@@ -190,11 +190,11 @@
 <span id="best-practices-level2"></span><h1>Configuring Envoy as a level two proxy<a class="headerlink" href="#configuring-envoy-as-a-level-two-proxy" title="Permalink to this headline">¶</a></h1>
 <p>Envoy is a production-ready proxy, however, the default settings that are tailored for the
 edge use case may need to be adjusted when using Envoy in a multi-level deployment as a
-“level two” HTTP/2 proxy.</p>
+“level two” proxy.</p>
 <img alt="../../_images/multilevel_deployment.svg" src="../../_images/multilevel_deployment.svg" /><p><strong>In summary, if you run level two Envoy version 1.11.1 or greater which terminates
-HTTP/2, we strongly advise you to change the HTTP/2 configuration of your level
+HTTP/2, we strongly advise you to change the HttpConnectionManager configuration of your level
 two Envoy, by setting its downstream</strong>
-<a class="reference internal" href="../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-http2protocoloptions-stream-error-on-invalid-http-messaging"><span class="std std-ref">validation of HTTP/2 messaging option</span></a>
+<a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-stream-error-on-invalid-http-message"><span class="std std-ref">validation of HTTP messaging option</span></a>
 <strong>to true.</strong></p>
 <p>If there is an invalid HTTP/2 request and this option is not set, the Envoy in
 question will reset the entire connection. This behavior was changed as part of
@@ -209,12 +209,10 @@ a service disruption to the clients sharing that L1-L2 connection. If a maliciou
 user has insight into what traffic will bypass level one checks, they could spray
 “bad” traffic across the level one fleet, causing serious disruption to other users’
 traffic.</p>
-<p>Please note that the
-<a class="reference internal" href="../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-http2protocoloptions-stream-error-on-invalid-http-messaging"><span class="std std-ref">validation of HTTP/2 messaging option</span></a>
-is planned to be deprecated and replaced with mandatory configuration in the HttpConnectionManager, to ensure
-that what is now an easily overlooked option would need to be configured, ideally
-appropriately for the given Envoy deployment. Please refer to the
-<a class="reference external" href="https://github.com/envoyproxy/envoy/issues/9285">https://github.com/envoyproxy/envoy/issues/9285</a> for more information.</p>
+<p>This configuration option also has implications for invalid HTTP/1.1 though slightly less
+severe ones. For Envoy L1s, invalid HTTP/1 requests will also result in connection
+reset. If the option is set to true, and the request is completely read, the connection
+will persist and can be reused for a subsequent request.</p>
 </div>
 
 
