@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Local reply modification &mdash; envoy 1.16.0-dev-06fd1d documentation</title>
+  <title>Local reply modification &mdash; envoy 1.16.0-dev-23df4f documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.16.0-dev-06fd1d
+                1.16.0-dev-23df4f
               </div>
             
           
@@ -211,7 +211,7 @@
 </ul>
 <div class="section" id="local-reply-content-modification">
 <span id="config-http-conn-man-local-reply-modification"></span><h2>Local reply content modification<a class="headerlink" href="#local-reply-content-modification" title="Permalink to this headline">¶</a></h2>
-<p>The local response content returned by Envoy can be customized. A list of <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-localreplyconfig-mappers"><span class="std std-ref">mappers</span></a> can be specified. Each mapper must have a <a class="reference internal" href="../../../api-v3/config/accesslog/v3/accesslog.proto.html#envoy-v3-api-field-config-accesslog-v3-accesslog-filter"><span class="std std-ref">filter</span></a>. It may have following rewrite rules; a <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-responsemapper-status-code"><span class="std std-ref">status_code</span></a> rule to rewrite response code, a <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-responsemapper-body"><span class="std std-ref">body</span></a> rule to rewrite the local reply body and a <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-responsemapper-body-format-override"><span class="std std-ref">body_format_override</span></a> to specify the response body format. Envoy checks each <cite>mapper</cite> according to the specified order until the first one is matched. If a <cite>mapper</cite> is matched, all its rewrite rules will apply.</p>
+<p>The local response content returned by Envoy can be customized. A list of <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-localreplyconfig-mappers"><span class="std std-ref">mappers</span></a> can be specified. Each mapper must have a <a class="reference internal" href="../../../api-v3/config/accesslog/v3/accesslog.proto.html#envoy-v3-api-field-config-accesslog-v3-accesslog-filter"><span class="std std-ref">filter</span></a>. It may have following rewrite rules; a <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-responsemapper-status-code"><span class="std std-ref">status_code</span></a> rule to rewrite response code, a <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-responsemapper-headers-to-add"><span class="std std-ref">headers_to_add</span></a> rule to add/override/append response HTTP headers, a <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-responsemapper-body"><span class="std std-ref">body</span></a> rule to rewrite the local reply body and a <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-responsemapper-body-format-override"><span class="std std-ref">body_format_override</span></a> to specify the response body format. Envoy checks each <cite>mapper</cite> according to the specified order until the first one is matched. If a <cite>mapper</cite> is matched, all its rewrite rules will apply.</p>
 <p>Example of a LocalReplyConfig</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mappers</span><span class="p">:</span>
 <span class="o">-</span> <span class="nb">filter</span><span class="p">:</span>
@@ -221,6 +221,11 @@
         <span class="n">value</span><span class="p">:</span>
           <span class="n">default_value</span><span class="p">:</span> <span class="mi">400</span>
           <span class="n">runtime_key</span><span class="p">:</span> <span class="n">key_b</span>
+  <span class="n">headers_to_add</span><span class="p">:</span>
+    <span class="o">-</span> <span class="n">header</span><span class="p">:</span>
+        <span class="n">key</span><span class="p">:</span> <span class="s2">&quot;foo&quot;</span>
+        <span class="n">value</span><span class="p">:</span> <span class="s2">&quot;bar&quot;</span>
+      <span class="n">append</span><span class="p">:</span> <span class="n">false</span>
   <span class="n">status_code</span><span class="p">:</span> <span class="mi">401</span>
   <span class="n">body</span><span class="p">:</span>
     <span class="n">inline_string</span><span class="p">:</span> <span class="s2">&quot;not allowed&quot;</span>
