@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Getting Started &mdash; envoy 1.16.0-dev-7d8752 documentation</title>
+  <title>Getting Started &mdash; envoy 1.16.0-dev-939ab3 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.16.0-dev-7d8752
+                1.16.0-dev-939ab3
               </div>
             
           
@@ -205,10 +205,10 @@ feature of the API, which is most useful for simple requirements. For more compl
 more detailed explanation of the configuration file and execution steps for
 the same configuration.</p>
 <p>A very minimal Envoy configuration that can be used to validate basic plain HTTP
-proxying is available in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7d875281d5633cf63aaa4e2d47aa5f4be573a26f/configs/google_com_proxy.v2.yaml">configs/google_com_proxy.v2.yaml</a>. This is not
+proxying is available in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/939ab3911818d0afe59cb9353ba06f1adfa0303e/configs/google_com_proxy.v2.yaml">configs/google_com_proxy.v2.yaml</a>. This is not
 intended to represent a realistic Envoy deployment:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ docker pull envoyproxy/envoy-dev:7d875281d5633cf63aaa4e2d47aa5f4be573a26f
-$ docker run --rm -d -p 10000:10000 envoyproxy/envoy-dev:7d875281d5633cf63aaa4e2d47aa5f4be573a26f
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ docker pull envoyproxy/envoy-dev:939ab3911818d0afe59cb9353ba06f1adfa0303e
+$ docker run --rm -d -p 10000:10000 envoyproxy/envoy-dev:939ab3911818d0afe59cb9353ba06f1adfa0303e
 $ curl -v localhost:10000
 </pre></div>
 </div>
@@ -288,7 +288,7 @@ The <a class="reference internal" href="../configuration/overview/overview.html#
 <h2>Using the Envoy Docker Image<a class="headerlink" href="#using-the-envoy-docker-image" title="Permalink to this headline">¶</a></h2>
 <p>Create a simple Dockerfile to execute Envoy, which assumes that envoy.yaml (described above) is in your local directory.
 You can refer to the <a class="reference internal" href="../operations/cli.html#operations-cli"><span class="std std-ref">Command line options</span></a>.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>FROM envoyproxy/envoy-dev:7d875281d5633cf63aaa4e2d47aa5f4be573a26f
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>FROM envoyproxy/envoy-dev:939ab3911818d0afe59cb9353ba06f1adfa0303e
 COPY envoy.yaml /etc/envoy/envoy.yaml
 </pre></div>
 </div>
@@ -328,6 +328,16 @@ $ docker run -d -v `pwd`/logs:/var/log --name envoy -e ENVOY_UID=777 -p 9901:990
 </div>
 <p>You can then configure <code class="docutils literal notranslate"><span class="pre">envoy</span></code> to log to files in <code class="docutils literal notranslate"><span class="pre">/var/log</span></code></p>
 <p>The default <code class="docutils literal notranslate"><span class="pre">envoy</span></code> <code class="docutils literal notranslate"><span class="pre">uid</span></code> and <code class="docutils literal notranslate"><span class="pre">gid</span></code> are <code class="docutils literal notranslate"><span class="pre">101</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">envoy</span></code> user also needs to have permission to access any required configuration files mounted
+into the container.</p>
+<p>If you are running in an environment with a strict <code class="docutils literal notranslate"><span class="pre">umask</span></code> setting, you may need to provide envoy with
+access either by setting the <code class="docutils literal notranslate"><span class="pre">uid</span></code> or <code class="docutils literal notranslate"><span class="pre">gid</span></code> of the file, or by making the configuration file readable
+by the envoy user.</p>
+<p>One method of doing this without changing any file permissions or running as root inside the container
+is to start the container with the host user’s <code class="docutils literal notranslate"><span class="pre">uid</span></code>, for example:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ docker run -d --name envoy -e ENVOY_UID=`id -u` -p 9901:9901 -p 10000:10000 envoy:v1
+</pre></div>
+</div>
 </div>
 <div class="section" id="sandboxes">
 <h2>Sandboxes<a class="headerlink" href="#sandboxes" title="Permalink to this headline">¶</a></h2>
