@@ -10,7 +10,7 @@ Statistics :ref:`architecture overview <arch_overview_statistics>`.
 config.metrics.v3.StatsSink
 ---------------------------
 
-`[config.metrics.v3.StatsSink proto] <https://github.com/envoyproxy/envoy/blob/958745d658752f90f544296d9e75030519a9fb84/api/envoy/config/metrics/v3/stats.proto#L24>`_
+`[config.metrics.v3.StatsSink proto] <https://github.com/envoyproxy/envoy/blob/0a0fc51e25599665d772f274c54addf3891ef5c7/api/envoy/config/metrics/v3/stats.proto#L24>`_
 
 Configuration for pluggable stats sinks.
 
@@ -50,7 +50,7 @@ typed_config
 config.metrics.v3.StatsConfig
 -----------------------------
 
-`[config.metrics.v3.StatsConfig proto] <https://github.com/envoyproxy/envoy/blob/958745d658752f90f544296d9e75030519a9fb84/api/envoy/config/metrics/v3/stats.proto#L50>`_
+`[config.metrics.v3.StatsConfig proto] <https://github.com/envoyproxy/envoy/blob/0a0fc51e25599665d772f274c54addf3891ef5c7/api/envoy/config/metrics/v3/stats.proto#L50>`_
 
 Statistics configuration such as tagging.
 
@@ -59,7 +59,8 @@ Statistics configuration such as tagging.
   {
     "stats_tags": [],
     "use_all_default_tags": "{...}",
-    "stats_matcher": "{...}"
+    "stats_matcher": "{...}",
+    "histogram_bucket_settings": []
   }
 
 .. _envoy_v3_api_field_config.metrics.v3.StatsConfig.stats_tags:
@@ -103,6 +104,38 @@ stats_matcher
     If any unexpected behavior changes are observed, please open a new issue immediately.
   
   
+.. _envoy_v3_api_field_config.metrics.v3.StatsConfig.histogram_bucket_settings:
+
+histogram_bucket_settings
+  (:ref:`config.metrics.v3.HistogramBucketSettings <envoy_v3_api_msg_config.metrics.v3.HistogramBucketSettings>`) Defines rules for setting the histogram buckets. Rules are evaluated in order, and the first
+  match is applied. If no match is found (or if no rules are set), the following default buckets
+  are used:
+  
+    .. code-block:: json
+  
+      [
+        0.5,
+        1,
+        5,
+        10,
+        25,
+        50,
+        100,
+        250,
+        500,
+        1000,
+        2500,
+        5000,
+        10000,
+        30000,
+        60000,
+        300000,
+        600000,
+        1800000,
+        3600000
+      ]
+  
+  
 
 
 .. _envoy_v3_api_msg_config.metrics.v3.StatsMatcher:
@@ -110,7 +143,7 @@ stats_matcher
 config.metrics.v3.StatsMatcher
 ------------------------------
 
-`[config.metrics.v3.StatsMatcher proto] <https://github.com/envoyproxy/envoy/blob/958745d658752f90f544296d9e75030519a9fb84/api/envoy/config/metrics/v3/stats.proto#L88>`_
+`[config.metrics.v3.StatsMatcher proto] <https://github.com/envoyproxy/envoy/blob/0a0fc51e25599665d772f274c54addf3891ef5c7/api/envoy/config/metrics/v3/stats.proto#L117>`_
 
 Configuration for disabling stat instantiation.
 
@@ -159,7 +192,7 @@ inclusion_list
 config.metrics.v3.TagSpecifier
 ------------------------------
 
-`[config.metrics.v3.TagSpecifier proto] <https://github.com/envoyproxy/envoy/blob/958745d658752f90f544296d9e75030519a9fb84/api/envoy/config/metrics/v3/stats.proto#L181>`_
+`[config.metrics.v3.TagSpecifier proto] <https://github.com/envoyproxy/envoy/blob/0a0fc51e25599665d772f274c54addf3891ef5c7/api/envoy/config/metrics/v3/stats.proto#L210>`_
 
 Designates a tag name and value pair. The value may be either a fixed value
 or a regex providing the value via capture groups. The specified tag will be
@@ -264,12 +297,43 @@ fixed_value
   
 
 
+.. _envoy_v3_api_msg_config.metrics.v3.HistogramBucketSettings:
+
+config.metrics.v3.HistogramBucketSettings
+-----------------------------------------
+
+`[config.metrics.v3.HistogramBucketSettings proto] <https://github.com/envoyproxy/envoy/blob/0a0fc51e25599665d772f274c54addf3891ef5c7/api/envoy/config/metrics/v3/stats.proto#L291>`_
+
+Specifies a matcher for stats and the buckets that matching stats should use.
+
+.. code-block:: json
+
+  {
+    "match": "{...}",
+    "buckets": []
+  }
+
+.. _envoy_v3_api_field_config.metrics.v3.HistogramBucketSettings.match:
+
+match
+  (:ref:`type.matcher.v3.StringMatcher <envoy_v3_api_msg_type.matcher.v3.StringMatcher>`, *REQUIRED*) The stats that this rule applies to. The match is applied to the original stat name
+  before tag-extraction, for example `cluster.exampleclustername.upstream_cx_length_ms`.
+  
+  
+.. _envoy_v3_api_field_config.metrics.v3.HistogramBucketSettings.buckets:
+
+buckets
+  (`double <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Each value is the upper bound of a successive bucket.
+  
+  
+
+
 .. _envoy_v3_api_msg_config.metrics.v3.StatsdSink:
 
 config.metrics.v3.StatsdSink
 ----------------------------
 
-`[config.metrics.v3.StatsdSink proto] <https://github.com/envoyproxy/envoy/blob/958745d658752f90f544296d9e75030519a9fb84/api/envoy/config/metrics/v3/stats.proto#L264>`_
+`[config.metrics.v3.StatsdSink proto] <https://github.com/envoyproxy/envoy/blob/0a0fc51e25599665d772f274c54addf3891ef5c7/api/envoy/config/metrics/v3/stats.proto#L303>`_
 
 Stats configuration proto schema for built-in *envoy.stat_sinks.statsd* sink. This sink does not support
 tagged metrics.
@@ -352,7 +416,7 @@ prefix
 config.metrics.v3.DogStatsdSink
 -------------------------------
 
-`[config.metrics.v3.DogStatsdSink proto] <https://github.com/envoyproxy/envoy/blob/958745d658752f90f544296d9e75030519a9fb84/api/envoy/config/metrics/v3/stats.proto#L315>`_
+`[config.metrics.v3.DogStatsdSink proto] <https://github.com/envoyproxy/envoy/blob/0a0fc51e25599665d772f274c54addf3891ef5c7/api/envoy/config/metrics/v3/stats.proto#L354>`_
 
 Stats configuration proto schema for built-in *envoy.stat_sinks.dog_statsd* sink.
 The sink emits stats with `DogStatsD <https://docs.datadoghq.com/guides/dogstatsd/>`_
@@ -410,7 +474,7 @@ max_bytes_per_datagram
 config.metrics.v3.HystrixSink
 -----------------------------
 
-`[config.metrics.v3.HystrixSink proto] <https://github.com/envoyproxy/envoy/blob/958745d658752f90f544296d9e75030519a9fb84/api/envoy/config/metrics/v3/stats.proto#L352>`_
+`[config.metrics.v3.HystrixSink proto] <https://github.com/envoyproxy/envoy/blob/0a0fc51e25599665d772f274c54addf3891ef5c7/api/envoy/config/metrics/v3/stats.proto#L391>`_
 
 Stats configuration proto schema for built-in *envoy.stat_sinks.hystrix* sink.
 The sink emits stats in `text/event-stream
