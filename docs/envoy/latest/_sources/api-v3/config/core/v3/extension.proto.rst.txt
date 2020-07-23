@@ -9,7 +9,7 @@ Extension configuration
 config.core.v3.TypedExtensionConfig
 -----------------------------------
 
-`[config.core.v3.TypedExtensionConfig proto] <https://github.com/envoyproxy/envoy/blob/8d4e7053aeb8a379d05b4b202cd8c4e54a24dd10/api/envoy/config/core/v3/extension.proto#L18>`_
+`[config.core.v3.TypedExtensionConfig proto] <https://github.com/envoyproxy/envoy/blob/e8216a8cf79c54e3e0a77ab729ebf27f4e79eb1b/api/envoy/config/core/v3/extension.proto#L20>`_
 
 Message type for extension configuration.
 .
@@ -36,6 +36,64 @@ typed_config
   the inner type URL of *TypedStruct* will be utilized. See the
   :ref:`extension configuration overview
   <config_overview_extension_configuration>` for further details.
+  
+  
+
+
+.. _envoy_v3_api_msg_config.core.v3.ExtensionConfigSource:
+
+config.core.v3.ExtensionConfigSource
+------------------------------------
+
+`[config.core.v3.ExtensionConfigSource proto] <https://github.com/envoyproxy/envoy/blob/e8216a8cf79c54e3e0a77ab729ebf27f4e79eb1b/api/envoy/config/core/v3/extension.proto#L44>`_
+
+Configuration source specifier for a late-bound extension configuration. The
+parent resource is warmed until all the initial extension configurations are
+received, unless the flag to apply the default configuration is set.
+Subsequent extension updates are atomic on a per-worker basis. Once an
+extension configuration is applied to a request or a connection, it remains
+constant for the duration of processing. If the initial delivery of the
+extension configuration fails, due to a timeout for example, the optional
+default configuration is applied. Without a default configuration, the
+extension is disabled, until an extension configuration is received. The
+behavior of a disabled extension depends on the context. For example, a
+filter chain with a disabled extension filter rejects all incoming streams.
+
+.. code-block:: json
+
+  {
+    "config_source": "{...}",
+    "default_config": "{...}",
+    "apply_default_config_without_warming": "...",
+    "type_urls": []
+  }
+
+.. _envoy_v3_api_field_config.core.v3.ExtensionConfigSource.config_source:
+
+config_source
+  (:ref:`config.core.v3.ConfigSource <envoy_v3_api_msg_config.core.v3.ConfigSource>`) 
+  
+.. _envoy_v3_api_field_config.core.v3.ExtensionConfigSource.default_config:
+
+default_config
+  (`Any <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any>`_) Optional default configuration to use as the initial configuration if
+  there is a failure to receive the initial extension configuration or if
+  `apply_default_config_without_warming` flag is set.
+  
+  
+.. _envoy_v3_api_field_config.core.v3.ExtensionConfigSource.apply_default_config_without_warming:
+
+apply_default_config_without_warming
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Use the default config as the initial configuration without warming and
+  waiting for the first discovery response. Requires the default configuration
+  to be supplied.
+  
+  
+.. _envoy_v3_api_field_config.core.v3.ExtensionConfigSource.type_urls:
+
+type_urls
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) A set of permitted extension type URLs. Extension configuration updates are rejected
+  if they do not match any type URL in the set.
   
   
 

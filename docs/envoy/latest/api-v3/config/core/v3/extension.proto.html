@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Extension configuration &mdash; envoy 1.16.0-dev-8d4e70 documentation</title>
+  <title>Extension configuration &mdash; envoy 1.16.0-dev-e8216a documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.16.0-dev-8d4e70
+                1.16.0-dev-e8216a
               </div>
             
           
@@ -212,7 +212,7 @@
 <span id="envoy-v3-api-file-envoy-config-core-v3-extension-proto"></span><h1>Extension configuration<a class="headerlink" href="#extension-configuration" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="config-core-v3-typedextensionconfig">
 <span id="envoy-v3-api-msg-config-core-v3-typedextensionconfig"></span><h2>config.core.v3.TypedExtensionConfig<a class="headerlink" href="#config-core-v3-typedextensionconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/8d4e7053aeb8a379d05b4b202cd8c4e54a24dd10/api/envoy/config/core/v3/extension.proto#L18">[config.core.v3.TypedExtensionConfig proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/e8216a8cf79c54e3e0a77ab729ebf27f4e79eb1b/api/envoy/config/core/v3/extension.proto#L20">[config.core.v3.TypedExtensionConfig proto]</a></p>
 <p>Message type for extension configuration.
 .</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -231,6 +231,50 @@ it serves the role of an opaque identifier.</p>
 the extension. In the case that the type URL is <em>udpa.type.v1.TypedStruct</em>,
 the inner type URL of <em>TypedStruct</em> will be utilized. See the
 <a class="reference internal" href="../../../../configuration/overview/extension.html#config-overview-extension-configuration"><span class="std std-ref">extension configuration overview</span></a> for further details.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-core-v3-extensionconfigsource">
+<span id="envoy-v3-api-msg-config-core-v3-extensionconfigsource"></span><h2>config.core.v3.ExtensionConfigSource<a class="headerlink" href="#config-core-v3-extensionconfigsource" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/e8216a8cf79c54e3e0a77ab729ebf27f4e79eb1b/api/envoy/config/core/v3/extension.proto#L44">[config.core.v3.ExtensionConfigSource proto]</a></p>
+<p>Configuration source specifier for a late-bound extension configuration. The
+parent resource is warmed until all the initial extension configurations are
+received, unless the flag to apply the default configuration is set.
+Subsequent extension updates are atomic on a per-worker basis. Once an
+extension configuration is applied to a request or a connection, it remains
+constant for the duration of processing. If the initial delivery of the
+extension configuration fails, due to a timeout for example, the optional
+default configuration is applied. Without a default configuration, the
+extension is disabled, until an extension configuration is received. The
+behavior of a disabled extension depends on the context. For example, a
+filter chain with a disabled extension filter rejects all incoming streams.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;config_source&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;default_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;apply_default_config_without_warming&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;type_urls&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-extensionconfigsource-config-source">
+<dt>config_source</dt><dd><p>(<a class="reference internal" href="config_source.proto.html#envoy-v3-api-msg-config-core-v3-configsource"><span class="std std-ref">config.core.v3.ConfigSource</span></a>)</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-extensionconfigsource-default-config">
+<dt>default_config</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any">Any</a>) Optional default configuration to use as the initial configuration if
+there is a failure to receive the initial extension configuration or if
+<cite>apply_default_config_without_warming</cite> flag is set.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-extensionconfigsource-apply-default-config-without-warming">
+<dt>apply_default_config_without_warming</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Use the default config as the initial configuration without warming and
+waiting for the first discovery response. Requires the default configuration
+to be supplied.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-extensionconfigsource-type-urls">
+<dt>type_urls</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) A set of permitted extension type URLs. Extension configuration updates are rejected
+if they do not match any type URL in the set.</p>
 </dd>
 </dl>
 </div>
