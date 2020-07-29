@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Postgres proxy &mdash; envoy 1.16.0-dev-c694e4 documentation</title>
+  <title>Postgres proxy &mdash; envoy 1.16.0-dev-7287fa documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.16.0-dev-c694e4
+                1.16.0-dev-7287fa
               </div>
             
           
@@ -217,9 +217,11 @@
   <div class="section" id="postgres-proxy">
 <span id="config-network-filters-postgres-proxy"></span><h1>Postgres proxy<a class="headerlink" href="#postgres-proxy" title="Permalink to this headline">¶</a></h1>
 <p>The Postgres proxy filter decodes the wire protocol between a Postgres client (downstream) and a Postgres server
-(upstream). The decoded information is currently used only to produce Postgres level statistics like sessions,
-statements or transactions executed, among others. This current version does not decode SQL queries. Future versions may
-add more statistics and more advanced capabilities. When the Postgres filter detects that a session is encrypted, the messages are ignored and no decoding takes
+(upstream). The decoded information is used to produce Postgres level statistics like sessions,
+statements or transactions executed, among others. The Postgres proxy filter parses SQL queries carried in <code class="docutils literal notranslate"><span class="pre">Query</span></code> and <code class="docutils literal notranslate"><span class="pre">Parse</span></code> messages.
+When SQL query has been parsed successfully, the <a class="reference internal" href="#config-network-filters-postgres-proxy-dynamic-metadata"><span class="std std-ref">metadata</span></a> is created,
+which may be used by other filters like <a class="reference internal" href="rbac_filter.html#config-network-filters-rbac"><span class="std std-ref">RBAC</span></a>.
+When the Postgres filter detects that a session is encrypted, the messages are ignored and no decoding takes
 place. More information:</p>
 <ul class="simple">
 <li><p>Postgres <a class="reference internal" href="../../../intro/arch_overview/other_protocols/postgres.html#arch-overview-postgres"><span class="std std-ref">architecture overview</span></a></p></li>
@@ -342,6 +344,14 @@ example below:</p>
 <td><p>Counter</p></td>
 <td><p>Number of statements other than DELETE, INSERT, SELECT or UPDATE</p></td>
 </tr>
+<tr class="row-even"><td><p>statements_parsed</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of SQL queries parsed successfully</p></td>
+</tr>
+<tr class="row-odd"><td><p>statements_parse_error</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of SQL queries not parsed successfully</p></td>
+</tr>
 <tr class="row-even"><td><p>transactions</p></td>
 <td><p>Counter</p></td>
 <td><p>Total number of SQL transactions</p></td>
@@ -384,6 +394,41 @@ example below:</p>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="section" id="dynamic-metadata">
+<span id="config-network-filters-postgres-proxy-dynamic-metadata"></span><h2>Dynamic Metadata<a class="headerlink" href="#dynamic-metadata" title="Permalink to this headline">¶</a></h2>
+<p>The Postgres filter emits Dynamic Metadata based on SQL statements carried in <code class="docutils literal notranslate"><span class="pre">Query</span></code> and <code class="docutils literal notranslate"><span class="pre">Parse</span></code> messages. <code class="docutils literal notranslate"><span class="pre">statements_parsed</span></code> statistics Counter tracks how many times
+SQL statement was parsed successfully and metadata was created. The metadata is emitted in the following format:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>&lt;table.db&gt;</p></td>
+<td><p>string</p></td>
+<td><p>The resource name in <em>table.db</em> format.</p></td>
+</tr>
+<tr class="row-odd"><td><p>[]</p></td>
+<td><p>list</p></td>
+<td><p>A list of strings representing the operations executed on the resource. Operations can be one of insert/update/select/drop/delete/create/alter/show.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Currently used parser does not successfully parse all SQL statements and it cannot be assumed that all SQL queries will successfully produce Dynamic Metadata.
+Creating Dynamic Metadata from SQL queries is on best-effort basis at the moment. If parsing of an SQL query fails, <code class="docutils literal notranslate"><span class="pre">statements_parse_error</span></code> counter is increased, log message is created, Dynamic Metadata is not
+produced, but the Postgres message is still forwarded to upstream Postgres server.</p>
+</div>
+<p>Parsing SQL statements and emitting Dynamic Metadata can be disabled by setting <a class="reference internal" href="../../../api-v3/extensions/filters/network/postgres_proxy/v3alpha/postgres_proxy.proto.html#envoy-v3-api-field-extensions-filters-network-postgres-proxy-v3alpha-postgresproxy-enable-sql-parsing"><span class="std std-ref">enable_sql_parsing</span></a> to false.</p>
 </div>
 </div>
 
