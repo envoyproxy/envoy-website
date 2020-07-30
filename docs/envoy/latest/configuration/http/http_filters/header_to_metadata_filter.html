@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Envoy Header-To-Metadata Filter &mdash; envoy 1.16.0-dev-4f8a9a documentation</title>
+  <title>Envoy Header-To-Metadata Filter &mdash; envoy 1.16.0-dev-4dfa84 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.16.0-dev-4f8a9a
+                1.16.0-dev-4dfa84
               </div>
             
           
@@ -229,9 +229,13 @@
 <li><p>This filter should be configured with the name <em>envoy.filters.http.header_to_metadata</em>.</p></li>
 </ul>
 <p>This filter is configured with rules that will be matched against requests and responses.
-Each rule has a header and can be triggered either when the header is present or missing. When
-a rule is triggered, dynamic metadata will be added based on the configuration of the rule.
-The metadata can then be used for load balancing decisions, consumed from logs, etc.</p>
+Each rule has either a cookie or a header and can be triggered either when the header
+or cookie is present or missing.</p>
+<p>When a rule is triggered, dynamic metadata will be added based on the configuration of the rule.
+If the header or cookie is present, it’s value is extracted and used along with the specified
+key as metadata. If the header or cookie is missing, on missing case is triggered and the value
+specified is used for adding metadata.</p>
+<p>The metadata can then be used for load balancing decisions, consumed from logs, etc.</p>
 <p>A typical use case for this filter is to dynamically match requests with load balancer
 subsets. For this, a given header’s value would be extracted and attached to the request
 as dynamic metadata which would then be used to match a subset of endpoints.</p>
@@ -245,6 +249,27 @@ absence of a version header could be:</p>
       <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.header_to_metadata.v3.Config</span>
       <span class="nt">request_rules</span><span class="p">:</span>
         <span class="p p-Indicator">-</span> <span class="nt">header</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">x-version</span>
+          <span class="nt">on_header_present</span><span class="p">:</span>
+            <span class="nt">metadata_namespace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.lb</span>
+            <span class="nt">key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">version</span>
+            <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">STRING</span>
+          <span class="nt">on_header_missing</span><span class="p">:</span>
+            <span class="nt">metadata_namespace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.lb</span>
+            <span class="nt">key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
+            <span class="nt">value</span><span class="p">:</span> <span class="s">&#39;true&#39;</span>
+            <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">STRING</span>
+          <span class="nt">remove</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+</pre></div>
+</div>
+<p>As with headers, the value of the specified cookie will be extracted from the request
+and added as metadata with the key specified.
+Removing a cookie when a rule matches is unsupported.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">http_filters</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.header_to_metadata</span>
+    <span class="nt">typed_config</span><span class="p">:</span>
+      <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.header_to_metadata.v3.Config</span>
+      <span class="nt">request_rules</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="nt">cookie</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">cookie</span>
           <span class="nt">on_header_present</span><span class="p">:</span>
             <span class="nt">metadata_namespace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.lb</span>
             <span class="nt">key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">version</span>
