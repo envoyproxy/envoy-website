@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Redis proxy &mdash; envoy 1.16.0-dev-8c3338 documentation</title>
+  <title>Redis proxy &mdash; envoy 1.16.0-dev-f521fc documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.16.0-dev-8c3338
+                1.16.0-dev-f521fc
               </div>
             
           
@@ -341,15 +341,7 @@ changed to microseconds by setting the configuration parameter <a class="referen
 </tr>
 <tr class="row-odd"><td><p>latency</p></td>
 <td><p>Histogram</p></td>
-<td><p>Command execution time in milliseconds (including delay faults)</p></td>
-</tr>
-<tr class="row-even"><td><p>error_fault</p></td>
-<td><p>Counter</p></td>
-<td><p>Number of commands that had an error fault injected</p></td>
-</tr>
-<tr class="row-odd"><td><p>delay_fault</p></td>
-<td><p>Counter</p></td>
-<td><p>Number of commands that had a delay fault injected</p></td>
+<td><p>Command execution time in milliseconds</p></td>
 </tr>
 </tbody>
 </table>
@@ -362,45 +354,6 @@ changed to microseconds by setting the configuration parameter <a class="referen
 attempt a drain close. Defaults to 100.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="fault-injection">
-<span id="config-network-filters-redis-proxy-fault-injection"></span><h2>Fault Injection<a class="headerlink" href="#fault-injection" title="Permalink to this headline">¶</a></h2>
-<p>The Redis filter can perform fault injection. Currently, Delay and Error faults are supported.
-Delay faults delay a request, and Error faults respond with an error. Moreover, errors can be delayed.</p>
-<p>Note that the Redis filter does not check for correctness in your configuration - it is the user’s
-responsibility to make sure both the default and runtime percentages are correct! This is because
-percentages can be changed during runtime, and validating correctness at request time is expensive.
-If multiple faults are specified, the fault injection percentage should not exceed 100% for a given
-fault and Redis command combination. For example, if two faults are specified; one applying to GET at 60
-%, and one applying to all commands at 50%, that is a bad configuration as GET now has 110% chance of
-applying a fault. This means that every request will have a fault.</p>
-<p>If a delay is injected, the delay is additive - if the request took 400ms and a delay of 100ms
-is injected, then the total request latency is 500ms. Also, due to implementation of the redis protocol,
-a delayed request will delay everything that comes in after it, due to the proxy’s need to respect the
-order of commands it receives.</p>
-<p>Note that faults must have a <cite>fault_enabled</cite> field, and are not enabled by default (if no default value
-or runtime key are set).</p>
-<p>Example configuration:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">faults</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="nt">fault_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ERROR</span>
-  <span class="nt">fault_enabled</span><span class="p">:</span>
-    <span class="nt">default_value</span><span class="p">:</span>
-      <span class="nt">numerator</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-      <span class="nt">denominator</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">HUNDRED</span>
-    <span class="nt">runtime_key</span><span class="p">:</span> <span class="s">&quot;bogus_key&quot;</span>
-    <span class="nt">commands</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">GET</span>
-  <span class="p p-Indicator">-</span> <span class="nt">fault_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DELAY</span>
-    <span class="nt">fault_enabled</span><span class="p">:</span>
-      <span class="nt">default_value</span><span class="p">:</span>
-        <span class="nt">numerator</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-        <span class="nt">denominator</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">HUNDRED</span>
-      <span class="nt">runtime_key</span><span class="p">:</span> <span class="s">&quot;bogus_key&quot;</span>
-    <span class="nt">delay</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2s</span>
-</pre></div>
-</div>
-<p>This creates two faults- an error, applying only to GET commands at 10%, and a delay, applying to all
-commands at 10%. This means that 20% of GET commands will have a fault applied, as discussed earlier.</p>
 </div>
 </div>
 
