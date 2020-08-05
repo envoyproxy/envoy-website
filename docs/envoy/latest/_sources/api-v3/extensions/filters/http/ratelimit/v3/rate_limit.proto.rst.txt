@@ -20,7 +20,7 @@ Rate limit :ref:`configuration overview <config_http_filters_rate_limit>`.
 extensions.filters.http.ratelimit.v3.RateLimit
 ----------------------------------------------
 
-`[extensions.filters.http.ratelimit.v3.RateLimit proto] <https://github.com/envoyproxy/envoy/blob/7d03b628859cdf20d97a4e9dc2e4c137884b4a1e/api/envoy/extensions/filters/http/ratelimit/v3/rate_limit.proto#L22>`_
+`[extensions.filters.http.ratelimit.v3.RateLimit proto] <https://github.com/envoyproxy/envoy/blob/9f405633b63e71c623d4de81698807fca17debe9/api/envoy/extensions/filters/http/ratelimit/v3/rate_limit.proto#L22>`_
 
 
 .. code-block:: json
@@ -32,7 +32,8 @@ extensions.filters.http.ratelimit.v3.RateLimit
     "timeout": "{...}",
     "failure_mode_deny": "...",
     "rate_limited_as_resource_exhausted": "...",
-    "rate_limit_service": "{...}"
+    "rate_limit_service": "{...}",
+    "enable_x_ratelimit_headers": "..."
   }
 
 .. _envoy_v3_api_field_extensions.filters.http.ratelimit.v3.RateLimit.domain:
@@ -95,4 +96,53 @@ rate_limit_service
   success.
   
   
+.. _envoy_v3_api_field_extensions.filters.http.ratelimit.v3.RateLimit.enable_x_ratelimit_headers:
 
+enable_x_ratelimit_headers
+  (:ref:`extensions.filters.http.ratelimit.v3.RateLimit.XRateLimitHeadersRFCVersion <envoy_v3_api_enum_extensions.filters.http.ratelimit.v3.RateLimit.XRateLimitHeadersRFCVersion>`) Defines the standard version to use for X-RateLimit headers emitted by the filter:
+  
+  * ``X-RateLimit-Limit`` - indicates the request-quota associated to the
+    client in the current time-window followed by the description of the
+    quota policy. The values are returned by the rate limiting service in
+    :ref:`current_limit<envoy_v3_api_field_service.ratelimit.v3.RateLimitResponse.DescriptorStatus.current_limit>`
+    field. Example: `10, 10;w=1;name="per-ip", 1000;w=3600`.
+  * ``X-RateLimit-Remaining`` - indicates the remaining requests in the
+    current time-window. The values are returned by the rate limiting service
+    in :ref:`limit_remaining<envoy_v3_api_field_service.ratelimit.v3.RateLimitResponse.DescriptorStatus.limit_remaining>`
+    field.
+  * ``X-RateLimit-Reset`` - indicates the number of seconds until reset of
+    the current time-window. The values are returned by the rate limiting service
+    in :ref:`duration_until_reset<envoy_v3_api_field_service.ratelimit.v3.RateLimitResponse.DescriptorStatus.duration_until_reset>`
+    field.
+  
+  In case rate limiting policy specifies more then one time window, the values
+  above represent the window that is closest to reaching its limit.
+  
+  For more information about the headers specification see selected version of
+  the `draft RFC <https://tools.ietf.org/id/draft-polli-ratelimit-headers-02.html>`_.
+  
+  Disabled by default.
+  
+  
+
+.. _envoy_v3_api_enum_extensions.filters.http.ratelimit.v3.RateLimit.XRateLimitHeadersRFCVersion:
+
+Enum extensions.filters.http.ratelimit.v3.RateLimit.XRateLimitHeadersRFCVersion
+-------------------------------------------------------------------------------
+
+`[extensions.filters.http.ratelimit.v3.RateLimit.XRateLimitHeadersRFCVersion proto] <https://github.com/envoyproxy/envoy/blob/9f405633b63e71c623d4de81698807fca17debe9/api/envoy/extensions/filters/http/ratelimit/v3/rate_limit.proto#L27>`_
+
+Defines the version of the standard to use for X-RateLimit headers.
+
+.. _envoy_v3_api_enum_value_extensions.filters.http.ratelimit.v3.RateLimit.XRateLimitHeadersRFCVersion.OFF:
+
+OFF
+  *(DEFAULT)* ⁣X-RateLimit headers disabled.
+  
+  
+.. _envoy_v3_api_enum_value_extensions.filters.http.ratelimit.v3.RateLimit.XRateLimitHeadersRFCVersion.DRAFT_VERSION_02:
+
+DRAFT_VERSION_02
+  ⁣Use `draft RFC Version 02 <https://tools.ietf.org/id/draft-polli-ratelimit-headers-02.html>`_.
+  
+  
