@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xDS REST and gRPC protocol &mdash; envoy 1.16.0-dev-1c8653 documentation</title>
+  <title>xDS REST and gRPC protocol &mdash; envoy 1.16.0-dev-2a4f7d documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.16.0-dev-1c8653
+                1.16.0-dev-2a4f7d
               </div>
             
           
@@ -203,7 +203,7 @@ below.</p>
 <div class="section" id="resource-types">
 <h2>Resource Types<a class="headerlink" href="#resource-types" title="Permalink to this headline">¶</a></h2>
 <p>Every configuration resource in the xDS API has a type associated with it. Resource types follow a
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/1c8653f90f0c8f1f756b18e50c0d0dcbd8a86896/api/API_VERSIONING.md">versioning scheme</a>. Resource types are versioned independent of the
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2a4f7dae855ef81376a8aee6201ea19ea36ef8e2/api/API_VERSIONING.md">versioning scheme</a>. Resource types are versioned independent of the
 transports described below.</p>
 <p>The following v2 xDS resource types are supported:</p>
 <ul class="simple">
@@ -378,18 +378,55 @@ the ADS server, which will be used for all resources. The <a class="reference in
 <h4>Transport API version<a class="headerlink" href="#transport-api-version" title="Permalink to this headline">¶</a></h4>
 <p>In addition the resource type version described above, the xDS wire protocol has a
 transport version associated with it. This provides type versioning for messages such as
-<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryrequest"><span class="std std-ref">DiscoveryRequest</span></a> and <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryresponse"><span class="std std-ref">DiscoveryResponse</span></a>.</p>
+<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryrequest"><span class="std std-ref">DiscoveryRequest</span></a> and <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryresponse"><span class="std std-ref">DiscoveryResponse</span></a>. It is also encoded in the gRPC method name, so a server
+can determine which version a client is speaking based on which method it calls.</p>
 </div>
-<div class="section" id="ack-nack-and-resource-instance-versioning">
-<h4>ACK/NACK and resource instance versioning<a class="headerlink" href="#ack-nack-and-resource-instance-versioning" title="Permalink to this headline">¶</a></h4>
-<p>Each xDS stream begins with a
-<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryrequest"><span class="std std-ref">DiscoveryRequest</span></a> from the client, specifying
-the list of resources to subscribe to, the type URL corresponding to the
-subscribed resources, the node identifier and an empty <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-version-info"><span class="std std-ref">version_info</span></a>.</p>
-<p>In addition to resource and transport type versioning schemes above, which operate at the type
-level, Envoy has a resource instance version. Unlike the resource/transport types, this is not a
-property of the API but is instead a reflection of the specific revision of a named resource
-delivered over xDS.</p>
+<div class="section" id="basic-protocol-overview">
+<h4>Basic Protocol Overview<a class="headerlink" href="#basic-protocol-overview" title="Permalink to this headline">¶</a></h4>
+<p>Each xDS stream begins with a <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryrequest"><span class="std std-ref">DiscoveryRequest</span></a> from the
+client, which specifies the list of resources to subscribe to, the type URL corresponding to the
+subscribed resources, the node identifier, and an optional resource type instance version
+indicating the most recent version of the resource type that the client has already seen (see
+<a class="reference internal" href="#xds-ack-nack"><span class="std std-ref">ACK/NACK and resource type instance version</span></a> for details).</p>
+<p>The server will then send a <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryresponse"><span class="std std-ref">DiscoveryResponse</span></a> containing
+any resources that the client has subscribed to that have changed since the last resource type
+instance version that the client indicated it has seen. The server may send additional responses
+at any time when the subscribed resources change.</p>
+<p>Whenever the client receives a new response, it will send another request indicating whether or
+not the resources in the response were valid (see
+<a class="reference internal" href="#xds-ack-nack"><span class="std std-ref">ACK/NACK and resource type instance version</span></a> for details).</p>
+<p>Only the first request on a stream is guaranteed to carry the node identifier.
+The subsequent discovery requests on the same stream may carry an empty node
+identifier. This holds true regardless of the acceptance of the discovery
+responses on the same stream. The node identifier should always be identical if
+present more than once on the stream. It is sufficient to only check the first
+message for the node identifier as a result.</p>
+</div>
+<div class="section" id="ack-nack-and-resource-type-instance-version">
+<span id="xds-ack-nack"></span><h4>ACK/NACK and resource type instance version<a class="headerlink" href="#ack-nack-and-resource-type-instance-version" title="Permalink to this headline">¶</a></h4>
+<p>Every xDS resource type has a version string that indicates the version for that resource type.
+Whenever one resource of that type changes, the version is changed.</p>
+<p>In a responses sent by the xDS server, the
+<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryresponse-version-info"><span class="std std-ref">version_info</span></a> field indicates the current
+version for that resource type. The client then sends another request to the server with the
+<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-version-info"><span class="std std-ref">version_info</span></a> field indicating the most
+recent valid version seen by the client. This provides a way for the server to determine when
+it sends a version that the client considers invalid.</p>
+<p>(In the <a class="reference internal" href="#xds-protocol-delta"><span class="std std-ref">incremental protocol variants</span></a>, the resource type instance
+version is sent by the server in the
+<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-deltadiscoveryresponse-system-version-info"><span class="std std-ref">system_version_info</span></a> field.
+However, this information is not actually used by the client to communicate which resources are
+valid, because the incremental API variants have a separate mechanism for that.)</p>
+<p>The resource type instance version is separate for each resource type. When using the aggregated
+protocol variants, each resource type has its own version even though all resource types are being
+sent on the same stream.</p>
+<p>The resource type is also separate for each xDS server (where an xDS server is identified by a
+unique <a class="reference internal" href="../api-v2/api/v2/core/config_source.proto.html#envoy-api-msg-core-configsource"><span class="std std-ref">ConfigSource</span></a>). When obtaining resources of a
+given type from multiple xDS servers, each xDS server will have a different notion of version.</p>
+<p>Note that the version for a resource type is not a property of an individual xDS stream but rather
+a property of the resources themselves. If the stream becomes broken and the client creates a new
+stream, the client’s initial request on the new stream should indicate the most recent version
+seen by the client on the previous stream.</p>
 <p>An example EDS request might be:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version_info</span><span class="p">:</span>
 <span class="nt">node</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> id</span><span class="p">:</span> <span class="nv">envoy</span> <span class="p p-Indicator">}</span>
@@ -419,7 +456,7 @@ as well as a mechanism to ACK/NACK configuration updates.</p>
 <div class="section" id="ack">
 <h4>ACK<a class="headerlink" href="#ack" title="Permalink to this headline">¶</a></h4>
 <p>If the update was successfully applied, the
-<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryresponse-version-info"><span class="std std-ref">version_info</span></a> will be <strong>X</strong>, as indicated
+<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-version-info"><span class="std std-ref">version_info</span></a> will be <strong>X</strong>, as indicated
 in the sequence diagram:</p>
 <div class="figure align-default">
 <img alt="Version update after ACK" src="../_images/simple-ack.svg" /></div>
@@ -458,19 +495,6 @@ used in certain race conditions to disambiguate between ACK and NACK.</p></li>
 <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryresponse-version-info"><span class="std std-ref">version_info</span></a>.</p></li>
 <li><p>Only the NACK should populate the <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-error-detail"><span class="std std-ref">error_detail</span></a>.</p></li>
 </ul>
-</div>
-<div class="section" id="versioning-and-node-identifier">
-<h4>Versioning and Node Identifier<a class="headerlink" href="#versioning-and-node-identifier" title="Permalink to this headline">¶</a></h4>
-<p>Each stream has its own notion of versioning, there is no shared
-versioning across resource types. When ADS is not used, even each
-resource of a given resource type may have a distinct version, since the
-Envoy API allows distinct EDS/RDS resources to point at different <a class="reference internal" href="../api-v2/api/v2/core/config_source.proto.html#envoy-api-msg-core-configsource"><span class="std std-ref">ConfigSources</span></a>.</p>
-<p>Only the first request on a stream is guaranteed to carry the node identifier.
-The subsequent discovery requests on the same stream may carry an empty node
-identifier. This holds true regardless of the acceptance of the discovery
-responses on the same stream. The node identifier should always be identical if
-present more than once on the stream. It is sufficient to only check the first
-message for the node identifier as a result.</p>
 </div>
 <div class="section" id="when-to-send-an-update">
 <span id="xds-protocol-resource-update"></span><h4>When to send an update<a class="headerlink" href="#when-to-send-an-update" title="Permalink to this headline">¶</a></h4>
