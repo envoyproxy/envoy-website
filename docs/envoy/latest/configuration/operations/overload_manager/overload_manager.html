@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Overload manager &mdash; envoy 1.16.0-dev-960ad2 documentation</title>
+  <title>Overload manager &mdash; envoy 1.16.0-dev-28df33 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.16.0-dev-960ad2
+                1.16.0-dev-28df33
               </div>
             
           
@@ -107,6 +107,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../runtime.html">Runtime</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Overload manager</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#resource-monitors">Resource monitors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#triggers">Triggers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#overload-actions">Overload actions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#limiting-active-connections">Limiting Active Connections</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#statistics">Statistics</a></li>
@@ -228,6 +229,34 @@ requests when heap memory usage reaches 99%.</p>
 resource monitors. Envoy’s builtin resource monitors are listed
 <a class="reference internal" href="../../../api-v2/config/resource_monitor/resource_monitor.html#config-resource-monitors"><span class="std std-ref">here</span></a>.</p>
 </div>
+<div class="section" id="triggers">
+<h2>Triggers<a class="headerlink" href="#triggers" title="Permalink to this headline">¶</a></h2>
+<p>Triggers connect resource monitors to actions. There are two types of triggers supported:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 67%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="../../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-msg-config-overload-v3-thresholdtrigger"><span class="std std-ref">threshold</span></a></p></td>
+<td><p>Sets the action state to 1 (= <em>saturated</em>) when the resource pressure is above a threshold, and to 0 otherwise.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-msg-config-overload-v3-scaledtrigger"><span class="std std-ref">scaled</span></a></p></td>
+<td><p>Sets the action state to 0 when the resource pressure is below the
+<a class="reference internal" href="../../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-field-config-overload-v3-scaledtrigger-scaling-threshold"><span class="std std-ref">scaling_threshold</span></a>,
+<cite>(pressure - scaling_threshold)/(saturation_threshold - scaling_threshold)</cite> when
+<cite>scaling_threshold &lt; pressure &lt; saturation_threshold</cite>, and to 1 (<em>saturated</em>) when the
+pressure is above the
+<a class="reference internal" href="../../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-field-config-overload-v3-scaledtrigger-saturation-threshold"><span class="std std-ref">saturation_threshold</span></a>.”</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="section" id="overload-actions">
 <h2>Overload actions<a class="headerlink" href="#overload-actions" title="Permalink to this headline">¶</a></h2>
 <p>The following overload actions are supported:</p>
@@ -325,7 +354,11 @@ with the following statistics:</p>
 <tbody>
 <tr class="row-even"><td><p>active</p></td>
 <td><p>Gauge</p></td>
-<td><p>Active state of the action (0=inactive, 1=active)</p></td>
+<td><p>Active state of the action (0=scaling, 1=saturated)</p></td>
+</tr>
+<tr class="row-odd"><td><p>scale_percent</p></td>
+<td><p>Gauge</p></td>
+<td><p>Scaled value of the action as a percent (0-99=scaling, 100=saturated)</p></td>
 </tr>
 </tbody>
 </table>

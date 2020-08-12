@@ -15,7 +15,7 @@ when triggers related to those resources fire.
 config.overload.v3.ResourceMonitor
 ----------------------------------
 
-`[config.overload.v3.ResourceMonitor proto] <https://github.com/envoyproxy/envoy/blob/960ad211c3d1fe0d8838d78e0e88a5c89781f137/api/envoy/config/overload/v3/overload.proto#L24>`_
+`[config.overload.v3.ResourceMonitor proto] <https://github.com/envoyproxy/envoy/blob/28df333572e71fc6850e82437a59e9e378d7b00b/api/envoy/config/overload/v3/overload.proto#L24>`_
 
 
 .. code-block:: json
@@ -51,7 +51,7 @@ typed_config
 config.overload.v3.ThresholdTrigger
 -----------------------------------
 
-`[config.overload.v3.ThresholdTrigger proto] <https://github.com/envoyproxy/envoy/blob/960ad211c3d1fe0d8838d78e0e88a5c89781f137/api/envoy/config/overload/v3/overload.proto#L47>`_
+`[config.overload.v3.ThresholdTrigger proto] <https://github.com/envoyproxy/envoy/blob/28df333572e71fc6850e82437a59e9e378d7b00b/api/envoy/config/overload/v3/overload.proto#L47>`_
 
 
 .. code-block:: json
@@ -64,7 +64,38 @@ config.overload.v3.ThresholdTrigger
 
 value
   (`double <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If the resource pressure is greater than or equal to this value, the trigger
-  will fire.
+  will enter saturation.
+  
+  
+
+
+.. _envoy_v3_api_msg_config.overload.v3.ScaledTrigger:
+
+config.overload.v3.ScaledTrigger
+--------------------------------
+
+`[config.overload.v3.ScaledTrigger proto] <https://github.com/envoyproxy/envoy/blob/28df333572e71fc6850e82437a59e9e378d7b00b/api/envoy/config/overload/v3/overload.proto#L56>`_
+
+
+.. code-block:: json
+
+  {
+    "scaling_threshold": "...",
+    "saturation_threshold": "..."
+  }
+
+.. _envoy_v3_api_field_config.overload.v3.ScaledTrigger.scaling_threshold:
+
+scaling_threshold
+  (`double <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If the resource pressure is greater than this value, the trigger will be in the
+  :ref:`scaling <arch_overview_overload_manager-triggers-state>` state with value
+  `(pressure - scaling_threshold) / (saturation_threshold - scaling_threshold)`.
+  
+  
+.. _envoy_v3_api_field_config.overload.v3.ScaledTrigger.saturation_threshold:
+
+saturation_threshold
+  (`double <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If the resource pressure is greater than this value, the trigger will enter saturation.
   
   
 
@@ -74,14 +105,15 @@ value
 config.overload.v3.Trigger
 --------------------------
 
-`[config.overload.v3.Trigger proto] <https://github.com/envoyproxy/envoy/blob/960ad211c3d1fe0d8838d78e0e88a5c89781f137/api/envoy/config/overload/v3/overload.proto#L56>`_
+`[config.overload.v3.Trigger proto] <https://github.com/envoyproxy/envoy/blob/28df333572e71fc6850e82437a59e9e378d7b00b/api/envoy/config/overload/v3/overload.proto#L66>`_
 
 
 .. code-block:: json
 
   {
     "name": "...",
-    "threshold": "{...}"
+    "threshold": "{...}",
+    "scaled": "{...}"
   }
 
 .. _envoy_v3_api_field_config.overload.v3.Trigger.name:
@@ -93,8 +125,18 @@ name
 .. _envoy_v3_api_field_config.overload.v3.Trigger.threshold:
 
 threshold
-  (:ref:`config.overload.v3.ThresholdTrigger <envoy_v3_api_msg_config.overload.v3.ThresholdTrigger>`, *REQUIRED*) 
+  (:ref:`config.overload.v3.ThresholdTrigger <envoy_v3_api_msg_config.overload.v3.ThresholdTrigger>`) 
   
+  
+  Precisely one of :ref:`threshold <envoy_v3_api_field_config.overload.v3.Trigger.threshold>`, :ref:`scaled <envoy_v3_api_field_config.overload.v3.Trigger.scaled>` must be set.
+  
+.. _envoy_v3_api_field_config.overload.v3.Trigger.scaled:
+
+scaled
+  (:ref:`config.overload.v3.ScaledTrigger <envoy_v3_api_msg_config.overload.v3.ScaledTrigger>`) 
+  
+  
+  Precisely one of :ref:`threshold <envoy_v3_api_field_config.overload.v3.Trigger.threshold>`, :ref:`scaled <envoy_v3_api_field_config.overload.v3.Trigger.scaled>` must be set.
   
 
 
@@ -103,7 +145,7 @@ threshold
 config.overload.v3.OverloadAction
 ---------------------------------
 
-`[config.overload.v3.OverloadAction proto] <https://github.com/envoyproxy/envoy/blob/960ad211c3d1fe0d8838d78e0e88a5c89781f137/api/envoy/config/overload/v3/overload.proto#L70>`_
+`[config.overload.v3.OverloadAction proto] <https://github.com/envoyproxy/envoy/blob/28df333572e71fc6850e82437a59e9e378d7b00b/api/envoy/config/overload/v3/overload.proto#L82>`_
 
 
 .. code-block:: json
@@ -124,9 +166,9 @@ name
 .. _envoy_v3_api_field_config.overload.v3.OverloadAction.triggers:
 
 triggers
-  (:ref:`config.overload.v3.Trigger <envoy_v3_api_msg_config.overload.v3.Trigger>`, *REQUIRED*) A set of triggers for this action. If any of these triggers fire the overload action
-  is activated. Listeners are notified when the overload action transitions from
-  inactivated to activated, or vice versa.
+  (:ref:`config.overload.v3.Trigger <envoy_v3_api_msg_config.overload.v3.Trigger>`, *REQUIRED*) A set of triggers for this action. The state of the action is the maximum
+  state of all triggers, which can be scaling between 0 and 1 or saturated. Listeners
+  are notified when the overload action changes state.
   
   
 
@@ -136,7 +178,7 @@ triggers
 config.overload.v3.OverloadManager
 ----------------------------------
 
-`[config.overload.v3.OverloadManager proto] <https://github.com/envoyproxy/envoy/blob/960ad211c3d1fe0d8838d78e0e88a5c89781f137/api/envoy/config/overload/v3/overload.proto#L85>`_
+`[config.overload.v3.OverloadManager proto] <https://github.com/envoyproxy/envoy/blob/28df333572e71fc6850e82437a59e9e378d7b00b/api/envoy/config/overload/v3/overload.proto#L97>`_
 
 
 .. code-block:: json
