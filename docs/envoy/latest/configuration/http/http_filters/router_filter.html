@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Router &mdash; envoy 1.16.0-dev-7852b9 documentation</title>
+  <title>Router &mdash; envoy 1.16.0-dev-5f3a35 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.16.0-dev-7852b9
+                1.16.0-dev-5f3a35
               </div>
             
           
@@ -268,7 +268,7 @@ or <a class="reference internal" href="#config-http-filters-router-x-envoy-retry
 retries. Thus if the request timeout is set to 3s, and the first request attempt takes 2.7s, the
 retry (including back-off) has .3s to complete. This is by design to avoid an exponential
 retry/timeout explosion.</p></li>
-<li><p>Envoy uses a fully jittered exponential back-off algorithm for retries with a default base
+<li><p>By default, Envoy uses a fully jittered exponential back-off algorithm for retries with a default base
 interval of 25ms. Given a base interval B and retry number N, the back-off for the retry is in
 the range <span class="math notranslate nohighlight">\(\big[0, (2^N-1)B\big)\)</span>. For example, given the default interval, the first retry
 will be delayed randomly by 0-24ms, the 2nd by 0-74ms, the 3rd by 0-174ms, and so on. The
@@ -277,6 +277,13 @@ The default base interval (and therefore the maximum interval) can be manipulate
 upstream.base_retry_backoff_ms runtime parameter. The back-off intervals can also be modified
 by configuring the retry policy’s
 <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-retrypolicy-retry-back-off"><span class="std std-ref">retry back-off</span></a>.</p></li>
+<li><p>Envoy can also be configured to use feedback from the upstream server to decide the interval between
+retries. Response headers like <code class="docutils literal notranslate"><span class="pre">Retry-After</span></code> or <code class="docutils literal notranslate"><span class="pre">X-RateLimit-Reset</span></code> instruct the client how long
+to wait before re-trying. The retry policy’s
+<a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-retrypolicy-rate-limited-retry-back-off"><span class="std std-ref">rate limited retry back off</span></a>
+strategy can be configured to expect a particular header, and if that header is present in the response Envoy
+will use its value to decide the back-off. If the header is not present, or if it cannot be parsed
+successfully, Envoy will use the default exponential back-off algorithm instead.</p></li>
 </ul>
 </div>
 <div class="section" id="x-envoy-retry-on">
