@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>DNS Filter &mdash; envoy 1.16.0-dev-c8c790 documentation</title>
+  <title>DNS Filter &mdash; envoy 1.16.0-dev-d6b9cf documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.16.0-dev-c8c790
+                1.16.0-dev-d6b9cf
               </div>
             
           
@@ -243,6 +243,8 @@ An Example configuration follows that illustrates how the filter can be used.</p
         <span class="p p-Indicator">-</span> <span class="nt">suffix</span><span class="p">:</span> <span class="s">&quot;domain1.com&quot;</span>
         <span class="p p-Indicator">-</span> <span class="nt">suffix</span><span class="p">:</span> <span class="s">&quot;domain2.com&quot;</span>
         <span class="p p-Indicator">-</span> <span class="nt">suffix</span><span class="p">:</span> <span class="s">&quot;domain3.com&quot;</span>
+        <span class="p p-Indicator">-</span> <span class="nt">suffix</span><span class="p">:</span> <span class="s">&quot;domain4.com&quot;</span>
+        <span class="p p-Indicator">-</span> <span class="nt">suffix</span><span class="p">:</span> <span class="s">&quot;domain5.com&quot;</span>
         <span class="nt">virtual_domains</span><span class="p">:</span>
          <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;www.domain1.com&quot;</span>
            <span class="nt">endpoint</span><span class="p">:</span>
@@ -263,6 +265,26 @@ An Example configuration follows that illustrates how the filter can be used.</p
           <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;www.domain4.com&quot;</span>
             <span class="nt">endpoint</span><span class="p">:</span>
               <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">cluster_0</span>
+          <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;voip.domain5.com&quot;</span>
+            <span class="nt">endpoint</span><span class="p">:</span>
+              <span class="nt">service_list</span><span class="p">:</span>
+                <span class="nt">services</span><span class="p">:</span>
+                  <span class="p p-Indicator">-</span> <span class="nt">service_name</span><span class="p">:</span> <span class="s">&quot;sip&quot;</span>
+                    <span class="nt">protocol</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> number</span><span class="p">:</span> <span class="nv">6</span> <span class="p p-Indicator">}</span>
+                    <span class="nt">ttl</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">86400s</span>
+                    <span class="nt">targets</span><span class="p">:</span>
+                    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> host_name</span><span class="p">:</span> <span class="s">&quot;primary.voip.domain5.com&quot;</span> <span class="p p-Indicator">}</span>
+                      <span class="nt">priority</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+                      <span class="nt">weight</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+                      <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5060</span>
+                    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> host_name</span><span class="p">:</span> <span class="s">&quot;secondary.voip.domain5.com&quot;</span> <span class="p p-Indicator">}</span>
+                      <span class="nt">priority</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+                      <span class="nt">weight</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+                      <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5060</span>
+                    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> host_name</span><span class="p">:</span> <span class="s">&quot;backup.voip.domain5.com&quot;</span> <span class="p p-Indicator">}</span>
+                      <span class="nt">priority</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+                      <span class="nt">weight</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+                      <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5060</span>
 </pre></div>
 </div>
 <p>In this example, Envoy is configured to respond to client queries for four domains. For any
@@ -270,11 +292,22 @@ other query, it will forward upstream to external resolvers. The filter will ret
 matching the input query type. If the query is for type A records and no A records are configured,
 Envoy will return no addresses and set the response code appropriately. Conversely, if there are
 matching records for the query type, each configured address is returned. This is also true for
-AAAA records. Only A and AAAA records are supported. If the filter parses other queries for other
-record types, the filter immediately responds indicating that the query is not supported. The
-filter can also redirect a query for a DNS name to the enpoints of a cluster. The last domain
+AAAA records. Only A, AAAA, and SRV records are supported. If the filter parses queries for other
+record types, the filter immediately responds indicating that the type is not supported. The
+filter can also redirect a query for a DNS name to the enpoints of a cluster. “www.domain4.com”
 in the configuration demonstrates this. Along with an address list, a cluster name is a valid
 endpoint for a DNS name.</p>
+<p>The DNS filter also supports responding to queries for service records. The records for “domain5.com”
+illustrate the configuration necessary to support responding to SRV records. The target name
+populated in the configuration must be fully qualified domain names, unless the target is a cluster.
+For non-cluster targets, each referenced target name must be defined in the DNS Filter table so that
+Envoy can resolve the target hosts’ IP addresses. For a cluster, Envoy will return an address for
+each cluster endpoint.</p>
+<p>Each service record’s protocol can be defined by a name or number. As configured in the example,
+the filter will successfully respond to SRV record requests for “_sip._tcp.voip.domain5.com”. If a
+numerical value is specified, Envoy will attempt to resolve the number to a name. String values for
+protocols are used as they appear. An underscore is prepended to both the service and protocol to
+adhere to the convention outlined in the RFC.</p>
 <p>The filter can also consume its domain configuration from an external DNS table. The same entities
 appearing in the static configuration can be stored as JSON or YAML in a separate file and referenced
 using the <a class="reference internal" href="../../../api-v2/api/v2/core/base.proto.html#envoy-api-msg-core-datasource"><span class="std std-ref">external_dns_table DataSource</span></a> directive:</p>
