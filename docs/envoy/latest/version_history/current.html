@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1.16.0 (Pending) &mdash; envoy 1.16.0-dev-0bda2d documentation</title>
+  <title>1.16.0 (Pending) &mdash; envoy 1.16.0-dev-4ff622 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.16.0-dev-0bda2d
+                1.16.0-dev-4ff622
               </div>
             
           
@@ -230,6 +230,7 @@
 <li><p>http: added <a class="reference internal" href="../api-v2/api/v2/route/route_components.proto.html#envoy-api-msg-route-headermatcher"><span class="std std-ref">contains</span></a> a new header matcher type which matches if the value of the header has the substring mentioned in contains matcher.</p></li>
 <li><p>http: added <a class="reference internal" href="../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-responsemapper-headers-to-add"><span class="std std-ref">headers_to_add</span></a> to <a class="reference internal" href="../configuration/http/http_conn_man/local_reply.html#config-http-conn-man-local-reply"><span class="std std-ref">local reply mapper</span></a> to allow its users to add/append/override response HTTP headers to local replies.</p></li>
 <li><p>http: added HCM level configuration of <a class="reference internal" href="../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-stream-error-on-invalid-http-message"><span class="std std-ref">error handling on invalid messaging</span></a> which substantially changes Envoy’s behavior when encountering invalid HTTP/1.1 defaulting to closing the connection instead of allowing reuse. This can temporarily be reverted by setting <cite>envoy.reloadable_features.hcm_stream_error_on_invalid_message</cite> to false, or permanently reverted by setting the <a class="reference internal" href="../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-stream-error-on-invalid-http-message"><span class="std std-ref">HCM option</span></a> to true to restore prior HTTP/1.1 beavior and setting the <em>new</em> HTTP/2 configuration <a class="reference internal" href="../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-http2protocoloptions-override-stream-error-on-invalid-http-message"><span class="std std-ref">override_stream_error_on_invalid_http_message</span></a> to false to retain prior HTTP/2 behavior.</p></li>
+<li><p>http: changed Envoy to send GOAWAY to HTTP2 downstreams when the <a class="reference internal" href="../configuration/operations/overload_manager/overload_manager.html#config-overload-manager-overload-actions"><span class="std std-ref">disable_keepalive</span></a> overload action is active. This behavior may be temporarily reverted by setting <cite>envoy.reloadable_features.overload_manager_disable_keepalive_drain_http2</cite> to false.</p></li>
 <li><p>http: changed Envoy to send error headers and body when possible. This behavior may be temporarily reverted by setting <cite>envoy.reloadable_features.allow_response_for_timeout</cite> to false.</p></li>
 <li><p>http: changed empty trailers encoding behavior by sending empty data with <code class="docutils literal notranslate"><span class="pre">end_stream</span></code> true (instead of sending empty trailers) for HTTP/2. This behavior can be reverted temporarily by setting runtime feature <code class="docutils literal notranslate"><span class="pre">envoy.reloadable_features.http2_skip_encoding_empty_trailers</span></code> to false.</p></li>
 <li><p>http: clarified and enforced 1xx handling. Multiple 100-continue headers are coalesced when proxying. 1xx headers other than {100, 101} are dropped.</p></li>
