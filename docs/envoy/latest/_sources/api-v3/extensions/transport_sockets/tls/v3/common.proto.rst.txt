@@ -9,7 +9,7 @@ Common TLS configuration
 extensions.transport_sockets.tls.v3.TlsParameters
 -------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.TlsParameters proto] <https://github.com/envoyproxy/envoy/blob/4ac944d2d05838e6150945c512192f66e284c50f/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L23>`_
+`[extensions.transport_sockets.tls.v3.TlsParameters proto] <https://github.com/envoyproxy/envoy/blob/969711e8c7f6b4cdc8fbc9f1f8d9c81a4df94adb/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L23>`_
 
 
 .. code-block:: json
@@ -104,7 +104,7 @@ ecdh_curves
 Enum extensions.transport_sockets.tls.v3.TlsParameters.TlsProtocol
 ------------------------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.TlsParameters.TlsProtocol proto] <https://github.com/envoyproxy/envoy/blob/4ac944d2d05838e6150945c512192f66e284c50f/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L26>`_
+`[extensions.transport_sockets.tls.v3.TlsParameters.TlsProtocol proto] <https://github.com/envoyproxy/envoy/blob/969711e8c7f6b4cdc8fbc9f1f8d9c81a4df94adb/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L26>`_
 
 
 .. _envoy_v3_api_enum_value_extensions.transport_sockets.tls.v3.TlsParameters.TlsProtocol.TLS_AUTO:
@@ -143,7 +143,7 @@ TLSv1_3
 extensions.transport_sockets.tls.v3.PrivateKeyProvider
 ------------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.PrivateKeyProvider proto] <https://github.com/envoyproxy/envoy/blob/4ac944d2d05838e6150945c512192f66e284c50f/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L112>`_
+`[extensions.transport_sockets.tls.v3.PrivateKeyProvider proto] <https://github.com/envoyproxy/envoy/blob/969711e8c7f6b4cdc8fbc9f1f8d9c81a4df94adb/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L112>`_
 
 BoringSSL private key method configuration. The private key methods are used for external
 (potentially asynchronous) signing and decryption operations. Some use cases for private key
@@ -177,7 +177,7 @@ typed_config
 extensions.transport_sockets.tls.v3.TlsCertificate
 --------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.TlsCertificate proto] <https://github.com/envoyproxy/envoy/blob/4ac944d2d05838e6150945c512192f66e284c50f/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L131>`_
+`[extensions.transport_sockets.tls.v3.TlsCertificate proto] <https://github.com/envoyproxy/envoy/blob/969711e8c7f6b4cdc8fbc9f1f8d9c81a4df94adb/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L131>`_
 
 
 .. code-block:: json
@@ -229,7 +229,7 @@ password
 extensions.transport_sockets.tls.v3.TlsSessionTicketKeys
 --------------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.TlsSessionTicketKeys proto] <https://github.com/envoyproxy/envoy/blob/4ac944d2d05838e6150945c512192f66e284c50f/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L160>`_
+`[extensions.transport_sockets.tls.v3.TlsSessionTicketKeys proto] <https://github.com/envoyproxy/envoy/blob/969711e8c7f6b4cdc8fbc9f1f8d9c81a4df94adb/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L160>`_
 
 
 .. code-block:: json
@@ -273,7 +273,7 @@ keys
 extensions.transport_sockets.tls.v3.CertificateValidationContext
 ----------------------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.CertificateValidationContext proto] <https://github.com/envoyproxy/envoy/blob/4ac944d2d05838e6150945c512192f66e284c50f/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L192>`_
+`[extensions.transport_sockets.tls.v3.CertificateValidationContext proto] <https://github.com/envoyproxy/envoy/blob/969711e8c7f6b4cdc8fbc9f1f8d9c81a4df94adb/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L192>`_
 
 
 .. code-block:: json
@@ -306,7 +306,10 @@ trusted_ca
   specified.
   
   It can optionally contain certificate revocation lists, in which case Envoy will verify
-  that the presented peer certificate has not been revoked by one of the included CRLs.
+  that the presented peer certificate has not been revoked by one of the included CRLs. Note
+  that if a CRL is provided for any certificate authority in a trust chain, a CRL must be
+  provided for all certificate authorities in that chain. Failure to do so will result in
+  verification failure for both revoked and unrevoked certificates from that chain.
   
   See :ref:`the TLS overview <arch_overview_ssl_enabling_verification>` for a list of common
   system CA locations.
@@ -410,7 +413,11 @@ crl
   <https://en.wikipedia.org/wiki/Certificate_revocation_list>`_
   (in PEM format). If specified, Envoy will verify that the presented peer
   certificate has not been revoked by this CRL. If this DataSource contains
-  multiple CRLs, all of them will be used.
+  multiple CRLs, all of them will be used. Note that if a CRL is provided
+  for any certificate authority in a trust chain, a CRL must be provided
+  for all certificate authorities in that chain. Failure to do so will
+  result in verification failure for both revoked and unrevoked certificates
+  from that chain.
   
   
 .. _envoy_v3_api_field_extensions.transport_sockets.tls.v3.CertificateValidationContext.allow_expired_certificate:
@@ -431,7 +438,7 @@ trust_chain_verification
 Enum extensions.transport_sockets.tls.v3.CertificateValidationContext.TrustChainVerification
 --------------------------------------------------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.CertificateValidationContext.TrustChainVerification proto] <https://github.com/envoyproxy/envoy/blob/4ac944d2d05838e6150945c512192f66e284c50f/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L197>`_
+`[extensions.transport_sockets.tls.v3.CertificateValidationContext.TrustChainVerification proto] <https://github.com/envoyproxy/envoy/blob/969711e8c7f6b4cdc8fbc9f1f8d9c81a4df94adb/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L197>`_
 
 Peer certificate verification mode.
 
