@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>MySQL Filter &mdash; envoy 1.16.0-dev-ba9644 documentation</title>
+  <title>MySQL Filter &mdash; envoy 1.16.0-dev-ff4f25 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.16.0-dev-ba9644
+                1.16.0-dev-ff4f25
               </div>
             
           
@@ -198,13 +198,16 @@
 metrics.</p>
 <div class="section" id="running-the-sandboxes">
 <h2>Running the Sandboxes<a class="headerlink" href="#running-the-sandboxes" title="Permalink to this headline">¶</a></h2>
-<p>The following documentation runs through the setup of both services.</p>
+<p>The following documentation runs through the setup of the services.</p>
 <p><strong>Step 1: Install Docker</strong></p>
 <p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code>.</p>
 <p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
-<p><strong>Step 2: Clone the Envoy repo and start all of our containers</strong></p>
-<p>If you have not cloned the Envoy repo, clone it with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:envoyproxy/envoy</span></code>
-or <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/envoyproxy/envoy.git</span></code></p>
+<p><strong>Step 2: Clone the Envoy repo</strong></p>
+<p>If you have not cloned the Envoy repo, clone it with:</p>
+<p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:envoyproxy/envoy</span></code></p>
+<p>or</p>
+<p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/envoyproxy/envoy.git</span></code></p>
+<p><strong>Step 3: Build the sandbox</strong></p>
 <p>Terminal 1</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
 <span class="go">envoy/examples/mysql</span>
@@ -218,7 +221,7 @@ or <code class="docutils literal notranslate"><span class="pre">git</span> <span
 <span class="go">mysql_proxy_1   /docker-entrypoint.sh /bin       Up      10000/tcp, 0.0.0.0:1999-&gt;1999/tcp, 0.0.0.0:8001-&gt;8001/tcp</span>
 </pre></div>
 </div>
-<p><strong>Step 3: Issue commands using mysql</strong></p>
+<p><strong>Step 4: Issue commands using mysql</strong></p>
 <p>Use <code class="docutils literal notranslate"><span class="pre">mysql</span></code> to issue some commands and verify they are routed via Envoy. Note
 that the current implementation of the protocol filter was tested with MySQL
 v5.5. It may, however, not work with other versions of MySQL due to differences
@@ -258,7 +261,7 @@ in the protocol implementation.</p>
 <span class="go">Bye</span>
 </pre></div>
 </div>
-<p><strong>Step 4: Check egress stats</strong></p>
+<p><strong>Step 5: Check egress stats</strong></p>
 <p>Check egress stats were updated.</p>
 <p>Terminal 1</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:8001/stats?filter<span class="o">=</span>egress_mysql
@@ -273,7 +276,7 @@ in the protocol implementation.</p>
 <span class="go">mysql.egress_mysql.upgraded_to_ssl: 0</span>
 </pre></div>
 </div>
-<p><strong>Step 5: Check TCP stats</strong></p>
+<p><strong>Step 6: Check TCP stats</strong></p>
 <p>Check TCP stats were updated.</p>
 <p>Terminal 1</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:8001/stats?filter<span class="o">=</span>mysql_tcp

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Front Proxy &mdash; envoy 1.16.0-dev-ba9644 documentation</title>
+  <title>Front Proxy &mdash; envoy 1.16.0-dev-ff4f25 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.16.0-dev-ba9644
+                1.16.0-dev-ff4f25
               </div>
             
           
@@ -202,208 +202,217 @@ running service Envoy. The three containers will be deployed inside a virtual ne
 <a class="reference internal image-reference" href="../../_images/docker_compose_front_proxy.svg"><img alt="../../_images/docker_compose_front_proxy.svg" src="../../_images/docker_compose_front_proxy.svg" width="100%" /></a>
 <p>All incoming requests are routed via the front Envoy, which is acting as a reverse proxy sitting on
 the edge of the <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code> network. Port <code class="docutils literal notranslate"><span class="pre">8080</span></code>, <code class="docutils literal notranslate"><span class="pre">8443</span></code>, and <code class="docutils literal notranslate"><span class="pre">8001</span></code> are exposed by docker
-compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/ba9644493d1e788e26dc0b772e384a0b4e8986e2//examples/front-proxy/docker-compose.yaml">/examples/front-proxy/docker-compose.yaml</a>) to handle <code class="docutils literal notranslate"><span class="pre">HTTP</span></code>, <code class="docutils literal notranslate"><span class="pre">HTTPS</span></code> calls
-to the services and requests to <code class="docutils literal notranslate"><span class="pre">/admin</span></code> respectively. Moreover, notice that all traffic routed
-by the front Envoy to the service containers is actually routed to the service Envoys
-(routes setup in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/ba9644493d1e788e26dc0b772e384a0b4e8986e2//examples/front-proxy/front-envoy.yaml">/examples/front-proxy/front-envoy.yaml</a>). In turn the service Envoys route
-the request to the Flask app via the loopback address (routes setup in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/ba9644493d1e788e26dc0b772e384a0b4e8986e2//examples/front-proxy/service-envoy.yaml">/examples/front-proxy/service-envoy.yaml</a>).
-This setup illustrates the advantage of running service Envoys collocated with your services: all
+compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/ff4f257432d4eec008f5f996ee7c63f4f2959d21//examples/front-proxy/docker-compose.yaml">/examples/front-proxy/docker-compose.yaml</a>) to handle <code class="docutils literal notranslate"><span class="pre">HTTP</span></code>, <code class="docutils literal notranslate"><span class="pre">HTTPS</span></code> calls
+to the services and requests to <code class="docutils literal notranslate"><span class="pre">/admin</span></code> respectively.</p>
+<p>Moreover, notice that all traffic routed by the front Envoy to the service containers is actually
+routed to the service Envoys (routes setup in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/ff4f257432d4eec008f5f996ee7c63f4f2959d21//examples/front-proxy/front-envoy.yaml">/examples/front-proxy/front-envoy.yaml</a>).</p>
+<p>In turn the service Envoys route the request to the Flask app via the loopback
+address (routes setup in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/ff4f257432d4eec008f5f996ee7c63f4f2959d21//examples/front-proxy/service-envoy.yaml">/examples/front-proxy/service-envoy.yaml</a>). This
+setup illustrates the advantage of running service Envoys collocated with your services: all
 requests are handled by the service Envoy, and efficiently routed to your services.</p>
 <div class="section" id="running-the-sandbox">
 <h2>Running the Sandbox<a class="headerlink" href="#running-the-sandbox" title="Permalink to this headline">¶</a></h2>
 <p>The following documentation runs through the setup of an Envoy cluster organized
 as is described in the image above.</p>
 <p><strong>Step 1: Install Docker</strong></p>
-<p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> installed.</p>
+<p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code>.</p>
 <p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
-<p><strong>Step 2: Clone the Envoy repo, and start all of our containers</strong></p>
-<p>If you have not cloned the Envoy repo, clone it with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:envoyproxy/envoy</span></code>
-or <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/envoyproxy/envoy.git</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  $ pwd
-  envoy/examples/front-proxy
-  $ docker-compose build --pull
-  $ docker-compose up -d
-  $ docker-compose ps
+<p><strong>Step 2: Clone the Envoy repo</strong></p>
+<p>If you have not cloned the Envoy repo, clone it with:</p>
+<p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:envoyproxy/envoy</span></code></p>
+<p>or</p>
+<p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/envoyproxy/envoy.git</span></code></p>
+<p><strong>Step 3: Start all of our containers</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
+<span class="go">envoy/examples/front-proxy</span>
+<span class="gp">$</span> docker-compose build --pull
+<span class="gp">$</span> docker-compose up -d
+<span class="gp">$</span> docker-compose ps
 
-          Name                         Command               State                                         Ports
-------------------------------------------------------------------------------------------------------------------------------------------------------
-front-proxy_front-envoy_1   /docker-entrypoint.sh /bin ... Up      10000/tcp, 0.0.0.0:8080-&gt;8080/tcp, 0.0.0.0:8001-&gt;8001/tcp, 0.0.0.0:8443-&gt;8443/tcp
-front-proxy_service1_1      /bin/sh -c /usr/local/bin/ ... Up      10000/tcp, 8000/tcp
-front-proxy_service2_1      /bin/sh -c /usr/local/bin/ ... Up      10000/tcp, 8000/tcp
+<span class="go">          Name                         Command               State                                         Ports</span>
+<span class="go">------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="go">front-proxy_front-envoy_1   /docker-entrypoint.sh /bin ... Up      10000/tcp, 0.0.0.0:8080-&gt;8080/tcp, 0.0.0.0:8001-&gt;8001/tcp, 0.0.0.0:8443-&gt;8443/tcp</span>
+<span class="go">front-proxy_service1_1      /bin/sh -c /usr/local/bin/ ... Up      10000/tcp, 8000/tcp</span>
+<span class="go">front-proxy_service2_1      /bin/sh -c /usr/local/bin/ ... Up      10000/tcp, 8000/tcp</span>
 </pre></div>
 </div>
-<p><strong>Step 3: Test Envoy’s routing capabilities</strong></p>
+<p><strong>Step 4: Test Envoy’s routing capabilities</strong></p>
 <p>You can now send a request to both services via the <code class="docutils literal notranslate"><span class="pre">front-envoy</span></code>.</p>
 <p>For <code class="docutils literal notranslate"><span class="pre">service1</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl -v localhost:8080/service/1
-*   Trying ::1...
-* TCP_NODELAY set
-* Connected to localhost (::1) port 8080 (#0)
-&gt; GET /service/1 HTTP/1.1
-&gt; Host: localhost:8080
-&gt; User-Agent: curl/7.64.1
-&gt; Accept: */*
-&gt;
-&lt; HTTP/1.1 200 OK
-&lt; content-type: text/html; charset=utf-8
-&lt; content-length: 92
-&lt; server: envoy
-&lt; date: Mon, 06 Jul 2020 06:20:00 GMT
-&lt; x-envoy-upstream-service-time: 2
-&lt;
-Hello from behind Envoy (service 1)! hostname: 36418bc3c824 resolvedhostname: 192.168.160.4
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -v localhost:8080/service/1
+<span class="go">*   Trying ::1...</span>
+<span class="go">* TCP_NODELAY set</span>
+<span class="go">* Connected to localhost (::1) port 8080 (#0)</span>
+<span class="gp">&gt;</span> GET /service/1 HTTP/1.1
+<span class="gp">&gt;</span> Host: localhost:8080
+<span class="gp">&gt;</span> User-Agent: curl/7.64.1
+<span class="gp">&gt;</span> Accept: */*
+<span class="gp">&gt;</span>
+<span class="go">&lt; HTTP/1.1 200 OK</span>
+<span class="go">&lt; content-type: text/html; charset=utf-8</span>
+<span class="go">&lt; content-length: 92</span>
+<span class="go">&lt; server: envoy</span>
+<span class="go">&lt; date: Mon, 06 Jul 2020 06:20:00 GMT</span>
+<span class="go">&lt; x-envoy-upstream-service-time: 2</span>
+<span class="go">&lt;</span>
+<span class="go">Hello from behind Envoy (service 1)! hostname: 36418bc3c824 resolvedhostname: 192.168.160.4</span>
 </pre></div>
 </div>
 <p>For <code class="docutils literal notranslate"><span class="pre">service2</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl -v localhost:8080/service/2
-*   Trying ::1...
-* TCP_NODELAY set
-* Connected to localhost (::1) port 8080 (#0)
-&gt; GET /service/2 HTTP/1.1
-&gt; Host: localhost:8080
-&gt; User-Agent: curl/7.64.1
-&gt; Accept: */*
-&gt;
-&lt; HTTP/1.1 200 OK
-&lt; content-type: text/html; charset=utf-8
-&lt; content-length: 92
-&lt; server: envoy
-&lt; date: Mon, 06 Jul 2020 06:23:13 GMT
-&lt; x-envoy-upstream-service-time: 2
-&lt;
-Hello from behind Envoy (service 2)! hostname: ea6165ee4fee resolvedhostname: 192.168.160.2
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -v localhost:8080/service/2
+<span class="go">*   Trying ::1...</span>
+<span class="go">* TCP_NODELAY set</span>
+<span class="go">* Connected to localhost (::1) port 8080 (#0)</span>
+<span class="gp">&gt;</span> GET /service/2 HTTP/1.1
+<span class="gp">&gt;</span> Host: localhost:8080
+<span class="gp">&gt;</span> User-Agent: curl/7.64.1
+<span class="gp">&gt;</span> Accept: */*
+<span class="gp">&gt;</span>
+<span class="go">&lt; HTTP/1.1 200 OK</span>
+<span class="go">&lt; content-type: text/html; charset=utf-8</span>
+<span class="go">&lt; content-length: 92</span>
+<span class="go">&lt; server: envoy</span>
+<span class="go">&lt; date: Mon, 06 Jul 2020 06:23:13 GMT</span>
+<span class="go">&lt; x-envoy-upstream-service-time: 2</span>
+<span class="go">&lt;</span>
+<span class="go">Hello from behind Envoy (service 2)! hostname: ea6165ee4fee resolvedhostname: 192.168.160.2</span>
 </pre></div>
 </div>
 <p>Notice that each request, while sent to the front Envoy, was correctly routed to the respective
 application.</p>
 <p>We can also use <code class="docutils literal notranslate"><span class="pre">HTTPS</span></code> to call services behind the front Envoy. For example, calling <code class="docutils literal notranslate"><span class="pre">service1</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl https://localhost:8443/service/1 -k -v
-*   Trying ::1...
-* TCP_NODELAY set
-* Connected to localhost (::1) port 8443 (#0)
-* ALPN, offering h2
-* ALPN, offering http/1.1
-* successfully set certificate verify locations:
-*   CAfile: /etc/ssl/cert.pem
-  CApath: none
-* TLSv1.2 (OUT), TLS handshake, Client hello (1):
-* TLSv1.2 (IN), TLS handshake, Server hello (2):
-* TLSv1.2 (IN), TLS handshake, Certificate (11):
-* TLSv1.2 (IN), TLS handshake, Server key exchange (12):
-* TLSv1.2 (IN), TLS handshake, Server finished (14):
-* TLSv1.2 (OUT), TLS handshake, Client key exchange (16):
-* TLSv1.2 (OUT), TLS change cipher, Change cipher spec (1):
-* TLSv1.2 (OUT), TLS handshake, Finished (20):
-* TLSv1.2 (IN), TLS change cipher, Change cipher spec (1):
-* TLSv1.2 (IN), TLS handshake, Finished (20):
-* SSL connection using TLSv1.2 / ECDHE-RSA-CHACHA20-POLY1305
-* ALPN, server did not agree to a protocol
-* Server certificate:
-*  subject: CN=front-envoy
-*  start date: Jul  5 15:18:44 2020 GMT
-*  expire date: Jul  5 15:18:44 2021 GMT
-*  issuer: CN=front-envoy
-*  SSL certificate verify result: self signed certificate (18), continuing anyway.
-&gt; GET /service/1 HTTP/1.1
-&gt; Host: localhost:8443
-&gt; User-Agent: curl/7.64.1
-&gt; Accept: */*
-&gt;
-&lt; HTTP/1.1 200 OK
-&lt; content-type: text/html; charset=utf-8
-&lt; content-length: 92
-&lt; server: envoy
-&lt; date: Mon, 06 Jul 2020 06:17:14 GMT
-&lt; x-envoy-upstream-service-time: 3
-&lt;
-Hello from behind Envoy (service 1)! hostname: 36418bc3c824 resolvedhostname: 192.168.160.4
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl https://localhost:8443/service/1 -k -v
+<span class="go">*   Trying ::1...</span>
+<span class="go">* TCP_NODELAY set</span>
+<span class="go">* Connected to localhost (::1) port 8443 (#0)</span>
+<span class="go">* ALPN, offering h2</span>
+<span class="go">* ALPN, offering http/1.1</span>
+<span class="go">* successfully set certificate verify locations:</span>
+<span class="go">*   CAfile: /etc/ssl/cert.pem</span>
+<span class="go">  CApath: none</span>
+<span class="go">* TLSv1.2 (OUT), TLS handshake, Client hello (1):</span>
+<span class="go">* TLSv1.2 (IN), TLS handshake, Server hello (2):</span>
+<span class="go">* TLSv1.2 (IN), TLS handshake, Certificate (11):</span>
+<span class="go">* TLSv1.2 (IN), TLS handshake, Server key exchange (12):</span>
+<span class="go">* TLSv1.2 (IN), TLS handshake, Server finished (14):</span>
+<span class="go">* TLSv1.2 (OUT), TLS handshake, Client key exchange (16):</span>
+<span class="go">* TLSv1.2 (OUT), TLS change cipher, Change cipher spec (1):</span>
+<span class="go">* TLSv1.2 (OUT), TLS handshake, Finished (20):</span>
+<span class="go">* TLSv1.2 (IN), TLS change cipher, Change cipher spec (1):</span>
+<span class="go">* TLSv1.2 (IN), TLS handshake, Finished (20):</span>
+<span class="go">* SSL connection using TLSv1.2 / ECDHE-RSA-CHACHA20-POLY1305</span>
+<span class="go">* ALPN, server did not agree to a protocol</span>
+<span class="go">* Server certificate:</span>
+<span class="go">*  subject: CN=front-envoy</span>
+<span class="go">*  start date: Jul  5 15:18:44 2020 GMT</span>
+<span class="go">*  expire date: Jul  5 15:18:44 2021 GMT</span>
+<span class="go">*  issuer: CN=front-envoy</span>
+<span class="go">*  SSL certificate verify result: self signed certificate (18), continuing anyway.</span>
+<span class="gp">&gt;</span> GET /service/1 HTTP/1.1
+<span class="gp">&gt;</span> Host: localhost:8443
+<span class="gp">&gt;</span> User-Agent: curl/7.64.1
+<span class="gp">&gt;</span> Accept: */*
+<span class="gp">&gt;</span>
+<span class="go">&lt; HTTP/1.1 200 OK</span>
+<span class="go">&lt; content-type: text/html; charset=utf-8</span>
+<span class="go">&lt; content-length: 92</span>
+<span class="go">&lt; server: envoy</span>
+<span class="go">&lt; date: Mon, 06 Jul 2020 06:17:14 GMT</span>
+<span class="go">&lt; x-envoy-upstream-service-time: 3</span>
+<span class="go">&lt;</span>
+<span class="go">Hello from behind Envoy (service 1)! hostname: 36418bc3c824 resolvedhostname: 192.168.160.4</span>
 </pre></div>
 </div>
-<p><strong>Step 4: Test Envoy’s load balancing capabilities</strong></p>
+<p><strong>Step 5: Test Envoy’s load balancing capabilities</strong></p>
 <p>Now let’s scale up our <code class="docutils literal notranslate"><span class="pre">service1</span></code> nodes to demonstrate the load balancing abilities of Envoy:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker-compose scale service1=3
-Creating and starting example_service1_2 ... done
-Creating and starting example_service1_3 ... done
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker-compose scale <span class="nv">service1</span><span class="o">=</span><span class="m">3</span>
+<span class="go">Creating and starting example_service1_2 ... done</span>
+<span class="go">Creating and starting example_service1_3 ... done</span>
 </pre></div>
 </div>
 <p>Now if we send a request to <code class="docutils literal notranslate"><span class="pre">service1</span></code> multiple times, the front Envoy will load balance the
 requests by doing a round robin of the three <code class="docutils literal notranslate"><span class="pre">service1</span></code> machines:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl -v localhost:8080/service/1
-*   Trying ::1...
-* TCP_NODELAY set
-* Connected to localhost (::1) port 8080 (#0)
-&gt; GET /service/1 HTTP/1.1
-&gt; Host: localhost:8080
-&gt; User-Agent: curl/7.64.1
-&gt; Accept: */*
-&gt;
-&lt; HTTP/1.1 200 OK
-&lt; content-type: text/html; charset=utf-8
-&lt; content-length: 92
-&lt; server: envoy
-&lt; date: Mon, 06 Jul 2020 06:21:47 GMT
-&lt; x-envoy-upstream-service-time: 6
-&lt;
-Hello from behind Envoy (service 1)! hostname: 3dc787578c23 resolvedhostname: 192.168.160.6
-$ curl -v localhost:8080/service/1
-*   Trying 192.168.99.100...
-* Connected to 192.168.99.100 (192.168.99.100) port 8080 (#0)
-&gt; GET /service/1 HTTP/1.1
-&gt; Host: 192.168.99.100:8080
-&gt; User-Agent: curl/7.54.0
-&gt; Accept: */*
-&gt;
-&lt; HTTP/1.1 200 OK
-&lt; content-type: text/html; charset=utf-8
-&lt; content-length: 89
-&lt; x-envoy-upstream-service-time: 1
-&lt; server: envoy
-&lt; date: Fri, 26 Aug 2018 19:40:22 GMT
-&lt;
-Hello from behind Envoy (service 1)! hostname: 3a93ece62129 resolvedhostname: 192.168.160.5
-$ curl -v localhost:8080/service/1
-*   Trying 192.168.99.100...
-* Connected to 192.168.99.100 (192.168.99.100) port 8080 (#0)
-&gt; GET /service/1 HTTP/1.1
-&gt; Host: 192.168.99.100:8080
-&gt; User-Agent: curl/7.43.0
-&gt; Accept: */*
-&gt;
-&lt; HTTP/1.1 200 OK
-&lt; content-type: text/html; charset=utf-8
-&lt; content-length: 89
-&lt; x-envoy-upstream-service-time: 1
-&lt; server: envoy
-&lt; date: Fri, 26 Aug 2018 19:40:24 GMT
-&lt; x-envoy-protocol-version: HTTP/1.1
-&lt;
-Hello from behind Envoy (service 1)! hostname: 36418bc3c824 resolvedhostname: 192.168.160.4
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -v localhost:8080/service/1
+<span class="go">*   Trying ::1...</span>
+<span class="go">* TCP_NODELAY set</span>
+<span class="go">* Connected to localhost (::1) port 8080 (#0)</span>
+<span class="gp">&gt;</span> GET /service/1 HTTP/1.1
+<span class="gp">&gt;</span> Host: localhost:8080
+<span class="gp">&gt;</span> User-Agent: curl/7.64.1
+<span class="gp">&gt;</span> Accept: */*
+<span class="gp">&gt;</span>
+<span class="go">&lt; HTTP/1.1 200 OK</span>
+<span class="go">&lt; content-type: text/html; charset=utf-8</span>
+<span class="go">&lt; content-length: 92</span>
+<span class="go">&lt; server: envoy</span>
+<span class="go">&lt; date: Mon, 06 Jul 2020 06:21:47 GMT</span>
+<span class="go">&lt; x-envoy-upstream-service-time: 6</span>
+<span class="go">&lt;</span>
+<span class="go">Hello from behind Envoy (service 1)! hostname: 3dc787578c23 resolvedhostname: 192.168.160.6</span>
+
+<span class="gp">$</span> curl -v localhost:8080/service/1
+<span class="go">*   Trying 192.168.99.100...</span>
+<span class="go">* Connected to 192.168.99.100 (192.168.99.100) port 8080 (#0)</span>
+<span class="gp">&gt;</span> GET /service/1 HTTP/1.1
+<span class="gp">&gt;</span> Host: <span class="m">192</span>.168.99.100:8080
+<span class="gp">&gt;</span> User-Agent: curl/7.54.0
+<span class="gp">&gt;</span> Accept: */*
+<span class="gp">&gt;</span>
+<span class="go">&lt; HTTP/1.1 200 OK</span>
+<span class="go">&lt; content-type: text/html; charset=utf-8</span>
+<span class="go">&lt; content-length: 89</span>
+<span class="go">&lt; x-envoy-upstream-service-time: 1</span>
+<span class="go">&lt; server: envoy</span>
+<span class="go">&lt; date: Fri, 26 Aug 2018 19:40:22 GMT</span>
+<span class="go">&lt;</span>
+<span class="go">Hello from behind Envoy (service 1)! hostname: 3a93ece62129 resolvedhostname: 192.168.160.5</span>
+
+<span class="gp">$</span> curl -v localhost:8080/service/1
+<span class="go">*   Trying 192.168.99.100...</span>
+<span class="go">* Connected to 192.168.99.100 (192.168.99.100) port 8080 (#0)</span>
+<span class="gp">&gt;</span> GET /service/1 HTTP/1.1
+<span class="gp">&gt;</span> Host: <span class="m">192</span>.168.99.100:8080
+<span class="gp">&gt;</span> User-Agent: curl/7.43.0
+<span class="gp">&gt;</span> Accept: */*
+<span class="gp">&gt;</span>
+<span class="go">&lt; HTTP/1.1 200 OK</span>
+<span class="go">&lt; content-type: text/html; charset=utf-8</span>
+<span class="go">&lt; content-length: 89</span>
+<span class="go">&lt; x-envoy-upstream-service-time: 1</span>
+<span class="go">&lt; server: envoy</span>
+<span class="go">&lt; date: Fri, 26 Aug 2018 19:40:24 GMT</span>
+<span class="go">&lt; x-envoy-protocol-version: HTTP/1.1</span>
+<span class="go">&lt;</span>
+<span class="go">Hello from behind Envoy (service 1)! hostname: 36418bc3c824 resolvedhostname: 192.168.160.4</span>
 </pre></div>
 </div>
-<p><strong>Step 5: enter containers and curl services</strong></p>
+<p><strong>Step 6: enter containers and curl services</strong></p>
 <p>In addition of using <code class="docutils literal notranslate"><span class="pre">curl</span></code> from your host machine, you can also enter the
 containers themselves and <code class="docutils literal notranslate"><span class="pre">curl</span></code> from inside them. To enter a container you
 can use <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">exec</span> <span class="pre">&lt;container_name&gt;</span> <span class="pre">/bin/bash</span></code>. For example we can
 enter the <code class="docutils literal notranslate"><span class="pre">front-envoy</span></code> container, and <code class="docutils literal notranslate"><span class="pre">curl</span></code> for services locally:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker-compose exec front-envoy /bin/bash
-root@81288499f9d7:/# curl localhost:8080/service/1
-Hello from behind Envoy (service 1)! hostname: 85ac151715c6 resolvedhostname: 172.19.0.3
-root@81288499f9d7:/# curl localhost:8080/service/1
-Hello from behind Envoy (service 1)! hostname: 20da22cfc955 resolvedhostname: 172.19.0.5
-root@81288499f9d7:/# curl localhost:8080/service/1
-Hello from behind Envoy (service 1)! hostname: f26027f1ce28 resolvedhostname: 172.19.0.6
-root@81288499f9d7:/# curl localhost:8080/service/2
-Hello from behind Envoy (service 2)! hostname: 92f4a3737bbc resolvedhostname: 172.19.0.2
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker-compose <span class="nb">exec</span> front-envoy /bin/bash
+<span class="gp">root@81288499f9d7:/#</span> curl localhost:8080/service/1
+<span class="go">Hello from behind Envoy (service 1)! hostname: 85ac151715c6 resolvedhostname: 172.19.0.3</span>
+<span class="gp">root@81288499f9d7:/#</span> curl localhost:8080/service/1
+<span class="go">Hello from behind Envoy (service 1)! hostname: 20da22cfc955 resolvedhostname: 172.19.0.5</span>
+<span class="gp">root@81288499f9d7:/#</span> curl localhost:8080/service/1
+<span class="go">Hello from behind Envoy (service 1)! hostname: f26027f1ce28 resolvedhostname: 172.19.0.6</span>
+<span class="gp">root@81288499f9d7:/#</span> curl localhost:8080/service/2
+<span class="go">Hello from behind Envoy (service 2)! hostname: 92f4a3737bbc resolvedhostname: 172.19.0.2</span>
 </pre></div>
 </div>
-<p><strong>Step 6: enter containers and curl admin</strong></p>
-<p>When Envoy runs it also attaches an <code class="docutils literal notranslate"><span class="pre">admin</span></code> to your desired port. In the example
-configs the admin is bound to port <code class="docutils literal notranslate"><span class="pre">8001</span></code>. We can <code class="docutils literal notranslate"><span class="pre">curl</span></code> it to gain useful information.
-For example you can <code class="docutils literal notranslate"><span class="pre">curl</span></code> <code class="docutils literal notranslate"><span class="pre">/server_info</span></code> to get information about the
-Envoy version you are running. Additionally you can <code class="docutils literal notranslate"><span class="pre">curl</span></code> <code class="docutils literal notranslate"><span class="pre">/stats</span></code> to get
-statistics. For example inside <code class="docutils literal notranslate"><span class="pre">front-envoy</span></code> we can get:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker-compose exec front-envoy /bin/bash
-root@e654c2c83277:/# curl localhost:8001/server_info
+<p><strong>Step 7: enter container and curl admin</strong></p>
+<p>When Envoy runs it also attaches an <code class="docutils literal notranslate"><span class="pre">admin</span></code> to your desired port.</p>
+<p>In the example configs the admin is bound to port <code class="docutils literal notranslate"><span class="pre">8001</span></code>.</p>
+<p>We can <code class="docutils literal notranslate"><span class="pre">curl</span></code> it to gain useful information:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">/server_info</span></code> provides information about the Envoy version you are running.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/stats</span></code> provides statistics about the  Envoy server.</p></li>
+</ul>
+<p>In the example we can we can enter the <code class="docutils literal notranslate"><span class="pre">front-envoy</span></code> container to query admin:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker-compose <span class="nb">exec</span> front-envoy /bin/bash
+<span class="gp">root@e654c2c83277:/#</span> curl localhost:8001/server_info
 </pre></div>
 </div>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -449,25 +458,25 @@ root@e654c2c83277:/# curl localhost:8001/server_info
 <span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>root@e654c2c83277:/# curl localhost:8001/stats
-cluster.service1.external.upstream_rq_200: 7
-...
-cluster.service1.membership_change: 2
-cluster.service1.membership_total: 3
-...
-cluster.service1.upstream_cx_http2_total: 3
-...
-cluster.service1.upstream_rq_total: 7
-...
-cluster.service2.external.upstream_rq_200: 2
-...
-cluster.service2.membership_change: 1
-cluster.service2.membership_total: 1
-...
-cluster.service2.upstream_cx_http2_total: 1
-...
-cluster.service2.upstream_rq_total: 2
-...
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">root@e654c2c83277:/#</span> curl localhost:8001/stats
+<span class="go">cluster.service1.external.upstream_rq_200: 7</span>
+<span class="go">...</span>
+<span class="go">cluster.service1.membership_change: 2</span>
+<span class="go">cluster.service1.membership_total: 3</span>
+<span class="go">...</span>
+<span class="go">cluster.service1.upstream_cx_http2_total: 3</span>
+<span class="go">...</span>
+<span class="go">cluster.service1.upstream_rq_total: 7</span>
+<span class="go">...</span>
+<span class="go">cluster.service2.external.upstream_rq_200: 2</span>
+<span class="go">...</span>
+<span class="go">cluster.service2.membership_change: 1</span>
+<span class="go">cluster.service2.membership_total: 1</span>
+<span class="go">...</span>
+<span class="go">cluster.service2.upstream_cx_http2_total: 1</span>
+<span class="go">...</span>
+<span class="go">cluster.service2.upstream_rq_total: 2</span>
+<span class="go">...</span>
 </pre></div>
 </div>
 <p>Notice that we can get the number of members of upstream clusters, number of requests fulfilled by

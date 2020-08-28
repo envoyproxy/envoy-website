@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Zipkin Tracing &mdash; envoy 1.16.0-dev-ba9644 documentation</title>
+  <title>Zipkin Tracing &mdash; envoy 1.16.0-dev-ff4f25 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.16.0-dev-ba9644
+                1.16.0-dev-ff4f25
               </div>
             
           
@@ -201,11 +201,11 @@ service1 makes an API call to service2 before returning a response.
 The three containers will be deployed inside a virtual network called <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code>.</p>
 <p>All incoming requests are routed via the front Envoy, which is acting as a reverse proxy
 sitting on the edge of the <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code> network. Port <code class="docutils literal notranslate"><span class="pre">8000</span></code> is exposed
-by docker compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/ba9644493d1e788e26dc0b772e384a0b4e8986e2//examples/zipkin-tracing/docker-compose.yaml">/examples/zipkin-tracing/docker-compose.yaml</a>). Notice that
+by docker compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/ff4f257432d4eec008f5f996ee7c63f4f2959d21//examples/zipkin-tracing/docker-compose.yaml">/examples/zipkin-tracing/docker-compose.yaml</a>). Notice that
 all Envoys are configured to collect request traces (e.g., http_connection_manager/config/tracing setup in
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/ba9644493d1e788e26dc0b772e384a0b4e8986e2//examples/zipkin-tracing/front-envoy-zipkin.yaml">/examples/zipkin-tracing/front-envoy-zipkin.yaml</a>) and setup to propagate the spans generated
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/ff4f257432d4eec008f5f996ee7c63f4f2959d21//examples/zipkin-tracing/front-envoy-zipkin.yaml">/examples/zipkin-tracing/front-envoy-zipkin.yaml</a>) and setup to propagate the spans generated
 by the Zipkin tracer to a Zipkin cluster (trace driver setup
-in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/ba9644493d1e788e26dc0b772e384a0b4e8986e2//examples/zipkin-tracing/front-envoy-zipkin.yaml">/examples/zipkin-tracing/front-envoy-zipkin.yaml</a>).</p>
+in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/ff4f257432d4eec008f5f996ee7c63f4f2959d21//examples/zipkin-tracing/front-envoy-zipkin.yaml">/examples/zipkin-tracing/front-envoy-zipkin.yaml</a>).</p>
 <p>Before routing a request to the appropriate service Envoy or the application, Envoy will take
 care of generating the appropriate spans for tracing (parent/child/shared context spans).
 At a high-level, each span records the latency of upstream API calls as well as information
@@ -214,50 +214,58 @@ needed to correlate the span with other related spans (e.g., the trace ID).</p>
 propagating the traces to the Zipkin service cluster. However, in order to fully take advantage
 of tracing, the application has to propagate trace headers that Envoy generates, while making
 calls to other services. In the sandbox we have provided, the simple flask app
-(see trace function in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/ba9644493d1e788e26dc0b772e384a0b4e8986e2//examples/front-proxy/service.py">/examples/front-proxy/service.py</a>) acting as service1 propagates
+(see trace function in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/ff4f257432d4eec008f5f996ee7c63f4f2959d21//examples/front-proxy/service.py">/examples/front-proxy/service.py</a>) acting as service1 propagates
 the trace headers while making an outbound call to service2.</p>
 <div class="section" id="running-the-sandbox">
 <h2>Running the Sandbox<a class="headerlink" href="#running-the-sandbox" title="Permalink to this headline">¶</a></h2>
 <p>The following documentation runs through the setup of an Envoy cluster organized
-as is described in the image above.</p>
-<p><strong>Step 1: Build the sandbox</strong></p>
+as is described above.</p>
+<p><strong>Step 1: Install Docker</strong></p>
+<p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code>.</p>
+<p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
+<p><strong>Step 2: Clone the Envoy repo</strong></p>
+<p>If you have not cloned the Envoy repo, clone it with:</p>
+<p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:envoyproxy/envoy</span></code></p>
+<p>or</p>
+<p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/envoyproxy/envoy.git</span></code></p>
+<p><strong>Step 3: Build the sandbox</strong></p>
 <p>To build this sandbox example, and start the example apps run the following commands:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pwd
-envoy/examples/zipkin-tracing
-$ docker-compose pull
-$ docker-compose up --build -d
-$ docker-compose ps
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
+<span class="go">envoy/examples/zipkin-tracing</span>
+<span class="gp">$</span> docker-compose pull
+<span class="gp">$</span> docker-compose up --build -d
+<span class="gp">$</span> docker-compose ps
 
-            Name                          Command             State                            Ports
------------------------------------------------------------------------------------------------------------------------------
-zipkin-tracing_front-envoy_1   /docker-entrypoint.sh /bin ... Up      10000/tcp, 0.0.0.0:8000-&gt;8000/tcp, 0.0.0.0:8001-&gt;8001/tcp
-zipkin-tracing_service1_1      /bin/sh -c /usr/local/bin/ ... Up      10000/tcp, 8000/tcp
-zipkin-tracing_service2_1      /bin/sh -c /usr/local/bin/ ... Up      10000/tcp, 8000/tcp
-zipkin-tracing_zipkin_1        /busybox/sh run.sh             Up      9410/tcp, 0.0.0.0:9411-&gt;9411/tcp
+<span class="go">            Name                          Command             State                            Ports</span>
+<span class="go">-----------------------------------------------------------------------------------------------------------------------------</span>
+<span class="go">zipkin-tracing_front-envoy_1   /docker-entrypoint.sh /bin ... Up      10000/tcp, 0.0.0.0:8000-&gt;8000/tcp, 0.0.0.0:8001-&gt;8001/tcp</span>
+<span class="go">zipkin-tracing_service1_1      /bin/sh -c /usr/local/bin/ ... Up      10000/tcp, 8000/tcp</span>
+<span class="go">zipkin-tracing_service2_1      /bin/sh -c /usr/local/bin/ ... Up      10000/tcp, 8000/tcp</span>
+<span class="go">zipkin-tracing_zipkin_1        /busybox/sh run.sh             Up      9410/tcp, 0.0.0.0:9411-&gt;9411/tcp</span>
 </pre></div>
 </div>
-<p><strong>Step 2: Generate some load</strong></p>
+<p><strong>Step 4: Generate some load</strong></p>
 <p>You can now send a request to service1 via the front-envoy as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl -v localhost:8000/trace/1
-*   Trying 192.168.99.100...
-* Connected to 192.168.99.100 (192.168.99.100) port 8000 (#0)
-&gt; GET /trace/1 HTTP/1.1
-&gt; Host: 192.168.99.100:8000
-&gt; User-Agent: curl/7.43.0
-&gt; Accept: */*
-&gt;
-&lt; HTTP/1.1 200 OK
-&lt; content-type: text/html; charset=utf-8
-&lt; content-length: 89
-&lt; x-envoy-upstream-service-time: 1
-&lt; server: envoy
-&lt; date: Fri, 26 Aug 2018 19:39:19 GMT
-&lt;
-Hello from behind Envoy (service 1)! hostname: f26027f1ce28 resolvedhostname: 172.19.0.6
-* Connection #0 to host 192.168.99.100 left intact
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -v localhost:8000/trace/1
+<span class="go">*   Trying 192.168.99.100...</span>
+<span class="go">* Connected to 192.168.99.100 (192.168.99.100) port 8000 (#0)</span>
+<span class="gp">&gt;</span> GET /trace/1 HTTP/1.1
+<span class="gp">&gt;</span> Host: <span class="m">192</span>.168.99.100:8000
+<span class="gp">&gt;</span> User-Agent: curl/7.43.0
+<span class="gp">&gt;</span> Accept: */*
+<span class="gp">&gt;</span>
+<span class="go">&lt; HTTP/1.1 200 OK</span>
+<span class="go">&lt; content-type: text/html; charset=utf-8</span>
+<span class="go">&lt; content-length: 89</span>
+<span class="go">&lt; x-envoy-upstream-service-time: 1</span>
+<span class="go">&lt; server: envoy</span>
+<span class="go">&lt; date: Fri, 26 Aug 2018 19:39:19 GMT</span>
+<span class="go">&lt;</span>
+<span class="go">Hello from behind Envoy (service 1)! hostname: f26027f1ce28 resolvedhostname: 172.19.0.6</span>
+<span class="go">* Connection #0 to host 192.168.99.100 left intact</span>
 </pre></div>
 </div>
-<p><strong>Step 3: View the traces in Zipkin UI</strong></p>
+<p><strong>Step 5: View the traces in Zipkin UI</strong></p>
 <p>Point your browser to <a class="reference external" href="http://localhost:9411">http://localhost:9411</a> . You should see the Zipkin dashboard.
 Set the service to “front-proxy” and set the start time to a few minutes before
 the start of the test (step 2) and hit enter. You should see traces from the front-proxy.

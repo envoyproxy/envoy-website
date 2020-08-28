@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>CORS Filter &mdash; envoy 1.16.0-dev-ba9644 documentation</title>
+  <title>CORS Filter &mdash; envoy 1.16.0-dev-ff4f25 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.16.0-dev-ba9644
+                1.16.0-dev-ff4f25
               </div>
             
           
@@ -223,10 +223,13 @@ origin is <code class="docutils literal notranslate"><span class="pre">envoyprox
 <p><strong>Step 1: Install Docker</strong></p>
 <p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code>.</p>
 <p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
-<p><strong>Step 2: Clone the Envoy repo and start all of our containers</strong></p>
-<p>If you have not cloned the Envoy repo, clone it with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:envoyproxy/envoy</span></code>
-or <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/envoyproxy/envoy.git</span></code></p>
-<p>Terminal 1</p>
+<p><strong>Step 2: Clone the Envoy repo</strong></p>
+<p>If you have not cloned the Envoy repo, clone it with:</p>
+<p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:envoyproxy/envoy</span></code></p>
+<p>or</p>
+<p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/envoyproxy/envoy.git</span></code></p>
+<p><strong>Step 3: Start all of our containers</strong></p>
+<p>Switch to the <code class="docutils literal notranslate"><span class="pre">frontend</span></code> directory in the <code class="docutils literal notranslate"><span class="pre">cors</span></code> example, and start the containers:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
 <span class="go">envoy/examples/cors/frontend</span>
 <span class="gp">$</span> docker-compose pull
@@ -239,9 +242,10 @@ or <code class="docutils literal notranslate"><span class="pre">git</span> <span
 <span class="go">frontend_frontend-service_1   /bin/sh -c /usr/local/bin/ ... Up      10000/tcp, 8000/tcp</span>
 </pre></div>
 </div>
-<p>Terminal 2</p>
+<p>Now, switch to the <code class="docutils literal notranslate"><span class="pre">backend</span></code> directory in the <code class="docutils literal notranslate"><span class="pre">cors</span></code> example, and start the containers:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
 <span class="go">envoy/examples/cors/backend</span>
+<span class="gp">$</span> docker-compose pull
 <span class="gp">$</span> docker-compose up --build -d
 <span class="gp">$</span> docker-compose ps
 
@@ -251,20 +255,20 @@ or <code class="docutils literal notranslate"><span class="pre">git</span> <span
 <span class="go">backend_front-envoy_1       /docker-entrypoint.sh /bin ... Up      10000/tcp, 0.0.0.0:8002-&gt;8000/tcp, 0.0.0.0:8003-&gt;8001/tcp</span>
 </pre></div>
 </div>
-<p><strong>Step 3: Test Envoy’s CORS capabilities</strong></p>
-<p>You can now open a browser to view your frontend service at <code class="docutils literal notranslate"><span class="pre">localhost:8000</span></code>.</p>
-<p>Results of the cross-origin request will be shown on the page under <em>Request Results</em>.
-Your browser’s CORS enforcement logs can be found in the console.</p>
+<p><strong>Step 4: Test Envoy’s CORS capabilities</strong></p>
+<p>You can now open a browser to view your frontend service at <a class="reference external" href="http://localhost:8000">http://localhost:8000</a>.</p>
+<p>Results of the cross-origin request will be shown on the page under <em>Request Results</em>.</p>
+<p>Your browser’s <code class="docutils literal notranslate"><span class="pre">CORS</span></code> enforcement logs can be found in the browser console.</p>
 <p>For example:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Access to XMLHttpRequest at &#39;http://192.168.99.100:8002/cors/disabled&#39; from origin &#39;http://192.168.99.101:8000&#39;</span>
 <span class="go">has been blocked by CORS policy: No &#39;Access-Control-Allow-Origin&#39; header is present on the requested resource.</span>
 </pre></div>
 </div>
-<p><strong>Step 4: Check stats of backend via admin</strong></p>
-<p>When Envoy runs, it can listen to <code class="docutils literal notranslate"><span class="pre">admin</span></code> requests if a port is configured. In the example
-configs, the backend admin is bound to port <code class="docutils literal notranslate"><span class="pre">8003</span></code>.</p>
-<p>If you go to <code class="docutils literal notranslate"><span class="pre">localhost:8003/stats</span></code> you will be able to view
-all of the Envoy stats for the backend. You should see the CORS stats for
+<p><strong>Step 5: Check stats of backend via admin</strong></p>
+<p>When Envoy runs, it can listen to <code class="docutils literal notranslate"><span class="pre">admin</span></code> requests if a port is configured.</p>
+<p>In the example configs, the backend admin is bound to port <code class="docutils literal notranslate"><span class="pre">8003</span></code>.</p>
+<p>If you browse to <a class="reference external" href="http://localhost:8003/stats">http://localhost:8003/stats</a> you will be able to view
+all of the Envoy stats for the backend. You should see the <code class="docutils literal notranslate"><span class="pre">CORS</span></code> stats for
 invalid and valid origins increment as you make requests from the frontend cluster.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>http.ingress_http.cors.origin_invalid: 2
 http.ingress_http.cors.origin_valid: 7

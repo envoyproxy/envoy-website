@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>gRPC Bridge &mdash; envoy 1.16.0-dev-ba9644 documentation</title>
+  <title>gRPC Bridge &mdash; envoy 1.16.0-dev-ff4f25 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.16.0-dev-ba9644
+                1.16.0-dev-ff4f25
               </div>
             
           
@@ -105,8 +105,7 @@
 <li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front Proxy</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">gRPC Bridge</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#envoy-grpc">Envoy gRPC</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#building-the-go-service">Building the Go service</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#docker-compose">Docker compose</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#running-the-sandbox">Running the Sandbox</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sending-requests-to-the-key-value-store">Sending requests to the Key/Value store</a></li>
 </ul>
 </li>
@@ -200,62 +199,104 @@
 <div class="section" id="envoy-grpc">
 <h2>Envoy gRPC<a class="headerlink" href="#envoy-grpc" title="Permalink to this headline">¶</a></h2>
 <p>The gRPC bridge sandbox is an example usage of Envoy’s
-<a class="reference internal" href="../../configuration/http/http_filters/grpc_http1_bridge_filter.html#config-http-filters-grpc-bridge"><span class="std std-ref">gRPC bridge filter</span></a>.
-Included in the sandbox is a gRPC in-memory Key/Value store with a Python HTTP
-client. The Python client makes HTTP/1 requests through the Envoy sidecar
-process which are upgraded into HTTP/2 gRPC requests. Response trailers are then
-buffered and sent back to the client as a HTTP/1 header payload.</p>
+<a class="reference internal" href="../../configuration/http/http_filters/grpc_http1_bridge_filter.html#config-http-filters-grpc-bridge"><span class="std std-ref">gRPC bridge filter</span></a>.</p>
+<p>This is an example of a key-value store where an <code class="docutils literal notranslate"><span class="pre">http</span></code>-based client CLI, written in <code class="docutils literal notranslate"><span class="pre">Python</span></code>,
+updates a remote store, written in <code class="docutils literal notranslate"><span class="pre">Go</span></code>, using the stubs generated for both languages.</p>
+<p>The client send messages through a proxy that upgrades the HTTP requests from <code class="docutils literal notranslate"><span class="pre">http/1.1</span></code> to <code class="docutils literal notranslate"><span class="pre">http/2</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">[client](http/1.1)</span> <span class="pre">-&gt;</span> <span class="pre">[client-egress-proxy](http/2)</span> <span class="pre">-&gt;</span> <span class="pre">[server-ingress-proxy](http/2)</span> <span class="pre">-&gt;</span> <span class="pre">[server]</span></code></p>
 <p>Another Envoy feature demonstrated in this example is Envoy’s ability to do authority
 base routing via its route configuration.</p>
 </div>
-<div class="section" id="building-the-go-service">
-<h2>Building the Go service<a class="headerlink" href="#building-the-go-service" title="Permalink to this headline">¶</a></h2>
-<p>To build the Go gRPC service run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pwd
-envoy/examples/grpc-bridge
-$ script/bootstrap.sh
-$ script/build.sh
+<div class="section" id="running-the-sandbox">
+<h2>Running the Sandbox<a class="headerlink" href="#running-the-sandbox" title="Permalink to this headline">¶</a></h2>
+<p>The following documentation runs through the setup of the services.</p>
+<p><strong>Step 1: Install Docker</strong></p>
+<p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code>.</p>
+<p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
+<p><strong>Step 2: Clone the Envoy repo</strong></p>
+<p>If you have not cloned the Envoy repo, clone it with:</p>
+<p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:envoyproxy/envoy</span></code></p>
+<p>or</p>
+<p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/envoyproxy/envoy.git</span></code></p>
+<p><strong>Step 3: Generate the protocol stubs</strong></p>
+<p>A docker-compose file is provided that generates the stubs for both <code class="docutils literal notranslate"><span class="pre">client</span></code> and <code class="docutils literal notranslate"><span class="pre">server</span></code> from the
+specification in the <code class="docutils literal notranslate"><span class="pre">protos</span></code> directory.</p>
+<p>Inspecting the <code class="docutils literal notranslate"><span class="pre">docker-compose-protos.yaml</span></code> file, you will see that it contains both the <code class="docutils literal notranslate"><span class="pre">python</span></code>
+and <code class="docutils literal notranslate"><span class="pre">go</span></code> gRPC protoc commands necessary for generating the protocol stubs.</p>
+<p>Generate the stubs as follows:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
+<span class="go">envoy/examples/grpc-bridge</span>
+<span class="gp">$</span> docker-compose -f docker-compose-protos.yaml up
+<span class="go">Starting grpc-bridge_stubs_python_1 ... done</span>
+<span class="go">Starting grpc-bridge_stubs_go_1     ... done</span>
+<span class="go">Attaching to grpc-bridge_stubs_go_1, grpc-bridge_stubs_python_1</span>
+<span class="go">grpc-bridge_stubs_go_1 exited with code 0</span>
+<span class="go">grpc-bridge_stubs_python_1 exited with code 0</span>
 </pre></div>
 </div>
-<p>Note: <code class="docutils literal notranslate"><span class="pre">build.sh</span></code> requires that your Envoy codebase (or a working copy thereof) is in <code class="docutils literal notranslate"><span class="pre">$GOPATH/src/github.com/envoyproxy/envoy</span></code>.</p>
+<p>You may wish to clean up left over containers with the following command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker container prune
+</pre></div>
 </div>
-<div class="section" id="docker-compose">
-<h2>Docker compose<a class="headerlink" href="#docker-compose" title="Permalink to this headline">¶</a></h2>
-<p>To run the docker compose file, and set up both the Python and the gRPC containers
-run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pwd
-envoy/examples/grpc-bridge
-$ docker-compose pull
-$ docker-compose up --build
+<p>You can view the generated <code class="docutils literal notranslate"><span class="pre">kv</span></code> modules for both the client and server in their
+respective directories:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> ls -la client/kv/kv_pb2.py
+<span class="go">-rw-r--r--  1 mdesales  CORP\Domain Users  9527 Nov  6 21:59 client/kv/kv_pb2.py</span>
+
+<span class="gp">$</span> ls -la server/kv/kv.pb.go
+<span class="go">-rw-r--r--  1 mdesales  CORP\Domain Users  9994 Nov  6 21:59 server/kv/kv.pb.go</span>
+</pre></div>
+</div>
+<p>These generated <code class="docutils literal notranslate"><span class="pre">python</span></code> and <code class="docutils literal notranslate"><span class="pre">go</span></code> stubs can be included as external modules.</p>
+<p><strong>Step 4: Start all of our containers</strong></p>
+<p>To build this sandbox example and start the example services, run the following commands:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
+<span class="go">envoy/examples/grpc-bridge</span>
+<span class="gp">$</span> docker-compose pull
+<span class="gp">$</span> docker-compose up --build -d
+<span class="gp">$</span> docker-compose ps
+
+<span class="go">               Name                             Command               State                         Ports</span>
+<span class="go">---------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="go">grpc-bridge_grpc-client-proxy_1        /docker-entrypoint.sh /bin ... Up      10000/tcp, 0.0.0.0:9911-&gt;9911/tcp, 0.0.0.0:9991-&gt;9991/tcp</span>
+<span class="go">grpc-bridge_grpc-client_1              /bin/sh -c tail -f /dev/null   Up</span>
+<span class="go">grpc-bridge_grpc-server-proxy_1        /docker-entrypoint.sh /bin ... Up      10000/tcp, 0.0.0.0:8811-&gt;8811/tcp, 0.0.0.0:8881-&gt;8881/tcp</span>
+<span class="go">grpc-bridge_grpc-server_1              /bin/sh -c /bin/server         Up      0.0.0.0:8081-&gt;8081/tcp</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="sending-requests-to-the-key-value-store">
 <h2>Sending requests to the Key/Value store<a class="headerlink" href="#sending-requests-to-the-key-value-store" title="Permalink to this headline">¶</a></h2>
 <p>To use the Python service and send gRPC requests:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pwd
-envoy/examples/grpc-bridge
-# set a key
-$ docker-compose exec python /client/client.py set foo bar
-setf foo to bar
-
-# get a key
-$ docker-compose exec python /client/client.py get foo
-bar
-
-# modify an existing key
-$ docker-compose exec python /client/client.py set foo baz
-setf foo to baz
-
-# get the modified key
-$ docker-compose exec python /client/client.py get foo
-baz
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
+<span class="go">envoy/examples/grpc-bridge</span>
+</pre></div>
+</div>
+<p>Set a key:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker-compose <span class="nb">exec</span> python /client/client.py <span class="nb">set</span> foo bar
+<span class="go">setf foo to bar</span>
+</pre></div>
+</div>
+<p>Get a key:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker-compose <span class="nb">exec</span> python /client/client.py get foo
+<span class="go">bar</span>
+</pre></div>
+</div>
+<p>Modify an existing key:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker-compose <span class="nb">exec</span> python /client/client.py <span class="nb">set</span> foo baz
+<span class="go">setf foo to baz</span>
+</pre></div>
+</div>
+<p>Get the modified key:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker-compose <span class="nb">exec</span> python /client/client.py get foo
+<span class="go">baz</span>
 </pre></div>
 </div>
 <p>In the running docker-compose container, you should see the gRPC service printing a record of its activity:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">grpc_1</span>    <span class="o">|</span> <span class="mi">2017</span><span class="o">/</span><span class="mi">05</span><span class="o">/</span><span class="mi">30</span> <span class="mi">12</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">09</span> <span class="nb">set</span><span class="p">:</span> <span class="n">foo</span> <span class="o">=</span> <span class="n">bar</span>
-<span class="n">grpc_1</span>    <span class="o">|</span> <span class="mi">2017</span><span class="o">/</span><span class="mi">05</span><span class="o">/</span><span class="mi">30</span> <span class="mi">12</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">12</span> <span class="n">get</span><span class="p">:</span> <span class="n">foo</span>
-<span class="n">grpc_1</span>    <span class="o">|</span> <span class="mi">2017</span><span class="o">/</span><span class="mi">05</span><span class="o">/</span><span class="mi">30</span> <span class="mi">12</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">18</span> <span class="nb">set</span><span class="p">:</span> <span class="n">foo</span> <span class="o">=</span> <span class="n">baz</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker-compose logs grpc-server
+<span class="go">grpc_1    | 2017/05/30 12:05:09 set: foo = bar</span>
+<span class="go">grpc_1    | 2017/05/30 12:05:12 get: foo</span>
+<span class="go">grpc_1    | 2017/05/30 12:05:18 set: foo = baz</span>
 </pre></div>
 </div>
 </div>

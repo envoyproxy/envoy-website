@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>External Authorization Filter &mdash; envoy 1.16.0-dev-ba9644 documentation</title>
+  <title>External Authorization Filter &mdash; envoy 1.16.0-dev-ff4f25 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.16.0-dev-ba9644
+                1.16.0-dev-ff4f25
               </div>
             
           
@@ -207,22 +207,25 @@ header entry to the original request headers to be forwarded to the upstream ser
 <p><strong>Step 1: Install Docker</strong></p>
 <p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code>.</p>
 <p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
-<p><strong>Step 2: Clone the Envoy repository and start all of our containers</strong></p>
-<p>If you have not cloned the Envoy repository, clone it with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:envoyproxy/envoy</span></code>
-or <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/envoyproxy/envoy.git</span></code>.</p>
+<p><strong>Step 2: Clone the Envoy repo</strong></p>
+<p>If you have not cloned the Envoy repo, clone it with:</p>
+<p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:envoyproxy/envoy</span></code></p>
+<p>or</p>
+<p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/envoyproxy/envoy.git</span></code></p>
+<p><strong>Step 3: Start all of our containers</strong></p>
 <p>To build this sandbox example and start the example services, run the following commands:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pwd
-envoy/examples/ext_authz
-$ docker-compose pull
-$ docker-compose up --build -d
-$ docker-compose ps
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
+<span class="go">envoy/examples/ext_authz</span>
+<span class="gp">$</span> docker-compose pull
+<span class="gp">$</span> docker-compose up --build -d
+<span class="gp">$</span> docker-compose ps
 
-               Name                             Command               State                             Ports
----------------------------------------------------------------------------------------------------------------------------------------
-ext_authz_ext_authz-grpc-service_1   /app/server -users /etc/us       Up
-ext_authz_ext_authz-http-service_1   docker-entrypoint.sh node        Up
-ext_authz_front-envoy_1              /docker-entrypoint.sh /bin       Up      10000/tcp, 0.0.0.0:8000-&gt;8000/tcp, 0.0.0.0:8001-&gt;8001/tcp
-ext_authz_upstream-service_1         python3 /app/service/server.py   Up
+<span class="go">               Name                             Command               State                             Ports</span>
+<span class="go">---------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="go">ext_authz_ext_authz-grpc-service_1   /app/server -users /etc/us       Up</span>
+<span class="go">ext_authz_ext_authz-http-service_1   docker-entrypoint.sh node        Up</span>
+<span class="go">ext_authz_front-envoy_1              /docker-entrypoint.sh /bin       Up      10000/tcp, 0.0.0.0:8000-&gt;8000/tcp, 0.0.0.0:8001-&gt;8001/tcp</span>
+<span class="go">ext_authz_upstream-service_1         python3 /app/service/server.py   Up</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -237,30 +240,30 @@ front-envoy with ext_authz HTTP filter with gRPC service <code class="docutils l
 The possible values of <code class="docutils literal notranslate"><span class="pre">FRONT_ENVOY_YAML</span></code> can be found inside the <code class="docutils literal notranslate"><span class="pre">envoy/examples/ext_authz/config</span></code>
 directory.</p>
 <p>For example, to run Envoy with ext_authz HTTP filter with HTTP service will be:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pwd
-envoy/examples/ext_authz
-$ docker-compose pull
-$ # Tearing down the currently running setup
-$ docker-compose down
-$ FRONT_ENVOY_YAML=config/http-service.yaml docker-compose up --build -d
-$ # Or you can update the .env file with the above FRONT_ENVOY_YAML value, so you don&#39;t have to specify it when running the &quot;up&quot; command.
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
+<span class="go">envoy/examples/ext_authz</span>
+<span class="gp">$</span> docker-compose pull
+<span class="gp">$</span> <span class="c1"># Tearing down the currently running setup</span>
+<span class="gp">$</span> docker-compose down
+<span class="gp">$</span> <span class="nv">FRONT_ENVOY_YAML</span><span class="o">=</span>config/http-service.yaml docker-compose up --build -d
+<span class="gp">$</span> <span class="c1"># Or you can update the .env file with the above FRONT_ENVOY_YAML value, so you don&#39;t have to specify it when running the &quot;up&quot; command.</span>
 </pre></div>
 </div>
-<p><strong>Step 3: Access the upstream-service behind the Front Envoy</strong></p>
+<p><strong>Step 4: Access the upstream-service behind the Front Envoy</strong></p>
 <p>You can now try to send a request to upstream-service via the front-envoy as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl -v localhost:8000/service
-*   Trying 127.0.0.1...
-* TCP_NODELAY set
-* Connected to localhost (127.0.0.1) port 8000 (#0)
-&gt; GET /service HTTP/1.1
-&gt; Host: localhost:8000
-&gt; User-Agent: curl/7.58.0
-&gt; Accept: */*
-&gt;
-&lt; HTTP/1.1 403 Forbidden
-&lt; date: Fri, 19 Jun 2020 15:02:24 GMT
-&lt; server: envoy
-&lt; content-length: 0
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -v localhost:8000/service
+<span class="go">*   Trying 127.0.0.1...</span>
+<span class="go">* TCP_NODELAY set</span>
+<span class="go">* Connected to localhost (127.0.0.1) port 8000 (#0)</span>
+<span class="gp">&gt;</span> GET /service HTTP/1.1
+<span class="gp">&gt;</span> Host: localhost:8000
+<span class="gp">&gt;</span> User-Agent: curl/7.58.0
+<span class="gp">&gt;</span> Accept: */*
+<span class="gp">&gt;</span>
+<span class="go">&lt; HTTP/1.1 403 Forbidden</span>
+<span class="go">&lt; date: Fri, 19 Jun 2020 15:02:24 GMT</span>
+<span class="go">&lt; server: envoy</span>
+<span class="go">&lt; content-length: 0</span>
 </pre></div>
 </div>
 <p>As observed, the request failed with <code class="docutils literal notranslate"><span class="pre">403</span> <span class="pre">Forbidden</span></code> status code. This happened since the ext_authz
@@ -272,109 +275,109 @@ to provide a <code class="docutils literal notranslate"><span class="pre">Bearer
 example, the <code class="docutils literal notranslate"><span class="pre">token1</span></code> used in the below example is corresponding to <code class="docutils literal notranslate"><span class="pre">user1</span></code>.</p>
 </div>
 <p>An example of successful requests can be observed as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl -v -H &quot;Authorization: Bearer token1&quot; localhost:8000/service
-*   Trying 127.0.0.1...
-* TCP_NODELAY set
-* Connected to localhost (127.0.0.1) port 8000 (#0)
-&gt; GET /service HTTP/1.1
-&gt; Host: localhost:8000
-&gt; User-Agent: curl/7.58.0
-&gt; Accept: */*
-&gt; Authorization: Bearer token1
-&gt;
-&lt; HTTP/1.1 200 OK
-&lt; content-type: text/html; charset=utf-8
-&lt; content-length: 24
-&lt; server: envoy
-&lt; date: Fri, 19 Jun 2020 15:04:29 GMT
-&lt; x-envoy-upstream-service-time: 2
-&lt;
-* Connection #0 to host localhost left intact
-Hello user1 from behind Envoy!
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -v -H <span class="s2">&quot;Authorization: Bearer token1&quot;</span> localhost:8000/service
+<span class="go">*   Trying 127.0.0.1...</span>
+<span class="go">* TCP_NODELAY set</span>
+<span class="go">* Connected to localhost (127.0.0.1) port 8000 (#0)</span>
+<span class="gp">&gt;</span> GET /service HTTP/1.1
+<span class="gp">&gt;</span> Host: localhost:8000
+<span class="gp">&gt;</span> User-Agent: curl/7.58.0
+<span class="gp">&gt;</span> Accept: */*
+<span class="gp">&gt;</span> Authorization: Bearer token1
+<span class="gp">&gt;</span>
+<span class="go">&lt; HTTP/1.1 200 OK</span>
+<span class="go">&lt; content-type: text/html; charset=utf-8</span>
+<span class="go">&lt; content-length: 24</span>
+<span class="go">&lt; server: envoy</span>
+<span class="go">&lt; date: Fri, 19 Jun 2020 15:04:29 GMT</span>
+<span class="go">&lt; x-envoy-upstream-service-time: 2</span>
+<span class="go">&lt;</span>
+<span class="go">* Connection #0 to host localhost left intact</span>
+<span class="go">Hello user1 from behind Envoy!</span>
 </pre></div>
 </div>
 <p>We can also employ <a class="reference external" href="https://www.openpolicyagent.org/">Open Policy Agent</a> server
 (with <a class="reference external" href="https://github.com/open-policy-agent/opa-istio-plugin">envoy_ext_authz_grpc</a> plugin enabled)
 as the authorization server. To run this example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pwd
-envoy/examples/ext_authz
-$ docker-compose pull
-$ # Tearing down the currently running setup
-$ docker-compose down
-$ FRONT_ENVOY_YAML=config/opa-service/v2.yaml docker-compose up --build -d
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
+<span class="go">envoy/examples/ext_authz</span>
+<span class="gp">$</span> docker-compose pull
+<span class="gp">$</span> <span class="c1"># Tearing down the currently running setup</span>
+<span class="gp">$</span> docker-compose down
+<span class="gp">$</span> <span class="nv">FRONT_ENVOY_YAML</span><span class="o">=</span>config/opa-service/v2.yaml docker-compose up --build -d
 </pre></div>
 </div>
 <p>And sending a request to the upstream service (via the Front Envoy) gives:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl localhost:8000/service --verbose
-*   Trying ::1...
-* TCP_NODELAY set
-* Connected to localhost (::1) port 8000 (#0)
-&gt; GET /service HTTP/1.1
-&gt; Host: localhost:8000
-&gt; User-Agent: curl/7.64.1
-&gt; Accept: */*
-&gt;
-&lt; HTTP/1.1 200 OK
-&lt; content-type: text/html; charset=utf-8
-&lt; content-length: 28
-&lt; server: envoy
-&lt; date: Thu, 02 Jul 2020 06:29:58 GMT
-&lt; x-envoy-upstream-service-time: 2
-&lt;
-* Connection #0 to host localhost left intact
-Hello OPA from behind Envoy!
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl localhost:8000/service --verbose
+<span class="go">*   Trying ::1...</span>
+<span class="go">* TCP_NODELAY set</span>
+<span class="go">* Connected to localhost (::1) port 8000 (#0)</span>
+<span class="gp">&gt;</span> GET /service HTTP/1.1
+<span class="gp">&gt;</span> Host: localhost:8000
+<span class="gp">&gt;</span> User-Agent: curl/7.64.1
+<span class="gp">&gt;</span> Accept: */*
+<span class="gp">&gt;</span>
+<span class="go">&lt; HTTP/1.1 200 OK</span>
+<span class="go">&lt; content-type: text/html; charset=utf-8</span>
+<span class="go">&lt; content-length: 28</span>
+<span class="go">&lt; server: envoy</span>
+<span class="go">&lt; date: Thu, 02 Jul 2020 06:29:58 GMT</span>
+<span class="go">&lt; x-envoy-upstream-service-time: 2</span>
+<span class="go">&lt;</span>
+<span class="go">* Connection #0 to host localhost left intact</span>
+<span class="go">Hello OPA from behind Envoy!</span>
 </pre></div>
 </div>
 <p>From the logs, we can observe the policy decision message from the Open Policy Agent server (for
 the above request against the defined policy in <code class="docutils literal notranslate"><span class="pre">config/opa-service/policy.rego</span></code>):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker-compose logs ext_authz-opa-service | grep decision_id -A 30
-ext_authz-opa-service_1   |   &quot;decision_id&quot;: &quot;8143ca68-42d8-43e6-ade6-d1169bf69110&quot;,
-ext_authz-opa-service_1   |   &quot;input&quot;: {
-ext_authz-opa-service_1   |     &quot;attributes&quot;: {
-ext_authz-opa-service_1   |       &quot;destination&quot;: {
-ext_authz-opa-service_1   |         &quot;address&quot;: {
-ext_authz-opa-service_1   |           &quot;Address&quot;: {
-ext_authz-opa-service_1   |             &quot;SocketAddress&quot;: {
-ext_authz-opa-service_1   |               &quot;PortSpecifier&quot;: {
-ext_authz-opa-service_1   |                 &quot;PortValue&quot;: 8000
-ext_authz-opa-service_1   |               },
-ext_authz-opa-service_1   |               &quot;address&quot;: &quot;172.28.0.6&quot;
-ext_authz-opa-service_1   |             }
-ext_authz-opa-service_1   |           }
-ext_authz-opa-service_1   |         }
-ext_authz-opa-service_1   |       },
-ext_authz-opa-service_1   |       &quot;metadata_context&quot;: {},
-ext_authz-opa-service_1   |       &quot;request&quot;: {
-ext_authz-opa-service_1   |         &quot;http&quot;: {
-ext_authz-opa-service_1   |           &quot;headers&quot;: {
-ext_authz-opa-service_1   |             &quot;:authority&quot;: &quot;localhost:8000&quot;,
-ext_authz-opa-service_1   |             &quot;:method&quot;: &quot;GET&quot;,
-ext_authz-opa-service_1   |             &quot;:path&quot;: &quot;/service&quot;,
-ext_authz-opa-service_1   |             &quot;accept&quot;: &quot;*/*&quot;,
-ext_authz-opa-service_1   |             &quot;user-agent&quot;: &quot;curl/7.64.1&quot;,
-ext_authz-opa-service_1   |             &quot;x-forwarded-proto&quot;: &quot;http&quot;,
-ext_authz-opa-service_1   |             &quot;x-request-id&quot;: &quot;b77919c0-f1d4-4b06-b444-5a8b32d5daf4&quot;
-ext_authz-opa-service_1   |           },
-ext_authz-opa-service_1   |           &quot;host&quot;: &quot;localhost:8000&quot;,
-ext_authz-opa-service_1   |           &quot;id&quot;: &quot;16617514055874272263&quot;,
-ext_authz-opa-service_1   |           &quot;method&quot;: &quot;GET&quot;,
-ext_authz-opa-service_1   |           &quot;path&quot;: &quot;/service&quot;,
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker-compose logs ext_authz-opa-service <span class="p">|</span> grep decision_id -A <span class="m">30</span>
+<span class="go">ext_authz-opa-service_1   |   &quot;decision_id&quot;: &quot;8143ca68-42d8-43e6-ade6-d1169bf69110&quot;,</span>
+<span class="go">ext_authz-opa-service_1   |   &quot;input&quot;: {</span>
+<span class="go">ext_authz-opa-service_1   |     &quot;attributes&quot;: {</span>
+<span class="go">ext_authz-opa-service_1   |       &quot;destination&quot;: {</span>
+<span class="go">ext_authz-opa-service_1   |         &quot;address&quot;: {</span>
+<span class="go">ext_authz-opa-service_1   |           &quot;Address&quot;: {</span>
+<span class="go">ext_authz-opa-service_1   |             &quot;SocketAddress&quot;: {</span>
+<span class="go">ext_authz-opa-service_1   |               &quot;PortSpecifier&quot;: {</span>
+<span class="go">ext_authz-opa-service_1   |                 &quot;PortValue&quot;: 8000</span>
+<span class="go">ext_authz-opa-service_1   |               },</span>
+<span class="go">ext_authz-opa-service_1   |               &quot;address&quot;: &quot;172.28.0.6&quot;</span>
+<span class="go">ext_authz-opa-service_1   |             }</span>
+<span class="go">ext_authz-opa-service_1   |           }</span>
+<span class="go">ext_authz-opa-service_1   |         }</span>
+<span class="go">ext_authz-opa-service_1   |       },</span>
+<span class="go">ext_authz-opa-service_1   |       &quot;metadata_context&quot;: {},</span>
+<span class="go">ext_authz-opa-service_1   |       &quot;request&quot;: {</span>
+<span class="go">ext_authz-opa-service_1   |         &quot;http&quot;: {</span>
+<span class="go">ext_authz-opa-service_1   |           &quot;headers&quot;: {</span>
+<span class="go">ext_authz-opa-service_1   |             &quot;:authority&quot;: &quot;localhost:8000&quot;,</span>
+<span class="go">ext_authz-opa-service_1   |             &quot;:method&quot;: &quot;GET&quot;,</span>
+<span class="go">ext_authz-opa-service_1   |             &quot;:path&quot;: &quot;/service&quot;,</span>
+<span class="go">ext_authz-opa-service_1   |             &quot;accept&quot;: &quot;*/*&quot;,</span>
+<span class="go">ext_authz-opa-service_1   |             &quot;user-agent&quot;: &quot;curl/7.64.1&quot;,</span>
+<span class="go">ext_authz-opa-service_1   |             &quot;x-forwarded-proto&quot;: &quot;http&quot;,</span>
+<span class="go">ext_authz-opa-service_1   |             &quot;x-request-id&quot;: &quot;b77919c0-f1d4-4b06-b444-5a8b32d5daf4&quot;</span>
+<span class="go">ext_authz-opa-service_1   |           },</span>
+<span class="go">ext_authz-opa-service_1   |           &quot;host&quot;: &quot;localhost:8000&quot;,</span>
+<span class="go">ext_authz-opa-service_1   |           &quot;id&quot;: &quot;16617514055874272263&quot;,</span>
+<span class="go">ext_authz-opa-service_1   |           &quot;method&quot;: &quot;GET&quot;,</span>
+<span class="go">ext_authz-opa-service_1   |           &quot;path&quot;: &quot;/service&quot;,</span>
 </pre></div>
 </div>
 <p>Trying to send a request with method other than <code class="docutils literal notranslate"><span class="pre">GET</span></code> gives a rejection:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl -X POST localhost:8000/service --verbose
-*   Trying ::1...
-* TCP_NODELAY set
-* Connected to localhost (::1) port 8000 (#0)
-&gt; PUT /service HTTP/1.1
-&gt; Host: localhost:8000
-&gt; User-Agent: curl/7.64.1
-&gt; Accept: */*
-&gt;
-&lt; HTTP/1.1 403 Forbidden
-&lt; date: Thu, 02 Jul 2020 06:46:13 GMT
-&lt; server: envoy
-&lt; content-length: 0
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -X POST localhost:8000/service --verbose
+<span class="go">*   Trying ::1...</span>
+<span class="go">* TCP_NODELAY set</span>
+<span class="go">* Connected to localhost (::1) port 8000 (#0)</span>
+<span class="gp">&gt;</span> PUT /service HTTP/1.1
+<span class="gp">&gt;</span> Host: localhost:8000
+<span class="gp">&gt;</span> User-Agent: curl/7.64.1
+<span class="gp">&gt;</span> Accept: */*
+<span class="gp">&gt;</span>
+<span class="go">&lt; HTTP/1.1 403 Forbidden</span>
+<span class="go">&lt; date: Thu, 02 Jul 2020 06:46:13 GMT</span>
+<span class="go">&lt; server: envoy</span>
+<span class="go">&lt; content-length: 0</span>
 </pre></div>
 </div>
 </div>
