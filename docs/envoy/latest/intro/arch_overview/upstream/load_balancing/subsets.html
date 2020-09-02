@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Load Balancer Subsets &mdash; envoy 1.16.0-dev-f45068 documentation</title>
+  <title>Load Balancer Subsets &mdash; envoy 1.16.0-dev-724df0 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                1.16.0-dev-f45068
+                1.16.0-dev-724df0
               </div>
             
           
@@ -238,8 +238,13 @@ is a subset with the exact keys and values specified by the route, the subset is
 balancing. Otherwise, the fallback policy is used. The cluster’s subset configuration must,
 therefore, contain a definition that has the same keys as a given route in order for subset load
 balancing to occur.</p>
-<p>This feature can only be enabled using the V2 configuration API. Furthermore, host metadata is only
-supported when hosts are defined using
+<p>Subsets can be configured with only a single host in each subset, which can be used in use cases
+similar to <a class="reference internal" href="load_balancers.html#arch-overview-load-balancing-types-maglev"><span class="std std-ref">Maglev</span></a> or
+<a class="reference internal" href="load_balancers.html#arch-overview-load-balancing-types-ring-hash"><span class="std std-ref">ring hash</span></a>, such as load balancing based on a cookie,
+but when it is important to select the same host even after new hosts are added to the cluster. Endpoint
+configuration changes may use less CPU if <a class="reference internal" href="../../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-lbsubsetconfig-lbsubsetselector-single-host-per-subset"><span class="std std-ref">single_host_per_subset</span></a>
+is enabled.</p>
+<p>Host metadata is only supported when hosts are defined using
 <a class="reference internal" href="../../../../api-v3/config/endpoint/v3/endpoint.proto.html#envoy-v3-api-msg-config-endpoint-v3-clusterloadassignment"><span class="std std-ref">ClusterLoadAssignments</span></a>. ClusterLoadAssignments are
 available via EDS or the Cluster <a class="reference internal" href="../../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-load-assignment"><span class="std std-ref">load_assignment</span></a>
 field. Host metadata for subset load balancing must be placed under the filter name <code class="docutils literal notranslate"><span class="pre">&quot;envoy.lb&quot;</span></code>.
