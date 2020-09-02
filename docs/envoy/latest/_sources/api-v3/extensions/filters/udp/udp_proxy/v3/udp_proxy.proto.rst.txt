@@ -20,7 +20,7 @@ UDP proxy :ref:`configuration overview <config_udp_listener_filters_udp_proxy>`.
 extensions.filters.udp.udp_proxy.v3.UdpProxyConfig
 --------------------------------------------------
 
-`[extensions.filters.udp.udp_proxy.v3.UdpProxyConfig proto] <https://github.com/envoyproxy/envoy/blob/724df08c329c8270509e2a8568be90fd43d597c1/api/envoy/extensions/filters/udp/udp_proxy/v3/udp_proxy.proto#L20>`_
+`[extensions.filters.udp.udp_proxy.v3.UdpProxyConfig proto] <https://github.com/envoyproxy/envoy/blob/a92c496754f04f624729937b9812c5fc4c44b371/api/envoy/extensions/filters/udp/udp_proxy/v3/udp_proxy.proto#L21>`_
 
 Configuration for the UDP proxy filter.
 
@@ -30,7 +30,8 @@ Configuration for the UDP proxy filter.
     "stat_prefix": "...",
     "cluster": "...",
     "idle_timeout": "{...}",
-    "use_original_src_ip": "..."
+    "use_original_src_ip": "...",
+    "hash_policies": []
   }
 
 .. _envoy_v3_api_field_extensions.filters.udp.udp_proxy.v3.UdpProxyConfig.stat_prefix:
@@ -72,4 +73,36 @@ use_original_src_ip
   If the platform does not support this option, Envoy will raise a configuration error.
   
   
+.. _envoy_v3_api_field_extensions.filters.udp.udp_proxy.v3.UdpProxyConfig.hash_policies:
+
+hash_policies
+  (:ref:`extensions.filters.udp.udp_proxy.v3.UdpProxyConfig.HashPolicy <envoy_v3_api_msg_extensions.filters.udp.udp_proxy.v3.UdpProxyConfig.HashPolicy>`) Optional configuration for UDP proxy hash policies. If hash_policies is not set, the hash-based
+  load balancing algorithms will select a host randomly. Currently the number of hash policies is
+  limited to 1.
+  
+  
+.. _envoy_v3_api_msg_extensions.filters.udp.udp_proxy.v3.UdpProxyConfig.HashPolicy:
+
+extensions.filters.udp.udp_proxy.v3.UdpProxyConfig.HashPolicy
+-------------------------------------------------------------
+
+`[extensions.filters.udp.udp_proxy.v3.UdpProxyConfig.HashPolicy proto] <https://github.com/envoyproxy/envoy/blob/a92c496754f04f624729937b9812c5fc4c44b371/api/envoy/extensions/filters/udp/udp_proxy/v3/udp_proxy.proto#L27>`_
+
+Specifies the UDP hash policy.
+The packets can be routed by hash policy.
+
+.. code-block:: json
+
+  {
+    "source_ip": "..."
+  }
+
+.. _envoy_v3_api_field_extensions.filters.udp.udp_proxy.v3.UdpProxyConfig.HashPolicy.source_ip:
+
+source_ip
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The source IP will be used to compute the hash used by hash-based load balancing algorithms.
+  
+  
+  
+
 
