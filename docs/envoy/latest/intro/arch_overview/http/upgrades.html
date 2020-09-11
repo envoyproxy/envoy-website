@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP upgrades &mdash; envoy 1.16.0-dev-0d4bcd documentation</title>
+  <title>HTTP upgrades &mdash; envoy 1.16.0-dev-12d7b1 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                1.16.0-dev-0d4bcd
+                1.16.0-dev-12d7b1
               </div>
             
           
@@ -262,7 +262,7 @@ a deployment of the form:</p>
 <p>[Client] —- HTTP/1.1 —- [Front Envoy] —- HTTP/2 —- [Sidecar Envoy —- H1  —- App]</p>
 <p>In this case, if a client is for example using WebSocket, we want the Websocket to arrive at the
 upstream server functionally intact, which means it needs to traverse the HTTP/2 hop.</p>
-<p>This is accomplished via <a class="reference external" href="https://tools.ietf.org/html/rfc8441">extended CONNECT</a> support,
+<p>This is accomplished via <a class="reference external" href="https://tools.ietf.org/html/rfc8441">Extended CONNECT (RFC8441)</a> support,
 turned on by setting <a class="reference internal" href="../../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-http2protocoloptions-allow-connect"><span class="std std-ref">allow_connect</span></a>
 true at the second layer Envoy. The
 WebSocket request will be transformed into an HTTP/2 CONNECT stream, with :protocol header
@@ -295,7 +295,7 @@ and forward the HTTP payload upstream. On receipt of initial TCP data from upstr
 will synthesize 200 response headers, and then forward the TCP data as the HTTP response body.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>This mode of CONNECT support can create major security holes if configured correctly, as the upstream
+<p>This mode of CONNECT support can create major security holes if not configured correctly, as the upstream
 will be forwarded <em>unsanitized</em> headers if they are in the body payload. Please use with caution</p>
 </div>
 </div>
@@ -305,7 +305,7 @@ will be forwarded <em>unsanitized</em> headers if they are in the body payload. 
 proxy multiplexed TCP over pre-warmed secure connections and amortize the cost of any TLS handshake.
 An example set up proxying SMTP would look something like this</p>
 <p>[SMTP Upstream] — raw SMTP — [L2 Envoy]  — SMTP tunneled over HTTP/2  — [L1 Envoy]  — raw SMTP  — [Client]</p>
-<p>Examples of such a set up can be found in the Envoy example config <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/0d4bcd865db414188aaf55b341114c85e58daf39/configs/">directory</a>
+<p>Examples of such a set up can be found in the Envoy example config <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/12d7b17906df69749990a9f481bc4fce087c22e6/configs/">directory</a>
 If you run <cite>bazel-bin/source/exe/envoy-static –config-path configs/encapsulate_in_connect.v3.yaml –base-id 1</cite>
 and <cite>bazel-bin/source/exe/envoy-static –config-path  configs/terminate_connect.v3.yaml</cite>
 you will be running two Envoys, the first listening for TCP traffic on port 10000 and encapsulating it in an HTTP/2
