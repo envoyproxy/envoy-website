@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1.16.0 (Pending) &mdash; envoy 1.16.0-dev-308f2a documentation</title>
+  <title>1.16.0 (Pending) &mdash; envoy 1.16.0-dev-49b316 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                1.16.0-dev-308f2a
+                1.16.0-dev-49b316
               </div>
             
           
@@ -237,6 +237,7 @@
 <li><p>http: changed Envoy to send GOAWAY to HTTP2 downstreams when the <a class="reference internal" href="../configuration/operations/overload_manager/overload_manager.html#config-overload-manager-overload-actions"><span class="std std-ref">disable_keepalive</span></a> overload action is active. This behavior may be temporarily reverted by setting <cite>envoy.reloadable_features.overload_manager_disable_keepalive_drain_http2</cite> to false.</p></li>
 <li><p>http: changed Envoy to send error headers and body when possible. This behavior may be temporarily reverted by setting <cite>envoy.reloadable_features.allow_response_for_timeout</cite> to false.</p></li>
 <li><p>http: changed empty trailers encoding behavior by sending empty data with <code class="docutils literal notranslate"><span class="pre">end_stream</span></code> true (instead of sending empty trailers) for HTTP/2. This behavior can be reverted temporarily by setting runtime feature <code class="docutils literal notranslate"><span class="pre">envoy.reloadable_features.http2_skip_encoding_empty_trailers</span></code> to false.</p></li>
+<li><p>http: changed how local replies are processed for requests which transform from grpc to not-grpc, or not-grpc to grpc. Previously the initial generated reply depended on which filter sent the reply, but now the reply is consistently generated the way the downstream expects. This behavior can be temporarily reverted by setting <cite>envoy.reloadable_features.unify_grpc_handling</cite> to false.</p></li>
 <li><p>http: clarified and enforced 1xx handling. Multiple 100-continue headers are coalesced when proxying. 1xx headers other than {100, 101} are dropped.</p></li>
 <li><p>http: fixed a bug in access logs where early stream termination could be incorrectly tagged as a downstream disconnect, and disconnects after partial response were not flagged.</p></li>
 <li><p>http: fixed the 100-continue response path to properly handle upstream failure by sending 5xx responses. This behavior can be temporarily reverted by setting <cite>envoy.reloadable_features.allow_500_after_100</cite> to false.</p></li>
