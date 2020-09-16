@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Local reply modification &mdash; envoy 1.16.0-dev-c95fb7 documentation</title>
+  <title>Local reply modification &mdash; envoy 1.16.0-dev-a8b946 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                1.16.0-dev-c95fb7
+                1.16.0-dev-a8b946
               </div>
             
           
@@ -240,6 +240,7 @@
 <span id="config-http-conn-man-local-reply-format"></span><h2>Local reply format modification<a class="headerlink" href="#local-reply-format-modification" title="Permalink to this headline">¶</a></h2>
 <p>The response body content type can be customized. If not specified, the content type is plain/text. There are two <cite>body_format</cite> fields; one is the <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-localreplyconfig-body-format"><span class="std std-ref">body_format</span></a> field in the <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-msg-extensions-filters-network-http-connection-manager-v3-localreplyconfig"><span class="std std-ref">LocalReplyConfig</span></a> message and the other <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-responsemapper-body-format-override"><span class="std std-ref">body_format_override</span></a> field in the <cite>mapper</cite>. The latter is only used when its mapper is matched. The former is used if there is no any matched mappers, or the matched mapper doesn’t have the <cite>body_format</cite> specified.</p>
 <p>Local reply format can be specified as <a class="reference internal" href="../../../api-v3/config/core/v3/substitution_format_string.proto.html#envoy-v3-api-msg-config-core-v3-substitutionformatstring"><span class="std std-ref">SubstitutionFormatString</span></a>. It supports <a class="reference internal" href="../../../api-v3/config/core/v3/substitution_format_string.proto.html#envoy-v3-api-field-config-core-v3-substitutionformatstring-text-format"><span class="std std-ref">text_format</span></a> and <a class="reference internal" href="../../../api-v3/config/core/v3/substitution_format_string.proto.html#envoy-v3-api-field-config-core-v3-substitutionformatstring-json-format"><span class="std std-ref">json_format</span></a>.</p>
+<p>Optionally, content-type can be modified further via <a class="reference internal" href="../../../api-v3/config/core/v3/substitution_format_string.proto.html#envoy-v3-api-field-config-core-v3-substitutionformatstring-content-type"><span class="std std-ref">content_type</span></a> field. If not specified, default content-type is <cite>text/plain</cite> for <a class="reference internal" href="../../../api-v3/config/core/v3/substitution_format_string.proto.html#envoy-v3-api-field-config-core-v3-substitutionformatstring-text-format"><span class="std std-ref">text_format</span></a> and <cite>application/json</cite> for <a class="reference internal" href="../../../api-v3/config/core/v3/substitution_format_string.proto.html#envoy-v3-api-field-config-core-v3-substitutionformatstring-json-format"><span class="std std-ref">json_format</span></a>.</p>
 <p>Example of a LocalReplyConfig with <cite>body_format</cite> field.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mappers</span><span class="p">:</span>
 <span class="o">-</span> <span class="nb">filter</span><span class="p">:</span>
@@ -251,7 +252,8 @@
           <span class="n">runtime_key</span><span class="p">:</span> <span class="n">key_b</span>
   <span class="n">status_code</span><span class="p">:</span> <span class="mi">401</span>
   <span class="n">body_format_override</span><span class="p">:</span>
-    <span class="n">text_format</span><span class="p">:</span> <span class="s2">&quot;%LOCAL_REPLY_BODY</span><span class="si">% %</span><span class="s2">REQ(:path)%&quot;</span>
+    <span class="n">text_format</span><span class="p">:</span> <span class="s2">&quot;&lt;h1&gt;%LOCAL_REPLY_BODY</span><span class="si">% %</span><span class="s2">REQ(:path)%&lt;/h1&gt;&quot;</span>
+    <span class="n">content_type</span><span class="p">:</span> <span class="s2">&quot;text/html; charset=UTF-8&quot;</span>
 <span class="o">-</span> <span class="nb">filter</span><span class="p">:</span>
     <span class="n">status_code_filter</span><span class="p">:</span>
       <span class="n">comparison</span><span class="p">:</span>
