@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1.16.0 (Pending) &mdash; envoy 1.16.0-dev-6d7743 documentation</title>
+  <title>1.16.0 (Pending) &mdash; envoy 1.16.0-dev-20d9f8 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                1.16.0-dev-6d7743
+                1.16.0-dev-20d9f8
               </div>
             
           
@@ -219,6 +219,7 @@
 <p><em>Changes that are expected to cause an incompatibility if applicable; deployment changes are likely required</em></p>
 <ul class="simple">
 <li><p>build: added visibility rules for upstream. If these cause visibility related breakage, see notes in //BUILD.</p></li>
+<li><p>watchdog: added two guarddogs, breaking the aggregated stats for the single guarddog system. The aggregated stats for the guarddogs will have the following prefixes: <cite>main_thread</cite> and <cite>workers</cite>. Concretely, anything monitoring <cite>server.watchdog_miss</cite> and <cite>server.watchdog_mega_miss</cite> will need to be updated.</p></li>
 </ul>
 </div>
 <div class="section" id="minor-behavior-changes">
@@ -250,6 +251,7 @@ in the environment.</p></li>
 <li><p>router: added transport failure reason to response body when upstream reset happens. After this change, the response body will be of the form <cite>upstream connect error or disconnect/reset before headers. reset reason:{}, transport failure reason:{}</cite>.This behavior may be reverted by setting runtime feature <cite>envoy.reloadable_features.http_transport_failure_reason_in_body</cite> to false.</p></li>
 <li><p>router: now consumes all retry related headers to prevent them from being propagated to the upstream. This behavior may be reverted by setting runtime feature <cite>envoy.reloadable_features.consume_all_retry_headers</cite> to false.</p></li>
 <li><p>thrift_proxy: special characters {‘0’, ‘r’, ‘n’} will be stripped from thrift headers.</p></li>
+<li><p>watchdog: replaced single watchdog with separate watchdog configuration for worker threads and for the main thread <a class="reference internal" href="../api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-bootstrap-watchdogs"><span class="std std-ref">Watchdogs</span></a>. It works with <a class="reference internal" href="../api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-bootstrap-watchdog"><span class="std std-ref">watchdog</span></a> by having the worker thread and main thread watchdogs have same config.</p></li>
 </ul>
 </div>
 <div class="section" id="bug-fixes">
@@ -360,6 +362,7 @@ grouping by cluster and locality.</p></li>
 <li><p>ext_authz: the <a class="reference internal" href="../api-v3/service/auth/v3/external_auth.proto.html#envoy-v3-api-field-service-auth-v3-okhttpresponse-dynamic-metadata"><span class="std std-ref">dynamic metadata</span></a> field in <a class="reference internal" href="../api-v3/service/auth/v3/external_auth.proto.html#envoy-v3-api-msg-service-auth-v3-okhttpresponse"><span class="std std-ref">OkHttpResponse</span></a>
 has been deprecated in favor of <a class="reference internal" href="../api-v3/service/auth/v3/external_auth.proto.html#envoy-v3-api-field-service-auth-v3-checkresponse-dynamic-metadata"><span class="std std-ref">dynamic metadata</span></a> field in <a class="reference internal" href="../api-v3/service/auth/v3/external_auth.proto.html#envoy-v3-api-msg-service-auth-v3-checkresponse"><span class="std std-ref">CheckResponse</span></a>.</p></li>
 <li><p>router_check_tool: <cite>request_header_fields</cite>, <cite>response_header_fields</cite> config deprecated in favor of <cite>request_header_matches</cite>, <cite>response_header_matches</cite>.</p></li>
+<li><p>watchdog: <a class="reference internal" href="../api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-bootstrap-watchdog"><span class="std std-ref">watchdog</span></a> deprecated in favor of <a class="reference internal" href="../api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-bootstrap-watchdogs"><span class="std std-ref">watchdogs</span></a>.</p></li>
 </ul>
 </div>
 </div>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Performance &mdash; envoy 1.16.0-dev-6d7743 documentation</title>
+  <title>Performance &mdash; envoy 1.16.0-dev-20d9f8 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                1.16.0-dev-6d7743
+                1.16.0-dev-20d9f8
               </div>
             
           
@@ -249,14 +249,17 @@ the event dispatcher for each worker thread has a statistics tree rooted at
 <div class="section" id="watchdog">
 <span id="operations-performance-watchdog"></span><h2>Watchdog<a class="headerlink" href="#watchdog" title="Permalink to this headline">¶</a></h2>
 <p>In addition to event loop statistics, Envoy also include a configurable
-<a class="reference internal" href="../api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-bootstrap-watchdog"><span class="std std-ref">watchdog</span></a>
+<a class="reference internal" href="../api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-bootstrap-watchdogs"><span class="std std-ref">watchdog</span></a>
 system that can increment statistics when Envoy is not responsive and
-optionally kill the server. The system also has an extension point allowing for
-custom actions to be taken based on watchdog events. The statistics are
-useful for understanding at a high level whether Envoy’s event loop is not
-responsive either because it is doing too much work, blocking, or not being
-scheduled by the OS.</p>
-<p>The watchdog emits statistics in both the <em>server.</em> and <em>server.&lt;thread_name&gt;.</em> trees.
+optionally kill the server. The system has two separate watchdog configs, one
+for the main thread and one for worker threads; this is helpful as the different
+threads have different workloads. The system also has an extension point
+allowing for custom actions to be taken based on watchdog events. The
+statistics are useful for understanding at a high level whether Envoy’s event
+loop is not responsive either because it is doing too much work, blocking, or
+not being scheduled by the OS.</p>
+<p>The watchdog emits aggregated statistics in both <em>main_thread</em> and <em>workers</em>.
+In addition, it emits individual statistics under  <em>server.&lt;thread_name&gt;.</em> trees.
 <em>&lt;thread_name&gt;</em> is equal to <em>main_thread</em>, <em>worker_0</em>, <em>worker_1</em>, etc.</p>
 <table class="colwidths-given docutils align-default">
 <colgroup>
