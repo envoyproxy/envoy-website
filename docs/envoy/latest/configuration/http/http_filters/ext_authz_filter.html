@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>External Authorization &mdash; envoy 1.16.0-dev-f63c27 documentation</title>
+  <title>External Authorization &mdash; envoy 1.16.0-dev-1a54bb documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                1.16.0-dev-f63c27
+                1.16.0-dev-1a54bb
               </div>
             
           
@@ -278,6 +278,30 @@ configuration options at
     <span class="c1"># entire request.</span>
     <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25s</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>One of the features of this filter is to send HTTP request body to the configured gRPC
+authorization server as part of the <a class="reference internal" href="../../../api-v3/service/auth/v3/external_auth.proto.html#envoy-v3-api-msg-service-auth-v3-checkrequest"><span class="std std-ref">check request</span></a>.</p>
+<p>A sample configuration is as follows:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">http_filters</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.ext_authz</span>
+    <span class="nt">typed_config</span><span class="p">:</span>
+      <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.ext_authz.v3.ExtAuthz</span>
+      <span class="nt">grpc_service</span><span class="p">:</span>
+        <span class="nt">envoy_grpc</span><span class="p">:</span>
+          <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ext-authz</span>
+      <span class="nt">with_request_body</span><span class="p">:</span>
+        <span class="nt">max_request_bytes</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1024</span>
+        <span class="nt">allow_partial_message</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+        <span class="nt">pack_as_bytes</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+<p>Please note that by default <a class="reference internal" href="../../../api-v3/service/auth/v3/external_auth.proto.html#envoy-v3-api-msg-service-auth-v3-checkrequest"><span class="std std-ref">check request</span></a>
+carries the HTTP request body as UTF-8 string and it fills the <a class="reference internal" href="../../../api-v3/service/auth/v3/attribute_context.proto.html#envoy-v3-api-field-service-auth-v3-attributecontext-httprequest-body"><span class="std std-ref">body</span></a> field. To pack the request
+body as raw bytes, it is needed to set <a class="reference internal" href="../../../api-v3/extensions/filters/http/ext_authz/v3/ext_authz.proto.html#envoy-v3-api-field-extensions-filters-http-ext-authz-v3-buffersettings-pack-as-bytes"><span class="std std-ref">pack_as_bytes</span></a> field to
+true. In effect to that, the <a class="reference internal" href="../../../api-v3/service/auth/v3/attribute_context.proto.html#envoy-v3-api-field-service-auth-v3-attributecontext-httprequest-raw-body"><span class="std std-ref">raw_body</span></a>
+field will be set and <a class="reference internal" href="../../../api-v3/service/auth/v3/attribute_context.proto.html#envoy-v3-api-field-service-auth-v3-attributecontext-httprequest-body"><span class="std std-ref">body</span></a> field will be empty.</p>
 </div>
 <p>A sample filter configuration for a raw HTTP authorization server:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">http_filters</span><span class="p">:</span>
