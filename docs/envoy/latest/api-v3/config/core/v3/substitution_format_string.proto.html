@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Substitution format string &mdash; envoy 1.16.0-dev-473275 documentation</title>
+  <title>Substitution format string &mdash; envoy 1.16.0-dev-130c7c documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                1.16.0-dev-473275
+                1.16.0-dev-130c7c
               </div>
             
           
@@ -215,7 +215,7 @@
 <span id="envoy-v3-api-file-envoy-config-core-v3-substitution-format-string-proto"></span><h1>Substitution format string<a class="headerlink" href="#substitution-format-string" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="config-core-v3-substitutionformatstring">
 <span id="envoy-v3-api-msg-config-core-v3-substitutionformatstring"></span><h2>config.core.v3.SubstitutionFormatString<a class="headerlink" href="#config-core-v3-substitutionformatstring" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/47327526349e6598e6754d944b0e606ed9fd846f/api/envoy/config/core/v3/substitution_format_string.proto#L18">[config.core.v3.SubstitutionFormatString proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/130c7c4e271fe306ae4dd747daa5f09ff31aef79/api/envoy/config/core/v3/substitution_format_string.proto#L18">[config.core.v3.SubstitutionFormatString proto]</a></p>
 <p>Configuration to use multiple <a class="reference internal" href="../../../../configuration/observability/access_log/usage.html#config-access-log-command-operators"><span class="std std-ref">command operators</span></a>
 to generate a new string in either plain text or JSON format.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -229,11 +229,12 @@ to generate a new string in either plain text or JSON format.</p>
 <dl id="envoy-v3-api-field-config-core-v3-substitutionformatstring-text-format">
 <dt>text_format</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Specify a format with command operators to form a text string.
 Its details is described in <a class="reference internal" href="../../../../configuration/observability/access_log/usage.html#config-access-log-format-strings"><span class="std std-ref">format string</span></a>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>text_format: %LOCAL_REPLY_BODY%:%RESPONSE_CODE%:path=$REQ(:path)%
+<p>For example, setting <code class="docutils literal notranslate"><span class="pre">text_format</span></code> like below,</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">text_format</span><span class="p">:</span> <span class="s">&quot;%LOCAL_REPLY_BODY%:%RESPONSE_CODE%:path=%REQ(:path)%\n&quot;</span>
 </pre></div>
 </div>
-<p>The following plain text will be created:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">upstream</span> <span class="n">connect</span> <span class="n">error</span><span class="p">:</span><span class="mi">204</span><span class="p">:</span><span class="n">path</span><span class="o">=/</span><span class="n">foo</span>
+<p>generates plain text similar to:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>upstream connect error:503:path=/foo
 </pre></div>
 </div>
 <p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-core-v3-substitutionformatstring-text-format"><span class="std std-ref">text_format</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-core-v3-substitutionformatstring-json-format"><span class="std std-ref">json_format</span></a> must be set.</p>
@@ -245,9 +246,9 @@ Its details is described in <a class="reference internal" href="../../../../conf
 Values are rendered as strings, numbers, or boolean values as appropriate.
 Nested JSON objects may be produced by some command operators (e.g. FILTER_STATE or DYNAMIC_METADATA).
 See the documentation for a specific command operator for details.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">json_format</span><span class="p">:</span>
-  <span class="n">status</span><span class="p">:</span> <span class="o">%</span><span class="n">RESPONSE_CODE</span><span class="o">%</span>
-  <span class="n">message</span><span class="p">:</span> <span class="o">%</span><span class="n">LOCAL_REPLY_BODY</span><span class="o">%</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">json_format</span><span class="p">:</span>
+  <span class="nt">status</span><span class="p">:</span> <span class="s">&quot;%RESPONSE_CODE%&quot;</span>
+  <span class="nt">message</span><span class="p">:</span> <span class="s">&quot;%LOCAL_REPLY_BODY%&quot;</span>
 </pre></div>
 </div>
 <p>The following JSON object would be created:</p>
@@ -273,7 +274,7 @@ empty string, so that empty values are omitted entirely.</p></li>
 <dt>content_type</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Specify a <em>content_type</em> field.
 If this field is not set then <code class="docutils literal notranslate"><span class="pre">text/plain</span></code> is used for <em>text_format</em> and
 <code class="docutils literal notranslate"><span class="pre">application/json</span></code> is used for <em>json_format</em>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">content_type</span><span class="p">:</span> <span class="s2">&quot;text/html; charset=UTF-8&quot;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">content_type</span><span class="p">:</span> <span class="s">&quot;text/html;</span><span class="nv"> </span><span class="s">charset=UTF-8&quot;</span>
 </pre></div>
 </div>
 </dd>
