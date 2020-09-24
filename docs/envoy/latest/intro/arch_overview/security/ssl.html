@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TLS &mdash; envoy 1.16.0-dev-1fb4db documentation</title>
+  <title>TLS &mdash; envoy 1.16.0-dev-cdd3a8 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                1.16.0-dev-1fb4db
+                1.16.0-dev-cdd3a8
               </div>
             
           
@@ -231,6 +231,7 @@ configuration).</p></li>
 performed asynchronously from <a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tls/v3/common.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-privatekeyprovider"><span class="std std-ref">an extension</span></a>. This allows extending Envoy to support various key
 management schemes (such as TPM) and TLS acceleration. This mechanism uses
 <a class="reference external" href="https://github.com/google/boringssl/blob/c0b4c72b6d4c6f4828a373ec454bd646390017d4/include/openssl/ssl.h#L1169">BoringSSL private key method interface</a>.</p></li>
+<li><p><strong>OCSP Stapling</strong>: Online Certificate Stapling Protocol responses may be stapled to certificates.</p></li>
 </ul>
 <div class="section" id="underlying-implementation">
 <h2>Underlying implementation<a class="headerlink" href="#underlying-implementation" title="Permalink to this headline">¶</a></h2>
@@ -298,6 +299,7 @@ validation context specifies one or more trusted authority certificates.</p>
           <span class="nt">tls_certificates</span><span class="p">:</span>
             <span class="nt">certificate_chain</span><span class="p">:</span> <span class="p p-Indicator">{</span> <span class="s">&quot;filename&quot;</span><span class="p p-Indicator">:</span> <span class="s">&quot;/cert.crt&quot;</span> <span class="p p-Indicator">}</span>
             <span class="nt">private_key</span><span class="p">:</span> <span class="p p-Indicator">{</span> <span class="s">&quot;filename&quot;</span><span class="p p-Indicator">:</span> <span class="s">&quot;/cert.key&quot;</span> <span class="p p-Indicator">}</span>
+            <span class="nt">ocsp_response</span><span class="p">:</span> <span class="p p-Indicator">{</span> <span class="s">&quot;filename&quot;</span><span class="p p-Indicator">:</span> <span class="s">&quot;/ocsp_response.der&quot;</span> <span class="p p-Indicator">}</span>
           <span class="nt">validation_context</span><span class="p">:</span>
             <span class="nt">match_subject_alt_names</span><span class="p">:</span>
               <span class="nt">exact</span><span class="p">:</span> <span class="s">&quot;foo&quot;</span>
@@ -336,13 +338,16 @@ certificates. These may be a mix of RSA and P-256 ECDSA certificates. The follow
 <ul class="simple">
 <li><p>Only one certificate of a particular type (RSA or ECDSA) may be specified.</p></li>
 <li><p>Non-P-256 server ECDSA certificates are rejected.</p></li>
-<li><p>If the client supports P-256 ECDSA, a P-256 ECDSA certificate will be selected if present in the
-<a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContext</span></a>.</p></li>
+<li><p>If the client supports P-256 ECDSA, a P-256 ECDSA certificate will be selected if one is present in the
+<a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContext</span></a>
+and it is in compliance with the OCSP policy.</p></li>
 <li><p>If the client only supports RSA certificates, a RSA certificate will be selected if present in the
 <a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContext</span></a>.</p></li>
 <li><p>Otherwise, the first certificate listed is used. This will result in a failed handshake if the
 client only supports RSA certificates and the server only has ECDSA certificates.</p></li>
 <li><p>Static and SDS certificates may not be mixed in a given <a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContext</span></a>.</p></li>
+<li><p>The selected certificate must adhere to the OCSP policy. If no
+such certificate is found, the connection is refused.</p></li>
 </ul>
 <p>Only a single TLS certificate is supported today for <a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-upstreamtlscontext"><span class="std std-ref">UpstreamTlsContexts</span></a>.</p>
 </div>
@@ -351,6 +356,34 @@ client only supports RSA certificates and the server only has ECDSA certificates
 <p>TLS certificates can be specified in the static resource or can be fetched remotely.
 Certificate rotation is supported for static resources by sourcing <a class="reference internal" href="../../../configuration/security/secret.html#xds-certificate-rotation"><span class="std std-ref">SDS configuration from the filesystem</span></a> or by pushing updates from the SDS server.
 Please see <a class="reference internal" href="../../../configuration/security/secret.html#config-secret-discovery-service"><span class="std std-ref">SDS</span></a> for details.</p>
+</div>
+<div class="section" id="ocsp-stapling">
+<span id="arch-overview-ssl-ocsp-stapling"></span><h2>OCSP Stapling<a class="headerlink" href="#ocsp-stapling" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContexts</span></a> support
+stapling an Online Certificate Status Protocol (OCSP) response to a TLS certificate during the handshake. The
+<code class="docutils literal notranslate"><span class="pre">ocsp_staple</span></code> field allows the operator to supply a pre-computed OCSP response per-certificate in the context.
+A single response may not pertain to multiple certificates. If provided, OCSP responses must be valid and
+affirm the certificate has not been revoked. Expired OCSP responses are accepted, but may cause downstream
+connection errors depending on the OCSP staple policy.</p>
+<p><a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-downstreamtlscontext"><span class="std std-ref">DownstreamTlsContexts</span></a>
+support an <code class="docutils literal notranslate"><span class="pre">ocsp_staple_policy</span></code> field to control whether Envoy should stop using a certificate or
+continue without stapling when its associated OCSP response is missing or expired.
+Certificates marked as <a class="reference external" href="https://tools.ietf.org/html/rfc7633">must-staple</a> require a
+valid OCSP response regardless of the OCSP staple policy. In practice, a must-staple certificate causes
+cEnvoy to behave as if the OCSP staple policy is <a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#envoy-v3-api-enum-value-extensions-transport-sockets-tls-v3-downstreamtlscontext-ocspstaplepolicy-must-staple"><span class="std std-ref">MUST_STAPLE</span></a>.
+Envoy will not use a must-staple certificate for new connections after its OCSP response expires.</p>
+<p>OCSP responses are never stapled to TLS requests that do not indicate support for OCSP stapling
+via the <code class="docutils literal notranslate"><span class="pre">status_request</span></code> extension.</p>
+<p>The following runtime flags are provided to adjust the requirements of OCSP responses and override
+the OCSP policy. These flags default to <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">envoy.reloadable_features.require_ocsp_response_for_must_staple_certs</span></code>: Disabling this allows
+the operator to omit an OCSP response for must-staple certs in the config.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">envoy.reloadable_features.check_ocsp_policy</span></code>: Disabling this will disable OCSP policy
+checking. OCSP responses are stapled when available if the client supports it, even if the
+response is expired. Stapling is skipped if no response is present.</p></li>
+</ul>
+<p>OCSP responses are ignored for <a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-upstreamtlscontext"><span class="std std-ref">UpstreamTlsContexts</span></a>.</p>
 </div>
 <div class="section" id="authentication-filter">
 <span id="arch-overview-ssl-auth-filter"></span><h2>Authentication filter<a class="headerlink" href="#authentication-filter" title="Permalink to this headline">¶</a></h2>

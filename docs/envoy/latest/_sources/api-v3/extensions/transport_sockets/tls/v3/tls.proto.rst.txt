@@ -20,7 +20,7 @@ The TLS contexts below provide the transport socket configuration for upstream/d
 extensions.transport_sockets.tls.v3.UpstreamTlsContext
 ------------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.UpstreamTlsContext proto] <https://github.com/envoyproxy/envoy/blob/1fb4db754eabb9d659d255d1801b0bfc1a31cd9c/api/envoy/extensions/transport_sockets/tls/v3/tls.proto#L26>`_
+`[extensions.transport_sockets.tls.v3.UpstreamTlsContext proto] <https://github.com/envoyproxy/envoy/blob/cdd3a837056dc6935c0d8e0fb693d4de89b998e9/api/envoy/extensions/transport_sockets/tls/v3/tls.proto#L26>`_
 
 
 .. code-block:: json
@@ -76,7 +76,7 @@ max_session_keys
 extensions.transport_sockets.tls.v3.DownstreamTlsContext
 --------------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.DownstreamTlsContext proto] <https://github.com/envoyproxy/envoy/blob/1fb4db754eabb9d659d255d1801b0bfc1a31cd9c/api/envoy/extensions/transport_sockets/tls/v3/tls.proto#L57>`_
+`[extensions.transport_sockets.tls.v3.DownstreamTlsContext proto] <https://github.com/envoyproxy/envoy/blob/cdd3a837056dc6935c0d8e0fb693d4de89b998e9/api/envoy/extensions/transport_sockets/tls/v3/tls.proto#L57>`_
 
 
 .. code-block:: json
@@ -87,7 +87,8 @@ extensions.transport_sockets.tls.v3.DownstreamTlsContext
     "session_ticket_keys": "{...}",
     "session_ticket_keys_sds_secret_config": "{...}",
     "disable_stateless_session_resumption": "...",
-    "session_timeout": "{...}"
+    "session_timeout": "{...}",
+    "ocsp_staple_policy": "..."
   }
 
 .. _envoy_v3_api_field_extensions.transport_sockets.tls.v3.DownstreamTlsContext.common_tls_context:
@@ -147,14 +148,59 @@ session_timeout
   only seconds could be specified (fractional seconds are going to be ignored).
   
   
+.. _envoy_v3_api_field_extensions.transport_sockets.tls.v3.DownstreamTlsContext.ocsp_staple_policy:
 
+ocsp_staple_policy
+  (:ref:`extensions.transport_sockets.tls.v3.DownstreamTlsContext.OcspStaplePolicy <envoy_v3_api_enum_extensions.transport_sockets.tls.v3.DownstreamTlsContext.OcspStaplePolicy>`) Config for whether to use certificates if they do not have
+  an accompanying OCSP response or if the response expires at runtime.
+  Defaults to LENIENT_STAPLING
+  
+  
+
+.. _envoy_v3_api_enum_extensions.transport_sockets.tls.v3.DownstreamTlsContext.OcspStaplePolicy:
+
+Enum extensions.transport_sockets.tls.v3.DownstreamTlsContext.OcspStaplePolicy
+------------------------------------------------------------------------------
+
+`[extensions.transport_sockets.tls.v3.DownstreamTlsContext.OcspStaplePolicy proto] <https://github.com/envoyproxy/envoy/blob/cdd3a837056dc6935c0d8e0fb693d4de89b998e9/api/envoy/extensions/transport_sockets/tls/v3/tls.proto#L61>`_
+
+
+.. _envoy_v3_api_enum_value_extensions.transport_sockets.tls.v3.DownstreamTlsContext.OcspStaplePolicy.LENIENT_STAPLING:
+
+LENIENT_STAPLING
+  *(DEFAULT)* ⁣OCSP responses are optional. If an OCSP response is absent
+  or expired, the associated certificate will be used for
+  connections without an OCSP staple.
+  
+  
+.. _envoy_v3_api_enum_value_extensions.transport_sockets.tls.v3.DownstreamTlsContext.OcspStaplePolicy.STRICT_STAPLING:
+
+STRICT_STAPLING
+  ⁣OCSP responses are optional. If an OCSP response is absent,
+  the associated certificate will be used without an
+  OCSP staple. If a response is provided but is expired,
+  the associated certificate will not be used for
+  subsequent connections. If no suitable certificate is found,
+  the connection is rejected.
+  
+  
+.. _envoy_v3_api_enum_value_extensions.transport_sockets.tls.v3.DownstreamTlsContext.OcspStaplePolicy.MUST_STAPLE:
+
+MUST_STAPLE
+  ⁣OCSP responses are required. Configuration will fail if
+  a certificate is provided without an OCSP response. If a
+  response expires, the associated certificate will not be
+  used connections. If no suitable certificate is found, the
+  connection is rejected.
+  
+  
 
 .. _envoy_v3_api_msg_extensions.transport_sockets.tls.v3.CommonTlsContext:
 
 extensions.transport_sockets.tls.v3.CommonTlsContext
 ----------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.CommonTlsContext proto] <https://github.com/envoyproxy/envoy/blob/1fb4db754eabb9d659d255d1801b0bfc1a31cd9c/api/envoy/extensions/transport_sockets/tls/v3/tls.proto#L102>`_
+`[extensions.transport_sockets.tls.v3.CommonTlsContext proto] <https://github.com/envoyproxy/envoy/blob/cdd3a837056dc6935c0d8e0fb693d4de89b998e9/api/envoy/extensions/transport_sockets/tls/v3/tls.proto#L129>`_
 
 TLS context shared by both client and server TLS contexts.
 
@@ -260,7 +306,7 @@ custom_handshaker
 extensions.transport_sockets.tls.v3.CommonTlsContext.CertificateProvider
 ------------------------------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.CommonTlsContext.CertificateProvider proto] <https://github.com/envoyproxy/envoy/blob/1fb4db754eabb9d659d255d1801b0bfc1a31cd9c/api/envoy/extensions/transport_sockets/tls/v3/tls.proto#L107>`_
+`[extensions.transport_sockets.tls.v3.CommonTlsContext.CertificateProvider proto] <https://github.com/envoyproxy/envoy/blob/cdd3a837056dc6935c0d8e0fb693d4de89b998e9/api/envoy/extensions/transport_sockets/tls/v3/tls.proto#L134>`_
 
 Config for Certificate provider to get certificates. This provider should allow certificates to be
 fetched/refreshed over the network asynchronously with respect to the TLS handshake.
@@ -298,7 +344,7 @@ typed_config
 extensions.transport_sockets.tls.v3.CommonTlsContext.CertificateProviderInstance
 --------------------------------------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.CommonTlsContext.CertificateProviderInstance proto] <https://github.com/envoyproxy/envoy/blob/1fb4db754eabb9d659d255d1801b0bfc1a31cd9c/api/envoy/extensions/transport_sockets/tls/v3/tls.proto#L127>`_
+`[extensions.transport_sockets.tls.v3.CommonTlsContext.CertificateProviderInstance proto] <https://github.com/envoyproxy/envoy/blob/cdd3a837056dc6935c0d8e0fb693d4de89b998e9/api/envoy/extensions/transport_sockets/tls/v3/tls.proto#L154>`_
 
 Similar to CertificateProvider above, but allows the provider instances to be configured on
 the client side instead of being sent from the control plane.
@@ -339,7 +385,7 @@ certificate_name
 extensions.transport_sockets.tls.v3.CommonTlsContext.CombinedCertificateValidationContext
 -----------------------------------------------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.CommonTlsContext.CombinedCertificateValidationContext proto] <https://github.com/envoyproxy/envoy/blob/1fb4db754eabb9d659d255d1801b0bfc1a31cd9c/api/envoy/extensions/transport_sockets/tls/v3/tls.proto#L145>`_
+`[extensions.transport_sockets.tls.v3.CommonTlsContext.CombinedCertificateValidationContext proto] <https://github.com/envoyproxy/envoy/blob/cdd3a837056dc6935c0d8e0fb693d4de89b998e9/api/envoy/extensions/transport_sockets/tls/v3/tls.proto#L172>`_
 
 
 .. code-block:: json
