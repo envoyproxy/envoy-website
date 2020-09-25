@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Cache Filter &mdash; envoy 1.16.0-dev-cb91c6 documentation</title>
+  <title>Cache Filter &mdash; envoy 1.16.0-dev-1c2739 documentation</title>
   
 
   
@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                1.16.0-dev-cb91c6
+                1.16.0-dev-1c2739
               </div>
             
           
@@ -211,10 +211,10 @@
 The setup of this sandbox is based on the setup of the <a class="reference internal" href="front_proxy.html#install-sandboxes-front-proxy"><span class="std std-ref">Front Proxy sandbox</span></a>.</p>
 <p>All incoming requests are routed via the front Envoy, which acts as a reverse proxy sitting on
 the edge of the <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code> network. Ports <code class="docutils literal notranslate"><span class="pre">8000</span></code> and <code class="docutils literal notranslate"><span class="pre">8001</span></code> are exposed by docker
-compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/cb91c625fb9a9d9149bbe149afbf3b8b2ae32b4a//examples/cache/docker-compose.yaml">/examples/cache/docker-compose.yaml</a>) to handle <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> calls
+compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/1c27396b1f7e756ba79eed72b47f485d44da1d41//examples/cache/docker-compose.yaml">/examples/cache/docker-compose.yaml</a>) to handle <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> calls
 to the services, and requests to <code class="docutils literal notranslate"><span class="pre">/admin</span></code> respectively. Two backend services are deployed behind the front Envoy, each with a sidecar Envoy.</p>
 <p>The front Envoy is configured to run the Cache Filter, which stores cacheable responses in an in-memory cache,
-and serves it to subsequent requests. In this demo, the responses that are served by the deployed services are stored in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/cb91c625fb9a9d9149bbe149afbf3b8b2ae32b4a//examples/cache/responses.yaml">/examples/cache/responses.yaml</a>.
+and serves it to subsequent requests. In this demo, the responses that are served by the deployed services are stored in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/1c27396b1f7e756ba79eed72b47f485d44da1d41//examples/cache/responses.yaml">/examples/cache/responses.yaml</a>.
 This file is mounted to both services’ containers, so any changes made to the stored responses while the services are running should be instantly effective (no need to rebuild or rerun).</p>
 <p>For the purposes of the demo, a response’s date of creation is appended to its body before being served.
 An Etag is computed for every response for validation purposes, which only depends on the response body in the yaml file (i.e. the appended date is not taken into account).
@@ -223,8 +223,7 @@ as when a response is validated the <code class="docutils literal notranslate"><
 Responses served from the backend service have no <code class="docutils literal notranslate"><span class="pre">age</span></code> header, and their <code class="docutils literal notranslate"><span class="pre">date</span></code> header is the same as their generation date.</p>
 <div class="section" id="running-the-sandbox">
 <h2>Running the Sandbox<a class="headerlink" href="#running-the-sandbox" title="Permalink to this headline">¶</a></h2>
-<p>The following documentation runs through the setup of an Envoy cluster organized
-as is described in the image above.</p>
+<p>The following documentation runs through the setup of Envoy described above.</p>
 <p><strong>Step 1: Install Docker</strong></p>
 <p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> installed.</p>
 <p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
@@ -232,24 +231,24 @@ as is described in the image above.</p>
 <p>If you have not cloned the Envoy repo, clone it with:</p>
 <div class="sphinx-tabs docutils container">
 <div class="ui top attached tabular menu sphinx-menu docutils container">
-<div class="active item sphinx-data-tab-SFRUUFM= docutils container">
-<div class="docutils container">
-<p>HTTPS</p>
-</div>
-</div>
-<div class="item sphinx-data-tab-U1NI docutils container">
+<div class="active item sphinx-data-tab-U1NI docutils container">
 <div class="docutils container">
 <p>SSH</p>
 </div>
 </div>
+<div class="item sphinx-data-tab-SFRUUFM= docutils container">
+<div class="docutils container">
+<p>HTTPS</p>
 </div>
-<div class="ui bottom attached sphinx-tab tab segment code-tab sphinx-data-tab-SFRUUFM= active docutils container">
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/envoyproxy/envoy.git</span>
+</div>
+</div>
+<div class="ui bottom attached sphinx-tab tab segment code-tab sphinx-data-tab-U1NI active docutils container">
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone git@github.com:envoyproxy/envoy</span>
 </pre></div>
 </div>
 </div>
-<div class="ui bottom attached sphinx-tab tab segment code-tab sphinx-data-tab-U1NI docutils container">
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone git@github.com:envoyproxy/envoy</span>
+<div class="ui bottom attached sphinx-tab tab segment code-tab sphinx-data-tab-SFRUUFM= docutils container">
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/envoyproxy/envoy.git</span>
 </pre></div>
 </div>
 </div>
@@ -275,7 +274,7 @@ response produced by service 1).</p>
 <p>To send a request:</p>
 <p><code class="docutils literal notranslate"><span class="pre">curl</span> <span class="pre">-i</span> <span class="pre">localhost:8000/service/&lt;service_no&gt;/&lt;response&gt;</span></code></p>
 <p><code class="docutils literal notranslate"><span class="pre">service_no</span></code>: The service to send the request to, 1 or 2.</p>
-<p><code class="docutils literal notranslate"><span class="pre">response</span></code>: The response that is being requested. The responses are found in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/cb91c625fb9a9d9149bbe149afbf3b8b2ae32b4a//examples/cache/responses.yaml">/examples/cache/responses.yaml</a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">response</span></code>: The response that is being requested. The responses are found in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/1c27396b1f7e756ba79eed72b47f485d44da1d41//examples/cache/responses.yaml">/examples/cache/responses.yaml</a>.</p>
 <p>The provided example responses are:</p>
 <ul class="simple">
 <li><dl class="simple">
