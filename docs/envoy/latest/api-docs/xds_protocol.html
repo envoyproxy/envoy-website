@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xDS REST and gRPC protocol &mdash; envoy 1.16.0-dev-cc450a documentation</title>
+  <title>xDS REST and gRPC protocol &mdash; envoy 1.16.0-dev-b63855 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.16.0-dev-cc450a
+                1.16.0-dev-b63855
               </div>
             
           
@@ -213,7 +213,7 @@ below.</p>
 <div class="section" id="resource-types">
 <h2>Resource Types<a class="headerlink" href="#resource-types" title="Permalink to this headline">¶</a></h2>
 <p>Every configuration resource in the xDS API has a type associated with it. Resource types follow a
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/cc450a2db567ca6e0e0c388de4686b2f313492b7/api/API_VERSIONING.md">versioning scheme</a>. Resource types are versioned independent of the
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/b63855d710b8b800bf4100598ad8cfef4ceda15d/api/API_VERSIONING.md">versioning scheme</a>. Resource types are versioned independent of the
 transports described below.</p>
 <p>The following v2 xDS resource types are supported:</p>
 <ul class="simple">
@@ -775,10 +775,16 @@ example update sequence might look like:</p>
         <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;ADS management server IP address&gt;</span>
         <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;ADS management server port&gt;</span>
     <span class="nt">lb_policy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ROUND_ROBIN</span>
-    <span class="nt">http2_protocol_options</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+    <span class="c1"># It is recommended to configure either HTTP/2 or TCP keepalives in order to detect</span>
+    <span class="c1"># connection issues, and allow Envoy to reconnect. TCP keepalive is less expensive, but</span>
+    <span class="c1"># may be inadequate if there is a TCP proxy between Envoy and the management server.</span>
+    <span class="c1"># HTTP/2 keepalive is slightly more expensive, but may detect issues through more types</span>
+    <span class="c1"># of intermediate proxies.</span>
+    <span class="nt">http2_protocol_options</span><span class="p">:</span>
+      <span class="nt">connection_keepalive</span><span class="p">:</span>
+        <span class="nt">interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30s</span>
+        <span class="nt">timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5s</span>
     <span class="nt">upstream_connection_options</span><span class="p">:</span>
-      <span class="c1"># configure a TCP keep-alive to detect and reconnect to the admin</span>
-      <span class="c1"># server in the event of a TCP socket disconnection</span>
       <span class="nt">tcp_keepalive</span><span class="p">:</span>
         <span class="l l-Scalar l-Scalar-Plain">...</span>
 <span class="nt">admin</span><span class="p">:</span>
