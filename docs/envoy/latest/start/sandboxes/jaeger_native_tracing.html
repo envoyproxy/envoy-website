@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Jaeger Native Tracing &mdash; envoy 1.16.0-dev-e3741f documentation</title>
+  <title>Jaeger Native Tracing &mdash; envoy 1.16.0-dev-392ce7 documentation</title>
   
 
   
@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                1.16.0-dev-e3741f
+                1.16.0-dev-392ce7
               </div>
             
           
@@ -227,11 +227,11 @@ The three containers will be deployed inside a virtual network called <code clas
 </div>
 <p>All incoming requests are routed via the front Envoy, which is acting as a reverse proxy
 sitting on the edge of the <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code> network. Port <code class="docutils literal notranslate"><span class="pre">8000</span></code> is exposed
-by docker compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/e3741fe61580b081efd1f9b9c2dd0082c1708215//examples/jaeger-native-tracing/docker-compose.yaml">/examples/jaeger-native-tracing/docker-compose.yaml</a>). Notice that
+by docker compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/392ce7cb851c7d640a8dc3a43875e61f85f3b037//examples/jaeger-native-tracing/docker-compose.yaml">/examples/jaeger-native-tracing/docker-compose.yaml</a>). Notice that
 all Envoys are configured to collect request traces (e.g., http_connection_manager/config/tracing setup in
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/e3741fe61580b081efd1f9b9c2dd0082c1708215//examples/jaeger-native-tracing/front-envoy-jaeger.yaml">/examples/jaeger-native-tracing/front-envoy-jaeger.yaml</a>) and setup to propagate the spans generated
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/392ce7cb851c7d640a8dc3a43875e61f85f3b037//examples/jaeger-native-tracing/front-envoy-jaeger.yaml">/examples/jaeger-native-tracing/front-envoy-jaeger.yaml</a>) and setup to propagate the spans generated
 by the Jaeger tracer to a Jaeger cluster (trace driver setup
-in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/e3741fe61580b081efd1f9b9c2dd0082c1708215//examples/jaeger-native-tracing/front-envoy-jaeger.yaml">/examples/jaeger-native-tracing/front-envoy-jaeger.yaml</a>).</p>
+in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/392ce7cb851c7d640a8dc3a43875e61f85f3b037//examples/jaeger-native-tracing/front-envoy-jaeger.yaml">/examples/jaeger-native-tracing/front-envoy-jaeger.yaml</a>).</p>
 <p>Before routing a request to the appropriate service Envoy or the application, Envoy will take
 care of generating the appropriate spans for tracing (parent/child context spans).
 At a high-level, each span records the latency of upstream API calls as well as information
@@ -240,15 +240,18 @@ needed to correlate the span with other related spans (e.g., the trace ID).</p>
 propagating the traces to the Jaeger service cluster. However, in order to fully take advantage
 of tracing, the application has to propagate trace headers that Envoy generates, while making
 calls to other services. In the sandbox we have provided, the simple flask app
-(see trace function in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/e3741fe61580b081efd1f9b9c2dd0082c1708215//examples/front-proxy/service.py">/examples/front-proxy/service.py</a>) acting as service1 propagates
+(see trace function in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/392ce7cb851c7d640a8dc3a43875e61f85f3b037//examples/front-proxy/service.py">/examples/front-proxy/service.py</a>) acting as service1 propagates
 the trace headers while making an outbound call to service2.</p>
 <div class="section" id="running-the-sandbox">
 <h2>Running the Sandbox<a class="headerlink" href="#running-the-sandbox" title="Permalink to this headline">¶</a></h2>
 <p>The following documentation runs through the setup of Envoy described above.</p>
-<p><strong>Step 1: Install Docker</strong></p>
+<div class="section" id="step-1-install-docker">
+<h3>Step 1: Install Docker<a class="headerlink" href="#step-1-install-docker" title="Permalink to this headline">¶</a></h3>
 <p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> installed.</p>
 <p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
-<p><strong>Step 2: Clone the Envoy repo</strong></p>
+</div>
+<div class="section" id="step-2-clone-the-envoy-repo">
+<h3>Step 2: Clone the Envoy repo<a class="headerlink" href="#step-2-clone-the-envoy-repo" title="Permalink to this headline">¶</a></h3>
 <p>If you have not cloned the Envoy repo, clone it with:</p>
 <div class="sphinx-tabs docutils container">
 <div class="ui top attached tabular menu sphinx-menu docutils container">
@@ -274,7 +277,9 @@ the trace headers while making an outbound call to service2.</p>
 </div>
 </div>
 </div>
-<p><strong>Step 3: Build the sandbox</strong></p>
+</div>
+<div class="section" id="step-3-build-the-sandbox">
+<h3>Step 3: Build the sandbox<a class="headerlink" href="#step-3-build-the-sandbox" title="Permalink to this headline">¶</a></h3>
 <p>To build this sandbox example, and start the example apps run the following commands:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
 <span class="go">envoy/examples/jaeger-native-tracing</span>
@@ -290,7 +295,9 @@ the trace headers while making an outbound call to service2.</p>
 <span class="go">jaeger-native-tracing_service2_1      /start-service.sh              Up      10000/tcp, 8000/tcp</span>
 </pre></div>
 </div>
-<p><strong>Step 4: Generate some load</strong></p>
+</div>
+<div class="section" id="step-4-generate-some-load">
+<h3>Step 4: Generate some load<a class="headerlink" href="#step-4-generate-some-load" title="Permalink to this headline">¶</a></h3>
 <p>You can now send a request to service1 via the front-envoy as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -v localhost:8000/trace/1
 <span class="go">*   Trying 192.168.99.100...</span>
@@ -311,11 +318,14 @@ the trace headers while making an outbound call to service2.</p>
 <span class="go">* Connection #0 to host 192.168.99.100 left intact</span>
 </pre></div>
 </div>
-<p><strong>Step 5: View the traces in Jaeger UI</strong></p>
+</div>
+<div class="section" id="step-5-view-the-traces-in-jaeger-ui">
+<h3>Step 5: View the traces in Jaeger UI<a class="headerlink" href="#step-5-view-the-traces-in-jaeger-ui" title="Permalink to this headline">¶</a></h3>
 <p>Point your browser to <a class="reference external" href="http://localhost:16686">http://localhost:16686</a> . You should see the Jaeger dashboard.
 Set the service to “front-proxy” and hit ‘Find Traces’. You should see traces from the front-proxy.
 Click on a trace to explore the path taken by the request from front-proxy to service1
 to service2, as well as the latency incurred at each hop.</p>
+</div>
 </div>
 </div>
 

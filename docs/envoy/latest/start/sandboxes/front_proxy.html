@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Front Proxy &mdash; envoy 1.16.0-dev-e3741f documentation</title>
+  <title>Front Proxy &mdash; envoy 1.16.0-dev-392ce7 documentation</title>
   
 
   
@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                1.16.0-dev-e3741f
+                1.16.0-dev-392ce7
               </div>
             
           
@@ -215,21 +215,24 @@ running service Envoy. The three containers will be deployed inside a virtual ne
 <a class="reference internal image-reference" href="../../_images/docker_compose_front_proxy.svg"><img alt="../../_images/docker_compose_front_proxy.svg" src="../../_images/docker_compose_front_proxy.svg" width="100%" /></a>
 <p>All incoming requests are routed via the front Envoy, which is acting as a reverse proxy sitting on
 the edge of the <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code> network. Port <code class="docutils literal notranslate"><span class="pre">8080</span></code>, <code class="docutils literal notranslate"><span class="pre">8443</span></code>, and <code class="docutils literal notranslate"><span class="pre">8001</span></code> are exposed by docker
-compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/e3741fe61580b081efd1f9b9c2dd0082c1708215//examples/front-proxy/docker-compose.yaml">/examples/front-proxy/docker-compose.yaml</a>) to handle <code class="docutils literal notranslate"><span class="pre">HTTP</span></code>, <code class="docutils literal notranslate"><span class="pre">HTTPS</span></code> calls
+compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/392ce7cb851c7d640a8dc3a43875e61f85f3b037//examples/front-proxy/docker-compose.yaml">/examples/front-proxy/docker-compose.yaml</a>) to handle <code class="docutils literal notranslate"><span class="pre">HTTP</span></code>, <code class="docutils literal notranslate"><span class="pre">HTTPS</span></code> calls
 to the services and requests to <code class="docutils literal notranslate"><span class="pre">/admin</span></code> respectively.</p>
 <p>Moreover, notice that all traffic routed by the front Envoy to the service containers is actually
-routed to the service Envoys (routes setup in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/e3741fe61580b081efd1f9b9c2dd0082c1708215//examples/front-proxy/front-envoy.yaml">/examples/front-proxy/front-envoy.yaml</a>).</p>
+routed to the service Envoys (routes setup in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/392ce7cb851c7d640a8dc3a43875e61f85f3b037//examples/front-proxy/front-envoy.yaml">/examples/front-proxy/front-envoy.yaml</a>).</p>
 <p>In turn the service Envoys route the request to the Flask app via the loopback
-address (routes setup in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/e3741fe61580b081efd1f9b9c2dd0082c1708215//examples/front-proxy/service-envoy.yaml">/examples/front-proxy/service-envoy.yaml</a>). This
+address (routes setup in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/392ce7cb851c7d640a8dc3a43875e61f85f3b037//examples/front-proxy/service-envoy.yaml">/examples/front-proxy/service-envoy.yaml</a>). This
 setup illustrates the advantage of running service Envoys collocated with your services: all
 requests are handled by the service Envoy, and efficiently routed to your services.</p>
 <div class="section" id="running-the-sandbox">
 <h2>Running the Sandbox<a class="headerlink" href="#running-the-sandbox" title="Permalink to this headline">¶</a></h2>
 <p>The following documentation runs through the setup of Envoy described above.</p>
-<p><strong>Step 1: Install Docker</strong></p>
+<div class="section" id="step-1-install-docker">
+<h3>Step 1: Install Docker<a class="headerlink" href="#step-1-install-docker" title="Permalink to this headline">¶</a></h3>
 <p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> installed.</p>
 <p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
-<p><strong>Step 2: Clone the Envoy repo</strong></p>
+</div>
+<div class="section" id="step-2-clone-the-envoy-repo">
+<h3>Step 2: Clone the Envoy repo<a class="headerlink" href="#step-2-clone-the-envoy-repo" title="Permalink to this headline">¶</a></h3>
 <p>If you have not cloned the Envoy repo, clone it with:</p>
 <div class="sphinx-tabs docutils container">
 <div class="ui top attached tabular menu sphinx-menu docutils container">
@@ -255,7 +258,9 @@ requests are handled by the service Envoy, and efficiently routed to your servic
 </div>
 </div>
 </div>
-<p><strong>Step 3: Start all of our containers</strong></p>
+</div>
+<div class="section" id="step-3-start-all-of-our-containers">
+<h3>Step 3: Start all of our containers<a class="headerlink" href="#step-3-start-all-of-our-containers" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
 <span class="go">envoy/examples/front-proxy</span>
 <span class="gp">$</span> docker-compose build --pull
@@ -269,7 +274,9 @@ requests are handled by the service Envoy, and efficiently routed to your servic
 <span class="go">front-proxy_service2_1      /bin/sh -c /usr/local/bin/ ... Up      10000/tcp, 8000/tcp</span>
 </pre></div>
 </div>
-<p><strong>Step 4: Test Envoy’s routing capabilities</strong></p>
+</div>
+<div class="section" id="step-4-test-envoy-s-routing-capabilities">
+<h3>Step 4: Test Envoy’s routing capabilities<a class="headerlink" href="#step-4-test-envoy-s-routing-capabilities" title="Permalink to this headline">¶</a></h3>
 <p>You can now send a request to both services via the <code class="docutils literal notranslate"><span class="pre">front-envoy</span></code>.</p>
 <p>For <code class="docutils literal notranslate"><span class="pre">service1</span></code>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -v localhost:8080/service/1
@@ -356,7 +363,9 @@ application.</p>
 <span class="go">Hello from behind Envoy (service 1)! hostname: 36418bc3c824 resolvedhostname: 192.168.160.4</span>
 </pre></div>
 </div>
-<p><strong>Step 5: Test Envoy’s load balancing capabilities</strong></p>
+</div>
+<div class="section" id="step-5-test-envoy-s-load-balancing-capabilities">
+<h3>Step 5: Test Envoy’s load balancing capabilities<a class="headerlink" href="#step-5-test-envoy-s-load-balancing-capabilities" title="Permalink to this headline">¶</a></h3>
 <p>Now let’s scale up our <code class="docutils literal notranslate"><span class="pre">service1</span></code> nodes to demonstrate the load balancing abilities of Envoy:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker-compose scale <span class="nv">service1</span><span class="o">=</span><span class="m">3</span>
 <span class="go">Creating and starting example_service1_2 ... done</span>
@@ -419,7 +428,9 @@ requests by doing a round robin of the three <code class="docutils literal notra
 <span class="go">Hello from behind Envoy (service 1)! hostname: 36418bc3c824 resolvedhostname: 192.168.160.4</span>
 </pre></div>
 </div>
-<p><strong>Step 6: enter containers and curl services</strong></p>
+</div>
+<div class="section" id="step-6-enter-containers-and-curl-services">
+<h3>Step 6: enter containers and curl services<a class="headerlink" href="#step-6-enter-containers-and-curl-services" title="Permalink to this headline">¶</a></h3>
 <p>In addition of using <code class="docutils literal notranslate"><span class="pre">curl</span></code> from your host machine, you can also enter the
 containers themselves and <code class="docutils literal notranslate"><span class="pre">curl</span></code> from inside them. To enter a container you
 can use <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">exec</span> <span class="pre">&lt;container_name&gt;</span> <span class="pre">/bin/bash</span></code>. For example we can
@@ -435,7 +446,9 @@ enter the <code class="docutils literal notranslate"><span class="pre">front-env
 <span class="go">Hello from behind Envoy (service 2)! hostname: 92f4a3737bbc resolvedhostname: 172.19.0.2</span>
 </pre></div>
 </div>
-<p><strong>Step 7: enter container and curl admin</strong></p>
+</div>
+<div class="section" id="step-7-enter-container-and-curl-admin">
+<h3>Step 7: enter container and curl admin<a class="headerlink" href="#step-7-enter-container-and-curl-admin" title="Permalink to this headline">¶</a></h3>
 <p>When Envoy runs it also attaches an <code class="docutils literal notranslate"><span class="pre">admin</span></code> to your desired port.</p>
 <p>In the example configs the admin is bound to port <code class="docutils literal notranslate"><span class="pre">8001</span></code>.</p>
 <p>We can <code class="docutils literal notranslate"><span class="pre">curl</span></code> it to gain useful information:</p>
@@ -514,6 +527,7 @@ enter the <code class="docutils literal notranslate"><span class="pre">front-env
 </div>
 <p>Notice that we can get the number of members of upstream clusters, number of requests fulfilled by
 them, information about http ingress, and a plethora of other useful stats.</p>
+</div>
 </div>
 </div>
 
