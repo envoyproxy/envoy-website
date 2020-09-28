@@ -13,7 +13,7 @@ The authorization service request messages used by external authorization :ref:`
 service.auth.v3.CheckRequest
 ----------------------------
 
-`[service.auth.v3.CheckRequest proto] <https://github.com/envoyproxy/envoy/blob/6321e5d95f7e435625d762ea82316b7a9f7071a4/api/envoy/service/auth/v3/external_auth.proto#L35>`_
+`[service.auth.v3.CheckRequest proto] <https://github.com/envoyproxy/envoy/blob/228c8ad78433c19b61eeaf9aad1c38ec1f2c75cc/api/envoy/service/auth/v3/external_auth.proto#L35>`_
 
 
 .. code-block:: json
@@ -35,7 +35,7 @@ attributes
 service.auth.v3.DeniedHttpResponse
 ----------------------------------
 
-`[service.auth.v3.DeniedHttpResponse proto] <https://github.com/envoyproxy/envoy/blob/6321e5d95f7e435625d762ea82316b7a9f7071a4/api/envoy/service/auth/v3/external_auth.proto#L43>`_
+`[service.auth.v3.DeniedHttpResponse proto] <https://github.com/envoyproxy/envoy/blob/228c8ad78433c19b61eeaf9aad1c38ec1f2c75cc/api/envoy/service/auth/v3/external_auth.proto#L43>`_
 
 HTTP attributes for a denied response.
 
@@ -75,7 +75,7 @@ body
 service.auth.v3.OkHttpResponse
 ------------------------------
 
-`[service.auth.v3.OkHttpResponse proto] <https://github.com/envoyproxy/envoy/blob/6321e5d95f7e435625d762ea82316b7a9f7071a4/api/envoy/service/auth/v3/external_auth.proto#L61>`_
+`[service.auth.v3.OkHttpResponse proto] <https://github.com/envoyproxy/envoy/blob/228c8ad78433c19b61eeaf9aad1c38ec1f2c75cc/api/envoy/service/auth/v3/external_auth.proto#L62>`_
 
 HTTP attributes for an OK response.
 
@@ -83,6 +83,7 @@ HTTP attributes for an OK response.
 
   {
     "headers": [],
+    "headers_to_remove": [],
     "dynamic_metadata": "{...}"
   }
 
@@ -95,6 +96,26 @@ headers
   the filter will append the correspondent header value to the matched request header. Note that
   by Leaving `append` as false, the filter will either add a new header, or override an existing
   one if there is a match.
+  
+  
+.. _envoy_v3_api_field_service.auth.v3.OkHttpResponse.headers_to_remove:
+
+headers_to_remove
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) HTTP entity headers to remove from the original request before dispatching
+  it to the upstream. This allows the authorization service to act on auth
+  related headers (like `Authorization`), process them, and consume them.
+  Under this model, the upstream will either receive the request (if it's
+  authorized) or not receive it (if it's not), but will not see headers
+  containing authorization credentials.
+  
+  Pseudo headers (such as `:authority`, `:method`, `:path` etc), as well as
+  the header `Host`, may not be removed as that would make the request
+  malformed. If mentioned in `headers_to_remove` these special headers will
+  be ignored.
+  
+  When using the HTTP service this must instead be set by the HTTP
+  authorization service as a comma separated list like so:
+  ``x-envoy-auth-headers-to-remove: one-auth-header, another-auth-header``.
   
   
 .. _envoy_v3_api_field_service.auth.v3.OkHttpResponse.dynamic_metadata:
@@ -113,7 +134,7 @@ dynamic_metadata
 service.auth.v3.CheckResponse
 -----------------------------
 
-`[service.auth.v3.CheckResponse proto] <https://github.com/envoyproxy/envoy/blob/6321e5d95f7e435625d762ea82316b7a9f7071a4/api/envoy/service/auth/v3/external_auth.proto#L81>`_
+`[service.auth.v3.CheckResponse proto] <https://github.com/envoyproxy/envoy/blob/228c8ad78433c19b61eeaf9aad1c38ec1f2c75cc/api/envoy/service/auth/v3/external_auth.proto#L99>`_
 
 Intended for gRPC and Network Authorization servers `only`.
 
