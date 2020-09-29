@@ -1,0 +1,162 @@
+.. _envoy_api_file_envoy/api/v2/cluster/circuit_breaker.proto:
+
+Circuit breakers
+================
+
+
+.. _envoy_api_msg_cluster.CircuitBreakers:
+
+cluster.CircuitBreakers
+-----------------------
+
+`[cluster.CircuitBreakers proto] <https://github.com/envoyproxy/envoy/blob/v1.14.5/api/envoy/api/v2/cluster/circuit_breaker.proto#L25>`_
+
+:ref:`Circuit breaking<arch_overview_circuit_break>` settings can be
+specified individually for each defined priority.
+
+.. code-block:: json
+
+  {
+    "thresholds": []
+  }
+
+.. _envoy_api_field_cluster.CircuitBreakers.thresholds:
+
+thresholds
+  (:ref:`cluster.CircuitBreakers.Thresholds <envoy_api_msg_cluster.CircuitBreakers.Thresholds>`) If multiple :ref:`Thresholds<envoy_api_msg_cluster.CircuitBreakers.Thresholds>`
+  are defined with the same :ref:`RoutingPriority<envoy_api_enum_core.RoutingPriority>`,
+  the first one in the list is used. If no Thresholds is defined for a given
+  :ref:`RoutingPriority<envoy_api_enum_core.RoutingPriority>`, the default values
+  are used.
+  
+  
+.. _envoy_api_msg_cluster.CircuitBreakers.Thresholds:
+
+cluster.CircuitBreakers.Thresholds
+----------------------------------
+
+`[cluster.CircuitBreakers.Thresholds proto] <https://github.com/envoyproxy/envoy/blob/v1.14.5/api/envoy/api/v2/cluster/circuit_breaker.proto#L29>`_
+
+A Thresholds defines CircuitBreaker settings for a
+:ref:`RoutingPriority<envoy_api_enum_core.RoutingPriority>`.
+
+.. code-block:: json
+
+  {
+    "priority": "...",
+    "max_connections": "{...}",
+    "max_pending_requests": "{...}",
+    "max_requests": "{...}",
+    "max_retries": "{...}",
+    "retry_budget": "{...}",
+    "track_remaining": "...",
+    "max_connection_pools": "{...}"
+  }
+
+.. _envoy_api_field_cluster.CircuitBreakers.Thresholds.priority:
+
+priority
+  (:ref:`core.RoutingPriority <envoy_api_enum_core.RoutingPriority>`) The :ref:`RoutingPriority<envoy_api_enum_core.RoutingPriority>`
+  the specified CircuitBreaker settings apply to.
+  
+  
+.. _envoy_api_field_cluster.CircuitBreakers.Thresholds.max_connections:
+
+max_connections
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The maximum number of connections that Envoy will make to the upstream
+  cluster. If not specified, the default is 1024.
+  
+  
+.. _envoy_api_field_cluster.CircuitBreakers.Thresholds.max_pending_requests:
+
+max_pending_requests
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The maximum number of pending requests that Envoy will allow to the
+  upstream cluster. If not specified, the default is 1024.
+  
+  
+.. _envoy_api_field_cluster.CircuitBreakers.Thresholds.max_requests:
+
+max_requests
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The maximum number of parallel requests that Envoy will make to the
+  upstream cluster. If not specified, the default is 1024.
+  
+  
+.. _envoy_api_field_cluster.CircuitBreakers.Thresholds.max_retries:
+
+max_retries
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The maximum number of parallel retries that Envoy will allow to the
+  upstream cluster. If not specified, the default is 3.
+  
+  
+.. _envoy_api_field_cluster.CircuitBreakers.Thresholds.retry_budget:
+
+retry_budget
+  (:ref:`cluster.CircuitBreakers.Thresholds.RetryBudget <envoy_api_msg_cluster.CircuitBreakers.Thresholds.RetryBudget>`) Specifies a limit on concurrent retries in relation to the number of active requests. This
+  parameter is optional.
+  
+  .. note::
+  
+     If this field is set, the retry budget will override any configured retry circuit
+     breaker.
+  
+  
+.. _envoy_api_field_cluster.CircuitBreakers.Thresholds.track_remaining:
+
+track_remaining
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If track_remaining is true, then stats will be published that expose
+  the number of resources remaining until the circuit breakers open. If
+  not specified, the default is false.
+  
+  .. note::
+  
+     If a retry budget is used in lieu of the max_retries circuit breaker,
+     the remaining retry resources remaining will not be tracked.
+  
+  
+.. _envoy_api_field_cluster.CircuitBreakers.Thresholds.max_connection_pools:
+
+max_connection_pools
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The maximum number of connection pools per cluster that Envoy will concurrently support at
+  once. If not specified, the default is unlimited. Set this for clusters which create a
+  large number of connection pools. See
+  :ref:`Circuit Breaking <arch_overview_circuit_break_cluster_maximum_connection_pools>` for
+  more details.
+  
+  
+.. _envoy_api_msg_cluster.CircuitBreakers.Thresholds.RetryBudget:
+
+cluster.CircuitBreakers.Thresholds.RetryBudget
+----------------------------------------------
+
+`[cluster.CircuitBreakers.Thresholds.RetryBudget proto] <https://github.com/envoyproxy/envoy/blob/v1.14.5/api/envoy/api/v2/cluster/circuit_breaker.proto#L30>`_
+
+
+.. code-block:: json
+
+  {
+    "budget_percent": "{...}",
+    "min_retry_concurrency": "{...}"
+  }
+
+.. _envoy_api_field_cluster.CircuitBreakers.Thresholds.RetryBudget.budget_percent:
+
+budget_percent
+  (:ref:`type.Percent <envoy_api_msg_type.Percent>`) Specifies the limit on concurrent retries as a percentage of the sum of active requests and
+  active pending requests. For example, if there are 100 active requests and the
+  budget_percent is set to 25, there may be 25 active retries.
+  
+  This parameter is optional. Defaults to 20%.
+  
+  
+.. _envoy_api_field_cluster.CircuitBreakers.Thresholds.RetryBudget.min_retry_concurrency:
+
+min_retry_concurrency
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Specifies the minimum retry concurrency allowed for the retry budget. The limit on the
+  number of active retries may never go below this number.
+  
+  This parameter is optional. Defaults to 3.
+  
+  
+
+
+
