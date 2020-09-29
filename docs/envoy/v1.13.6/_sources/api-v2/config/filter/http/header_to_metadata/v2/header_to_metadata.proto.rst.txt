@@ -1,0 +1,206 @@
+.. _envoy_api_file_envoy/config/filter/http/header_to_metadata/v2/header_to_metadata.proto:
+
+Header-To-Metadata Filter
+=========================
+
+.. _extension_envoy.filters.http.header_to_metadata:
+
+
+This extension may be referenced by the qualified name *envoy.filters.http.header_to_metadata*
+
+.. note::
+  
+
+  This extension is intended to be robust against untrusted downstream traffic. It assumes that the upstream is trusted.
+
+
+The configuration for transforming headers into metadata. This is useful
+for matching load balancer subsets, logging, etc.
+
+Header to Metadata :ref:`configuration overview <config_http_filters_header_to_metadata>`.
+
+.. _envoy_api_msg_config.filter.http.header_to_metadata.v2.Config:
+
+config.filter.http.header_to_metadata.v2.Config
+-----------------------------------------------
+
+`[config.filter.http.header_to_metadata.v2.Config proto] <https://github.com/envoyproxy/envoy/blob/v1.13.6/api/envoy/config/filter/http/header_to_metadata/v2/header_to_metadata.proto#L21>`_
+
+
+.. code-block:: json
+
+  {
+    "request_rules": [],
+    "response_rules": []
+  }
+
+.. _envoy_api_field_config.filter.http.header_to_metadata.v2.Config.request_rules:
+
+request_rules
+  (:ref:`config.filter.http.header_to_metadata.v2.Config.Rule <envoy_api_msg_config.filter.http.header_to_metadata.v2.Config.Rule>`) The list of rules to apply to requests.
+  
+  
+.. _envoy_api_field_config.filter.http.header_to_metadata.v2.Config.response_rules:
+
+response_rules
+  (:ref:`config.filter.http.header_to_metadata.v2.Config.Rule <envoy_api_msg_config.filter.http.header_to_metadata.v2.Config.Rule>`) The list of rules to apply to responses.
+  
+  
+.. _envoy_api_msg_config.filter.http.header_to_metadata.v2.Config.KeyValuePair:
+
+config.filter.http.header_to_metadata.v2.Config.KeyValuePair
+------------------------------------------------------------
+
+`[config.filter.http.header_to_metadata.v2.Config.KeyValuePair proto] <https://github.com/envoyproxy/envoy/blob/v1.13.6/api/envoy/config/filter/http/header_to_metadata/v2/header_to_metadata.proto#L44>`_
+
+
+.. code-block:: json
+
+  {
+    "metadata_namespace": "...",
+    "key": "...",
+    "value": "...",
+    "type": "...",
+    "encode": "..."
+  }
+
+.. _envoy_api_field_config.filter.http.header_to_metadata.v2.Config.KeyValuePair.metadata_namespace:
+
+metadata_namespace
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The namespace — if this is empty, the filter's namespace will be used.
+  
+  
+.. _envoy_api_field_config.filter.http.header_to_metadata.v2.Config.KeyValuePair.key:
+
+key
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The key to use within the namespace.
+  
+  
+.. _envoy_api_field_config.filter.http.header_to_metadata.v2.Config.KeyValuePair.value:
+
+value
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The value to pair with the given key.
+  
+  When used for a `on_header_present` case, if value is non-empty it'll be used
+  instead of the header value. If both are empty, no metadata is added.
+  
+  When used for a `on_header_missing` case, a non-empty value must be provided
+  otherwise no metadata is added.
+  
+  
+.. _envoy_api_field_config.filter.http.header_to_metadata.v2.Config.KeyValuePair.type:
+
+type
+  (:ref:`config.filter.http.header_to_metadata.v2.Config.ValueType <envoy_api_enum_config.filter.http.header_to_metadata.v2.Config.ValueType>`) The value's type — defaults to string.
+  
+  
+.. _envoy_api_field_config.filter.http.header_to_metadata.v2.Config.KeyValuePair.encode:
+
+encode
+  (:ref:`config.filter.http.header_to_metadata.v2.Config.ValueEncode <envoy_api_enum_config.filter.http.header_to_metadata.v2.Config.ValueEncode>`) How is the value encoded, default is NONE (not encoded).
+  The value will be decoded accordingly before storing to metadata.
+  
+  
+
+
+.. _envoy_api_msg_config.filter.http.header_to_metadata.v2.Config.Rule:
+
+config.filter.http.header_to_metadata.v2.Config.Rule
+----------------------------------------------------
+
+`[config.filter.http.header_to_metadata.v2.Config.Rule proto] <https://github.com/envoyproxy/envoy/blob/v1.13.6/api/envoy/config/filter/http/header_to_metadata/v2/header_to_metadata.proto#L69>`_
+
+A Rule defines what metadata to apply when a header is present or missing.
+
+.. code-block:: json
+
+  {
+    "header": "...",
+    "on_header_present": "{...}",
+    "on_header_missing": "{...}",
+    "remove": "..."
+  }
+
+.. _envoy_api_field_config.filter.http.header_to_metadata.v2.Config.Rule.header:
+
+header
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The header that triggers this rule — required.
+  
+  
+.. _envoy_api_field_config.filter.http.header_to_metadata.v2.Config.Rule.on_header_present:
+
+on_header_present
+  (:ref:`config.filter.http.header_to_metadata.v2.Config.KeyValuePair <envoy_api_msg_config.filter.http.header_to_metadata.v2.Config.KeyValuePair>`) If the header is present, apply this metadata KeyValuePair.
+  
+  If the value in the KeyValuePair is non-empty, it'll be used instead
+  of the header value.
+  
+  
+.. _envoy_api_field_config.filter.http.header_to_metadata.v2.Config.Rule.on_header_missing:
+
+on_header_missing
+  (:ref:`config.filter.http.header_to_metadata.v2.Config.KeyValuePair <envoy_api_msg_config.filter.http.header_to_metadata.v2.Config.KeyValuePair>`) If the header is not present, apply this metadata KeyValuePair.
+  
+  The value in the KeyValuePair must be set, since it'll be used in lieu
+  of the missing header value.
+  
+  
+.. _envoy_api_field_config.filter.http.header_to_metadata.v2.Config.Rule.remove:
+
+remove
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Whether or not to remove the header after a rule is applied.
+  
+  This prevents headers from leaking.
+  
+  
+
+
+.. _envoy_api_enum_config.filter.http.header_to_metadata.v2.Config.ValueType:
+
+Enum config.filter.http.header_to_metadata.v2.Config.ValueType
+--------------------------------------------------------------
+
+`[config.filter.http.header_to_metadata.v2.Config.ValueType proto] <https://github.com/envoyproxy/envoy/blob/v1.13.6/api/envoy/config/filter/http/header_to_metadata/v2/header_to_metadata.proto#L22>`_
+
+
+.. _envoy_api_enum_value_config.filter.http.header_to_metadata.v2.Config.ValueType.STRING:
+
+STRING
+  *(DEFAULT)* ⁣
+  
+.. _envoy_api_enum_value_config.filter.http.header_to_metadata.v2.Config.ValueType.NUMBER:
+
+NUMBER
+  ⁣
+  
+.. _envoy_api_enum_value_config.filter.http.header_to_metadata.v2.Config.ValueType.PROTOBUF_VALUE:
+
+PROTOBUF_VALUE
+  ⁣The value is a serialized `protobuf.Value
+  <https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/struct.proto#L62>`_.
+  
+  
+
+.. _envoy_api_enum_config.filter.http.header_to_metadata.v2.Config.ValueEncode:
+
+Enum config.filter.http.header_to_metadata.v2.Config.ValueEncode
+----------------------------------------------------------------
+
+`[config.filter.http.header_to_metadata.v2.Config.ValueEncode proto] <https://github.com/envoyproxy/envoy/blob/v1.13.6/api/envoy/config/filter/http/header_to_metadata/v2/header_to_metadata.proto#L33>`_
+
+ValueEncode defines the encoding algorithm.
+
+.. _envoy_api_enum_value_config.filter.http.header_to_metadata.v2.Config.ValueEncode.NONE:
+
+NONE
+  *(DEFAULT)* ⁣The value is not encoded.
+  
+  
+.. _envoy_api_enum_value_config.filter.http.header_to_metadata.v2.Config.ValueEncode.BASE64:
+
+BASE64
+  ⁣The value is encoded in `Base64 <https://tools.ietf.org/html/rfc4648#section-4>`_.
+  Note: this is mostly used for STRING and PROTOBUF_VALUE to escape the
+  non-ASCII characters in the header.
+  
+  
