@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Admission Control &mdash; envoy 1.16.0-dev-8f1645 documentation</title>
+  <title>Admission Control &mdash; envoy 1.16.0-dev-056772 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.16.0-dev-8f1645
+                1.16.0-dev-056772
               </div>
             
           
@@ -112,6 +112,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../configuration/http/http_conn_man/http_conn_man.html">HTTP connection manager</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../../../../../../configuration/http/http_filters/http_filters.html">HTTP filters</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../configuration/http/http_filters/adaptive_concurrency_filter.html">Adaptive Concurrency</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../configuration/http/http_filters/admission_control_filter.html">Admission Control</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../configuration/http/http_filters/aws_lambda_filter.html">AWS Lambda</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../configuration/http/http_filters/aws_request_signing_filter.html">AWS Request Signing</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../configuration/http/http_filters/buffer_filter.html">Buffer</a></li>
@@ -250,12 +251,13 @@
 </div>
 <div class="section" id="extensions-filters-http-admission-control-v3alpha-admissioncontrol">
 <span id="envoy-v3-api-msg-extensions-filters-http-admission-control-v3alpha-admissioncontrol"></span><h2>extensions.filters.http.admission_control.v3alpha.AdmissionControl<a class="headerlink" href="#extensions-filters-http-admission-control-v3alpha-admissioncontrol" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/8f164561a8974f5526fa3bd1327d6a197dd8a2b9/api/envoy/extensions/filters/http/admission_control/v3alpha/admission_control.proto#L25">[extensions.filters.http.admission_control.v3alpha.AdmissionControl proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/056772107d83752fc679e6145afc58522e3c8fdd/api/envoy/extensions/filters/http/admission_control/v3alpha/admission_control.proto#L26">[extensions.filters.http.admission_control.v3alpha.AdmissionControl proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;enabled&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;success_criteria&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;sampling_window&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;aggression_coefficient&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;aggression&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;sr_threshold&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -271,24 +273,31 @@ Defines how a request is considered a success/failure.</p>
 </dl>
 <dl class="simple" id="envoy-v3-api-field-extensions-filters-http-admission-control-v3alpha-admissioncontrol-sampling-window">
 <dt>sampling_window</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The sliding time window over which the success rate is calculated. The window is rounded to the
-nearest second. Defaults to 120s.</p>
+nearest second. Defaults to 30s.</p>
 </dd>
 </dl>
-<dl id="envoy-v3-api-field-extensions-filters-http-admission-control-v3alpha-admissioncontrol-aggression-coefficient">
-<dt>aggression_coefficient</dt><dd><p>(<a class="reference internal" href="../../../../../config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-runtimedouble"><span class="std std-ref">config.core.v3.RuntimeDouble</span></a>) Rejection probability is defined by the formula:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">rq_count</span> <span class="o">-</span> <span class="n">aggression_coefficient</span> <span class="o">*</span> <span class="n">rq_success_count</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">rq_count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+<dl id="envoy-v3-api-field-extensions-filters-http-admission-control-v3alpha-admissioncontrol-aggression">
+<dt>aggression</dt><dd><p>(<a class="reference internal" href="../../../../../config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-runtimedouble"><span class="std std-ref">config.core.v3.RuntimeDouble</span></a>) Rejection probability is defined by the formula:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">rq_count</span> <span class="o">-</span>  <span class="n">rq_success_count</span> <span class="o">/</span> <span class="n">sr_threshold</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">rq_count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">^</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">aggression</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The coefficient dictates how aggressively the admission controller will throttle requests as
-the success rate drops. Lower values will cause throttling to kick in at higher success rates
-and result in more aggressive throttling. Any values less than 1.0, will be set to 1.0. If the
-message is unspecified, the coefficient is 2.0.</p>
+<p>The aggression dictates how heavily the admission controller will throttle requests upon SR
+dropping at or below the threshold. A value of 1 will result in a linear increase in
+rejection probability as SR drops. Any values less than 1.0, will be set to 1.0. If the
+message is unspecified, the aggression is 1.0. See <a class="reference external" href="https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/admission_control_filter.html">the admission control documentation</a>
+for a diagram illustrating this.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-http-admission-control-v3alpha-admissioncontrol-sr-threshold">
+<dt>sr_threshold</dt><dd><p>(<a class="reference internal" href="../../../../../config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-runtimepercent"><span class="std std-ref">config.core.v3.RuntimePercent</span></a>) Dictates the success rate at which the rejection probability is non-zero. As success rate drops
+below this threshold, rejection probability will increase. Any success rate above the threshold
+results in a rejection probability of 0. Defaults to 95%.</p>
 </dd>
 </dl>
 </div>
 <div class="section" id="extensions-filters-http-admission-control-v3alpha-admissioncontrol-successcriteria">
 <span id="envoy-v3-api-msg-extensions-filters-http-admission-control-v3alpha-admissioncontrol-successcriteria"></span><h2>extensions.filters.http.admission_control.v3alpha.AdmissionControl.SuccessCriteria<a class="headerlink" href="#extensions-filters-http-admission-control-v3alpha-admissioncontrol-successcriteria" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/8f164561a8974f5526fa3bd1327d6a197dd8a2b9/api/envoy/extensions/filters/http/admission_control/v3alpha/admission_control.proto#L29">[extensions.filters.http.admission_control.v3alpha.AdmissionControl.SuccessCriteria proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/056772107d83752fc679e6145afc58522e3c8fdd/api/envoy/extensions/filters/http/admission_control/v3alpha/admission_control.proto#L30">[extensions.filters.http.admission_control.v3alpha.AdmissionControl.SuccessCriteria proto]</a></p>
 <p>Default method of specifying what constitutes a successful request. All status codes that
 indicate a successful request must be explicitly specified if not relying on the default
 values.</p>
@@ -324,7 +333,7 @@ chosen because of the unlikelihood that sending fewer requests will change the b
 </div>
 <div class="section" id="extensions-filters-http-admission-control-v3alpha-admissioncontrol-successcriteria-httpcriteria">
 <span id="envoy-v3-api-msg-extensions-filters-http-admission-control-v3alpha-admissioncontrol-successcriteria-httpcriteria"></span><h2>extensions.filters.http.admission_control.v3alpha.AdmissionControl.SuccessCriteria.HttpCriteria<a class="headerlink" href="#extensions-filters-http-admission-control-v3alpha-admissioncontrol-successcriteria-httpcriteria" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/8f164561a8974f5526fa3bd1327d6a197dd8a2b9/api/envoy/extensions/filters/http/admission_control/v3alpha/admission_control.proto#L30">[extensions.filters.http.admission_control.v3alpha.AdmissionControl.SuccessCriteria.HttpCriteria proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/056772107d83752fc679e6145afc58522e3c8fdd/api/envoy/extensions/filters/http/admission_control/v3alpha/admission_control.proto#L31">[extensions.filters.http.admission_control.v3alpha.AdmissionControl.SuccessCriteria.HttpCriteria proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;http_success_status&quot;</span><span class="p">:</span> <span class="p">[]</span>
 <span class="p">}</span>
@@ -338,7 +347,7 @@ range [100, 600).</p>
 </div>
 <div class="section" id="extensions-filters-http-admission-control-v3alpha-admissioncontrol-successcriteria-grpccriteria">
 <span id="envoy-v3-api-msg-extensions-filters-http-admission-control-v3alpha-admissioncontrol-successcriteria-grpccriteria"></span><h2>extensions.filters.http.admission_control.v3alpha.AdmissionControl.SuccessCriteria.GrpcCriteria<a class="headerlink" href="#extensions-filters-http-admission-control-v3alpha-admissioncontrol-successcriteria-grpccriteria" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/8f164561a8974f5526fa3bd1327d6a197dd8a2b9/api/envoy/extensions/filters/http/admission_control/v3alpha/admission_control.proto#L37">[extensions.filters.http.admission_control.v3alpha.AdmissionControl.SuccessCriteria.GrpcCriteria proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/056772107d83752fc679e6145afc58522e3c8fdd/api/envoy/extensions/filters/http/admission_control/v3alpha/admission_control.proto#L38">[extensions.filters.http.admission_control.v3alpha.AdmissionControl.SuccessCriteria.GrpcCriteria proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;grpc_success_status&quot;</span><span class="p">:</span> <span class="p">[]</span>
 <span class="p">}</span>

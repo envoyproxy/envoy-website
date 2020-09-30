@@ -22,7 +22,7 @@ This extension may be referenced by the qualified name *envoy.filters.http.admis
 extensions.filters.http.admission_control.v3alpha.AdmissionControl
 ------------------------------------------------------------------
 
-`[extensions.filters.http.admission_control.v3alpha.AdmissionControl proto] <https://github.com/envoyproxy/envoy/blob/8f164561a8974f5526fa3bd1327d6a197dd8a2b9/api/envoy/extensions/filters/http/admission_control/v3alpha/admission_control.proto#L25>`_
+`[extensions.filters.http.admission_control.v3alpha.AdmissionControl proto] <https://github.com/envoyproxy/envoy/blob/056772107d83752fc679e6145afc58522e3c8fdd/api/envoy/extensions/filters/http/admission_control/v3alpha/admission_control.proto#L26>`_
 
 
 .. code-block:: json
@@ -31,7 +31,8 @@ extensions.filters.http.admission_control.v3alpha.AdmissionControl
     "enabled": "{...}",
     "success_criteria": "{...}",
     "sampling_window": "{...}",
-    "aggression_coefficient": "{...}"
+    "aggression": "{...}",
+    "sr_threshold": "{...}"
   }
 
 .. _envoy_v3_api_field_extensions.filters.http.admission_control.v3alpha.AdmissionControl.enabled:
@@ -52,20 +53,30 @@ success_criteria
 
 sampling_window
   (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The sliding time window over which the success rate is calculated. The window is rounded to the
-  nearest second. Defaults to 120s.
+  nearest second. Defaults to 30s.
   
   
-.. _envoy_v3_api_field_extensions.filters.http.admission_control.v3alpha.AdmissionControl.aggression_coefficient:
+.. _envoy_v3_api_field_extensions.filters.http.admission_control.v3alpha.AdmissionControl.aggression:
 
-aggression_coefficient
+aggression
   (:ref:`config.core.v3.RuntimeDouble <envoy_v3_api_msg_config.core.v3.RuntimeDouble>`) Rejection probability is defined by the formula::
   
-      max(0, (rq_count - aggression_coefficient * rq_success_count) / (rq_count + 1))
+      max(0, (rq_count -  rq_success_count / sr_threshold) / (rq_count + 1)) ^ (1 / aggression)
   
-  The coefficient dictates how aggressively the admission controller will throttle requests as
-  the success rate drops. Lower values will cause throttling to kick in at higher success rates
-  and result in more aggressive throttling. Any values less than 1.0, will be set to 1.0. If the
-  message is unspecified, the coefficient is 2.0.
+  The aggression dictates how heavily the admission controller will throttle requests upon SR
+  dropping at or below the threshold. A value of 1 will result in a linear increase in
+  rejection probability as SR drops. Any values less than 1.0, will be set to 1.0. If the
+  message is unspecified, the aggression is 1.0. See `the admission control documentation
+  <https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/admission_control_filter.html>`_
+  for a diagram illustrating this.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.admission_control.v3alpha.AdmissionControl.sr_threshold:
+
+sr_threshold
+  (:ref:`config.core.v3.RuntimePercent <envoy_v3_api_msg_config.core.v3.RuntimePercent>`) Dictates the success rate at which the rejection probability is non-zero. As success rate drops
+  below this threshold, rejection probability will increase. Any success rate above the threshold
+  results in a rejection probability of 0. Defaults to 95%.
   
   
 .. _envoy_v3_api_msg_extensions.filters.http.admission_control.v3alpha.AdmissionControl.SuccessCriteria:
@@ -73,7 +84,7 @@ aggression_coefficient
 extensions.filters.http.admission_control.v3alpha.AdmissionControl.SuccessCriteria
 ----------------------------------------------------------------------------------
 
-`[extensions.filters.http.admission_control.v3alpha.AdmissionControl.SuccessCriteria proto] <https://github.com/envoyproxy/envoy/blob/8f164561a8974f5526fa3bd1327d6a197dd8a2b9/api/envoy/extensions/filters/http/admission_control/v3alpha/admission_control.proto#L29>`_
+`[extensions.filters.http.admission_control.v3alpha.AdmissionControl.SuccessCriteria proto] <https://github.com/envoyproxy/envoy/blob/056772107d83752fc679e6145afc58522e3c8fdd/api/envoy/extensions/filters/http/admission_control/v3alpha/admission_control.proto#L30>`_
 
 Default method of specifying what constitutes a successful request. All status codes that
 indicate a successful request must be explicitly specified if not relying on the default
@@ -118,7 +129,7 @@ grpc_criteria
 extensions.filters.http.admission_control.v3alpha.AdmissionControl.SuccessCriteria.HttpCriteria
 -----------------------------------------------------------------------------------------------
 
-`[extensions.filters.http.admission_control.v3alpha.AdmissionControl.SuccessCriteria.HttpCriteria proto] <https://github.com/envoyproxy/envoy/blob/8f164561a8974f5526fa3bd1327d6a197dd8a2b9/api/envoy/extensions/filters/http/admission_control/v3alpha/admission_control.proto#L30>`_
+`[extensions.filters.http.admission_control.v3alpha.AdmissionControl.SuccessCriteria.HttpCriteria proto] <https://github.com/envoyproxy/envoy/blob/056772107d83752fc679e6145afc58522e3c8fdd/api/envoy/extensions/filters/http/admission_control/v3alpha/admission_control.proto#L31>`_
 
 
 .. code-block:: json
@@ -141,7 +152,7 @@ http_success_status
 extensions.filters.http.admission_control.v3alpha.AdmissionControl.SuccessCriteria.GrpcCriteria
 -----------------------------------------------------------------------------------------------
 
-`[extensions.filters.http.admission_control.v3alpha.AdmissionControl.SuccessCriteria.GrpcCriteria proto] <https://github.com/envoyproxy/envoy/blob/8f164561a8974f5526fa3bd1327d6a197dd8a2b9/api/envoy/extensions/filters/http/admission_control/v3alpha/admission_control.proto#L37>`_
+`[extensions.filters.http.admission_control.v3alpha.AdmissionControl.SuccessCriteria.GrpcCriteria proto] <https://github.com/envoyproxy/envoy/blob/056772107d83752fc679e6145afc58522e3c8fdd/api/envoy/extensions/filters/http/admission_control/v3alpha/admission_control.proto#L38>`_
 
 
 .. code-block:: json
