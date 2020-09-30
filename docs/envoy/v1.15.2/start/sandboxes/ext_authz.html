@@ -1,0 +1,348 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>External Authorization Filter &mdash; envoy tag-v1.15.2 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Fault Injection Filter" href="fault_injection.html" />
+    <link rel="prev" title="CSRF Filter" href="csrf.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                tag-v1.15.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../start.html">Getting Started</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../start.html#quick-start-to-run-simple-example">Quick Start to Run Simple Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../start.html#simple-configuration">Simple Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../start.html#using-the-envoy-docker-image">Using the Envoy Docker Image</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../start.html#sandboxes">Sandboxes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="cors.html">CORS Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF Filter</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">External Authorization Filter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#running-the-sandbox">Running the Sandbox</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault Injection Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front Proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC Bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger Native Tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_tracing.html">Jaeger Tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="load_reporting_service.html">Load Reporting Service (LRS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mysql.html">MySQL Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">Zipkin Tracing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../start.html#other-use-cases">Other use cases</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/install.html">Building and installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version_history/version_history.html">Version history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/overview.html">FAQ</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../start.html">Getting Started</a> &raquo;</li>
+        
+      <li>External Authorization Filter</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/start/sandboxes/ext_authz.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="external-authorization-filter">
+<span id="install-sandboxes-ext-authz"></span><h1>External Authorization Filter<a class="headerlink" href="#external-authorization-filter" title="Permalink to this headline">¶</a></h1>
+<p>The External Authorization sandbox demonstrates Envoy’s <a class="reference internal" href="../../configuration/http/http_filters/ext_authz_filter.html#config-http-filters-ext-authz"><span class="std std-ref">ext_authz filter</span></a>
+capability to delegate authorization of incoming requests through Envoy to an external services.</p>
+<p>While ext_authz can also be employed as a network filter, this sandbox is limited to exhibit
+ext_authz HTTP Filter, which supports to call HTTP or gRPC service.</p>
+<p>The setup of this sandbox is very similar to front-proxy deployment, however calls to upstream
+service behind the proxy will be checked by an external HTTP or gRPC service. In this sandbox,
+for every authorized call, the external authorization service adds additional <code class="docutils literal notranslate"><span class="pre">x-current-user</span></code>
+header entry to the original request headers to be forwarded to the upstream service.</p>
+<div class="section" id="running-the-sandbox">
+<h2>Running the Sandbox<a class="headerlink" href="#running-the-sandbox" title="Permalink to this headline">¶</a></h2>
+<p><strong>Step 1: Install Docker</strong></p>
+<p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code>.</p>
+<p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
+<p><strong>Step 2: Clone the Envoy repository and start all of our containers</strong></p>
+<p>If you have not cloned the Envoy repository, clone it with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:envoyproxy/envoy</span></code>
+or <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/envoyproxy/envoy.git</span></code>.</p>
+<p>To build this sandbox example and start the example services, run the following commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pwd
+envoy/examples/ext_authz
+$ docker-compose pull
+$ docker-compose up --build -d
+$ docker-compose ps
+
+               Name                             Command               State                             Ports
+---------------------------------------------------------------------------------------------------------------------------------------
+ext_authz_ext_authz-grpc-service_1   /app/server -users /etc/us       Up
+ext_authz_ext_authz-http-service_1   docker-entrypoint.sh node        Up
+ext_authz_front-envoy_1              /docker-entrypoint.sh /bin       Up      10000/tcp, 0.0.0.0:8000-&gt;8000/tcp, 0.0.0.0:8001-&gt;8001/tcp
+ext_authz_upstream-service_1         python3 /app/service/server.py   Up
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This sandbox has multiple setup controlled by <code class="docutils literal notranslate"><span class="pre">FRONT_ENVOY_YAML</span></code> environment variable which
+points to the effective Envoy configuration to be used. The default value of <code class="docutils literal notranslate"><span class="pre">FRONT_ENVOY_YAML</span></code>
+can be defined in the <code class="docutils literal notranslate"><span class="pre">.env</span></code> file or provided inline when running the <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">up</span></code>
+command. For more information, pease take a look at <a class="reference external" href="https://docs.docker.com/compose/environment-variables">environment variables in Compose documentation</a>.</p>
+</div>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">FRONT_ENVOY_YAML</span></code> points to <code class="docutils literal notranslate"><span class="pre">config/grpc-service/v3.yaml</span></code> file which bootstraps
+front-envoy with ext_authz HTTP filter with gRPC service <code class="docutils literal notranslate"><span class="pre">V3</span></code> (this is specified by <a class="reference internal" href="../../api-v3/extensions/filters/http/ext_authz/v3/ext_authz.proto.html#envoy-v3-api-field-extensions-filters-http-ext-authz-v3-extauthz-transport-api-version"><span class="std std-ref">transport_api_version field</span></a>).
+The possible values of <code class="docutils literal notranslate"><span class="pre">FRONT_ENVOY_YAML</span></code> can be found inside the <code class="docutils literal notranslate"><span class="pre">envoy/examples/ext_authz/config</span></code>
+directory.</p>
+<p>For example, to run Envoy with ext_authz HTTP filter with HTTP service will be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pwd
+envoy/examples/ext_authz
+$ docker-compose pull
+$ # Tearing down the currently running setup
+$ docker-compose down
+$ FRONT_ENVOY_YAML=config/http-service.yaml docker-compose up --build -d
+$ # Or you can update the .env file with the above FRONT_ENVOY_YAML value, so you don&#39;t have to specify it when running the &quot;up&quot; command.
+</pre></div>
+</div>
+<p><strong>Step 3: Access the upstream-service behind the Front Envoy</strong></p>
+<p>You can now try to send a request to upstream-service via the front-envoy as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl -v localhost:8000/service
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to localhost (127.0.0.1) port 8000 (#0)
+&gt; GET /service HTTP/1.1
+&gt; Host: localhost:8000
+&gt; User-Agent: curl/7.58.0
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 403 Forbidden
+&lt; date: Fri, 19 Jun 2020 15:02:24 GMT
+&lt; server: envoy
+&lt; content-length: 0
+</pre></div>
+</div>
+<p>As observed, the request failed with <code class="docutils literal notranslate"><span class="pre">403</span> <span class="pre">Forbidden</span></code> status code. This happened since the ext_authz
+filter employed by Envoy rejected the call. To let the request reach the upstream service, you need
+to provide a <code class="docutils literal notranslate"><span class="pre">Bearer</span></code> token via the <code class="docutils literal notranslate"><span class="pre">Authorization</span></code> header.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A complete list of users is defined in <code class="docutils literal notranslate"><span class="pre">envoy/examples/ext_authz/auth/users.json</span></code> file. For
+example, the <code class="docutils literal notranslate"><span class="pre">token1</span></code> used in the below example is corresponding to <code class="docutils literal notranslate"><span class="pre">user1</span></code>.</p>
+</div>
+<p>An example of successful requests can be observed as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl -v -H &quot;Authorization: Bearer token1&quot; localhost:8000/service
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to localhost (127.0.0.1) port 8000 (#0)
+&gt; GET /service HTTP/1.1
+&gt; Host: localhost:8000
+&gt; User-Agent: curl/7.58.0
+&gt; Accept: */*
+&gt; Authorization: Bearer token1
+&gt;
+&lt; HTTP/1.1 200 OK
+&lt; content-type: text/html; charset=utf-8
+&lt; content-length: 24
+&lt; server: envoy
+&lt; date: Fri, 19 Jun 2020 15:04:29 GMT
+&lt; x-envoy-upstream-service-time: 2
+&lt;
+* Connection #0 to host localhost left intact
+Hello user1 from behind Envoy!
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="fault_injection.html" class="btn btn-neutral float-right" title="Fault Injection Filter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="csrf.html" class="btn btn-neutral float-left" title="CSRF Filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2020, Envoy Project Authors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

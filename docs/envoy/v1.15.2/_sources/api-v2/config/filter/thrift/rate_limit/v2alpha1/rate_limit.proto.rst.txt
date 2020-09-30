@@ -1,0 +1,80 @@
+.. _envoy_api_file_envoy/config/filter/thrift/rate_limit/v2alpha1/rate_limit.proto:
+
+Rate limit
+==========
+
+.. _extension_envoy.filters.thrift.ratelimit:
+
+
+This extension may be referenced by the qualified name *envoy.filters.thrift.ratelimit*
+
+.. note::
+  This extension is functional but has not had substantial production burn time, use only with this caveat.
+
+  This extension is not hardened and should only be used in deployments where both the downstream and upstream are trusted.
+
+Rate limit :ref:`configuration overview <config_thrift_filters_rate_limit>`.
+
+.. _envoy_api_msg_config.filter.thrift.rate_limit.v2alpha1.RateLimit:
+
+config.filter.thrift.rate_limit.v2alpha1.RateLimit
+--------------------------------------------------
+
+`[config.filter.thrift.rate_limit.v2alpha1.RateLimit proto] <https://github.com/envoyproxy/envoy/blob/v1.15.2/api/envoy/config/filter/thrift/rate_limit/v2alpha1/rate_limit.proto#L24>`_
+
+
+.. code-block:: json
+
+  {
+    "domain": "...",
+    "stage": "...",
+    "timeout": "{...}",
+    "failure_mode_deny": "...",
+    "rate_limit_service": "{...}"
+  }
+
+.. _envoy_api_field_config.filter.thrift.rate_limit.v2alpha1.RateLimit.domain:
+
+domain
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The rate limit domain to use in the rate limit service request.
+  
+  
+.. _envoy_api_field_config.filter.thrift.rate_limit.v2alpha1.RateLimit.stage:
+
+stage
+  (`uint32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies the rate limit configuration stage. Each configured rate limit filter performs a
+  rate limit check using descriptors configured in the
+  :ref:`envoy_api_msg_config.filter.network.thrift_proxy.v2alpha1.RouteAction` for the request.
+  Only those entries with a matching stage number are used for a given filter. If not set, the
+  default stage number is 0.
+  
+  .. note::
+  
+   The filter supports a range of 0 - 10 inclusively for stage numbers.
+  
+  
+.. _envoy_api_field_config.filter.thrift.rate_limit.v2alpha1.RateLimit.timeout:
+
+timeout
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The timeout in milliseconds for the rate limit service RPC. If not
+  set, this defaults to 20ms.
+  
+  
+.. _envoy_api_field_config.filter.thrift.rate_limit.v2alpha1.RateLimit.failure_mode_deny:
+
+failure_mode_deny
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The filter's behaviour in case the rate limiting service does
+  not respond back. When it is set to true, Envoy will not allow traffic in case of
+  communication failure between rate limiting service and the proxy.
+  Defaults to false.
+  
+  
+.. _envoy_api_field_config.filter.thrift.rate_limit.v2alpha1.RateLimit.rate_limit_service:
+
+rate_limit_service
+  (:ref:`config.ratelimit.v2.RateLimitServiceConfig <envoy_api_msg_config.ratelimit.v2.RateLimitServiceConfig>`, *REQUIRED*) Configuration for an external rate limit service provider. If not
+  specified, any calls to the rate limit service will immediately return
+  success.
+  
+  
+
