@@ -20,7 +20,7 @@ External Authorization :ref:`configuration overview <config_http_filters_ext_aut
 extensions.filters.http.ext_authz.v3.ExtAuthz
 ---------------------------------------------
 
-`[extensions.filters.http.ext_authz.v3.ExtAuthz proto] <https://github.com/envoyproxy/envoy/blob/6fb4376da270a0f137f6f24d7685d41c464ae990/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L26>`_
+`[extensions.filters.http.ext_authz.v3.ExtAuthz proto] <https://github.com/envoyproxy/envoy/blob/720348b822aed159dc4ec8243fffe95a8775a4cd/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L26>`_
 
 
 .. code-block:: json
@@ -36,7 +36,8 @@ extensions.filters.http.ext_authz.v3.ExtAuthz
     "metadata_context_namespaces": [],
     "filter_enabled": "{...}",
     "deny_at_disable": "{...}",
-    "include_peer_certificate": "..."
+    "include_peer_certificate": "...",
+    "stat_prefix": "..."
   }
 
 .. _envoy_v3_api_field_extensions.filters.http.ext_authz.v3.ExtAuthz.grpc_service:
@@ -162,6 +163,26 @@ include_peer_certificate
   :ref:`certificate<envoy_v3_api_field_service.auth.v3.AttributeContext.Peer.certificate>`.
   
   
+.. _envoy_v3_api_field_extensions.filters.http.ext_authz.v3.ExtAuthz.stat_prefix:
+
+stat_prefix
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Optional additional prefix to use when emitting statistics. This allows to distinguish
+  emitted statistics between configured *ext_authz* filters in an HTTP filter chain. For example:
+  
+  .. code-block:: yaml
+  
+    http_filters:
+      - name: envoy.filters.http.ext_authz
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.http.ext_authz.v3.ExtAuthz
+          stat_prefix: waf # This emits ext_authz.waf.ok, ext_authz.waf.denied, etc.
+      - name: envoy.filters.http.ext_authz
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.http.ext_authz.v3.ExtAuthz
+          stat_prefix: blocker # This emits ext_authz.blocker.ok, ext_authz.blocker.denied, etc.
+  
+  
+  
 
 
 .. _envoy_v3_api_msg_extensions.filters.http.ext_authz.v3.BufferSettings:
@@ -169,7 +190,7 @@ include_peer_certificate
 extensions.filters.http.ext_authz.v3.BufferSettings
 ---------------------------------------------------
 
-`[extensions.filters.http.ext_authz.v3.BufferSettings proto] <https://github.com/envoyproxy/envoy/blob/6fb4376da270a0f137f6f24d7685d41c464ae990/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L122>`_
+`[extensions.filters.http.ext_authz.v3.BufferSettings proto] <https://github.com/envoyproxy/envoy/blob/720348b822aed159dc4ec8243fffe95a8775a4cd/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L139>`_
 
 Configuration for buffering the request data.
 
@@ -215,7 +236,7 @@ pack_as_bytes
 extensions.filters.http.ext_authz.v3.HttpService
 ------------------------------------------------
 
-`[extensions.filters.http.ext_authz.v3.HttpService proto] <https://github.com/envoyproxy/envoy/blob/6fb4376da270a0f137f6f24d7685d41c464ae990/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L170>`_
+`[extensions.filters.http.ext_authz.v3.HttpService proto] <https://github.com/envoyproxy/envoy/blob/720348b822aed159dc4ec8243fffe95a8775a4cd/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L187>`_
 
 HttpService is used for raw HTTP communication between the filter and the authorization service.
 When configured, the filter will parse the client request and use these attributes to call the
@@ -282,7 +303,7 @@ authorization_response
 extensions.filters.http.ext_authz.v3.AuthorizationRequest
 ---------------------------------------------------------
 
-`[extensions.filters.http.ext_authz.v3.AuthorizationRequest proto] <https://github.com/envoyproxy/envoy/blob/6fb4376da270a0f137f6f24d7685d41c464ae990/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L189>`_
+`[extensions.filters.http.ext_authz.v3.AuthorizationRequest proto] <https://github.com/envoyproxy/envoy/blob/720348b822aed159dc4ec8243fffe95a8775a4cd/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L206>`_
 
 
 .. code-block:: json
@@ -324,7 +345,7 @@ headers_to_add
 extensions.filters.http.ext_authz.v3.AuthorizationResponse
 ----------------------------------------------------------
 
-`[extensions.filters.http.ext_authz.v3.AuthorizationResponse proto] <https://github.com/envoyproxy/envoy/blob/6fb4376da270a0f137f6f24d7685d41c464ae990/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L213>`_
+`[extensions.filters.http.ext_authz.v3.AuthorizationResponse proto] <https://github.com/envoyproxy/envoy/blob/720348b822aed159dc4ec8243fffe95a8775a4cd/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L230>`_
 
 
 .. code-block:: json
@@ -368,7 +389,7 @@ allowed_client_headers
 extensions.filters.http.ext_authz.v3.ExtAuthzPerRoute
 -----------------------------------------------------
 
-`[extensions.filters.http.ext_authz.v3.ExtAuthzPerRoute proto] <https://github.com/envoyproxy/envoy/blob/6fb4376da270a0f137f6f24d7685d41c464ae990/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L236>`_
+`[extensions.filters.http.ext_authz.v3.ExtAuthzPerRoute proto] <https://github.com/envoyproxy/envoy/blob/720348b822aed159dc4ec8243fffe95a8775a4cd/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L253>`_
 
 Extra settings on a per virtualhost/route/weighted-cluster level.
 
@@ -405,7 +426,7 @@ check_settings
 extensions.filters.http.ext_authz.v3.CheckSettings
 --------------------------------------------------
 
-`[extensions.filters.http.ext_authz.v3.CheckSettings proto] <https://github.com/envoyproxy/envoy/blob/6fb4376da270a0f137f6f24d7685d41c464ae990/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L257>`_
+`[extensions.filters.http.ext_authz.v3.CheckSettings proto] <https://github.com/envoyproxy/envoy/blob/720348b822aed159dc4ec8243fffe95a8775a4cd/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L274>`_
 
 Extra settings for the check request. You can use this to provide extra context for the
 external authorization server on specific virtual hosts \ routes. For example, adding a context
