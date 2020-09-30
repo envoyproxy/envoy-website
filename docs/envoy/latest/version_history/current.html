@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1.16.0 (Pending) &mdash; envoy 1.16.0-dev-52161c documentation</title>
+  <title>1.16.0 (Pending) &mdash; envoy 1.16.0-dev-d3ecde documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.16.0-dev-52161c
+                1.16.0-dev-d3ecde
               </div>
             
           
@@ -227,6 +227,7 @@
 <p><em>Changes that are expected to cause an incompatibility if applicable; deployment changes are likely required</em></p>
 <ul class="simple">
 <li><p>build: added visibility rules for upstream. If these cause visibility related breakage, see notes in //BUILD.</p></li>
+<li><p>dns: <code class="docutils literal notranslate"><span class="pre">envoy.restart_features.use_apple_api_for_dns_lookups</span></code> is on by default. This flag only affects Apple platforms (macOS, iOS). It is incompatible to have the runtime flag set to true at the same time as specifying the <code class="docutils literal notranslate"><span class="pre">use_tcp_for_dns_lookups</span></code> option or custom dns resolvers. Doing so will cause failure.</p></li>
 <li><p>watchdog: added two guarddogs, breaking the aggregated stats for the single guarddog system. The aggregated stats for the guarddogs will have the following prefixes: <cite>main_thread</cite> and <cite>workers</cite>. Concretely, anything monitoring <cite>server.watchdog_miss</cite> and <cite>server.watchdog_mega_miss</cite> will need to be updated.</p></li>
 </ul>
 </div>
@@ -308,6 +309,7 @@ in the environment.</p></li>
 <li><p>build: enable building envoy <a class="reference internal" href="../install/building.html#arm-binaries"><span class="std std-ref">arm64 images</span></a> by buildx tool in x86 CI platform.</p></li>
 <li><p>cluster: added new <a class="reference internal" href="../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-connection-pool-per-downstream-connection"><span class="std std-ref">connection_pool_per_downstream_connection</span></a> flag, which enable creation of a new connection pool for each downstream connection.</p></li>
 <li><p>decompressor filter: reports compressed and uncompressed bytes in trailers.</p></li>
+<li><p>dns: added support for doing DNS resolution using Apple’s DnsService APIs in Apple platforms (macOS, iOS). This feature is ON by default, and is only configurable via the <code class="docutils literal notranslate"><span class="pre">envoy.restart_features.use_apple_api_for_dns_lookups</span></code> runtime key. Note that this value is latched during server startup and changing the runtime key is a no-op during the lifetime of the process.</p></li>
 <li><p>dns_filter: added support for answering <a class="reference internal" href="../api-v3/data/dns/v3/dns_table.proto.html#envoy-v3-api-msg-data-dns-v3-dnstable-dnsservice"><span class="std std-ref">service record</span></a> queries.</p></li>
 <li><p>dynamic_forward_proxy: added <a class="reference internal" href="../api-v3/extensions/common/dynamic_forward_proxy/v3/dns_cache.proto.html#envoy-v3-api-field-extensions-common-dynamic-forward-proxy-v3-dnscacheconfig-use-tcp-for-dns-lookups"><span class="std std-ref">use_tcp_for_dns_lookups</span></a> option to use TCP for DNS lookups in order to match the DNS options for <a class="reference internal" href="../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-msg-config-cluster-v3-cluster"><span class="std std-ref">Clusters</span></a>.</p></li>
 <li><p>ext_authz filter: added support for emitting dynamic metadata for both <a class="reference internal" href="../configuration/http/http_filters/ext_authz_filter.html#config-http-filters-ext-authz-dynamic-metadata"><span class="std std-ref">HTTP</span></a> and <a class="reference internal" href="../configuration/listeners/network_filters/ext_authz_filter.html#config-network-filters-ext-authz-dynamic-metadata"><span class="std std-ref">network</span></a> filters.
