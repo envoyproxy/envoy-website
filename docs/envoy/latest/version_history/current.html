@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1.16.0 (Pending) &mdash; envoy 1.16.0-dev-ed1ee2 documentation</title>
+  <title>1.16.0 (Pending) &mdash; envoy 1.16.0-dev-241358 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.16.0-dev-ed1ee2
+                1.16.0-dev-241358
               </div>
             
           
@@ -332,6 +332,7 @@ The emitted dynamic metadata is set by <a class="reference internal" href="../ap
 <li><p>http: added support for <a class="reference internal" href="../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-custom-request-headers"><span class="std std-ref">%DOWNSTREAM_PEER_FINGERPRINT_1%</span></a> as custom header.</p></li>
 <li><p>http: added <a class="reference internal" href="../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-http1protocoloptions-allow-chunked-length"><span class="std std-ref">allow_chunked_length</span></a> configuration option for HTTP/1 codec to allow processing requests/responses with both Content-Length and Transfer-Encoding: chunked headers. If such message is served and option is enabled - per RFC Content-Length is ignored and removed.</p></li>
 <li><p>http: added <a class="reference internal" href="../api-v3/extensions/filters/http/cdn_loop/v3alpha/cdn_loop.proto.html#envoy-v3-api-msg-extensions-filters-http-cdn-loop-v3alpha-cdnloopconfig"><span class="std std-ref">CDN Loop filter</span></a> and <a class="reference internal" href="../configuration/http/http_filters/cdn_loop_filter.html#config-http-filters-cdn-loop"><span class="std std-ref">documentation</span></a>.</p></li>
+<li><p>http: added <a class="reference internal" href="../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-msg-config-route-v3-routeaction-maxstreamduration"><span class="std std-ref">MaxStreamDuration proto</span></a> for configuring per-route downstream duration timeouts.</p></li>
 <li><p>http: introduced new HTTP/1 and HTTP/2 codec implementations that will remove the use of exceptions for control flow due to high risk factors and instead use error statuses. The old behavior is used by default, but the new codecs can be enabled for testing by setting the runtime feature <cite>envoy.reloadable_features.new_codec_behavior</cite> to true. The new codecs will be in development for one month, and then enabled by default while the old codecs are deprecated.</p></li>
 <li><p>http: modified the HTTP header-map data-structure to use an underlying dictionary and a list (no change to the header-map API). To conform with previous versions, the use of a dictionary is currently disabled. It can be enabled by setting the <cite>envoy.http.headermap.lazy_map_min_size</cite> runtime feature to a non-negative number which defines the minimal number of headers in a request/response/trailers required for using a dictionary in addition to the list. Our current benchmarks suggest that the value 3 is a good threshold for most workloads.</p></li>
 <li><p>load balancer: added <a class="reference internal" href="../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-msg-config-cluster-v3-cluster-maglevlbconfig"><span class="std std-ref">RingHashLbConfig</span></a> to configure the table size of Maglev consistent hash.</p></li>
@@ -392,6 +393,8 @@ field has been deprecated in favor of <cite>timeout_budgets</cite> part of an <a
 field has been deprecated in favor of <a class="reference internal" href="../api-v3/service/health/v3/hds.proto.html#envoy-v3-api-field-service-health-v3-endpointhealthresponse-cluster-endpoints-health"><span class="std std-ref">cluster_endpoints_health</span></a> to maintain
 grouping by cluster and locality.</p></li>
 <li><p>router: the <a class="reference internal" href="../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-include-vh-rate-limits"><span class="std std-ref">include_vh_rate_limits</span></a> field has been deprecated in favor of <a class="reference internal" href="../api-v3/extensions/filters/http/ratelimit/v3/rate_limit.proto.html#envoy-v3-api-field-extensions-filters-http-ratelimit-v3-ratelimitperroute-vh-rate-limits"><span class="std std-ref">vh_rate_limits</span></a>.</p></li>
+<li><p>router: the <a class="reference internal" href="../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-max-grpc-timeout"><span class="std std-ref">max_grpc_timeout</span></a> field has been deprecated in favor of <a class="reference internal" href="../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-maxstreamduration-grpc-timeout-header-max"><span class="std std-ref">grpc_timeout_header_max</span></a>.</p></li>
+<li><p>router: the <a class="reference internal" href="../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-grpc-timeout-offset"><span class="std std-ref">grpc_timeout_offset</span></a> field has been deprecated in favor of <a class="reference internal" href="../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-maxstreamduration-grpc-timeout-header-offset"><span class="std std-ref">grpc_timeout_header_offset</span></a>.</p></li>
 <li><p>tap: the <a class="reference internal" href="../api-v3/config/tap/v3/common.proto.html#envoy-v3-api-field-config-tap-v3-tapconfig-match-config"><span class="std std-ref">match_config</span></a> field has been deprecated in favor of
 <a class="reference internal" href="../api-v3/config/tap/v3/common.proto.html#envoy-v3-api-field-config-tap-v3-tapconfig-match"><span class="std std-ref">match</span></a> field.</p></li>
 <li><p>ext_authz: the <a class="reference internal" href="../api-v3/service/auth/v3/external_auth.proto.html#envoy-v3-api-field-service-auth-v3-okhttpresponse-dynamic-metadata"><span class="std std-ref">dynamic metadata</span></a> field in <a class="reference internal" href="../api-v3/service/auth/v3/external_auth.proto.html#envoy-v3-api-msg-service-auth-v3-okhttpresponse"><span class="std std-ref">OkHttpResponse</span></a>
