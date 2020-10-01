@@ -1,7 +1,7 @@
 # Envoy Proxy Website
 
-This is the repo for the Envoy Proxy website. This website uses Jekyll to generate static html files, and then deploys
-the files on Github pages.
+This is the repo for the Envoy Proxy website. This website uses Jekyll to generate static HTML files, and then deploys
+the files on GitHub pages.
 
 ### Running the site locally
 
@@ -43,9 +43,9 @@ docker-compose up
 
 Preview the site in your web browser at http://localhost:4000.
 
-### Deploying to Github Pages
+### Deploying to GitHub Pages
 
-To deploy your changes all you have to do is push to `master` and Github pages will automatically run `jekyll build` and
+To deploy your changes all you have to do is push to `master` and GitHub pages will automatically run `jekyll build` and
 deploy the generated files.
 
 ### Site content
@@ -75,6 +75,6 @@ Envoy is happy to recognize projects that use the software in production. These 
 
 To add your logo, please send a [pull request](https://github.com/envoyproxy/envoyproxy.github.io) (see this as an [example](https://github.com/envoyproxy/envoyproxy.github.io/pull/102)).
 
-### The Envoy blog
+### The Envoy Blog
 
 The official Envoy blog is hosted on [Medium](https://medium.com) at https://blog.envoyproxy.io.
