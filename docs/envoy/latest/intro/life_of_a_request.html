@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Life of a Request &mdash; envoy 1.16.0-dev-7f8110 documentation</title>
+  <title>Life of a Request &mdash; envoy 1.16.0-dev-4b4dc5 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.16.0-dev-7f8110
+                1.16.0-dev-4b4dc5
               </div>
             
           
@@ -492,10 +492,10 @@ TLS inspector appears explicitly in the listener filter chain configuration, Env
 of inserting this automatically whenever there is a need for SNI (or ALPN) in a listener’s filter
 chain.</p>
 <a class="reference internal image-reference" href="../_images/lor-listener-filters.svg"><img alt="../_images/lor-listener-filters.svg" class="align-center" src="../_images/lor-listener-filters.svg" width="80%" /></a>
-<p>The TLS inspector filter implements the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7f81108dce94ce3ab9e315f483b5553157b2e283/include/envoy/network/filter.h">ListenerFilter</a>
+<p>The TLS inspector filter implements the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/4b4dc5cae283f5bd2478b345e0caea8b31cef682/include/envoy/network/filter.h">ListenerFilter</a>
 interface. All filter interfaces, whether listener or network/HTTP, require that filters implement
 callbacks for specific connection or stream events. In the case of <cite>ListenerFilter</cite>, this is:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="n">FilterStatus</span> <span class="nf">onAccept</span><span class="p">(</span><span class="n">ListenerFilterCallbacks</span><span class="o">&amp;</span> <span class="n">cb</span><span class="p">)</span> <span class="n">PURE</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="n">FilterStatus</span> <span class="n">onAccept</span><span class="p">(</span><span class="n">ListenerFilterCallbacks</span><span class="o">&amp;</span> <span class="n">cb</span><span class="p">)</span> <span class="n">PURE</span><span class="p">;</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">onAccept()</span></code> allows a filter to run during the TCP accept processing. The <code class="docutils literal notranslate"><span class="pre">FilterStatus</span></code>
@@ -509,13 +509,13 @@ connection.</p>
 <div class="section" id="tls-transport-socket-decryption">
 <span id="life-of-a-request-tls-decryption"></span><h3>3. TLS transport socket decryption<a class="headerlink" href="#tls-transport-socket-decryption" title="Permalink to this headline">¶</a></h3>
 <p>Envoy offers pluggable transport sockets via the
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7f81108dce94ce3ab9e315f483b5553157b2e283/include/envoy/network/transport_socket.h">TransportSocket</a>
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/4b4dc5cae283f5bd2478b345e0caea8b31cef682/include/envoy/network/transport_socket.h">TransportSocket</a>
 extension interface. Transport sockets follow the lifecycle events of a TCP connection and
 read/write into network buffers. Some key methods that transport sockets must implement are:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="kt">void</span> <span class="nf">onConnected</span><span class="p">()</span> <span class="n">PURE</span><span class="p">;</span>
-<span class="k">virtual</span> <span class="n">IoResult</span> <span class="nf">doRead</span><span class="p">(</span><span class="n">Buffer</span><span class="o">::</span><span class="n">Instance</span><span class="o">&amp;</span> <span class="n">buffer</span><span class="p">)</span> <span class="n">PURE</span><span class="p">;</span>
-<span class="k">virtual</span> <span class="n">IoResult</span> <span class="nf">doWrite</span><span class="p">(</span><span class="n">Buffer</span><span class="o">::</span><span class="n">Instance</span><span class="o">&amp;</span> <span class="n">buffer</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">end_stream</span><span class="p">)</span> <span class="n">PURE</span><span class="p">;</span>
-<span class="k">virtual</span> <span class="kt">void</span> <span class="nf">closeSocket</span><span class="p">(</span><span class="n">Network</span><span class="o">::</span><span class="n">ConnectionEvent</span> <span class="n">event</span><span class="p">)</span> <span class="n">PURE</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="kt">void</span> <span class="n">onConnected</span><span class="p">()</span> <span class="n">PURE</span><span class="p">;</span>
+<span class="k">virtual</span> <span class="n">IoResult</span> <span class="n">doRead</span><span class="p">(</span><span class="n">Buffer</span><span class="o">::</span><span class="n">Instance</span><span class="o">&amp;</span> <span class="n">buffer</span><span class="p">)</span> <span class="n">PURE</span><span class="p">;</span>
+<span class="k">virtual</span> <span class="n">IoResult</span> <span class="n">doWrite</span><span class="p">(</span><span class="n">Buffer</span><span class="o">::</span><span class="n">Instance</span><span class="o">&amp;</span> <span class="n">buffer</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">end_stream</span><span class="p">)</span> <span class="n">PURE</span><span class="p">;</span>
+<span class="k">virtual</span> <span class="kt">void</span> <span class="n">closeSocket</span><span class="p">(</span><span class="n">Network</span><span class="o">::</span><span class="n">ConnectionEvent</span> <span class="n">event</span><span class="p">)</span> <span class="n">PURE</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>When data is available on a TCP connection, <code class="docutils literal notranslate"><span class="pre">Network::ConnectionImpl::onReadReady()</span></code> invokes the
@@ -540,16 +540,16 @@ lifecycle events and are invoked as data becomes available from the transport so
 <p>Network filters are composed as a pipeline, unlike transport sockets which are one-per-connection.
 Network filters come in three varieties:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7f81108dce94ce3ab9e315f483b5553157b2e283/include/envoy/network/filter.h">ReadFilter</a> implementing <code class="docutils literal notranslate"><span class="pre">onData()</span></code>, called when data is
+<li><p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/4b4dc5cae283f5bd2478b345e0caea8b31cef682/include/envoy/network/filter.h">ReadFilter</a> implementing <code class="docutils literal notranslate"><span class="pre">onData()</span></code>, called when data is
 available from the connection (due to some request).</p></li>
-<li><p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7f81108dce94ce3ab9e315f483b5553157b2e283/include/envoy/network/filter.h">WriteFilter</a> implementing <code class="docutils literal notranslate"><span class="pre">onWrite()</span></code>, called when data
+<li><p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/4b4dc5cae283f5bd2478b345e0caea8b31cef682/include/envoy/network/filter.h">WriteFilter</a> implementing <code class="docutils literal notranslate"><span class="pre">onWrite()</span></code>, called when data
 is about to be written to the connection (due to some response).</p></li>
-<li><p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7f81108dce94ce3ab9e315f483b5553157b2e283/include/envoy/network/filter.h">Filter</a> implementing both <em>ReadFilter</em> and <em>WriteFilter</em>.</p></li>
+<li><p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/4b4dc5cae283f5bd2478b345e0caea8b31cef682/include/envoy/network/filter.h">Filter</a> implementing both <em>ReadFilter</em> and <em>WriteFilter</em>.</p></li>
 </ul>
 <p>The method signatures for the key filter methods are:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="n">FilterStatus</span> <span class="nf">onNewConnection</span><span class="p">()</span> <span class="n">PURE</span><span class="p">;</span>
-<span class="k">virtual</span> <span class="n">FilterStatus</span> <span class="nf">onData</span><span class="p">(</span><span class="n">Buffer</span><span class="o">::</span><span class="n">Instance</span><span class="o">&amp;</span> <span class="n">data</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">end_stream</span><span class="p">)</span> <span class="n">PURE</span><span class="p">;</span>
-<span class="k">virtual</span> <span class="n">FilterStatus</span> <span class="nf">onWrite</span><span class="p">(</span><span class="n">Buffer</span><span class="o">::</span><span class="n">Instance</span><span class="o">&amp;</span> <span class="n">data</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">end_stream</span><span class="p">)</span> <span class="n">PURE</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="n">FilterStatus</span> <span class="n">onNewConnection</span><span class="p">()</span> <span class="n">PURE</span><span class="p">;</span>
+<span class="k">virtual</span> <span class="n">FilterStatus</span> <span class="n">onData</span><span class="p">(</span><span class="n">Buffer</span><span class="o">::</span><span class="n">Instance</span><span class="o">&amp;</span> <span class="n">data</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">end_stream</span><span class="p">)</span> <span class="n">PURE</span><span class="p">;</span>
+<span class="k">virtual</span> <span class="n">FilterStatus</span> <span class="n">onWrite</span><span class="p">(</span><span class="n">Buffer</span><span class="o">::</span><span class="n">Instance</span><span class="o">&amp;</span> <span class="n">data</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">end_stream</span><span class="p">)</span> <span class="n">PURE</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>As with the listener filter, the <code class="docutils literal notranslate"><span class="pre">FilterStatus</span></code> allows filters to pause execution of the filter
@@ -571,7 +571,7 @@ decodes the byte stream as a series of HTTP/2 frames and demultiplexes the conne
 of independent HTTP streams. Stream multiplexing is a key feature in HTTP/2, providing significant
 performance advantages over HTTP/1. Each HTTP stream handles a single request and response.</p>
 <p>The codec is also responsible for handling HTTP/2 setting frames and both stream and connection
-level <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7f81108dce94ce3ab9e315f483b5553157b2e283/source/docs/flow_control.md">flow control</a>.</p>
+level <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/4b4dc5cae283f5bd2478b345e0caea8b31cef682/source/docs/flow_control.md">flow control</a>.</p>
 <p>The codecs are responsible for abstracting the specifics of the HTTP connection, presenting a
 standard view to the HTTP connection manager and HTTP filter chain of a connection split into
 streams, each with request/response headers/body/trailers. This is true regardless of whether the
@@ -584,15 +584,15 @@ following the pattern established above for listener and network filter chains.<
 <a class="reference internal image-reference" href="../_images/lor-http-filters.svg"><img alt="../_images/lor-http-filters.svg" class="align-center" src="../_images/lor-http-filters.svg" width="80%" /></a>
 <p>There are three kinds of HTTP filter interfaces:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7f81108dce94ce3ab9e315f483b5553157b2e283/include/envoy/http/filter.h">StreamDecoderFilter</a> with callbacks for request processing.</p></li>
-<li><p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7f81108dce94ce3ab9e315f483b5553157b2e283/include/envoy/http/filter.h">StreamEncoderFilter</a> with callbacks for response processing.</p></li>
-<li><p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7f81108dce94ce3ab9e315f483b5553157b2e283/include/envoy/http/filter.h">StreamFilter</a> implementing both <cite>StreamDecoderFilter</cite> and
+<li><p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/4b4dc5cae283f5bd2478b345e0caea8b31cef682/include/envoy/http/filter.h">StreamDecoderFilter</a> with callbacks for request processing.</p></li>
+<li><p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/4b4dc5cae283f5bd2478b345e0caea8b31cef682/include/envoy/http/filter.h">StreamEncoderFilter</a> with callbacks for response processing.</p></li>
+<li><p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/4b4dc5cae283f5bd2478b345e0caea8b31cef682/include/envoy/http/filter.h">StreamFilter</a> implementing both <cite>StreamDecoderFilter</cite> and
 <cite>StreamEncoderFilter</cite>.</p></li>
 </ul>
 <p>Looking at the decoder filter interface:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="n">FilterHeadersStatus</span> <span class="nf">decodeHeaders</span><span class="p">(</span><span class="n">RequestHeaderMap</span><span class="o">&amp;</span> <span class="n">headers</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">end_stream</span><span class="p">)</span> <span class="n">PURE</span><span class="p">;</span>
-<span class="k">virtual</span> <span class="n">FilterDataStatus</span> <span class="nf">decodeData</span><span class="p">(</span><span class="n">Buffer</span><span class="o">::</span><span class="n">Instance</span><span class="o">&amp;</span> <span class="n">data</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">end_stream</span><span class="p">)</span> <span class="n">PURE</span><span class="p">;</span>
-<span class="k">virtual</span> <span class="n">FilterTrailersStatus</span> <span class="nf">decodeTrailers</span><span class="p">(</span><span class="n">RequestTrailerMap</span><span class="o">&amp;</span> <span class="n">trailers</span><span class="p">)</span> <span class="n">PURE</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="n">FilterHeadersStatus</span> <span class="n">decodeHeaders</span><span class="p">(</span><span class="n">RequestHeaderMap</span><span class="o">&amp;</span> <span class="n">headers</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">end_stream</span><span class="p">)</span> <span class="n">PURE</span><span class="p">;</span>
+<span class="k">virtual</span> <span class="n">FilterDataStatus</span> <span class="n">decodeData</span><span class="p">(</span><span class="n">Buffer</span><span class="o">::</span><span class="n">Instance</span><span class="o">&amp;</span> <span class="n">data</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">end_stream</span><span class="p">)</span> <span class="n">PURE</span><span class="p">;</span>
+<span class="k">virtual</span> <span class="n">FilterTrailersStatus</span> <span class="n">decodeTrailers</span><span class="p">(</span><span class="n">RequestTrailerMap</span><span class="o">&amp;</span> <span class="n">trailers</span><span class="p">)</span> <span class="n">PURE</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>Rather than operating on connection buffers and events, HTTP filters follow the lifecycle of an HTTP
@@ -640,7 +640,7 @@ connections are at their maximum concurrent stream limit, a new connection is es
 in the connection pool, unless the circuit breaker for maximum connections for the cluster has
 tripped. If a maximum lifetime stream limit for a connection is configured and reached, a new
 connection is allocated in the pool and the affected HTTP/2 connection is drained. Other circuit
-breakers, e.g. maximum concurrent requests to a cluster are also checked. See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7f81108dce94ce3ab9e315f483b5553157b2e283/arch_overview_circuit_breakers">circuit
+breakers, e.g. maximum concurrent requests to a cluster are also checked. See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/4b4dc5cae283f5bd2478b345e0caea8b31cef682/arch_overview_circuit_breakers">circuit
 breakers</a> and <a class="reference internal" href="arch_overview/upstream/connection_pooling.html#arch-overview-conn-pool"><span class="std std-ref">connection pools</span></a> for
 further details.</p>
 <a class="reference internal image-reference" href="../_images/lor-lb.svg"><img alt="../_images/lor-lb.svg" class="align-center" src="../_images/lor-lb.svg" width="80%" /></a>
