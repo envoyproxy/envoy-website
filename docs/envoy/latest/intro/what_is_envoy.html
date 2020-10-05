@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>What is Envoy &mdash; envoy 1.16.0-dev-0414d5 documentation</title>
+  <title>What is Envoy &mdash; envoy 1.16.0-dev-50e722 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.16.0-dev-0414d5
+                1.16.0-dev-50e722
               </div>
             
           
@@ -102,16 +102,11 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../about_docs.html">About the documentation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="intro.html">Introduction</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">What is Envoy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#design-goals">Design goals</a></li>
-</ul>
-</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">What is Envoy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="arch_overview/arch_overview.html">Architecture overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="life_of_a_request.html">Life of a Request</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deployment_types/deployment_types.html">Deployment types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_help.html">Getting help</a></li>
-<li class="toctree-l2"><a class="reference internal" href="version_history.html">Version History</a></li>
-<li class="toctree-l2"><a class="reference internal" href="deprecated.html">Deprecated</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../start/start.html">Getting Started</a></li>
@@ -213,20 +208,13 @@ the gap.</p></li>
 upgrades can be incredibly painful. Envoy can be deployed and upgraded quickly across an
 entire infrastructure transparently.</p></li>
 </ul>
-<p><strong>Modern C++11 code base:</strong> Envoy is written in C++11. Native code was chosen because we
-believe that an architectural component such as Envoy should get out of the way as much as possible.
-Modern application developers already deal with tail latencies that are difficult to reason about
-due to deployments in shared cloud environments and the use of very productive but not particularly
-well performing languages such as PHP, Python, Ruby, Scala, etc. Native code provides generally
-excellent latency properties that don’t add additional confusion to an already confusing situation.
-Unlike other native code proxy solutions written in C, C++11 provides both excellent developer
-productivity and performance.</p>
 <p><strong>L3/L4 filter architecture:</strong> At its core, Envoy is an L3/L4 network proxy. A pluggable
 <a class="reference internal" href="arch_overview/listeners/network_filters.html#arch-overview-network-filters"><span class="std std-ref">filter</span></a> chain mechanism allows filters to be written to
-perform different TCP proxy tasks and inserted into the main server. Filters have already been
-written to support various tasks such as raw <a class="reference internal" href="arch_overview/listeners/tcp_proxy.html#arch-overview-tcp-proxy"><span class="std std-ref">TCP proxy</span></a>,
-<a class="reference internal" href="arch_overview/http/http_connection_management.html#arch-overview-http-conn-man"><span class="std std-ref">HTTP proxy</span></a>, <a class="reference internal" href="arch_overview/security/ssl.html#arch-overview-ssl-auth-filter"><span class="std std-ref">TLS client certificate
-authentication</span></a>, etc.</p>
+perform different TCP/UDP proxy tasks and inserted into the main server. Filters have already been
+written to support various tasks such as raw <a class="reference internal" href="arch_overview/listeners/tcp_proxy.html#arch-overview-tcp-proxy"><span class="std std-ref">TCP proxy</span></a>, <a class="reference internal" href="arch_overview/listeners/udp_proxy.html#arch-overview-udp-proxy"><span class="std std-ref">UDP
+proxy</span></a>, <a class="reference internal" href="arch_overview/http/http_connection_management.html#arch-overview-http-conn-man"><span class="std std-ref">HTTP proxy</span></a>, <a class="reference internal" href="arch_overview/security/ssl.html#arch-overview-ssl-auth-filter"><span class="std std-ref">TLS client
+certificate authentication</span></a>, <a class="reference internal" href="arch_overview/other_protocols/redis.html#arch-overview-redis"><span class="std std-ref">Redis</span></a>,
+<a class="reference internal" href="arch_overview/other_protocols/mongo.html#arch-overview-mongo"><span class="std std-ref">MongoDB</span></a>, <a class="reference internal" href="arch_overview/other_protocols/postgres.html#arch-overview-postgres"><span class="std std-ref">Postgres</span></a>, etc.</p>
 <p><strong>HTTP L7 filter architecture:</strong> HTTP is such a critical component of modern application
 architectures that Envoy <a class="reference internal" href="arch_overview/http/http_filters.html#arch-overview-http-filters"><span class="std std-ref">supports</span></a> an additional HTTP L7 filter
 layer. HTTP filters can be plugged into the HTTP connection management subsystem that perform
@@ -236,7 +224,7 @@ Amazon’s <a class="reference internal" href="arch_overview/other_protocols/dyn
 HTTP/1.1 to HTTP/2 proxy in both directions. This means that any combination of HTTP/1.1 and HTTP/2
 clients and target servers can be bridged. The recommended service to service configuration uses
 HTTP/2 between all Envoys to create a mesh of persistent connections that requests and responses can
-be multiplexed over. Envoy does not support SPDY as the protocol is being phased out.</p>
+be multiplexed over.</p>
 <p><strong>HTTP L7 routing:</strong> When operating in HTTP mode, Envoy supports a
 <a class="reference internal" href="arch_overview/http/http_routing.html#arch-overview-http-routing"><span class="std std-ref">routing</span></a> subsystem that is capable of routing and redirecting
 requests based on path, authority, content type, <a class="reference internal" href="arch_overview/operations/runtime.html#arch-overview-runtime"><span class="std std-ref">runtime</span></a> values, etc.
@@ -246,12 +234,6 @@ building a service to service mesh.</p>
 as the underlying multiplexed transport. Envoy <a class="reference internal" href="arch_overview/other_protocols/grpc.html#arch-overview-grpc"><span class="std std-ref">supports</span></a> all of the
 HTTP/2 features required to be used as the routing and load balancing substrate for gRPC requests
 and responses. The two systems are very complementary.</p>
-<p><strong>MongoDB L7 support:</strong> <a class="reference external" href="https://www.mongodb.com/">MongoDB</a> is a popular database used in modern
-web applications. Envoy <a class="reference internal" href="arch_overview/other_protocols/mongo.html#arch-overview-mongo"><span class="std std-ref">supports</span></a> L7 sniffing, statistics production,
-and logging for MongoDB connections.</p>
-<p><strong>DynamoDB L7 support</strong>: <a class="reference external" href="https://aws.amazon.com/dynamodb/">DynamoDB</a> is Amazon’s hosted key/value
-NOSQL datastore. Envoy <a class="reference internal" href="arch_overview/other_protocols/dynamo.html#arch-overview-dynamo"><span class="std std-ref">supports</span></a> L7 sniffing and statistics production
-for DynamoDB connections.</p>
 <p><strong>Service discovery and dynamic configuration:</strong> Envoy optionally consumes a layered set of
 <a class="reference internal" href="arch_overview/operations/dynamic_configuration.html#arch-overview-dynamic-config"><span class="std std-ref">dynamic configuration APIs</span></a> for centralized management.
 The layers provide an Envoy with dynamic updates about: hosts within a backend cluster, the
@@ -276,25 +258,16 @@ retries</span></a>, <a class="reference internal" href="arch_overview/upstream/c
 <a class="reference internal" href="../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-msg-config-route-v3-routeaction-requestmirrorpolicy"><span class="std std-ref">request shadowing</span></a>, and
 <a class="reference internal" href="arch_overview/upstream/outlier.html#arch-overview-outlier-detection"><span class="std std-ref">outlier detection</span></a>. Future support is planned for request
 racing.</p>
-<p><strong>Front/edge proxy support:</strong> Although Envoy is primarily designed as a service to service
-communication system, there is benefit in using the same software at the edge (observability,
-management, identical service discovery and load balancing algorithms, etc.). Envoy includes enough
-features to make it usable as an edge proxy for most modern web application use cases. This includes
-<a class="reference internal" href="arch_overview/security/ssl.html#arch-overview-ssl"><span class="std std-ref">TLS</span></a> termination, HTTP/1.1 and HTTP/2 <a class="reference internal" href="arch_overview/http/http_connection_management.html#arch-overview-http-protocols"><span class="std std-ref">support</span></a>, as well as HTTP L7 <a class="reference internal" href="arch_overview/http/http_routing.html#arch-overview-http-routing"><span class="std std-ref">routing</span></a>.</p>
+<p><strong>Front/edge proxy support:</strong> There is substantial benefit in using the same software at the edge
+(observability, management, identical service discovery and load balancing algorithms, etc.). Envoy
+has a feature set that makes it well suited as an edge proxy for most modern web application use
+cases. This includes <a class="reference internal" href="arch_overview/security/ssl.html#arch-overview-ssl"><span class="std std-ref">TLS</span></a> termination, HTTP/1.1 and HTTP/2 <a class="reference internal" href="arch_overview/http/http_connection_management.html#arch-overview-http-protocols"><span class="std std-ref">support</span></a>, as well as HTTP L7 <a class="reference internal" href="arch_overview/http/http_routing.html#arch-overview-http-routing"><span class="std std-ref">routing</span></a>.</p>
 <p><strong>Best in class observability:</strong> As stated above, the primary goal of Envoy is to make the network
 transparent. However, problems occur both at the network level and at the application level. Envoy
 includes robust <a class="reference internal" href="arch_overview/observability/statistics.html#arch-overview-statistics"><span class="std std-ref">statistics</span></a> support for all subsystems. <a class="reference external" href="https://github.com/etsy/statsd">statsd</a> (and compatible providers) is the currently supported statistics
 sink, though plugging in a different one would not be difficult. Statistics are also viewable via
 the <a class="reference internal" href="../operations/admin.html#operations-admin-interface"><span class="std std-ref">administration</span></a> port. Envoy also supports distributed
 <a class="reference internal" href="arch_overview/observability/tracing.html#arch-overview-tracing"><span class="std std-ref">tracing</span></a> via thirdparty providers.</p>
-<div class="section" id="design-goals">
-<h2>Design goals<a class="headerlink" href="#design-goals" title="Permalink to this headline">¶</a></h2>
-<p>A short note on the design goals of the code itself: Although Envoy is by no means slow (we have
-spent considerable time optimizing certain fast paths), the code has been written to be modular and
-easy to test versus aiming for the greatest possible absolute performance. It’s our view that this
-is a more efficient use of time given that typical deployments will be alongside languages and
-runtimes many times slower and with many times greater memory usage.</p>
-</div>
 </div>
 
 
