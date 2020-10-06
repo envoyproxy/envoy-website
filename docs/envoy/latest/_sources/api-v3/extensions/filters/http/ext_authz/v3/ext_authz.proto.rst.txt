@@ -20,7 +20,7 @@ External Authorization :ref:`configuration overview <config_http_filters_ext_aut
 extensions.filters.http.ext_authz.v3.ExtAuthz
 ---------------------------------------------
 
-`[extensions.filters.http.ext_authz.v3.ExtAuthz proto] <https://github.com/envoyproxy/envoy/blob/105e3f1559c51f5098de1e021abefeee40844dfb/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L26>`_
+`[extensions.filters.http.ext_authz.v3.ExtAuthz proto] <https://github.com/envoyproxy/envoy/blob/10e5a47fdc9c3120d24b4d3e5383d49ddeca344a/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L26>`_
 
 
 .. code-block:: json
@@ -190,7 +190,7 @@ stat_prefix
 extensions.filters.http.ext_authz.v3.BufferSettings
 ---------------------------------------------------
 
-`[extensions.filters.http.ext_authz.v3.BufferSettings proto] <https://github.com/envoyproxy/envoy/blob/105e3f1559c51f5098de1e021abefeee40844dfb/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L139>`_
+`[extensions.filters.http.ext_authz.v3.BufferSettings proto] <https://github.com/envoyproxy/envoy/blob/10e5a47fdc9c3120d24b4d3e5383d49ddeca344a/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L139>`_
 
 Configuration for buffering the request data.
 
@@ -236,7 +236,7 @@ pack_as_bytes
 extensions.filters.http.ext_authz.v3.HttpService
 ------------------------------------------------
 
-`[extensions.filters.http.ext_authz.v3.HttpService proto] <https://github.com/envoyproxy/envoy/blob/105e3f1559c51f5098de1e021abefeee40844dfb/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L187>`_
+`[extensions.filters.http.ext_authz.v3.HttpService proto] <https://github.com/envoyproxy/envoy/blob/10e5a47fdc9c3120d24b4d3e5383d49ddeca344a/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L187>`_
 
 HttpService is used for raw HTTP communication between the filter and the authorization service.
 When configured, the filter will parse the client request and use these attributes to call the
@@ -303,7 +303,7 @@ authorization_response
 extensions.filters.http.ext_authz.v3.AuthorizationRequest
 ---------------------------------------------------------
 
-`[extensions.filters.http.ext_authz.v3.AuthorizationRequest proto] <https://github.com/envoyproxy/envoy/blob/105e3f1559c51f5098de1e021abefeee40844dfb/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L206>`_
+`[extensions.filters.http.ext_authz.v3.AuthorizationRequest proto] <https://github.com/envoyproxy/envoy/blob/10e5a47fdc9c3120d24b4d3e5383d49ddeca344a/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L206>`_
 
 
 .. code-block:: json
@@ -345,7 +345,7 @@ headers_to_add
 extensions.filters.http.ext_authz.v3.AuthorizationResponse
 ----------------------------------------------------------
 
-`[extensions.filters.http.ext_authz.v3.AuthorizationResponse proto] <https://github.com/envoyproxy/envoy/blob/105e3f1559c51f5098de1e021abefeee40844dfb/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L230>`_
+`[extensions.filters.http.ext_authz.v3.AuthorizationResponse proto] <https://github.com/envoyproxy/envoy/blob/10e5a47fdc9c3120d24b4d3e5383d49ddeca344a/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L230>`_
 
 
 .. code-block:: json
@@ -389,7 +389,7 @@ allowed_client_headers
 extensions.filters.http.ext_authz.v3.ExtAuthzPerRoute
 -----------------------------------------------------
 
-`[extensions.filters.http.ext_authz.v3.ExtAuthzPerRoute proto] <https://github.com/envoyproxy/envoy/blob/105e3f1559c51f5098de1e021abefeee40844dfb/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L253>`_
+`[extensions.filters.http.ext_authz.v3.ExtAuthzPerRoute proto] <https://github.com/envoyproxy/envoy/blob/10e5a47fdc9c3120d24b4d3e5383d49ddeca344a/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L253>`_
 
 Extra settings on a per virtualhost/route/weighted-cluster level.
 
@@ -426,18 +426,15 @@ check_settings
 extensions.filters.http.ext_authz.v3.CheckSettings
 --------------------------------------------------
 
-`[extensions.filters.http.ext_authz.v3.CheckSettings proto] <https://github.com/envoyproxy/envoy/blob/105e3f1559c51f5098de1e021abefeee40844dfb/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L274>`_
+`[extensions.filters.http.ext_authz.v3.CheckSettings proto] <https://github.com/envoyproxy/envoy/blob/10e5a47fdc9c3120d24b4d3e5383d49ddeca344a/api/envoy/extensions/filters/http/ext_authz/v3/ext_authz.proto#L270>`_
 
-Extra settings for the check request. You can use this to provide extra context for the
-external authorization server on specific virtual hosts \ routes. For example, adding a context
-extension on the virtual host level can give the ext-authz server information on what virtual
-host is used without needing to parse the host header. If CheckSettings is specified in multiple
-per-filter-configs, they will be merged in order, and the result will be used.
+Extra settings for the check request.
 
 .. code-block:: json
 
   {
-    "context_extensions": "{...}"
+    "context_extensions": "{...}",
+    "disable_request_body_buffering": "..."
   }
 
 .. _envoy_v3_api_field_extensions.filters.http.ext_authz.v3.CheckSettings.context_extensions:
@@ -446,12 +443,25 @@ context_extensions
   (map<`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, `string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_>) Context extensions to set on the CheckRequest's
   :ref:`AttributeContext.context_extensions<envoy_v3_api_field_service.auth.v3.AttributeContext.context_extensions>`
   
+  You can use this to provide extra context for the external authorization server on specific
+  virtual hosts/routes. For example, adding a context extension on the virtual host level can
+  give the ext-authz server information on what virtual host is used without needing to parse the
+  host header. If CheckSettings is specified in multiple per-filter-configs, they will be merged
+  in order, and the result will be used.
+  
   Merge semantics for this field are such that keys from more specific configs override.
   
   .. note::
   
     These settings are only applied to a filter configured with a
     :ref:`grpc_service<envoy_v3_api_field_extensions.filters.http.ext_authz.v3.ExtAuthz.grpc_service>`.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.ext_authz.v3.CheckSettings.disable_request_body_buffering:
+
+disable_request_body_buffering
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) When set to true, disable the configured :ref:`with_request_body
+  <envoy_v3_api_field_extensions.filters.http.ext_authz.v3.ExtAuthz.with_request_body>` for a route.
   
   
 
