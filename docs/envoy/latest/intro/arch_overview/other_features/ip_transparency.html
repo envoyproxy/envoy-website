@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>IP Transparency &mdash; envoy 1.16.0-dev-641b34 documentation</title>
+  <title>IP Transparency &mdash; envoy 1.16.0-dev-b18f57 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.16.0-dev-641b34
+                1.16.0-dev-b18f57
               </div>
             
           
@@ -247,12 +247,30 @@ metadata includes the source IP. Envoy supports consuming this information using
 the downstream remote address for propagation into an
 <a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a> header. It can also be used in
 conjunction with the
-<a class="reference internal" href="#arch-overview-ip-transparency-original-src-listener"><span class="std std-ref">Original Src Listener Filter</span></a>.</p>
+<a class="reference internal" href="#arch-overview-ip-transparency-original-src-listener"><span class="std std-ref">Original Src Listener Filter</span></a>. Finally,
+Envoy supports generating this header using the <a class="reference internal" href="../../../api-v3/extensions/transport_sockets/proxy_protocol/v3/upstream_proxy_protocol.proto.html#extension-envoy-transport-sockets-upstream-proxy-protocol"><span class="std std-ref">Proxy Protocol Transport Socket</span></a>.
+Here is an example config for setting up the socket:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">clusters</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service1</span>
+  <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25s</span>
+  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">strict_dns</span>
+  <span class="nt">lb_policy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">round_robin</span>
+  <span class="nt">transport_socket</span><span class="p">:</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.upstream_proxy_protocol</span>
+    <span class="nt">typed_config</span><span class="p">:</span>
+    <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.transport_sockets.proxy_protocol.v3.ProxyProtocolUpstreamTransport</span>
+    <span class="nt">config</span><span class="p">:</span>
+      <span class="nt">version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">V1</span>
+    <span class="nt">transport_socket</span><span class="p">:</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.raw_buffer</span>
+  <span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+<p>Note: If you are wrapping a TLS socket, the header will be sent before the TLS handshake occurs.</p>
 <p>Some drawbacks to Proxy Protocol:</p>
 <ul class="simple">
 <li><p>It only supports TCP protocols.</p></li>
 <li><p>It requires upstream host support.</p></li>
-<li><p>Envoy cannot yet send it to the upstream.</p></li>
 </ul>
 </div>
 <div class="section" id="original-source-listener-filter">
