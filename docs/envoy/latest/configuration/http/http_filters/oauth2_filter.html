@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>OAuth2 &mdash; envoy 1.17.0-dev-f99a24 documentation</title>
+  <title>OAuth2 &mdash; envoy 1.17.0-dev-9dce18 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.17.0-dev-f99a24
+                1.17.0-dev-9dce18
               </div>
             
           
@@ -246,57 +246,102 @@
 </div>
 <div class="section" id="example-configuration">
 <h2>Example configuration<a class="headerlink" href="#example-configuration" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">http_filters</span><span class="p">:</span>
- <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">oauth2</span>
-   <span class="n">typed_config</span><span class="p">:</span>
-     <span class="s2">&quot;@type&quot;</span><span class="p">:</span> <span class="nb">type</span><span class="o">.</span><span class="n">googleapis</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">envoy</span><span class="o">.</span><span class="n">extensions</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">oauth2</span><span class="o">.</span><span class="n">v3alpha</span><span class="o">.</span><span class="n">OAuth2</span>
-     <span class="n">token_endpoint</span><span class="p">:</span>
-       <span class="n">cluster</span><span class="p">:</span> <span class="n">oauth</span>
-       <span class="n">uri</span><span class="p">:</span> <span class="n">oauth</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">token</span>
-       <span class="n">timeout</span><span class="p">:</span> <span class="mi">3</span><span class="n">s</span>
-     <span class="n">authorization_endpoint</span><span class="p">:</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">oauth</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">oauth</span><span class="o">/</span><span class="n">authorize</span><span class="o">/</span>
-     <span class="n">redirect_uri</span><span class="p">:</span> <span class="s2">&quot;%REQ(:x-forwarded-proto)%://%REQ(:authority)%/callback&quot;</span>
-     <span class="n">redirect_path_matcher</span><span class="p">:</span>
-       <span class="n">path</span><span class="p">:</span>
-         <span class="n">exact</span><span class="p">:</span> <span class="o">/</span><span class="n">callback</span>
-     <span class="n">signout_path</span><span class="p">:</span>
-       <span class="n">path</span><span class="p">:</span>
-         <span class="n">exact</span><span class="p">:</span> <span class="o">/</span><span class="n">signout</span>
-    <span class="n">credentials</span><span class="p">:</span>
-      <span class="n">client_id</span><span class="p">:</span> <span class="n">foo</span>
-      <span class="n">token_secret</span><span class="p">:</span>
-        <span class="n">name</span><span class="p">:</span> <span class="n">token</span>
-      <span class="n">hmac_secret</span><span class="p">:</span>
-        <span class="n">name</span><span class="p">:</span> <span class="n">hmac</span>
-    <span class="n">timeout</span><span class="p">:</span> <span class="mi">3</span><span class="n">s</span>
- <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">envoy</span><span class="o">.</span><span class="n">router</span>
+<p>The following is an example configuring the filter.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">config</span><span class="p">:</span>
+  <span class="nt">token_endpoint</span><span class="p">:</span>
+    <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">oauth</span>
+    <span class="nt">uri</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">oauth.com/token</span>
+    <span class="nt">timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3s</span>
+  <span class="nt">authorization_endpoint</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://oauth.com/oauth/authorize/</span>
+  <span class="nt">redirect_uri</span><span class="p">:</span> <span class="s">&quot;%REQ(:x-forwarded-proto)%://%REQ(:authority)%/callback&quot;</span>
+  <span class="nt">redirect_path_matcher</span><span class="p">:</span>
+    <span class="nt">path</span><span class="p">:</span>
+      <span class="nt">exact</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/callback</span>
+  <span class="nt">signout_path</span><span class="p">:</span>
+    <span class="nt">path</span><span class="p">:</span>
+      <span class="nt">exact</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/signout</span>
+  <span class="nt">credentials</span><span class="p">:</span>
+    <span class="nt">client_id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">foo</span>
+    <span class="nt">token_secret</span><span class="p">:</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">token</span>
+      <span class="nt">sds_config</span><span class="p">:</span>
+        <span class="nt">path</span><span class="p">:</span> <span class="s">&quot;/etc/envoy/token-secret.yaml&quot;</span>
+    <span class="nt">hmac_secret</span><span class="p">:</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">hmac</span>
+      <span class="nt">sds_config</span><span class="p">:</span>
+        <span class="nt">path</span><span class="p">:</span> <span class="s">&quot;/etc/envoy/hmac.yaml&quot;</span>
+</pre></div>
+</div>
+<p>And the below code block is an example of how we employ it as one of
+<a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-http-filters"><span class="std std-ref">HttpConnectionManager HTTP filters</span></a></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">static_resources</span><span class="p">:</span>
+  <span class="nt">listeners</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span>
+    <span class="nt">address</span><span class="p">:</span>
+  <span class="nt">filter_chains</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">filters</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.network.http_connection_manager</span>
+      <span class="nt">typed_config</span><span class="p">:</span>
+        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager</span>
+        <span class="nt">http_filters</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.oauth2</span>
+          <span class="nt">typed_config</span><span class="p">:</span>
+            <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.oauth2.v3alpha.OAuth2</span>
+            <span class="nt">config</span><span class="p">:</span>
+              <span class="nt">token_endpoint</span><span class="p">:</span>
+                <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">oauth</span>
+                <span class="nt">uri</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">oauth.com/token</span>
+                <span class="nt">timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3s</span>
+              <span class="nt">authorization_endpoint</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://oauth.com/oauth/authorize/</span>
+              <span class="nt">redirect_uri</span><span class="p">:</span> <span class="s">&quot;%REQ(:x-forwarded-proto)%://%REQ(:authority)%/callback&quot;</span>
+              <span class="nt">redirect_path_matcher</span><span class="p">:</span>
+                <span class="nt">path</span><span class="p">:</span>
+                  <span class="nt">exact</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/callback</span>
+              <span class="nt">signout_path</span><span class="p">:</span>
+                <span class="nt">path</span><span class="p">:</span>
+                  <span class="nt">exact</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/signout</span>
+              <span class="nt">credentials</span><span class="p">:</span>
+                <span class="nt">client_id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">foo</span>
+                <span class="nt">token_secret</span><span class="p">:</span>
+                  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">token</span>
+                  <span class="nt">sds_config</span><span class="p">:</span>
+                    <span class="nt">path</span><span class="p">:</span> <span class="s">&quot;/etc/envoy/token-secret.yaml&quot;</span>
+                <span class="nt">hmac_secret</span><span class="p">:</span>
+                  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">hmac</span>
+                  <span class="nt">sds_config</span><span class="p">:</span>
+                    <span class="nt">path</span><span class="p">:</span> <span class="s">&quot;/etc/envoy/hmac.yaml&quot;</span>
+        <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.router</span>
 
-<span class="n">clusters</span><span class="p">:</span>
-<span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">service</span>
-  <span class="o">...</span>
-<span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">auth</span>
-  <span class="n">connect_timeout</span><span class="p">:</span> <span class="mi">5</span><span class="n">s</span>
-  <span class="nb">type</span><span class="p">:</span> <span class="n">LOGICAL_DNS</span>
-  <span class="n">lb_policy</span><span class="p">:</span> <span class="n">ROUND_ROBIN</span>
-  <span class="n">load_assignment</span><span class="p">:</span>
-    <span class="n">cluster_name</span><span class="p">:</span> <span class="n">auth</span>
-    <span class="n">endpoints</span><span class="p">:</span>
-    <span class="o">-</span> <span class="n">lb_endpoints</span><span class="p">:</span>
-      <span class="o">-</span> <span class="n">endpoint</span><span class="p">:</span>
-          <span class="n">address</span><span class="p">:</span> <span class="p">{</span> <span class="n">socket_address</span><span class="p">:</span> <span class="p">{</span> <span class="n">address</span><span class="p">:</span> <span class="n">auth</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="p">,</span> <span class="n">port_value</span><span class="p">:</span> <span class="mi">443</span> <span class="p">}}</span>
-  <span class="n">tls_context</span><span class="p">:</span> <span class="p">{</span> <span class="n">sni</span><span class="p">:</span> <span class="n">auth</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span> <span class="p">}</span>
+<span class="nt">clusters</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service</span>
+  <span class="c1"># ...</span>
+<span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">auth</span>
+  <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5s</span>
+  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">LOGICAL_DNS</span>
+  <span class="nt">lb_policy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ROUND_ROBIN</span>
+  <span class="nt">load_assignment</span><span class="p">:</span>
+    <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">auth</span>
+    <span class="nt">endpoints</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">endpoint</span><span class="p">:</span>
+          <span class="nt">address</span><span class="p">:</span>
+            <span class="nt">socket_address</span><span class="p">:</span>
+              <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">auth.example.com</span>
+              <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">443</span>
+  <span class="nt">tls_context</span><span class="p">:</span>
+    <span class="nt">sni</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">auth.example.com</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="notes">
 <h2>Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
-<p>This module does not currently provide much Cross-Site-Request-Forgery protection for the redirect loop
-to the OAuth server and back.</p>
+<p>This module does not currently provide much Cross-Site-Request-Forgery protection for the redirect
+loop to the OAuth server and back.</p>
 <p>The service must be served over HTTPS for this filter to work, as the cookies use <cite>;secure</cite>.</p>
 </div>
 <div class="section" id="statistics">
 <h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
-<p>The OAuth filter outputs statistics in the <em>&lt;stat_prefix&gt;.</em> namespace.</p>
+<p>The OAuth2 filter outputs statistics in the <em>&lt;stat_prefix&gt;.</em> namespace.</p>
 <table class="colwidths-given docutils align-default">
 <colgroup>
 <col style="width: 25%" />
