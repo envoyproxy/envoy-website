@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Statistics &mdash; envoy 1.17.0-dev-6481a2 documentation</title>
+  <title>Statistics &mdash; envoy 1.17.0-dev-ffa2f1 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.17.0-dev-6481a2
+                1.17.0-dev-ffa2f1
               </div>
             
           
@@ -109,6 +109,7 @@
 <li class="toctree-l3"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Statistics</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#listener">Listener</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tls-statistics">TLS statistics</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#per-handler-listener-stats">Per-handler Listener Stats</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#listener-manager">Listener manager</a></li>
 </ul>
@@ -263,67 +264,86 @@
 <td><p>Counter</p></td>
 <td><p>Total connections that didn’t match any filter chain</p></td>
 </tr>
-<tr class="row-even"><td><p>ssl.connection_error</p></td>
+</tbody>
+</table>
+</div>
+<div class="section" id="tls-statistics">
+<span id="config-listener-stats-tls"></span><h2>TLS statistics<a class="headerlink" href="#tls-statistics" title="Permalink to this headline">¶</a></h2>
+<p>The following TLS statistics are rooted at <em>listener.&lt;address&gt;.ssl.</em>:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>connection_error</p></td>
 <td><p>Counter</p></td>
 <td><p>Total TLS connection errors not including failed certificate verifications</p></td>
 </tr>
-<tr class="row-odd"><td><p>ssl.handshake</p></td>
+<tr class="row-odd"><td><p>handshake</p></td>
 <td><p>Counter</p></td>
 <td><p>Total successful TLS connection handshakes</p></td>
 </tr>
-<tr class="row-even"><td><p>ssl.session_reused</p></td>
+<tr class="row-even"><td><p>session_reused</p></td>
 <td><p>Counter</p></td>
 <td><p>Total successful TLS session resumptions</p></td>
 </tr>
-<tr class="row-odd"><td><p>ssl.no_certificate</p></td>
+<tr class="row-odd"><td><p>no_certificate</p></td>
 <td><p>Counter</p></td>
 <td><p>Total successful TLS connections with no client certificate</p></td>
 </tr>
-<tr class="row-even"><td><p>ssl.fail_verify_no_cert</p></td>
+<tr class="row-even"><td><p>fail_verify_no_cert</p></td>
 <td><p>Counter</p></td>
 <td><p>Total TLS connections that failed because of missing client certificate</p></td>
 </tr>
-<tr class="row-odd"><td><p>ssl.fail_verify_error</p></td>
+<tr class="row-odd"><td><p>fail_verify_error</p></td>
 <td><p>Counter</p></td>
 <td><p>Total TLS connections that failed CA verification</p></td>
 </tr>
-<tr class="row-even"><td><p>ssl.fail_verify_san</p></td>
+<tr class="row-even"><td><p>fail_verify_san</p></td>
 <td><p>Counter</p></td>
 <td><p>Total TLS connections that failed SAN verification</p></td>
 </tr>
-<tr class="row-odd"><td><p>ssl.fail_verify_cert_hash</p></td>
+<tr class="row-odd"><td><p>fail_verify_cert_hash</p></td>
 <td><p>Counter</p></td>
 <td><p>Total TLS connections that failed certificate pinning verification</p></td>
 </tr>
-<tr class="row-even"><td><p>ssl.ocsp_staple_failed</p></td>
+<tr class="row-even"><td><p>ocsp_staple_failed</p></td>
 <td><p>Counter</p></td>
 <td><p>Total TLS connections that failed compliance with the OCSP policy</p></td>
 </tr>
-<tr class="row-odd"><td><p>ssl.ocsp_staple_omitted</p></td>
+<tr class="row-odd"><td><p>ocsp_staple_omitted</p></td>
 <td><p>Counter</p></td>
 <td><p>Total TLS connections that succeeded without stapling an OCSP response</p></td>
 </tr>
-<tr class="row-even"><td><p>ssl.ocsp_staple_responses</p></td>
+<tr class="row-even"><td><p>ocsp_staple_responses</p></td>
 <td><p>Counter</p></td>
 <td><p>Total TLS connections where a valid OCSP response was available (irrespective of whether the client requested stapling)</p></td>
 </tr>
-<tr class="row-odd"><td><p>ssl.ocsp_staple_requests</p></td>
+<tr class="row-odd"><td><p>ocsp_staple_requests</p></td>
 <td><p>Counter</p></td>
 <td><p>Total TLS connections where the client requested an OCSP staple</p></td>
 </tr>
-<tr class="row-even"><td><p>ssl.ciphers.&lt;cipher&gt;</p></td>
+<tr class="row-even"><td><p>ciphers.&lt;cipher&gt;</p></td>
 <td><p>Counter</p></td>
 <td><p>Total successful TLS connections that used cipher &lt;cipher&gt;</p></td>
 </tr>
-<tr class="row-odd"><td><p>ssl.curves.&lt;curve&gt;</p></td>
+<tr class="row-odd"><td><p>curves.&lt;curve&gt;</p></td>
 <td><p>Counter</p></td>
 <td><p>Total successful TLS connections that used ECDHE curve &lt;curve&gt;</p></td>
 </tr>
-<tr class="row-even"><td><p>ssl.sigalgs.&lt;sigalg&gt;</p></td>
+<tr class="row-even"><td><p>sigalgs.&lt;sigalg&gt;</p></td>
 <td><p>Counter</p></td>
 <td><p>Total successful TLS connections that used signature algorithm &lt;sigalg&gt;</p></td>
 </tr>
-<tr class="row-odd"><td><p>ssl.versions.&lt;version&gt;</p></td>
+<tr class="row-odd"><td><p>versions.&lt;version&gt;</p></td>
 <td><p>Counter</p></td>
 <td><p>Total successful TLS connections that used protocol version &lt;version&gt;</p></td>
 </tr>
