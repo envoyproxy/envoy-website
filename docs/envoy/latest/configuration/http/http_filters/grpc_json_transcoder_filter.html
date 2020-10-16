@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>gRPC-JSON transcoder &mdash; envoy 1.17.0-dev-388b30 documentation</title>
+  <title>gRPC-JSON transcoder &mdash; envoy 1.17.0-dev-7b62e1 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.17.0-dev-388b30
+                1.17.0-dev-7b62e1
               </div>
             
           
@@ -256,13 +256,14 @@ response parameters.</p>
 <p>To generate a protobuf descriptor set for the gRPC service, you’ll also need to clone the
 googleapis repository from GitHub before running protoc, as you’ll need annotations.proto
 in your include path, to define the HTTP mapping.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/googleapis/googleapis
-<span class="nv">GOOGLEAPIS_DIR</span><span class="o">=</span>&lt;your-local-googleapis-folder&gt;
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> git clone https://github.com/googleapis/googleapis
+<span class="gp">$</span> <span class="nv">GOOGLEAPIS_DIR</span><span class="o">=</span>&lt;your-local-googleapis-folder&gt;
 </pre></div>
 </div>
-<p>Then run protoc to generate the descriptor set from bookstore.proto:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>protoc -I<span class="k">$(</span>GOOGLEAPIS_DIR<span class="k">)</span> -I. --include_imports --include_source_info <span class="se">\</span>
-  --descriptor_set_out<span class="o">=</span>proto.pb test/proto/bookstore.proto
+<p>Then run protoc to generate the descriptor set. For example using the test
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7b62e162a122302240e3c513fe744947597e455b/test/proto/bookstore.proto">bookstore.proto</a> provided in the Envoy repository:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> protoc -I<span class="k">$(</span>GOOGLEAPIS_DIR<span class="k">)</span> -I. --include_imports --include_source_info <span class="se">\</span>
+    --descriptor_set_out<span class="o">=</span>proto.pb test/proto/bookstore.proto
 </pre></div>
 </div>
 <p>If you have more than one proto source files, you can pass all of them in one command.</p>
@@ -277,17 +278,37 @@ gRPC-JSON transcoded requests.</p>
 <p>For example, with the following proto example, the router will process <cite>/helloworld.Greeter/SayHello</cite>
 as the path, so the route config prefix <cite>/say</cite> won’t match requests to <cite>SayHello</cite>. If you want to
 match the incoming request path, set <cite>match_incoming_request_route</cite> to true.</p>
-<div class="highlight-proto notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">helloworld</span><span class="p">;</span>
+<div class="highlight-proto notranslate"><div class="highlight"><pre><span></span><span class="k">syntax</span> <span class="o">=</span> <span class="s">&quot;proto3&quot;</span><span class="p">;</span>
+
+<span class="kn">package</span> <span class="nn">helloworld</span><span class="p">;</span>
+
+<span class="k">import</span> <span class="s">&quot;google/api/annotations.proto&quot;</span><span class="p">;</span>
 
 <span class="c1">// The greeting service definition.</span>
 <span class="kd">service</span> <span class="n">Greeter</span> <span class="p">{</span>
   <span class="c1">// Sends a greeting</span>
-  <span class="k">rpc</span> <span class="n">SayHello</span> <span class="p">(</span><span class="n">HelloRequest</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="n">HelloReply</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">rpc</span> <span class="n">SayHello</span><span class="p">(</span><span class="n">HelloRequest</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="n">HelloReply</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">option</span> <span class="p">(</span><span class="n">google.api.http</span><span class="p">)</span> <span class="o">=</span> <span class="p">{</span>
       <span class="n">get</span><span class="o">:</span> <span class="s">&quot;/say&quot;</span>
     <span class="p">};</span>
   <span class="p">}</span>
 <span class="p">}</span>
+
+<span class="c1">// The request message containing the user&#39;s name.</span>
+<span class="kd">message</span> <span class="nc">HelloRequest</span> <span class="p">{</span>
+  <span class="kt">string</span> <span class="na">name</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// The response message containing the greetings</span>
+<span class="kd">message</span> <span class="nc">HelloReply</span> <span class="p">{</span>
+  <span class="kt">string</span> <span class="kd">message</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Assuming you have checked out the google APIs as described above, and have saved the proto file as
+<code class="docutils literal notranslate"><span class="pre">protos/helloworld.proto</span></code> you can build it with:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> protoc -I<span class="k">$(</span>GOOGLEAPIS_DIR<span class="k">)</span> -I. --include_imports --include_source_info <span class="se">\</span>
+    --descriptor_set_out<span class="o">=</span>protos/helloworld.pb protos/helloworld.proto
 </pre></div>
 </div>
 </div>
@@ -351,7 +372,7 @@ gRPC or RESTful JSON requests to localhost:51051.</p>
           <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.grpc_json_transcoder</span>
             <span class="nt">typed_config</span><span class="p">:</span>
               <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.grpc_json_transcoder.v3.GrpcJsonTranscoder</span>
-              <span class="nt">proto_descriptor</span><span class="p">:</span> <span class="s">&quot;/tmp/envoy/proto.pb&quot;</span>
+              <span class="nt">proto_descriptor</span><span class="p">:</span> <span class="s">&quot;protos/helloworld.pb&quot;</span>
               <span class="nt">services</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;helloworld.Greeter&quot;</span><span class="p p-Indicator">]</span>
               <span class="nt">print_options</span><span class="p">:</span>
                 <span class="nt">add_whitespace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
