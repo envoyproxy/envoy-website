@@ -10,7 +10,7 @@ Listener :ref:`configuration overview <config_listeners>`
 config.listener.v3.Filter
 -------------------------
 
-`[config.listener.v3.Filter proto] <https://github.com/envoyproxy/envoy/blob/a9ec7e2a06d86aaeff1441a34ba1a8231acdd290/api/envoy/config/listener/v3/listener_components.proto#L25>`_
+`[config.listener.v3.Filter proto] <https://github.com/envoyproxy/envoy/blob/e62c994fac7ba18babfe2742b5595217ae2569c4/api/envoy/config/listener/v3/listener_components.proto#L25>`_
 
 
 .. code-block:: json
@@ -42,7 +42,7 @@ typed_config
 config.listener.v3.FilterChainMatch
 -----------------------------------
 
-`[config.listener.v3.FilterChainMatch proto] <https://github.com/envoyproxy/envoy/blob/a9ec7e2a06d86aaeff1441a34ba1a8231acdd290/api/envoy/config/listener/v3/listener_components.proto#L72>`_
+`[config.listener.v3.FilterChainMatch proto] <https://github.com/envoyproxy/envoy/blob/e62c994fac7ba18babfe2742b5595217ae2569c4/api/envoy/config/listener/v3/listener_components.proto#L84>`_
 
 Specifies the match criteria for selecting a specific filter chain for a
 listener.
@@ -67,6 +67,18 @@ of the configured filter chains that matches the incoming connection is going
 to be used (e.g. for SNI ``www.example.com`` the most specific match would be
 ``www.example.com``, then ``*.example.com``, then ``*.com``, then any filter
 chain without ``server_names`` requirements).
+
+A different way to reason about the filter chain matches:
+Suppose there exists N filter chains. Prune the filter chain set using the above 8 steps.
+In each step, filter chains which most specifically matches the attributes continue to the next step.
+The listener guarantees at most 1 filter chain is left after all of the steps.
+
+Example:
+
+For destination port, filter chains specifying the destination port of incoming traffic are the
+most specific match. If none of the filter chains specifies the exact destination port, the filter
+chains which do not specify ports are the most specific match. Filter chains specifying the
+wrong port can never be the most specific match.
 
 
 .. code-block:: json
@@ -183,7 +195,7 @@ application_protocols
 Enum config.listener.v3.FilterChainMatch.ConnectionSourceType
 -------------------------------------------------------------
 
-`[config.listener.v3.FilterChainMatch.ConnectionSourceType proto] <https://github.com/envoyproxy/envoy/blob/a9ec7e2a06d86aaeff1441a34ba1a8231acdd290/api/envoy/config/listener/v3/listener_components.proto#L76>`_
+`[config.listener.v3.FilterChainMatch.ConnectionSourceType proto] <https://github.com/envoyproxy/envoy/blob/e62c994fac7ba18babfe2742b5595217ae2569c4/api/envoy/config/listener/v3/listener_components.proto#L88>`_
 
 
 .. _envoy_v3_api_enum_value_config.listener.v3.FilterChainMatch.ConnectionSourceType.ANY:
@@ -210,7 +222,7 @@ EXTERNAL
 config.listener.v3.FilterChain
 ------------------------------
 
-`[config.listener.v3.FilterChain proto] <https://github.com/envoyproxy/envoy/blob/a9ec7e2a06d86aaeff1441a34ba1a8231acdd290/api/envoy/config/listener/v3/listener_components.proto#L171>`_
+`[config.listener.v3.FilterChain proto] <https://github.com/envoyproxy/envoy/blob/e62c994fac7ba18babfe2742b5595217ae2569c4/api/envoy/config/listener/v3/listener_components.proto#L183>`_
 
 A filter chain wraps a set of match criteria, an option TLS context, a set of filters, and
 various other parameters.
@@ -268,7 +280,7 @@ transport_socket
 config.listener.v3.FilterChain.OnDemandConfiguration
 ----------------------------------------------------
 
-`[config.listener.v3.FilterChain.OnDemandConfiguration proto] <https://github.com/envoyproxy/envoy/blob/a9ec7e2a06d86aaeff1441a34ba1a8231acdd290/api/envoy/config/listener/v3/listener_components.proto#L179>`_
+`[config.listener.v3.FilterChain.OnDemandConfiguration proto] <https://github.com/envoyproxy/envoy/blob/e62c994fac7ba18babfe2742b5595217ae2569c4/api/envoy/config/listener/v3/listener_components.proto#L191>`_
 
 The configuration for on-demand filter chain. If this field is not empty in FilterChain message,
 a filter chain will be built on-demand.
@@ -301,7 +313,7 @@ rebuild_timeout
 config.listener.v3.ListenerFilterChainMatchPredicate
 ----------------------------------------------------
 
-`[config.listener.v3.ListenerFilterChainMatchPredicate proto] <https://github.com/envoyproxy/envoy/blob/a9ec7e2a06d86aaeff1441a34ba1a8231acdd290/api/envoy/config/listener/v3/listener_components.proto#L258>`_
+`[config.listener.v3.ListenerFilterChainMatchPredicate proto] <https://github.com/envoyproxy/envoy/blob/e62c994fac7ba18babfe2742b5595217ae2569c4/api/envoy/config/listener/v3/listener_components.proto#L270>`_
 
 Listener filter chain match configuration. This is a recursive structure which allows complex
 nested match configurations to be built using various logical operators.
@@ -393,7 +405,7 @@ destination_port_range
 config.listener.v3.ListenerFilterChainMatchPredicate.MatchSet
 -------------------------------------------------------------
 
-`[config.listener.v3.ListenerFilterChainMatchPredicate.MatchSet proto] <https://github.com/envoyproxy/envoy/blob/a9ec7e2a06d86aaeff1441a34ba1a8231acdd290/api/envoy/config/listener/v3/listener_components.proto#L263>`_
+`[config.listener.v3.ListenerFilterChainMatchPredicate.MatchSet proto] <https://github.com/envoyproxy/envoy/blob/e62c994fac7ba18babfe2742b5595217ae2569c4/api/envoy/config/listener/v3/listener_components.proto#L275>`_
 
 A set of match configurations used for logical operations.
 
@@ -417,7 +429,7 @@ rules
 config.listener.v3.ListenerFilter
 ---------------------------------
 
-`[config.listener.v3.ListenerFilter proto] <https://github.com/envoyproxy/envoy/blob/a9ec7e2a06d86aaeff1441a34ba1a8231acdd290/api/envoy/config/listener/v3/listener_components.proto#L295>`_
+`[config.listener.v3.ListenerFilter proto] <https://github.com/envoyproxy/envoy/blob/e62c994fac7ba18babfe2742b5595217ae2569c4/api/envoy/config/listener/v3/listener_components.proto#L307>`_
 
 
 .. code-block:: json
