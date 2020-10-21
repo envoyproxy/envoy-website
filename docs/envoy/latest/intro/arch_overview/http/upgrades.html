@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HTTP upgrades &mdash; envoy 1.17.0-dev-883310 documentation</title>
+  <title>HTTP upgrades &mdash; envoy 1.17.0-dev-2e808a documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.17.0-dev-883310
+                1.17.0-dev-2e808a
               </div>
             
           
@@ -285,7 +285,10 @@ CONNECT requests). CONNECT support can be enabled via the upgrade options descri
 the upgrade value to the special keyword “CONNECT”.</p>
 <p>While for HTTP/2, CONNECT request may have a path, in general and for HTTP/1.1 CONNECT requests do
 not have a path, and can only be matched using a
-<a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-msg-config-route-v3-routematch-connectmatcher"><span class="std std-ref">connect_matcher</span></a></p>
+<a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-msg-config-route-v3-routematch-connectmatcher"><span class="std std-ref">connect_matcher</span></a>. Please also note
+that when doing non-wildcard domain matching for CONNECT requests, the CONNECT target is  matched
+rather than the Host/Authority header. You may need to include the port (e.g. “hostname:port”) to
+successfully match.</p>
 <p>Envoy can handle CONNECT in one of two ways, either proxying the CONNECT headers through as if they
 were any other request, and letting the upstream terminate the CONNECT request, or by terminating the
 CONNECT request, and forwarding the payload as raw TCP data. When CONNECT upgrade configuration is
@@ -301,8 +304,8 @@ will synthesize 200 response headers, and then forward the TCP data as the HTTP 
 <p>This mode of CONNECT support can create major security holes if not configured correctly, as the upstream
 will be forwarded <em>unsanitized</em> headers if they are in the body payload. Please use with caution</p>
 </div>
-<p>For an example of proxying connect, please see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/883310eb281e6b4d71241d439ecf19dc49dda72f/configs/proxy_connect.yaml">configs/proxy_connect.yaml</a>
-For an example of terminating connect, please see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/883310eb281e6b4d71241d439ecf19dc49dda72f/configs/terminate_connect.yaml">configs/terminate_connect.yaml</a></p>
+<p>For an example of proxying connect, please see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2e808a89153fc10fc702c31cd6de98d06cec2bfe/configs/proxy_connect.yaml">configs/proxy_connect.yaml</a>
+For an example of terminating connect, please see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2e808a89153fc10fc702c31cd6de98d06cec2bfe/configs/terminate_connect.yaml">configs/terminate_connect.yaml</a></p>
 </div>
 <div class="section" id="tunneling-tcp-over-http-2">
 <h2>Tunneling TCP over HTTP/2<a class="headerlink" href="#tunneling-tcp-over-http-2" title="Permalink to this headline">¶</a></h2>
@@ -310,7 +313,7 @@ For an example of terminating connect, please see <a class="reference external" 
 proxy multiplexed TCP over pre-warmed secure connections and amortize the cost of any TLS handshake.
 An example set up proxying SMTP would look something like this</p>
 <p>[SMTP Upstream] — raw SMTP — [L2 Envoy]  — SMTP tunneled over HTTP/2  — [L1 Envoy]  — raw SMTP  — [Client]</p>
-<p>Examples of such a set up can be found in the Envoy example config <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/883310eb281e6b4d71241d439ecf19dc49dda72f/configs/">directory</a>
+<p>Examples of such a set up can be found in the Envoy example config <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2e808a89153fc10fc702c31cd6de98d06cec2bfe/configs/">directory</a>
 If you run <cite>bazel-bin/source/exe/envoy-static –config-path configs/encapsulate_in_connect.yaml –base-id 1</cite>
 and <cite>bazel-bin/source/exe/envoy-static –config-path  configs/terminate_connect.yaml</cite>
 you will be running two Envoys, the first listening for TCP traffic on port 10000 and encapsulating it in an HTTP/2
