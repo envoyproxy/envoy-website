@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Tap &mdash; envoy 1.17.0-dev-7000fa documentation</title>
+  <title>Tap &mdash; envoy 1.17.0-dev-b1eb42 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.17.0-dev-7000fa
+                1.17.0-dev-b1eb42
               </div>
             
           
@@ -281,6 +281,15 @@ the JSON or YAML representation of the <a class="reference internal" href="../..
 <li><p>If the POST request is accepted, Envoy will stream <a class="reference internal" href="../../../api-v3/data/tap/v3/http.proto.html#envoy-v3-api-msg-data-tap-v3-httpbufferedtrace"><span class="std std-ref">HttpBufferedTrace</span></a> messages (serialized to JSON) until the admin
 request is terminated.</p></li>
 </ol>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>If using HTTP/1.1 to communicate with the admin endpoint, it is important to not use Unix Domain
+Sockets (UDS) as the underlying transport. This is because UDS do not support “early close
+detection” which means that when the client is disconnected it may take a substantial amount of
+time for Envoy to realize the connection has been terminated (typically when the next streamed
+message is written). During this time period it is currently impossible to connect a new tap. To
+work around this either use HTTP/2 or use TCP.</p>
+</div>
 <p>An example POST body:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">config_id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test_config_id</span>
 <span class="nt">tap_config</span><span class="p">:</span>
