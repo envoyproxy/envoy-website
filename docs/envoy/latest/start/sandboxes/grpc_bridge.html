@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>gRPC Bridge &mdash; envoy 1.17.0-dev-275857 documentation</title>
+  <title>gRPC Bridge &mdash; envoy 1.17.0-dev-51dc07 documentation</title>
   
 
   
@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                1.17.0-dev-275857
+                1.17.0-dev-51dc07
               </div>
             
           
@@ -105,11 +105,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../start.html">Getting Started</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../start.html#building-and-installation">Building and installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../start.html#quick-start-to-run-simple-example">Quick Start to Run Simple Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../start.html#simple-configuration">Simple Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../start.html#using-the-envoy-docker-image">Using the Envoy Docker Image</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../start.html#sandboxes">Sandboxes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../install.html">Installing Envoy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quick-start.html">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docker.html">Using the Envoy Docker Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../building.html">Building</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Sandboxes</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cors.html">CORS Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF Filter</a></li>
@@ -117,9 +117,11 @@
 <li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault Injection Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front Proxy</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">gRPC Bridge</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#envoy-grpc">Envoy gRPC</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#running-the-sandbox">Running the Sandbox</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#sending-requests-to-the-key-value-store">Sending requests to the Key/Value store</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-1-install-docker">Step 1: Install Docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-2-clone-the-envoy-repo">Step 2: Clone the Envoy repo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-3-generate-the-protocol-stubs">Step 3: Generate the protocol stubs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-4-start-all-of-our-containers">Step 4: Start all of our containers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-5-send-requests-to-the-key-value-store">Step 5: Send requests to the Key/Value store</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger Native Tracing</a></li>
@@ -189,6 +191,8 @@
         
           <li><a href="../start.html">Getting Started</a> &raquo;</li>
         
+          <li><a href="index.html">Sandboxes</a> &raquo;</li>
+        
       <li>gRPC Bridge</li>
     
     
@@ -210,8 +214,6 @@
             
   <div class="section" id="grpc-bridge">
 <span id="install-sandboxes-grpc-bridge"></span><h1>gRPC Bridge<a class="headerlink" href="#grpc-bridge" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="envoy-grpc">
-<h2>Envoy gRPC<a class="headerlink" href="#envoy-grpc" title="Permalink to this headline">¶</a></h2>
 <p>The gRPC bridge sandbox is an example usage of Envoy’s
 <a class="reference internal" href="../../configuration/http/http_filters/grpc_http1_bridge_filter.html#config-http-filters-grpc-bridge"><span class="std std-ref">gRPC bridge filter</span></a>.</p>
 <p>This is an example of a key-value store where an <code class="docutils literal notranslate"><span class="pre">http</span></code>-based client CLI, written in <code class="docutils literal notranslate"><span class="pre">Python</span></code>,
@@ -220,17 +222,14 @@ updates a remote store, written in <code class="docutils literal notranslate"><s
 <p><code class="docutils literal notranslate"><span class="pre">[client](http/1.1)</span> <span class="pre">-&gt;</span> <span class="pre">[client-egress-proxy](http/2)</span> <span class="pre">-&gt;</span> <span class="pre">[server-ingress-proxy](http/2)</span> <span class="pre">-&gt;</span> <span class="pre">[server]</span></code></p>
 <p>Another Envoy feature demonstrated in this example is Envoy’s ability to do authority
 base routing via its route configuration.</p>
-</div>
-<div class="section" id="running-the-sandbox">
-<h2>Running the Sandbox<a class="headerlink" href="#running-the-sandbox" title="Permalink to this headline">¶</a></h2>
 <p>The following documentation runs through the setup of Envoy described above.</p>
 <div class="section" id="step-1-install-docker">
-<h3>Step 1: Install Docker<a class="headerlink" href="#step-1-install-docker" title="Permalink to this headline">¶</a></h3>
+<h2>Step 1: Install Docker<a class="headerlink" href="#step-1-install-docker" title="Permalink to this headline">¶</a></h2>
 <p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> installed.</p>
 <p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
 </div>
 <div class="section" id="step-2-clone-the-envoy-repo">
-<h3>Step 2: Clone the Envoy repo<a class="headerlink" href="#step-2-clone-the-envoy-repo" title="Permalink to this headline">¶</a></h3>
+<h2>Step 2: Clone the Envoy repo<a class="headerlink" href="#step-2-clone-the-envoy-repo" title="Permalink to this headline">¶</a></h2>
 <p>If you have not cloned the Envoy repo, clone it with:</p>
 <div class="sphinx-tabs docutils container">
 <div class="ui top attached tabular menu sphinx-menu docutils container">
@@ -258,7 +257,7 @@ base routing via its route configuration.</p>
 </div>
 </div>
 <div class="section" id="step-3-generate-the-protocol-stubs">
-<h3>Step 3: Generate the protocol stubs<a class="headerlink" href="#step-3-generate-the-protocol-stubs" title="Permalink to this headline">¶</a></h3>
+<h2>Step 3: Generate the protocol stubs<a class="headerlink" href="#step-3-generate-the-protocol-stubs" title="Permalink to this headline">¶</a></h2>
 <p>A docker-compose file is provided that generates the stubs for both <code class="docutils literal notranslate"><span class="pre">client</span></code> and <code class="docutils literal notranslate"><span class="pre">server</span></code> from the
 specification in the <code class="docutils literal notranslate"><span class="pre">protos</span></code> directory.</p>
 <p>Inspecting the <code class="docutils literal notranslate"><span class="pre">docker-compose-protos.yaml</span></code> file, you will see that it contains both the <code class="docutils literal notranslate"><span class="pre">python</span></code>
@@ -290,7 +289,7 @@ respective directories:</p>
 <p>These generated <code class="docutils literal notranslate"><span class="pre">python</span></code> and <code class="docutils literal notranslate"><span class="pre">go</span></code> stubs can be included as external modules.</p>
 </div>
 <div class="section" id="step-4-start-all-of-our-containers">
-<h3>Step 4: Start all of our containers<a class="headerlink" href="#step-4-start-all-of-our-containers" title="Permalink to this headline">¶</a></h3>
+<h2>Step 4: Start all of our containers<a class="headerlink" href="#step-4-start-all-of-our-containers" title="Permalink to this headline">¶</a></h2>
 <p>To build this sandbox example and start the example services, run the following commands:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
 <span class="go">envoy/examples/grpc-bridge</span>
@@ -307,9 +306,8 @@ respective directories:</p>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="sending-requests-to-the-key-value-store">
-<h2>Sending requests to the Key/Value store<a class="headerlink" href="#sending-requests-to-the-key-value-store" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="step-5-send-requests-to-the-key-value-store">
+<h2>Step 5: Send requests to the Key/Value store<a class="headerlink" href="#step-5-send-requests-to-the-key-value-store" title="Permalink to this headline">¶</a></h2>
 <p>To use the Python service and send gRPC requests:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
 <span class="go">envoy/examples/grpc-bridge</span>

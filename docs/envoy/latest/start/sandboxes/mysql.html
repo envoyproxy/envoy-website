@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>MySQL Filter &mdash; envoy 1.17.0-dev-275857 documentation</title>
+  <title>MySQL Filter &mdash; envoy 1.17.0-dev-51dc07 documentation</title>
   
 
   
@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                1.17.0-dev-275857
+                1.17.0-dev-51dc07
               </div>
             
           
@@ -105,11 +105,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../start.html">Getting Started</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../start.html#building-and-installation">Building and installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../start.html#quick-start-to-run-simple-example">Quick Start to Run Simple Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../start.html#simple-configuration">Simple Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../start.html#using-the-envoy-docker-image">Using the Envoy Docker Image</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../start.html#sandboxes">Sandboxes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../install.html">Installing Envoy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quick-start.html">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docker.html">Using the Envoy Docker Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../building.html">Building</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Sandboxes</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cors.html">CORS Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF Filter</a></li>
@@ -122,7 +122,12 @@
 <li class="toctree-l3"><a class="reference internal" href="load_reporting_service.html">Load Reporting Service (LRS)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="lua.html">Lua Filter</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">MySQL Filter</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#running-the-sandboxes">Running the Sandboxes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-1-install-docker">Step 1: Install Docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-2-clone-the-envoy-repo">Step 2: Clone the Envoy repo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-3-build-the-sandbox">Step 3: Build the sandbox</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-4-issue-commands-using-mysql">Step 4: Issue commands using mysql</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-5-check-egress-stats">Step 5: Check egress stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-6-check-tcp-stats">Step 6: Check TCP stats</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="postgres.html">Postgres Filter</a></li>
@@ -187,6 +192,8 @@
         
           <li><a href="../start.html">Getting Started</a> &raquo;</li>
         
+          <li><a href="index.html">Sandboxes</a> &raquo;</li>
+        
       <li>MySQL Filter</li>
     
     
@@ -210,16 +217,14 @@
 <span id="install-sandboxes-mysql"></span><h1>MySQL Filter<a class="headerlink" href="#mysql-filter" title="Permalink to this headline">¶</a></h1>
 <p>In this example, we show how the <a class="reference internal" href="../../configuration/listeners/network_filters/mysql_proxy_filter.html#config-network-filters-mysql-proxy"><span class="std std-ref">MySQL filter</span></a> can be used with the Envoy proxy. The Envoy proxy configuration includes a MySQL filter that parses queries and collects MySQL-specific
 metrics.</p>
-<div class="section" id="running-the-sandboxes">
-<h2>Running the Sandboxes<a class="headerlink" href="#running-the-sandboxes" title="Permalink to this headline">¶</a></h2>
 <p>The following documentation runs through the setup of Envoy described above.</p>
 <div class="section" id="step-1-install-docker">
-<h3>Step 1: Install Docker<a class="headerlink" href="#step-1-install-docker" title="Permalink to this headline">¶</a></h3>
+<h2>Step 1: Install Docker<a class="headerlink" href="#step-1-install-docker" title="Permalink to this headline">¶</a></h2>
 <p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> installed.</p>
 <p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
 </div>
 <div class="section" id="step-2-clone-the-envoy-repo">
-<h3>Step 2: Clone the Envoy repo<a class="headerlink" href="#step-2-clone-the-envoy-repo" title="Permalink to this headline">¶</a></h3>
+<h2>Step 2: Clone the Envoy repo<a class="headerlink" href="#step-2-clone-the-envoy-repo" title="Permalink to this headline">¶</a></h2>
 <p>If you have not cloned the Envoy repo, clone it with:</p>
 <div class="sphinx-tabs docutils container">
 <div class="ui top attached tabular menu sphinx-menu docutils container">
@@ -247,7 +252,7 @@ metrics.</p>
 </div>
 </div>
 <div class="section" id="step-3-build-the-sandbox">
-<h3>Step 3: Build the sandbox<a class="headerlink" href="#step-3-build-the-sandbox" title="Permalink to this headline">¶</a></h3>
+<h2>Step 3: Build the sandbox<a class="headerlink" href="#step-3-build-the-sandbox" title="Permalink to this headline">¶</a></h2>
 <p>Terminal 1</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
 <span class="go">envoy/examples/mysql</span>
@@ -263,7 +268,7 @@ metrics.</p>
 </div>
 </div>
 <div class="section" id="step-4-issue-commands-using-mysql">
-<h3>Step 4: Issue commands using mysql<a class="headerlink" href="#step-4-issue-commands-using-mysql" title="Permalink to this headline">¶</a></h3>
+<h2>Step 4: Issue commands using mysql<a class="headerlink" href="#step-4-issue-commands-using-mysql" title="Permalink to this headline">¶</a></h2>
 <p>Use <code class="docutils literal notranslate"><span class="pre">mysql</span></code> to issue some commands and verify they are routed via Envoy. Note
 that the current implementation of the protocol filter was tested with MySQL
 v5.5. It may, however, not work with other versions of MySQL due to differences
@@ -305,7 +310,7 @@ in the protocol implementation.</p>
 </div>
 </div>
 <div class="section" id="step-5-check-egress-stats">
-<h3>Step 5: Check egress stats<a class="headerlink" href="#step-5-check-egress-stats" title="Permalink to this headline">¶</a></h3>
+<h2>Step 5: Check egress stats<a class="headerlink" href="#step-5-check-egress-stats" title="Permalink to this headline">¶</a></h2>
 <p>Check egress stats were updated.</p>
 <p>Terminal 1</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:8001/stats?filter<span class="o">=</span>egress_mysql
@@ -322,7 +327,7 @@ in the protocol implementation.</p>
 </div>
 </div>
 <div class="section" id="step-6-check-tcp-stats">
-<h3>Step 6: Check TCP stats<a class="headerlink" href="#step-6-check-tcp-stats" title="Permalink to this headline">¶</a></h3>
+<h2>Step 6: Check TCP stats<a class="headerlink" href="#step-6-check-tcp-stats" title="Permalink to this headline">¶</a></h2>
 <p>Check TCP stats were updated.</p>
 <p>Terminal 1</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:8001/stats?filter<span class="o">=</span>mysql_tcp
@@ -338,7 +343,6 @@ in the protocol implementation.</p>
 <span class="go">tcp.mysql_tcp.upstream_flush_active: 0</span>
 <span class="go">tcp.mysql_tcp.upstream_flush_total: 0</span>
 </pre></div>
-</div>
 </div>
 </div>
 </div>

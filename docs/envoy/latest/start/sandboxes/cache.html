@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Cache Filter &mdash; envoy 1.17.0-dev-275857 documentation</title>
+  <title>Cache Filter &mdash; envoy 1.17.0-dev-51dc07 documentation</title>
   
 
   
@@ -49,7 +49,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="CORS Filter" href="cors.html" />
-    <link rel="prev" title="Schema Validator check tool" href="../install/tools/schema_validator_check_tool.html" /> 
+    <link rel="prev" title="Sandboxes" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                1.17.0-dev-275857
+                1.17.0-dev-51dc07
               </div>
             
           
@@ -105,13 +105,16 @@
 <li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../start.html">Getting Started</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../start.html#building-and-installation">Building and installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../start.html#quick-start-to-run-simple-example">Quick Start to Run Simple Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../start.html#simple-configuration">Simple Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../start.html#using-the-envoy-docker-image">Using the Envoy Docker Image</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../start.html#sandboxes">Sandboxes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../install.html">Installing Envoy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quick-start.html">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docker.html">Using the Envoy Docker Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../building.html">Building</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Sandboxes</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Cache Filter</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#running-the-sandbox">Running the Sandbox</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-1-install-docker">Step 1: Install Docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-2-clone-the-envoy-repo">Step 2: Clone the Envoy repo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-3-start-all-of-our-containers">Step 3: Start all of our containers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-4-test-envoy-s-http-caching-capabilities">Step 4: Test Envoy’s HTTP caching capabilities</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="cors.html">CORS Filter</a></li>
@@ -187,6 +190,8 @@
         
           <li><a href="../start.html">Getting Started</a> &raquo;</li>
         
+          <li><a href="index.html">Sandboxes</a> &raquo;</li>
+        
       <li>Cache Filter</li>
     
     
@@ -212,26 +217,24 @@
 The setup of this sandbox is based on the setup of the <a class="reference internal" href="front_proxy.html#install-sandboxes-front-proxy"><span class="std std-ref">Front Proxy sandbox</span></a>.</p>
 <p>All incoming requests are routed via the front Envoy, which acts as a reverse proxy sitting on
 the edge of the <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code> network. Ports <code class="docutils literal notranslate"><span class="pre">8000</span></code> and <code class="docutils literal notranslate"><span class="pre">8001</span></code> are exposed by docker
-compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2758575b9a02f935245fe8a3b08af0a8c14994dc//examples/cache/docker-compose.yaml">/examples/cache/docker-compose.yaml</a>) to handle <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> calls
+compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/51dc07d0882157e1bc9a85b8de2ef2f08267da64//examples/cache/docker-compose.yaml">/examples/cache/docker-compose.yaml</a>) to handle <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> calls
 to the services, and requests to <code class="docutils literal notranslate"><span class="pre">/admin</span></code> respectively. Two backend services are deployed behind the front Envoy, each with a sidecar Envoy.</p>
 <p>The front Envoy is configured to run the Cache Filter, which stores cacheable responses in an in-memory cache,
-and serves it to subsequent requests. In this demo, the responses that are served by the deployed services are stored in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2758575b9a02f935245fe8a3b08af0a8c14994dc//examples/cache/responses.yaml">/examples/cache/responses.yaml</a>.
+and serves it to subsequent requests. In this demo, the responses that are served by the deployed services are stored in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/51dc07d0882157e1bc9a85b8de2ef2f08267da64//examples/cache/responses.yaml">/examples/cache/responses.yaml</a>.
 This file is mounted to both services’ containers, so any changes made to the stored responses while the services are running should be instantly effective (no need to rebuild or rerun).</p>
 <p>For the purposes of the demo, a response’s date of creation is appended to its body before being served.
 An Etag is computed for every response for validation purposes, which only depends on the response body in the yaml file (i.e. the appended date is not taken into account).
 Cached responses can be identified by having an <code class="docutils literal notranslate"><span class="pre">age</span></code> header. Validated responses can be identified by having a generation date older than the <code class="docutils literal notranslate"><span class="pre">date</span></code> header;
 as when a response is validated the <code class="docutils literal notranslate"><span class="pre">date</span></code> header is updated, while the body stays the same. Validated responses do not have an <code class="docutils literal notranslate"><span class="pre">age</span></code> header.
 Responses served from the backend service have no <code class="docutils literal notranslate"><span class="pre">age</span></code> header, and their <code class="docutils literal notranslate"><span class="pre">date</span></code> header is the same as their generation date.</p>
-<div class="section" id="running-the-sandbox">
-<h2>Running the Sandbox<a class="headerlink" href="#running-the-sandbox" title="Permalink to this headline">¶</a></h2>
 <p>The following documentation runs through the setup of Envoy described above.</p>
 <div class="section" id="step-1-install-docker">
-<h3>Step 1: Install Docker<a class="headerlink" href="#step-1-install-docker" title="Permalink to this headline">¶</a></h3>
+<h2>Step 1: Install Docker<a class="headerlink" href="#step-1-install-docker" title="Permalink to this headline">¶</a></h2>
 <p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> installed.</p>
 <p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
 </div>
 <div class="section" id="step-2-clone-the-envoy-repo">
-<h3>Step 2: Clone the Envoy repo<a class="headerlink" href="#step-2-clone-the-envoy-repo" title="Permalink to this headline">¶</a></h3>
+<h2>Step 2: Clone the Envoy repo<a class="headerlink" href="#step-2-clone-the-envoy-repo" title="Permalink to this headline">¶</a></h2>
 <p>If you have not cloned the Envoy repo, clone it with:</p>
 <div class="sphinx-tabs docutils container">
 <div class="ui top attached tabular menu sphinx-menu docutils container">
@@ -259,7 +262,7 @@ Responses served from the backend service have no <code class="docutils literal 
 </div>
 </div>
 <div class="section" id="step-3-start-all-of-our-containers">
-<h3>Step 3: Start all of our containers<a class="headerlink" href="#step-3-start-all-of-our-containers" title="Permalink to this headline">¶</a></h3>
+<h2>Step 3: Start all of our containers<a class="headerlink" href="#step-3-start-all-of-our-containers" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
 <span class="go">envoy/examples/cache</span>
 <span class="gp">$</span> docker-compose build --pull
@@ -275,14 +278,14 @@ Responses served from the backend service have no <code class="docutils literal 
 </div>
 </div>
 <div class="section" id="step-4-test-envoy-s-http-caching-capabilities">
-<h3>Step 4: Test Envoy’s HTTP caching capabilities<a class="headerlink" href="#step-4-test-envoy-s-http-caching-capabilities" title="Permalink to this headline">¶</a></h3>
+<h2>Step 4: Test Envoy’s HTTP caching capabilities<a class="headerlink" href="#step-4-test-envoy-s-http-caching-capabilities" title="Permalink to this headline">¶</a></h2>
 <p>You can now send a request to both services via the <code class="docutils literal notranslate"><span class="pre">front-envoy</span></code>. Note that since the two services have different routes,
 identical requests to different services have different cache entries (i.e. a request sent to service 2 will not be served by a cached
 response produced by service 1).</p>
 <p>To send a request:</p>
 <p><code class="docutils literal notranslate"><span class="pre">curl</span> <span class="pre">-i</span> <span class="pre">localhost:8000/service/&lt;service_no&gt;/&lt;response&gt;</span></code></p>
 <p><code class="docutils literal notranslate"><span class="pre">service_no</span></code>: The service to send the request to, 1 or 2.</p>
-<p><code class="docutils literal notranslate"><span class="pre">response</span></code>: The response that is being requested. The responses are found in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2758575b9a02f935245fe8a3b08af0a8c14994dc//examples/cache/responses.yaml">/examples/cache/responses.yaml</a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">response</span></code>: The response that is being requested. The responses are found in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/51dc07d0882157e1bc9a85b8de2ef2f08267da64//examples/cache/responses.yaml">/examples/cache/responses.yaml</a>.</p>
 <p>The provided example responses are:</p>
 <ul class="simple">
 <li><dl class="simple">
@@ -304,9 +307,9 @@ If found to be updated, the new response is served (and cached). Otherwise, the 
 </ul>
 <p>You can change the responses’ headers and bodies (or add new ones) while the sandbox is running to experiment.</p>
 <div class="section" id="example-responses">
-<h4>Example responses<a class="headerlink" href="#example-responses" title="Permalink to this headline">¶</a></h4>
+<h3>Example responses<a class="headerlink" href="#example-responses" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="valid-for-minute">
-<h5>1. valid-for-minute<a class="headerlink" href="#valid-for-minute" title="Permalink to this headline">¶</a></h5>
+<h4>1. valid-for-minute<a class="headerlink" href="#valid-for-minute" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -i localhost:8000/service/1/valid-for-minute
 <span class="go">HTTP/1.1 200 OK</span>
 <span class="go">content-type: text/html; charset=utf-8</span>
@@ -366,7 +369,7 @@ If the response body changes while the cached response is still fresh,
 the cached response will still be served. The cached response will only be updated when it is no longer fresh.</p>
 </div>
 <div class="section" id="private">
-<h5>2. private<a class="headerlink" href="#private" title="Permalink to this headline">¶</a></h5>
+<h4>2. private<a class="headerlink" href="#private" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -i localhost:8000/service/1/private
 <span class="go">HTTP/1.1 200 OK</span>
 <span class="go">content-type: text/html; charset=utf-8</span>
@@ -385,7 +388,7 @@ the cached response will still be served. The cached response will only be updat
 new date of generation, new <code class="docutils literal notranslate"><span class="pre">date</span></code> header, and no <code class="docutils literal notranslate"><span class="pre">age</span></code> header.</p>
 </div>
 <div class="section" id="no-cache">
-<h5>3. no-cache<a class="headerlink" href="#no-cache" title="Permalink to this headline">¶</a></h5>
+<h4>3. no-cache<a class="headerlink" href="#no-cache" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -i localhost:8000/service/1/no-cache
 <span class="go">HTTP/1.1 200 OK</span>
 <span class="go">content-type: text/html; charset=utf-8</span>
@@ -442,7 +445,6 @@ the <a class="reference external" href="https://developer.mozilla.org/en-US/docs
 </div>
 </div>
 </div>
-</div>
 
 
            </div>
@@ -455,7 +457,7 @@ the <a class="reference external" href="https://developer.mozilla.org/en-US/docs
         <a href="cors.html" class="btn btn-neutral float-right" title="CORS Filter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../install/tools/schema_validator_check_tool.html" class="btn btn-neutral float-left" title="Schema Validator check tool" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Sandboxes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

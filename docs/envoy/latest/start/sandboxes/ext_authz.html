@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>External Authorization Filter &mdash; envoy 1.17.0-dev-275857 documentation</title>
+  <title>External Authorization Filter &mdash; envoy 1.17.0-dev-51dc07 documentation</title>
   
 
   
@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                1.17.0-dev-275857
+                1.17.0-dev-51dc07
               </div>
             
           
@@ -105,16 +105,19 @@
 <li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../start.html">Getting Started</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../start.html#building-and-installation">Building and installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../start.html#quick-start-to-run-simple-example">Quick Start to Run Simple Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../start.html#simple-configuration">Simple Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../start.html#using-the-envoy-docker-image">Using the Envoy Docker Image</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../start.html#sandboxes">Sandboxes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../install.html">Installing Envoy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quick-start.html">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docker.html">Using the Envoy Docker Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../building.html">Building</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Sandboxes</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cors.html">CORS Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF Filter</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">External Authorization Filter</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#running-the-sandbox">Running the Sandbox</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-1-install-docker">Step 1: Install Docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-2-clone-the-envoy-repo">Step 2: Clone the Envoy repo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-3-start-all-of-our-containers">Step 3: Start all of our containers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-4-access-the-upstream-service-behind-the-front-envoy">Step 4: Access the upstream-service behind the Front Envoy</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault Injection Filter</a></li>
@@ -187,6 +190,8 @@
         
           <li><a href="../start.html">Getting Started</a> &raquo;</li>
         
+          <li><a href="index.html">Sandboxes</a> &raquo;</li>
+        
       <li>External Authorization Filter</li>
     
     
@@ -216,16 +221,14 @@ ext_authz HTTP Filter, which supports to call HTTP or gRPC service.</p>
 service behind the proxy will be checked by an external HTTP or gRPC service. In this sandbox,
 for every authorized call, the external authorization service adds additional <code class="docutils literal notranslate"><span class="pre">x-current-user</span></code>
 header entry to the original request headers to be forwarded to the upstream service.</p>
-<div class="section" id="running-the-sandbox">
-<h2>Running the Sandbox<a class="headerlink" href="#running-the-sandbox" title="Permalink to this headline">¶</a></h2>
 <p>The following documentation runs through the setup of Envoy described above.</p>
 <div class="section" id="step-1-install-docker">
-<h3>Step 1: Install Docker<a class="headerlink" href="#step-1-install-docker" title="Permalink to this headline">¶</a></h3>
+<h2>Step 1: Install Docker<a class="headerlink" href="#step-1-install-docker" title="Permalink to this headline">¶</a></h2>
 <p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> installed.</p>
 <p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
 </div>
 <div class="section" id="step-2-clone-the-envoy-repo">
-<h3>Step 2: Clone the Envoy repo<a class="headerlink" href="#step-2-clone-the-envoy-repo" title="Permalink to this headline">¶</a></h3>
+<h2>Step 2: Clone the Envoy repo<a class="headerlink" href="#step-2-clone-the-envoy-repo" title="Permalink to this headline">¶</a></h2>
 <p>If you have not cloned the Envoy repo, clone it with:</p>
 <div class="sphinx-tabs docutils container">
 <div class="ui top attached tabular menu sphinx-menu docutils container">
@@ -253,7 +256,7 @@ header entry to the original request headers to be forwarded to the upstream ser
 </div>
 </div>
 <div class="section" id="step-3-start-all-of-our-containers">
-<h3>Step 3: Start all of our containers<a class="headerlink" href="#step-3-start-all-of-our-containers" title="Permalink to this headline">¶</a></h3>
+<h2>Step 3: Start all of our containers<a class="headerlink" href="#step-3-start-all-of-our-containers" title="Permalink to this headline">¶</a></h2>
 <p>To build this sandbox example and start the example services, run the following commands:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
 <span class="go">envoy/examples/ext_authz</span>
@@ -292,7 +295,7 @@ directory.</p>
 </div>
 </div>
 <div class="section" id="step-4-access-the-upstream-service-behind-the-front-envoy">
-<h3>Step 4: Access the upstream-service behind the Front Envoy<a class="headerlink" href="#step-4-access-the-upstream-service-behind-the-front-envoy" title="Permalink to this headline">¶</a></h3>
+<h2>Step 4: Access the upstream-service behind the Front Envoy<a class="headerlink" href="#step-4-access-the-upstream-service-behind-the-front-envoy" title="Permalink to this headline">¶</a></h2>
 <p>You can now try to send a request to upstream-service via the front-envoy as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -v localhost:8000/service
 <span class="go">*   Trying 127.0.0.1...</span>
@@ -422,7 +425,6 @@ the above request against the defined policy in <code class="docutils literal no
 <span class="go">&lt; server: envoy</span>
 <span class="go">&lt; content-length: 0</span>
 </pre></div>
-</div>
 </div>
 </div>
 </div>

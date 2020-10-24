@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Building &mdash; envoy 1.17.0-dev-275857 documentation</title>
+  <title>Building &mdash; envoy 1.17.0-dev-51dc07 documentation</title>
   
 
   
@@ -46,8 +46,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Building an Envoy Docker image" href="install/sandboxes/local_docker_build.html" />
-    <link rel="prev" title="Getting Started" href="start.html" /> 
+    <link rel="next" title="Building an Envoy Docker image" href="building/local_docker_build.html" />
+    <link rel="prev" title="Using the Envoy Docker Image" href="docker.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.17.0-dev-275857
+                1.17.0-dev-51dc07
               </div>
             
           
@@ -103,21 +103,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../about_docs.html">About the documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../intro/intro.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="start.html">Getting Started</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="start.html#building-and-installation">Building and installation</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Building</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#requirements">Requirements</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pre-built-binaries">Pre-built binaries</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#modifying-envoy">Modifying Envoy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html">Installing Envoy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick-start.html">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docker.html">Using the Envoy Docker Image</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Building</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modifying-envoy">Modifying Envoy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="building/local_docker_build.html">Building an Envoy Docker image</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="install/ref_configs.html">Reference configurations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="install/tools/tools.html">Tools</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="start.html#quick-start-to-run-simple-example">Quick Start to Run Simple Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="start.html#simple-configuration">Simple Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="start.html#using-the-envoy-docker-image">Using the Envoy Docker Image</a></li>
-<li class="toctree-l2"><a class="reference internal" href="start.html#sandboxes">Sandboxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sandboxes/index.html">Sandboxes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../configuration/configuration.html">Configuration reference</a></li>
@@ -195,10 +192,10 @@
             
   <div class="section" id="building">
 <span id="id1"></span><h1>Building<a class="headerlink" href="#building" title="Permalink to this headline">¶</a></h1>
-<p>The Envoy build system uses Bazel. In order to ease initial building and for a quick start, we
-provide an Ubuntu 16 based docker container that has everything needed inside of it to build
-and <em>statically link</em> Envoy, see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2758575b9a02f935245fe8a3b08af0a8c14994dc/ci/README.md">ci/README.md</a>.</p>
-<p>In order to build manually, follow the instructions at <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2758575b9a02f935245fe8a3b08af0a8c14994dc/bazel/README.md">bazel/README.md</a>.</p>
+<p>The Envoy build system uses <a class="reference external" href="https://bazel.build/">Bazel</a>.</p>
+<p>In order to ease initial building and for a quick start, we provide an Ubuntu 16 based docker container that
+has everything needed inside of it to build and <em>statically link</em> Envoy, see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/51dc07d0882157e1bc9a85b8de2ef2f08267da64/ci/README.md">ci/README.md</a>.</p>
+<p>In order to build without using the Docker container, follow the instructions at <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/51dc07d0882157e1bc9a85b8de2ef2f08267da64/bazel/README.md">bazel/README.md</a>.</p>
 <div class="section" id="requirements">
 <span id="install-requirements"></span><h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
 <p>Envoy was initially developed and deployed on Ubuntu 14.04 LTS. It should work on any reasonably
@@ -206,61 +203,12 @@ recent Linux including Ubuntu 18.04 LTS.</p>
 <p>Building Envoy has the following requirements:</p>
 <ul class="simple">
 <li><p>GCC 7+ or Clang/LLVM 7+ (for C++14 support). Clang/LLVM 9+ preferred where Clang is used (see below).</p></li>
-<li><p>These <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2758575b9a02f935245fe8a3b08af0a8c14994dc/bazel/repository_locations.bzl">Bazel native</a> dependencies.</p></li>
+<li><p>These <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/51dc07d0882157e1bc9a85b8de2ef2f08267da64/bazel/repository_locations.bzl">Bazel native</a> dependencies.</p></li>
 </ul>
-<p>Please see the linked <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2758575b9a02f935245fe8a3b08af0a8c14994dc/ci/README.md">CI</a> and <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2758575b9a02f935245fe8a3b08af0a8c14994dc/bazel/README.md">Bazel</a> documentation
+<p>Please see the linked <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/51dc07d0882157e1bc9a85b8de2ef2f08267da64/ci/README.md">CI</a> and <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/51dc07d0882157e1bc9a85b8de2ef2f08267da64/bazel/README.md">Bazel</a> documentation
 for more information on performing manual builds.
 Please note that for Clang/LLVM 8 and lower, Envoy may need to be built with <cite>–define tcmalloc=gperftools</cite>
 as the new tcmalloc code is not guaranteed to compile with lower versions of Clang.</p>
-</div>
-<div class="section" id="pre-built-binaries">
-<span id="install-binaries"></span><h2>Pre-built binaries<a class="headerlink" href="#pre-built-binaries" title="Permalink to this headline">¶</a></h2>
-<p>We build and tag Docker images with release versions when we do official releases. These images can
-be found in the following repositories:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://hub.docker.com/r/envoyproxy/envoy/tags/">envoyproxy/envoy</a>: Release binary with
-symbols stripped on top of an Ubuntu Bionic base.</p></li>
-<li><p><a class="reference external" href="https://hub.docker.com/r/envoyproxy/envoy-debug/tags/">envoyproxy/envoy-debug</a>: Release
-binary with debug symbols on top of an Ubuntu Bionic base.</p></li>
-<li><p><a class="reference external" href="https://hub.docker.com/r/envoyproxy/envoy-alpine/tags/">envoyproxy/envoy-alpine</a>: Release
-binary with symbols stripped on top of a <strong>glibc</strong> alpine base.</p></li>
-</ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In the above repositories, we tag a <em>vX.Y-latest</em> image for each security/stable release line.</p>
-</div>
-<p>On every master commit we additionally create a set of development Docker images. These images can
-be found in the following repositories:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://hub.docker.com/r/envoyproxy/envoy-dev/tags/">envoyproxy/envoy-dev</a>: Release binary with
-symbols stripped on top of an Ubuntu Bionic base.</p></li>
-<li><p><a class="reference external" href="https://hub.docker.com/r/envoyproxy/envoy-debug-dev/tags/">envoyproxy/envoy-debug-dev</a>: Release
-binary with debug symbols on top of an Ubuntu Bionic base.</p></li>
-<li><p><a class="reference external" href="https://hub.docker.com/r/envoyproxy/envoy-alpine-dev/tags/">envoyproxy/envoy-alpine-dev</a>: Release
-binary with symbols stripped on top of a <strong>glibc</strong> alpine base.</p></li>
-</ul>
-<p>In the above <em>dev</em> repositories, the <em>latest</em> tag points to the last Envoy SHA in master that passed
-tests.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The Envoy project considers master to be release candidate quality at all times, and many
-organizations track and deploy master in production. We encourage you to do the same so that
-issues can be reported as early as possible in the development process.</p>
-</div>
-<p>Packaged Envoy pre-built binaries for a variety of platforms are available via
-<a class="reference external" href="https://www.getenvoy.io/">GetEnvoy.io</a>.</p>
-<p>We will consider producing additional binary types depending on community interest in helping with
-CI, packaging, etc. Please open an <a class="reference external" href="https://github.com/tetratelabs/getenvoy/issues">issue in GetEnvoy</a>
-for pre-built binaries for different platforms.</p>
-<div class="section" id="arm64-binaries">
-<span id="arm-binaries"></span><h3>ARM64 binaries<a class="headerlink" href="#arm64-binaries" title="Permalink to this headline">¶</a></h3>
-<p><a class="reference external" href="https://hub.docker.com/r/envoyproxy/envoy/tags/">envoyproxy/envoy</a>,
-<a class="reference external" href="https://hub.docker.com/r/envoyproxy/envoy-debug/tags/">envoyproxy/envoy-debug</a>,
-<a class="reference external" href="https://hub.docker.com/r/envoyproxy/envoy-dev/tags/">envoyproxy/envoy-dev</a> and
-<a class="reference external" href="https://hub.docker.com/r/envoyproxy/envoy-debug-dev/tags/">envoyproxy/envoy-debug-dev</a> are Docker
-<a class="reference external" href="https://www.docker.com/blog/multi-arch-build-and-images-the-simple-way/">multi-arch</a> images
-and should run transparently on compatible ARM64 hosts.</p>
-</div>
 </div>
 <div class="section" id="modifying-envoy">
 <h2>Modifying Envoy<a class="headerlink" href="#modifying-envoy" title="Permalink to this headline">¶</a></h2>
@@ -269,7 +217,7 @@ is to use Docker. This guide will walk through the process of building your own
 Envoy binary, and putting the binary in an Ubuntu container.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="install/sandboxes/local_docker_build.html">Building an Envoy Docker image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building/local_docker_build.html">Building an Envoy Docker image</a></li>
 </ul>
 </div>
 </div>
@@ -283,10 +231,10 @@ Envoy binary, and putting the binary in an Ubuntu container.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="install/sandboxes/local_docker_build.html" class="btn btn-neutral float-right" title="Building an Envoy Docker image" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="building/local_docker_build.html" class="btn btn-neutral float-right" title="Building an Envoy Docker image" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="start.html" class="btn btn-neutral float-left" title="Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="docker.html" class="btn btn-neutral float-left" title="Using the Envoy Docker Image" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

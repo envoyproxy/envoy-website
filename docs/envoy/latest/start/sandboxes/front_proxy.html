@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Front Proxy &mdash; envoy 1.17.0-dev-275857 documentation</title>
+  <title>Front Proxy &mdash; envoy 1.17.0-dev-51dc07 documentation</title>
   
 
   
@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                1.17.0-dev-275857
+                1.17.0-dev-51dc07
               </div>
             
           
@@ -105,18 +105,24 @@
 <li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../start.html">Getting Started</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../start.html#building-and-installation">Building and installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../start.html#quick-start-to-run-simple-example">Quick Start to Run Simple Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../start.html#simple-configuration">Simple Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../start.html#using-the-envoy-docker-image">Using the Envoy Docker Image</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../start.html#sandboxes">Sandboxes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../install.html">Installing Envoy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quick-start.html">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docker.html">Using the Envoy Docker Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../building.html">Building</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Sandboxes</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cors.html">CORS Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ext_authz.html">External Authorization Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault Injection Filter</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Front Proxy</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#running-the-sandbox">Running the Sandbox</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-1-install-docker">Step 1: Install Docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-2-clone-the-envoy-repo">Step 2: Clone the Envoy repo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-3-start-all-of-our-containers">Step 3: Start all of our containers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-4-test-envoy-s-routing-capabilities">Step 4: Test Envoy’s routing capabilities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-5-test-envoy-s-load-balancing-capabilities">Step 5: Test Envoy’s load balancing capabilities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-6-enter-containers-and-curl-services">Step 6: Enter containers and curl services</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-7-enter-container-and-curl-admin">Step 7: Enter container and curl admin</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC Bridge</a></li>
@@ -187,6 +193,8 @@
         
           <li><a href="../start.html">Getting Started</a> &raquo;</li>
         
+          <li><a href="index.html">Sandboxes</a> &raquo;</li>
+        
       <li>Front Proxy</li>
     
     
@@ -216,24 +224,22 @@ running service Envoy. The three containers will be deployed inside a virtual ne
 <a class="reference internal image-reference" href="../../_images/docker_compose_front_proxy.svg"><img alt="../../_images/docker_compose_front_proxy.svg" src="../../_images/docker_compose_front_proxy.svg" width="100%" /></a>
 <p>All incoming requests are routed via the front Envoy, which is acting as a reverse proxy sitting on
 the edge of the <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code> network. Port <code class="docutils literal notranslate"><span class="pre">8080</span></code>, <code class="docutils literal notranslate"><span class="pre">8443</span></code>, and <code class="docutils literal notranslate"><span class="pre">8001</span></code> are exposed by docker
-compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2758575b9a02f935245fe8a3b08af0a8c14994dc//examples/front-proxy/docker-compose.yaml">/examples/front-proxy/docker-compose.yaml</a>) to handle <code class="docutils literal notranslate"><span class="pre">HTTP</span></code>, <code class="docutils literal notranslate"><span class="pre">HTTPS</span></code> calls
+compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/51dc07d0882157e1bc9a85b8de2ef2f08267da64//examples/front-proxy/docker-compose.yaml">/examples/front-proxy/docker-compose.yaml</a>) to handle <code class="docutils literal notranslate"><span class="pre">HTTP</span></code>, <code class="docutils literal notranslate"><span class="pre">HTTPS</span></code> calls
 to the services and requests to <code class="docutils literal notranslate"><span class="pre">/admin</span></code> respectively.</p>
 <p>Moreover, notice that all traffic routed by the front Envoy to the service containers is actually
-routed to the service Envoys (routes setup in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2758575b9a02f935245fe8a3b08af0a8c14994dc//examples/front-proxy/front-envoy.yaml">/examples/front-proxy/front-envoy.yaml</a>).</p>
+routed to the service Envoys (routes setup in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/51dc07d0882157e1bc9a85b8de2ef2f08267da64//examples/front-proxy/front-envoy.yaml">/examples/front-proxy/front-envoy.yaml</a>).</p>
 <p>In turn the service Envoys route the request to the Flask app via the loopback
-address (routes setup in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2758575b9a02f935245fe8a3b08af0a8c14994dc//examples/front-proxy/service-envoy.yaml">/examples/front-proxy/service-envoy.yaml</a>). This
+address (routes setup in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/51dc07d0882157e1bc9a85b8de2ef2f08267da64//examples/front-proxy/service-envoy.yaml">/examples/front-proxy/service-envoy.yaml</a>). This
 setup illustrates the advantage of running service Envoys collocated with your services: all
 requests are handled by the service Envoy, and efficiently routed to your services.</p>
-<div class="section" id="running-the-sandbox">
-<h2>Running the Sandbox<a class="headerlink" href="#running-the-sandbox" title="Permalink to this headline">¶</a></h2>
 <p>The following documentation runs through the setup of Envoy described above.</p>
 <div class="section" id="step-1-install-docker">
-<h3>Step 1: Install Docker<a class="headerlink" href="#step-1-install-docker" title="Permalink to this headline">¶</a></h3>
+<h2>Step 1: Install Docker<a class="headerlink" href="#step-1-install-docker" title="Permalink to this headline">¶</a></h2>
 <p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> installed.</p>
 <p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
 </div>
 <div class="section" id="step-2-clone-the-envoy-repo">
-<h3>Step 2: Clone the Envoy repo<a class="headerlink" href="#step-2-clone-the-envoy-repo" title="Permalink to this headline">¶</a></h3>
+<h2>Step 2: Clone the Envoy repo<a class="headerlink" href="#step-2-clone-the-envoy-repo" title="Permalink to this headline">¶</a></h2>
 <p>If you have not cloned the Envoy repo, clone it with:</p>
 <div class="sphinx-tabs docutils container">
 <div class="ui top attached tabular menu sphinx-menu docutils container">
@@ -261,7 +267,7 @@ requests are handled by the service Envoy, and efficiently routed to your servic
 </div>
 </div>
 <div class="section" id="step-3-start-all-of-our-containers">
-<h3>Step 3: Start all of our containers<a class="headerlink" href="#step-3-start-all-of-our-containers" title="Permalink to this headline">¶</a></h3>
+<h2>Step 3: Start all of our containers<a class="headerlink" href="#step-3-start-all-of-our-containers" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
 <span class="go">envoy/examples/front-proxy</span>
 <span class="gp">$</span> docker-compose build --pull
@@ -277,7 +283,7 @@ requests are handled by the service Envoy, and efficiently routed to your servic
 </div>
 </div>
 <div class="section" id="step-4-test-envoy-s-routing-capabilities">
-<h3>Step 4: Test Envoy’s routing capabilities<a class="headerlink" href="#step-4-test-envoy-s-routing-capabilities" title="Permalink to this headline">¶</a></h3>
+<h2>Step 4: Test Envoy’s routing capabilities<a class="headerlink" href="#step-4-test-envoy-s-routing-capabilities" title="Permalink to this headline">¶</a></h2>
 <p>You can now send a request to both services via the <code class="docutils literal notranslate"><span class="pre">front-envoy</span></code>.</p>
 <p>For <code class="docutils literal notranslate"><span class="pre">service1</span></code>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -v localhost:8080/service/1
@@ -366,7 +372,7 @@ application.</p>
 </div>
 </div>
 <div class="section" id="step-5-test-envoy-s-load-balancing-capabilities">
-<h3>Step 5: Test Envoy’s load balancing capabilities<a class="headerlink" href="#step-5-test-envoy-s-load-balancing-capabilities" title="Permalink to this headline">¶</a></h3>
+<h2>Step 5: Test Envoy’s load balancing capabilities<a class="headerlink" href="#step-5-test-envoy-s-load-balancing-capabilities" title="Permalink to this headline">¶</a></h2>
 <p>Now let’s scale up our <code class="docutils literal notranslate"><span class="pre">service1</span></code> nodes to demonstrate the load balancing abilities of Envoy:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker-compose scale <span class="nv">service1</span><span class="o">=</span><span class="m">3</span>
 <span class="go">Creating and starting example_service1_2 ... done</span>
@@ -431,7 +437,7 @@ requests by doing a round robin of the three <code class="docutils literal notra
 </div>
 </div>
 <div class="section" id="step-6-enter-containers-and-curl-services">
-<h3>Step 6: enter containers and curl services<a class="headerlink" href="#step-6-enter-containers-and-curl-services" title="Permalink to this headline">¶</a></h3>
+<h2>Step 6: Enter containers and curl services<a class="headerlink" href="#step-6-enter-containers-and-curl-services" title="Permalink to this headline">¶</a></h2>
 <p>In addition of using <code class="docutils literal notranslate"><span class="pre">curl</span></code> from your host machine, you can also enter the
 containers themselves and <code class="docutils literal notranslate"><span class="pre">curl</span></code> from inside them. To enter a container you
 can use <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">exec</span> <span class="pre">&lt;container_name&gt;</span> <span class="pre">/bin/bash</span></code>. For example we can
@@ -449,7 +455,7 @@ enter the <code class="docutils literal notranslate"><span class="pre">front-env
 </div>
 </div>
 <div class="section" id="step-7-enter-container-and-curl-admin">
-<h3>Step 7: enter container and curl admin<a class="headerlink" href="#step-7-enter-container-and-curl-admin" title="Permalink to this headline">¶</a></h3>
+<h2>Step 7: Enter container and curl admin<a class="headerlink" href="#step-7-enter-container-and-curl-admin" title="Permalink to this headline">¶</a></h2>
 <p>When Envoy runs it also attaches an <code class="docutils literal notranslate"><span class="pre">admin</span></code> to your desired port.</p>
 <p>In the example configs the admin is bound to port <code class="docutils literal notranslate"><span class="pre">8001</span></code>.</p>
 <p>We can <code class="docutils literal notranslate"><span class="pre">curl</span></code> it to gain useful information:</p>
@@ -528,7 +534,6 @@ enter the <code class="docutils literal notranslate"><span class="pre">front-env
 </div>
 <p>Notice that we can get the number of members of upstream clusters, number of requests fulfilled by
 them, information about http ingress, and a plethora of other useful stats.</p>
-</div>
 </div>
 </div>
 
