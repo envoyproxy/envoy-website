@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Zipkin Tracing &mdash; envoy 1.17.0-dev-f69a78 documentation</title>
+  <title>Zipkin Tracing &mdash; envoy 1.17.0-dev-a4733f documentation</title>
   
 
   
@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                1.17.0-dev-f69a78
+                1.17.0-dev-a4733f
               </div>
             
           
@@ -221,11 +221,11 @@ service1 makes an API call to service2 before returning a response.
 The three containers will be deployed inside a virtual network called <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code>.</p>
 <p>All incoming requests are routed via the front Envoy, which is acting as a reverse proxy
 sitting on the edge of the <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code> network. Port <code class="docutils literal notranslate"><span class="pre">8000</span></code> is exposed
-by docker compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f69a78cec9e833898121d514475e2542799accc0//examples/zipkin-tracing/docker-compose.yaml">/examples/zipkin-tracing/docker-compose.yaml</a>). Notice that
+by docker compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a4733f64e2566630a0bd7f1481331d9336af63ee//examples/zipkin-tracing/docker-compose.yaml">/examples/zipkin-tracing/docker-compose.yaml</a>). Notice that
 all Envoys are configured to collect request traces (e.g., http_connection_manager/config/tracing setup in
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f69a78cec9e833898121d514475e2542799accc0//examples/zipkin-tracing/front-envoy-zipkin.yaml">/examples/zipkin-tracing/front-envoy-zipkin.yaml</a>) and setup to propagate the spans generated
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a4733f64e2566630a0bd7f1481331d9336af63ee//examples/zipkin-tracing/front-envoy-zipkin.yaml">/examples/zipkin-tracing/front-envoy-zipkin.yaml</a>) and setup to propagate the spans generated
 by the Zipkin tracer to a Zipkin cluster (trace driver setup
-in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f69a78cec9e833898121d514475e2542799accc0//examples/zipkin-tracing/front-envoy-zipkin.yaml">/examples/zipkin-tracing/front-envoy-zipkin.yaml</a>).</p>
+in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a4733f64e2566630a0bd7f1481331d9336af63ee//examples/zipkin-tracing/front-envoy-zipkin.yaml">/examples/zipkin-tracing/front-envoy-zipkin.yaml</a>).</p>
 <p>Before routing a request to the appropriate service Envoy or the application, Envoy will take
 care of generating the appropriate spans for tracing (parent/child/shared context spans).
 At a high-level, each span records the latency of upstream API calls as well as information
@@ -234,7 +234,7 @@ needed to correlate the span with other related spans (e.g., the trace ID).</p>
 propagating the traces to the Zipkin service cluster. However, in order to fully take advantage
 of tracing, the application has to propagate trace headers that Envoy generates, while making
 calls to other services. In the sandbox we have provided, the simple flask app
-(see trace function in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f69a78cec9e833898121d514475e2542799accc0//examples/front-proxy/service.py">/examples/front-proxy/service.py</a>) acting as service1 propagates
+(see trace function in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a4733f64e2566630a0bd7f1481331d9336af63ee//examples/front-proxy/service.py">/examples/front-proxy/service.py</a>) acting as service1 propagates
 the trace headers while making an outbound call to service2.</p>
 <p>The following documentation runs through the setup of Envoy described above.</p>
 <div class="section" id="step-1-install-docker">
@@ -279,11 +279,11 @@ the trace headers while making an outbound call to service2.</p>
 <span class="gp">$</span> docker-compose up --build -d
 <span class="gp">$</span> docker-compose ps
 
-<span class="go">            Name                          Command             State                            Ports</span>
-<span class="go">-----------------------------------------------------------------------------------------------------------------------------</span>
-<span class="go">zipkin-tracing_front-envoy_1   /docker-entrypoint.sh /bin ... Up      10000/tcp, 0.0.0.0:8000-&gt;8000/tcp, 0.0.0.0:8001-&gt;8001/tcp</span>
-<span class="go">zipkin-tracing_service1_1      /bin/sh -c /usr/local/bin/ ... Up      10000/tcp, 8000/tcp</span>
-<span class="go">zipkin-tracing_service2_1      /bin/sh -c /usr/local/bin/ ... Up      10000/tcp, 8000/tcp</span>
+<span class="go">            Name                          Command             State            Ports</span>
+<span class="go">-------------------------------------------------------------------------------------------------------</span>
+<span class="go">zipkin-tracing_front-envoy_1   /docker-entrypoint.sh /bin ... Up      10000/tcp, 0.0.0.0:8000-&gt;8000/tcp</span>
+<span class="go">zipkin-tracing_service1_1      /bin/sh -c /usr/local/bin/ ... Up      10000/tcp</span>
+<span class="go">zipkin-tracing_service2_1      /bin/sh -c /usr/local/bin/ ... Up      10000/tcp</span>
 <span class="go">zipkin-tracing_zipkin_1        /busybox/sh run.sh             Up      9410/tcp, 0.0.0.0:9411-&gt;9411/tcp</span>
 </pre></div>
 </div>
