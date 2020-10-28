@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Zipkin Tracing &mdash; envoy 1.17.0-dev-b9ed0a documentation</title>
+  <title>Zipkin Tracing &mdash; envoy 1.17.0-dev-f6991d documentation</title>
   
 
   
@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                1.17.0-dev-b9ed0a
+                1.17.0-dev-f6991d
               </div>
             
           
@@ -113,6 +113,7 @@
 <li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cors.html">CORS Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-control-plane.html">Dynamic configuration (control plane)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ext_authz.html">External Authorization Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault Injection Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front Proxy</a></li>
@@ -221,11 +222,11 @@ service1 makes an API call to service2 before returning a response.
 The three containers will be deployed inside a virtual network called <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code>.</p>
 <p>All incoming requests are routed via the front Envoy, which is acting as a reverse proxy
 sitting on the edge of the <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code> network. Port <code class="docutils literal notranslate"><span class="pre">8000</span></code> is exposed
-by docker compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/b9ed0a991d90363ad04da2191891f54790482dcf//examples/zipkin-tracing/docker-compose.yaml">/examples/zipkin-tracing/docker-compose.yaml</a>). Notice that
+by docker compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f6991d97c4f7a437a8a64059946bb031d6723c62//examples/zipkin-tracing/docker-compose.yaml">/examples/zipkin-tracing/docker-compose.yaml</a>). Notice that
 all Envoys are configured to collect request traces (e.g., http_connection_manager/config/tracing setup in
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/b9ed0a991d90363ad04da2191891f54790482dcf//examples/zipkin-tracing/front-envoy-zipkin.yaml">/examples/zipkin-tracing/front-envoy-zipkin.yaml</a>) and setup to propagate the spans generated
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f6991d97c4f7a437a8a64059946bb031d6723c62//examples/zipkin-tracing/front-envoy-zipkin.yaml">/examples/zipkin-tracing/front-envoy-zipkin.yaml</a>) and setup to propagate the spans generated
 by the Zipkin tracer to a Zipkin cluster (trace driver setup
-in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/b9ed0a991d90363ad04da2191891f54790482dcf//examples/zipkin-tracing/front-envoy-zipkin.yaml">/examples/zipkin-tracing/front-envoy-zipkin.yaml</a>).</p>
+in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f6991d97c4f7a437a8a64059946bb031d6723c62//examples/zipkin-tracing/front-envoy-zipkin.yaml">/examples/zipkin-tracing/front-envoy-zipkin.yaml</a>).</p>
 <p>Before routing a request to the appropriate service Envoy or the application, Envoy will take
 care of generating the appropriate spans for tracing (parent/child/shared context spans).
 At a high-level, each span records the latency of upstream API calls as well as information
@@ -234,7 +235,7 @@ needed to correlate the span with other related spans (e.g., the trace ID).</p>
 propagating the traces to the Zipkin service cluster. However, in order to fully take advantage
 of tracing, the application has to propagate trace headers that Envoy generates, while making
 calls to other services. In the sandbox we have provided, the simple flask app
-(see trace function in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/b9ed0a991d90363ad04da2191891f54790482dcf//examples/front-proxy/service.py">/examples/front-proxy/service.py</a>) acting as service1 propagates
+(see trace function in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f6991d97c4f7a437a8a64059946bb031d6723c62//examples/front-proxy/service.py">/examples/front-proxy/service.py</a>) acting as service1 propagates
 the trace headers while making an outbound call to service2.</p>
 <p>The following documentation runs through the setup of Envoy described above.</p>
 <div class="section" id="step-1-install-docker">
