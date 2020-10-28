@@ -15,7 +15,7 @@ when triggers related to those resources fire.
 config.overload.v3.ResourceMonitor
 ----------------------------------
 
-`[config.overload.v3.ResourceMonitor proto] <https://github.com/envoyproxy/envoy/blob/f6991d97c4f7a437a8a64059946bb031d6723c62/api/envoy/config/overload/v3/overload.proto#L24>`_
+`[config.overload.v3.ResourceMonitor proto] <https://github.com/envoyproxy/envoy/blob/a68755d734e30c8d385b92a1c569bd9cceacc5ff/api/envoy/config/overload/v3/overload.proto#L26>`_
 
 
 .. code-block:: json
@@ -51,7 +51,7 @@ typed_config
 config.overload.v3.ThresholdTrigger
 -----------------------------------
 
-`[config.overload.v3.ThresholdTrigger proto] <https://github.com/envoyproxy/envoy/blob/f6991d97c4f7a437a8a64059946bb031d6723c62/api/envoy/config/overload/v3/overload.proto#L47>`_
+`[config.overload.v3.ThresholdTrigger proto] <https://github.com/envoyproxy/envoy/blob/a68755d734e30c8d385b92a1c569bd9cceacc5ff/api/envoy/config/overload/v3/overload.proto#L49>`_
 
 
 .. code-block:: json
@@ -74,7 +74,7 @@ value
 config.overload.v3.ScaledTrigger
 --------------------------------
 
-`[config.overload.v3.ScaledTrigger proto] <https://github.com/envoyproxy/envoy/blob/f6991d97c4f7a437a8a64059946bb031d6723c62/api/envoy/config/overload/v3/overload.proto#L56>`_
+`[config.overload.v3.ScaledTrigger proto] <https://github.com/envoyproxy/envoy/blob/a68755d734e30c8d385b92a1c569bd9cceacc5ff/api/envoy/config/overload/v3/overload.proto#L58>`_
 
 
 .. code-block:: json
@@ -105,7 +105,7 @@ saturation_threshold
 config.overload.v3.Trigger
 --------------------------
 
-`[config.overload.v3.Trigger proto] <https://github.com/envoyproxy/envoy/blob/f6991d97c4f7a437a8a64059946bb031d6723c62/api/envoy/config/overload/v3/overload.proto#L66>`_
+`[config.overload.v3.Trigger proto] <https://github.com/envoyproxy/envoy/blob/a68755d734e30c8d385b92a1c569bd9cceacc5ff/api/envoy/config/overload/v3/overload.proto#L68>`_
 
 
 .. code-block:: json
@@ -140,19 +140,107 @@ scaled
   
 
 
+.. _envoy_v3_api_msg_config.overload.v3.ScaleTimersOverloadActionConfig:
+
+config.overload.v3.ScaleTimersOverloadActionConfig
+--------------------------------------------------
+
+`[config.overload.v3.ScaleTimersOverloadActionConfig proto] <https://github.com/envoyproxy/envoy/blob/a68755d734e30c8d385b92a1c569bd9cceacc5ff/api/envoy/config/overload/v3/overload.proto#L87>`_
+
+Typed configuration for the "envoy.overload_actions.reduce_timeouts" action. See
+:ref:`the docs <config_overload_manager_reducing_timeouts>` for an example of how to configure
+the action with different timeouts and minimum values.
+
+.. code-block:: json
+
+  {
+    "timer_scale_factors": []
+  }
+
+.. _envoy_v3_api_field_config.overload.v3.ScaleTimersOverloadActionConfig.timer_scale_factors:
+
+timer_scale_factors
+  (:ref:`config.overload.v3.ScaleTimersOverloadActionConfig.ScaleTimer <envoy_v3_api_msg_config.overload.v3.ScaleTimersOverloadActionConfig.ScaleTimer>`, *REQUIRED*) A set of timer scaling rules to be applied.
+  
+  
+.. _envoy_v3_api_msg_config.overload.v3.ScaleTimersOverloadActionConfig.ScaleTimer:
+
+config.overload.v3.ScaleTimersOverloadActionConfig.ScaleTimer
+-------------------------------------------------------------
+
+`[config.overload.v3.ScaleTimersOverloadActionConfig.ScaleTimer proto] <https://github.com/envoyproxy/envoy/blob/a68755d734e30c8d385b92a1c569bd9cceacc5ff/api/envoy/config/overload/v3/overload.proto#L97>`_
+
+
+.. code-block:: json
+
+  {
+    "timer": "...",
+    "min_timeout": "{...}",
+    "min_scale": "{...}"
+  }
+
+.. _envoy_v3_api_field_config.overload.v3.ScaleTimersOverloadActionConfig.ScaleTimer.timer:
+
+timer
+  (:ref:`config.overload.v3.ScaleTimersOverloadActionConfig.TimerType <envoy_v3_api_enum_config.overload.v3.ScaleTimersOverloadActionConfig.TimerType>`) The type of timer this minimum applies to.
+  
+  
+.. _envoy_v3_api_field_config.overload.v3.ScaleTimersOverloadActionConfig.ScaleTimer.min_timeout:
+
+min_timeout
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) Sets the minimum duration as an absolute value.
+  
+  
+  
+  Precisely one of :ref:`min_timeout <envoy_v3_api_field_config.overload.v3.ScaleTimersOverloadActionConfig.ScaleTimer.min_timeout>`, :ref:`min_scale <envoy_v3_api_field_config.overload.v3.ScaleTimersOverloadActionConfig.ScaleTimer.min_scale>` must be set.
+  
+.. _envoy_v3_api_field_config.overload.v3.ScaleTimersOverloadActionConfig.ScaleTimer.min_scale:
+
+min_scale
+  (:ref:`type.v3.Percent <envoy_v3_api_msg_type.v3.Percent>`) Sets the minimum duration as a percentage of the maximum value.
+  
+  
+  
+  Precisely one of :ref:`min_timeout <envoy_v3_api_field_config.overload.v3.ScaleTimersOverloadActionConfig.ScaleTimer.min_timeout>`, :ref:`min_scale <envoy_v3_api_field_config.overload.v3.ScaleTimersOverloadActionConfig.ScaleTimer.min_scale>` must be set.
+  
+
+
+.. _envoy_v3_api_enum_config.overload.v3.ScaleTimersOverloadActionConfig.TimerType:
+
+Enum config.overload.v3.ScaleTimersOverloadActionConfig.TimerType
+-----------------------------------------------------------------
+
+`[config.overload.v3.ScaleTimersOverloadActionConfig.TimerType proto] <https://github.com/envoyproxy/envoy/blob/a68755d734e30c8d385b92a1c569bd9cceacc5ff/api/envoy/config/overload/v3/overload.proto#L88>`_
+
+
+.. _envoy_v3_api_enum_value_config.overload.v3.ScaleTimersOverloadActionConfig.TimerType.UNSPECIFIED:
+
+UNSPECIFIED
+  *(DEFAULT)* ⁣Unsupported value; users must explicitly specify the timer they want scaled.
+  
+  
+.. _envoy_v3_api_enum_value_config.overload.v3.ScaleTimersOverloadActionConfig.TimerType.HTTP_DOWNSTREAM_CONNECTION_IDLE:
+
+HTTP_DOWNSTREAM_CONNECTION_IDLE
+  ⁣Adjusts the idle timer for downstream HTTP connections that takes effect when there are no active streams.
+  This affects the value of :ref:`RouteAction.idle_timeout <envoy_v3_api_field_config.route.v3.RouteAction.idle_timeout>`.
+  
+  
+
 .. _envoy_v3_api_msg_config.overload.v3.OverloadAction:
 
 config.overload.v3.OverloadAction
 ---------------------------------
 
-`[config.overload.v3.OverloadAction proto] <https://github.com/envoyproxy/envoy/blob/f6991d97c4f7a437a8a64059946bb031d6723c62/api/envoy/config/overload/v3/overload.proto#L82>`_
+`[config.overload.v3.OverloadAction proto] <https://github.com/envoyproxy/envoy/blob/a68755d734e30c8d385b92a1c569bd9cceacc5ff/api/envoy/config/overload/v3/overload.proto#L116>`_
 
 
 .. code-block:: json
 
   {
     "name": "...",
-    "triggers": []
+    "triggers": [],
+    "typed_config": "{...}"
   }
 
 .. _envoy_v3_api_field_config.overload.v3.OverloadAction.name:
@@ -171,6 +259,12 @@ triggers
   are notified when the overload action changes state.
   
   
+.. _envoy_v3_api_field_config.overload.v3.OverloadAction.typed_config:
+
+typed_config
+  (`Any <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any>`_) Configuration for the action being instantiated.
+  
+  
 
 
 .. _envoy_v3_api_msg_config.overload.v3.OverloadManager:
@@ -178,7 +272,7 @@ triggers
 config.overload.v3.OverloadManager
 ----------------------------------
 
-`[config.overload.v3.OverloadManager proto] <https://github.com/envoyproxy/envoy/blob/f6991d97c4f7a437a8a64059946bb031d6723c62/api/envoy/config/overload/v3/overload.proto#L97>`_
+`[config.overload.v3.OverloadManager proto] <https://github.com/envoyproxy/envoy/blob/a68755d734e30c8d385b92a1c569bd9cceacc5ff/api/envoy/config/overload/v3/overload.proto#L134>`_
 
 
 .. code-block:: json
