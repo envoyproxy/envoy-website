@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xDS REST and gRPC protocol &mdash; envoy 1.17.0-dev-3a32d2 documentation</title>
+  <title>xDS REST and gRPC protocol &mdash; envoy 1.17.0-dev-b2b397 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.17.0-dev-3a32d2
+                1.17.0-dev-b2b397
               </div>
             
           
@@ -118,6 +118,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#variants-of-the-xds-transport-protocol">Variants of the xDS Transport Protocol</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#the-xds-transport-protocol">The xDS transport Protocol</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#resource-warming">Resource warming</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ttl">TTL</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#aggregated-discovery-service">Aggregated Discovery Service</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#incremental-xds">Incremental xDS</a></li>
 </ul>
@@ -212,7 +213,7 @@ below.</p>
 <div class="section" id="resource-types">
 <h2>Resource Types<a class="headerlink" href="#resource-types" title="Permalink to this headline">¶</a></h2>
 <p>Every configuration resource in the xDS API has a type associated with it. Resource types follow a
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/3a32d23c7c361b6ffd5860a707af8957326b2b17/api/API_VERSIONING.md">versioning scheme</a>. Resource types are versioned independent of the
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/b2b3978afb25c5d2c3ca6b344071b285e8820da1/api/API_VERSIONING.md">versioning scheme</a>. Resource types are versioned independent of the
 transports described below.</p>
 <p>The following v2 xDS resource types are supported:</p>
 <ul class="simple">
@@ -742,6 +743,34 @@ routes are fetched through RDS if configured. Clusters are warmed when
 adding/removing/updating clusters. On the other hand, routes are not
 warmed, i.e., the management plane must ensure that clusters referenced
 by a route are in place, before pushing the updates for a route.</p>
+</div>
+</div>
+<div class="section" id="ttl">
+<span id="xds-protocol-ttl"></span><h3>TTL<a class="headerlink" href="#ttl" title="Permalink to this headline">¶</a></h3>
+<p>In the event that the management server becomes unreachable, the last known configuration received
+by Envoy will persist until the connection is reestablished. For some services, this may not be
+desirable. For example, in the case of a fault injection service, a management server crash at the
+wrong time may leave Envoy in an undesirable state. The TTL setting allows Envoy to remove a set of
+resources after a specified period of time if contact with the management server is lost. This can
+be used, for example, to terminate a fault injection test when the management server can no longer
+be reached.</p>
+<p>For clients that support the <em>xds.config.supports-resource-ttl</em> client feature, A TTL field may
+be specified on each <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-resource"><span class="std std-ref">Resource</span></a>. Each resource will have its own TTL
+expiry time, at which point the resource will be expired. Each xDS type may have different ways of
+handling such an expiry.</p>
+<p>To update the TTL associated with a <em>Resource</em>, the management server resends the resource with a
+new TTL. To remove the TTL, the management server resends the resource with the TTL field unset.</p>
+<p>To allow for lightweight TTL updates (“heartbeats”), a response can be sent that provides a
+<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-resource"><span class="std std-ref">Resource</span></a> with the <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-resource-resource"><span class="std std-ref">resource</span></a>
+unset and version matching the most recently sent version can be used to update the TTL. These
+resources will not be treated as resource updates, but only as TTL updates.</p>
+<div class="section" id="sotw-ttl">
+<h4>SotW TTL<a class="headerlink" href="#sotw-ttl" title="Permalink to this headline">¶</a></h4>
+<p>In order to use TTL with SotW xDS, the relevant resources must be wrapped in a
+<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-resource"><span class="std std-ref">Resource</span></a>. This allows setting the same TTL field that is used for
+Delta xDS with SotW, without changing the SotW API. Heartbeats are supported for SotW as well:
+any resource within the response that look like a heartbeat resource will only be used to update the TTL.</p>
+<p>This feature is gated by the <em>xds.config.supports-resource-in-sotw</em> client feature.</p>
 </div>
 </div>
 <div class="section" id="aggregated-discovery-service">

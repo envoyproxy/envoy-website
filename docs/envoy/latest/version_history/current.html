@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1.17.0 (pending) &mdash; envoy 1.17.0-dev-3a32d2 documentation</title>
+  <title>1.17.0 (pending) &mdash; envoy 1.17.0-dev-b2b397 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.17.0-dev-3a32d2
+                1.17.0-dev-b2b397
               </div>
             
           
@@ -244,6 +244,8 @@
 <li><p>ext_authz filter: the deprecated field <a class="reference internal" href="../api-v2/config/filter/http/ext_authz/v2/ext_authz.proto.html#envoy-api-field-config-filter-http-ext-authz-v2-extauthz-use-alpha"><span class="std std-ref">use_alpha</span></a> is no longer supported and cannot be set anymore.</p></li>
 <li><p>grpc_web filter: if a <cite>grpc-accept-encoding</cite> header is present it’s passed as-is to the upstream and if it isn’t <cite>grpc-accept-encoding:identity</cite> is sent instead. The header was always overwriten with <cite>grpc-accept-encoding:identity,deflate,gzip</cite> before.</p></li>
 <li><p>watchdog: the watchdog action <a class="reference internal" href="../api-v3/watchdog/v3alpha/abort_action.proto.html#envoy-v3-api-msg-watchdog-v3alpha-abortactionconfig"><span class="std std-ref">abort_action</span></a> is now the default action to terminate the process if watchdog kill / multikill is enabled.</p></li>
+<li><p>xds: to support TTLs, heartbeating has been added to xDS. As a result, responses that contain empty resources without updating the version will no longer be propagated to the
+subscribers. To undo this for VHDS (which is the only subscriber that wants empty resources), the <cite>envoy.reloadable_features.vhds_heartbeats</cite> can be set to “false”.</p></li>
 </ul>
 </div>
 <div class="section" id="bug-fixes">
@@ -281,6 +283,8 @@
 <li><p>ratelimit: added support for use of various <a class="reference internal" href="../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-ratelimit-action-metadata"><span class="std std-ref">metadata</span></a> as a ratelimit action.</p></li>
 <li><p>ratelimit: added <a class="reference internal" href="../api-v3/extensions/filters/http/ratelimit/v3/rate_limit.proto.html#envoy-v3-api-msg-extensions-filters-http-ratelimit-v3-ratelimit"><span class="std std-ref">disable_x_envoy_ratelimited_header</span></a> option to disable <cite>X-Envoy-RateLimited</cite> header.</p></li>
 <li><p>tcp: added a new <a class="reference internal" href="../configuration/operations/overload_manager/overload_manager.html#config-overload-manager-overload-actions"><span class="std std-ref">envoy.overload_actions.reject_incoming_connections</span></a> action to reject incoming TCP connections.</p></li>
+<li><p>xds: added support for resource TTLs. A TTL is specified on the <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-resource"><span class="std std-ref">Resource</span></a>. For SotW, a <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-resource"><span class="std std-ref">Resource</span></a> can be embedded
+in the list of resources to specify the TTL.</p></li>
 </ul>
 </div>
 <div class="section" id="deprecated">
