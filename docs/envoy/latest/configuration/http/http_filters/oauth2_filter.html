@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>OAuth2 &mdash; envoy 1.17.0-dev-1a119a documentation</title>
+  <title>OAuth2 &mdash; envoy 1.17.0-dev-8d0e55 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.17.0-dev-1a119a
+                1.17.0-dev-8d0e55
               </div>
             
           
@@ -240,6 +240,34 @@
 <li><p><a class="reference internal" href="../../../api-v3/extensions/filters/http/oauth2/v3alpha/oauth.proto.html#envoy-v3-api-msg-extensions-filters-http-oauth2-v3alpha-oauth2"><span class="std std-ref">v3 API reference</span></a></p></li>
 <li><p>This filter should be configured with the name <em>envoy.filters.http.oauth2</em>.</p></li>
 </ul>
+<p>The OAuth filter’s flow involves:</p>
+<ul class="simple">
+<li><p>An unauthenticated user arrives at myapp.com, and the oauth filter redirects them to the
+<a class="reference internal" href="../../../api-v3/extensions/filters/http/oauth2/v3alpha/oauth.proto.html#envoy-v3-api-field-extensions-filters-http-oauth2-v3alpha-oauth2config-authorization-endpoint"><span class="std std-ref">authorization_endpoint</span></a>
+for login. The <a class="reference internal" href="../../../api-v3/extensions/filters/http/oauth2/v3alpha/oauth.proto.html#envoy-v3-api-field-extensions-filters-http-oauth2-v3alpha-oauth2credentials-client-id"><span class="std std-ref">client_id</span></a>
+and the <a class="reference internal" href="../../../api-v3/extensions/filters/http/oauth2/v3alpha/oauth.proto.html#envoy-v3-api-field-extensions-filters-http-oauth2-v3alpha-oauth2config-redirect-uri"><span class="std std-ref">redirect_uri</span></a>
+are sent as query string parameters in this first redirect.</p></li>
+<li><p>After a successful login, the authn server should be configured to redirect the user back to the
+<a class="reference internal" href="../../../api-v3/extensions/filters/http/oauth2/v3alpha/oauth.proto.html#envoy-v3-api-field-extensions-filters-http-oauth2-v3alpha-oauth2config-redirect-uri"><span class="std std-ref">redirect_uri</span></a>
+provided in the query string in the first step. In the below code example, we choose /callback as the configured match path.
+An “authorization grant” is included in the query string for this second redirect.</p></li>
+<li><p>Using this new grant and the <a class="reference internal" href="../../../api-v3/extensions/filters/http/oauth2/v3alpha/oauth.proto.html#envoy-v3-api-field-extensions-filters-http-oauth2-v3alpha-oauth2credentials-token-secret"><span class="std std-ref">token_secret</span></a>,
+the filter then attempts to retrieve an access token from
+the <a class="reference internal" href="../../../api-v3/extensions/filters/http/oauth2/v3alpha/oauth.proto.html#envoy-v3-api-field-extensions-filters-http-oauth2-v3alpha-oauth2config-token-endpoint"><span class="std std-ref">token_endpoint</span></a>. The filter knows it has to do this
+instead of reinitiating another login because the incoming request has a path that matches the
+<a class="reference internal" href="../../../api-v3/extensions/filters/http/oauth2/v3alpha/oauth.proto.html#envoy-v3-api-field-extensions-filters-http-oauth2-v3alpha-oauth2config-redirect-path-matcher"><span class="std std-ref">redirect_path_matcher</span></a> criteria.</p></li>
+<li><p>Upon receiving an access token, the filter sets cookies so that subseqeuent requests can skip the full
+flow. These cookies are calculated using the
+<a class="reference internal" href="../../../api-v3/extensions/filters/http/oauth2/v3alpha/oauth.proto.html#envoy-v3-api-field-extensions-filters-http-oauth2-v3alpha-oauth2credentials-hmac-secret"><span class="std std-ref">hmac_secret</span></a>
+to assist in encoding.</p></li>
+<li><p>The filter calls continueDecoding() to unblock the filter chain.</p></li>
+</ul>
+<p>When the authn server validates the client and returns an authorization token back to the OAuth filter,
+no matter what format that token is, if
+<a class="reference internal" href="../../../api-v3/extensions/filters/http/oauth2/v3alpha/oauth.proto.html#envoy-v3-api-field-extensions-filters-http-oauth2-v3alpha-oauth2config-forward-bearer-token"><span class="std std-ref">forward_bearer_token</span></a>
+is set to true the filter will send over a
+cookie named <cite>BearerToken</cite> to the upstream. Additionally, the <cite>Authorization</cite> header will be populated
+with the same value.</p>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
 <p>The OAuth2 filter is currently under active development.</p>
@@ -272,7 +300,7 @@
         <span class="nt">path</span><span class="p">:</span> <span class="s">&quot;/etc/envoy/hmac.yaml&quot;</span>
 </pre></div>
 </div>
-<p>And the below code block is an example of how we employ it as one of
+<p>Below is a complete code example of how we employ the filter as one of
 <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-http-filters"><span class="std std-ref">HttpConnectionManager HTTP filters</span></a></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">static_resources</span><span class="p">:</span>
   <span class="nt">listeners</span><span class="p">:</span>
@@ -311,10 +339,34 @@
                   <span class="nt">sds_config</span><span class="p">:</span>
                     <span class="nt">path</span><span class="p">:</span> <span class="s">&quot;/etc/envoy/hmac.yaml&quot;</span>
         <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.router</span>
+        <span class="nt">tracing</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+        <span class="nt">codec_type</span><span class="p">:</span> <span class="s">&quot;AUTO&quot;</span>
+        <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ingress_http</span>
+        <span class="nt">route_config</span><span class="p">:</span>
+          <span class="nt">virtual_hosts</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service</span>
+            <span class="nt">domains</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;*&quot;</span><span class="p p-Indicator">]</span>
+            <span class="nt">routes</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span>
+                <span class="nt">prefix</span><span class="p">:</span> <span class="s">&quot;/&quot;</span>
+              <span class="nt">route</span><span class="p">:</span>
+                <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service</span>
+                <span class="nt">timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5s</span>
 
 <span class="nt">clusters</span><span class="p">:</span>
 <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service</span>
-  <span class="c1"># ...</span>
+  <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5s</span>
+  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">STATIC</span>
+  <span class="nt">lb_policy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ROUND_ROBIN</span>
+  <span class="nt">load_assignment</span><span class="p">:</span>
+    <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service</span>
+    <span class="nt">endpoints</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">endpoint</span><span class="p">:</span>
+          <span class="nt">address</span><span class="p">:</span>
+            <span class="nt">socket_address</span><span class="p">:</span>
+              <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span>
+              <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8080</span>
 <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">auth</span>
   <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5s</span>
   <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">LOGICAL_DNS</span>
@@ -332,12 +384,37 @@
     <span class="nt">sni</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">auth.example.com</span>
 </pre></div>
 </div>
+<p>Finally, the following code block illustrates sample contents inside a yaml file containing both credential secrets.
+Both the <a class="reference internal" href="../../../api-v3/extensions/filters/http/oauth2/v3alpha/oauth.proto.html#envoy-v3-api-field-extensions-filters-http-oauth2-v3alpha-oauth2credentials-token-secret"><span class="std std-ref">token_secret</span></a>
+and the <a class="reference internal" href="../../../api-v3/extensions/filters/http/oauth2/v3alpha/oauth.proto.html#envoy-v3-api-field-extensions-filters-http-oauth2-v3alpha-oauth2credentials-hmac-secret"><span class="std std-ref">hmac_secret</span></a>
+can be defined in one shared file.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">static_resources</span><span class="p">:</span>
+  <span class="nt">secrets</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">token</span>
+    <span class="nt">generic_secret</span><span class="p">:</span>
+      <span class="nt">secret</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;Your token secret here&gt;</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">hmac</span>
+    <span class="nt">generic_secret</span><span class="p">:</span>
+      <span class="nt">secret</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;Your hmac secret here&gt;</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="notes">
 <h2>Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
-<p>This module does not currently provide much Cross-Site-Request-Forgery protection for the redirect
-loop to the OAuth server and back.</p>
-<p>The service must be served over HTTPS for this filter to work, as the cookies use <cite>;secure</cite>.</p>
+<p>When enabled, the OAuth filter does not protect against Cross-Site-Request-Forgery attacks on domains with
+cached authentication (in the form of cookies).
+It is recommended to pair this filter with the <a class="reference internal" href="../../../api-v3/extensions/filters/http/csrf/v3/csrf.proto.html#envoy-v3-api-msg-extensions-filters-http-csrf-v3-csrfpolicy"><span class="std std-ref">CSRF Filter</span></a>
+to prevent malicious social engineering.</p>
+<p>The service must be served over HTTPS for this filter to work properly, as the cookies use <cite>;secure</cite>. Without https, your
+<a class="reference internal" href="../../../api-v3/extensions/filters/http/oauth2/v3alpha/oauth.proto.html#envoy-v3-api-field-extensions-filters-http-oauth2-v3alpha-oauth2config-authorization-endpoint"><span class="std std-ref">authorization_endpoint</span></a>
+provider will likely reject the incoming request, and your access cookies will not be cached to bypass future logins.</p>
+<p>The signout path will redirect the current user to ‘/’, and clear all authentication cookies related to
+the HMAC validation. Consequently, the OAuth filter will then restart the full OAuth flow at the root path,
+sending the user to the configured auth endpoint.</p>
+<p><a class="reference internal" href="../../../api-v3/extensions/filters/http/oauth2/v3alpha/oauth.proto.html#envoy-v3-api-field-extensions-filters-http-oauth2-v3alpha-oauth2config-pass-through-matcher"><span class="std std-ref">pass_through_matcher</span></a> provides
+an interface for users to provide specific header matching criteria such that, when applicable, the OAuth flow is entirely skipped.
+When this occurs, the <cite>oauth_success</cite> metric is still incremented.</p>
+<p>Generally, allowlisting is inadvisable from a security standpoint.</p>
 </div>
 <div class="section" id="statistics">
 <h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
