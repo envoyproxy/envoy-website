@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Dynamic configuration (filesystem) &mdash; envoy 1.17.0-dev-8d0e55 documentation</title>
+  <title>Dynamic configuration (filesystem) &mdash; envoy 1.17.0-dev-29adb9 documentation</title>
   
 
   
@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                1.17.0-dev-8d0e55
+                1.17.0-dev-29adb9
               </div>
             
           
@@ -119,7 +119,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#step-3-start-the-proxy-container">Step 3: Start the proxy container</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#step-4-check-web-response">Step 4: Check web response</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#step-5-dump-envoy-s-dynamic-active-clusters-config">Step 5: Dump Envoy’s <code class="docutils literal notranslate"><span class="pre">dynamic_active_clusters</span></code> config</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-5-edit-configs-cds-yaml-file-to-update-upstream-cluster">Step 5: Edit <code class="docutils literal notranslate"><span class="pre">configs/cds.yaml</span></code> file to update upstream cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-5-edit-cds-yaml-inside-the-container-to-update-upstream-cluster">Step 5: Edit <code class="docutils literal notranslate"><span class="pre">cds.yaml</span></code> inside the container to update upstream cluster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#step-6-check-envoy-uses-updated-configuration">Step 6: Check Envoy uses updated configuration</a></li>
 </ul>
 </li>
@@ -258,19 +258,6 @@ restarting the server.</p>
 </div>
 <div class="section" id="step-3-start-the-proxy-container">
 <h2>Step 3: Start the proxy container<a class="headerlink" href="#step-3-start-the-proxy-container" title="Permalink to this headline">¶</a></h2>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If you are running on a system with strict <code class="docutils literal notranslate"><span class="pre">umask</span></code> you will need to <code class="docutils literal notranslate"><span class="pre">chmod</span></code> the dynamic config
-files which are mounted into the container:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">umask</span>
-<span class="go">027</span>
-<span class="gp">$</span> <span class="nb">pwd</span>
-<span class="go">envoy/examples/dynamic-config-fs</span>
-<span class="gp">$</span> chmod go+r configs/*
-<span class="gp">$</span> chmod go+x configs
-</pre></div>
-</div>
-</div>
 <p>Build and start the containers.</p>
 <p>This should also start two upstream <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> echo servers, <code class="docutils literal notranslate"><span class="pre">service1</span></code> and <code class="docutils literal notranslate"><span class="pre">service2</span></code>.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
@@ -345,16 +332,16 @@ the <code class="docutils literal notranslate"><span class="pre">example_proxy_c
 </pre></div>
 </div>
 </div>
-<div class="section" id="step-5-edit-configs-cds-yaml-file-to-update-upstream-cluster">
-<h2>Step 5: Edit <code class="docutils literal notranslate"><span class="pre">configs/cds.yaml</span></code> file to update upstream cluster<a class="headerlink" href="#step-5-edit-configs-cds-yaml-file-to-update-upstream-cluster" title="Permalink to this headline">¶</a></h2>
-<p>The example setup provides two dynamic configuration files:</p>
+<div class="section" id="step-5-edit-cds-yaml-inside-the-container-to-update-upstream-cluster">
+<h2>Step 5: Edit <code class="docutils literal notranslate"><span class="pre">cds.yaml</span></code> inside the container to update upstream cluster<a class="headerlink" href="#step-5-edit-cds-yaml-inside-the-container-to-update-upstream-cluster" title="Permalink to this headline">¶</a></h2>
+<p>The example setup provides Envoy with two dynamic configuration files:</p>
 <ul class="simple">
-<li><p><a class="reference download internal" download="" href="../../_downloads/acabac94942e1dd4533bff2fb404e74c/cds.yaml"><code class="xref download docutils literal notranslate"><span class="pre">configs/cds.yaml</span></code></a> to provide a <a class="reference internal" href="../../configuration/upstream/cluster_manager/cds.html#config-cluster-manager-cds"><span class="std std-ref">Cluster
+<li><p><a class="reference download internal" download="" href="../../_downloads/acabac94942e1dd4533bff2fb404e74c/cds.yaml"><code class="xref download docutils literal notranslate"><span class="pre">cds.yaml</span></code></a> to provide a <a class="reference internal" href="../../configuration/upstream/cluster_manager/cds.html#config-cluster-manager-cds"><span class="std std-ref">Cluster
 discovery service (CDS)</span></a>.</p></li>
-<li><p><a class="reference download internal" download="" href="../../_downloads/d53562f4a3df46fa62541618ed6ea999/lds.yaml"><code class="xref download docutils literal notranslate"><span class="pre">configs/lds.yaml</span></code></a> to provide a <a class="reference internal" href="../../configuration/listeners/lds.html#config-listeners-lds"><span class="std std-ref">Listener
+<li><p><a class="reference download internal" download="" href="../../_downloads/d53562f4a3df46fa62541618ed6ea999/lds.yaml"><code class="xref download docutils literal notranslate"><span class="pre">lds.yaml</span></code></a> to provide a <a class="reference internal" href="../../configuration/listeners/lds.html#config-listeners-lds"><span class="std std-ref">Listener
 discovery service (CDS)</span></a>.</p></li>
 </ul>
-<p>Edit <code class="docutils literal notranslate"><span class="pre">configs/cds.yaml</span></code> in the dynamic configuration example folder and change the cluster address
+<p>Edit <code class="docutils literal notranslate"><span class="pre">cds.yaml</span></code> inside the container and change the cluster address
 from <code class="docutils literal notranslate"><span class="pre">service1</span></code> to <code class="docutils literal notranslate"><span class="pre">service2</span></code>:</p>
 <div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 7
  8
@@ -375,6 +362,10 @@ from <code class="docutils literal notranslate"><span class="pre">service1</span
 </span>              <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8080</span>
 </pre></div>
 </td></tr></table></div>
+<p>You can do this using <code class="docutils literal notranslate"><span class="pre">sed</span></code> inside the container:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docker-compose exec -T proxy sed -i s/service1/service2/ /var/lib/envoy/cds.yaml</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="step-6-check-envoy-uses-updated-configuration">
 <h2>Step 6: Check Envoy uses updated configuration<a class="headerlink" href="#step-6-check-envoy-uses-updated-configuration" title="Permalink to this headline">¶</a></h2>
