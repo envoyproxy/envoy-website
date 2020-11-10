@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Envoy admin interface &mdash; envoy 1.17.0-dev-1d6d68 documentation</title>
+  <title>Envoy admin interface &mdash; envoy 1.17.0-dev-8e6b17 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.17.0-dev-1d6d68
+                1.17.0-dev-8e6b17
               </div>
             
           
@@ -114,6 +114,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#stat-prefix"><code class="docutils literal notranslate"><span class="pre">stat_prefix</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#admin-endpoints-config-dump">Admin endpoints: <code class="docutils literal notranslate"><span class="pre">config_dump</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#admin-endpoints-stats">Admin endpoints: <code class="docutils literal notranslate"><span class="pre">stats</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#envoy-admin-web-ui">Envoy admin web UI</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="securing.html">Securing Envoy</a></li>
@@ -234,8 +235,8 @@ specify where to send admin access logs.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>The Envoy admin endpoint can expose private information about the running service, and
-can also be used to shut it down.</p>
+<p>The Envoy admin endpoint can expose private information about the running service, allows modification
+of runtime settings and can also be used to shut the server down.</p>
 <p>As the endpoint is not authenticated it is essential that you limit access to it.</p>
 <p>You may wish to restrict the network address the admin server listens to in your own deployment as part
 of your strategy to limit access to this endpoint.</p>
@@ -329,7 +330,7 @@ configuration in <code class="docutils literal notranslate"><span class="pre">js
 <p>To view the <a class="reference internal" href="../../api-v3/config/core/v3/address.proto.html#envoy-v3-api-msg-config-core-v3-socketaddress"><span class="std std-ref">socket_address</span></a> of the first
 <a class="reference internal" href="../../api-v3/admin/v3/config_dump.proto.html#envoy-v3-api-field-admin-v3-listenersconfigdump-dynamic-listeners"><span class="std std-ref">dynamic_listener</span></a> currently configured,
 you could:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:19000/config_dump?resource<span class="o">=</span>dynamic_listeners <span class="p">|</span> jq <span class="s1">&#39;.configs[0].active_state.listener.address&#39;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:9901/config_dump?resource<span class="o">=</span>dynamic_listeners <span class="p">|</span> jq <span class="s1">&#39;.configs[0].active_state.listener.address&#39;</span>
 <span class="go">{</span>
 <span class="go">  &quot;socket_address&quot;: {</span>
 <span class="go">    &quot;address&quot;: &quot;0.0.0.0&quot;,</span>
@@ -374,7 +375,7 @@ and the values are one of <code class="docutils literal notranslate"><span class
 </div>
 <p>The stats endpoint accepts a <a class="reference internal" href="../../operations/admin.html#operations-admin-interface-stats"><span class="std std-ref">filter</span></a> argument, which
 is evaluated as a regular expression:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:19000/stats?filter<span class="o">=</span><span class="s1">&#39;^http\.ingress_http&#39;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:9901/stats?filter<span class="o">=</span><span class="s1">&#39;^http\.ingress_http&#39;</span>
 <span class="go">http.ingress_http.downstream_cx_active: 0</span>
 <span class="go">http.ingress_http.downstream_cx_delayed_close_timeout: 0</span>
 <span class="go">http.ingress_http.downstream_cx_destroy: 3</span>
@@ -448,7 +449,7 @@ is evaluated as a regular expression:</p>
 </pre></div>
 </div>
 <p>You can also pass a <a class="reference internal" href="../../operations/admin.html#operations-admin-interface-stats"><span class="std std-ref">format</span></a> argument, for example to return <code class="docutils literal notranslate"><span class="pre">json</span></code>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s <span class="s2">&quot;http://localhost:19000/stats?filter=http.ingress_http.rq&amp;format=json&quot;</span> <span class="p">|</span> jq <span class="s1">&#39;.stats&#39;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s <span class="s2">&quot;http://localhost:9901/stats?filter=http.ingress_http.rq&amp;format=json&quot;</span> <span class="p">|</span> jq <span class="s1">&#39;.stats&#39;</span>
 </pre></div>
 </div>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
@@ -471,6 +472,13 @@ is evaluated as a regular expression:</p>
 <span class="p">]</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="envoy-admin-web-ui">
+<h2>Envoy admin web UI<a class="headerlink" href="#envoy-admin-web-ui" title="Permalink to this headline">¶</a></h2>
+<p>Envoy also has a web user interface that allows you to view and modify settings and
+statistics.</p>
+<p>Point your browser to <a class="reference external" href="http://localhost:9901">http://localhost:9901</a>.</p>
+<img alt="../../_images/envoy-admin.png" src="../../_images/envoy-admin.png" />
 </div>
 </div>
 
