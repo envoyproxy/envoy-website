@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Configuration: Static &mdash; envoy 1.17.0-dev-36da8f documentation</title>
+  <title>Configuration: Static &mdash; envoy 1.17.0-dev-3c8e56 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.17.0-dev-36da8f
+                1.17.0-dev-3c8e56
               </div>
             
           
@@ -268,6 +268,11 @@ on port <code class="docutils literal notranslate"><span class="pre">10000</span
 </span><span class="hll">        <span class="nt">typed_config</span><span class="p">:</span>
 </span><span class="hll">          <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager</span>
 </span><span class="hll">          <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ingress_http</span>
+</span><span class="hll">          <span class="nt">access_log</span><span class="p">:</span>
+</span><span class="hll">          <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.access_loggers.file</span>
+</span><span class="hll">            <span class="nt">typed_config</span><span class="p">:</span>
+</span><span class="hll">              <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.access_loggers.file.v3.FileAccessLog</span>
+</span><span class="hll">              <span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/dev/stdout</span>
 </span><span class="hll">          <span class="nt">http_filters</span><span class="p">:</span>
 </span><span class="hll">          <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.router</span>
 </span><span class="hll">          <span class="nt">route_config</span><span class="p">:</span>
@@ -276,13 +281,8 @@ on port <code class="docutils literal notranslate"><span class="pre">10000</span
 </span><span class="hll">            <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_service</span>
 </span><span class="hll">              <span class="nt">domains</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;*&quot;</span><span class="p p-Indicator">]</span>
 </span><span class="hll">              <span class="nt">routes</span><span class="p">:</span>
-</span><span class="hll">              <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span>
-</span><span class="hll">                  <span class="nt">prefix</span><span class="p">:</span> <span class="s">&quot;/&quot;</span>
-</span><span class="hll">                <span class="nt">route</span><span class="p">:</span>
-</span><span class="hll">                  <span class="nt">host_rewrite_literal</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">www.envoyproxy.io</span>
-</span><span class="hll">                  <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service_envoyproxy_io</span>
-</span>
-  <span class="nt">clusters</span><span class="p">:</span>
+</span>              <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span>
+                  <span class="nt">prefix</span><span class="p">:</span> <span class="s">&quot;/&quot;</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -311,9 +311,14 @@ proxies over <code class="docutils literal notranslate"><span class="pre">TLS</s
 45
 46
 47
-48</pre></div></td><td class="code"><div class="highlight"><pre><span></span>                  <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service_envoyproxy_io</span>
-
-<span class="hll"> <span class=" -Error"> </span><span class="nt">clusters</span><span class="p">:</span>
+48</pre></div></td><td class="code"><div class="highlight"><pre><span></span>              <span class="nt">routes</span><span class="p">:</span>
+              <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span>
+<span class="hll">                  <span class="nt">prefix</span><span class="p">:</span> <span class="s">&quot;/&quot;</span>
+</span><span class="hll">                <span class="nt">route</span><span class="p">:</span>
+</span><span class="hll">                  <span class="nt">host_rewrite_literal</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">www.envoyproxy.io</span>
+</span><span class="hll">                  <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service_envoyproxy_io</span>
+</span><span class="hll">
+</span><span class="hll"> <span class=" -Error"> </span><span class="nt">clusters</span><span class="p">:</span>
 </span><span class="hll">  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service_envoyproxy_io</span>
 </span><span class="hll">    <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30s</span>
 </span><span class="hll">    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">LOGICAL_DNS</span>
@@ -328,11 +333,6 @@ proxies over <code class="docutils literal notranslate"><span class="pre">TLS</s
 </span><span class="hll">              <span class="nt">socket_address</span><span class="p">:</span>
 </span><span class="hll">                <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">www.envoyproxy.io</span>
 </span><span class="hll">                <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">443</span>
-</span><span class="hll">    <span class="nt">transport_socket</span><span class="p">:</span>
-</span><span class="hll">      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.tls</span>
-</span><span class="hll">      <span class="nt">typed_config</span><span class="p">:</span>
-</span><span class="hll">        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext</span>
-</span><span class="hll">        <span class="nt">sni</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">www.envoyproxy.io</span>
 </span></pre></div>
 </td></tr></table></div>
 </div>
