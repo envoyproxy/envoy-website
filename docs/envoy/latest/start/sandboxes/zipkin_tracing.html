@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Zipkin Tracing &mdash; envoy 1.17.0-dev-de8334 documentation</title>
+  <title>Zipkin Tracing &mdash; envoy 1.17.0-dev-e4eec6 documentation</title>
   
 
   
@@ -49,7 +49,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="SkyWalking Tracing" href="skywalking_tracing.html" />
-    <link rel="prev" title="WASM C++ filter" href="wasm-cc.html" /> 
+    <link rel="prev" title="WebSockets" href="websocket.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                1.17.0-dev-de8334
+                1.17.0-dev-e4eec6
               </div>
             
           
@@ -129,6 +129,7 @@
 <li class="toctree-l3"><a class="reference internal" href="redis.html">Redis Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tls.html">TLS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wasm-cc.html">WASM C++ filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="websocket.html">WebSockets</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Zipkin Tracing</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#step-1-install-docker">Step 1: Install Docker</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#step-2-clone-the-envoy-repo">Step 2: Clone the Envoy repo</a></li>
@@ -226,11 +227,11 @@ service1 makes an API call to service2 before returning a response.
 The three containers will be deployed inside a virtual network called <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code>.</p>
 <p>All incoming requests are routed via the front Envoy, which is acting as a reverse proxy
 sitting on the edge of the <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code> network. Port <code class="docutils literal notranslate"><span class="pre">8000</span></code> is exposed
-by docker compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/de8334227416ebc16a344e3b3abab2998cb34eeb//examples/zipkin-tracing/docker-compose.yaml">/examples/zipkin-tracing/docker-compose.yaml</a>). Notice that
+by docker compose (see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/e4eec652eb88a3bbe60ebe5cc49338df6f7ac0bf//examples/zipkin-tracing/docker-compose.yaml">/examples/zipkin-tracing/docker-compose.yaml</a>). Notice that
 all Envoys are configured to collect request traces (e.g., http_connection_manager/config/tracing setup in
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/de8334227416ebc16a344e3b3abab2998cb34eeb//examples/zipkin-tracing/front-envoy-zipkin.yaml">/examples/zipkin-tracing/front-envoy-zipkin.yaml</a>) and setup to propagate the spans generated
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/e4eec652eb88a3bbe60ebe5cc49338df6f7ac0bf//examples/zipkin-tracing/front-envoy-zipkin.yaml">/examples/zipkin-tracing/front-envoy-zipkin.yaml</a>) and setup to propagate the spans generated
 by the Zipkin tracer to a Zipkin cluster (trace driver setup
-in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/de8334227416ebc16a344e3b3abab2998cb34eeb//examples/zipkin-tracing/front-envoy-zipkin.yaml">/examples/zipkin-tracing/front-envoy-zipkin.yaml</a>).</p>
+in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/e4eec652eb88a3bbe60ebe5cc49338df6f7ac0bf//examples/zipkin-tracing/front-envoy-zipkin.yaml">/examples/zipkin-tracing/front-envoy-zipkin.yaml</a>).</p>
 <p>Before routing a request to the appropriate service Envoy or the application, Envoy will take
 care of generating the appropriate spans for tracing (parent/child/shared context spans).
 At a high-level, each span records the latency of upstream API calls as well as information
@@ -239,7 +240,7 @@ needed to correlate the span with other related spans (e.g., the trace ID).</p>
 propagating the traces to the Zipkin service cluster. However, in order to fully take advantage
 of tracing, the application has to propagate trace headers that Envoy generates, while making
 calls to other services. In the sandbox we have provided, the simple flask app
-(see trace function in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/de8334227416ebc16a344e3b3abab2998cb34eeb//examples/front-proxy/service.py">/examples/front-proxy/service.py</a>) acting as service1 propagates
+(see trace function in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/e4eec652eb88a3bbe60ebe5cc49338df6f7ac0bf//examples/front-proxy/service.py">/examples/front-proxy/service.py</a>) acting as service1 propagates
 the trace headers while making an outbound call to service2.</p>
 <p>The following documentation runs through the setup of Envoy described above.</p>
 <div class="section" id="step-1-install-docker">
@@ -337,7 +338,7 @@ to service2, as well as the latency incurred at each hop.</p>
         <a href="skywalking_tracing.html" class="btn btn-neutral float-right" title="SkyWalking Tracing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="wasm-cc.html" class="btn btn-neutral float-left" title="WASM C++ filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="websocket.html" class="btn btn-neutral float-left" title="WebSockets" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
