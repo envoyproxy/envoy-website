@@ -9,7 +9,7 @@ Common TLS configuration
 extensions.transport_sockets.tls.v3.TlsParameters
 -------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.TlsParameters proto] <https://github.com/envoyproxy/envoy/blob/93aa95749894c8adecf3c213b0378b1187eec860/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L23>`_
+`[extensions.transport_sockets.tls.v3.TlsParameters proto] <https://github.com/envoyproxy/envoy/blob/122257ef6ade0009feafc3c9142d480260fe069f/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L23>`_
 
 
 .. code-block:: json
@@ -104,7 +104,7 @@ ecdh_curves
 Enum extensions.transport_sockets.tls.v3.TlsParameters.TlsProtocol
 ------------------------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.TlsParameters.TlsProtocol proto] <https://github.com/envoyproxy/envoy/blob/93aa95749894c8adecf3c213b0378b1187eec860/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L26>`_
+`[extensions.transport_sockets.tls.v3.TlsParameters.TlsProtocol proto] <https://github.com/envoyproxy/envoy/blob/122257ef6ade0009feafc3c9142d480260fe069f/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L26>`_
 
 
 .. _envoy_v3_api_enum_value_extensions.transport_sockets.tls.v3.TlsParameters.TlsProtocol.TLS_AUTO:
@@ -143,7 +143,7 @@ TLSv1_3
 extensions.transport_sockets.tls.v3.PrivateKeyProvider
 ------------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.PrivateKeyProvider proto] <https://github.com/envoyproxy/envoy/blob/93aa95749894c8adecf3c213b0378b1187eec860/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L112>`_
+`[extensions.transport_sockets.tls.v3.PrivateKeyProvider proto] <https://github.com/envoyproxy/envoy/blob/122257ef6ade0009feafc3c9142d480260fe069f/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L112>`_
 
 BoringSSL private key method configuration. The private key methods are used for external
 (potentially asynchronous) signing and decryption operations. Some use cases for private key
@@ -177,7 +177,7 @@ typed_config
 extensions.transport_sockets.tls.v3.TlsCertificate
 --------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.TlsCertificate proto] <https://github.com/envoyproxy/envoy/blob/93aa95749894c8adecf3c213b0378b1187eec860/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L131>`_
+`[extensions.transport_sockets.tls.v3.TlsCertificate proto] <https://github.com/envoyproxy/envoy/blob/122257ef6ade0009feafc3c9142d480260fe069f/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L131>`_
 
 
 .. code-block:: json
@@ -185,6 +185,7 @@ extensions.transport_sockets.tls.v3.TlsCertificate
   {
     "certificate_chain": "{...}",
     "private_key": "{...}",
+    "watched_directory": "{...}",
     "private_key_provider": "{...}",
     "password": "{...}",
     "ocsp_staple": "{...}"
@@ -195,11 +196,34 @@ extensions.transport_sockets.tls.v3.TlsCertificate
 certificate_chain
   (:ref:`config.core.v3.DataSource <envoy_v3_api_msg_config.core.v3.DataSource>`) The TLS certificate chain.
   
+  If *certificate_chain* is a filesystem path, a watch will be added to the
+  parent directory for any file moves to support rotation. This currently
+  only applies to dynamic secrets, when the *TlsCertificate* is delivered via
+  SDS.
+  
   
 .. _envoy_v3_api_field_extensions.transport_sockets.tls.v3.TlsCertificate.private_key:
 
 private_key
   (:ref:`config.core.v3.DataSource <envoy_v3_api_msg_config.core.v3.DataSource>`) The TLS private key.
+  
+  If *private_key* is a filesystem path, a watch will be added to the parent
+  directory for any file moves to support rotation. This currently only
+  applies to dynamic secrets, when the *TlsCertificate* is delivered via SDS.
+  
+  
+.. _envoy_v3_api_field_extensions.transport_sockets.tls.v3.TlsCertificate.watched_directory:
+
+watched_directory
+  (:ref:`config.core.v3.WatchedDirectory <envoy_v3_api_msg_config.core.v3.WatchedDirectory>`) If specified, updates of file-based *certificate_chain* and *private_key*
+  sources will be triggered by this watch. The certificate/key pair will be
+  read together and validated for atomic read consistency (i.e. no
+  intervening modification occurred between cert/key read, verified by file
+  hash comparisons). This allows explicit control over the path watched, by
+  default the parent directories of the filesystem paths in
+  *certificate_chain* and *private_key* are watched if this field is not
+  specified. This only applies when a *TlsCertificate* is delivered by SDS
+  with references to filesystem paths.
   
   
 .. _envoy_v3_api_field_extensions.transport_sockets.tls.v3.TlsCertificate.private_key_provider:
@@ -237,7 +261,7 @@ ocsp_staple
 extensions.transport_sockets.tls.v3.TlsSessionTicketKeys
 --------------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.TlsSessionTicketKeys proto] <https://github.com/envoyproxy/envoy/blob/93aa95749894c8adecf3c213b0378b1187eec860/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L162>`_
+`[extensions.transport_sockets.tls.v3.TlsSessionTicketKeys proto] <https://github.com/envoyproxy/envoy/blob/122257ef6ade0009feafc3c9142d480260fe069f/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L182>`_
 
 
 .. code-block:: json
@@ -281,13 +305,14 @@ keys
 extensions.transport_sockets.tls.v3.CertificateValidationContext
 ----------------------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.CertificateValidationContext proto] <https://github.com/envoyproxy/envoy/blob/93aa95749894c8adecf3c213b0378b1187eec860/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L194>`_
+`[extensions.transport_sockets.tls.v3.CertificateValidationContext proto] <https://github.com/envoyproxy/envoy/blob/122257ef6ade0009feafc3c9142d480260fe069f/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L214>`_
 
 
 .. code-block:: json
 
   {
     "trusted_ca": "{...}",
+    "watched_directory": "{...}",
     "verify_certificate_spki": [],
     "verify_certificate_hash": [],
     "match_subject_alt_names": [],
@@ -321,6 +346,22 @@ trusted_ca
   
   See :ref:`the TLS overview <arch_overview_ssl_enabling_verification>` for a list of common
   system CA locations.
+  
+  If *trusted_ca* is a filesystem path, a watch will be added to the parent
+  directory for any file moves to support rotation. This currently only
+  applies to dynamic secrets, when the *CertificateValidationContext* is
+  delivered via SDS.
+  
+  
+.. _envoy_v3_api_field_extensions.transport_sockets.tls.v3.CertificateValidationContext.watched_directory:
+
+watched_directory
+  (:ref:`config.core.v3.WatchedDirectory <envoy_v3_api_msg_config.core.v3.WatchedDirectory>`) If specified, updates of a file-based *trusted_ca* source will be triggered
+  by this watch. This allows explicit control over the path watched, by
+  default the parent directory of the filesystem path in *trusted_ca* is
+  watched if this field is not specified. This only applies when a
+  *CertificateValidationContext* is delivered by SDS with references to
+  filesystem paths.
   
   
 .. _envoy_v3_api_field_extensions.transport_sockets.tls.v3.CertificateValidationContext.verify_certificate_spki:
@@ -445,7 +486,7 @@ trust_chain_verification
 Enum extensions.transport_sockets.tls.v3.CertificateValidationContext.TrustChainVerification
 --------------------------------------------------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.CertificateValidationContext.TrustChainVerification proto] <https://github.com/envoyproxy/envoy/blob/93aa95749894c8adecf3c213b0378b1187eec860/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L199>`_
+`[extensions.transport_sockets.tls.v3.CertificateValidationContext.TrustChainVerification proto] <https://github.com/envoyproxy/envoy/blob/122257ef6ade0009feafc3c9142d480260fe069f/api/envoy/extensions/transport_sockets/tls/v3/common.proto#L219>`_
 
 Peer certificate verification mode.
 
