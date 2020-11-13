@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Fault Injection Filter &mdash; envoy 1.17.0-dev-4068ae documentation</title>
+  <title>Fault injection filter &mdash; envoy 1.17.0-dev-93aa95 documentation</title>
   
 
   
@@ -37,8 +37,6 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/language_data.js"></script>
-        <script src="../../_static/sphinx_tabs/semantic-ui-2.4.1/tab.min.js"></script>
-        <script src="../../_static/sphinx_tabs/tabs.js"></script>
         <script src="../../_static/clipboard.min.js"></script>
         <script src="../../_static/copybutton.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -48,8 +46,8 @@
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Front Proxy" href="front_proxy.html" />
-    <link rel="prev" title="External Authorization Filter" href="ext_authz.html" /> 
+    <link rel="next" title="Front proxy" href="front_proxy.html" />
+    <link rel="prev" title="External authorization (ext_authz) filter" href="ext_authz.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -76,7 +74,7 @@
             
             
               <div class="version">
-                1.17.0-dev-4068ae
+                1.17.0-dev-93aa95
               </div>
             
           
@@ -110,37 +108,36 @@
 <li class="toctree-l2"><a class="reference internal" href="../docker.html">Using the Envoy Docker Image</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../building.html">Building</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Sandboxes</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cors.html">CORS Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="setup.html">Setup the sandbox environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cors.html">CORS filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="double-proxy.html">Double proxy (with <code class="docutils literal notranslate"><span class="pre">mTLS</span></code> encryption)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-filesystem.html">Dynamic configuration (filesystem)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-control-plane.html">Dynamic configuration (control plane)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ext_authz.html">External Authorization Filter</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Fault Injection Filter</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#step-1-install-docker">Step 1: Install Docker</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-2-clone-the-envoy-repo">Step 2: Clone the Envoy repo</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-3-start-all-of-our-containers">Step 3: Start all of our containers</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-4-start-sending-continuous-stream-of-http-requests">Step 4: Start sending continuous stream of HTTP requests</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-5-test-envoy-s-abort-fault-injection">Step 5: Test Envoy’s abort fault injection</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-6-test-envoy-s-delay-fault-injection">Step 6: Test Envoy’s delay fault injection</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-7-check-the-current-runtime-filesystem">Step 7: Check the current runtime filesystem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ext_authz.html">External authorization (<code class="docutils literal notranslate"><span class="pre">ext_authz</span></code>) filter</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Fault injection filter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#step-1-start-all-of-our-containers">Step 1: Start all of our containers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-2-start-sending-continuous-stream-of-http-requests">Step 2: Start sending continuous stream of HTTP requests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-3-test-envoy-s-abort-fault-injection">Step 3: Test Envoy’s abort fault injection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-4-test-envoy-s-delay-fault-injection">Step 4: Test Envoy’s delay fault injection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-5-check-the-current-runtime-filesystem">Step 5: Check the current runtime filesystem</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front Proxy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC Bridge</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger Native Tracing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaeger_tracing.html">Jaeger Tracing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="load_reporting_service.html">Load Reporting Service (LRS)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mysql.html">MySQL Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="postgres.html">Postgres Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tls.html">TLS</a></li>
-<li class="toctree-l3"><a class="reference internal" href="wasm-cc.html">WASM C++ filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger native tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_tracing.html">Jaeger tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="load_reporting_service.html">Load reporting service (<code class="docutils literal notranslate"><span class="pre">LRS</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mysql.html">MySQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="postgres.html">PostgreSQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skywalking_tracing.html">SkyWalking tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls.html">Transport layer security (<code class="docutils literal notranslate"><span class="pre">TLS</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wasm-cc.html">Wasm C++ filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="websocket.html">WebSockets</a></li>
-<li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">Zipkin Tracing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="skywalking_tracing.html">SkyWalking Tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">Zipkin tracing</a></li>
 </ul>
 </li>
 </ul>
@@ -201,7 +198,7 @@
         
           <li><a href="index.html">Sandboxes</a> &raquo;</li>
         
-      <li>Fault Injection Filter</li>
+      <li>Fault injection filter</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -221,44 +218,22 @@
            <div itemprop="articleBody">
             
   <div class="section" id="fault-injection-filter">
-<span id="install-sandboxes-fault-injection"></span><h1>Fault Injection Filter<a class="headerlink" href="#fault-injection-filter" title="Permalink to this headline">¶</a></h1>
-<p>This simple example demonstrates Envoy’s <a class="reference internal" href="../../configuration/http/http_filters/fault_filter.html#config-http-filters-fault-injection"><span class="std std-ref">fault injection</span></a> capability using Envoy’s <a class="reference internal" href="../../configuration/operations/runtime.html#config-runtime"><span class="std std-ref">runtime support</span></a> to control the feature.</p>
-<p>The following documentation runs through the setup of Envoy described above.</p>
-<div class="section" id="step-1-install-docker">
-<h2>Step 1: Install Docker<a class="headerlink" href="#step-1-install-docker" title="Permalink to this headline">¶</a></h2>
-<p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> installed.</p>
-<p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
+<span id="install-sandboxes-fault-injection"></span><h1>Fault injection filter<a class="headerlink" href="#fault-injection-filter" title="Permalink to this headline">¶</a></h1>
+<div class="sidebar">
+<p class="sidebar-title">Requirements</p>
+<dl class="simple">
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup"><span class="std std-ref">Sandbox environment</span></a></dt><dd><p>Setup your sandbox environment with Docker and Docker Compose,
+and clone the Envoy repository with Git.</p>
+</dd>
+</dl>
 </div>
-<div class="section" id="step-2-clone-the-envoy-repo">
-<h2>Step 2: Clone the Envoy repo<a class="headerlink" href="#step-2-clone-the-envoy-repo" title="Permalink to this headline">¶</a></h2>
-<p>If you have not cloned the Envoy repo, clone it with:</p>
-<div class="sphinx-tabs docutils container">
-<div class="ui top attached tabular menu sphinx-menu docutils container">
-<div class="active item sphinx-data-tab-U1NI docutils container">
-<div class="docutils container">
-<p>SSH</p>
-</div>
-</div>
-<div class="item sphinx-data-tab-SFRUUFM= docutils container">
-<div class="docutils container">
-<p>HTTPS</p>
-</div>
-</div>
-</div>
-<div class="ui bottom attached sphinx-tab tab segment code-tab sphinx-data-tab-U1NI active docutils container">
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone git@github.com:envoyproxy/envoy</span>
-</pre></div>
-</div>
-</div>
-<div class="ui bottom attached sphinx-tab tab segment code-tab sphinx-data-tab-SFRUUFM= docutils container">
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/envoyproxy/envoy.git</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="section" id="step-3-start-all-of-our-containers">
-<h2>Step 3: Start all of our containers<a class="headerlink" href="#step-3-start-all-of-our-containers" title="Permalink to this headline">¶</a></h2>
+<p>This simple example demonstrates Envoy’s <a class="reference internal" href="../../configuration/http/http_filters/fault_filter.html#config-http-filters-fault-injection"><span class="std std-ref">fault injection</span></a> capability
+using Envoy’s <a class="reference internal" href="../../configuration/operations/runtime.html#config-runtime"><span class="std std-ref">runtime support</span></a> to control the feature.</p>
+<p>It demonstrates fault injection that cause the request to abort and fail, and also faults that simply delay the
+response.</p>
+<div class="section" id="step-1-start-all-of-our-containers">
+<h2>Step 1: Start all of our containers<a class="headerlink" href="#step-1-start-all-of-our-containers" title="Permalink to this headline">¶</a></h2>
+<p>Change to the <code class="docutils literal notranslate"><span class="pre">examples/fault_injection</span></code> directory.</p>
 <p>Terminal 1</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
 <span class="go">envoy/examples/fault-injection</span>
@@ -273,8 +248,8 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="step-4-start-sending-continuous-stream-of-http-requests">
-<h2>Step 4: Start sending continuous stream of HTTP requests<a class="headerlink" href="#step-4-start-sending-continuous-stream-of-http-requests" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="step-2-start-sending-continuous-stream-of-http-requests">
+<h2>Step 2: Start sending continuous stream of HTTP requests<a class="headerlink" href="#step-2-start-sending-continuous-stream-of-http-requests" title="Permalink to this headline">¶</a></h2>
 <p>Terminal 2</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
 <span class="go">envoy/examples/fault-injection</span>
@@ -282,45 +257,57 @@
 <span class="gp">$</span> bash send_request.sh
 </pre></div>
 </div>
-<p>The script above (<code class="docutils literal notranslate"><span class="pre">send_request.sh</span></code>) sends a continuous stream of HTTP requests to Envoy, which in turn forwards the requests to the backend container. Fauilt injection is configured in Envoy but turned off (i.e. affects 0% of requests). Consequently, you should see a continuous sequence of HTTP 200 response codes.</p>
+<p>The script above (<a class="reference download internal" download="" href="../../_downloads/5f20ac88be2cfdca65127e2b8d63bb6a/send_request.sh"><code class="xref download docutils literal notranslate"><span class="pre">send_request.sh</span></code></a>) sends a continuous stream
+of HTTP requests to Envoy, which in turn forwards the requests to the backend container.</p>
+<p>Fault injection is configured in Envoy but turned off (i.e. affects 0% of requests).</p>
+<p>Consequently, you should see a continuous sequence of <code class="docutils literal notranslate"><span class="pre">HTTP</span> <span class="pre">200</span></code> response codes.</p>
 </div>
-<div class="section" id="step-5-test-envoy-s-abort-fault-injection">
-<h2>Step 5: Test Envoy’s abort fault injection<a class="headerlink" href="#step-5-test-envoy-s-abort-fault-injection" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="step-3-test-envoy-s-abort-fault-injection">
+<h2>Step 3: Test Envoy’s abort fault injection<a class="headerlink" href="#step-3-test-envoy-s-abort-fault-injection" title="Permalink to this headline">¶</a></h2>
 <p>Turn on <em>abort</em> fault injection via the runtime using the commands below.</p>
 <p>Terminal 3</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker-compose <span class="nb">exec</span> envoy bash
 <span class="gp">$</span> bash enable_abort_fault_injection.sh
 </pre></div>
 </div>
-<p>The script above enables HTTP aborts for 100% of requests. So, you should now see a continuous sequence of HTTP 503
-responses for all requests.</p>
+<p>The script above enables <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> aborts for 100% of requests.</p>
+<p>You should now see a continuous sequence of <code class="docutils literal notranslate"><span class="pre">HTTP</span> <span class="pre">503</span></code> responses for all requests.</p>
 <p>To disable the abort injection:</p>
 <p>Terminal 3</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> bash disable_abort_fault_injection.sh
 </pre></div>
 </div>
 </div>
-<div class="section" id="step-6-test-envoy-s-delay-fault-injection">
-<h2>Step 6: Test Envoy’s delay fault injection<a class="headerlink" href="#step-6-test-envoy-s-delay-fault-injection" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="step-4-test-envoy-s-delay-fault-injection">
+<h2>Step 4: Test Envoy’s delay fault injection<a class="headerlink" href="#step-4-test-envoy-s-delay-fault-injection" title="Permalink to this headline">¶</a></h2>
 <p>Turn on <em>delay</em> fault injection via the runtime using the commands below.</p>
 <p>Terminal 3</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker-compose <span class="nb">exec</span> envoy bash
 <span class="gp">$</span> bash enable_delay_fault_injection.sh
 </pre></div>
 </div>
-<p>The script above will add a 3-second delay to 50% of HTTP requests. You should now see a continuous sequence of HTTP 200 responses for all requests, but half of the requests will take 3 seconds to complete.</p>
+<p>The script above will add a 3-second delay to 50% of <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> requests.</p>
+<p>You should now see a continuous sequence of <code class="docutils literal notranslate"><span class="pre">HTTP</span> <span class="pre">200</span></code> responses for all requests, but half of the requests
+will take 3 seconds to complete.</p>
 <p>To disable the delay injection:</p>
 <p>Terminal 3</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> bash disable_delay_fault_injection.sh
 </pre></div>
 </div>
 </div>
-<div class="section" id="step-7-check-the-current-runtime-filesystem">
-<h2>Step 7: Check the current runtime filesystem<a class="headerlink" href="#step-7-check-the-current-runtime-filesystem" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="step-5-check-the-current-runtime-filesystem">
+<h2>Step 5: Check the current runtime filesystem<a class="headerlink" href="#step-5-check-the-current-runtime-filesystem" title="Permalink to this headline">¶</a></h2>
 <p>To see the current runtime filesystem overview:</p>
 <p>Terminal 3</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> tree /srv/runtime
 </pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="../../configuration/http/http_filters/fault_filter.html#config-http-filters-fault-injection"><span class="std std-ref">Fault injection</span></a></dt><dd><p>Learn more about Envoy’s <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> fault injection filter.</p>
+</dd>
+</dl>
 </div>
 </div>
 </div>
@@ -333,10 +320,10 @@ responses for all requests.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="front_proxy.html" class="btn btn-neutral float-right" title="Front Proxy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="front_proxy.html" class="btn btn-neutral float-right" title="Front proxy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="ext_authz.html" class="btn btn-neutral float-left" title="External Authorization Filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="ext_authz.html" class="btn btn-neutral float-left" title="External authorization (ext_authz) filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

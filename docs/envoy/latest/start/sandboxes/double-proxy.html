@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Double proxy (with mTLS encryption) &mdash; envoy 1.17.0-dev-4068ae documentation</title>
+  <title>Double proxy (with mTLS encryption) &mdash; envoy 1.17.0-dev-93aa95 documentation</title>
   
 
   
@@ -37,8 +37,6 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/language_data.js"></script>
-        <script src="../../_static/sphinx_tabs/semantic-ui-2.4.1/tab.min.js"></script>
-        <script src="../../_static/sphinx_tabs/tabs.js"></script>
         <script src="../../_static/clipboard.min.js"></script>
         <script src="../../_static/copybutton.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -49,7 +47,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Dynamic configuration (filesystem)" href="dynamic-configuration-filesystem.html" />
-    <link rel="prev" title="CSRF Filter" href="csrf.html" /> 
+    <link rel="prev" title="CSRF filter" href="csrf.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -76,7 +74,7 @@
             
             
               <div class="version">
-                1.17.0-dev-4068ae
+                1.17.0-dev-93aa95
               </div>
             
           
@@ -110,38 +108,37 @@
 <li class="toctree-l2"><a class="reference internal" href="../docker.html">Using the Envoy Docker Image</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../building.html">Building</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Sandboxes</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cors.html">CORS Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="setup.html">Setup the sandbox environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cors.html">CORS filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF filter</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Double proxy (with <code class="docutils literal notranslate"><span class="pre">mTLS</span></code> encryption)</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#step-1-install-docker">Step 1: Install Docker</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-2-clone-the-envoy-repo">Step 2: Clone the Envoy repo</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-3-create-a-certificate-authority">Step 3: Create a certificate authority</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-4-create-a-domain-key">Step 4: Create a domain key</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-5-generate-certificate-signing-requests-for-the-proxies">Step 5: Generate certificate signing requests for the proxies</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-6-sign-the-proxy-certificates">Step 6: Sign the proxy certificates</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-7-start-all-of-our-containers">Step 7: Start all of our containers</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-8-check-the-flask-app-can-connect-to-the-database">Step 8: Check the flask app can connect to the database</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-1-create-a-certificate-authority">Step 1: Create a certificate authority</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-2-create-a-domain-key">Step 2: Create a domain key</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-3-generate-certificate-signing-requests-for-the-proxies">Step 3: Generate certificate signing requests for the proxies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-4-sign-the-proxy-certificates">Step 4: Sign the proxy certificates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-5-start-all-of-our-containers">Step 5: Start all of our containers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-6-check-the-flask-app-can-connect-to-the-database">Step 6: Check the flask app can connect to the database</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-filesystem.html">Dynamic configuration (filesystem)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-control-plane.html">Dynamic configuration (control plane)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ext_authz.html">External Authorization Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault Injection Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front Proxy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC Bridge</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger Native Tracing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaeger_tracing.html">Jaeger Tracing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="load_reporting_service.html">Load Reporting Service (LRS)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mysql.html">MySQL Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="postgres.html">Postgres Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tls.html">TLS</a></li>
-<li class="toctree-l3"><a class="reference internal" href="wasm-cc.html">WASM C++ filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ext_authz.html">External authorization (<code class="docutils literal notranslate"><span class="pre">ext_authz</span></code>) filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault injection filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger native tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_tracing.html">Jaeger tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="load_reporting_service.html">Load reporting service (<code class="docutils literal notranslate"><span class="pre">LRS</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mysql.html">MySQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="postgres.html">PostgreSQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skywalking_tracing.html">SkyWalking tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls.html">Transport layer security (<code class="docutils literal notranslate"><span class="pre">TLS</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wasm-cc.html">Wasm C++ filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="websocket.html">WebSockets</a></li>
-<li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">Zipkin Tracing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="skywalking_tracing.html">SkyWalking Tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">Zipkin tracing</a></li>
 </ul>
 </li>
 </ul>
@@ -223,6 +220,18 @@
             
   <div class="section" id="double-proxy-with-mtls-encryption">
 <span id="install-sandboxes-double-proxy"></span><h1>Double proxy (with <code class="docutils literal notranslate"><span class="pre">mTLS</span></code> encryption)<a class="headerlink" href="#double-proxy-with-mtls-encryption" title="Permalink to this headline">¶</a></h1>
+<div class="sidebar">
+<p class="sidebar-title">Requirements</p>
+<dl class="simple">
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup"><span class="std std-ref">Sandbox environment</span></a></dt><dd><p>Setup your sandbox environment with Docker and Docker Compose,
+and clone the Envoy repository with Git.</p>
+</dd>
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup-curl"><span class="std std-ref">curl</span></a></dt><dd><p>Used to make <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> requests.</p>
+</dd>
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup-openssl"><span class="std std-ref">openssl</span></a></dt><dd><p>Generate <code class="docutils literal notranslate"><span class="pre">SSL</span></code> keys and certificates.</p>
+</dd>
+</dl>
+</div>
 <p>This sandbox demonstrates a basic “double proxy” configuration, in which a simple Flask app
 connects to a PostgreSQL database, with two Envoy proxies in between.</p>
 <p><code class="docutils literal notranslate"><span class="pre">Envoy</span> <span class="pre">(front)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Flask</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Envoy</span> <span class="pre">(postgres-front)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Envoy</span> <span class="pre">(postgres-back)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">PostgreSQL</span></code></p>
@@ -237,43 +246,9 @@ using <code class="docutils literal notranslate"><span class="pre">mTLS</span></
 <p>In order to  use the sandbox you will first need to generate the necessary <code class="docutils literal notranslate"><span class="pre">SSL</span></code> keys and certificates.</p>
 <p>This example walks through creating a certificate authority, and using it to create a domain key and sign
 certificates for the proxies.</p>
-<p>The following documentation runs through the setup of Envoy described above.</p>
-<div class="section" id="step-1-install-docker">
-<h2>Step 1: Install Docker<a class="headerlink" href="#step-1-install-docker" title="Permalink to this headline">¶</a></h2>
-<p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> installed.</p>
-<p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
-</div>
-<div class="section" id="step-2-clone-the-envoy-repo">
-<h2>Step 2: Clone the Envoy repo<a class="headerlink" href="#step-2-clone-the-envoy-repo" title="Permalink to this headline">¶</a></h2>
-<p>If you have not cloned the Envoy repo, clone it with:</p>
-<div class="sphinx-tabs docutils container">
-<div class="ui top attached tabular menu sphinx-menu docutils container">
-<div class="active item sphinx-data-tab-U1NI docutils container">
-<div class="docutils container">
-<p>SSH</p>
-</div>
-</div>
-<div class="item sphinx-data-tab-SFRUUFM= docutils container">
-<div class="docutils container">
-<p>HTTPS</p>
-</div>
-</div>
-</div>
-<div class="ui bottom attached sphinx-tab tab segment code-tab sphinx-data-tab-U1NI active docutils container">
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone git@github.com:envoyproxy/envoy</span>
-</pre></div>
-</div>
-</div>
-<div class="ui bottom attached sphinx-tab tab segment code-tab sphinx-data-tab-SFRUUFM= docutils container">
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/envoyproxy/envoy.git</span>
-</pre></div>
-</div>
-</div>
-</div>
 <p>Change to the <code class="docutils literal notranslate"><span class="pre">examples/double-proxy</span></code> directory.</p>
-</div>
-<div class="section" id="step-3-create-a-certificate-authority">
-<h2>Step 3: Create a certificate authority<a class="headerlink" href="#step-3-create-a-certificate-authority" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="step-1-create-a-certificate-authority">
+<h2>Step 1: Create a certificate authority<a class="headerlink" href="#step-1-create-a-certificate-authority" title="Permalink to this headline">¶</a></h2>
 <p>First create a key for the certificate authority:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
 <span class="go">envoy/examples/double-proxy</span>
@@ -307,8 +282,8 @@ certificates for the proxies.</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="step-4-create-a-domain-key">
-<h2>Step 4: Create a domain key<a class="headerlink" href="#step-4-create-a-domain-key" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="step-2-create-a-domain-key">
+<h2>Step 2: Create a domain key<a class="headerlink" href="#step-2-create-a-domain-key" title="Permalink to this headline">¶</a></h2>
 <p>Create a key for the example domain:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> openssl genrsa -out certs/example.com.key <span class="m">2048</span>
 <span class="go">Generating RSA private key, 2048 bit long modulus (2 primes)</span>
@@ -318,8 +293,8 @@ certificates for the proxies.</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="step-5-generate-certificate-signing-requests-for-the-proxies">
-<h2>Step 5: Generate certificate signing requests for the proxies<a class="headerlink" href="#step-5-generate-certificate-signing-requests-for-the-proxies" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="step-3-generate-certificate-signing-requests-for-the-proxies">
+<h2>Step 3: Generate certificate signing requests for the proxies<a class="headerlink" href="#step-3-generate-certificate-signing-requests-for-the-proxies" title="Permalink to this headline">¶</a></h2>
 <p>Use the domain key to generate certificate signing requests for each of the proxies:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> openssl req -new -sha256 <span class="se">\</span>
      -key certs/example.com.key <span class="se">\</span>
@@ -332,8 +307,8 @@ certificates for the proxies.</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="step-6-sign-the-proxy-certificates">
-<h2>Step 6: Sign the proxy certificates<a class="headerlink" href="#step-6-sign-the-proxy-certificates" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="step-4-sign-the-proxy-certificates">
+<h2>Step 4: Sign the proxy certificates<a class="headerlink" href="#step-4-sign-the-proxy-certificates" title="Permalink to this headline">¶</a></h2>
 <p>You can now use the certificate authority that you created to sign the certificate requests.</p>
 <p>Note the <code class="docutils literal notranslate"><span class="pre">subjectAltName</span></code>. This is used for reciprocally matching and validating the certificates.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> openssl x509 -req <span class="se">\</span>
@@ -367,8 +342,8 @@ certificates for the proxies.</p>
 the proxies.</p>
 <p>They keys and certificates are stored in the <code class="docutils literal notranslate"><span class="pre">certs/</span></code> directory.</p>
 </div>
-<div class="section" id="step-7-start-all-of-our-containers">
-<h2>Step 7: Start all of our containers<a class="headerlink" href="#step-7-start-all-of-our-containers" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="step-5-start-all-of-our-containers">
+<h2>Step 5: Start all of our containers<a class="headerlink" href="#step-5-start-all-of-our-containers" title="Permalink to this headline">¶</a></h2>
 <p>Build and start the containers.</p>
 <p>This will load the required keys and certificates into the frontend and backend proxies.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
@@ -387,12 +362,21 @@ the proxies.</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="step-8-check-the-flask-app-can-connect-to-the-database">
-<h2>Step 8: Check the flask app can connect to the database<a class="headerlink" href="#step-8-check-the-flask-app-can-connect-to-the-database" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="step-6-check-the-flask-app-can-connect-to-the-database">
+<h2>Step 6: Check the flask app can connect to the database<a class="headerlink" href="#step-6-check-the-flask-app-can-connect-to-the-database" title="Permalink to this headline">¶</a></h2>
 <p>Checking the response at <a class="reference external" href="http://localhost:10000">http://localhost:10000</a>, you should see the output from the Flask app:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:10000
 <span class="go">Connected to Postgres, version: PostgreSQL 13.0 (Debian 13.0-1.pgdg100+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 8.3.0-6) 8.3.0, 64-bit</span>
 </pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="../quick-start/securing.html#start-quick-start-securing"><span class="std std-ref">Securing Envoy quick start guide</span></a></dt><dd><p>Outline of key concepts for securing Envoy.</p>
+</dd>
+<dt><a class="reference internal" href="tls.html#install-sandboxes-tls"><span class="std std-ref">TLS sandbox</span></a></dt><dd><p>Examples of various <code class="docutils literal notranslate"><span class="pre">TLS</span></code> termination patterns with Envoy.</p>
+</dd>
+</dl>
 </div>
 </div>
 </div>
@@ -408,7 +392,7 @@ the proxies.</p>
         <a href="dynamic-configuration-filesystem.html" class="btn btn-neutral float-right" title="Dynamic configuration (filesystem)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="csrf.html" class="btn btn-neutral float-left" title="CSRF Filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="csrf.html" class="btn btn-neutral float-left" title="CSRF filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

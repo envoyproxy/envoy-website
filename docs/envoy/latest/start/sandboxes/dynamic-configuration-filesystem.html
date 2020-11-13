@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Dynamic configuration (filesystem) &mdash; envoy 1.17.0-dev-4068ae documentation</title>
+  <title>Dynamic configuration (filesystem) &mdash; envoy 1.17.0-dev-93aa95 documentation</title>
   
 
   
@@ -37,8 +37,6 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/language_data.js"></script>
-        <script src="../../_static/sphinx_tabs/semantic-ui-2.4.1/tab.min.js"></script>
-        <script src="../../_static/sphinx_tabs/tabs.js"></script>
         <script src="../../_static/clipboard.min.js"></script>
         <script src="../../_static/copybutton.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -76,7 +74,7 @@
             
             
               <div class="version">
-                1.17.0-dev-4068ae
+                1.17.0-dev-93aa95
               </div>
             
           
@@ -110,37 +108,36 @@
 <li class="toctree-l2"><a class="reference internal" href="../docker.html">Using the Envoy Docker Image</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../building.html">Building</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Sandboxes</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cors.html">CORS Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="setup.html">Setup the sandbox environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cors.html">CORS filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="double-proxy.html">Double proxy (with <code class="docutils literal notranslate"><span class="pre">mTLS</span></code> encryption)</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Dynamic configuration (filesystem)</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#step-1-install-docker">Step 1: Install Docker</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-2-clone-the-envoy-repo">Step 2: Clone the Envoy repo</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-3-start-the-proxy-container">Step 3: Start the proxy container</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-4-check-web-response">Step 4: Check web response</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-5-dump-envoy-s-dynamic-active-clusters-config">Step 5: Dump Envoy’s <code class="docutils literal notranslate"><span class="pre">dynamic_active_clusters</span></code> config</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-5-edit-cds-yaml-inside-the-container-to-update-upstream-cluster">Step 5: Edit <code class="docutils literal notranslate"><span class="pre">cds.yaml</span></code> inside the container to update upstream cluster</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-6-check-envoy-uses-updated-configuration">Step 6: Check Envoy uses updated configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-1-start-the-proxy-container">Step 1: Start the proxy container</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-2-check-web-response">Step 2: Check web response</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-3-dump-envoy-s-dynamic-active-clusters-config">Step 3: Dump Envoy’s <code class="docutils literal notranslate"><span class="pre">dynamic_active_clusters</span></code> config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-4-edit-cds-yaml-inside-the-container-to-update-upstream-cluster">Step 4: Edit <code class="docutils literal notranslate"><span class="pre">cds.yaml</span></code> inside the container to update upstream cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-5-check-envoy-uses-updated-configuration">Step 5: Check Envoy uses updated configuration</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-control-plane.html">Dynamic configuration (control plane)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ext_authz.html">External Authorization Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault Injection Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front Proxy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC Bridge</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger Native Tracing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaeger_tracing.html">Jaeger Tracing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="load_reporting_service.html">Load Reporting Service (LRS)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mysql.html">MySQL Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="postgres.html">Postgres Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tls.html">TLS</a></li>
-<li class="toctree-l3"><a class="reference internal" href="wasm-cc.html">WASM C++ filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ext_authz.html">External authorization (<code class="docutils literal notranslate"><span class="pre">ext_authz</span></code>) filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault injection filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger native tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_tracing.html">Jaeger tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="load_reporting_service.html">Load reporting service (<code class="docutils literal notranslate"><span class="pre">LRS</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mysql.html">MySQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="postgres.html">PostgreSQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skywalking_tracing.html">SkyWalking tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls.html">Transport layer security (<code class="docutils literal notranslate"><span class="pre">TLS</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wasm-cc.html">Wasm C++ filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="websocket.html">WebSockets</a></li>
-<li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">Zipkin Tracing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="skywalking_tracing.html">SkyWalking Tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">Zipkin tracing</a></li>
 </ul>
 </li>
 </ul>
@@ -222,46 +219,24 @@
             
   <div class="section" id="dynamic-configuration-filesystem">
 <span id="install-sandboxes-dynamic-config-fs"></span><h1>Dynamic configuration (filesystem)<a class="headerlink" href="#dynamic-configuration-filesystem" title="Permalink to this headline">¶</a></h1>
+<div class="sidebar">
+<p class="sidebar-title">Requirements</p>
+<dl class="simple">
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup"><span class="std std-ref">Sandbox environment</span></a></dt><dd><p>Setup your sandbox environment with Docker and Docker Compose,
+and clone the Envoy repository with Git.</p>
+</dd>
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup-curl"><span class="std std-ref">curl</span></a></dt><dd><p>Used to make <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> requests.</p>
+</dd>
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup-jq"><span class="std std-ref">jq</span></a></dt><dd><p>Parse <code class="docutils literal notranslate"><span class="pre">json</span></code> output from the upstream echo servers.</p>
+</dd>
+</dl>
+</div>
 <p>This example walks through configuring Envoy using filesystem-based dynamic configuration.</p>
 <p>It demonstrates how configuration provided to Envoy dynamically can be updated without
 restarting the server.</p>
-<p>The following documentation runs through the setup of Envoy described above.</p>
-<div class="section" id="step-1-install-docker">
-<h2>Step 1: Install Docker<a class="headerlink" href="#step-1-install-docker" title="Permalink to this headline">¶</a></h2>
-<p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> installed.</p>
-<p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
-</div>
-<div class="section" id="step-2-clone-the-envoy-repo">
-<h2>Step 2: Clone the Envoy repo<a class="headerlink" href="#step-2-clone-the-envoy-repo" title="Permalink to this headline">¶</a></h2>
-<p>If you have not cloned the Envoy repo, clone it with:</p>
-<div class="sphinx-tabs docutils container">
-<div class="ui top attached tabular menu sphinx-menu docutils container">
-<div class="active item sphinx-data-tab-U1NI docutils container">
-<div class="docutils container">
-<p>SSH</p>
-</div>
-</div>
-<div class="item sphinx-data-tab-SFRUUFM= docutils container">
-<div class="docutils container">
-<p>HTTPS</p>
-</div>
-</div>
-</div>
-<div class="ui bottom attached sphinx-tab tab segment code-tab sphinx-data-tab-U1NI active docutils container">
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone git@github.com:envoyproxy/envoy</span>
-</pre></div>
-</div>
-</div>
-<div class="ui bottom attached sphinx-tab tab segment code-tab sphinx-data-tab-SFRUUFM= docutils container">
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/envoyproxy/envoy.git</span>
-</pre></div>
-</div>
-</div>
-</div>
+<div class="section" id="step-1-start-the-proxy-container">
+<h2>Step 1: Start the proxy container<a class="headerlink" href="#step-1-start-the-proxy-container" title="Permalink to this headline">¶</a></h2>
 <p>Change directory to <code class="docutils literal notranslate"><span class="pre">examples/dynamic-config-fs</span></code> in the Envoy repository.</p>
-</div>
-<div class="section" id="step-3-start-the-proxy-container">
-<h2>Step 3: Start the proxy container<a class="headerlink" href="#step-3-start-the-proxy-container" title="Permalink to this headline">¶</a></h2>
 <p>Build and start the containers.</p>
 <p>This should also start two upstream <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> echo servers, <code class="docutils literal notranslate"><span class="pre">service1</span></code> and <code class="docutils literal notranslate"><span class="pre">service2</span></code>.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
@@ -278,8 +253,8 @@ restarting the server.</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="step-4-check-web-response">
-<h2>Step 4: Check web response<a class="headerlink" href="#step-4-check-web-response" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="step-2-check-web-response">
+<h2>Step 2: Check web response<a class="headerlink" href="#step-2-check-web-response" title="Permalink to this headline">¶</a></h2>
 <p>You should be able to make a request to port <code class="docutils literal notranslate"><span class="pre">10000</span></code>, which will be served by <code class="docutils literal notranslate"><span class="pre">service1</span></code>.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:10000
 <span class="go">Request served by service1</span>
@@ -295,10 +270,10 @@ restarting the server.</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="step-5-dump-envoy-s-dynamic-active-clusters-config">
-<h2>Step 5: Dump Envoy’s <code class="docutils literal notranslate"><span class="pre">dynamic_active_clusters</span></code> config<a class="headerlink" href="#step-5-dump-envoy-s-dynamic-active-clusters-config" title="Permalink to this headline">¶</a></h2>
-<p>If you now dump the proxy’s <code class="docutils literal notranslate"><span class="pre">dynamic_active_clusters</span></code> configuration, you should see it is configured with
-the <code class="docutils literal notranslate"><span class="pre">example_proxy_cluster</span></code> pointing to <code class="docutils literal notranslate"><span class="pre">service1</span></code>.</p>
+<div class="section" id="step-3-dump-envoy-s-dynamic-active-clusters-config">
+<h2>Step 3: Dump Envoy’s <code class="docutils literal notranslate"><span class="pre">dynamic_active_clusters</span></code> config<a class="headerlink" href="#step-3-dump-envoy-s-dynamic-active-clusters-config" title="Permalink to this headline">¶</a></h2>
+<p>If you now dump the proxy’s <a class="reference internal" href="../../api-v3/admin/v3/config_dump.proto.html#envoy-v3-api-field-admin-v3-clustersconfigdump-dynamic-active-clusters"><span class="std std-ref">dynamic_active_clusters</span></a>
+configuration, you should see it is configured with the <code class="docutils literal notranslate"><span class="pre">example_proxy_cluster</span></code> pointing to <code class="docutils literal notranslate"><span class="pre">service1</span></code>.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:19000/config_dump <span class="p">|</span> jq -r <span class="s1">&#39;.configs[1].dynamic_active_clusters&#39;</span>
 </pre></div>
 </div>
@@ -336,13 +311,13 @@ the <code class="docutils literal notranslate"><span class="pre">example_proxy_c
 </pre></div>
 </div>
 </div>
-<div class="section" id="step-5-edit-cds-yaml-inside-the-container-to-update-upstream-cluster">
-<h2>Step 5: Edit <code class="docutils literal notranslate"><span class="pre">cds.yaml</span></code> inside the container to update upstream cluster<a class="headerlink" href="#step-5-edit-cds-yaml-inside-the-container-to-update-upstream-cluster" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="step-4-edit-cds-yaml-inside-the-container-to-update-upstream-cluster">
+<h2>Step 4: Edit <code class="docutils literal notranslate"><span class="pre">cds.yaml</span></code> inside the container to update upstream cluster<a class="headerlink" href="#step-4-edit-cds-yaml-inside-the-container-to-update-upstream-cluster" title="Permalink to this headline">¶</a></h2>
 <p>The example setup provides Envoy with two dynamic configuration files:</p>
 <ul class="simple">
-<li><p><a class="reference download internal" download="" href="../../_downloads/acabac94942e1dd4533bff2fb404e74c/cds.yaml"><code class="xref download docutils literal notranslate"><span class="pre">cds.yaml</span></code></a> to provide a <a class="reference internal" href="../../configuration/upstream/cluster_manager/cds.html#config-cluster-manager-cds"><span class="std std-ref">Cluster
+<li><p><a class="reference download internal" download="" href="../../_downloads/acabac94942e1dd4533bff2fb404e74c/cds.yaml"><code class="xref download docutils literal notranslate"><span class="pre">configs/cds.yaml</span></code></a> to provide a <a class="reference internal" href="../../configuration/upstream/cluster_manager/cds.html#config-cluster-manager-cds"><span class="std std-ref">Cluster
 discovery service (CDS)</span></a>.</p></li>
-<li><p><a class="reference download internal" download="" href="../../_downloads/d53562f4a3df46fa62541618ed6ea999/lds.yaml"><code class="xref download docutils literal notranslate"><span class="pre">lds.yaml</span></code></a> to provide a <a class="reference internal" href="../../configuration/listeners/lds.html#config-listeners-lds"><span class="std std-ref">Listener
+<li><p><a class="reference download internal" download="" href="../../_downloads/d53562f4a3df46fa62541618ed6ea999/lds.yaml"><code class="xref download docutils literal notranslate"><span class="pre">configs/lds.yaml</span></code></a> to provide a <a class="reference internal" href="../../configuration/listeners/lds.html#config-listeners-lds"><span class="std std-ref">Listener
 discovery service (CDS)</span></a>.</p></li>
 </ul>
 <p>Edit <code class="docutils literal notranslate"><span class="pre">cds.yaml</span></code> inside the container and change the cluster address
@@ -371,15 +346,15 @@ from <code class="docutils literal notranslate"><span class="pre">service1</span
 </pre></div>
 </div>
 </div>
-<div class="section" id="step-6-check-envoy-uses-updated-configuration">
-<h2>Step 6: Check Envoy uses updated configuration<a class="headerlink" href="#step-6-check-envoy-uses-updated-configuration" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="step-5-check-envoy-uses-updated-configuration">
+<h2>Step 5: Check Envoy uses updated configuration<a class="headerlink" href="#step-5-check-envoy-uses-updated-configuration" title="Permalink to this headline">¶</a></h2>
 <p>Checking the web response again, the request should now be handled by <code class="docutils literal notranslate"><span class="pre">service2</span></code>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl http://localhost:10000 <span class="p">|</span> grep <span class="s2">&quot;served by&quot;</span>
 <span class="go">Request served by service2</span>
 </pre></div>
 </div>
-<p>Dumping the <code class="docutils literal notranslate"><span class="pre">dynamic_active_clusters</span></code>, the <code class="docutils literal notranslate"><span class="pre">example_proxy_cluster</span></code> should now be
-configured to proxy to <code class="docutils literal notranslate"><span class="pre">service2</span></code>:</p>
+<p>Dumping the <a class="reference internal" href="../../api-v3/admin/v3/config_dump.proto.html#envoy-v3-api-field-admin-v3-clustersconfigdump-dynamic-active-clusters"><span class="std std-ref">dynamic_active_clusters</span></a>,
+the <code class="docutils literal notranslate"><span class="pre">example_proxy_cluster</span></code> should now be configured to proxy to <code class="docutils literal notranslate"><span class="pre">service2</span></code>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:19000/config_dump jq -r <span class="s1">&#39;.configs[1].dynamic_active_clusters&#39;</span>
 </pre></div>
 </div>
@@ -415,6 +390,17 @@ configured to proxy to <code class="docutils literal notranslate"><span class="p
   <span class="p">}</span>
 <span class="p">]</span>
 </pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="../quick-start/configuration-dynamic-filesystem.html#start-quick-start-dynamic-filesystem"><span class="std std-ref">Dynamic configuration (filesystem) quick start guide</span></a></dt><dd><p>Quick start guide to filesystem-based dynamic configuration of Envoy.</p>
+</dd>
+<dt><a class="reference internal" href="../quick-start/admin.html#start-quick-start-admin"><span class="std std-ref">Envoy admin quick start guide</span></a></dt><dd><p>Quick start guide to the Envoy admin interface.</p>
+</dd>
+<dt><a class="reference internal" href="dynamic-configuration-control-plane.html#install-sandboxes-dynamic-config-cp"><span class="std std-ref">Dynamic configuration (control plane) sandbox</span></a></dt><dd><p>Configure Envoy dynamically with the Go Control Plane.</p>
+</dd>
+</dl>
 </div>
 </div>
 </div>

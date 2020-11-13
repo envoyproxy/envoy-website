@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>External Authorization Filter &mdash; envoy 1.17.0-dev-4068ae documentation</title>
+  <title>External authorization (ext_authz) filter &mdash; envoy 1.17.0-dev-93aa95 documentation</title>
   
 
   
@@ -37,8 +37,6 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/language_data.js"></script>
-        <script src="../../_static/sphinx_tabs/semantic-ui-2.4.1/tab.min.js"></script>
-        <script src="../../_static/sphinx_tabs/tabs.js"></script>
         <script src="../../_static/clipboard.min.js"></script>
         <script src="../../_static/copybutton.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -48,7 +46,7 @@
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Fault Injection Filter" href="fault_injection.html" />
+    <link rel="next" title="Fault injection filter" href="fault_injection.html" />
     <link rel="prev" title="Dynamic configuration (control plane)" href="dynamic-configuration-control-plane.html" /> 
 </head>
 
@@ -76,7 +74,7 @@
             
             
               <div class="version">
-                1.17.0-dev-4068ae
+                1.17.0-dev-93aa95
               </div>
             
           
@@ -110,34 +108,33 @@
 <li class="toctree-l2"><a class="reference internal" href="../docker.html">Using the Envoy Docker Image</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../building.html">Building</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Sandboxes</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cors.html">CORS Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="setup.html">Setup the sandbox environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cors.html">CORS filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="double-proxy.html">Double proxy (with <code class="docutils literal notranslate"><span class="pre">mTLS</span></code> encryption)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-filesystem.html">Dynamic configuration (filesystem)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-control-plane.html">Dynamic configuration (control plane)</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">External Authorization Filter</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#step-1-install-docker">Step 1: Install Docker</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-2-clone-the-envoy-repo">Step 2: Clone the Envoy repo</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-3-start-all-of-our-containers">Step 3: Start all of our containers</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">External authorization (<code class="docutils literal notranslate"><span class="pre">ext_authz</span></code>) filter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#step-1-start-all-of-our-containers">Step 1: Start all of our containers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#step-4-access-the-upstream-service-behind-the-front-envoy">Step 4: Access the upstream-service behind the Front Envoy</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault Injection Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front Proxy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC Bridge</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger Native Tracing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jaeger_tracing.html">Jaeger Tracing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="load_reporting_service.html">Load Reporting Service (LRS)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mysql.html">MySQL Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="postgres.html">Postgres Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tls.html">TLS</a></li>
-<li class="toctree-l3"><a class="reference internal" href="wasm-cc.html">WASM C++ filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault injection filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger native tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_tracing.html">Jaeger tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="load_reporting_service.html">Load reporting service (<code class="docutils literal notranslate"><span class="pre">LRS</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mysql.html">MySQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="postgres.html">PostgreSQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skywalking_tracing.html">SkyWalking tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls.html">Transport layer security (<code class="docutils literal notranslate"><span class="pre">TLS</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wasm-cc.html">Wasm C++ filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="websocket.html">WebSockets</a></li>
-<li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">Zipkin Tracing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="skywalking_tracing.html">SkyWalking Tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">Zipkin tracing</a></li>
 </ul>
 </li>
 </ul>
@@ -198,7 +195,7 @@
         
           <li><a href="index.html">Sandboxes</a> &raquo;</li>
         
-      <li>External Authorization Filter</li>
+      <li>External authorization (<code class="docutils literal notranslate"><span class="pre">ext_authz</span></code>) filter</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -217,8 +214,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="external-authorization-filter">
-<span id="install-sandboxes-ext-authz"></span><h1>External Authorization Filter<a class="headerlink" href="#external-authorization-filter" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="external-authorization-ext-authz-filter">
+<span id="install-sandboxes-ext-authz"></span><h1>External authorization (<code class="docutils literal notranslate"><span class="pre">ext_authz</span></code>) filter<a class="headerlink" href="#external-authorization-ext-authz-filter" title="Permalink to this headline">¶</a></h1>
+<div class="sidebar">
+<p class="sidebar-title">Requirements</p>
+<dl class="simple">
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup"><span class="std std-ref">Sandbox environment</span></a></dt><dd><p>Setup your sandbox environment with Docker and Docker Compose,
+and clone the Envoy repository with Git.</p>
+</dd>
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup-curl"><span class="std std-ref">curl</span></a></dt><dd><p>Used to make <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> requests.</p>
+</dd>
+</dl>
+</div>
 <p>The External Authorization sandbox demonstrates Envoy’s <a class="reference internal" href="../../configuration/http/http_filters/ext_authz_filter.html#config-http-filters-ext-authz"><span class="std std-ref">ext_authz filter</span></a>
 capability to delegate authorization of incoming requests through Envoy to an external services.</p>
 <p>While ext_authz can also be employed as a network filter, this sandbox is limited to exhibit
@@ -227,42 +234,9 @@ ext_authz HTTP Filter, which supports to call HTTP or gRPC service.</p>
 service behind the proxy will be checked by an external HTTP or gRPC service. In this sandbox,
 for every authorized call, the external authorization service adds additional <code class="docutils literal notranslate"><span class="pre">x-current-user</span></code>
 header entry to the original request headers to be forwarded to the upstream service.</p>
-<p>The following documentation runs through the setup of Envoy described above.</p>
-<div class="section" id="step-1-install-docker">
-<h2>Step 1: Install Docker<a class="headerlink" href="#step-1-install-docker" title="Permalink to this headline">¶</a></h2>
-<p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> installed.</p>
-<p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
-</div>
-<div class="section" id="step-2-clone-the-envoy-repo">
-<h2>Step 2: Clone the Envoy repo<a class="headerlink" href="#step-2-clone-the-envoy-repo" title="Permalink to this headline">¶</a></h2>
-<p>If you have not cloned the Envoy repo, clone it with:</p>
-<div class="sphinx-tabs docutils container">
-<div class="ui top attached tabular menu sphinx-menu docutils container">
-<div class="active item sphinx-data-tab-U1NI docutils container">
-<div class="docutils container">
-<p>SSH</p>
-</div>
-</div>
-<div class="item sphinx-data-tab-SFRUUFM= docutils container">
-<div class="docutils container">
-<p>HTTPS</p>
-</div>
-</div>
-</div>
-<div class="ui bottom attached sphinx-tab tab segment code-tab sphinx-data-tab-U1NI active docutils container">
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone git@github.com:envoyproxy/envoy</span>
-</pre></div>
-</div>
-</div>
-<div class="ui bottom attached sphinx-tab tab segment code-tab sphinx-data-tab-SFRUUFM= docutils container">
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/envoyproxy/envoy.git</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="section" id="step-3-start-all-of-our-containers">
-<h2>Step 3: Start all of our containers<a class="headerlink" href="#step-3-start-all-of-our-containers" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="step-1-start-all-of-our-containers">
+<h2>Step 1: Start all of our containers<a class="headerlink" href="#step-1-start-all-of-our-containers" title="Permalink to this headline">¶</a></h2>
+<p>Change to the <code class="docutils literal notranslate"><span class="pre">examples/ext_authz</span></code> directory.</p>
 <p>To build this sandbox example and start the example services, run the following commands:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
 <span class="go">envoy/examples/ext_authz</span>
@@ -283,11 +257,14 @@ header entry to the original request headers to be forwarded to the upstream ser
 <p>This sandbox has multiple setup controlled by <code class="docutils literal notranslate"><span class="pre">FRONT_ENVOY_YAML</span></code> environment variable which
 points to the effective Envoy configuration to be used. The default value of <code class="docutils literal notranslate"><span class="pre">FRONT_ENVOY_YAML</span></code>
 can be defined in the <code class="docutils literal notranslate"><span class="pre">.env</span></code> file or provided inline when running the <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">up</span></code>
-command. For more information, pease take a look at <a class="reference external" href="https://docs.docker.com/compose/environment-variables">environment variables in Compose documentation</a>.</p>
+command.</p>
+<p>For more information, please take a look at
+<a class="reference external" href="https://docs.docker.com/compose/environment-variables">environment variables in Compose documentation</a>.</p>
 </div>
-<p>By default, <code class="docutils literal notranslate"><span class="pre">FRONT_ENVOY_YAML</span></code> points to <code class="docutils literal notranslate"><span class="pre">config/grpc-service/v3.yaml</span></code> file which bootstraps
-front-envoy with ext_authz HTTP filter with gRPC service <code class="docutils literal notranslate"><span class="pre">V3</span></code> (this is specified by <a class="reference internal" href="../../api-v3/extensions/filters/http/ext_authz/v3/ext_authz.proto.html#envoy-v3-api-field-extensions-filters-http-ext-authz-v3-extauthz-transport-api-version"><span class="std std-ref">transport_api_version field</span></a>).
-The possible values of <code class="docutils literal notranslate"><span class="pre">FRONT_ENVOY_YAML</span></code> can be found inside the <code class="docutils literal notranslate"><span class="pre">envoy/examples/ext_authz/config</span></code>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">FRONT_ENVOY_YAML</span></code> points to <a class="reference download internal" download="" href="../../_downloads/5e1c8a47a9568f7eeb931122b5070c1a/v3.yaml"><code class="xref download docutils literal notranslate"><span class="pre">config/grpc-service/v3.yaml</span></code></a>
+file which bootstraps front-envoy with ext_authz HTTP filter with gRPC service <code class="docutils literal notranslate"><span class="pre">V3</span></code> (this is specified by
+<a class="reference internal" href="../../api-v3/extensions/filters/http/ext_authz/v3/ext_authz.proto.html#envoy-v3-api-field-extensions-filters-http-ext-authz-v3-extauthz-transport-api-version"><span class="std std-ref">transport_api_version field</span></a>).</p>
+<p>The possible values of <code class="docutils literal notranslate"><span class="pre">FRONT_ENVOY_YAML</span></code> can be found inside the <code class="docutils literal notranslate"><span class="pre">config</span></code>
 directory.</p>
 <p>For example, to run Envoy with ext_authz HTTP filter with HTTP service will be:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
@@ -323,8 +300,8 @@ filter employed by Envoy rejected the call. To let the request reach the upstrea
 to provide a <code class="docutils literal notranslate"><span class="pre">Bearer</span></code> token via the <code class="docutils literal notranslate"><span class="pre">Authorization</span></code> header.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>A complete list of users is defined in <code class="docutils literal notranslate"><span class="pre">envoy/examples/ext_authz/auth/users.json</span></code> file. For
-example, the <code class="docutils literal notranslate"><span class="pre">token1</span></code> used in the below example is corresponding to <code class="docutils literal notranslate"><span class="pre">user1</span></code>.</p>
+<p>A complete list of users is defined in <a class="reference download internal" download="" href="../../_downloads/51d2e325feddc4b71a6eeb88ae4c7fbb/users.json"><code class="xref download docutils literal notranslate"><span class="pre">auth/users.json</span></code></a>
+file. For example, the <code class="docutils literal notranslate"><span class="pre">token1</span></code> used in the below example is corresponding to <code class="docutils literal notranslate"><span class="pre">user1</span></code>.</p>
 </div>
 <p>An example of successful requests can be observed as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -v -H <span class="s2">&quot;Authorization: Bearer token1&quot;</span> localhost:8000/service
@@ -349,7 +326,7 @@ example, the <code class="docutils literal notranslate"><span class="pre">token1
 </pre></div>
 </div>
 <p>We can also employ <a class="reference external" href="https://www.openpolicyagent.org/">Open Policy Agent</a> server
-(with <a class="reference external" href="https://github.com/open-policy-agent/opa-istio-plugin">envoy_ext_authz_grpc</a> plugin enabled)
+(with <a class="reference external" href="https://github.com/open-policy-agent/opa-envoy-plugin">envoy_ext_authz_grpc</a> plugin enabled)
 as the authorization server. To run this example:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
 <span class="go">envoy/examples/ext_authz</span>
@@ -381,7 +358,8 @@ as the authorization server. To run this example:</p>
 </pre></div>
 </div>
 <p>From the logs, we can observe the policy decision message from the Open Policy Agent server (for
-the above request against the defined policy in <code class="docutils literal notranslate"><span class="pre">config/opa-service/policy.rego</span></code>):</p>
+the above request against the defined policy in
+<a class="reference download internal" download="" href="../../_downloads/820c9994319e32174253485940818917/policy.rego"><code class="xref download docutils literal notranslate"><span class="pre">config/opa-service/policy.rego</span></code></a>):</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker-compose logs ext_authz-opa-service <span class="p">|</span> grep decision_id -A <span class="m">30</span>
 <span class="go">ext_authz-opa-service_1   |   &quot;decision_id&quot;: &quot;8143ca68-42d8-43e6-ade6-d1169bf69110&quot;,</span>
 <span class="go">ext_authz-opa-service_1   |   &quot;input&quot;: {</span>
@@ -432,6 +410,19 @@ the above request against the defined policy in <code class="docutils literal no
 <span class="go">&lt; content-length: 0</span>
 </pre></div>
 </div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="../../configuration/http/http_filters/ext_authz_filter.html#config-http-filters-ext-authz"><span class="std std-ref">ext_authz filter</span></a></dt><dd><p>Learn more about using Envoy’s <code class="docutils literal notranslate"><span class="pre">ext_authz</span></code> filter.</p>
+</dd>
+<dt><a class="reference external" href="https://www.openpolicyagent.org/">Open Policy Agent</a></dt><dd><p>Policy-based control for cloud native environments.</p>
+</dd>
+<dt><a class="reference external" href="https://github.com/open-policy-agent/opa-envoy-plugin">envoy_ext_authz_grpc</a></dt><dd><p>Open Policy Agent Envoy plugin.</p>
+</dd>
+<dt><a class="reference external" href="https://docs.docker.com/compose/environment-variables">environment variables in Compose documentation</a>.</dt><dd><p>Further information about using env variables with Docker Compose.</p>
+</dd>
+</dl>
+</div>
 </div>
 </div>
 
@@ -443,7 +434,7 @@ the above request against the defined policy in <code class="docutils literal no
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="fault_injection.html" class="btn btn-neutral float-right" title="Fault Injection Filter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="fault_injection.html" class="btn btn-neutral float-right" title="Fault injection filter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="dynamic-configuration-control-plane.html" class="btn btn-neutral float-left" title="Dynamic configuration (control plane)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
