@@ -9,7 +9,7 @@ Common discovery API components
 DiscoveryRequest
 ----------------
 
-`[DiscoveryRequest proto] <https://github.com/envoyproxy/envoy/blob/7554d61bccf136638bdfb383c10d049dc8bd3790/api/envoy/api/v2/discovery.proto#L23>`_
+`[DiscoveryRequest proto] <https://github.com/envoyproxy/envoy/blob/55157caf290d5c0c9c258d42f2cfea547ea52df6/api/envoy/api/v2/discovery.proto#L23>`_
 
 A DiscoveryRequest requests a set of versioned resources of the same type for
 a given Envoy node on some API.
@@ -46,7 +46,7 @@ node
 .. _envoy_api_field_DiscoveryRequest.resource_names:
 
 resource_names
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) List of resources to subscribe to, e.g. list of cluster names or a route
+  (**repeated** `string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) List of resources to subscribe to, e.g. list of cluster names or a route
   configuration name. If this is empty, all resources for the API are
   returned. LDS/CDS may have empty resource_names, which will cause all
   resources for the Envoy instance to be returned. The LDS and CDS responses
@@ -89,7 +89,7 @@ error_detail
 DiscoveryResponse
 -----------------
 
-`[DiscoveryResponse proto] <https://github.com/envoyproxy/envoy/blob/7554d61bccf136638bdfb383c10d049dc8bd3790/api/envoy/api/v2/discovery.proto#L65>`_
+`[DiscoveryResponse proto] <https://github.com/envoyproxy/envoy/blob/55157caf290d5c0c9c258d42f2cfea547ea52df6/api/envoy/api/v2/discovery.proto#L65>`_
 
 
 .. code-block:: json
@@ -110,7 +110,7 @@ version_info
 .. _envoy_api_field_DiscoveryResponse.resources:
 
 resources
-  (`Any <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any>`_) The response resources. These resources are typed and depend on the API being called.
+  (**repeated** `Any <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any>`_) The response resources. These resources are typed and depend on the API being called.
   
   
 
@@ -142,7 +142,7 @@ nonce
 DeltaDiscoveryRequest
 ---------------------
 
-`[DeltaDiscoveryRequest proto] <https://github.com/envoyproxy/envoy/blob/7554d61bccf136638bdfb383c10d049dc8bd3790/api/envoy/api/v2/discovery.proto#L140>`_
+`[DeltaDiscoveryRequest proto] <https://github.com/envoyproxy/envoy/blob/55157caf290d5c0c9c258d42f2cfea547ea52df6/api/envoy/api/v2/discovery.proto#L140>`_
 
 DeltaDiscoveryRequest and DeltaDiscoveryResponse are used in a new gRPC
 endpoint for Delta xDS.
@@ -205,7 +205,7 @@ type_url
 .. _envoy_api_field_DeltaDiscoveryRequest.resource_names_subscribe:
 
 resource_names_subscribe
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) DeltaDiscoveryRequests allow the client to add or remove individual
+  (**repeated** `string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) DeltaDiscoveryRequests allow the client to add or remove individual
   resources to the set of tracked resources in the context of a stream.
   All resource names in the resource_names_subscribe list are added to the
   set of tracked resources and all resource names in the resource_names_unsubscribe
@@ -231,13 +231,13 @@ resource_names_subscribe
 .. _envoy_api_field_DeltaDiscoveryRequest.resource_names_unsubscribe:
 
 resource_names_unsubscribe
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) A list of Resource names to remove from the list of tracked resources.
+  (**repeated** `string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) A list of Resource names to remove from the list of tracked resources.
   
   
 .. _envoy_api_field_DeltaDiscoveryRequest.initial_resource_versions:
 
 initial_resource_versions
-  (map<`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, `string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_>) Informs the server of the versions of the resources the xDS client knows of, to enable the
+  (**repeated** map<`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, `string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_>) Informs the server of the versions of the resources the xDS client knows of, to enable the
   client to continue the same logical xDS session even in the face of gRPC stream reconnection.
   It will not be populated: [1] in the very first stream of a session, since the client will
   not yet have any resources,  [2] in any message after the first in a stream (for a given
@@ -271,7 +271,7 @@ error_detail
 DeltaDiscoveryResponse
 ----------------------
 
-`[DeltaDiscoveryResponse proto] <https://github.com/envoyproxy/envoy/blob/7554d61bccf136638bdfb383c10d049dc8bd3790/api/envoy/api/v2/discovery.proto#L197>`_
+`[DeltaDiscoveryResponse proto] <https://github.com/envoyproxy/envoy/blob/55157caf290d5c0c9c258d42f2cfea547ea52df6/api/envoy/api/v2/discovery.proto#L197>`_
 
 
 .. code-block:: json
@@ -293,7 +293,7 @@ system_version_info
 .. _envoy_api_field_DeltaDiscoveryResponse.resources:
 
 resources
-  (:ref:`Resource <envoy_api_msg_Resource>`) The response resources. These are typed resources, whose types must match
+  (**repeated** :ref:`Resource <envoy_api_msg_Resource>`) The response resources. These are typed resources, whose types must match
   the type_url field.
   
   
@@ -307,7 +307,7 @@ type_url
 .. _envoy_api_field_DeltaDiscoveryResponse.removed_resources:
 
 removed_resources
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Resources names of resources that have be deleted and to be removed from the xDS Client.
+  (**repeated** `string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Resources names of resources that have be deleted and to be removed from the xDS Client.
   Removed resources for missing resources can be ignored.
   
   
@@ -325,7 +325,7 @@ nonce
 Resource
 --------
 
-`[Resource proto] <https://github.com/envoyproxy/envoy/blob/7554d61bccf136638bdfb383c10d049dc8bd3790/api/envoy/api/v2/discovery.proto#L220>`_
+`[Resource proto] <https://github.com/envoyproxy/envoy/blob/55157caf290d5c0c9c258d42f2cfea547ea52df6/api/envoy/api/v2/discovery.proto#L220>`_
 
 
 .. code-block:: json
@@ -346,7 +346,7 @@ name
 .. _envoy_api_field_Resource.aliases:
 
 aliases
-  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The aliases are a list of other names that this resource can go by.
+  (**repeated** `string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The aliases are a list of other names that this resource can go by.
   
   
 .. _envoy_api_field_Resource.version:
