@@ -1,0 +1,71 @@
+.. _envoy_v3_api_file_envoy/extensions/filters/network/ext_authz/v3/ext_authz.proto:
+
+Network External Authorization 
+===============================
+
+.. _extension_envoy.filters.network.ext_authz:
+
+
+This extension may be referenced by the qualified name *envoy.filters.network.ext_authz*
+
+.. note::
+  
+
+  This extension is intended to be robust against untrusted downstream traffic. It assumes that the upstream is trusted.
+
+The network layer external authorization service configuration
+:ref:`configuration overview <config_network_filters_ext_authz>`.
+
+.. _envoy_v3_api_msg_extensions.filters.network.ext_authz.v3.ExtAuthz:
+
+extensions.filters.network.ext_authz.v3.ExtAuthz
+------------------------------------------------
+
+`[extensions.filters.network.ext_authz.v3.ExtAuthz proto] <https://github.com/envoyproxy/envoy/blob/56d148b94ef25a026d8d31790695d478ad53eb94/api/envoy/extensions/filters/network/ext_authz/v3/ext_authz.proto#L23>`_
+
+External Authorization filter calls out to an external service over the
+gRPC Authorization API defined by
+:ref:`CheckRequest <envoy_v3_api_msg_service.auth.v3.CheckRequest>`.
+A failed check will cause this filter to close the TCP connection.
+
+.. code-block:: json
+
+  {
+    "stat_prefix": "...",
+    "grpc_service": "{...}",
+    "failure_mode_allow": "...",
+    "include_peer_certificate": "..."
+  }
+
+.. _envoy_v3_api_field_extensions.filters.network.ext_authz.v3.ExtAuthz.stat_prefix:
+
+stat_prefix
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The prefix to use when emitting statistics.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.network.ext_authz.v3.ExtAuthz.grpc_service:
+
+grpc_service
+  (:ref:`config.core.v3.GrpcService <envoy_v3_api_msg_config.core.v3.GrpcService>`) The external authorization gRPC service configuration.
+  The default timeout is set to 200ms by this filter.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.network.ext_authz.v3.ExtAuthz.failure_mode_allow:
+
+failure_mode_allow
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The filter's behaviour in case the external authorization service does
+  not respond back. When it is set to true, Envoy will also allow traffic in case of
+  communication failure between authorization service and the proxy.
+  Defaults to false.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.network.ext_authz.v3.ExtAuthz.include_peer_certificate:
+
+include_peer_certificate
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies if the peer certificate is sent to the external service.
+  
+  When this field is true, Envoy will include the peer X.509 certificate, if available, in the
+  :ref:`certificate<envoy_v3_api_field_service.auth.v3.AttributeContext.Peer.certificate>`.
+  
+  
+
