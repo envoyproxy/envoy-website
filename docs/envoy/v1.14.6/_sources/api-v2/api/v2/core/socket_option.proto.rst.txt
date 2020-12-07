@@ -1,0 +1,98 @@
+.. _envoy_api_file_envoy/api/v2/core/socket_option.proto:
+
+Socket Option 
+==============
+
+
+.. _envoy_api_msg_core.SocketOption:
+
+core.SocketOption
+-----------------
+
+`[core.SocketOption proto] <https://github.com/envoyproxy/envoy/blob/ca0d61134a84ce644c7f46549a06a99579fb97c0/api/envoy/api/v2/core/socket_option.proto#L19>`_
+
+Generic socket option message. This would be used to set socket options that
+might not exist in upstream kernels or precompiled Envoy binaries.
+
+.. code-block:: json
+
+  {
+    "description": "...",
+    "level": "...",
+    "name": "...",
+    "int_value": "...",
+    "buf_value": "...",
+    "state": "..."
+  }
+
+.. _envoy_api_field_core.SocketOption.description:
+
+description
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) An optional name to give this socket option for debugging, etc.
+  Uniqueness is not required and no special meaning is assumed.
+  
+  
+.. _envoy_api_field_core.SocketOption.level:
+
+level
+  (`int64 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Corresponding to the level value passed to setsockopt, such as IPPROTO_TCP
+  
+  
+.. _envoy_api_field_core.SocketOption.name:
+
+name
+  (`int64 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The numeric name as passed to setsockopt
+  
+  
+.. _envoy_api_field_core.SocketOption.int_value:
+
+int_value
+  (`int64 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Because many sockopts take an int value.
+  
+  
+  
+  Precisely one of :ref:`int_value <envoy_api_field_core.SocketOption.int_value>`, :ref:`buf_value <envoy_api_field_core.SocketOption.buf_value>` must be set.
+  
+.. _envoy_api_field_core.SocketOption.buf_value:
+
+buf_value
+  (`bytes <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Otherwise it's a byte buffer.
+  
+  
+  
+  Precisely one of :ref:`int_value <envoy_api_field_core.SocketOption.int_value>`, :ref:`buf_value <envoy_api_field_core.SocketOption.buf_value>` must be set.
+  
+.. _envoy_api_field_core.SocketOption.state:
+
+state
+  (:ref:`core.SocketOption.SocketState <envoy_api_enum_core.SocketOption.SocketState>`) The state in which the option will be applied. When used in BindConfig
+  STATE_PREBIND is currently the only valid value.
+  
+  
+
+.. _envoy_api_enum_core.SocketOption.SocketState:
+
+Enum core.SocketOption.SocketState
+----------------------------------
+
+`[core.SocketOption.SocketState proto] <https://github.com/envoyproxy/envoy/blob/ca0d61134a84ce644c7f46549a06a99579fb97c0/api/envoy/api/v2/core/socket_option.proto#L20>`_
+
+
+.. _envoy_api_enum_value_core.SocketOption.SocketState.STATE_PREBIND:
+
+STATE_PREBIND
+  *(DEFAULT)* ⁣Socket options are applied after socket creation but before binding the socket to a port
+  
+  
+.. _envoy_api_enum_value_core.SocketOption.SocketState.STATE_BOUND:
+
+STATE_BOUND
+  ⁣Socket options are applied after binding the socket to a port but before calling listen()
+  
+  
+.. _envoy_api_enum_value_core.SocketOption.SocketState.STATE_LISTENING:
+
+STATE_LISTENING
+  ⁣Socket options are applied after calling listen()
+  
+  
