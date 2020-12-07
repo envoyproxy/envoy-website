@@ -1,0 +1,334 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Dynamic forward proxy common configuration &mdash; envoy 1.15.3-69c307 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link rel="next" title="Common tap extension configuration" href="../../tap/v3/common.proto.html" />
+    <link rel="prev" title="Common" href="../../../../config/common/common.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html">
+          
+
+          
+            
+            <img src="../../../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.15.3-69c307
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../install/install.html">Building and installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../version_history/version_history.html">Version history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../../api/api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../../../api/api_supported_versions.html">Supported API versions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../api-v2/api.html">v2 API reference</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../../../api.html">v3 API reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../../bootstrap/bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../clusters/clusters.html">Clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../http_routes/http_routes.html">HTTP route management</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../../../config/config.html">Extensions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/filter/filter.html">Filters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/accesslog/accesslog.html">Access loggers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/rbac/rbac.html">RBAC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/health_checker/health_checker.html">Health checkers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/transport_socket/transport_socket.html">Transport sockets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/resource_monitor/resource_monitor.html">Resource monitors</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../../../../config/common/common.html">Common</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/compression/compression.html">Compression</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/cluster/cluster.html">Cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/grpc_credential/grpc_credential.html">Grpc Credentials</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/retry/retry.html">Retry Predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/trace/trace.html">HTTP Tracers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/internal_redirect/internal_redirect.html">Internal Redirect Predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/endpoint/endpoint.html">Endpoint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/upstream/upstream.html">Upstream Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../admin/admin.html">Admin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../data/data.html">Envoy data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../service/service.html">Services</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../common_messages/common_messages.html">Common messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../types/types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../api-docs/xds_protocol.html">xDS REST and gRPC protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../api/client_features.html">Well Known Client Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../faq/overview.html">FAQ</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../../api/api.html">API</a> &raquo;</li>
+        
+          <li><a href="../../../../api.html">v3 API reference</a> &raquo;</li>
+        
+          <li><a href="../../../../config/config.html">Extensions</a> &raquo;</li>
+        
+          <li><a href="../../../../config/common/common.html">Common</a> &raquo;</li>
+        
+      <li>Dynamic forward proxy common configuration</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../../../_sources/api-v3/extensions/common/dynamic_forward_proxy/v3/dns_cache.proto.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="dynamic-forward-proxy-common-configuration">
+<span id="envoy-v3-api-file-envoy-extensions-common-dynamic-forward-proxy-v3-dns-cache-proto"></span><h1>Dynamic forward proxy common configuration<a class="headerlink" href="#dynamic-forward-proxy-common-configuration" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="extensions-common-dynamic-forward-proxy-v3-dnscachecircuitbreakers">
+<span id="envoy-v3-api-msg-extensions-common-dynamic-forward-proxy-v3-dnscachecircuitbreakers"></span><h2>extensions.common.dynamic_forward_proxy.v3.DnsCacheCircuitBreakers<a class="headerlink" href="#extensions-common-dynamic-forward-proxy-v3-dnscachecircuitbreakers" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/69c307cbdb0386df9ed393e59fd6c24e5cab5603/api/envoy/extensions/common/dynamic_forward_proxy/v3/dns_cache.proto#L21">[extensions.common.dynamic_forward_proxy.v3.DnsCacheCircuitBreakers proto]</a></p>
+<p>Configuration of circuit breakers for resolver.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;max_pending_requests&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-extensions-common-dynamic-forward-proxy-v3-dnscachecircuitbreakers-max-pending-requests">
+<dt>max_pending_requests</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The maximum number of pending requests that Envoy will allow to the
+resolver. If not specified, the default is 1024.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="extensions-common-dynamic-forward-proxy-v3-dnscacheconfig">
+<span id="envoy-v3-api-msg-extensions-common-dynamic-forward-proxy-v3-dnscacheconfig"></span><h2>extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig<a class="headerlink" href="#extensions-common-dynamic-forward-proxy-v3-dnscacheconfig" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/69c307cbdb0386df9ed393e59fd6c24e5cab5603/api/envoy/extensions/common/dynamic_forward_proxy/v3/dns_cache.proto#L30">[extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig proto]</a></p>
+<p>Configuration for the dynamic forward proxy DNS cache. See the <a class="reference internal" href="../../../../../intro/arch_overview/http/http_proxy.html#arch-overview-http-dynamic-forward-proxy"><span class="std std-ref">architecture overview</span></a> for more information.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;dns_lookup_family&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;dns_refresh_rate&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;host_ttl&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;max_hosts&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;dns_failure_refresh_rate&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;dns_cache_circuit_breaker&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-extensions-common-dynamic-forward-proxy-v3-dnscacheconfig-name">
+<dt>name</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) The name of the cache. Multiple named caches allow independent dynamic forward proxy
+configurations to operate within a single Envoy process using different configurations. All
+configurations with the same name <em>must</em> otherwise have the same settings when referenced
+from different configuration components. Configuration will fail to load if this is not
+the case.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-common-dynamic-forward-proxy-v3-dnscacheconfig-dns-lookup-family">
+<dt>dns_lookup_family</dt><dd><p>(<a class="reference internal" href="../../../../config/cluster/v3/cluster.proto.html#envoy-v3-api-enum-config-cluster-v3-cluster-dnslookupfamily"><span class="std std-ref">config.cluster.v3.Cluster.DnsLookupFamily</span></a>) The DNS lookup family to use during resolution.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-extensions-common-dynamic-forward-proxy-v3-dnscacheconfig-dns-refresh-rate">
+<dt>dns_refresh_rate</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The DNS refresh rate for currently cached DNS hosts. If not specified defaults to 60s.</p>
+<p>The refresh rate is rounded to the closest millisecond, and must be at least 1ms.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-common-dynamic-forward-proxy-v3-dnscacheconfig-host-ttl">
+<dt>host_ttl</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The TTL for hosts that are unused. Hosts that have not been used in the configured time
+interval will be purged. If not specified defaults to 5m.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-common-dynamic-forward-proxy-v3-dnscacheconfig-max-hosts">
+<dt>max_hosts</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The maximum number of hosts that the cache will hold. If not specified defaults to 1024.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-common-dynamic-forward-proxy-v3-dnscacheconfig-dns-failure-refresh-rate">
+<dt>dns_failure_refresh_rate</dt><dd><p>(<a class="reference internal" href="../../../../config/cluster/v3/cluster.proto.html#envoy-v3-api-msg-config-cluster-v3-cluster-refreshrate"><span class="std std-ref">config.cluster.v3.Cluster.RefreshRate</span></a>) If the DNS failure refresh rate is specified,
+this is used as the cache’s DNS refresh rate when DNS requests are failing. If this setting is
+not specified, the failure refresh rate defaults to the dns_refresh_rate.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-common-dynamic-forward-proxy-v3-dnscacheconfig-dns-cache-circuit-breaker">
+<dt>dns_cache_circuit_breaker</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-extensions-common-dynamic-forward-proxy-v3-dnscachecircuitbreakers"><span class="std std-ref">extensions.common.dynamic_forward_proxy.v3.DnsCacheCircuitBreakers</span></a>) The config of circuit breakers for resolver. It provides a configurable threshold.
+If <cite>envoy.reloadable_features.enable_dns_cache_circuit_breakers</cite> is enabled,
+envoy will use dns cache circuit breakers with default settings even if this value is not set.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../tap/v3/common.proto.html" class="btn btn-neutral float-right" title="Common tap extension configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../../../../config/common/common.html" class="btn btn-neutral float-left" title="Common" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2020, Envoy Project Authors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

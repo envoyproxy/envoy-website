@@ -1,0 +1,480 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Front Proxy &mdash; envoy 1.15.3-69c307 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="gRPC Bridge" href="grpc_bridge.html" />
+    <link rel="prev" title="Fault Injection Filter" href="fault_injection.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.15.3-69c307
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../start.html">Getting Started</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../start.html#quick-start-to-run-simple-example">Quick Start to Run Simple Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../start.html#simple-configuration">Simple Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../start.html#using-the-envoy-docker-image">Using the Envoy Docker Image</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../start.html#sandboxes">Sandboxes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="cors.html">CORS Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ext_authz.html">External Authorization Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault Injection Filter</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Front Proxy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#running-the-sandbox">Running the Sandbox</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC Bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger Native Tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_tracing.html">Jaeger Tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="load_reporting_service.html">Load Reporting Service (LRS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mysql.html">MySQL Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">Zipkin Tracing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../start.html#other-use-cases">Other use cases</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/install.html">Building and installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version_history/version_history.html">Version history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/overview.html">FAQ</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../start.html">Getting Started</a> &raquo;</li>
+        
+      <li>Front Proxy</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/start/sandboxes/front_proxy.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="front-proxy">
+<span id="install-sandboxes-front-proxy"></span><h1>Front Proxy<a class="headerlink" href="#front-proxy" title="Permalink to this headline">¶</a></h1>
+<p>To get a flavor of what Envoy has to offer as a front proxy, we are releasing a
+<a class="reference external" href="https://docs.docker.com/compose/">docker compose</a> sandbox that deploys a front
+envoy and a couple of services (simple flask apps) colocated with a running
+service Envoy. The three containers will be deployed inside a virtual network
+called <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code>.</p>
+<p>Below you can see a graphic showing the docker compose deployment:</p>
+<a class="reference internal image-reference" href="../../_images/docker_compose_v0.1.svg"><img alt="../../_images/docker_compose_v0.1.svg" src="../../_images/docker_compose_v0.1.svg" width="100%" /></a>
+<p>All incoming requests are routed via the front Envoy, which is acting as a reverse proxy sitting on
+the edge of the <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code> network. Port <code class="docutils literal notranslate"><span class="pre">8000</span></code> is exposed by docker compose
+(see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/69c307cbdb0386df9ed393e59fd6c24e5cab5603//examples/front-proxy/docker-compose.yaml">/examples/front-proxy/docker-compose.yaml</a>). Moreover, notice
+that all  traffic routed by the front Envoy to the service containers is actually routed to the
+service Envoys (routes setup in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/69c307cbdb0386df9ed393e59fd6c24e5cab5603//examples/front-proxy/front-envoy.yaml">/examples/front-proxy/front-envoy.yaml</a>). In turn the service
+envoys route the  request to the flask app via the loopback address (routes setup in
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/69c307cbdb0386df9ed393e59fd6c24e5cab5603//examples/front-proxy/service-envoy.yaml">/examples/front-proxy/service-envoy.yaml</a>). This setup
+illustrates the advantage of running service Envoys  collocated with your services: all requests are
+handled by the service Envoy, and efficiently routed to your services.</p>
+<div class="section" id="running-the-sandbox">
+<h2>Running the Sandbox<a class="headerlink" href="#running-the-sandbox" title="Permalink to this headline">¶</a></h2>
+<p>The following documentation runs through the setup of an Envoy cluster organized
+as is described in the image above.</p>
+<p><strong>Step 1: Install Docker</strong></p>
+<p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> installed.</p>
+<p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
+<p><strong>Step 2: Clone the Envoy repo, and start all of our containers</strong></p>
+<p>If you have not cloned the Envoy repo, clone it with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:envoyproxy/envoy</span></code>
+or <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/envoyproxy/envoy.git</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  $ pwd
+  envoy/examples/front-proxy
+  $ docker-compose pull
+  $ docker-compose up --build -d
+  $ docker-compose ps
+
+          Name                         Command             State                            Ports
+--------------------------------------------------------------------------------------------------------------------------
+front-proxy_front-envoy_1   /docker-entrypoint.sh /bin ... Up      10000/tcp, 0.0.0.0:8000-&gt;8000/tcp, 0.0.0.0:8001-&gt;8001/tcp
+front-proxy_service1_1      /bin/sh -c /usr/local/bin/ ... Up      10000/tcp, 8000/tcp
+front-proxy_service2_1      /bin/sh -c /usr/local/bin/ ... Up      10000/tcp, 8000/tcp
+</pre></div>
+</div>
+<p><strong>Step 3: Test Envoy’s routing capabilities</strong></p>
+<p>You can now send a request to both services via the front-envoy.</p>
+<p>For service1:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl -v localhost:8000/service/1
+*   Trying 192.168.99.100...
+* Connected to 192.168.99.100 (192.168.99.100) port 8000 (#0)
+&gt; GET /service/1 HTTP/1.1
+&gt; Host: 192.168.99.100:8000
+&gt; User-Agent: curl/7.54.0
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 200 OK
+&lt; content-type: text/html; charset=utf-8
+&lt; content-length: 89
+&lt; x-envoy-upstream-service-time: 1
+&lt; server: envoy
+&lt; date: Fri, 26 Aug 2018 19:39:19 GMT
+&lt;
+Hello from behind Envoy (service 1)! hostname: f26027f1ce28 resolvedhostname: 172.19.0.6
+* Connection #0 to host 192.168.99.100 left intact
+</pre></div>
+</div>
+<p>For service2:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl -v localhost:8000/service/2
+*   Trying 192.168.99.100...
+* Connected to 192.168.99.100 (192.168.99.100) port 8000 (#0)
+&gt; GET /service/2 HTTP/1.1
+&gt; Host: 192.168.99.100:8000
+&gt; User-Agent: curl/7.54.0
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 200 OK
+&lt; content-type: text/html; charset=utf-8
+&lt; content-length: 89
+&lt; x-envoy-upstream-service-time: 2
+&lt; server: envoy
+&lt; date: Fri, 26 Aug 2018 19:39:23 GMT
+&lt;
+Hello from behind Envoy (service 2)! hostname: 92f4a3737bbc resolvedhostname: 172.19.0.2
+* Connection #0 to host 192.168.99.100 left intact
+</pre></div>
+</div>
+<p>Notice that each request, while sent to the front Envoy, was correctly routed
+to the respective application.</p>
+<p><strong>Step 4: Test Envoy’s load balancing capabilities</strong></p>
+<p>Now let’s scale up our service1 nodes to demonstrate the load balancing abilities
+of Envoy.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker-compose scale service1=3
+Creating and starting example_service1_2 ... done
+Creating and starting example_service1_3 ... done
+</pre></div>
+</div>
+<p>Now if we send a request to service1 multiple times, the front Envoy will load balance the
+requests by doing a round robin of the three service1 machines:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl -v localhost:8000/service/1
+*   Trying 192.168.99.100...
+* Connected to 192.168.99.100 (192.168.99.100) port 8000 (#0)
+&gt; GET /service/1 HTTP/1.1
+&gt; Host: 192.168.99.100:8000
+&gt; User-Agent: curl/7.43.0
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 200 OK
+&lt; content-type: text/html; charset=utf-8
+&lt; content-length: 89
+&lt; x-envoy-upstream-service-time: 1
+&lt; server: envoy
+&lt; date: Fri, 26 Aug 2018 19:40:21 GMT
+&lt; x-envoy-protocol-version: HTTP/1.1
+&lt;
+Hello from behind Envoy (service 1)! hostname: 85ac151715c6 resolvedhostname: 172.19.0.3
+* Connection #0 to host 192.168.99.100 left intact
+$ curl -v localhost:8000/service/1
+*   Trying 192.168.99.100...
+* Connected to 192.168.99.100 (192.168.99.100) port 8000 (#0)
+&gt; GET /service/1 HTTP/1.1
+&gt; Host: 192.168.99.100:8000
+&gt; User-Agent: curl/7.54.0
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 200 OK
+&lt; content-type: text/html; charset=utf-8
+&lt; content-length: 89
+&lt; x-envoy-upstream-service-time: 1
+&lt; server: envoy
+&lt; date: Fri, 26 Aug 2018 19:40:22 GMT
+&lt;
+Hello from behind Envoy (service 1)! hostname: 20da22cfc955 resolvedhostname: 172.19.0.5
+* Connection #0 to host 192.168.99.100 left intact
+$ curl -v localhost:8000/service/1
+*   Trying 192.168.99.100...
+* Connected to 192.168.99.100 (192.168.99.100) port 8000 (#0)
+&gt; GET /service/1 HTTP/1.1
+&gt; Host: 192.168.99.100:8000
+&gt; User-Agent: curl/7.43.0
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 200 OK
+&lt; content-type: text/html; charset=utf-8
+&lt; content-length: 89
+&lt; x-envoy-upstream-service-time: 1
+&lt; server: envoy
+&lt; date: Fri, 26 Aug 2018 19:40:24 GMT
+&lt; x-envoy-protocol-version: HTTP/1.1
+&lt;
+Hello from behind Envoy (service 1)! hostname: f26027f1ce28 resolvedhostname: 172.19.0.6
+* Connection #0 to host 192.168.99.100 left intact
+</pre></div>
+</div>
+<p><strong>Step 5: enter containers and curl services</strong></p>
+<p>In addition of using <code class="docutils literal notranslate"><span class="pre">curl</span></code> from your host machine, you can also enter the
+containers themselves and <code class="docutils literal notranslate"><span class="pre">curl</span></code> from inside them. To enter a container you
+can use <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">exec</span> <span class="pre">&lt;container_name&gt;</span> <span class="pre">/bin/bash</span></code>. For example we can
+enter the <code class="docutils literal notranslate"><span class="pre">front-envoy</span></code> container, and <code class="docutils literal notranslate"><span class="pre">curl</span></code> for services locally:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker-compose exec front-envoy /bin/bash
+root@81288499f9d7:/# curl localhost:8000/service/1
+Hello from behind Envoy (service 1)! hostname: 85ac151715c6 resolvedhostname: 172.19.0.3
+root@81288499f9d7:/# curl localhost:8000/service/1
+Hello from behind Envoy (service 1)! hostname: 20da22cfc955 resolvedhostname: 172.19.0.5
+root@81288499f9d7:/# curl localhost:8000/service/1
+Hello from behind Envoy (service 1)! hostname: f26027f1ce28 resolvedhostname: 172.19.0.6
+root@81288499f9d7:/# curl localhost:8000/service/2
+Hello from behind Envoy (service 2)! hostname: 92f4a3737bbc resolvedhostname: 172.19.0.2
+</pre></div>
+</div>
+<p><strong>Step 6: enter containers and curl admin</strong></p>
+<p>When Envoy runs it also attaches an <code class="docutils literal notranslate"><span class="pre">admin</span></code> to your desired port. In the example
+configs the admin is bound to port <code class="docutils literal notranslate"><span class="pre">8001</span></code>. We can <code class="docutils literal notranslate"><span class="pre">curl</span></code> it to gain useful information.
+For example you can <code class="docutils literal notranslate"><span class="pre">curl</span></code> <code class="docutils literal notranslate"><span class="pre">/server_info</span></code> to get information about the
+envoy version you are running. Additionally you can <code class="docutils literal notranslate"><span class="pre">curl</span></code> <code class="docutils literal notranslate"><span class="pre">/stats</span></code> to get
+statistics. For example inside <code class="docutils literal notranslate"><span class="pre">frontenvoy</span></code> we can get:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker-compose exec front-envoy /bin/bash
+root@e654c2c83277:/# curl localhost:8001/server_info
+</pre></div>
+</div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;3ba949a9cb5b0b1cccd61e76159969a49377fd7d/1.10.0-dev/Clean/RELEASE/BoringSSL&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;state&quot;</span><span class="p">:</span> <span class="s2">&quot;LIVE&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;command_line_options&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;base_id&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;concurrency&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="nt">&quot;config_path&quot;</span><span class="p">:</span> <span class="s2">&quot;/etc/front-envoy.yaml&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;config_yaml&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;allow_unknown_static_fields&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nt">&quot;admin_address_path&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;local_address_ip_version&quot;</span><span class="p">:</span> <span class="s2">&quot;v4&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;log_level&quot;</span><span class="p">:</span> <span class="s2">&quot;info&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;component_log_level&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;log_format&quot;</span><span class="p">:</span> <span class="s2">&quot;[%Y-%m-%d %T.%e][%t][%l][%n] %v&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;log_path&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;hot_restart_version&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nt">&quot;service_cluster&quot;</span><span class="p">:</span> <span class="s2">&quot;front-proxy&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;service_node&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;service_zone&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;mode&quot;</span><span class="p">:</span> <span class="s2">&quot;Serve&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;disable_hot_restart&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nt">&quot;enable_mutex_tracing&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nt">&quot;restart_epoch&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nt">&quot;cpuset_threads&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nt">&quot;file_flush_interval&quot;</span><span class="p">:</span> <span class="s2">&quot;10s&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;drain_time&quot;</span><span class="p">:</span> <span class="s2">&quot;600s&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;parent_shutdown_time&quot;</span><span class="p">:</span> <span class="s2">&quot;900s&quot;</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;uptime_current_epoch&quot;</span><span class="p">:</span> <span class="s2">&quot;401s&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;uptime_all_epochs&quot;</span><span class="p">:</span> <span class="s2">&quot;401s&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>root@e654c2c83277:/# curl localhost:8001/stats
+cluster.service1.external.upstream_rq_200: 7
+...
+cluster.service1.membership_change: 2
+cluster.service1.membership_total: 3
+...
+cluster.service1.upstream_cx_http2_total: 3
+...
+cluster.service1.upstream_rq_total: 7
+...
+cluster.service2.external.upstream_rq_200: 2
+...
+cluster.service2.membership_change: 1
+cluster.service2.membership_total: 1
+...
+cluster.service2.upstream_cx_http2_total: 1
+...
+cluster.service2.upstream_rq_total: 2
+...
+</pre></div>
+</div>
+<p>Notice that we can get the number of members of upstream clusters, number of requests
+fulfilled by them, information about http ingress, and a plethora of other useful
+stats.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="grpc_bridge.html" class="btn btn-neutral float-right" title="gRPC Bridge" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="fault_injection.html" class="btn btn-neutral float-left" title="Fault Injection Filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2020, Envoy Project Authors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
