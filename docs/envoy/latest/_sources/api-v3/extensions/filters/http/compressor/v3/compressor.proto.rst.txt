@@ -20,7 +20,7 @@ Compressor :ref:`configuration overview <config_http_filters_compressor>`.
 extensions.filters.http.compressor.v3.Compressor
 ------------------------------------------------
 
-`[extensions.filters.http.compressor.v3.Compressor proto] <https://github.com/envoyproxy/envoy/blob/424909395c90d7d68f1afeb3427c26c7c85f2672/api/envoy/extensions/filters/http/compressor/v3/compressor.proto#L24>`_
+`[extensions.filters.http.compressor.v3.Compressor proto] <https://github.com/envoyproxy/envoy/blob/b0fedbe914092124dbffb0e9d3e8ea8928f74bb9/api/envoy/extensions/filters/http/compressor/v3/compressor.proto#L24>`_
 
 
 .. code-block:: json
@@ -31,7 +31,9 @@ extensions.filters.http.compressor.v3.Compressor
     "disable_on_etag_header": "...",
     "remove_accept_encoding_header": "...",
     "runtime_enabled": "{...}",
-    "compressor_library": "{...}"
+    "compressor_library": "{...}",
+    "request_direction_config": "{...}",
+    "response_direction_config": "{...}"
   }
 
 .. _envoy_v3_api_field_extensions.filters.http.compressor.v3.Compressor.content_length:
@@ -62,7 +64,8 @@ disable_on_etag_header
 remove_accept_encoding_header
   (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If true, removes accept-encoding from the request headers before dispatching it to the upstream
   so that responses do not get compressed before reaching the filter.
-  .. attention:
+  
+  .. attention::
   
      To avoid interfering with other compression filters in the same chain use this option in
      the filter closest to the upstream.
@@ -84,4 +87,134 @@ compressor_library
   This field is ignored if used in the context of the gzip http-filter, but is mandatory otherwise.
   
   
+.. _envoy_v3_api_field_extensions.filters.http.compressor.v3.Compressor.request_direction_config:
+
+request_direction_config
+  (:ref:`extensions.filters.http.compressor.v3.Compressor.RequestDirectionConfig <envoy_v3_api_msg_extensions.filters.http.compressor.v3.Compressor.RequestDirectionConfig>`) Configuration for request compression. Compression is disabled by default if left empty.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.compressor.v3.Compressor.response_direction_config:
+
+response_direction_config
+  (:ref:`extensions.filters.http.compressor.v3.Compressor.ResponseDirectionConfig <envoy_v3_api_msg_extensions.filters.http.compressor.v3.Compressor.ResponseDirectionConfig>`) Configuration for response compression. Compression is enabled by default if left empty.
+  
+  .. attention::
+  
+     If the field is not empty then the duplicate deprecated fields of the `Compressor` message,
+     such as `content_length`, `content_type`, `disable_on_etag_header`,
+     `remove_accept_encoding_header` and `runtime_enabled`, are ignored.
+  
+     Also all the statistics related to response compression will be rooted in
+     `<stat_prefix>.compressor.<compressor_library.name>.<compressor_library_stat_prefix>.response.*`
+     instead of
+     `<stat_prefix>.compressor.<compressor_library.name>.<compressor_library_stat_prefix>.*`.
+  
+  
+.. _envoy_v3_api_msg_extensions.filters.http.compressor.v3.Compressor.CommonDirectionConfig:
+
+extensions.filters.http.compressor.v3.Compressor.CommonDirectionConfig
+----------------------------------------------------------------------
+
+`[extensions.filters.http.compressor.v3.Compressor.CommonDirectionConfig proto] <https://github.com/envoyproxy/envoy/blob/b0fedbe914092124dbffb0e9d3e8ea8928f74bb9/api/envoy/extensions/filters/http/compressor/v3/compressor.proto#L28>`_
+
+
+.. code-block:: json
+
+  {
+    "enabled": "{...}",
+    "min_content_length": "{...}",
+    "content_type": []
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.compressor.v3.Compressor.CommonDirectionConfig.enabled:
+
+enabled
+  (:ref:`config.core.v3.RuntimeFeatureFlag <envoy_v3_api_msg_config.core.v3.RuntimeFeatureFlag>`) Runtime flag that controls whether compression is enabled or not for the direction this
+  common config is put in. If set to false, the filter will operate as a pass-through filter
+  in the chosen direction. If the field is omitted, the filter will be enabled.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.compressor.v3.Compressor.CommonDirectionConfig.min_content_length:
+
+min_content_length
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) Minimum value of Content-Length header of request or response messages (depending on the direction
+  this common config is put in), in bytes, which will trigger compression. The default value is 30.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.compressor.v3.Compressor.CommonDirectionConfig.content_type:
+
+content_type
+  (**repeated** `string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Set of strings that allows specifying which mime-types yield compression; e.g.,
+  application/json, text/html, etc. When this field is not defined, compression will be applied
+  to the following mime-types: "application/javascript", "application/json",
+  "application/xhtml+xml", "image/svg+xml", "text/css", "text/html", "text/plain", "text/xml"
+  and their synonyms.
+  
+  
+
+
+.. _envoy_v3_api_msg_extensions.filters.http.compressor.v3.Compressor.RequestDirectionConfig:
+
+extensions.filters.http.compressor.v3.Compressor.RequestDirectionConfig
+-----------------------------------------------------------------------
+
+`[extensions.filters.http.compressor.v3.Compressor.RequestDirectionConfig proto] <https://github.com/envoyproxy/envoy/blob/b0fedbe914092124dbffb0e9d3e8ea8928f74bb9/api/envoy/extensions/filters/http/compressor/v3/compressor.proto#L47>`_
+
+Configuration for filter behavior on the request direction.
+
+.. code-block:: json
+
+  {
+    "common_config": "{...}"
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.compressor.v3.Compressor.RequestDirectionConfig.common_config:
+
+common_config
+  (:ref:`extensions.filters.http.compressor.v3.Compressor.CommonDirectionConfig <envoy_v3_api_msg_extensions.filters.http.compressor.v3.Compressor.CommonDirectionConfig>`) 
+  
+
+
+.. _envoy_v3_api_msg_extensions.filters.http.compressor.v3.Compressor.ResponseDirectionConfig:
+
+extensions.filters.http.compressor.v3.Compressor.ResponseDirectionConfig
+------------------------------------------------------------------------
+
+`[extensions.filters.http.compressor.v3.Compressor.ResponseDirectionConfig proto] <https://github.com/envoyproxy/envoy/blob/b0fedbe914092124dbffb0e9d3e8ea8928f74bb9/api/envoy/extensions/filters/http/compressor/v3/compressor.proto#L52>`_
+
+Configuration for filter behavior on the response direction.
+
+.. code-block:: json
+
+  {
+    "common_config": "{...}",
+    "disable_on_etag_header": "...",
+    "remove_accept_encoding_header": "..."
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.compressor.v3.Compressor.ResponseDirectionConfig.common_config:
+
+common_config
+  (:ref:`extensions.filters.http.compressor.v3.Compressor.CommonDirectionConfig <envoy_v3_api_msg_extensions.filters.http.compressor.v3.Compressor.CommonDirectionConfig>`) 
+  
+.. _envoy_v3_api_field_extensions.filters.http.compressor.v3.Compressor.ResponseDirectionConfig.disable_on_etag_header:
+
+disable_on_etag_header
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If true, disables compression when the response contains an etag header. When it is false, the
+  filter will preserve weak etags and remove the ones that require strong validation.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.compressor.v3.Compressor.ResponseDirectionConfig.remove_accept_encoding_header:
+
+remove_accept_encoding_header
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If true, removes accept-encoding from the request headers before dispatching it to the upstream
+  so that responses do not get compressed before reaching the filter.
+  
+  .. attention::
+  
+     To avoid interfering with other compression filters in the same chain use this option in
+     the filter closest to the upstream.
+  
+  
+
 
