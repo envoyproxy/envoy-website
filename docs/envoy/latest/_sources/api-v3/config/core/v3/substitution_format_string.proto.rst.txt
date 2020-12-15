@@ -9,7 +9,7 @@ Substitution format string
 config.core.v3.SubstitutionFormatString
 ---------------------------------------
 
-`[config.core.v3.SubstitutionFormatString proto] <https://github.com/envoyproxy/envoy/blob/357ed13f5d6c12ac0ef15e2d05216afa53953527/api/envoy/config/core/v3/substitution_format_string.proto#L18>`_
+`[config.core.v3.SubstitutionFormatString proto] <https://github.com/envoyproxy/envoy/blob/43bf707f9516264f086ded6431e294150fa30b06/api/envoy/config/core/v3/substitution_format_string.proto#L21>`_
 
 Configuration to use multiple :ref:`command operators <config_access_log_command_operators>`
 to generate a new string in either plain text or JSON format.
@@ -19,6 +19,7 @@ to generate a new string in either plain text or JSON format.
   {
     "text_format": "...",
     "json_format": "{...}",
+    "text_format_source": "{...}",
     "omit_empty_values": "...",
     "content_type": "..."
   }
@@ -42,10 +43,11 @@ text_format
   
     upstream connect error:503:path=/foo
   
+  Deprecated in favor of :ref:`text_format_source <envoy_v3_api_field_config.core.v3.SubstitutionFormatString.text_format_source>`. To migrate text format strings, use the :ref:`inline_string <envoy_v3_api_field_config.core.v3.DataSource.inline_string>` field.
   
   
   
-  Precisely one of :ref:`text_format <envoy_v3_api_field_config.core.v3.SubstitutionFormatString.text_format>`, :ref:`json_format <envoy_v3_api_field_config.core.v3.SubstitutionFormatString.json_format>` must be set.
+  Precisely one of :ref:`text_format <envoy_v3_api_field_config.core.v3.SubstitutionFormatString.text_format>`, :ref:`json_format <envoy_v3_api_field_config.core.v3.SubstitutionFormatString.json_format>`, :ref:`text_format_source <envoy_v3_api_field_config.core.v3.SubstitutionFormatString.text_format_source>` must be set.
   
 .. _envoy_v3_api_field_config.core.v3.SubstitutionFormatString.json_format:
 
@@ -75,7 +77,32 @@ json_format
   
   
   
-  Precisely one of :ref:`text_format <envoy_v3_api_field_config.core.v3.SubstitutionFormatString.text_format>`, :ref:`json_format <envoy_v3_api_field_config.core.v3.SubstitutionFormatString.json_format>` must be set.
+  Precisely one of :ref:`text_format <envoy_v3_api_field_config.core.v3.SubstitutionFormatString.text_format>`, :ref:`json_format <envoy_v3_api_field_config.core.v3.SubstitutionFormatString.json_format>`, :ref:`text_format_source <envoy_v3_api_field_config.core.v3.SubstitutionFormatString.text_format_source>` must be set.
+  
+.. _envoy_v3_api_field_config.core.v3.SubstitutionFormatString.text_format_source:
+
+text_format_source
+  (:ref:`config.core.v3.DataSource <envoy_v3_api_msg_config.core.v3.DataSource>`) Specify a format with command operators to form a text string.
+  Its details is described in :ref:`format string<config_access_log_format_strings>`.
+  
+  For example, setting ``text_format`` like below,
+  
+  .. validated-code-block:: yaml
+    :type-name: envoy.config.core.v3.SubstitutionFormatString
+  
+    text_format_source:
+      inline_string: "%LOCAL_REPLY_BODY%:%RESPONSE_CODE%:path=%REQ(:path)%\n"
+  
+  generates plain text similar to:
+  
+  .. code-block:: text
+  
+    upstream connect error:503:path=/foo
+  
+  
+  
+  
+  Precisely one of :ref:`text_format <envoy_v3_api_field_config.core.v3.SubstitutionFormatString.text_format>`, :ref:`json_format <envoy_v3_api_field_config.core.v3.SubstitutionFormatString.json_format>`, :ref:`text_format_source <envoy_v3_api_field_config.core.v3.SubstitutionFormatString.text_format_source>` must be set.
   
 .. _envoy_v3_api_field_config.core.v3.SubstitutionFormatString.omit_empty_values:
 
