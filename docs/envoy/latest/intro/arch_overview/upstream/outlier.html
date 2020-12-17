@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Outlier detection &mdash; envoy 1.17.0-dev-791f66 documentation</title>
+  <title>Outlier detection &mdash; envoy 1.17.0-dev-8b1569 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.17.0-dev-791f66
+                1.17.0-dev-8b1569
               </div>
             
           
@@ -253,7 +253,7 @@ or vice-versa.</p>
 ejects a host based on its outlier detection type, other filter chains will be also affected even though their
 outlier detection type would not have ejected that host.</p>
 <div class="section" id="ejection-algorithm">
-<h2>Ejection algorithm<a class="headerlink" href="#ejection-algorithm" title="Permalink to this headline">¶</a></h2>
+<span id="arch-overview-outlier-detection-algorithm"></span><h2>Ejection algorithm<a class="headerlink" href="#ejection-algorithm" title="Permalink to this headline">¶</a></h2>
 <p>Depending on the type of outlier detection, ejection either runs inline (for example in the case of
 consecutive 5xx) or at a specified interval (for example in the case of periodic success rate). The
 ejection algorithm works as follows:</p>
@@ -266,9 +266,18 @@ setting). If the number of ejected hosts is above the threshold, the host is not
 <li><p>The host is ejected for some number of milliseconds. Ejection means that the host is marked
 unhealthy and will not be used during load balancing unless the load balancer is in a
 <a class="reference internal" href="load_balancing/panic_threshold.html#arch-overview-load-balancing-panic-threshold"><span class="std std-ref">panic</span></a> scenario. The number of milliseconds
-is equal to the <a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-base-ejection-time"><span class="std std-ref">outlier_detection.base_ejection_time_ms</span></a> value
-multiplied by the number of times the host has been ejected. This causes hosts to get ejected
-for longer and longer periods if they continue to fail.</p></li>
+is equal to the <a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-base-ejection-time"><span class="std std-ref">outlier_detection.base_ejection_time</span></a> value
+multiplied by the number of times the host has been ejected in a row. This causes hosts to get ejected
+for longer and longer periods if they continue to fail. When ejection time reaches
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-max-ejection-time"><span class="std std-ref">outlier_detection.max_ejection_time</span></a> it does not increase any more.
+When the host becomes healthy, the ejection time
+multiplier decreases with time. The host’s health is checked at intervals equal to
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-interval"><span class="std std-ref">outlier_detection.interval</span></a>.
+If the host is healthy during that check, the ejection time multiplier is decremented. Assuming that the host stays healthy
+it would take approximately <a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-max-ejection-time"><span class="std std-ref">outlier_detection.max_ejection_time</span></a> /
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-base-ejection-time"><span class="std std-ref">outlier_detection.base_ejection_time</span></a> *
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-interval"><span class="std std-ref">outlier_detection.interval</span></a> seconds to bring down the ejection time to the minimum
+value <a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-base-ejection-time"><span class="std std-ref">outlier_detection.base_ejection_time</span></a>.</p></li>
 <li><p>An ejected host will automatically be brought back into service after the ejection time has
 been satisfied. Generally, outlier detection is used alongside <a class="reference internal" href="health_checking.html#arch-overview-health-checking"><span class="std std-ref">active health checking</span></a> for a comprehensive health checking solution.</p></li>
 </ol>
