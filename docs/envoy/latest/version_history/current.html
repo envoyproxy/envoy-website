@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1.17.0 (pending) &mdash; envoy 1.17.0-dev-1087ea documentation</title>
+  <title>1.17.0 (pending) &mdash; envoy 1.17.0-dev-1bf77f documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.17.0-dev-1087ea
+                1.17.0-dev-1bf77f
               </div>
             
           
@@ -259,6 +259,7 @@ the <a class="reference internal" href="../faq/api/transition.html#faq-api-versi
 <li><p>jwt_authn filter: added support of Jwt time constraint verification with a clock skew (default to 60 seconds) and added a filter config field <a class="reference internal" href="../api-v3/extensions/filters/http/jwt_authn/v3/config.proto.html#envoy-v3-api-field-extensions-filters-http-jwt-authn-v3-jwtprovider-clock-skew-seconds"><span class="std std-ref">clock_skew_seconds</span></a> to configure it.</p></li>
 <li><p>kill_request: enable a way to configure kill header name in KillRequest proto.</p></li>
 <li><p>listener: injection of the <a class="reference internal" href="../configuration/listeners/listener_filters/tls_inspector.html#config-listener-filters-tls-inspector"><span class="std std-ref">TLS inspector</span></a> has been disabled by default. This feature is controlled by the runtime guard <cite>envoy.reloadable_features.disable_tls_inspector_injection</cite>.</p></li>
+<li><p>lua: add <cite>always_wrap_body</cite> argument to <cite>body()</cite> API to always return a <a class="reference internal" href="../configuration/http/http_filters/lua_filter.html#config-http-filters-lua-buffer-wrapper"><span class="std std-ref">buffer object</span></a> even if the body is empty.</p></li>
 <li><p>memory: enable new tcmalloc with restartable sequences for aarch64 builds.</p></li>
 <li><p>mongo proxy metrics: swapped network connection remote and local closed counters previously set reversed (<cite>cx_destroy_local_with_active_rq</cite> and <cite>cx_destroy_remote_with_active_rq</cite>).</p></li>
 <li><p>outlier detection: added <a class="reference internal" href="../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-max-ejection-time"><span class="std std-ref">max_ejection_time</span></a> to limit ejection time growth when a node stays unhealthy for extended period of time. By default <a class="reference internal" href="../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-max-ejection-time"><span class="std std-ref">max_ejection_time</span></a> limits ejection time to 5 minutes. Additionally, when the node stays healthy, ejection time decreases. See <a class="reference internal" href="../intro/arch_overview/upstream/outlier.html#arch-overview-outlier-detection-algorithm"><span class="std std-ref">ejection algorithm</span></a> for more info. Previously, ejection time could grow without limit and never decreased.</p></li>
@@ -307,6 +308,7 @@ subscribers. To undo this for VHDS (which is the only subscriber that wants empt
 <li><p>config: added ability to flush stats when the admin’s <a class="reference internal" href="../operations/admin.html#operations-admin-interface-stats"><span class="std std-ref">/stats endpoint</span></a> is hit instead of on a timer via <a class="reference internal" href="../api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-bootstrap-stats-flush-on-admin"><span class="std std-ref">stats_flush_on_admin</span></a>.</p></li>
 <li><p>config: added new runtime feature <cite>envoy.features.enable_all_deprecated_features</cite> that allows the use of all deprecated features.</p></li>
 <li><p>formatter: added new <a class="reference internal" href="../api-v3/config/core/v3/substitution_format_string.proto.html#envoy-v3-api-field-config-core-v3-substitutionformatstring-text-format-source"><span class="std std-ref">text_format_source</span></a> field to support format strings both inline and from a file.</p></li>
+<li><p>formatter: added support for custom date formatting to <a class="reference internal" href="../configuration/observability/access_log/usage.html#config-access-log-format-downstream-peer-cert-v-start"><span class="std std-ref">%DOWNSTREAM_PEER_CERT_V_START%</span></a> and <a class="reference internal" href="../configuration/observability/access_log/usage.html#config-access-log-format-downstream-peer-cert-v-end"><span class="std std-ref">%DOWNSTREAM_PEER_CERT_V_END%</span></a>, similar to <a class="reference internal" href="../configuration/observability/access_log/usage.html#config-access-log-format-start-time"><span class="std std-ref">%START_TIME%</span></a>.</p></li>
 <li><p>grpc: implemented header value syntax support when defining <a class="reference internal" href="../api-v3/config/core/v3/grpc_service.proto.html#envoy-v3-api-field-config-core-v3-grpcservice-initial-metadata"><span class="std std-ref">initial metadata</span></a> for gRPC-based <cite>ext_authz</cite> <a class="reference internal" href="../api-v3/extensions/filters/http/ext_authz/v3/ext_authz.proto.html#envoy-v3-api-field-extensions-filters-http-ext-authz-v3-extauthz-grpc-service"><span class="std std-ref">HTTP</span></a> and <a class="reference internal" href="../api-v3/extensions/filters/network/ext_authz/v3/ext_authz.proto.html#envoy-v3-api-field-extensions-filters-network-ext-authz-v3-extauthz-grpc-service"><span class="std std-ref">network</span></a> filters, and <a class="reference internal" href="../api-v3/config/ratelimit/v3/rls.proto.html#envoy-v3-api-field-config-ratelimit-v3-ratelimitserviceconfig-grpc-service"><span class="std std-ref">ratelimit</span></a> filters.</p></li>
 <li><p>grpc-json: added support for configuring <a class="reference internal" href="../api-v3/extensions/filters/http/grpc_json_transcoder/v3/transcoder.proto.html#envoy-v3-api-field-extensions-filters-http-grpc-json-transcoder-v3-grpcjsontranscoder-url-unescape-spec"><span class="std std-ref">unescaping behavior</span></a> for path components.</p></li>
 <li><p>hds: added support for delta updates in the <a class="reference internal" href="../api-v3/service/health/v3/hds.proto.html#envoy-v3-api-msg-service-health-v3-healthcheckspecifier"><span class="std std-ref">HealthCheckSpecifier</span></a>, making only the Endpoints and Health Checkers that changed be reconstructed on receiving a new message, rather than the entire HDS.</p></li>
