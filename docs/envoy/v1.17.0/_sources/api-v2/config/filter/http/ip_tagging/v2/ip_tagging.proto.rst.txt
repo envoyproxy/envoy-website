@@ -1,0 +1,107 @@
+.. _envoy_api_file_envoy/config/filter/http/ip_tagging/v2/ip_tagging.proto:
+
+IP tagging
+==========
+
+.. _extension_envoy.filters.http.ip_tagging:
+
+
+This extension may be referenced by the qualified name *envoy.filters.http.ip_tagging*
+
+.. note::
+  
+
+  This extension is intended to be robust against untrusted downstream traffic. It assumes that the upstream is trusted.
+
+IP tagging :ref:`configuration overview <config_http_filters_ip_tagging>`.
+
+.. _envoy_api_msg_config.filter.http.ip_tagging.v2.IPTagging:
+
+config.filter.http.ip_tagging.v2.IPTagging
+------------------------------------------
+
+`[config.filter.http.ip_tagging.v2.IPTagging proto] <https://github.com/envoyproxy/envoy/blob/5c801b25cae04f06bf48248c90e87d623d7a6283/api/envoy/config/filter/http/ip_tagging/v2/ip_tagging.proto#L21>`_
+
+
+.. code-block:: json
+
+  {
+    "request_type": "...",
+    "ip_tags": []
+  }
+
+.. _envoy_api_field_config.filter.http.ip_tagging.v2.IPTagging.request_type:
+
+request_type
+  (:ref:`config.filter.http.ip_tagging.v2.IPTagging.RequestType <envoy_api_enum_config.filter.http.ip_tagging.v2.IPTagging.RequestType>`) The type of request the filter should apply to.
+  
+  
+.. _envoy_api_field_config.filter.http.ip_tagging.v2.IPTagging.ip_tags:
+
+ip_tags
+  (**repeated** :ref:`config.filter.http.ip_tagging.v2.IPTagging.IPTag <envoy_api_msg_config.filter.http.ip_tagging.v2.IPTagging.IPTag>`, *REQUIRED*) The set of IP tags for the filter.
+  
+  
+.. _envoy_api_msg_config.filter.http.ip_tagging.v2.IPTagging.IPTag:
+
+config.filter.http.ip_tagging.v2.IPTagging.IPTag
+------------------------------------------------
+
+`[config.filter.http.ip_tagging.v2.IPTagging.IPTag proto] <https://github.com/envoyproxy/envoy/blob/5c801b25cae04f06bf48248c90e87d623d7a6283/api/envoy/config/filter/http/ip_tagging/v2/ip_tagging.proto#L40>`_
+
+Supplies the IP tag name and the IP address subnets.
+
+.. code-block:: json
+
+  {
+    "ip_tag_name": "...",
+    "ip_list": []
+  }
+
+.. _envoy_api_field_config.filter.http.ip_tagging.v2.IPTagging.IPTag.ip_tag_name:
+
+ip_tag_name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies the IP tag name to apply.
+  
+  
+.. _envoy_api_field_config.filter.http.ip_tagging.v2.IPTagging.IPTag.ip_list:
+
+ip_list
+  (**repeated** :ref:`core.CidrRange <envoy_api_msg_core.CidrRange>`) A list of IP address subnets that will be tagged with
+  ip_tag_name. Both IPv4 and IPv6 are supported.
+  
+  
+
+
+.. _envoy_api_enum_config.filter.http.ip_tagging.v2.IPTagging.RequestType:
+
+Enum config.filter.http.ip_tagging.v2.IPTagging.RequestType
+-----------------------------------------------------------
+
+`[config.filter.http.ip_tagging.v2.IPTagging.RequestType proto] <https://github.com/envoyproxy/envoy/blob/5c801b25cae04f06bf48248c90e87d623d7a6283/api/envoy/config/filter/http/ip_tagging/v2/ip_tagging.proto#L28>`_
+
+The type of requests the filter should apply to. The supported types
+are internal, external or both. The
+:ref:`x-forwarded-for<config_http_conn_man_headers_x-forwarded-for_internal_origin>` header is
+used to determine if a request is internal and will result in
+:ref:`x-envoy-internal<config_http_conn_man_headers_x-envoy-internal>`
+being set. The filter defaults to both, and it will apply to all request types.
+
+.. _envoy_api_enum_value_config.filter.http.ip_tagging.v2.IPTagging.RequestType.BOTH:
+
+BOTH
+  *(DEFAULT)* ⁣Both external and internal requests will be tagged. This is the default value.
+  
+  
+.. _envoy_api_enum_value_config.filter.http.ip_tagging.v2.IPTagging.RequestType.INTERNAL:
+
+INTERNAL
+  ⁣Only internal requests will be tagged.
+  
+  
+.. _envoy_api_enum_value_config.filter.http.ip_tagging.v2.IPTagging.RequestType.EXTERNAL:
+
+EXTERNAL
+  ⁣Only external requests will be tagged.
+  
+  
