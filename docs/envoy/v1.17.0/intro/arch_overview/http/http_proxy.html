@@ -1,0 +1,317 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>HTTP dynamic forward proxy &mdash; envoy 1.17.0-5c801b documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.4.1/segment.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.4.1/menu.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.4.1/tab.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Upstream clusters" href="../upstream/upstream.html" />
+    <link rel="prev" title="HTTP upgrades" href="upgrades.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.17.0-5c801b
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../intro.html">Introduction</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../what_is_envoy.html">What is Envoy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../arch_overview.html">Architecture overview</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../intro/intro.html">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../listeners/listeners_toc.html">Listeners</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="http.html">HTTP</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="http_connection_management.html">HTTP connection management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="http_filters.html">HTTP filters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="http_routing.html">HTTP routing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="upgrades.html">HTTP upgrades</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">HTTP dynamic forward proxy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../upstream/upstream.html">Upstream clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../observability/observability.html">Observability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../security/security.html">Security</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../operations/operations.html">Operations &amp; configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../other_features/other_features.html">Other features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../advanced/advanced.html">Advanced</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../life_of_a_request.html">Life of a Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../deployment_types/deployment_types.html">Deployment types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_help.html">Getting help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../intro.html">Introduction</a> &raquo;</li>
+        
+          <li><a href="../arch_overview.html">Architecture overview</a> &raquo;</li>
+        
+          <li><a href="http.html">HTTP</a> &raquo;</li>
+        
+      <li>HTTP dynamic forward proxy</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/intro/arch_overview/http/http_proxy.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="http-dynamic-forward-proxy">
+<span id="arch-overview-http-dynamic-forward-proxy"></span><h1>HTTP dynamic forward proxy<a class="headerlink" href="#http-dynamic-forward-proxy" title="Permalink to this headline">¶</a></h1>
+<p>Through the combination of both an <a class="reference internal" href="../../../configuration/http/http_filters/dynamic_forward_proxy_filter.html#config-http-filters-dynamic-forward-proxy"><span class="std std-ref">HTTP filter</span></a> and
+<a class="reference internal" href="../../../api-v3/extensions/clusters/dynamic_forward_proxy/v3/cluster.proto.html#envoy-v3-api-msg-extensions-clusters-dynamic-forward-proxy-v3-clusterconfig"><span class="std std-ref">custom cluster</span></a>,
+Envoy supports HTTP dynamic forward proxy. This means that Envoy can perform the role of an HTTP
+proxy without prior knowledge of all configured DNS addresses, while still retaining the vast
+majority of Envoy’s benefits including asynchronous DNS resolution. The implementation works as
+follows:</p>
+<ul class="simple">
+<li><p>The dynamic forward proxy HTTP filter is used to pause requests if the target DNS host is not
+already in cache.</p></li>
+<li><p>Envoy will begin asynchronously resolving the DNS address, unblocking any requests waiting on
+the response when the resolution completes.</p></li>
+<li><p>Any future requests will not be blocked as the DNS address is already in cache. The resolution
+process works similarly to the <a class="reference internal" href="../upstream/service_discovery.html#arch-overview-service-discovery-types-logical-dns"><span class="std std-ref">logical DNS</span></a> service discovery type with a single target
+address being remembered at any given time.</p></li>
+<li><p>All known hosts are stored in the dynamic forward proxy cluster such that they can be displayed
+in <a class="reference internal" href="../../../operations/admin.html#operations-admin-interface"><span class="std std-ref">admin output</span></a>.</p></li>
+<li><p>A special load balancer will select the right host to use based on the HTTP host/authority header
+during forwarding.</p></li>
+<li><p>Hosts that have not been used for a period of time are subject to a TTL that will purge them.</p></li>
+<li><p>When the upstream cluster has been configured with a TLS context, Envoy will automatically perform
+SAN verification for the resolved host name as well as specify the host name via SNI.</p></li>
+</ul>
+<p>The above implementation details mean that at steady state Envoy can forward a large volume of
+HTTP proxy traffic while all DNS resolution happens asynchronously in the background. Additionally,
+all other Envoy filters and extensions can be used in conjunction with dynamic forward proxy support
+including authentication, RBAC, rate limiting, etc.</p>
+<p>For further configuration information see the <a class="reference internal" href="../../../configuration/http/http_filters/dynamic_forward_proxy_filter.html#config-http-filters-dynamic-forward-proxy"><span class="std std-ref">HTTP filter configuration documentation</span></a>.</p>
+<div class="section" id="memory-usage-details">
+<h2>Memory usage details<a class="headerlink" href="#memory-usage-details" title="Permalink to this headline">¶</a></h2>
+<p>Memory usage detail’s for Envoy’s dynamic forward proxy support are as follows:</p>
+<ul class="simple">
+<li><p>Each resolved host/port pair uses a fixed amount of memory global to the server and shared
+amongst all workers.</p></li>
+<li><p>Address changes are performed inline using read/write locks and require no host reallocations.</p></li>
+<li><p>Hosts removed via TTL are purged once all active connections stop referring to them and all used
+memory is regained.</p></li>
+<li><p>The <a class="reference internal" href="../../../api-v3/extensions/common/dynamic_forward_proxy/v3/dns_cache.proto.html#envoy-v3-api-field-extensions-common-dynamic-forward-proxy-v3-dnscacheconfig-max-hosts"><span class="std std-ref">max_hosts</span></a> field can
+be used to limit the number of hosts that the DNS cache will store at any given time.</p></li>
+<li><p>The cluster’s <a class="reference internal" href="../../../api-v3/config/cluster/v3/circuit_breaker.proto.html#envoy-v3-api-field-config-cluster-v3-circuitbreakers-thresholds-max-pending-requests"><span class="std std-ref">max_pending_requests</span></a> circuit breaker can
+be used to limit the number of requests that are pending waiting for the DNS cache to load
+a host.</p></li>
+<li><p>Long lived upstream connections can have the underlying logical host expire via TTL while the
+connection is still open. Upstream requests and connections are still bound by other cluster
+circuit breakers such as <a class="reference internal" href="../../../api-v3/config/cluster/v3/circuit_breaker.proto.html#envoy-v3-api-field-config-cluster-v3-circuitbreakers-thresholds-max-requests"><span class="std std-ref">max_requests</span></a>. The current assumption is that
+host data shared between connections uses a marginal amount of memory compared to the connections
+and requests themselves, making it not worth controlling independently.</p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../upstream/upstream.html" class="btn btn-neutral float-right" title="Upstream clusters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="upgrades.html" class="btn btn-neutral float-left" title="HTTP upgrades" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2016-2021, Envoy Project Authors
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
