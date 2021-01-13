@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Local Rate limit &mdash; envoy 1.18.0-dev-a89a5d documentation</title>
+  <title>Local Rate limit &mdash; envoy 1.18.0-dev-a4d8d9 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-a89a5d
+                1.18.0-dev-a4d8d9
               </div>
             
           
@@ -233,14 +233,16 @@
 <p>Local Rate limit <a class="reference internal" href="../../../../../../configuration/http/http_filters/local_rate_limit_filter.html#config-http-filters-local-rate-limit"><span class="std std-ref">configuration overview</span></a>.</p>
 <div class="section" id="extensions-filters-http-local-ratelimit-v3-localratelimit">
 <span id="envoy-v3-api-msg-extensions-filters-http-local-ratelimit-v3-localratelimit"></span><h2>extensions.filters.http.local_ratelimit.v3.LocalRateLimit<a class="headerlink" href="#extensions-filters-http-local-ratelimit-v3-localratelimit" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a89a5d00363e2dcf36bad15f39b9e00cc2698494/api/envoy/extensions/filters/http/local_ratelimit/v3/local_rate_limit.proto#L22">[extensions.filters.http.local_ratelimit.v3.LocalRateLimit proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a4d8d91ee9098e9bee8b4766b9fddd48b1e73196/api/envoy/extensions/filters/http/local_ratelimit/v3/local_rate_limit.proto#L23">[extensions.filters.http.local_ratelimit.v3.LocalRateLimit proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;stat_prefix&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
   <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;token_bucket&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;filter_enabled&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;filter_enforced&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;response_headers_to_add&quot;</span><span class="p">:</span> <span class="p">[]</span>
+  <span class="nt">&quot;response_headers_to_add&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;descriptors&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;stage&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -295,6 +297,29 @@ Defaults to 0% of requests for safety.</p>
 <dl class="simple" id="envoy-v3-api-field-extensions-filters-http-local-ratelimit-v3-localratelimit-response-headers-to-add">
 <dt>response_headers_to_add</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="../../../../../config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-headervalueoption"><span class="std std-ref">config.core.v3.HeaderValueOption</span></a>) Specifies a list of HTTP headers that should be added to each response for requests that
 have been rate limited.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-extensions-filters-http-local-ratelimit-v3-localratelimit-descriptors">
+<dt>descriptors</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="../../../../common/ratelimit/v3/ratelimit.proto.html#envoy-v3-api-msg-extensions-common-ratelimit-v3-localratelimitdescriptor"><span class="std std-ref">extensions.common.ratelimit.v3.LocalRateLimitDescriptor</span></a>) The rate limit descriptor list to use in the local rate limit to override
+on. The rate limit descriptor is selected by the first full match from the
+request descriptors.</p>
+<p>Example on how to use :<a class="reference internal" href="../../../../../../configuration/http/http_filters/local_rate_limit_filter.html#config-http-filters-local-rate-limit-descriptors"><span class="std std-ref">this</span></a></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the current implementation the descriptor’s token bucket <a class="reference internal" href="../../../../../type/v3/token_bucket.proto.html#envoy-v3-api-field-type-v3-tokenbucket-fill-interval"><span class="std std-ref">fill_interval</span></a> must be a multiple
+global <a class="reference internal" href="#envoy-v3-api-field-extensions-filters-http-local-ratelimit-v3-localratelimit-token-bucket"><span class="std std-ref">token bucket’s</span></a> fill interval.</p>
+<p>The descriptors must match verbatim for rate limiting to apply. There is no partial
+match by a subset of descriptor entries in the current implementation.</p>
+</div>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-extensions-filters-http-local-ratelimit-v3-localratelimit-stage">
+<dt>stage</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">uint32</a>) Specifies the rate limit configurations to be applied with the same
+stage number. If not set, the default stage number is 0.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The filter supports a range of 0 - 10 inclusively for stage numbers.</p>
+</div>
 </dd>
 </dl>
 </div>

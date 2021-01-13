@@ -20,7 +20,7 @@ Local Rate limit :ref:`configuration overview <config_http_filters_local_rate_li
 extensions.filters.http.local_ratelimit.v3.LocalRateLimit
 ---------------------------------------------------------
 
-`[extensions.filters.http.local_ratelimit.v3.LocalRateLimit proto] <https://github.com/envoyproxy/envoy/blob/a89a5d00363e2dcf36bad15f39b9e00cc2698494/api/envoy/extensions/filters/http/local_ratelimit/v3/local_rate_limit.proto#L22>`_
+`[extensions.filters.http.local_ratelimit.v3.LocalRateLimit proto] <https://github.com/envoyproxy/envoy/blob/a4d8d91ee9098e9bee8b4766b9fddd48b1e73196/api/envoy/extensions/filters/http/local_ratelimit/v3/local_rate_limit.proto#L23>`_
 
 
 .. code-block:: json
@@ -31,7 +31,9 @@ extensions.filters.http.local_ratelimit.v3.LocalRateLimit
     "token_bucket": "{...}",
     "filter_enabled": "{...}",
     "filter_enforced": "{...}",
-    "response_headers_to_add": []
+    "response_headers_to_add": [],
+    "descriptors": [],
+    "stage": "..."
   }
 
 .. _envoy_v3_api_field_extensions.filters.http.local_ratelimit.v3.LocalRateLimit.stat_prefix:
@@ -96,6 +98,36 @@ filter_enforced
 response_headers_to_add
   (**repeated** :ref:`config.core.v3.HeaderValueOption <envoy_v3_api_msg_config.core.v3.HeaderValueOption>`) Specifies a list of HTTP headers that should be added to each response for requests that
   have been rate limited.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.local_ratelimit.v3.LocalRateLimit.descriptors:
+
+descriptors
+  (**repeated** :ref:`extensions.common.ratelimit.v3.LocalRateLimitDescriptor <envoy_v3_api_msg_extensions.common.ratelimit.v3.LocalRateLimitDescriptor>`) The rate limit descriptor list to use in the local rate limit to override
+  on. The rate limit descriptor is selected by the first full match from the
+  request descriptors.
+  
+  Example on how to use ::ref:`this <config_http_filters_local_rate_limit_descriptors>`
+  
+  .. note::
+  
+    In the current implementation the descriptor's token bucket :ref:`fill_interval
+    <envoy_v3_api_field_type.v3.TokenBucket.fill_interval>` must be a multiple
+    global :ref:`token bucket's<envoy_v3_api_field_extensions.filters.http.local_ratelimit.v3.LocalRateLimit.token_bucket>` fill interval.
+  
+    The descriptors must match verbatim for rate limiting to apply. There is no partial
+    match by a subset of descriptor entries in the current implementation.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.local_ratelimit.v3.LocalRateLimit.stage:
+
+stage
+  (`uint32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies the rate limit configurations to be applied with the same
+  stage number. If not set, the default stage number is 0.
+  
+  .. note::
+  
+   The filter supports a range of 0 - 10 inclusively for stage numbers.
   
   
 

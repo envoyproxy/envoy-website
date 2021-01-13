@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Local rate limit &mdash; envoy 1.18.0-dev-a89a5d documentation</title>
+  <title>Local rate limit &mdash; envoy 1.18.0-dev-a4d8d9 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-a89a5d
+                1.18.0-dev-a4d8d9
               </div>
             
           
@@ -326,6 +326,85 @@ headers may be configured.</p>
 </div>
 <p>Note that if this filter is configured as globally disabled and there are no virtual host or route level
 token buckets, no rate limiting will be applied.</p>
+</div>
+<div class="section" id="using-rate-limit-descriptors-for-local-rate-limiting">
+<span id="config-http-filters-local-rate-limit-descriptors"></span><h2>Using rate limit descriptors for local rate limiting<a class="headerlink" href="#using-rate-limit-descriptors-for-local-rate-limiting" title="Permalink to this headline">¶</a></h2>
+<p>Rate limit descriptors can be used to override local per-route rate limiting.
+A route’s <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-msg-config-route-v3-ratelimit"><span class="std std-ref">rate limit action</span></a>
+is used to match up a <a class="reference internal" href="../../../api-v3/extensions/common/ratelimit/v3/ratelimit.proto.html#envoy-v3-api-msg-extensions-common-ratelimit-v3-localratelimitdescriptor"><span class="std std-ref">local descriptor</span></a> in
+the filter config descriptor list. The local descriptor’s token bucket
+settings are then used to decide if the request should be rate limited or not
+depending on whether the local descriptor’s entries match the route’s rate
+limit actions descriptor entries. If there is no matching descriptor entries,
+the default token bucket is used.</p>
+<p>Example filter configuration using descriptors:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">route_config</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_route</span>
+  <span class="nt">virtual_hosts</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_service</span>
+    <span class="nt">domains</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;*&quot;</span><span class="p p-Indicator">]</span>
+    <span class="nt">routes</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> prefix</span><span class="p">:</span> <span class="s">&quot;/foo&quot;</span> <span class="p p-Indicator">}</span>
+      <span class="nt">route</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> cluster</span><span class="p">:</span> <span class="nv">service_protected_by_rate_limit</span> <span class="p p-Indicator">}</span>
+      <span class="nt">typed_per_filter_config</span><span class="p">:</span>
+        <span class="nt">envoy.filters.http.local_ratelimit</span><span class="p">:</span>
+          <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.local_ratelimit.v3.LocalRateLimit</span>
+          <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test</span>
+          <span class="nt">token_bucket</span><span class="p">:</span>
+            <span class="nt">max_tokens</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1000</span>
+            <span class="nt">tokens_per_fill</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1000</span>
+            <span class="nt">fill_interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60s</span>
+          <span class="nt">filter_enabled</span><span class="p">:</span>
+            <span class="nt">runtime_key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test_enabled</span>
+            <span class="nt">default_value</span><span class="p">:</span>
+              <span class="nt">numerator</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
+              <span class="nt">denominator</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">HUNDRED</span>
+          <span class="nt">filter_enforced</span><span class="p">:</span>
+            <span class="nt">runtime_key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test_enforced</span>
+            <span class="nt">default_value</span><span class="p">:</span>
+              <span class="nt">numerator</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
+              <span class="nt">denominator</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">HUNDRED</span>
+          <span class="nt">response_headers_to_add</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="nt">append</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+              <span class="nt">header</span><span class="p">:</span>
+                <span class="nt">key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">x-test-rate-limit</span>
+                <span class="nt">value</span><span class="p">:</span> <span class="s">&#39;true&#39;</span>
+          <span class="nt">descriptors</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="nt">entries</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="nt">key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">client_cluster</span>
+              <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">foo</span>
+            <span class="p p-Indicator">-</span> <span class="nt">key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">path</span>
+              <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/foo/bar</span>
+            <span class="nt">token_bucket</span><span class="p">:</span>
+              <span class="nt">max_tokens</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+              <span class="nt">tokens_per_fill</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+              <span class="nt">fill_interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60s</span>
+          <span class="p p-Indicator">-</span> <span class="nt">entries</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="nt">key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">client_cluster</span>
+              <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">foo</span>
+            <span class="p p-Indicator">-</span> <span class="nt">key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">path</span>
+              <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/foo/bar2</span>
+            <span class="nt">token_bucket</span><span class="p">:</span>
+              <span class="nt">max_tokens</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
+              <span class="nt">tokens_per_fill</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
+              <span class="nt">fill_interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60s</span>
+    <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> prefix</span><span class="p">:</span> <span class="s">&quot;/&quot;</span> <span class="p p-Indicator">}</span>
+      <span class="nt">route</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> cluster</span><span class="p">:</span> <span class="nv">default_service</span> <span class="p p-Indicator">}</span>
+    <span class="nt">rate_limits</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">actions</span><span class="p">:</span> <span class="c1"># any actions in here</span>
+      <span class="p p-Indicator">-</span> <span class="nt">request_headers</span><span class="p">:</span>
+          <span class="nt">header_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">x-envoy-downstream-service-cluster</span>
+          <span class="nt">descriptor_key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">client_cluster</span>
+      <span class="p p-Indicator">-</span> <span class="nt">request_headers</span><span class="p">:</span>
+          <span class="nt">header_name</span><span class="p">:</span> <span class="s">&quot;:path&quot;</span>
+          <span class="nt">descriptor_key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">path</span>
+</pre></div>
+</div>
+<p>In this example, requests are rate-limited for routes prefixed with “/foo” as
+follow. If requests come from a downstream service cluster “foo” for “/foo/bar”
+path, then 10 req/min are allowed. But if they come from a downstream service
+cluster “foo” for “/foo/bar2” path, then 100 req/min are allowed. Otherwise,
+1000 req/min are allowed.</p>
 </div>
 <div class="section" id="statistics">
 <h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
