@@ -23,9 +23,9 @@ The External Processing filter allows an external service to act on HTTP traffic
 
 
 **Current Implementation Status:**
-At this time, the filter will send a "request_headers" message to the server when the
-filter is invoked from the downstream, and apply any header mutations returned by the
-server. No other part of the protocol is implemented yet.
+At this time, the filter will send the "request_headers" and "response_headers" messages
+to the server when the filter is invoked, and apply any header mutations returned by the
+server, and respond to "immediate_response" messages. No other parts of the protocol are implemented yet.
 
 
 As designed, the filter supports up to six different processing steps, which are in the
@@ -33,7 +33,7 @@ process of being implemented:
 * Request headers: IMPLEMENTED
 * Request body: NOT IMPLEMENTED
 * Request trailers: NOT IMPLEMENTED
-* Response headers: NOT IMPLEMENTED
+* Response headers: IMPLEMENTED
 * Response body: NOT IMPLEMENTED
 * Response trailers: NOT IMPLEMENTED
 
@@ -79,13 +79,14 @@ messages, and the server must reply with
 extensions.filters.http.ext_proc.v3alpha.ExternalProcessor
 ----------------------------------------------------------
 
-`[extensions.filters.http.ext_proc.v3alpha.ExternalProcessor proto] <https://github.com/envoyproxy/envoy/blob/a87c9cf89bba40c1fb68a0438f3c3acae89d3062/api/envoy/extensions/filters/http/ext_proc/v3alpha/ext_proc.proto#L75>`_
+`[extensions.filters.http.ext_proc.v3alpha.ExternalProcessor proto] <https://github.com/envoyproxy/envoy/blob/9753819331d1547c4b8294546a6461a3777958f5/api/envoy/extensions/filters/http/ext_proc/v3alpha/ext_proc.proto#L75>`_
 
 
 .. code-block:: json
 
   {
-    "grpc_service": "{...}"
+    "grpc_service": "{...}",
+    "failure_mode_allow": "..."
   }
 
 .. _envoy_v3_api_field_extensions.filters.http.ext_proc.v3alpha.ExternalProcessor.grpc_service:
@@ -95,7 +96,18 @@ grpc_service
   The filter supports both the "Envoy" and "Google" gRPC clients.
   
   
+.. _envoy_v3_api_field_extensions.filters.http.ext_proc.v3alpha.ExternalProcessor.failure_mode_allow:
 
+failure_mode_allow
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) By default, if the gRPC stream cannot be established, or if it is closed
+  prematurely with an error, the filter will fail. Specifically, if the
+  response headers have not yet been delivered, then it will return a 500
+  error downstream. If they have been delivered, then instead the HTTP stream to the
+  downstream client will be reset.
+  With this parameter set to true, however, then if the gRPC stream is prematurely closed
+  or could not be opened, processing continues without error.
+  
+  
 
 
 

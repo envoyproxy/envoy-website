@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>External Processing Filter &mdash; envoy 1.18.0-dev-a87c9c documentation</title>
+  <title>External Processing Filter &mdash; envoy 1.18.0-dev-975381 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-a87c9c
+                1.18.0-dev-975381
               </div>
             
           
@@ -195,15 +195,15 @@
 <p>External Processing Filter</p>
 <p>The External Processing filter allows an external service to act on HTTP traffic in a flexible way.</p>
 <p><strong>Current Implementation Status:</strong>
-At this time, the filter will send a “request_headers” message to the server when the
-filter is invoked from the downstream, and apply any header mutations returned by the
-server. No other part of the protocol is implemented yet.</p>
+At this time, the filter will send the “request_headers” and “response_headers” messages
+to the server when the filter is invoked, and apply any header mutations returned by the
+server, and respond to “immediate_response” messages. No other parts of the protocol are implemented yet.</p>
 <p>As designed, the filter supports up to six different processing steps, which are in the
 process of being implemented:
 * Request headers: IMPLEMENTED
 * Request body: NOT IMPLEMENTED
 * Request trailers: NOT IMPLEMENTED
-* Response headers: NOT IMPLEMENTED
+* Response headers: IMPLEMENTED
 * Response body: NOT IMPLEMENTED
 * Response trailers: NOT IMPLEMENTED</p>
 <p>The filter communicates with an external gRPC service that can use it to do a variety of things
@@ -242,15 +242,26 @@ messages, and the server must reply with
 <a class="reference internal" href="../../../../../service/ext_proc/v3alpha/external_processor.proto.html#envoy-v3-api-msg-service-ext-proc-v3alpha-processingresponse"><span class="std std-ref">ProcessingResponse</span></a>.</p>
 <div class="section" id="extensions-filters-http-ext-proc-v3alpha-externalprocessor">
 <span id="envoy-v3-api-msg-extensions-filters-http-ext-proc-v3alpha-externalprocessor"></span><h2>extensions.filters.http.ext_proc.v3alpha.ExternalProcessor<a class="headerlink" href="#extensions-filters-http-ext-proc-v3alpha-externalprocessor" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a87c9cf89bba40c1fb68a0438f3c3acae89d3062/api/envoy/extensions/filters/http/ext_proc/v3alpha/ext_proc.proto#L75">[extensions.filters.http.ext_proc.v3alpha.ExternalProcessor proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/9753819331d1547c4b8294546a6461a3777958f5/api/envoy/extensions/filters/http/ext_proc/v3alpha/ext_proc.proto#L75">[extensions.filters.http.ext_proc.v3alpha.ExternalProcessor proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;grpc_service&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;grpc_service&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;failure_mode_allow&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <dl class="simple" id="envoy-v3-api-field-extensions-filters-http-ext-proc-v3alpha-externalprocessor-grpc-service">
 <dt>grpc_service</dt><dd><p>(<a class="reference internal" href="../../../../../config/core/v3/grpc_service.proto.html#envoy-v3-api-msg-config-core-v3-grpcservice"><span class="std std-ref">config.core.v3.GrpcService</span></a>) Configuration for the gRPC service that the filter will communicate with.
 The filter supports both the “Envoy” and “Google” gRPC clients.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-http-ext-proc-v3alpha-externalprocessor-failure-mode-allow">
+<dt>failure_mode_allow</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) By default, if the gRPC stream cannot be established, or if it is closed
+prematurely with an error, the filter will fail. Specifically, if the
+response headers have not yet been delivered, then it will return a 500
+error downstream. If they have been delivered, then instead the HTTP stream to the
+downstream client will be reset.
+With this parameter set to true, however, then if the gRPC stream is prematurely closed
+or could not be opened, processing continues without error.</p>
 </dd>
 </dl>
 </div>
