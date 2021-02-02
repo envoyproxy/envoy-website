@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xDS REST and gRPC protocol &mdash; envoy 1.18.0-dev-461caf documentation</title>
+  <title>xDS REST and gRPC protocol &mdash; envoy 1.18.0-dev-502d9c documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-461caf
+                1.18.0-dev-502d9c
               </div>
             
           
@@ -213,7 +213,7 @@ below.</p>
 <div class="section" id="resource-types">
 <h2>Resource Types<a class="headerlink" href="#resource-types" title="Permalink to this headline">¶</a></h2>
 <p>Every configuration resource in the xDS API has a type associated with it. Resource types follow a
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/461caf0520fd92871e2eb0464d661e658ed44e93/api/API_VERSIONING.md">versioning scheme</a>. Resource types are versioned independent of the
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/502d9cb5c7d8d9061337aec6e94c07afcc514e00/api/API_VERSIONING.md">versioning scheme</a>. Resource types are versioned independent of the
 transports described below.</p>
 <p>The following v2 xDS resource types are supported:</p>
 <ul class="simple">
@@ -405,6 +405,13 @@ at any time when the subscribed resources change.</p>
 <p>Whenever the client receives a new response, it will send another request indicating whether or
 not the resources in the response were valid (see
 <a class="reference internal" href="#xds-ack-nack"><span class="std std-ref">ACK/NACK and resource type instance version</span></a> for details).</p>
+<p>All server responses will contain a <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryresponse-nonce"><span class="std std-ref">nonce</span></a>, and
+all subsequent requests from the client must set the
+<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-response-nonce"><span class="std std-ref">response_nonce</span></a> field to the most recent
+nonce received from the server on that stream. This allows servers to determine which response a
+given request is associated with, which avoids various race conditions in the SotW protocol
+variants. Note that the nonce is valid only in the context of an individual xDS stream; it does
+not survive stream restarts.</p>
 <p>Only the first request on a stream is guaranteed to carry the node identifier.
 The subsequent discovery requests on the same stream may carry an empty node
 identifier. This holds true regardless of the acceptance of the discovery
@@ -416,7 +423,7 @@ message for the node identifier as a result.</p>
 <span id="xds-ack-nack"></span><h4>ACK/NACK and resource type instance version<a class="headerlink" href="#ack-nack-and-resource-type-instance-version" title="Permalink to this headline">¶</a></h4>
 <p>Every xDS resource type has a version string that indicates the version for that resource type.
 Whenever one resource of that type changes, the version is changed.</p>
-<p>In a responses sent by the xDS server, the
+<p>In a response sent by the xDS server, the
 <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryresponse-version-info"><span class="std std-ref">version_info</span></a> field indicates the current
 version for that resource type. The client then sends another request to the server with the
 <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-version-info"><span class="std std-ref">version_info</span></a> field indicating the most
@@ -430,9 +437,10 @@ valid, because the incremental API variants have a separate mechanism for that.)
 <p>The resource type instance version is separate for each resource type. When using the aggregated
 protocol variants, each resource type has its own version even though all resource types are being
 sent on the same stream.</p>
-<p>The resource type is also separate for each xDS server (where an xDS server is identified by a
-unique <a class="reference internal" href="../api-v2/api/v2/core/config_source.proto.html#envoy-api-msg-core-configsource"><span class="std std-ref">ConfigSource</span></a>). When obtaining resources of a
-given type from multiple xDS servers, each xDS server will have a different notion of version.</p>
+<p>The resource type instance version is also separate for each xDS server (where an xDS server is
+identified by a unique <a class="reference internal" href="../api-v2/api/v2/core/config_source.proto.html#envoy-api-msg-core-configsource"><span class="std std-ref">ConfigSource</span></a>). When obtaining
+resources of a given type from multiple xDS servers, each xDS server will have a different notion
+of version.</p>
 <p>Note that the version for a resource type is not a property of an individual xDS stream but rather
 a property of the resources themselves. If the stream becomes broken and the client creates a new
 stream, the client’s initial request on the new stream should indicate the most recent version
@@ -493,22 +501,36 @@ more details around the exact error message populated in the message field:</p>
 <p>After a NACK, an API update may succeed at a new version <strong>Y</strong>:</p>
 <div class="figure align-default">
 <img alt="ACK after NACK" src="../_images/later-ack.svg" /></div>
+<p>The preferred mechanism for a server to detect a NACK is to look for the presence of the
+<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-error-detail"><span class="std std-ref">error_detail</span></a> field in the request sent by
+the client. Some older servers may instead detect a NACK by looking at both the version and the
+nonce in the request: if the version in the request is not equal to the one sent by the server with
+that nonce, then the client has rejected the most recent version. However, this approach does not
+work for APIs other than LDS and CDS for clients that may dynamically change the set of resources
+that they are subscribing to, unless the server has somehow arranged to increment the resource
+type instance version every time any one client subscribes to a new resource. Specifically,
+consider the following example:
+- C: sends resource_names=[A]
+- S: sends resources=[A], version=1, nonce=1
+- C: sends resource_names=[A], version=1, nonce=1 (this is an ACK)
+- C: sends resource_names=[A, B], version=1, nonce=1 (client is adding subscription to B)
+- S: sends resources=[B], version=1, nonce=2 (server sends B but system version does not change because server has not gotten a new config)
+- C: sends resource_names=[A, B], version=1, nonce=2, error_detail=”B is invalid” (client intended to NACK B, server needs to look at error_detail to detect NACK instead of using version and nonce)</p>
 </div>
 <div class="section" id="ack-and-nack-semantics-summary">
 <h4>ACK and NACK semantics summary<a class="headerlink" href="#ack-and-nack-semantics-summary" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p>The xDS client should ACK or NACK every <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryresponse"><span class="std std-ref">DiscoveryResponse</span></a>
-received from the management server.</p></li>
-<li><p>Like all other requests, the nonce from the <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryresponse"><span class="std std-ref">DiscoveryResponse</span></a>
-is sent as <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-response-nonce"><span class="std std-ref">response_nonce</span></a>.
-As described in <a class="reference internal" href="#xds-protocol-resource-update"><span class="std std-ref">resource update</span></a> the nonce is
-used in certain race conditions to disambiguate between ACK and NACK.</p></li>
+received from the management server. The <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-response-nonce"><span class="std std-ref">response_nonce</span></a> field tells the server which of its responses
+the ACK or NACK is associated with.</p></li>
 <li><p>ACK signifies successful configuration update and contains the
 <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryresponse-version-info"><span class="std std-ref">version_info</span></a> from the
 <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-msg-discoveryresponse"><span class="std std-ref">DiscoveryResponse</span></a>.</p></li>
-<li><p>NACK signifies unsuccessful configuration update and contains the previous (existing)
-<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryresponse-version-info"><span class="std std-ref">version_info</span></a>.</p></li>
-<li><p>Only the NACK should populate the <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-error-detail"><span class="std std-ref">error_detail</span></a>.</p></li>
+<li><p>NACK signifies unsuccessful configuration and is indicated by the presence of the
+<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryrequest-error-detail"><span class="std std-ref">error_detail</span></a> field. The <a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-discoveryresponse-version-info"><span class="std std-ref">version_info</span></a> indicates the most recent version that the
+client is using, although that may not be an older version in the case where the client has
+subscribed to a new resource from an existing version and that new resource is invalid (see
+example above).</p></li>
 </ul>
 </div>
 <div class="section" id="when-to-send-an-update">
