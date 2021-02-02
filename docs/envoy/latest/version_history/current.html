@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1.18.0 (Pending) &mdash; envoy 1.18.0-dev-241a95 documentation</title>
+  <title>1.18.0 (Pending) &mdash; envoy 1.18.0-dev-deed32 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-241a95
+                1.18.0-dev-deed32
               </div>
             
           
@@ -251,6 +251,21 @@ to true. This behavior change by be overridden by setting runtime feature <cite>
 <h2>Minor Behavior Changes<a class="headerlink" href="#minor-behavior-changes" title="Permalink to this headline">¶</a></h2>
 <p><em>Changes that may cause incompatibilities for some users, but should not for most</em></p>
 <ul class="simple">
+<li><p>healthcheck: the <a class="reference internal" href="../configuration/http/http_filters/health_check_filter.html#config-http-filters-health-check"><span class="std std-ref">health check filter</span></a> now sends the
+<a class="reference internal" href="../configuration/http/http_filters/router_filter.html#config-http-filters-router-x-envoy-immediate-health-check-fail"><span class="std std-ref">x-envoy-immediate-health-check-fail</span></a> header
+for all responses when Envoy is in the health check failed state. Additionally, receiving the
+<a class="reference internal" href="../configuration/http/http_filters/router_filter.html#config-http-filters-router-x-envoy-immediate-health-check-fail"><span class="std std-ref">x-envoy-immediate-health-check-fail</span></a>
+header (either in response to normal traffic or in response to an HTTP <a class="reference internal" href="../intro/arch_overview/upstream/health_checking.html#arch-overview-health-checking"><span class="std std-ref">active health check</span></a>) will
+cause Envoy to immediately <a class="reference internal" href="../intro/arch_overview/upstream/load_balancing/excluded.html#arch-overview-load-balancing-excluded"><span class="std std-ref">exclude</span></a> the host from
+load balancing calculations. This has the useful property that such hosts, which are being
+explicitly told to disable traffic, will not be counted for panic routing calculations. See the
+excluded documentation for more information. This behavior can be temporarily reverted by setting
+the <cite>envoy.reloadable_features.health_check.immediate_failure_exclude_from_cluster</cite> feature flag
+to false. Note that the runtime flag covers <em>both</em> the health check filter responding with
+<cite>x-envoy-immediate-health-check-fail</cite> in all cases (versus just non-HC requests) as well as
+whether receiving <cite>x-envoy-immediate-health-check-fail</cite> will cause exclusion or not. Thus,
+depending on the Envoy deployment, the feature flag may need to be flipped on both downstream
+and upstream instances, depending on the reason.</p></li>
 <li><p>http: allow to use path canonicalizer from <a class="reference external" href="https://quiche.googlesource.com/googleurl">googleurl</a>
 instead of <cite>//source/common/chromium_url</cite>. The new path canonicalizer is enabled by default. To
 revert to the legacy path canonicalizer, enable the runtime flag

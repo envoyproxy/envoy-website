@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Health checking &mdash; envoy 1.18.0-dev-241a95 documentation</title>
+  <title>Health checking &mdash; envoy 1.18.0-dev-deed32 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-241a95
+                1.18.0-dev-deed32
               </div>
             
           
@@ -316,13 +316,15 @@ local service with a large number of health check requests.</p></li>
 </ul>
 </div>
 <div class="section" id="active-health-checking-fast-failure">
-<h2>Active health checking fast failure<a class="headerlink" href="#active-health-checking-fast-failure" title="Permalink to this headline">¶</a></h2>
+<span id="arch-overview-health-checking-fast-failure"></span><h2>Active health checking fast failure<a class="headerlink" href="#active-health-checking-fast-failure" title="Permalink to this headline">¶</a></h2>
 <p>When using active health checking along with passive health checking (<a class="reference internal" href="outlier.html#arch-overview-outlier-detection"><span class="std std-ref">outlier detection</span></a>), it is common to use a long health checking interval to avoid a
 large amount of active health checking traffic. In this case, it is still useful to be able to
 quickly drain an upstream host when using the <a class="reference internal" href="../../../operations/admin.html#operations-admin-interface-healthcheck-fail"><span class="std std-ref">/healthcheck/fail</span></a> admin endpoint. To support this, the <a class="reference internal" href="../../../configuration/http/http_filters/router_filter.html#config-http-filters-router"><span class="std std-ref">router
-filter</span></a> will respond to the <a class="reference internal" href="../../../configuration/http/http_filters/router_filter.html#config-http-filters-router-x-envoy-immediate-health-check-fail"><span class="std std-ref">x-envoy-immediate-health-check-fail</span></a> header. If this header is set by
-an upstream host, Envoy will immediately mark the host as being failed for active health check. Note
-that this only occurs if the host’s cluster has active health checking <a class="reference internal" href="../../../configuration/upstream/cluster_manager/cluster_hc.html#config-cluster-manager-cluster-hc"><span class="std std-ref">configured</span></a>. The <a class="reference internal" href="../../../configuration/http/http_filters/health_check_filter.html#config-http-filters-health-check"><span class="std std-ref">health checking filter</span></a> will automatically set this header if Envoy has been marked as
+filter</span></a> <em>and</em> the HTTP active health checker will respond to the
+<a class="reference internal" href="../../../configuration/http/http_filters/router_filter.html#config-http-filters-router-x-envoy-immediate-health-check-fail"><span class="std std-ref">x-envoy-immediate-health-check-fail</span></a> header. If this header is set by
+an upstream host, Envoy will immediately mark the host as being failed for active health check and
+<a class="reference internal" href="load_balancing/excluded.html#arch-overview-load-balancing-excluded"><span class="std std-ref">excluded</span></a> from load balancing. Note that this only
+occurs if the host’s cluster has active health checking <a class="reference internal" href="../../../configuration/upstream/cluster_manager/cluster_hc.html#config-cluster-manager-cluster-hc"><span class="std std-ref">configured</span></a>. The <a class="reference internal" href="../../../configuration/http/http_filters/health_check_filter.html#config-http-filters-health-check"><span class="std std-ref">health checking filter</span></a> will automatically set this header if Envoy has been marked as
 failed via the <a class="reference internal" href="../../../operations/admin.html#operations-admin-interface-healthcheck-fail"><span class="std std-ref">/healthcheck/fail</span></a> admin
 endpoint.</p>
 </div>
