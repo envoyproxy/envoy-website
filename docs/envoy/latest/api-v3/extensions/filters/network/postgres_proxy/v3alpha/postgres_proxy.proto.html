@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Postgres proxy &mdash; envoy 1.18.0-dev-c0c5b1 documentation</title>
+  <title>Postgres proxy &mdash; envoy 1.18.0-dev-2da07e documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-c0c5b1
+                1.18.0-dev-2da07e
               </div>
             
           
@@ -237,10 +237,11 @@
 <p>Postgres Proxy <a class="reference internal" href="../../../../../../configuration/listeners/network_filters/postgres_proxy_filter.html#config-network-filters-postgres-proxy"><span class="std std-ref">configuration overview</span></a>.</p>
 <div class="section" id="extensions-filters-network-postgres-proxy-v3alpha-postgresproxy">
 <span id="envoy-v3-api-msg-extensions-filters-network-postgres-proxy-v3alpha-postgresproxy"></span><h2>extensions.filters.network.postgres_proxy.v3alpha.PostgresProxy<a class="headerlink" href="#extensions-filters-network-postgres-proxy-v3alpha-postgresproxy" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/c0c5b180e319dc8233630b6e74851fadde3b025d/api/envoy/extensions/filters/network/postgres_proxy/v3alpha/postgres_proxy.proto#L20">[extensions.filters.network.postgres_proxy.v3alpha.PostgresProxy proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2da07ee48b3d177ed8b6c3f92afc5e992935f38e/api/envoy/extensions/filters/network/postgres_proxy/v3alpha/postgres_proxy.proto#L20">[extensions.filters.network.postgres_proxy.v3alpha.PostgresProxy proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;stat_prefix&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;enable_sql_parsing&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;enable_sql_parsing&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;terminate_ssl&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -252,6 +253,17 @@
 <dt>enable_sql_parsing</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue">BoolValue</a>) Controls whether SQL statements received in Frontend Query messages
 are parsed. Parsing is required to produce Postgres proxy filter
 metadata. Defaults to true.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-postgres-proxy-v3alpha-postgresproxy-terminate-ssl">
+<dt>terminate_ssl</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Controls whether to terminate SSL session initiated by a client.
+If the value is false, the Postgres proxy filter will not try to
+terminate SSL session, but will pass all the packets to the upstream server.
+If the value is true, the Postgres proxy filter will try to terminate SSL
+session. In order to do that, the filter chain must use <a class="reference internal" href="../../../../transport_sockets/starttls/v3/starttls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-starttls-v3-starttlsconfig"><span class="std std-ref">starttls transport socket</span></a>.
+If the filter does not manage to terminate the SSL session, it will close the connection from the client.
+Refer to official documentation for details
+<a class="reference external" href="https://www.postgresql.org/docs/current/protocol-flow.html#id-1.10.5.7.11">SSL Session Encryption Message Flow</a>.</p>
 </dd>
 </dl>
 </div>
