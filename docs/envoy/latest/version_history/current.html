@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1.18.0 (Pending) &mdash; envoy 1.18.0-dev-15e3b9 documentation</title>
+  <title>1.18.0 (Pending) &mdash; envoy 1.18.0-dev-5551e0 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-15e3b9
+                1.18.0-dev-5551e0
               </div>
             
           
@@ -249,6 +249,8 @@
 <h2>Minor Behavior Changes<a class="headerlink" href="#minor-behavior-changes" title="Permalink to this headline">¶</a></h2>
 <p><em>Changes that may cause incompatibilities for some users, but should not for most</em></p>
 <ul class="simple">
+<li><p>access_logs: change command operator %UPSTREAM_CLUSTER% to resolve to <a class="reference internal" href="../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-alt-stat-name"><span class="std std-ref">alt_stat_name</span></a> if provided. This behavior can be reverted by disabling the runtime feature <cite>envoy.reloadable_features.use_observable_cluster_name</cite>.</p></li>
+<li><p>admin: added <a class="reference internal" href="../api-v3/admin/v3/clusters.proto.html#envoy-v3-api-field-admin-v3-clusterstatus-observability-name"><span class="std std-ref">observability_name</span></a> information to GET /clusters?format=json <a class="reference internal" href="../api-v3/admin/v3/clusters.proto.html#envoy-v3-api-msg-admin-v3-clusterstatus"><span class="std std-ref">cluster status</span></a>.</p></li>
 <li><p>dns: both the <a class="reference internal" href="../intro/arch_overview/upstream/service_discovery.html#arch-overview-service-discovery-types-strict-dns"><span class="std std-ref">strict DNS</span></a> and
 <a class="reference internal" href="../intro/arch_overview/upstream/service_discovery.html#arch-overview-service-discovery-types-logical-dns"><span class="std std-ref">logical DNS</span></a> cluster types now honor the
 <a class="reference internal" href="../api-v3/config/endpoint/v3/endpoint_components.proto.html#envoy-v3-api-field-config-endpoint-v3-endpoint-hostname"><span class="std std-ref">hostname</span></a> field if not empty.
@@ -284,6 +286,7 @@ response HEADERS frame with the END_HEADERS flag set from upstream server.</p></
 <li><p>oauth filter: added the optional parameter <a class="reference internal" href="../api-v3/extensions/filters/http/oauth2/v3alpha/oauth.proto.html#envoy-v3-api-field-extensions-filters-http-oauth2-v3alpha-oauth2config-auth-scopes"><span class="std std-ref">auth_scopes</span></a> with default value of ‘user’ if not provided. Enables this value to be overridden in the Authorization request to the OAuth provider.</p></li>
 <li><p>perf: allow reading more bytes per operation from raw sockets to improve performance.</p></li>
 <li><p>router: extended custom date formatting to DOWNSTREAM_PEER_CERT_V_START and DOWNSTREAM_PEER_CERT_V_END when using <a class="reference internal" href="../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-custom-request-headers"><span class="std std-ref">custom request/response header formats</span></a>.</p></li>
+<li><p>tracing: added <cite>upstream_cluster.name</cite> tag that resolves to resolve to <a class="reference internal" href="../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-alt-stat-name"><span class="std std-ref">alt_stat_name</span></a> if provided (and otherwise the cluster name).</p></li>
 <li><p>upstream: host weight changes now cause a full load balancer rebuild as opposed to happening
 atomically inline. This change has been made to support load balancer pre-computation of data
 structures based on host weight, but may have performance implications if host weight changes
@@ -356,6 +359,7 @@ issue against the project.</p></li>
 <li><p>tcp_proxy: add support for converting raw TCP streams into HTTP/1.1 CONNECT requests. See <a class="reference internal" href="../intro/arch_overview/http/upgrades.html#tunneling-tcp-over-http"><span class="std std-ref">upgrade documentation</span></a> for details.</p></li>
 <li><p>tcp_proxy: added a <a class="reference internal" href="../api-v3/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto.html#envoy-v3-api-field-extensions-filters-network-tcp-proxy-v3-tcpproxy-tunnelingconfig-use-post"><span class="std std-ref">use_post field</span></a> for using HTTP POST to proxy TCP streams.</p></li>
 <li><p>tcp_proxy: added a <a class="reference internal" href="../api-v3/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto.html#envoy-v3-api-field-extensions-filters-network-tcp-proxy-v3-tcpproxy-tunnelingconfig-headers-to-add"><span class="std std-ref">headers_to_add field</span></a> for setting additional headers to the HTTP requests for TCP proxing.</p></li>
+<li><p>thrift_proxy: added a <a class="reference internal" href="../api-v3/extensions/filters/network/thrift_proxy/v3/thrift_proxy.proto.html#envoy-v3-api-field-extensions-filters-network-thrift-proxy-v3-thriftproxy-max-requests-per-connection"><span class="std std-ref">max_requests_per_connection field</span></a> for setting maximum requests for per downstream connection.</p></li>
 </ul>
 </div>
 <div class="section" id="deprecated">
