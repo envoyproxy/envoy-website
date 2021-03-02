@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1.18.0 (Pending) &mdash; envoy 1.18.0-dev-56eb1e documentation</title>
+  <title>1.18.0 (Pending) &mdash; envoy 1.18.0-dev-0ab78c documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-56eb1e
+                1.18.0-dev-0ab78c
               </div>
             
           
@@ -306,6 +306,7 @@ issue against the project.</p></li>
 <li><p>filter_chain: fix filter chain matching with the server name as the case-insensitive way.</p></li>
 <li><p>grpc-web: fix local reply and non-proto-encoded gRPC response handling for small response bodies. This fix can be temporarily reverted by setting <cite>envoy.reloadable_features.grpc_web_fix_non_proto_encoded_response_handling</cite> to false.</p></li>
 <li><p>grpc_http_bridge: the downstream HTTP status is now correctly set for trailers-only responses from the upstream.</p></li>
+<li><p>header map: pick the right delimiter to append multiple header values to the same key. Previouly header with multiple values are coalesced with “,”, after this fix cookie headers should be coalesced with ” ;”. This doesn’t affect Http1 or Http2 requests because these 2 codecs coalesce cookie headers before adding it to header map. To revert to the old behavior, set the runtime feature <cite>envoy.reloadable_features.header_map_correctly_coalesce_cookies</cite> to false.</p></li>
 <li><p>http: disallowing “host:” in request_headers_to_add for behavioral consistency with rejecting :authority header. This behavior can be temporarily reverted by setting <cite>envoy.reloadable_features.treat_host_like_authority</cite> to false.</p></li>
 <li><p>http: reverting a behavioral change where upstream connect timeouts were temporarily treated differently from other connection failures. The change back to the original behavior can be temporarily reverted by setting <cite>envoy.reloadable_features.treat_upstream_connect_timeout_as_connect_failure</cite> to false.</p></li>
 <li><p>jwt_authn: reject requests with a proper error if JWT has the wrong issuer when allow_missing is used. Before this change, the requests are accepted.</p></li>
@@ -348,6 +349,7 @@ issue against the project.</p></li>
 <li><p>grpc_json_transcoder: filter can now be configured on per-route/per-vhost level as well. Leaving empty list of services in the filter configuration disables transcoding on the specific route.</p></li>
 <li><p>http: added support for <cite>Envoy::ScopeTrackedObject</cite> for HTTP/1 and HTTP/2 dispatching. Crashes while inside the dispatching loop should dump debug information.</p></li>
 <li><p>http: added support for <a class="reference internal" href="../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-msg-config-cluster-v3-cluster-preconnectpolicy"><span class="std std-ref">preconnecting</span></a>. Preconnecting is off by default, but recommended for clusters serving latency-sensitive traffic, especially if using HTTP/1.1.</p></li>
+<li><p>http: added new runtime config <cite>envoy.reloadable_features.check_unsupported_typed_per_filter_config</cite>, the default value is true. When the value is true, envoy will reject virtual host-specific typed per filter config when the filter doesn’t support it.</p></li>
 <li><p>http: change frame flood and abuse checks to the upstream HTTP/2 codec to ON by default. It can be disabled by setting the <cite>envoy.reloadable_features.upstream_http2_flood_checks</cite> runtime key to false.</p></li>
 <li><p>json: introduced new JSON parser (<a class="reference external" href="https://github.com/nlohmann/json">https://github.com/nlohmann/json</a>) to replace RapidJSON. The new parser is disabled by default. To test the new RapidJSON parser, enable the runtime feature <cite>envoy.reloadable_features.remove_legacy_json</cite>.</p></li>
 <li><p>original_dst: added support for <a class="reference internal" href="../configuration/listeners/listener_filters/original_dst_filter.html#config-listener-filters-original-dst"><span class="std std-ref">Original Destination</span></a> on Windows. This enables the use of Envoy as a sidecar proxy on Windows.</p></li>
