@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1.18.0 (Pending) &mdash; envoy 1.18.0-dev-23a43b documentation</title>
+  <title>1.18.0 (Pending) &mdash; envoy 1.18.0-dev-5c9977 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-23a43b
+                1.18.0-dev-5c9977
               </div>
             
           
@@ -277,6 +277,7 @@ instead of <cite>//source/common/chromium_url</cite>. The new path canonicalizer
 revert to the legacy path canonicalizer, enable the runtime flag
 <cite>envoy.reloadable_features.remove_forked_chromium_url</cite>.</p></li>
 <li><p>http: increase the maximum allowed number of initial connection WINDOW_UPDATE frames sent by the peer from 1 to 5.</p></li>
+<li><p>http: no longer adding content-length: 0 for requests which should not have bodies. This behavior can be temporarily reverted by setting <cite>envoy.reloadable_features.dont_add_content_length_for_bodiless_requests</cite> false.</p></li>
 <li><p>http: upstream flood and abuse checks increment the count of opened HTTP/2 streams when Envoy sends
 initial HEADERS frame for the new stream. Before the counter was incrementred when Envoy received
 response HEADERS frame with the END_HEADERS flag set from upstream server.</p></li>
@@ -343,7 +344,6 @@ issue against the project.</p></li>
 <li><p>grpc_json_transcoder: added <a class="reference internal" href="../api-v3/extensions/filters/http/grpc_json_transcoder/v3/transcoder.proto.html#envoy-v3-api-field-extensions-filters-http-grpc-json-transcoder-v3-grpcjsontranscoder-request-validation-options"><span class="std std-ref">request_validation_options</span></a> to reject invalid requests early.</p></li>
 <li><p>grpc_json_transcoder: filter can now be configured on per-route/per-vhost level as well. Leaving empty list of services in the filter configuration disables transcoding on the specific route.</p></li>
 <li><p>http: added support for <cite>Envoy::ScopeTrackedObject</cite> for HTTP/1 and HTTP/2 dispatching. Crashes while inside the dispatching loop should dump debug information.</p></li>
-<li><p>http: added an option to not add content-length: 0 for requests which should not have bodies. This behavior can be enabled by setting <cite>envoy.reloadable_features.dont_add_content_length_for_bodiless_requests</cite> true.</p></li>
 <li><p>http: added support for <a class="reference internal" href="../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-msg-config-cluster-v3-cluster-preconnectpolicy"><span class="std std-ref">preconnecting</span></a>. Preconnecting is off by default, but recommended for clusters serving latency-sensitive traffic, especially if using HTTP/1.1.</p></li>
 <li><p>http: change frame flood and abuse checks to the upstream HTTP/2 codec to ON by default. It can be disabled by setting the <cite>envoy.reloadable_features.upstream_http2_flood_checks</cite> runtime key to false.</p></li>
 <li><p>json: introduced new JSON parser (<a class="reference external" href="https://github.com/nlohmann/json">https://github.com/nlohmann/json</a>) to replace RapidJSON. The new parser is disabled by default. To test the new RapidJSON parser, enable the runtime feature <cite>envoy.reloadable_features.remove_legacy_json</cite>.</p></li>
