@@ -1,0 +1,79 @@
+.. _envoy_v3_api_file_envoy/extensions/transport_sockets/tls/v3/tls_spiffe_validator_config.proto:
+
+SPIFFE Certificate Validator
+============================
+
+
+.. _envoy_v3_api_msg_extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig:
+
+extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig
+-------------------------------------------------------------
+
+`[extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig proto] <https://github.com/envoyproxy/envoy/blob/50e81276fd8f109ba3a6134e790f65c1cc5bdec9/api/envoy/extensions/transport_sockets/tls/v3/tls_spiffe_validator_config.proto#L41>`_
+
+Configuration specific to the SPIFFE certificate validator provided at
+:ref:`envoy.extensions.transport_sockets.tls.v3.CertificateValidationContext.custom_validator_config<envoy_v3_api_field_extensions.transport_sockets.tls.v3.CertificateValidationContext.custom_validator_config>`.
+
+Example:
+
+.. code-block:: yaml
+
+ custom_validator_config:
+   name: envoy.tls.cert_validator.spiffe
+   typed_config:
+     "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig
+     trust_domains:
+     - name: foo.com
+       trust_bundle:
+         filename: "foo.pem"
+     - name: envoy.com
+       trust_bundle:
+         filename: "envoy.pem"
+
+In this example, a presented peer certificate whose SAN matches `spiffe//foo.com/**` is validated against
+the "foo.pem" x.509 certificate. All the trust bundles are isolated from each other, so no trust domain can mint
+a SVID belonging to another trust domain. That means, in this example, a SVID signed by `envoy.com`'s CA with `spiffe//foo.com/**`
+SAN would be rejected since Envoy selects the trust bundle according to the presented SAN before validate the certificate.
+
+.. code-block:: json
+
+  {
+    "trust_domains": []
+  }
+
+.. _envoy_v3_api_field_extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig.trust_domains:
+
+trust_domains
+  (**repeated** :ref:`extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig.TrustDomain <envoy_v3_api_msg_extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig.TrustDomain>`, *REQUIRED*) This field specifies trust domains used for validating incoming X.509-SVID(s).
+  
+  
+.. _envoy_v3_api_msg_extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig.TrustDomain:
+
+extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig.TrustDomain
+-------------------------------------------------------------------------
+
+`[extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig.TrustDomain proto] <https://github.com/envoyproxy/envoy/blob/50e81276fd8f109ba3a6134e790f65c1cc5bdec9/api/envoy/extensions/transport_sockets/tls/v3/tls_spiffe_validator_config.proto#L42>`_
+
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "trust_bundle": "{...}"
+  }
+
+.. _envoy_v3_api_field_extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig.TrustDomain.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Name of the trust domain, `example.com`, `foo.bar.gov` for example.
+  Note that this must *not* have "spiffe://" prefix.
+  
+  
+.. _envoy_v3_api_field_extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig.TrustDomain.trust_bundle:
+
+trust_bundle
+  (:ref:`config.core.v3.DataSource <envoy_v3_api_msg_config.core.v3.DataSource>`) Specify a data source holding x.509 trust bundle used for validating incoming SVID(s) in this trust domain.
+  
+  
+
+
