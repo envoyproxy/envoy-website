@@ -1,0 +1,465 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>WebSockets &mdash; envoy 1.17.1-cffb09 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinx_tabs/semantic-ui-2.4.1/segment.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinx_tabs/semantic-ui-2.4.1/menu.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinx_tabs/semantic-ui-2.4.1/tab.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinx_tabs/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Zipkin tracing" href="zipkin_tracing.html" />
+    <link rel="prev" title="Wasm C++ filter" href="wasm-cc.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.17.1-cffb09
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../start.html">Getting Started</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../install.html">Installing Envoy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quick-start/index.html">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docker.html">Using the Envoy Docker Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../building.html">Building</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Sandboxes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="setup.html">Setup the sandbox environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cors.html">CORS filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="double-proxy.html">Double proxy (with <code class="docutils literal notranslate"><span class="pre">mTLS</span></code> encryption)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-filesystem.html">Dynamic configuration (filesystem)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-control-plane.html">Dynamic configuration (control plane)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ext_authz.html">External authorization (<code class="docutils literal notranslate"><span class="pre">ext_authz</span></code>) filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault injection filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger native tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_tracing.html">Jaeger tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="load_reporting_service.html">Load reporting service (<code class="docutils literal notranslate"><span class="pre">LRS</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mysql.html">MySQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="postgres.html">PostgreSQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skywalking_tracing.html">SkyWalking tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls.html">Transport layer security (<code class="docutils literal notranslate"><span class="pre">TLS</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wasm-cc.html">Wasm C++ filter</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">WebSockets</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#step-1-create-a-certificate-file-for-wss">Step 1: Create a certificate file for wss</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-2-build-and-start-the-sandbox">Step 2: Build and start the sandbox</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-3-test-proxying-ws-ws">Step 3: Test proxying <code class="docutils literal notranslate"><span class="pre">ws</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">ws</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-4-test-proxying-wss-wss">Step 4: Test proxying <code class="docutils literal notranslate"><span class="pre">wss</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">wss</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-5-test-proxying-wss-passthrough">Step 5: Test proxying <code class="docutils literal notranslate"><span class="pre">wss</span></code> passthrough</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">Zipkin tracing</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../start.html">Getting Started</a> &raquo;</li>
+        
+          <li><a href="index.html">Sandboxes</a> &raquo;</li>
+        
+      <li>WebSockets</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/start/sandboxes/websocket.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="websockets">
+<span id="install-sandboxes-websocket"></span><h1>WebSockets<a class="headerlink" href="#websockets" title="Permalink to this headline">¶</a></h1>
+<div class="sidebar">
+<p class="sidebar-title">Requirements</p>
+<dl class="simple">
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup"><span class="std std-ref">Sandbox environment</span></a></dt><dd><p>Setup your sandbox environment with Docker and Docker Compose,
+and clone the Envoy repository with Git.</p>
+</dd>
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup-openssl"><span class="std std-ref">openssl</span></a></dt><dd><p>Generate <code class="docutils literal notranslate"><span class="pre">SSL</span></code> keys and certificates.</p>
+</dd>
+</dl>
+</div>
+<p>This example walks through some of the ways that Envoy can be configured to proxy WebSockets.</p>
+<p>It demonstrates terminating a WebSocket connection with and without <code class="docutils literal notranslate"><span class="pre">TLS</span></code>, and provides some basic examples
+of proxying to encrypted and non-encrypted upstream sockets.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>For the sake of simplicity, the examples provided here do not authenticate any client certificates,
+or validate any of the provided certificates.</p>
+<p>When using <code class="docutils literal notranslate"><span class="pre">TLS</span></code>, you are strongly encouraged to <a class="reference internal" href="../quick-start/securing.html#start-quick-start-securing-validation"><span class="std std-ref">validate</span></a>
+all certificates wherever possible.</p>
+<p>You should also <a class="reference internal" href="../quick-start/securing.html#start-quick-start-securing-mtls"><span class="std std-ref">authenticate clients</span></a>
+where you control both sides of the connection, or relevant protocols are available.</p>
+</div>
+<div class="section" id="step-1-create-a-certificate-file-for-wss">
+<h2>Step 1: Create a certificate file for wss<a class="headerlink" href="#step-1-create-a-certificate-file-for-wss" title="Permalink to this headline">¶</a></h2>
+<p>Change directory to <code class="docutils literal notranslate"><span class="pre">examples/websocket</span></code> in the Envoy repository.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
+<span class="go">envoy/examples/websocket</span>
+<span class="gp">$</span> mkdir -p certs
+<span class="gp">$</span> openssl req -batch -new -x509 -nodes -keyout certs/key.pem -out certs/cert.pem
+<span class="go">Generating a RSA private key</span>
+<span class="go">..................................................................................................................+++++</span>
+<span class="go">......+++++</span>
+<span class="go">writing new private key to &#39;certs/key.pem&#39;</span>
+<span class="go">-----</span>
+<span class="gp">$</span> openssl pkcs12 -export -passout pass: -out certs/output.pkcs12 -inkey certs/key.pem -in certs/cert.pem
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-2-build-and-start-the-sandbox">
+<h2>Step 2: Build and start the sandbox<a class="headerlink" href="#step-2-build-and-start-the-sandbox" title="Permalink to this headline">¶</a></h2>
+<p>This starts three proxies listening on <code class="docutils literal notranslate"><span class="pre">localhost</span></code> ports <code class="docutils literal notranslate"><span class="pre">10000-30000</span></code>.</p>
+<p>It also starts two upstream services, one <code class="docutils literal notranslate"><span class="pre">ws</span></code> and one <code class="docutils literal notranslate"><span class="pre">wss</span></code>.</p>
+<p>The upstream services listen on the internal Docker network on ports <code class="docutils literal notranslate"><span class="pre">80</span></code> and <code class="docutils literal notranslate"><span class="pre">443</span></code> respectively.</p>
+<p>The socket servers are very trivial implementations, that simply output <code class="docutils literal notranslate"><span class="pre">[ws]</span> <span class="pre">HELO</span></code> and
+<code class="docutils literal notranslate"><span class="pre">[wss]</span> <span class="pre">HELO</span></code> in response to any input.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker-compose pull
+<span class="gp">$</span> docker-compose up --build -d
+<span class="gp">$</span> docker-compose ps
+
+<span class="go">            Name                             Command               State            Ports</span>
+<span class="go">---------------------------------------------------------------------------------------------------</span>
+<span class="go">websocket_proxy-ws_1                /docker-entrypoint.sh /usr ... Up      0.0.0.0:10000-&gt;10000/tcp</span>
+<span class="go">websocket_proxy-wss_1               /docker-entrypoint.sh /usr ... Up      0.0.0.0:20000-&gt;10000/tcp</span>
+<span class="go">websocket_proxy-wss-passthrough_1   /docker-entrypoint.sh /usr ... Up      0.0.0.0:30000-&gt;10000/tcp</span>
+<span class="go">websocket_service-ws_1              websocat -E ws-listen:0.0. ... Up</span>
+<span class="go">websocket_service-wss_1             websocat wss-listen:0.0.0. ... Up</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-3-test-proxying-ws-ws">
+<h2>Step 3: Test proxying <code class="docutils literal notranslate"><span class="pre">ws</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">ws</span></code><a class="headerlink" href="#step-3-test-proxying-ws-ws" title="Permalink to this headline">¶</a></h2>
+<p>The proxy listening on port <code class="docutils literal notranslate"><span class="pre">10000</span></code> terminates the WebSocket connection without <code class="docutils literal notranslate"><span class="pre">TLS</span></code> and then proxies
+to an upstream socket, also without <code class="docutils literal notranslate"><span class="pre">TLS</span></code>.</p>
+<p>In order for Envoy to terminate the WebSocket connection, the
+<a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-msg-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-upgradeconfig"><span class="std std-ref">upgrade_configs</span></a>
+in <a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-msg-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager"><span class="std std-ref">HttpConnectionManager</span></a>
+must be set, as can be seen in the provided <a class="reference download internal" download="" href="../../_downloads/1ab278c53aed7b4844c89c7856334949/envoy-ws.yaml"><code class="xref download docutils literal notranslate"><span class="pre">ws</span> <span class="pre">-&gt;</span> <span class="pre">ws</span> <span class="pre">configuration</span></code></a>:</p>
+<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">static_resources</span><span class="p">:</span>
+  <span class="nt">listeners</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">address</span><span class="p">:</span>
+      <span class="nt">socket_address</span><span class="p">:</span>
+        <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.0.0.0</span>
+        <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10000</span>
+    <span class="nt">filter_chains</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">filters</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.network.http_connection_manager</span>
+        <span class="nt">typed_config</span><span class="p">:</span>
+          <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager</span>
+          <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ingress_ws_to_ws</span>
+<span class="hll">          <span class="nt">upgrade_configs</span><span class="p">:</span>
+</span><span class="hll">          <span class="p p-Indicator">-</span> <span class="nt">upgrade_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">websocket</span>
+</span>          <span class="nt">route_config</span><span class="p">:</span>
+            <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_route</span>
+            <span class="nt">virtual_hosts</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">app</span>
+              <span class="nt">domains</span><span class="p">:</span>
+              <span class="p p-Indicator">-</span> <span class="s">&quot;*&quot;</span>
+              <span class="nt">routes</span><span class="p">:</span>
+              <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span>
+                  <span class="nt">prefix</span><span class="p">:</span> <span class="s">&quot;/&quot;</span>
+                <span class="nt">route</span><span class="p">:</span>
+                  <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service_ws</span>
+          <span class="nt">http_filters</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.router</span>
+
+  <span class="nt">clusters</span><span class="p">:</span>
+</pre></div>
+</td></tr></table></div>
+<p>You can start an interactive session with the socket as follows:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker run -ti --network<span class="o">=</span>host solsson/websocat ws://localhost:10000
+<span class="go">HELO</span>
+<span class="go">[ws] HELO</span>
+<span class="go">GOODBYE</span>
+<span class="go">[ws] HELO</span>
+</pre></div>
+</div>
+<p>Type <code class="docutils literal notranslate"><span class="pre">Ctrl-c</span></code> to exit the socket session.</p>
+</div>
+<div class="section" id="step-4-test-proxying-wss-wss">
+<h2>Step 4: Test proxying <code class="docutils literal notranslate"><span class="pre">wss</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">wss</span></code><a class="headerlink" href="#step-4-test-proxying-wss-wss" title="Permalink to this headline">¶</a></h2>
+<p>The proxy listening on port <code class="docutils literal notranslate"><span class="pre">20000</span></code> terminates the WebSocket connection with <code class="docutils literal notranslate"><span class="pre">TLS</span></code> and then proxies
+to an upstream <code class="docutils literal notranslate"><span class="pre">TLS</span></code> WebSocket.</p>
+<p>In addition to the
+<a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-msg-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-upgradeconfig"><span class="std std-ref">upgrade_configs</span></a>
+in <a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-msg-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager"><span class="std std-ref">HttpConnectionManager</span></a>,
+the <a class="reference download internal" download="" href="../../_downloads/e04701b0321b373ba1bf910a733c47f3/envoy-wss.yaml"><code class="xref download docutils literal notranslate"><span class="pre">wss</span> <span class="pre">-&gt;</span> <span class="pre">wss</span> <span class="pre">configuration</span></code></a> adds a <code class="docutils literal notranslate"><span class="pre">TLS</span></code>
+<a class="reference internal" href="../../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#extension-envoy-transport-sockets-tls"><span class="std std-ref">transport_socket</span></a> to both the
+<a class="reference internal" href="../../api-v3/config/listener/v3/listener.proto.html#envoy-v3-api-msg-config-listener-v3-listener"><span class="std std-ref">listener</span></a> and the
+<a class="reference internal" href="../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-msg-config-cluster-v3-cluster"><span class="std std-ref">cluster</span></a>.</p>
+<p>You can start an interactive session with the socket as follows:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker run -ti --network<span class="o">=</span>host solsson/websocat --insecure wss://localhost:20000
+<span class="go">HELO</span>
+<span class="go">[wss] HELO</span>
+<span class="go">GOODBYE</span>
+<span class="go">[wss] HELO</span>
+</pre></div>
+</div>
+<p>Type <code class="docutils literal notranslate"><span class="pre">Ctrl-c</span></code> to exit the socket session.</p>
+</div>
+<div class="section" id="step-5-test-proxying-wss-passthrough">
+<h2>Step 5: Test proxying <code class="docutils literal notranslate"><span class="pre">wss</span></code> passthrough<a class="headerlink" href="#step-5-test-proxying-wss-passthrough" title="Permalink to this headline">¶</a></h2>
+<p>The proxy listening on port <code class="docutils literal notranslate"><span class="pre">30000</span></code> passes through all <code class="docutils literal notranslate"><span class="pre">TCP</span></code> traffic to an upstream <code class="docutils literal notranslate"><span class="pre">TLS</span></code> WebSocket.</p>
+<p>The <a class="reference download internal" download="" href="../../_downloads/3b87dc0b24e3aef0deb1b30071fcec25/envoy-wss-passthrough.yaml"><code class="xref download docutils literal notranslate"><span class="pre">wss</span> <span class="pre">passthrough</span> <span class="pre">configuration</span></code></a> requires no <code class="docutils literal notranslate"><span class="pre">TLS</span></code>
+or <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> setup, and instead uses a simple
+<a class="reference internal" href="../../api-v3/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto.html#envoy-v3-api-msg-extensions-filters-network-tcp-proxy-v3-tcpproxy"><span class="std std-ref">tcp_proxy</span></a>.</p>
+<p>You can start an interactive session with the socket as follows:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker run -ti --network<span class="o">=</span>host solsson/websocat --insecure wss://localhost:30000
+<span class="go">HELO</span>
+<span class="go">[wss] HELO</span>
+<span class="go">GOODBYE</span>
+<span class="go">[wss] HELO</span>
+</pre></div>
+</div>
+<p>Type <code class="docutils literal notranslate"><span class="pre">Ctrl-c</span></code> to exit the socket session.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="../quick-start/securing.html#start-quick-start-securing"><span class="std std-ref">Securing Envoy quick start guide</span></a></dt><dd><p>Outline of key concepts for securing Envoy.</p>
+</dd>
+<dt><a class="reference internal" href="double-proxy.html#install-sandboxes-double-proxy"><span class="std std-ref">Double proxy sandbox</span></a></dt><dd><p>An example of securing traffic between proxies with validation and
+mutual authentication using <code class="docutils literal notranslate"><span class="pre">mTLS</span></code> with non-<code class="docutils literal notranslate"><span class="pre">HTTP</span></code> traffic.</p>
+</dd>
+<dt><a class="reference internal" href="tls.html#install-sandboxes-tls"><span class="std std-ref">TLS sandbox</span></a></dt><dd><p>Examples of various <code class="docutils literal notranslate"><span class="pre">TLS</span></code> termination patterns with Envoy.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="zipkin_tracing.html" class="btn btn-neutral float-right" title="Zipkin tracing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="wasm-cc.html" class="btn btn-neutral float-left" title="Wasm C++ filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2016-2021, Envoy Project Authors
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
