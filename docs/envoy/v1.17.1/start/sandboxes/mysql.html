@@ -1,0 +1,399 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MySQL filter &mdash; envoy 1.17.1-cffb09 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinx_tabs/semantic-ui-2.4.1/segment.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinx_tabs/semantic-ui-2.4.1/menu.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinx_tabs/semantic-ui-2.4.1/tab.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinx_tabs/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="PostgreSQL filter" href="postgres.html" />
+    <link rel="prev" title="Lua filter" href="lua.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.17.1-cffb09
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../start.html">Getting Started</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../install.html">Installing Envoy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quick-start/index.html">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docker.html">Using the Envoy Docker Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../building.html">Building</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Sandboxes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="setup.html">Setup the sandbox environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cors.html">CORS filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="double-proxy.html">Double proxy (with <code class="docutils literal notranslate"><span class="pre">mTLS</span></code> encryption)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-filesystem.html">Dynamic configuration (filesystem)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-control-plane.html">Dynamic configuration (control plane)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ext_authz.html">External authorization (<code class="docutils literal notranslate"><span class="pre">ext_authz</span></code>) filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault injection filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger native tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_tracing.html">Jaeger tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="load_reporting_service.html">Load reporting service (<code class="docutils literal notranslate"><span class="pre">LRS</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua filter</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">MySQL filter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#step-1-build-the-sandbox">Step 1: Build the sandbox</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-2-issue-commands-using-mysql">Step 2: Issue commands using mysql</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-3-check-egress-stats">Step 3: Check egress stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-4-check-tcp-stats">Step 4: Check TCP stats</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="postgres.html">PostgreSQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skywalking_tracing.html">SkyWalking tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls.html">Transport layer security (<code class="docutils literal notranslate"><span class="pre">TLS</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wasm-cc.html">Wasm C++ filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="websocket.html">WebSockets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">Zipkin tracing</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../start.html">Getting Started</a> &raquo;</li>
+        
+          <li><a href="index.html">Sandboxes</a> &raquo;</li>
+        
+      <li>MySQL filter</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/start/sandboxes/mysql.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="mysql-filter">
+<span id="install-sandboxes-mysql"></span><h1>MySQL filter<a class="headerlink" href="#mysql-filter" title="Permalink to this headline">¶</a></h1>
+<div class="sidebar">
+<p class="sidebar-title">Requirements</p>
+<dl class="simple">
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup"><span class="std std-ref">Sandbox environment</span></a></dt><dd><p>Setup your sandbox environment with Docker and Docker Compose,
+and clone the Envoy repository with Git.</p>
+</dd>
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup-curl"><span class="std std-ref">curl</span></a></dt><dd><p>Used to make <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> requests.</p>
+</dd>
+</dl>
+</div>
+<p>In this example, we show how the <a class="reference internal" href="../../configuration/listeners/network_filters/mysql_proxy_filter.html#config-network-filters-mysql-proxy"><span class="std std-ref">MySQL filter</span></a> can be used with the Envoy proxy.</p>
+<p>The Envoy proxy configuration includes a MySQL filter that parses queries and collects MySQL-specific
+metrics.</p>
+<div class="section" id="step-1-build-the-sandbox">
+<h2>Step 1: Build the sandbox<a class="headerlink" href="#step-1-build-the-sandbox" title="Permalink to this headline">¶</a></h2>
+<p>Change to the <code class="docutils literal notranslate"><span class="pre">examples/mysql</span></code> directory.</p>
+<p>Build and start the containers.</p>
+<p>Terminal 1</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
+<span class="go">envoy/examples/mysql</span>
+<span class="gp">$</span> docker-compose pull
+<span class="gp">$</span> docker-compose up --build -d
+<span class="gp">$</span> docker-compose ps
+
+<span class="go">    Name                   Command               State                             Ports</span>
+<span class="go">------------------------------------------------------------------------------------------------------------------</span>
+<span class="go">mysql_mysql_1   docker-entrypoint.sh mysqld      Up      3306/tcp</span>
+<span class="go">mysql_proxy_1   /docker-entrypoint.sh /bin       Up      10000/tcp, 0.0.0.0:1999-&gt;1999/tcp, 0.0.0.0:8001-&gt;8001/tcp</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-2-issue-commands-using-mysql">
+<h2>Step 2: Issue commands using mysql<a class="headerlink" href="#step-2-issue-commands-using-mysql" title="Permalink to this headline">¶</a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">mysql</span></code> to issue some commands and verify they are routed via Envoy. Note
+that the current implementation of the protocol filter was tested with MySQL
+v5.5. It may, however, not work with other versions of MySQL due to differences
+in the protocol implementation.</p>
+<p>Terminal 1</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker run --rm -it --network envoymesh mysql:5.5 mysql -h proxy -P <span class="m">1999</span> -u root
+<span class="go">... snip ...</span>
+
+<span class="go">mysql&gt; CREATE DATABASE test;</span>
+<span class="go">Query OK, 1 row affected (0.00 sec)</span>
+
+<span class="go">mysql&gt; USE test;</span>
+<span class="go">Database changed</span>
+<span class="go">mysql&gt; CREATE TABLE test ( text VARCHAR(255) );</span>
+<span class="go">Query OK, 0 rows affected (0.01 sec)</span>
+
+<span class="go">mysql&gt; SELECT COUNT(*) FROM test;</span>
+<span class="go">+----------+</span>
+<span class="go">| COUNT(*) |</span>
+<span class="go">+----------+</span>
+<span class="go">|        0 |</span>
+<span class="go">+----------+</span>
+<span class="go">1 row in set (0.01 sec)</span>
+
+<span class="go">mysql&gt; INSERT INTO test VALUES (&#39;hello, world!&#39;);</span>
+<span class="go">Query OK, 1 row affected (0.00 sec)</span>
+
+<span class="go">mysql&gt; SELECT COUNT(*) FROM test;</span>
+<span class="go">+----------+</span>
+<span class="go">| COUNT(*) |</span>
+<span class="go">+----------+</span>
+<span class="go">|        1 |</span>
+<span class="go">+----------+</span>
+<span class="go">1 row in set (0.00 sec)</span>
+
+<span class="go">mysql&gt; exit</span>
+<span class="go">Bye</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-3-check-egress-stats">
+<h2>Step 3: Check egress stats<a class="headerlink" href="#step-3-check-egress-stats" title="Permalink to this headline">¶</a></h2>
+<p>Check egress stats were updated.</p>
+<p>Terminal 1</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:8001/stats?filter<span class="o">=</span>egress_mysql
+<span class="go">mysql.egress_mysql.auth_switch_request: 0</span>
+<span class="go">mysql.egress_mysql.decoder_errors: 0</span>
+<span class="go">mysql.egress_mysql.login_attempts: 1</span>
+<span class="go">mysql.egress_mysql.login_failures: 0</span>
+<span class="go">mysql.egress_mysql.protocol_errors: 0</span>
+<span class="go">mysql.egress_mysql.queries_parse_error: 0</span>
+<span class="go">mysql.egress_mysql.queries_parsed: 7</span>
+<span class="go">mysql.egress_mysql.sessions: 1</span>
+<span class="go">mysql.egress_mysql.upgraded_to_ssl: 0</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-4-check-tcp-stats">
+<h2>Step 4: Check TCP stats<a class="headerlink" href="#step-4-check-tcp-stats" title="Permalink to this headline">¶</a></h2>
+<p>Check TCP stats were updated.</p>
+<p>Terminal 1</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:8001/stats?filter<span class="o">=</span>mysql_tcp
+<span class="go">tcp.mysql_tcp.downstream_cx_no_route: 0</span>
+<span class="go">tcp.mysql_tcp.downstream_cx_rx_bytes_buffered: 0</span>
+<span class="go">tcp.mysql_tcp.downstream_cx_rx_bytes_total: 347</span>
+<span class="go">tcp.mysql_tcp.downstream_cx_total: 1</span>
+<span class="go">tcp.mysql_tcp.downstream_cx_tx_bytes_buffered: 0</span>
+<span class="go">tcp.mysql_tcp.downstream_cx_tx_bytes_total: 702</span>
+<span class="go">tcp.mysql_tcp.downstream_flow_control_paused_reading_total: 0</span>
+<span class="go">tcp.mysql_tcp.downstream_flow_control_resumed_reading_total: 0</span>
+<span class="go">tcp.mysql_tcp.idle_timeout: 0</span>
+<span class="go">tcp.mysql_tcp.upstream_flush_active: 0</span>
+<span class="go">tcp.mysql_tcp.upstream_flush_total: 0</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="../../configuration/listeners/network_filters/mysql_proxy_filter.html#config-network-filters-mysql-proxy"><span class="std std-ref">Envoy MySQL filter</span></a></dt><dd><p>Learn more about using the Envoy MySQL filter.</p>
+</dd>
+<dt><a class="reference internal" href="../quick-start/admin.html#start-quick-start-admin"><span class="std std-ref">Envoy admin quick start guide</span></a></dt><dd><p>Quick start guide to the Envoy admin interface.</p>
+</dd>
+<dt><a class="reference external" href="https://www.mysql.com">MySQL</a></dt><dd><p>The MySQL database.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="postgres.html" class="btn btn-neutral float-right" title="PostgreSQL filter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="lua.html" class="btn btn-neutral float-left" title="Lua filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2016-2021, Envoy Project Authors
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
