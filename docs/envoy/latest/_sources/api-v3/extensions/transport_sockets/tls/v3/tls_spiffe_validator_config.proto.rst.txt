@@ -3,32 +3,52 @@
 SPIFFE Certificate Validator
 ============================
 
+.. _extension_envoy.tls.cert_validator.spiffe:
+
+
+This extension may be referenced by the qualified name *envoy.tls.cert_validator.spiffe*
+
+.. note::
+  This extension is work-in-progress. Functionality is incomplete and it is not intended for production use.
+
+  This extension has an unknown security posture and should only be used in deployments where both the downstream and upstream are trusted.
+
+
+
+
+.. tip::
+  This extension extends and can be used with the following extension categories:
+
+  - :ref:`envoy.tls.cert_validator <extension_category_envoy.tls.cert_validator>`
+  
+
+
 
 .. _envoy_v3_api_msg_extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig:
 
 extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig
 -------------------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig proto] <https://github.com/envoyproxy/envoy/blob/d6f0b746868b887cafe7343dc03949f27d133edf/api/envoy/extensions/transport_sockets/tls/v3/tls_spiffe_validator_config.proto#L41>`_
+`[extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig proto] <https://github.com/envoyproxy/envoy/blob/871914baa30fc69aecc3036fc75e7f34007d1e89/api/envoy/extensions/transport_sockets/tls/v3/tls_spiffe_validator_config.proto#L40>`_
 
-Configuration specific to the SPIFFE certificate validator provided at
-:ref:`envoy.extensions.transport_sockets.tls.v3.CertificateValidationContext.custom_validator_config<envoy_v3_api_field_extensions.transport_sockets.tls.v3.CertificateValidationContext.custom_validator_config>`.
+Configuration specific to the `SPIFFE <https://github.com/spiffe/spiffe>`_ certificate validator.
 
 Example:
 
-.. code-block:: yaml
+.. validated-code-block:: yaml
+  :type-name: envoy.extensions.transport_sockets.tls.v3.CertificateValidationContext
 
- custom_validator_config:
-   name: envoy.tls.cert_validator.spiffe
-   typed_config:
-     "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig
-     trust_domains:
-     - name: foo.com
-       trust_bundle:
-         filename: "foo.pem"
-     - name: envoy.com
-       trust_bundle:
-         filename: "envoy.pem"
+  custom_validator_config:
+    name: envoy.tls.cert_validator.spiffe
+    typed_config:
+      "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig
+      trust_domains:
+      - name: foo.com
+        trust_bundle:
+          filename: "foo.pem"
+      - name: envoy.com
+        trust_bundle:
+          filename: "envoy.pem"
 
 In this example, a presented peer certificate whose SAN matches `spiffe//foo.com/**` is validated against
 the "foo.pem" x.509 certificate. All the trust bundles are isolated from each other, so no trust domain can mint
@@ -52,7 +72,7 @@ trust_domains
 extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig.TrustDomain
 -------------------------------------------------------------------------
 
-`[extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig.TrustDomain proto] <https://github.com/envoyproxy/envoy/blob/d6f0b746868b887cafe7343dc03949f27d133edf/api/envoy/extensions/transport_sockets/tls/v3/tls_spiffe_validator_config.proto#L42>`_
+`[extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig.TrustDomain proto] <https://github.com/envoyproxy/envoy/blob/871914baa30fc69aecc3036fc75e7f34007d1e89/api/envoy/extensions/transport_sockets/tls/v3/tls_spiffe_validator_config.proto#L41>`_
 
 
 .. code-block:: json
