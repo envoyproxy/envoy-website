@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>External Processing Filter &mdash; envoy 1.18.0-dev-cfefdc documentation</title>
+  <title>External Processing Filter &mdash; envoy 1.18.0-dev-667d99 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-cfefdc
+                1.18.0-dev-667d99
               </div>
             
           
@@ -202,16 +202,19 @@
 <p>External Processing Filter</p>
 <p>The External Processing filter allows an external service to act on HTTP traffic in a flexible way.</p>
 <p><strong>Current Implementation Status:</strong>
-At this time, the filter will send the “request_headers” and “response_headers” messages
-to the server when the filter is invoked, and apply any header mutations returned by the
-server, and respond to “immediate_response” messages. No other parts of the protocol are implemented yet.</p>
+The filter will send the “request_headers” and “response_headers” messages by default.
+In addition, if the “processing mode” is set , the “request_body” and “response_body”
+messages will be sent if the corresponding fields of the “processing_mode” are
+set to BUFFERED. The other body processing modes, and trailer processing, are not
+implemented yet. The filter will also respond to “immediate_response” messages
+at any point in the stream.</p>
 <p>As designed, the filter supports up to six different processing steps, which are in the
 process of being implemented:
 * Request headers: IMPLEMENTED
-* Request body: NOT IMPLEMENTED
+* Request body: Only BUFFERED mode is implemented
 * Request trailers: NOT IMPLEMENTED
 * Response headers: IMPLEMENTED
-* Response body: NOT IMPLEMENTED
+* Response body: Only BUFFERED mode is implemented
 * Response trailers: NOT IMPLEMENTED</p>
 <p>The filter communicates with an external gRPC service that can use it to do a variety of things
 with the request and response:</p>
@@ -249,7 +252,7 @@ messages, and the server must reply with
 <a class="reference internal" href="../../../../../service/ext_proc/v3alpha/external_processor.proto.html#envoy-v3-api-msg-service-ext-proc-v3alpha-processingresponse"><span class="std std-ref">ProcessingResponse</span></a>.</p>
 <div class="section" id="extensions-filters-http-ext-proc-v3alpha-externalprocessor">
 <span id="envoy-v3-api-msg-extensions-filters-http-ext-proc-v3alpha-externalprocessor"></span><h2>extensions.filters.http.ext_proc.v3alpha.ExternalProcessor<a class="headerlink" href="#extensions-filters-http-ext-proc-v3alpha-externalprocessor" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/cfefdcf89a91f90a8e9a93d2493f90bdcef2353f/api/envoy/extensions/filters/http/ext_proc/v3alpha/ext_proc.proto#L75">[extensions.filters.http.ext_proc.v3alpha.ExternalProcessor proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/667d99539971130e882d7e86085f4dc9f146857b/api/envoy/extensions/filters/http/ext_proc/v3alpha/ext_proc.proto#L78">[extensions.filters.http.ext_proc.v3alpha.ExternalProcessor proto]</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;grpc_service&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;failure_mode_allow&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
