@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Tracing &mdash; envoy 1.18.0-dev-43ab84 documentation</title>
+  <title>Tracing &mdash; envoy 1.18.0-dev-07c4c1 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-43ab84
+                1.18.0-dev-07c4c1
               </div>
             
           
@@ -214,7 +214,9 @@ sources of latency. Envoy supports three features related to system wide tracing
 <ul class="simple">
 <li><p><strong>Request ID generation</strong>: Envoy will generate UUIDs when needed and populate the
 <a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a> HTTP header. Applications can forward the
-x-request-id header for unified logging as well as tracing. The behavior can be configured on per <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-request-id-extension"><span class="std std-ref">HTTP connection manager</span></a> basis using an extension.</p></li>
+x-request-id header for unified logging as well as tracing. The behavior can be configured on a
+per <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-request-id-extension"><span class="std std-ref">HTTP connection manager</span></a>
+basis using an extension.</p></li>
 <li><p><strong>Client trace ID joining</strong>: The <a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-client-trace-id"><span class="std std-ref">x-client-trace-id</span></a> header can
 be used to join untrusted request IDs to the trusted internal
 <a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a>.</p></li>
@@ -228,7 +230,6 @@ providers, that are divided into two subgroups:</p>
 </ul>
 </li>
 </ul>
-<p>Support for other tracing providers would not be difficult to add.</p>
 </div>
 <div class="section" id="how-to-initiate-a-trace">
 <h2>How to initiate a trace<a class="headerlink" href="#how-to-initiate-a-trace" title="Permalink to this headline">¶</a></h2>
@@ -246,7 +247,7 @@ runtime setting.</p></li>
 <a class="reference internal" href="../../../api-v3/extensions/filters/http/router/v3/router.proto.html#envoy-v3-api-field-extensions-filters-http-router-v3-router-start-child-span"><span class="std std-ref">start_child_span</span></a> option.</p>
 </div>
 <div class="section" id="trace-context-propagation">
-<h2>Trace context propagation<a class="headerlink" href="#trace-context-propagation" title="Permalink to this headline">¶</a></h2>
+<span id="arch-overview-tracing-context-propagation"></span><h2>Trace context propagation<a class="headerlink" href="#trace-context-propagation" title="Permalink to this headline">¶</a></h2>
 <p>Envoy provides the capability for reporting tracing information regarding communications between
 services in the mesh. However, to be able to correlate the pieces of tracing information generated
 by the various proxies within a call flow, the services must propagate certain trace context between
@@ -254,6 +255,20 @@ the inbound and outbound requests.</p>
 <p>Whichever tracing provider is being used, the service should propagate the
 <a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a> to enable logging across the invoked services
 to be correlated.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Envoy’s request ID implementation is extensible and defaults to the
+<a class="reference internal" href="../../../api-v3/extensions/request_id/uuid/v3/uuid.proto.html#envoy-v3-api-msg-extensions-request-id-uuid-v3-uuidrequestidconfig"><span class="std std-ref">UuidRequestIdConfig</span></a>
+implementation. Configuration for this extension can be provided within the
+<a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-request-id-extension"><span class="std std-ref">HTTP connection manager</span></a>
+field (see the documentation for that field for an example). The default implementation will
+modify the request ID UUID4 to pack the final trace reason into the UUID. This feature allows
+stable sampling across a fleet of Envoys as documented in the <a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a>
+header documentation. However, trace reason packing my break externally generated request IDs
+that must be maintained. The <a class="reference internal" href="../../../api-v3/extensions/request_id/uuid/v3/uuid.proto.html#envoy-v3-api-field-extensions-request-id-uuid-v3-uuidrequestidconfig-pack-trace-reason"><span class="std std-ref">pack_trace_reason</span></a>
+field can be used to disable this behavior at the expense of also disabling stable trace reason
+propagation and associated features within a deployment.</p>
+</div>
 <p>The tracing providers also require additional context, to enable the parent/child relationships
 between the spans (logical units of work) to be understood. This can be achieved by using the
 LightStep (via OpenTracing API) or Zipkin tracer directly within the service itself, to extract the
