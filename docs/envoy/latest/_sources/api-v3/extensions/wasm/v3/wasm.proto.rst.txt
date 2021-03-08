@@ -29,7 +29,7 @@ This extension may be referenced by the qualified name *envoy.bootstrap.wasm*
 extensions.wasm.v3.CapabilityRestrictionConfig
 ----------------------------------------------
 
-`[extensions.wasm.v3.CapabilityRestrictionConfig proto] <https://github.com/envoyproxy/envoy/blob/ca60583f1c4dfc3547b4efac9ecac7e0bcc20eee/api/envoy/extensions/wasm/v3/wasm.proto#L20>`_
+`[extensions.wasm.v3.CapabilityRestrictionConfig proto] <https://github.com/envoyproxy/envoy/blob/789f8a0831acac9bfe5a95f9b8c5331af43437d0/api/envoy/extensions/wasm/v3/wasm.proto#L20>`_
 
 Configuration for restricting Proxy-Wasm capabilities available to modules.
 
@@ -62,7 +62,7 @@ allowed_capabilities
 extensions.wasm.v3.SanitizationConfig
 -------------------------------------
 
-`[extensions.wasm.v3.SanitizationConfig proto] <https://github.com/envoyproxy/envoy/blob/ca60583f1c4dfc3547b4efac9ecac7e0bcc20eee/api/envoy/extensions/wasm/v3/wasm.proto#L38>`_
+`[extensions.wasm.v3.SanitizationConfig proto] <https://github.com/envoyproxy/envoy/blob/789f8a0831acac9bfe5a95f9b8c5331af43437d0/api/envoy/extensions/wasm/v3/wasm.proto#L38>`_
 
 Configuration for sanitization of inputs to an allowed capability.
 
@@ -80,7 +80,7 @@ NOTE: This is currently unimplemented.
 extensions.wasm.v3.VmConfig
 ---------------------------
 
-`[extensions.wasm.v3.VmConfig proto] <https://github.com/envoyproxy/envoy/blob/ca60583f1c4dfc3547b4efac9ecac7e0bcc20eee/api/envoy/extensions/wasm/v3/wasm.proto#L43>`_
+`[extensions.wasm.v3.VmConfig proto] <https://github.com/envoyproxy/envoy/blob/789f8a0831acac9bfe5a95f9b8c5331af43437d0/api/envoy/extensions/wasm/v3/wasm.proto#L43>`_
 
 Configuration for a Wasm VM.
 
@@ -92,7 +92,8 @@ Configuration for a Wasm VM.
     "code": "{...}",
     "configuration": "{...}",
     "allow_precompiled": "...",
-    "nack_on_code_cache_miss": "..."
+    "nack_on_code_cache_miss": "...",
+    "environment_variables": "{...}"
   }
 
 .. _envoy_v3_api_field_extensions.wasm.v3.VmConfig.vm_id:
@@ -178,6 +179,46 @@ nack_on_code_cache_miss
   warming state.
   
   
+.. _envoy_v3_api_field_extensions.wasm.v3.VmConfig.environment_variables:
+
+environment_variables
+  (:ref:`extensions.wasm.v3.EnvironmentVariables <envoy_v3_api_msg_extensions.wasm.v3.EnvironmentVariables>`) Specifies environment variables to be injected to this VM which will be available through
+  WASI's ``environ_get`` and ``environ_get_sizes`` system calls. Note that these functions are mostly implicitly
+  called in your language's standard library, so you do not need to call them directly and you can access to env
+  vars just like when you do on native platforms.
+  Warning: Envoy rejects the configuration if there's conflict of key space.
+  
+  
+
+
+.. _envoy_v3_api_msg_extensions.wasm.v3.EnvironmentVariables:
+
+extensions.wasm.v3.EnvironmentVariables
+---------------------------------------
+
+`[extensions.wasm.v3.EnvironmentVariables proto] <https://github.com/envoyproxy/envoy/blob/789f8a0831acac9bfe5a95f9b8c5331af43437d0/api/envoy/extensions/wasm/v3/wasm.proto#L104>`_
+
+
+.. code-block:: json
+
+  {
+    "host_env_keys": [],
+    "key_values": "{...}"
+  }
+
+.. _envoy_v3_api_field_extensions.wasm.v3.EnvironmentVariables.host_env_keys:
+
+host_env_keys
+  (**repeated** `string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The keys of *Envoy's* environment variables exposed to this VM. In other words, if a key exists in Envoy's environment
+  variables, then that key-value pair will be injected. Note that if a key does not exist, it will be ignored.
+  
+  
+.. _envoy_v3_api_field_extensions.wasm.v3.EnvironmentVariables.key_values:
+
+key_values
+  (**repeated** map<`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, `string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_>) Explicitly given key-value pairs to be injected to this VM in the form of "KEY=VALUE".
+  
+  
 
 
 .. _envoy_v3_api_msg_extensions.wasm.v3.PluginConfig:
@@ -185,7 +226,7 @@ nack_on_code_cache_miss
 extensions.wasm.v3.PluginConfig
 -------------------------------
 
-`[extensions.wasm.v3.PluginConfig proto] <https://github.com/envoyproxy/envoy/blob/ca60583f1c4dfc3547b4efac9ecac7e0bcc20eee/api/envoy/extensions/wasm/v3/wasm.proto#L99>`_
+`[extensions.wasm.v3.PluginConfig proto] <https://github.com/envoyproxy/envoy/blob/789f8a0831acac9bfe5a95f9b8c5331af43437d0/api/envoy/extensions/wasm/v3/wasm.proto#L115>`_
 
 Base Configuration for Wasm Plugins e.g. filters and services.
 
@@ -256,7 +297,7 @@ capability_restriction_config
 extensions.wasm.v3.WasmService
 ------------------------------
 
-`[extensions.wasm.v3.WasmService proto] <https://github.com/envoyproxy/envoy/blob/ca60583f1c4dfc3547b4efac9ecac7e0bcc20eee/api/envoy/extensions/wasm/v3/wasm.proto#L136>`_
+`[extensions.wasm.v3.WasmService proto] <https://github.com/envoyproxy/envoy/blob/789f8a0831acac9bfe5a95f9b8c5331af43437d0/api/envoy/extensions/wasm/v3/wasm.proto#L152>`_
 
 WasmService is configured as a built-in *envoy.wasm_service* :ref:`WasmService
 <config_wasm_service>` This opaque configuration will be used to create a Wasm Service.
