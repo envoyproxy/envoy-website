@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1.18.0 (Pending) &mdash; envoy 1.18.0-dev-93e492 documentation</title>
+  <title>1.18.0 (Pending) &mdash; envoy 1.18.0-dev-06d078 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-93e492
+                1.18.0-dev-06d078
               </div>
             
           
@@ -312,6 +312,7 @@ issue against the project.</p></li>
 <li><p>grpc_http_bridge: the downstream HTTP status is now correctly set for trailers-only responses from the upstream.</p></li>
 <li><p>header map: pick the right delimiter to append multiple header values to the same key. Previouly header with multiple values are coalesced with “,”, after this fix cookie headers should be coalesced with ” ;”. This doesn’t affect Http1 or Http2 requests because these 2 codecs coalesce cookie headers before adding it to header map. To revert to the old behavior, set the runtime feature <cite>envoy.reloadable_features.header_map_correctly_coalesce_cookies</cite> to false.</p></li>
 <li><p>http: disallowing “host:” in request_headers_to_add for behavioral consistency with rejecting :authority header. This behavior can be temporarily reverted by setting <cite>envoy.reloadable_features.treat_host_like_authority</cite> to false.</p></li>
+<li><p>http: fixed an issue where Enovy did not handle peer stream limits correctly, and queued streams in nghttp2 rather than establish new connections. This behavior can be temporarily reverted by setting <cite>envoy.reloadable_features.improved_stream_limit_handling</cite> to false.</p></li>
 <li><p>http: fixed a bug where setting <a class="reference internal" href="../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-msg-config-route-v3-routeaction-maxstreamduration"><span class="std std-ref">MaxStreamDuration proto</span></a> did not disable legacy timeout defaults.</p></li>
 <li><p>http: reverting a behavioral change where upstream connect timeouts were temporarily treated differently from other connection failures. The change back to the original behavior can be temporarily reverted by setting <cite>envoy.reloadable_features.treat_upstream_connect_timeout_as_connect_failure</cite> to false.</p></li>
 <li><p>jwt_authn: reject requests with a proper error if JWT has the wrong issuer when allow_missing is used. Before this change, the requests are accepted.</p></li>
