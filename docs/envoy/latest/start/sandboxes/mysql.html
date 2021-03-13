@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>MySQL filter &mdash; envoy 1.18.0-dev-7277b5 documentation</title>
+  <title>MySQL filter &mdash; envoy 1.18.0-dev-df3f29 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-7277b5
+                1.18.0-dev-df3f29
               </div>
             
           
@@ -254,10 +254,10 @@ metrics.</p>
 <h2>Step 2: Issue commands using mysql<a class="headerlink" href="#step-2-issue-commands-using-mysql" title="Permalink to this headline">¶</a></h2>
 <p>Use <code class="docutils literal notranslate"><span class="pre">mysql</span></code> to issue some commands and verify they are routed via Envoy. Note
 that the current implementation of the protocol filter was tested with MySQL
-v5.5. It may, however, not work with other versions of MySQL due to differences
-in the protocol implementation.</p>
+v5.7. It may, however, not work with other versions of MySQL due to differences
+in the protocol implementation, but it won’t affect normal progress of client-server communication.</p>
 <p>Terminal 1</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker run --rm -it --network envoymesh mysql:5.5 mysql -h proxy -P <span class="m">1999</span> -u root
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker run --rm -it --network envoymesh mysql:5.7 mysql -h proxy -P <span class="m">1999</span> -u root --skip-ssl
 <span class="go">... snip ...</span>
 
 <span class="go">mysql&gt; CREATE DATABASE test;</span>
@@ -296,13 +296,13 @@ in the protocol implementation.</p>
 <h2>Step 3: Check egress stats<a class="headerlink" href="#step-3-check-egress-stats" title="Permalink to this headline">¶</a></h2>
 <p>Check egress stats were updated.</p>
 <p>Terminal 1</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:8001/stats?filter<span class="o">=</span>egress_mysql
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s <span class="s2">&quot;http://localhost:8001/stats?filter=egress_mysql&quot;</span>
 <span class="go">mysql.egress_mysql.auth_switch_request: 0</span>
 <span class="go">mysql.egress_mysql.decoder_errors: 0</span>
 <span class="go">mysql.egress_mysql.login_attempts: 1</span>
 <span class="go">mysql.egress_mysql.login_failures: 0</span>
-<span class="go">mysql.egress_mysql.protocol_errors: 0</span>
-<span class="go">mysql.egress_mysql.queries_parse_error: 0</span>
+<span class="go">mysql.egress_mysql.protocol_errors: 21</span>
+<span class="go">mysql.egress_mysql.queries_parse_error: 2</span>
 <span class="go">mysql.egress_mysql.queries_parsed: 7</span>
 <span class="go">mysql.egress_mysql.sessions: 1</span>
 <span class="go">mysql.egress_mysql.upgraded_to_ssl: 0</span>
@@ -313,16 +313,17 @@ in the protocol implementation.</p>
 <h2>Step 4: Check TCP stats<a class="headerlink" href="#step-4-check-tcp-stats" title="Permalink to this headline">¶</a></h2>
 <p>Check TCP stats were updated.</p>
 <p>Terminal 1</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:8001/stats?filter<span class="o">=</span>mysql_tcp
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s <span class="s2">&quot;http://localhost:8001/stats?filter=mysql_tcp&quot;</span>
 <span class="go">tcp.mysql_tcp.downstream_cx_no_route: 0</span>
 <span class="go">tcp.mysql_tcp.downstream_cx_rx_bytes_buffered: 0</span>
-<span class="go">tcp.mysql_tcp.downstream_cx_rx_bytes_total: 347</span>
+<span class="go">tcp.mysql_tcp.downstream_cx_rx_bytes_total: 446</span>
 <span class="go">tcp.mysql_tcp.downstream_cx_total: 1</span>
 <span class="go">tcp.mysql_tcp.downstream_cx_tx_bytes_buffered: 0</span>
-<span class="go">tcp.mysql_tcp.downstream_cx_tx_bytes_total: 702</span>
+<span class="go">tcp.mysql_tcp.downstream_cx_tx_bytes_total: 677</span>
 <span class="go">tcp.mysql_tcp.downstream_flow_control_paused_reading_total: 0</span>
 <span class="go">tcp.mysql_tcp.downstream_flow_control_resumed_reading_total: 0</span>
 <span class="go">tcp.mysql_tcp.idle_timeout: 0</span>
+<span class="go">tcp.mysql_tcp.max_downstream_connection_duration: 0</span>
 <span class="go">tcp.mysql_tcp.upstream_flush_active: 0</span>
 <span class="go">tcp.mysql_tcp.upstream_flush_total: 0</span>
 </pre></div>
