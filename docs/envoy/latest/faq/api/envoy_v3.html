@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>How do I configure Envoy to use the v3 API? &mdash; envoy 1.18.0-dev-fce386 documentation</title>
+  <title>How do I configure Envoy to use the v3 API? &mdash; envoy 1.18.0-dev-031f75 documentation</title>
   
 
   
@@ -46,8 +46,8 @@
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="If I upgrade to Envoy 1.13+, do I need to use the v3 API?" href="envoy_upgrade_v3.html" />
-    <link rel="prev" title="How long will the v2 APIs be supported?" href="envoy_v2_support.html" /> 
+    <link rel="next" title="How does API versioning interact with a new extension?" href="extensions.html" />
+    <link rel="prev" title="Why does Envoy use BoringSSL?" href="../build/boringssl.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-fce386
+                1.18.0-dev-031f75
               </div>
             
           
@@ -110,13 +110,8 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../overview.html">FAQ</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../overview.html#build">Build</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../overview.html#api">API</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="transition.html">How do I continue to use the v2 xDS API until Q1 2021?</a></li>
-<li class="toctree-l3"><a class="reference internal" href="envoy_v2_support.html">How long will the v2 APIs be supported?</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">How do I configure Envoy to use the v3 API?</a></li>
-<li class="toctree-l3"><a class="reference internal" href="envoy_upgrade_v3.html">If I upgrade to Envoy 1.13+, do I need to use the v3 API?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="extensions.html">How does API versioning interact with a new extension?</a></li>
-<li class="toctree-l3"><a class="reference internal" href="control_plane_version_support.html">Which xDS transport and resource versions does my control plane need to support?</a></li>
-<li class="toctree-l3"><a class="reference internal" href="control_plane.html">How do I support multiple xDS API major versions in my control plane?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="package_naming.html">What do the v2, v3, vN etc. mean in API package names?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="why_versioning.html">Why are the Envoy xDS APIs versioned? What is the benefit?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="incremental.html">What is the status of incremental xDS support?</a></li>
@@ -199,10 +194,7 @@
             
   <div class="section" id="how-do-i-configure-envoy-to-use-the-v3-api">
 <span id="faq-api-v3-config"></span><h1>How do I configure Envoy to use the v3 API?<a class="headerlink" href="#how-do-i-configure-envoy-to-use-the-v3-api" title="Permalink to this headline">¶</a></h1>
-<p>By default, Envoy will attempt to parse any YAML, JSON or text proto as v2, and if it fails to do
-so, will consider it as v3. So, if you have a simple static Envoy consuming a text-based bootstrap,
-you just need to start using the new configuration. For binary proto bootstrap configuration, please
-use a <a class="reference internal" href="../../api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-msg-config-bootstrap-v3-bootstrap"><span class="std std-ref">v3 Bootstrap</span></a> proto.</p>
+<p>All bootstrap files are expected to be v3.</p>
 <p>For dynamic configuration, we have introduced two new fields to <a class="reference internal" href="../../api-v3/config/core/v3/config_source.proto.html#envoy-v3-api-msg-config-core-v3-configsource"><span class="std std-ref">config sources</span></a>, transport API version and resource API version. The
 distinction is as follows:</p>
 <ul class="simple">
@@ -212,9 +204,6 @@ endpoint and version of <em>DiscoveryRequest</em>/<em>DiscoveryResponse</em> mes
 v3 resource, e.g. v2 <em>RouteConfiguration</em> or v3 <em>RouteConfiguration</em>, is delivered.</p></li>
 </ul>
 <p>The API version must be set for both transport and resource API versions.</p>
-<p>It is possible to use a mixture of transport API and resource API versions, e.g. to deliver v2
-<em>Listener</em> resources and v3 <em>RouteConfiguration</em> resources over a v2 ADS transport. This is an
-intentional feature designed to provide for gradual migration of Envoy deployments from v2 to v3.</p>
 <p>If you see a warning or error with <code class="docutils literal notranslate"><span class="pre">V2</span> <span class="pre">(and</span> <span class="pre">AUTO)</span> <span class="pre">xDS</span> <span class="pre">transport</span> <span class="pre">protocol</span> <span class="pre">versions</span> <span class="pre">are</span> <span class="pre">deprecated</span></code>,
 it is likely that you are missing explicit V3 configuration of the transport API version.</p>
 </div>
@@ -227,10 +216,10 @@ it is likely that you are missing explicit V3 configuration of the transport API
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="envoy_upgrade_v3.html" class="btn btn-neutral float-right" title="If I upgrade to Envoy 1.13+, do I need to use the v3 API?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="extensions.html" class="btn btn-neutral float-right" title="How does API versioning interact with a new extension?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="envoy_v2_support.html" class="btn btn-neutral float-left" title="How long will the v2 APIs be supported?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../build/boringssl.html" class="btn btn-neutral float-left" title="Why does Envoy use BoringSSL?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1.18.0 (Pending) &mdash; envoy 1.18.0-dev-fce386 documentation</title>
+  <title>1.18.0 (Pending) &mdash; envoy 1.18.0-dev-031f75 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-fce386
+                1.18.0-dev-031f75
               </div>
             
           
@@ -241,6 +241,7 @@
 <h2>Incompatible Behavior Changes<a class="headerlink" href="#incompatible-behavior-changes" title="Permalink to this headline">¶</a></h2>
 <p><em>Changes that are expected to cause an incompatibility if applicable; deployment changes are likely required</em></p>
 <ul class="simple">
+<li><p>config: the v2 xDS API is no longer supported by the Envoy binary.</p></li>
 <li><p>grpc_stats: the default value for <a class="reference internal" href="../api-v3/extensions/filters/http/grpc_stats/v3/config.proto.html#envoy-v3-api-field-extensions-filters-http-grpc-stats-v3-filterconfig-stats-for-all-methods"><span class="std std-ref">stats_for_all_methods</span></a> is switched from true to false, in order to avoid possible memory exhaustion due to an untrusted downstream sending a large number of unique method names. The previous default value was deprecated in version 1.14.0. This only changes the behavior when the value is not set. The previous behavior can be used by setting the value to true. This behavior change by be overridden by setting runtime feature <cite>envoy.deprecated_features.grpc_stats_filter_enable_stats_for_all_methods_by_default</cite>.</p></li>
 <li><p>http: fixing a standards compliance issue with :scheme. The :scheme header sent upstream is now based on the original URL scheme, rather than set based on the security of the upstream connection. This behavior can be temporarily reverted by setting <cite>envoy.reloadable_features.preserve_downstream_scheme</cite> to false.</p></li>
 <li><p>http: resolving inconsistencies between :scheme and X-Forwarded-Proto. :scheme will now be set for all HTTP/1.1 requests. This changes the behavior of the gRPC access logger, Wasm filters, CSRF filter and oath2 filter for HTTP/1 traffic, where :scheme was previously not set. This change also validates that for front-line Envoys (Envoys configured with  <a class="reference internal" href="../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-xff-num-trusted-hops"><span class="std std-ref">xff_num_trusted_hops</span></a> set to 0 and <a class="reference internal" href="../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-use-remote-address"><span class="std std-ref">use_remote_address</span></a> set to true) that HTTP/1.1 https schemed requests can not be sent over non-TLS connections. All behavioral changes listed here can be temporarily reverted by setting <cite>envoy.reloadable_features.add_and_validate_scheme_header</cite> to false.</p></li>
