@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Supported load balancers &mdash; envoy 1.18.0-dev-68b7a6 documentation</title>
+  <title>Supported load balancers &mdash; envoy 1.18.0-dev-c53c32 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-68b7a6
+                1.18.0-dev-c53c32
               </div>
             
           
@@ -266,7 +266,15 @@ mapped onto a circle (the “ring”) by hashing its address; each request is th
 hashing some property of the request, and finding the nearest corresponding host clockwise around
 the ring. This technique is also commonly known as <a class="reference external" href="https://github.com/RJ/ketama">“Ketama”</a>
 hashing, and like all hash-based load balancers, it is only effective when protocol routing is used
-that specifies a value to hash on.</p>
+that specifies a value to hash on. If you want something other than the host’s address to be used
+as the hash key (e.g. the semantic name of your host in a Kubernetes StatefulSet), then you can specify it
+in the <code class="docutils literal notranslate"><span class="pre">&quot;envoy.lb&quot;</span></code> <a class="reference internal" href="../../../../api-v2/api/v2/endpoint/endpoint_components.proto.html#envoy-api-field-endpoint-lbendpoint-metadata"><span class="std std-ref">LbEndpoint.Metadata</span></a> e.g.:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span>  <span class="nt">filter_metadata</span><span class="p">:</span>
+    <span class="nt">envoy.lb</span><span class="p">:</span>
+      <span class="nt">hash_key</span><span class="p">:</span> <span class="s">&quot;YOUR</span><span class="nv"> </span><span class="s">HASH</span><span class="nv"> </span><span class="s">KEY&quot;</span>
+</pre></div>
+</div>
+<p>This will override <a class="reference internal" href="../../../../api-v2/api/v2/cluster.proto.html#envoy-api-field-cluster-commonlbconfig-consistent-hashing-lb-config"><span class="std std-ref">use_hostname_for_hashing</span></a>.</p>
 <p>Each host is hashed and placed on the ring some number of times proportional to its weight. For
 example, if host A has a weight of 1 and host B has a weight of 2, then there might be three entries
 on the ring: one for host A and two for host B. This doesn’t actually provide the desired 2:1
@@ -291,7 +299,15 @@ with a fixed table size of 65537 (see section 5.3 of the same paper). Maglev can
 in replacement for the <a class="reference internal" href="#arch-overview-load-balancing-types-ring-hash"><span class="std std-ref">ring hash load balancer</span></a>
 any place in which consistent hashing is desired. Like the ring hash load balancer, a consistent
 hashing load balancer is only effective when protocol routing is used that specifies a value to
-hash on.</p>
+hash on. If you want something other than the host’s address to be used as the hash key (e.g. the
+semantic name of your host in a Kubernetes StatefulSet), then you can specify it in the <code class="docutils literal notranslate"><span class="pre">&quot;envoy.lb&quot;</span></code>
+<a class="reference internal" href="../../../../api-v2/api/v2/endpoint/endpoint_components.proto.html#envoy-api-field-endpoint-lbendpoint-metadata"><span class="std std-ref">LbEndpoint.Metadata</span></a> e.g.:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span>  <span class="nt">filter_metadata</span><span class="p">:</span>
+    <span class="nt">envoy.lb</span><span class="p">:</span>
+      <span class="nt">hash_key</span><span class="p">:</span> <span class="s">&quot;YOUR</span><span class="nv"> </span><span class="s">HASH</span><span class="nv"> </span><span class="s">KEY&quot;</span>
+</pre></div>
+</div>
+<p>This will override <a class="reference internal" href="../../../../api-v2/api/v2/cluster.proto.html#envoy-api-field-cluster-commonlbconfig-consistent-hashing-lb-config"><span class="std std-ref">use_hostname_for_hashing</span></a>.</p>
 <p>The table construction algorithm places each host in the table some number of times proportional
 to its weight, until the table is completely filled. For example, if host A has a weight of 1 and
 host B has a weight of 2, then host A will have 21,846 entries and host B will have 43,691 entries
@@ -308,7 +324,7 @@ when using a large ring size of 256K entries). The downside of Maglev is that it
 as ring hash. More keys will move position when hosts are removed (simulations show approximately
 double the keys will move). With that said, for many applications including Redis, Maglev is very
 likely a superior drop in replacement for ring hash. The advanced reader can use
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/68b7a64bc32c4d88585345ce6c99995152280258//test/common/upstream/load_balancer_benchmark.cc">this benchmark</a> to compare ring hash
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/c53c32fcaa47f05e9bdee4f8d62f23e8a5c29a74//test/common/upstream/load_balancer_benchmark.cc">this benchmark</a> to compare ring hash
 versus Maglev with different parameters.</p>
 </div>
 <div class="section" id="random">
