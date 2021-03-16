@@ -26,7 +26,7 @@ TCP Proxy :ref:`configuration overview <config_network_filters_tcp_proxy>`.
 extensions.filters.network.tcp_proxy.v3.TcpProxy
 ------------------------------------------------
 
-`[extensions.filters.network.tcp_proxy.v3.TcpProxy proto] <https://github.com/envoyproxy/envoy/blob/a11d48368c62eb2c238d6d3087c16ffa355243d1/api/envoy/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto#L25>`_
+`[extensions.filters.network.tcp_proxy.v3.TcpProxy proto] <https://github.com/envoyproxy/envoy/blob/0acf24ed2580c787227dc7c31f394ac583a598ae/api/envoy/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto#L25>`_
 
 
 .. code-block:: json
@@ -40,6 +40,7 @@ extensions.filters.network.tcp_proxy.v3.TcpProxy
     "access_log": [],
     "max_connect_attempts": "{...}",
     "hash_policy": [],
+    "tunneling_config": "{...}",
     "max_downstream_connection_duration": "{...}"
   }
 
@@ -115,7 +116,13 @@ hash_policy
   limited to 1.
   
   
+.. _envoy_v3_api_field_extensions.filters.network.tcp_proxy.v3.TcpProxy.tunneling_config:
 
+tunneling_config
+  (:ref:`extensions.filters.network.tcp_proxy.v3.TcpProxy.TunnelingConfig <envoy_v3_api_msg_extensions.filters.network.tcp_proxy.v3.TcpProxy.TunnelingConfig>`) If set, this configures tunneling, e.g. configuration options to tunnel TCP payload over
+  HTTP CONNECT. If this message is absent, the payload will be proxied upstream as per usual.
+  
+  
 .. _envoy_v3_api_field_extensions.filters.network.tcp_proxy.v3.TcpProxy.max_downstream_connection_duration:
 
 max_downstream_connection_duration
@@ -129,7 +136,7 @@ max_downstream_connection_duration
 extensions.filters.network.tcp_proxy.v3.TcpProxy.WeightedCluster
 ----------------------------------------------------------------
 
-`[extensions.filters.network.tcp_proxy.v3.TcpProxy.WeightedCluster proto] <https://github.com/envoyproxy/envoy/blob/a11d48368c62eb2c238d6d3087c16ffa355243d1/api/envoy/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto#L32>`_
+`[extensions.filters.network.tcp_proxy.v3.TcpProxy.WeightedCluster proto] <https://github.com/envoyproxy/envoy/blob/0acf24ed2580c787227dc7c31f394ac583a598ae/api/envoy/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto#L32>`_
 
 Allows for specification of multiple upstream clusters along with weights
 that indicate the percentage of traffic to be forwarded to each cluster.
@@ -152,7 +159,7 @@ clusters
 extensions.filters.network.tcp_proxy.v3.TcpProxy.WeightedCluster.ClusterWeight
 ------------------------------------------------------------------------------
 
-`[extensions.filters.network.tcp_proxy.v3.TcpProxy.WeightedCluster.ClusterWeight proto] <https://github.com/envoyproxy/envoy/blob/a11d48368c62eb2c238d6d3087c16ffa355243d1/api/envoy/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto#L36>`_
+`[extensions.filters.network.tcp_proxy.v3.TcpProxy.WeightedCluster.ClusterWeight proto] <https://github.com/envoyproxy/envoy/blob/0acf24ed2580c787227dc7c31f394ac583a598ae/api/envoy/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto#L36>`_
 
 
 .. code-block:: json
@@ -196,11 +203,11 @@ metadata_match
 extensions.filters.network.tcp_proxy.v3.TcpProxy.TunnelingConfig
 ----------------------------------------------------------------
 
-`[extensions.filters.network.tcp_proxy.v3.TcpProxy.TunnelingConfig proto] <https://github.com/envoyproxy/envoy/blob/a11d48368c62eb2c238d6d3087c16ffa355243d1/api/envoy/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto#L64>`_
+`[extensions.filters.network.tcp_proxy.v3.TcpProxy.TunnelingConfig proto] <https://github.com/envoyproxy/envoy/blob/0acf24ed2580c787227dc7c31f394ac583a598ae/api/envoy/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto#L64>`_
 
 Configuration for tunneling TCP over other transports or application layers.
-Currently, only HTTP/2 is supported. When other options exist, HTTP/2 will
-remain the default.
+Tunneling is supported over both HTTP/1.1 and HTTP/2. Upstream protocol is
+determined by the cluster configuration.
 
 .. code-block:: json
 
@@ -220,7 +227,7 @@ hostname
 
 use_post
   (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Use POST method instead of CONNECT method to tunnel the TCP stream.
-  The 'protocol: bytestream' header is also NOT set to comply with the HTTP spec.
+  The 'protocol: bytestream' header is also NOT set for HTTP/2 to comply with the spec.
   
   The upstream proxy is expected to convert POST payload as raw TCP.
   
