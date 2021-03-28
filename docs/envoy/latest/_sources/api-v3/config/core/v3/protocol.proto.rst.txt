@@ -10,7 +10,7 @@ Protocol options
 config.core.v3.QuicProtocolOptions
 ----------------------------------
 
-`[config.core.v3.QuicProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/fcdaf20519216082db374dfad92e5b4771cc37fd/api/envoy/config/core/v3/protocol.proto#L27>`_
+`[config.core.v3.QuicProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/ceb15965a493300cc0e7a044dec1083ace6783f3/api/envoy/config/core/v3/protocol.proto#L28>`_
 
 QUIC protocol options which apply to both downstream and upstream connections.
 
@@ -34,7 +34,7 @@ max_concurrent_streams
 config.core.v3.UpstreamHttpProtocolOptions
 ------------------------------------------
 
-`[config.core.v3.UpstreamHttpProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/fcdaf20519216082db374dfad92e5b4771cc37fd/api/envoy/config/core/v3/protocol.proto#L33>`_
+`[config.core.v3.UpstreamHttpProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/ceb15965a493300cc0e7a044dec1083ace6783f3/api/envoy/config/core/v3/protocol.proto#L34>`_
 
 
 .. code-block:: json
@@ -68,7 +68,7 @@ auto_san_validation
 config.core.v3.HttpProtocolOptions
 ----------------------------------
 
-`[config.core.v3.HttpProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/fcdaf20519216082db374dfad92e5b4771cc37fd/api/envoy/config/core/v3/protocol.proto#L50>`_
+`[config.core.v3.HttpProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/ceb15965a493300cc0e7a044dec1083ace6783f3/api/envoy/config/core/v3/protocol.proto#L51>`_
 
 
 .. code-block:: json
@@ -142,7 +142,7 @@ headers_with_underscores_action
 Enum config.core.v3.HttpProtocolOptions.HeadersWithUnderscoresAction
 --------------------------------------------------------------------
 
-`[config.core.v3.HttpProtocolOptions.HeadersWithUnderscoresAction proto] <https://github.com/envoyproxy/envoy/blob/fcdaf20519216082db374dfad92e5b4771cc37fd/api/envoy/config/core/v3/protocol.proto#L59>`_
+`[config.core.v3.HttpProtocolOptions.HeadersWithUnderscoresAction proto] <https://github.com/envoyproxy/envoy/blob/ceb15965a493300cc0e7a044dec1083ace6783f3/api/envoy/config/core/v3/protocol.proto#L60>`_
 
 Action to take when Envoy receives client request with header names containing underscore
 characters.
@@ -178,7 +178,7 @@ DROP_HEADER
 config.core.v3.Http1ProtocolOptions
 -----------------------------------
 
-`[config.core.v3.Http1ProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/fcdaf20519216082db374dfad92e5b4771cc37fd/api/envoy/config/core/v3/protocol.proto#L116>`_
+`[config.core.v3.Http1ProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/ceb15965a493300cc0e7a044dec1083ace6783f3/api/envoy/config/core/v3/protocol.proto#L117>`_
 
 
 .. code-block:: json
@@ -269,19 +269,20 @@ override_stream_error_on_invalid_http_message
 config.core.v3.Http1ProtocolOptions.HeaderKeyFormat
 ---------------------------------------------------
 
-`[config.core.v3.Http1ProtocolOptions.HeaderKeyFormat proto] <https://github.com/envoyproxy/envoy/blob/fcdaf20519216082db374dfad92e5b4771cc37fd/api/envoy/config/core/v3/protocol.proto#L120>`_
+`[config.core.v3.Http1ProtocolOptions.HeaderKeyFormat proto] <https://github.com/envoyproxy/envoy/blob/ceb15965a493300cc0e7a044dec1083ace6783f3/api/envoy/config/core/v3/protocol.proto#L122>`_
 
 
 .. code-block:: json
 
   {
-    "proper_case_words": "{...}"
+    "proper_case_words": "{...}",
+    "stateful_formatter": "{...}"
   }
 
 .. _envoy_v3_api_field_config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.proper_case_words:
 
 proper_case_words
-  (:ref:`config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords <envoy_v3_api_msg_config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords>`, *REQUIRED*) Formats the header by proper casing words: the first character and any character following
+  (:ref:`config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords <envoy_v3_api_msg_config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords>`) Formats the header by proper casing words: the first character and any character following
   a special character will be capitalized if it's an alpha character. For example,
   "content-type" becomes "Content-Type", and "foo$b#$are" becomes "Foo$B#$Are".
   Note that while this results in most headers following conventional casing, certain headers
@@ -289,12 +290,33 @@ proper_case_words
   
   
   
+  Precisely one of :ref:`proper_case_words <envoy_v3_api_field_config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.proper_case_words>`, :ref:`stateful_formatter <envoy_v3_api_field_config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.stateful_formatter>` must be set.
+  
+.. _envoy_v3_api_field_config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.stateful_formatter:
+
+stateful_formatter
+  (:ref:`config.core.v3.TypedExtensionConfig <envoy_v3_api_msg_config.core.v3.TypedExtensionConfig>`) Configuration for stateful formatter extensions that allow using received headers to
+  affect the output of encoding headers. E.g., preserving case during proxying.
+  
+  
+  .. _extension_category_envoy.http.stateful_header_formatters:
+  
+  .. tip::
+    This extension category has the following known extensions:
+  
+  
+    - :ref:`envoy.http.stateful_header_formatters.preserve_case <extension_envoy.http.stateful_header_formatters.preserve_case>`
+  
+  
+  
+  Precisely one of :ref:`proper_case_words <envoy_v3_api_field_config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.proper_case_words>`, :ref:`stateful_formatter <envoy_v3_api_field_config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.stateful_formatter>` must be set.
+  
 .. _envoy_v3_api_msg_config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords:
 
 config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords
 -------------------------------------------------------------------
 
-`[config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords proto] <https://github.com/envoyproxy/envoy/blob/fcdaf20519216082db374dfad92e5b4771cc37fd/api/envoy/config/core/v3/protocol.proto#L124>`_
+`[config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords proto] <https://github.com/envoyproxy/envoy/blob/ceb15965a493300cc0e7a044dec1083ace6783f3/api/envoy/config/core/v3/protocol.proto#L126>`_
 
 
 .. code-block:: json
@@ -311,7 +333,7 @@ config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords
 config.core.v3.KeepaliveSettings
 --------------------------------
 
-`[config.core.v3.KeepaliveSettings proto] <https://github.com/envoyproxy/envoy/blob/fcdaf20519216082db374dfad92e5b4771cc37fd/api/envoy/config/core/v3/protocol.proto#L192>`_
+`[config.core.v3.KeepaliveSettings proto] <https://github.com/envoyproxy/envoy/blob/ceb15965a493300cc0e7a044dec1083ace6783f3/api/envoy/config/core/v3/protocol.proto#L199>`_
 
 
 .. code-block:: json
@@ -350,7 +372,7 @@ interval_jitter
 config.core.v3.Http2ProtocolOptions
 -----------------------------------
 
-`[config.core.v3.Http2ProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/fcdaf20519216082db374dfad92e5b4771cc37fd/api/envoy/config/core/v3/protocol.proto#L213>`_
+`[config.core.v3.Http2ProtocolOptions proto] <https://github.com/envoyproxy/envoy/blob/ceb15965a493300cc0e7a044dec1083ace6783f3/api/envoy/config/core/v3/protocol.proto#L220>`_
 
 
 .. code-block:: json
@@ -544,7 +566,7 @@ connection_keepalive
 config.core.v3.Http2ProtocolOptions.SettingsParameter
 -----------------------------------------------------
 
-`[config.core.v3.Http2ProtocolOptions.SettingsParameter proto] <https://github.com/envoyproxy/envoy/blob/fcdaf20519216082db374dfad92e5b4771cc37fd/api/envoy/config/core/v3/protocol.proto#L219>`_
+`[config.core.v3.Http2ProtocolOptions.SettingsParameter proto] <https://github.com/envoyproxy/envoy/blob/ceb15965a493300cc0e7a044dec1083ace6783f3/api/envoy/config/core/v3/protocol.proto#L226>`_
 
 Defines a parameter to be sent in the SETTINGS frame.
 See `RFC7540, sec. 6.5.1 <https://tools.ietf.org/html/rfc7540#section-6.5.1>`_ for details.
