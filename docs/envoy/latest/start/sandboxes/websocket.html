@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>WebSockets &mdash; envoy 1.18.0-dev-964e2a documentation</title>
+  <title>WebSockets &mdash; envoy 1.18.0-dev-4cce00 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-964e2a
+                1.18.0-dev-4cce00
               </div>
             
           
@@ -248,16 +248,16 @@ where you control both sides of the connection, or relevant protocols are availa
 <div class="section" id="step-1-create-a-certificate-file-for-wss">
 <h2>Step 1: Create a certificate file for wss<a class="headerlink" href="#step-1-create-a-certificate-file-for-wss" title="Permalink to this headline">¶</a></h2>
 <p>Change directory to <code class="docutils literal notranslate"><span class="pre">examples/websocket</span></code> in the Envoy repository.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">pwd</span>
 <span class="go">envoy/examples/websocket</span>
-<span class="gp">$</span> mkdir -p certs
-<span class="gp">$</span> openssl req -batch -new -x509 -nodes -keyout certs/key.pem -out certs/cert.pem
+<span class="gp">$ </span>mkdir -p certs
+<span class="gp">$ </span>openssl req -batch -new -x509 -nodes -keyout certs/key.pem -out certs/cert.pem
 <span class="go">Generating a RSA private key</span>
 <span class="go">..................................................................................................................+++++</span>
 <span class="go">......+++++</span>
 <span class="go">writing new private key to &#39;certs/key.pem&#39;</span>
 <span class="go">-----</span>
-<span class="gp">$</span> openssl pkcs12 -export -passout pass: -out certs/output.pkcs12 -inkey certs/key.pem -in certs/cert.pem
+<span class="gp">$ </span>openssl pkcs12 -export -passout pass: -out certs/output.pkcs12 -inkey certs/key.pem -in certs/cert.pem
 </pre></div>
 </div>
 </div>
@@ -268,9 +268,9 @@ where you control both sides of the connection, or relevant protocols are availa
 <p>The upstream services listen on the internal Docker network on ports <code class="docutils literal notranslate"><span class="pre">80</span></code> and <code class="docutils literal notranslate"><span class="pre">443</span></code> respectively.</p>
 <p>The socket servers are very trivial implementations, that simply output <code class="docutils literal notranslate"><span class="pre">[ws]</span> <span class="pre">HELO</span></code> and
 <code class="docutils literal notranslate"><span class="pre">[wss]</span> <span class="pre">HELO</span></code> in response to any input.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker-compose pull
-<span class="gp">$</span> docker-compose up --build -d
-<span class="gp">$</span> docker-compose ps
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker-compose pull
+<span class="gp">$ </span>docker-compose up --build -d
+<span class="gp">$ </span>docker-compose ps
 
 <span class="go">            Name                             Command               State            Ports</span>
 <span class="go">---------------------------------------------------------------------------------------------------</span>
@@ -290,35 +290,35 @@ to an upstream socket, also without <code class="docutils literal notranslate"><
 <a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-msg-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-upgradeconfig"><span class="std std-ref">upgrade_configs</span></a>
 in <a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-msg-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager"><span class="std std-ref">HttpConnectionManager</span></a>
 must be set, as can be seen in the provided <a class="reference download internal" download="" href="../../_downloads/1ab278c53aed7b4844c89c7856334949/envoy-ws.yaml"><code class="xref download docutils literal notranslate"><span class="pre">ws</span> <span class="pre">-&gt;</span> <span class="pre">ws</span> <span class="pre">configuration</span></code></a>:</p>
-<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">static_resources</span><span class="p">:</span>
+<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">static_resources</span><span class="p">:</span>
   <span class="nt">listeners</span><span class="p">:</span>
   <span class="p p-Indicator">-</span> <span class="nt">address</span><span class="p">:</span>
       <span class="nt">socket_address</span><span class="p">:</span>
@@ -350,7 +350,7 @@ must be set, as can be seen in the provided <a class="reference download interna
 </pre></div>
 </td></tr></table></div>
 <p>You can start an interactive session with the socket as follows:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker run -ti --network<span class="o">=</span>host solsson/websocat ws://localhost:10000
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker run -ti --network<span class="o">=</span>host solsson/websocat ws://localhost:10000
 <span class="go">HELO</span>
 <span class="go">[ws] HELO</span>
 <span class="go">GOODBYE</span>
@@ -371,7 +371,7 @@ the <a class="reference download internal" download="" href="../../_downloads/e0
 <a class="reference internal" href="../../api-v3/config/listener/v3/listener.proto.html#envoy-v3-api-msg-config-listener-v3-listener"><span class="std std-ref">listener</span></a> and the
 <a class="reference internal" href="../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-msg-config-cluster-v3-cluster"><span class="std std-ref">cluster</span></a>.</p>
 <p>You can start an interactive session with the socket as follows:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker run -ti --network<span class="o">=</span>host solsson/websocat --insecure wss://localhost:20000
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker run -ti --network<span class="o">=</span>host solsson/websocat --insecure wss://localhost:20000
 <span class="go">HELO</span>
 <span class="go">[wss] HELO</span>
 <span class="go">GOODBYE</span>
@@ -387,7 +387,7 @@ the <a class="reference download internal" download="" href="../../_downloads/e0
 or <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> setup, and instead uses a simple
 <a class="reference internal" href="../../api-v3/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto.html#envoy-v3-api-msg-extensions-filters-network-tcp-proxy-v3-tcpproxy"><span class="std std-ref">tcp_proxy</span></a>.</p>
 <p>You can start an interactive session with the socket as follows:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker run -ti --network<span class="o">=</span>host solsson/websocat --insecure wss://localhost:30000
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker run -ti --network<span class="o">=</span>host solsson/websocat --insecure wss://localhost:30000
 <span class="go">HELO</span>
 <span class="go">[wss] HELO</span>
 <span class="go">GOODBYE</span>

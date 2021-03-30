@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Double proxy (with mTLS encryption) &mdash; envoy 1.18.0-dev-964e2a documentation</title>
+  <title>Double proxy (with mTLS encryption) &mdash; envoy 1.18.0-dev-4cce00 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-964e2a
+                1.18.0-dev-4cce00
               </div>
             
           
@@ -254,10 +254,10 @@ certificates for the proxies.</p>
 <div class="section" id="step-1-create-a-certificate-authority">
 <h2>Step 1: Create a certificate authority<a class="headerlink" href="#step-1-create-a-certificate-authority" title="Permalink to this headline">¶</a></h2>
 <p>First create a key for the certificate authority:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">pwd</span>
 <span class="go">envoy/examples/double-proxy</span>
-<span class="gp">$</span> mkdir -p certs
-<span class="gp">$</span> openssl genrsa -out certs/ca.key <span class="m">4096</span>
+<span class="gp">$ </span>mkdir -p certs
+<span class="gp">$ </span>openssl genrsa -out certs/ca.key <span class="m">4096</span>
 <span class="go">Generating RSA private key, 4096 bit long modulus (2 primes)</span>
 <span class="go">..........++++</span>
 <span class="go">..........................................................................................................++++</span>
@@ -267,7 +267,7 @@ certificates for the proxies.</p>
 <p>Now use the key to generate a certificate authority certificate.</p>
 <p>If you wish, you can interactively alter the fields in the certificate.</p>
 <p>For the purpose of this example, the defaults should be sufficient.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> openssl req -x509 -new -nodes -key certs/ca.key -sha256 -days <span class="m">1024</span> -out certs/ca.crt
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openssl req -x509 -new -nodes -key certs/ca.key -sha256 -days <span class="m">1024</span> -out certs/ca.crt
 
 <span class="go">You are about to be asked to enter information that will be incorporated</span>
 <span class="go">into your certificate request.</span>
@@ -289,7 +289,7 @@ certificates for the proxies.</p>
 <div class="section" id="step-2-create-a-domain-key">
 <h2>Step 2: Create a domain key<a class="headerlink" href="#step-2-create-a-domain-key" title="Permalink to this headline">¶</a></h2>
 <p>Create a key for the example domain:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> openssl genrsa -out certs/example.com.key <span class="m">2048</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openssl genrsa -out certs/example.com.key <span class="m">2048</span>
 <span class="go">Generating RSA private key, 2048 bit long modulus (2 primes)</span>
 <span class="go">..+++++</span>
 <span class="go">.................................................+++++</span>
@@ -300,14 +300,14 @@ certificates for the proxies.</p>
 <div class="section" id="step-3-generate-certificate-signing-requests-for-the-proxies">
 <h2>Step 3: Generate certificate signing requests for the proxies<a class="headerlink" href="#step-3-generate-certificate-signing-requests-for-the-proxies" title="Permalink to this headline">¶</a></h2>
 <p>Use the domain key to generate certificate signing requests for each of the proxies:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> openssl req -new -sha256 <span class="se">\</span>
-     -key certs/example.com.key <span class="se">\</span>
-     -subj <span class="s2">&quot;/C=US/ST=CA/O=MyExample, Inc./CN=proxy-postgres-frontend.example.com&quot;</span> <span class="se">\</span>
-     -out certs/proxy-postgres-frontend.example.com.csr
-<span class="gp">$</span> openssl req -new -sha256 <span class="se">\</span>
-     -key certs/example.com.key <span class="se">\</span>
-     -subj <span class="s2">&quot;/C=US/ST=CA/O=MyExample, Inc./CN=proxy-postgres-backend.example.com&quot;</span> <span class="se">\</span>
-     -out certs/proxy-postgres-backend.example.com.csr
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openssl req -new -sha256 <span class="se">\</span>
+<span class="go">     -key certs/example.com.key \</span>
+<span class="go">     -subj &quot;/C=US/ST=CA/O=MyExample, Inc./CN=proxy-postgres-frontend.example.com&quot; \</span>
+<span class="go">     -out certs/proxy-postgres-frontend.example.com.csr</span>
+<span class="gp">$ </span>openssl req -new -sha256 <span class="se">\</span>
+<span class="go">     -key certs/example.com.key \</span>
+<span class="go">     -subj &quot;/C=US/ST=CA/O=MyExample, Inc./CN=proxy-postgres-backend.example.com&quot; \</span>
+<span class="go">     -out certs/proxy-postgres-backend.example.com.csr</span>
 </pre></div>
 </div>
 </div>
@@ -315,28 +315,28 @@ certificates for the proxies.</p>
 <h2>Step 4: Sign the proxy certificates<a class="headerlink" href="#step-4-sign-the-proxy-certificates" title="Permalink to this headline">¶</a></h2>
 <p>You can now use the certificate authority that you created to sign the certificate requests.</p>
 <p>Note the <code class="docutils literal notranslate"><span class="pre">subjectAltName</span></code>. This is used for reciprocally matching and validating the certificates.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> openssl x509 -req <span class="se">\</span>
-     -in certs/proxy-postgres-frontend.example.com.csr <span class="se">\</span>
-     -CA certs/ca.crt <span class="se">\</span>
-     -CAkey certs/ca.key <span class="se">\</span>
-     -CAcreateserial <span class="se">\</span>
-     -extfile &lt;<span class="o">(</span><span class="nb">printf</span> <span class="s2">&quot;subjectAltName=DNS:proxy-postgres-frontend.example.com&quot;</span><span class="o">)</span> <span class="se">\</span>
-     -out certs/postgres-frontend.example.com.crt <span class="se">\</span>
-     -days <span class="m">500</span> <span class="se">\</span>
-     -sha256
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openssl x509 -req <span class="se">\</span>
+<span class="go">     -in certs/proxy-postgres-frontend.example.com.csr \</span>
+<span class="go">     -CA certs/ca.crt \</span>
+<span class="go">     -CAkey certs/ca.key \</span>
+<span class="go">     -CAcreateserial \</span>
+<span class="go">     -extfile &lt;(printf &quot;subjectAltName=DNS:proxy-postgres-frontend.example.com&quot;) \</span>
+<span class="go">     -out certs/postgres-frontend.example.com.crt \</span>
+<span class="go">     -days 500 \</span>
+<span class="go">     -sha256</span>
 <span class="go">Signature ok</span>
 <span class="go">subject=C = US, ST = CA, O = &quot;MyExample, Inc.&quot;, CN = proxy-postgres-frontend.example.com</span>
 <span class="go">Getting CA Private Key</span>
 
-<span class="gp">$</span> openssl x509 -req <span class="se">\</span>
-     -in certs/proxy-postgres-backend.example.com.csr <span class="se">\</span>
-     -CA certs/ca.crt <span class="se">\</span>
-     -CAkey certs/ca.key <span class="se">\</span>
-     -CAcreateserial <span class="se">\</span>
-     -extfile &lt;<span class="o">(</span><span class="nb">printf</span> <span class="s2">&quot;subjectAltName=DNS:proxy-postgres-backend.example.com&quot;</span><span class="o">)</span> <span class="se">\</span>
-     -out certs/postgres-backend.example.com.crt <span class="se">\</span>
-     -days <span class="m">500</span> <span class="se">\</span>
-     -sha256
+<span class="gp">$ </span>openssl x509 -req <span class="se">\</span>
+<span class="go">     -in certs/proxy-postgres-backend.example.com.csr \</span>
+<span class="go">     -CA certs/ca.crt \</span>
+<span class="go">     -CAkey certs/ca.key \</span>
+<span class="go">     -CAcreateserial \</span>
+<span class="go">     -extfile &lt;(printf &quot;subjectAltName=DNS:proxy-postgres-backend.example.com&quot;) \</span>
+<span class="go">     -out certs/postgres-backend.example.com.crt \</span>
+<span class="go">     -days 500 \</span>
+<span class="go">     -sha256</span>
 <span class="go">Signature ok</span>
 <span class="go">subject=C = US, ST = CA, O = &quot;MyExample, Inc.&quot;, CN = proxy-postgres-backend.example.com</span>
 <span class="go">Getting CA Private Key</span>
@@ -350,11 +350,11 @@ the proxies.</p>
 <h2>Step 5: Start all of our containers<a class="headerlink" href="#step-5-start-all-of-our-containers" title="Permalink to this headline">¶</a></h2>
 <p>Build and start the containers.</p>
 <p>This will load the required keys and certificates into the frontend and backend proxies.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">pwd</span>
 <span class="go">envoy/examples/double-proxy</span>
-<span class="gp">$</span> docker-compose build --pull
-<span class="gp">$</span> docker-compose up -d
-<span class="gp">$</span> docker-compose ps
+<span class="gp">$ </span>docker-compose build --pull
+<span class="gp">$ </span>docker-compose up -d
+<span class="gp">$ </span>docker-compose ps
 
 <span class="go">       Name                                      Command                State         Ports</span>
 <span class="go">--------------------------------------------------------------------------------------------------------</span>
@@ -369,7 +369,7 @@ the proxies.</p>
 <div class="section" id="step-6-check-the-flask-app-can-connect-to-the-database">
 <h2>Step 6: Check the flask app can connect to the database<a class="headerlink" href="#step-6-check-the-flask-app-can-connect-to-the-database" title="Permalink to this headline">¶</a></h2>
 <p>Checking the response at <a class="reference external" href="http://localhost:10000">http://localhost:10000</a>, you should see the output from the Flask app:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:10000
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl -s http://localhost:10000
 <span class="go">Connected to Postgres, version: PostgreSQL 13.0 (Debian 13.0-1.pgdg100+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 8.3.0-6) 8.3.0, 64-bit</span>
 </pre></div>
 </div>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Dynamic configuration (control plane) &mdash; envoy 1.18.0-dev-964e2a documentation</title>
+  <title>Dynamic configuration (control plane) &mdash; envoy 1.18.0-dev-4cce00 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-964e2a
+                1.18.0-dev-4cce00
               </div>
             
           
@@ -248,11 +248,11 @@ and provides a trivial example of how to update Envoy’s configuration dynamica
 <p>First build the containers and start the <code class="docutils literal notranslate"><span class="pre">proxy</span></code> container.</p>
 <p>This should also start two upstream <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> echo servers, <code class="docutils literal notranslate"><span class="pre">service1</span></code> and <code class="docutils literal notranslate"><span class="pre">service2</span></code>.</p>
 <p>The control plane has not yet been started.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">pwd</span>
 <span class="go">envoy/examples/dynamic-config-cp</span>
-<span class="gp">$</span> docker-compose build --pull
-<span class="gp">$</span> docker-compose up -d proxy
-<span class="gp">$</span> docker-compose ps
+<span class="gp">$ </span>docker-compose build --pull
+<span class="gp">$ </span>docker-compose up -d proxy
+<span class="gp">$ </span>docker-compose ps
 
 <span class="go">       Name                            Command                State                     Ports</span>
 <span class="go">------------------------------------------------------------------------------------------------------------------------</span>
@@ -265,13 +265,13 @@ and provides a trivial example of how to update Envoy’s configuration dynamica
 <div class="section" id="step-2-check-initial-config-and-web-response">
 <h2>Step 2: Check initial config and web response<a class="headerlink" href="#step-2-check-initial-config-and-web-response" title="Permalink to this headline">¶</a></h2>
 <p>As we have not yet started the control plane, nothing should be responding on port <code class="docutils literal notranslate"><span class="pre">10000</span></code>.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl http://localhost:10000
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl http://localhost:10000
 <span class="go">curl: (56) Recv failure: Connection reset by peer</span>
 </pre></div>
 </div>
 <p>Dump the proxy’s <a class="reference internal" href="../../api-v3/admin/v3/config_dump.proto.html#envoy-v3-api-field-admin-v3-clustersconfigdump-static-clusters"><span class="std std-ref">static_clusters</span></a>
 configuration and you should see the cluster named <code class="docutils literal notranslate"><span class="pre">xds_cluster</span></code> configured for the control plane:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:19000/config_dump  <span class="p">|</span> jq <span class="s1">&#39;.configs[1].static_clusters&#39;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl -s http://localhost:19000/config_dump  <span class="p">|</span> jq <span class="s1">&#39;.configs[1].static_clusters&#39;</span>
 </pre></div>
 </div>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
@@ -309,7 +309,7 @@ configuration and you should see the cluster named <code class="docutils literal
 </div>
 <p>No <a class="reference internal" href="../../api-v3/admin/v3/config_dump.proto.html#envoy-v3-api-field-admin-v3-clustersconfigdump-dynamic-active-clusters"><span class="std std-ref">dynamic_active_clusters</span></a>
 have been configured yet:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:19000/config_dump  <span class="p">|</span> jq <span class="s1">&#39;.configs[1].dynamic_active_clusters&#39;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl -s http://localhost:19000/config_dump  <span class="p">|</span> jq <span class="s1">&#39;.configs[1].dynamic_active_clusters&#39;</span>
 <span class="go">null</span>
 </pre></div>
 </div>
@@ -318,8 +318,8 @@ have been configured yet:</p>
 <h2>Step 3: Start the control plane<a class="headerlink" href="#step-3-start-the-control-plane" title="Permalink to this headline">¶</a></h2>
 <p>Start up the <code class="docutils literal notranslate"><span class="pre">go-control-plane</span></code> service.</p>
 <p>You may need to wait a moment or two for it to become <code class="docutils literal notranslate"><span class="pre">healthy</span></code>.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker-compose up --build -d go-control-plane
-<span class="gp">$</span> docker-compose ps
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker-compose up --build -d go-control-plane
+<span class="gp">$ </span>docker-compose ps
 
 <span class="go">        Name                                Command                  State                    Ports</span>
 <span class="go">-------------------------------------------------------------------------------------------------------------------------------------</span>
@@ -334,7 +334,7 @@ have been configured yet:</p>
 <h2>Step 4: Query the proxy<a class="headerlink" href="#step-4-query-the-proxy" title="Permalink to this headline">¶</a></h2>
 <p>Once the control plane has started and is <code class="docutils literal notranslate"><span class="pre">healthy</span></code>, you should be able to make a request to port <code class="docutils literal notranslate"><span class="pre">10000</span></code>,
 which will be served by <code class="docutils literal notranslate"><span class="pre">service1</span></code>.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl http://localhost:10000
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl http://localhost:10000
 <span class="go">Request served by service1</span>
 
 <span class="go">HTTP/1.1 GET /</span>
@@ -353,7 +353,7 @@ which will be served by <code class="docutils literal notranslate"><span class="
 <h2>Step 5: Dump Envoy’s <code class="docutils literal notranslate"><span class="pre">dynamic_active_clusters</span></code> config<a class="headerlink" href="#step-5-dump-envoy-s-dynamic-active-clusters-config" title="Permalink to this headline">¶</a></h2>
 <p>If you now dump the proxy’s <a class="reference internal" href="../../api-v3/admin/v3/config_dump.proto.html#envoy-v3-api-field-admin-v3-clustersconfigdump-dynamic-active-clusters"><span class="std std-ref">dynamic_active_clusters</span></a>
 configuration, you should see it is configured with the <code class="docutils literal notranslate"><span class="pre">example_proxy_cluster</span></code> pointing to <code class="docutils literal notranslate"><span class="pre">service1</span></code>, and a version of <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:19000/config_dump  <span class="p">|</span> jq <span class="s1">&#39;.configs[1].dynamic_active_clusters&#39;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl -s http://localhost:19000/config_dump  <span class="p">|</span> jq <span class="s1">&#39;.configs[1].dynamic_active_clusters&#39;</span>
 </pre></div>
 </div>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
@@ -394,11 +394,11 @@ configuration, you should see it is configured with the <code class="docutils li
 <div class="section" id="step-6-stop-the-control-plane">
 <h2>Step 6: Stop the control plane<a class="headerlink" href="#step-6-stop-the-control-plane" title="Permalink to this headline">¶</a></h2>
 <p>Stop the <code class="docutils literal notranslate"><span class="pre">go-control-plane</span></code> service:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker-compose stop go-control-plane
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker-compose stop go-control-plane
 </pre></div>
 </div>
 <p>The Envoy proxy should continue proxying responses from <code class="docutils literal notranslate"><span class="pre">service1</span></code>.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl http://localhost:10000 <span class="p">|</span> grep <span class="s2">&quot;served by&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl http://localhost:10000 <span class="p">|</span> grep <span class="s2">&quot;served by&quot;</span>
 <span class="go">Request served by service1</span>
 </pre></div>
 </div>
@@ -411,14 +411,14 @@ specifies the configuration provided to Envoy.</p>
 <p>Update this to have Envoy proxy instead to <code class="docutils literal notranslate"><span class="pre">service2</span></code>.</p>
 <p>Edit <code class="docutils literal notranslate"><span class="pre">resource.go</span></code> in the dynamic configuration example folder and change the <code class="docutils literal notranslate"><span class="pre">UpstreamHost</span></code>
 from <code class="docutils literal notranslate"><span class="pre">service1</span></code> to <code class="docutils literal notranslate"><span class="pre">service2</span></code>:</p>
-<div class="highlight-go notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>33
-34
-35
-36
-37
-38
-39
-40</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kd">const</span> <span class="p">(</span>
+<div class="highlight-go notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kd">const</span> <span class="p">(</span>
 	<span class="nx">ClusterName</span>  <span class="p">=</span> <span class="s">&quot;example_proxy_cluster&quot;</span>
 	<span class="nx">RouteName</span>    <span class="p">=</span> <span class="s">&quot;local_route&quot;</span>
 	<span class="nx">ListenerName</span> <span class="p">=</span> <span class="s">&quot;listener_0&quot;</span>
@@ -430,17 +430,17 @@ from <code class="docutils literal notranslate"><span class="pre">service1</span
 </td></tr></table></div>
 <p>Further down in this file you must also change the configuration snapshot version number from
 <code class="docutils literal notranslate"><span class="pre">&quot;1&quot;</span></code> to <code class="docutils literal notranslate"><span class="pre">&quot;2&quot;</span></code> to ensure Envoy sees the configuration as newer:</p>
-<div class="highlight-go notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>164
-165
-166
-167
-168
-169
-170
-171
-172
-173
-174</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">GenerateSnapshot</span><span class="p">()</span> <span class="nx">cache</span><span class="p">.</span><span class="nx">Snapshot</span> <span class="p">{</span>
+<div class="highlight-go notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">GenerateSnapshot</span><span class="p">()</span> <span class="nx">cache</span><span class="p">.</span><span class="nx">Snapshot</span> <span class="p">{</span>
 	<span class="k">return</span> <span class="nx">cache</span><span class="p">.</span><span class="nx">NewSnapshot</span><span class="p">(</span>
 <span class="hll">		<span class="s">&quot;1&quot;</span><span class="p">,</span>
 </span>		<span class="p">[]</span><span class="nx">types</span><span class="p">.</span><span class="nx">Resource</span><span class="p">{},</span> <span class="c1">// endpoints</span>
@@ -454,7 +454,7 @@ from <code class="docutils literal notranslate"><span class="pre">service1</span
 </pre></div>
 </td></tr></table></div>
 <p>Now rebuild and restart the control plane:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker-compose up --build -d go-control-plane
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker-compose up --build -d go-control-plane
 </pre></div>
 </div>
 <p>You may need to wait a moment or two for the <code class="docutils literal notranslate"><span class="pre">go-control-plane</span></code> service to become <code class="docutils literal notranslate"><span class="pre">healthy</span></code> again.</p>
@@ -462,14 +462,14 @@ from <code class="docutils literal notranslate"><span class="pre">service1</span
 <div class="section" id="step-8-check-envoy-uses-the-updated-configuration">
 <h2>Step 8: Check Envoy uses the updated configuration<a class="headerlink" href="#step-8-check-envoy-uses-the-updated-configuration" title="Permalink to this headline">¶</a></h2>
 <p>Now when you make a request to the proxy it should be served by the <code class="docutils literal notranslate"><span class="pre">service2</span></code> upstream service.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl http://localhost:10000 <span class="p">|</span> grep <span class="s2">&quot;served by&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl http://localhost:10000 <span class="p">|</span> grep <span class="s2">&quot;served by&quot;</span>
 <span class="go">Request served by service2</span>
 </pre></div>
 </div>
 <p>Dumping the <a class="reference internal" href="../../api-v3/admin/v3/config_dump.proto.html#envoy-v3-api-field-admin-v3-clustersconfigdump-dynamic-active-clusters"><span class="std std-ref">dynamic_active_clusters</span></a>
 you should see the cluster configuration now has a version of <code class="docutils literal notranslate"><span class="pre">2</span></code>, and <code class="docutils literal notranslate"><span class="pre">example_proxy_cluster</span></code>
 is configured to proxy to <code class="docutils literal notranslate"><span class="pre">service2</span></code>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:19000/config_dump  <span class="p">|</span> jq <span class="s1">&#39;.configs[1].dynamic_active_clusters&#39;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl -s http://localhost:19000/config_dump  <span class="p">|</span> jq <span class="s1">&#39;.configs[1].dynamic_active_clusters&#39;</span>
 </pre></div>
 </div>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>

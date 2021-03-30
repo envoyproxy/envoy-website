@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>PostgreSQL filter &mdash; envoy 1.18.0-dev-964e2a documentation</title>
+  <title>PostgreSQL filter &mdash; envoy 1.18.0-dev-4cce00 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-964e2a
+                1.18.0-dev-4cce00
               </div>
             
           
@@ -239,11 +239,11 @@ can be used with the Envoy proxy.</p>
 <h2>Step 1: Build the sandbox<a class="headerlink" href="#step-1-build-the-sandbox" title="Permalink to this headline">¶</a></h2>
 <p>Change to the <code class="docutils literal notranslate"><span class="pre">examples/postgres</span></code> directory.</p>
 <p>Build and start the containers.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">pwd</span>
 <span class="go">envoy/examples/postgres</span>
-<span class="gp">$</span> docker-compose pull
-<span class="gp">$</span> docker-compose up --build -d
-<span class="gp">$</span> docker-compose ps
+<span class="gp">$ </span>docker-compose pull
+<span class="gp">$ </span>docker-compose up --build -d
+<span class="gp">$ </span>docker-compose ps
 
 <span class="go">       Name                      Command             State                             Ports</span>
 <span class="go">----------------------------------------------------------------------------------------------------------------------</span>
@@ -258,7 +258,7 @@ can be used with the Envoy proxy.</p>
 verify they are routed via Envoy. Note that we should set the environment variable
 <code class="docutils literal notranslate"><span class="pre">PGSSLMODE=disable</span></code> to disable <code class="docutils literal notranslate"><span class="pre">SSL</span></code> because the current implementation of the
 filter can’t decode encrypted sessions.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> docker run --rm -it --network envoymesh -e <span class="nv">PGSSLMODE</span><span class="o">=</span>disable postgres:latest psql -U postgres -h proxy -p <span class="m">1999</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker run --rm -it --network envoymesh -e <span class="nv">PGSSLMODE</span><span class="o">=</span>disable postgres:latest psql -U postgres -h proxy -p <span class="m">1999</span>
 <span class="go">... snip ...</span>
 
 <span class="go">postgres=# CREATE DATABASE testdb;</span>
@@ -291,7 +291,7 @@ filter can’t decode encrypted sessions.</p>
 <div class="section" id="step-3-check-egress-stats">
 <h2>Step 3: Check egress stats<a class="headerlink" href="#step-3-check-egress-stats" title="Permalink to this headline">¶</a></h2>
 <p>Check egress stats were updated.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:8001/stats?filter<span class="o">=</span>egress_postgres
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl -s http://localhost:8001/stats?filter<span class="o">=</span>egress_postgres
 <span class="go">postgres.egress_postgres.errors: 1</span>
 <span class="go">postgres.egress_postgres.errors_error: 1</span>
 <span class="go">postgres.egress_postgres.errors_fatal: 0</span>
@@ -328,7 +328,7 @@ filter can’t decode encrypted sessions.</p>
 <div class="section" id="step-4-check-tcp-stats">
 <h2>Step 4: Check TCP stats<a class="headerlink" href="#step-4-check-tcp-stats" title="Permalink to this headline">¶</a></h2>
 <p>Check TCP stats were updated.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:8001/stats?filter<span class="o">=</span>postgres_tcp
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl -s http://localhost:8001/stats?filter<span class="o">=</span>postgres_tcp
 <span class="go">tcp.postgres_tcp.downstream_cx_no_route: 0</span>
 <span class="go">tcp.postgres_tcp.downstream_cx_rx_bytes_buffered: 0</span>
 <span class="go">tcp.postgres_tcp.downstream_cx_rx_bytes_total: 373</span>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Dynamic configuration (filesystem) &mdash; envoy 1.18.0-dev-964e2a documentation</title>
+  <title>Dynamic configuration (filesystem) &mdash; envoy 1.18.0-dev-4cce00 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-964e2a
+                1.18.0-dev-4cce00
               </div>
             
           
@@ -243,11 +243,11 @@ restarting the server.</p>
 <p>Change directory to <code class="docutils literal notranslate"><span class="pre">examples/dynamic-config-fs</span></code> in the Envoy repository.</p>
 <p>Build and start the containers.</p>
 <p>This should also start two upstream <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> echo servers, <code class="docutils literal notranslate"><span class="pre">service1</span></code> and <code class="docutils literal notranslate"><span class="pre">service2</span></code>.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">pwd</span>
 <span class="go">envoy/examples/dynamic-config-fs</span>
-<span class="gp">$</span> docker-compose build --pull
-<span class="gp">$</span> docker-compose up -d
-<span class="gp">$</span> docker-compose ps
+<span class="gp">$ </span>docker-compose build --pull
+<span class="gp">$ </span>docker-compose up -d
+<span class="gp">$ </span>docker-compose ps
 
 <span class="go">       Name                            Command                State                     Ports</span>
 <span class="go">------------------------------------------------------------------------------------------------------------------------</span>
@@ -260,7 +260,7 @@ restarting the server.</p>
 <div class="section" id="step-2-check-web-response">
 <h2>Step 2: Check web response<a class="headerlink" href="#step-2-check-web-response" title="Permalink to this headline">¶</a></h2>
 <p>You should be able to make a request to port <code class="docutils literal notranslate"><span class="pre">10000</span></code>, which will be served by <code class="docutils literal notranslate"><span class="pre">service1</span></code>.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:10000
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl -s http://localhost:10000
 <span class="go">Request served by service1</span>
 
 <span class="go">HTTP/2.0 GET /</span>
@@ -278,7 +278,7 @@ restarting the server.</p>
 <h2>Step 3: Dump Envoy’s <code class="docutils literal notranslate"><span class="pre">dynamic_active_clusters</span></code> config<a class="headerlink" href="#step-3-dump-envoy-s-dynamic-active-clusters-config" title="Permalink to this headline">¶</a></h2>
 <p>If you now dump the proxy’s <a class="reference internal" href="../../api-v3/admin/v3/config_dump.proto.html#envoy-v3-api-field-admin-v3-clustersconfigdump-dynamic-active-clusters"><span class="std std-ref">dynamic_active_clusters</span></a>
 configuration, you should see it is configured with the <code class="docutils literal notranslate"><span class="pre">example_proxy_cluster</span></code> pointing to <code class="docutils literal notranslate"><span class="pre">service1</span></code>.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:19000/config_dump <span class="p">|</span> jq -r <span class="s1">&#39;.configs[1].dynamic_active_clusters&#39;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl -s http://localhost:19000/config_dump <span class="p">|</span> jq -r <span class="s1">&#39;.configs[1].dynamic_active_clusters&#39;</span>
 </pre></div>
 </div>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
@@ -326,15 +326,15 @@ discovery service (LDS)</span></a>.</p></li>
 </ul>
 <p>Edit <code class="docutils literal notranslate"><span class="pre">cds.yaml</span></code> inside the container and change the cluster address
 from <code class="docutils literal notranslate"><span class="pre">service1</span></code> to <code class="docutils literal notranslate"><span class="pre">service2</span></code>:</p>
-<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 6
- 7
- 8
- 9
-10
-11
-12
-13
-14</pre></div></td><td class="code"><div class="highlight"><pre><span></span>  <span class="nt">load_assignment</span><span class="p">:</span>
+<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>  <span class="nt">load_assignment</span><span class="p">:</span>
     <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">example_proxy_cluster</span>
     <span class="nt">endpoints</span><span class="p">:</span>
     <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
@@ -353,13 +353,13 @@ from <code class="docutils literal notranslate"><span class="pre">service1</span
 <div class="section" id="step-5-check-envoy-uses-updated-configuration">
 <h2>Step 5: Check Envoy uses updated configuration<a class="headerlink" href="#step-5-check-envoy-uses-updated-configuration" title="Permalink to this headline">¶</a></h2>
 <p>Checking the web response again, the request should now be handled by <code class="docutils literal notranslate"><span class="pre">service2</span></code>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl http://localhost:10000 <span class="p">|</span> grep <span class="s2">&quot;served by&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl http://localhost:10000 <span class="p">|</span> grep <span class="s2">&quot;served by&quot;</span>
 <span class="go">Request served by service2</span>
 </pre></div>
 </div>
 <p>Dumping the <a class="reference internal" href="../../api-v3/admin/v3/config_dump.proto.html#envoy-v3-api-field-admin-v3-clustersconfigdump-dynamic-active-clusters"><span class="std std-ref">dynamic_active_clusters</span></a>,
 the <code class="docutils literal notranslate"><span class="pre">example_proxy_cluster</span></code> should now be configured to proxy to <code class="docutils literal notranslate"><span class="pre">service2</span></code>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -s http://localhost:19000/config_dump <span class="p">|</span> jq -r <span class="s1">&#39;.configs[1].dynamic_active_clusters&#39;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl -s http://localhost:19000/config_dump <span class="p">|</span> jq -r <span class="s1">&#39;.configs[1].dynamic_active_clusters&#39;</span>
 </pre></div>
 </div>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
