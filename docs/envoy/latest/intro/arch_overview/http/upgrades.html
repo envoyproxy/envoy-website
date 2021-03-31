@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>HTTP upgrades &mdash; envoy 1.18.0-dev-61a524 documentation</title>
+  <title>HTTP upgrades &mdash; envoy 1.18.0-dev-904ab0 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.18.0-dev-61a524
+                1.18.0-dev-904ab0
               </div>
             
           
@@ -221,7 +221,11 @@ pass through the default HTTP filter chain. To avoid the use of HTTP-only filter
 one can set up custom
 <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-upgradeconfig-filters"><span class="std std-ref">filters</span></a>
 for the given upgrade type, up to and including only using the router filter to send the HTTP
-data upstream.</p>
+data upstream. Note that buffering is generally not compatible with upgrades, so if the
+<a class="reference internal" href="../../../api-v3/extensions/filters/http/buffer/v3/buffer.proto.html#envoy-v3-api-msg-extensions-filters-http-buffer-v3-buffer"><span class="std std-ref">Buffer filter</span></a> is configured in
+the default HTTP filter chain it should probably be excluded for upgrades by using
+<a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-upgradeconfig-filters"><span class="std std-ref">upgrade filters</span></a>
+and not including the buffer filter in that list.</p>
 <p>Upgrades can be enabled or disabled on a <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-upgrade-configs"><span class="std std-ref">per-route</span></a> basis.
 Any per-route enabling/disabling automatically overrides HttpConnectionManager configuration as
 laid out below, but custom filter chains can only be configured on a per-HttpConnectionManager basis.</p>
@@ -306,8 +310,8 @@ will synthesize 200 response headers, and then forward the TCP data as the HTTP 
 <p>This mode of CONNECT support can create major security holes if not configured correctly, as the upstream
 will be forwarded <em>unsanitized</em> headers if they are in the body payload. Please use with caution</p>
 </div>
-<p>For an example of proxying connect, please see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/61a524c689236adb8f4f7fae7faf40aa04679385/configs/proxy_connect.yaml">configs/proxy_connect.yaml</a>
-For an example of terminating connect, please see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/61a524c689236adb8f4f7fae7faf40aa04679385/configs/terminate_connect.yaml">configs/terminate_connect.yaml</a></p>
+<p>For an example of proxying connect, please see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/904ab015cd1eb7aa405f1ab8742bdaa5c4e49151/configs/proxy_connect.yaml">configs/proxy_connect.yaml</a>
+For an example of terminating connect, please see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/904ab015cd1eb7aa405f1ab8742bdaa5c4e49151/configs/terminate_connect.yaml">configs/terminate_connect.yaml</a></p>
 <p>Note that for CONNECT-over-tls, Envoy can not currently be configured to do the CONNECT request in the clear
 and encrypt previously unencrypted payload in one hop. To send CONNECT in plaintext and encrypt the payload,
 one must first forward the HTTP payload over an “upstream” TLS loopback connection to encrypt it, then have
@@ -331,7 +335,7 @@ HTTP/2 when you have the choice.</p>
 <p>HTTP POST can also be used to proxy multiplexed TCP when intermediate proxies that don’t support
 CONNECT. An example set up proxying HTTP would look something like this:</p>
 <p>[TCP Server] — raw TCP — [L2 Envoy]  — TCP tunneled over HTTP/2 or HTTP/1.1 POST — [Intermidate Proxies] — HTTP/2 or HTTP/1.1 POST — [L1 Envoy]  — raw TCP  — [TCP Client]</p>
-<p>Examples of such a set up can be found in the Envoy example config <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/61a524c689236adb8f4f7fae7faf40aa04679385/configs/">directory</a>
+<p>Examples of such a set up can be found in the Envoy example config <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/904ab015cd1eb7aa405f1ab8742bdaa5c4e49151/configs/">directory</a>
 For HTTP/1.1 CONNECT run <cite>bazel-bin/source/exe/envoy-static –config-path configs/encapsulate_in_http1_connect.yaml –base-id 1</cite>
 and <cite>bazel-bin/source/exe/envoy-static –config-path configs/terminate_http1_connect.yaml</cite>.
 For HTTP/2 CONNECT run <cite>bazel-bin/source/exe/envoy-static –config-path configs/encapsulate_in_http2_connect.yaml –base-id 1</cite>
