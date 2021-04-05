@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Matching API &mdash; envoy 1.18.0-dev-fad0ee documentation</title>
+  <title>Matching API &mdash; envoy 1.18.0-dev-afb751 documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.18.0-dev-fad0ee
+                1.18.0-dev-afb751
               </div>
             
           
@@ -405,7 +405,7 @@ the filter if <cite>some-header: skip_filter</cite> is present and <cite>second-
 <cite>bar</cite>.</p>
 </div>
 <div class="section" id="http-filter-iteration-impact">
-<h1>HTTP Filter Iteration Impact<a class="headerlink" href="#http-filter-iteration-impact" title="Permalink to this headline">¶</a></h1>
+<span id="arch-overview-matching-api-iteration-impact"></span><h1>HTTP Filter Iteration Impact<a class="headerlink" href="#http-filter-iteration-impact" title="Permalink to this headline">¶</a></h1>
 <p>The above example only demonstrates matching on request headers, which ends up being the simplest
 case due to it happening before the associated filter receives any data. Matching on other HTTP
 input sources is supported (e.g. response headers), but some discussion is warranted on how this
@@ -427,6 +427,104 @@ receives a gRPC request), but the response is never converted back to gRPC-Web. 
 client will receive an invalid response back from Envoy. If the skip action was instead resolved on
 trailers, the same gRPC-Web filter would consume all the data but never write it back out (as this
 happens when it sees the trailers), resulting in a gRPC-Web response with an empty body.</p>
+</div>
+<div class="section" id="match-tree-validation">
+<h1>Match Tree Validation<a class="headerlink" href="#match-tree-validation" title="Permalink to this headline">¶</a></h1>
+<p>As the match tree structure is very flexible, some filters might need to impose additional restrictions
+on what kind of match trees can be used. This system is somewhat inflexible at the moment, only supporting
+limiting the input sources to a specific set. For example, a filter might specify that it only works with
+request headers: in this case a match tree that attempts to match on request trailers or response headers
+will fail during configuration load, reporting back which data input was invalid.</p>
+<p>This is done for example to limit the issues talked about in
+<a class="reference internal" href="#arch-overview-matching-api-iteration-impact"><span class="std std-ref">the above section</span></a> or to help users understand in what
+context a match tree can be used for a specific filter. Due to the limitations of the validations framework
+at the current time, it is not used for all filters.</p>
+<p>For HTTP filters, the restrictions are specified by the filter implementation, so consult the individual
+filter documentation to understand whether there are restrictions in place.</p>
+<p>For example, in the example below, the match tree could not be used with a filter that restricts the the
+match tree to only use
+<a class="reference internal" href="../../../../api-v3/type/matcher/v3/http_inputs.proto.html#envoy-v3-api-msg-type-matcher-v3-httprequestheadermatchinput"><span class="std std-ref">HttpRequestHeaderMatchInput</span></a>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">static_resources</span><span class="p">:</span>
+  <span class="nt">listeners</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">address</span><span class="p">:</span>
+        <span class="nt">socket_address</span><span class="p">:</span>
+          <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.0.0.0</span>
+          <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">443</span>
+      <span class="nt">listener_filters</span><span class="p">:</span>
+      <span class="nt">filter_chains</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="nt">filters</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.network.http_connection_manager</span>
+              <span class="nt">typed_config</span><span class="p">:</span>
+                <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager</span>
+                <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ingress_http</span>
+                <span class="nt">http_filters</span><span class="p">:</span>
+                  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">with-matcher</span>
+                    <span class="nt">typed_config</span><span class="p">:</span>
+                      <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.common.matching.v3.ExtensionWithMatcher</span>
+                      <span class="nt">extension_config</span><span class="p">:</span>
+                        <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.fault</span>
+                        <span class="nt">typed_config</span><span class="p">:</span>
+                          <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.fault.v3.HTTPFault</span>
+                          <span class="nt">abort</span><span class="p">:</span>
+                            <span class="nt">http_status</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">503</span>
+                            <span class="nt">percentage</span><span class="p">:</span>
+                              <span class="nt">numerator</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+                              <span class="nt">denominator</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">HUNDRED</span>
+                          <span class="nt">delay</span><span class="p">:</span>
+                            <span class="nt">fixed_delay</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3s</span>
+                            <span class="nt">percentage</span><span class="p">:</span>
+                              <span class="nt">numerator</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+                              <span class="nt">denominator</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">HUNDRED</span>
+                      <span class="nt">matcher</span><span class="p">:</span>
+                        <span class="nt">matcher_list</span><span class="p">:</span>
+                          <span class="nt">matchers</span><span class="p">:</span>
+                            <span class="p p-Indicator">-</span> <span class="nt">predicate</span><span class="p">:</span>
+                                <span class="nt">or_matcher</span><span class="p">:</span>
+                                  <span class="nt">predicate</span><span class="p">:</span>
+                                    <span class="p p-Indicator">-</span> <span class="nt">single_predicate</span><span class="p">:</span>
+                                        <span class="nt">input</span><span class="p">:</span>
+                                          <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">request-headers</span>
+                                          <span class="nt">typed_config</span><span class="p">:</span>
+                                            <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.type.matcher.v3.HttpRequestHeaderMatchInput</span>
+                                            <span class="nt">header_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">request-header</span>
+                                        <span class="nt">value_match</span><span class="p">:</span>
+                                          <span class="nt">exact</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">foo</span>
+                                    <span class="p p-Indicator">-</span> <span class="nt">single_predicate</span><span class="p">:</span>
+                                        <span class="nt">input</span><span class="p">:</span>
+                                          <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">request-headers</span>
+                                          <span class="nt">typed_config</span><span class="p">:</span>
+                                            <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.type.matcher.v3.HttpResponseHeaderMatchInput</span>
+                                            <span class="nt">header_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">response-header</span>
+                                        <span class="nt">value_match</span><span class="p">:</span>
+                                          <span class="nt">exact</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">bar</span>
+                              <span class="nt">on_match</span><span class="p">:</span>
+                                <span class="nt">action</span><span class="p">:</span>
+                                  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">skip</span>
+                                  <span class="nt">typed_config</span><span class="p">:</span>
+                                    <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.common.matcher.action.v3.SkipFilter</span>
+                  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.router</span>
+                <span class="nt">route_config</span><span class="p">:</span>
+                  <span class="nt">virtual_hosts</span><span class="p">:</span>
+                    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
+                      <span class="nt">domains</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;*&quot;</span><span class="p p-Indicator">]</span>
+                      <span class="nt">routes</span><span class="p">:</span>
+                        <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> prefix</span><span class="p">:</span> <span class="s">&quot;/&quot;</span> <span class="p p-Indicator">}</span>
+                          <span class="nt">route</span><span class="p">:</span>
+                            <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service_foo</span>
+  <span class="nt">clusters</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service_foo</span>
+      <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">15s</span>
+      <span class="nt">load_assignment</span><span class="p">:</span>
+        <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">some_service</span>
+        <span class="nt">endpoints</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
+              <span class="p p-Indicator">-</span> <span class="nt">endpoint</span><span class="p">:</span>
+                  <span class="nt">address</span><span class="p">:</span>
+                    <span class="nt">socket_address</span><span class="p">:</span>
+                      <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span>
+                      <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8080</span>
+</pre></div>
+</div>
 </div>
 
 
