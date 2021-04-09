@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>HTTP connection management &mdash; envoy 1.18.0-dev-7ba63a documentation</title>
+  <title>HTTP connection management &mdash; envoy 1.18.0-dev-9c6a44 documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.18.0-dev-7ba63a
+                1.18.0-dev-9c6a44
               </div>
             
           
@@ -328,18 +328,24 @@ previously attempted priorities.</p>
 <span id="arch-overview-internal-redirects"></span><h2>Internal redirects<a class="headerlink" href="#internal-redirects" title="Permalink to this headline">¶</a></h2>
 <p>Envoy supports handling 3xx redirects internally, that is capturing a configurable 3xx redirect
 response, synthesizing a new request, sending it to the upstream specified by the new route match,
-and returning the redirected response as the response to the original request.</p>
+and returning the redirected response as the response to the original request. The headers and body
+of the original request will be sent in the redirect to the new location. Trailers are not yet
+supported.</p>
 <p>Internal redirects are configured via the <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-internal-redirect-policy"><span class="std std-ref">internal redirect policy</span></a> field in route configuration.
 When redirect handling is on, any 3xx response from upstream, that matches
 <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-internalredirectpolicy-redirect-response-codes"><span class="std std-ref">redirect_response_codes</span></a>
 is subject to the redirect being handled by Envoy.</p>
+<p>If Envoy is configured to internally redirect HTTP 303 and receives an HTTP 303 response, it will
+dispatch the redirect with a bodiless HTTP GET if the original request was not a GET or HEAD
+request. Otherwise, Envoy will preserve the original HTTP method. For more information, see <a class="reference external" href="https://tools.ietf.org/html/rfc7231#section-6.4.4">RFC
+7231 Section 6.4.4</a>.</p>
 <p>For a redirect to be handled successfully it must pass the following checks:</p>
 <ol class="arabic simple">
 <li><p>Have a response code matching one of <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-internalredirectpolicy-redirect-response-codes"><span class="std std-ref">redirect_response_codes</span></a>, which is
 either 302 (by default), or a set of 3xx codes (301, 302, 303, 307, 308).</p></li>
 <li><p>Have a <em>location</em> header with a valid, fully qualified URL.</p></li>
 <li><p>The request must have been fully processed by Envoy.</p></li>
-<li><p>The request must not have a body.</p></li>
+<li><p>The request must be smaller than the <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-route-per-request-buffer-limit-bytes"><span class="std std-ref">per_request_buffer_limit_bytes</span></a> limit.</p></li>
 <li><p><a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-internalredirectpolicy-allow-cross-scheme-redirect"><span class="std std-ref">allow_cross_scheme_redirect</span></a> is true (default to false),
 or the scheme of the downstream request and the <em>location</em> header are the same.</p></li>
 <li><p>The number of previously handled internal redirect within a given downstream request does not
