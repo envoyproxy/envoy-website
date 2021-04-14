@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>HTTP filters &mdash; envoy 1.18.0-dev-55002f documentation</title>
+  <title>HTTP filters &mdash; envoy 1.18.0-dev-d31ba2 documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.18.0-dev-55002f
+                1.18.0-dev-d31ba2
               </div>
             
           
@@ -248,18 +248,24 @@ decoder/encoder filters):</p>
 On the other hand, the connection manager will invoke encoder filters in the <strong>reverse</strong>
 order: <code class="docutils literal notranslate"><span class="pre">C</span></code>, <code class="docutils literal notranslate"><span class="pre">B</span></code>, <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p>
 </div>
+<div class="section" id="conditional-filter-configuration">
+<h2>Conditional Filter Configuration<a class="headerlink" href="#conditional-filter-configuration" title="Permalink to this headline">¶</a></h2>
+<p>There is some support for having the filter configuration used change based on the incoming
+request. See the <a class="reference internal" href="../../../configuration/http/http_filters/composite_filter.html#config-http-filters-composite"><span class="std std-ref">composite filter</span></a> for details on how to
+configure a match tree that can resolve filter configuration to use for a given request.</p>
+</div>
 <div class="section" id="filter-route-mutation">
 <span id="arch-overview-http-filters-route-mutation"></span><h2>Filter route mutation<a class="headerlink" href="#filter-route-mutation" title="Permalink to this headline">¶</a></h2>
 <p>During HTTP filter chain processing, when <code class="docutils literal notranslate"><span class="pre">decodeHeaders()</span></code> is invoked by a filter, the
 connection manager performs route resolution and sets a <em>cached route</em> pointing to an upstream
 cluster.</p>
 <p>Filters have the capability to directly mutate this <em>cached route</em> after route resolution, via the
-<code class="docutils literal notranslate"><span class="pre">setRoute</span></code> callback and <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/55002fae5389f2e0f6207122cc16118df96bc3ac/source/common/router/delegating_route_impl.h">DelegatingRoute</a>
+<code class="docutils literal notranslate"><span class="pre">setRoute</span></code> callback and <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/d31ba23d494c310973ceaf1e053393697821e4d3/source/common/router/delegating_route_impl.h">DelegatingRoute</a>
 mechanism. A filter may create a derived/child class of <code class="docutils literal notranslate"><span class="pre">DelegatingRoute</span></code> to override specific
 methods (for example, the route’s timeout value or the route entry’s cluster name) while preserving
 the rest of the properties/behavior of the base route that the <code class="docutils literal notranslate"><span class="pre">DelegatingRoute</span></code> wraps around.
 Then, <code class="docutils literal notranslate"><span class="pre">setRoute</span></code> can be invoked to manually set the cached route to this <code class="docutils literal notranslate"><span class="pre">DelegatingRoute</span></code>
-instance. An example of such a derived class can be found in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/55002fae5389f2e0f6207122cc16118df96bc3ac/test/test_common/delegating_route_utility.h">ExampleDerivedDelegatingRoute</a>.</p>
+instance. An example of such a derived class can be found in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/d31ba23d494c310973ceaf1e053393697821e4d3/test/test_common/delegating_route_utility.h">ExampleDerivedDelegatingRoute</a>.</p>
 <p>If no other filters in the chain modify the cached route selection (for example, a common operation
 that filters do is <code class="docutils literal notranslate"><span class="pre">clearRouteCache()</span></code>, and <code class="docutils literal notranslate"><span class="pre">setRoute</span></code> will not survive that), this route
 selection makes it way to the router filter which finalizes the upstream cluster that the request
