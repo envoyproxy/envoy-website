@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Wasm service &mdash; envoy 1.18.0-dev-96573e documentation</title>
+  <title>Wasm service &mdash; envoy 1.18.0-dev-432cc0 documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.18.0-dev-96573e
+                1.18.0-dev-432cc0
               </div>
             
           
@@ -202,16 +202,24 @@
 <p>The <a class="reference internal" href="../../api-v3/extensions/wasm/v3/wasm.proto.html#envoy-v3-api-msg-extensions-wasm-v3-wasmservice"><span class="std std-ref">WasmService</span></a> configuration specifies a
 singleton or per-worker Wasm service for background or on-demand activities.</p>
 <p>Example plugin configuration:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">wasm</span><span class="p">:</span>
-  <span class="nt">config</span><span class="p">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">bootstrap_extensions</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.bootstrap.wasm</span>
+  <span class="nt">typed_config</span><span class="p">:</span>
+    <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.wasm.v3.WasmService</span>
+    <span class="nt">singleton</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
     <span class="nt">config</span><span class="p">:</span>
       <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;my_plugin&quot;</span>
+      <span class="nt">configuration</span><span class="p">:</span>
+        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/google.protobuf.StringValue</span>
+        <span class="nt">value</span><span class="p">:</span> <span class="p p-Indicator">|</span>
+          <span class="no">{</span>
+            <span class="no">&quot;my_config_value&quot;: &quot;my_value&quot;</span>
+          <span class="no">}</span>
       <span class="nt">vm_config</span><span class="p">:</span>
         <span class="nt">runtime</span><span class="p">:</span> <span class="s">&quot;envoy.wasm.runtime.v8&quot;</span>
         <span class="nt">code</span><span class="p">:</span>
           <span class="nt">local</span><span class="p">:</span>
             <span class="nt">filename</span><span class="p">:</span> <span class="s">&quot;/etc/envoy_filter_http_wasm_example.wasm&quot;</span>
-    <span class="nt">singleton</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 </pre></div>
 </div>
 <p>The preceding snippet configures a plugin singleton service from a Wasm binary on local disk.</p>
