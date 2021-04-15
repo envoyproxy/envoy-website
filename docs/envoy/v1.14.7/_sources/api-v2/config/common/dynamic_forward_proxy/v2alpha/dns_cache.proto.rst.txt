@@ -1,0 +1,97 @@
+.. _envoy_api_file_envoy/config/common/dynamic_forward_proxy/v2alpha/dns_cache.proto:
+
+Dynamic forward proxy common configuration
+==========================================
+
+
+.. _envoy_api_msg_config.common.dynamic_forward_proxy.v2alpha.DnsCacheConfig:
+
+config.common.dynamic_forward_proxy.v2alpha.DnsCacheConfig
+----------------------------------------------------------
+
+`[config.common.dynamic_forward_proxy.v2alpha.DnsCacheConfig proto] <https://github.com/envoyproxy/envoy/blob/v1.14.7/api/envoy/config/common/dynamic_forward_proxy/v2alpha/dns_cache.proto#L25>`_
+
+Configuration for the dynamic forward proxy DNS cache. See the :ref:`architecture overview
+<arch_overview_http_dynamic_forward_proxy>` for more information.
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "dns_lookup_family": "...",
+    "dns_refresh_rate": "{...}",
+    "host_ttl": "{...}",
+    "max_hosts": "{...}",
+    "dns_failure_refresh_rate": "{...}"
+  }
+
+.. _envoy_api_field_config.common.dynamic_forward_proxy.v2alpha.DnsCacheConfig.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The name of the cache. Multiple named caches allow independent dynamic forward proxy
+  configurations to operate within a single Envoy process using different configurations. All
+  configurations with the same name *must* otherwise have the same settings when referenced
+  from different configuration components. Configuration will fail to load if this is not
+  the case.
+  
+  
+.. _envoy_api_field_config.common.dynamic_forward_proxy.v2alpha.DnsCacheConfig.dns_lookup_family:
+
+dns_lookup_family
+  (:ref:`Cluster.DnsLookupFamily <envoy_api_enum_Cluster.DnsLookupFamily>`) The DNS lookup family to use during resolution.
+  
+  
+  
+.. _envoy_api_field_config.common.dynamic_forward_proxy.v2alpha.DnsCacheConfig.dns_refresh_rate:
+
+dns_refresh_rate
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The DNS refresh rate for currently cached DNS hosts. If not specified defaults to 60s.
+  
+  .. note:
+  
+   The returned DNS TTL is not currently used to alter the refresh rate. This feature will be
+   added in a future change.
+  
+  .. note:
+  
+  The refresh rate is rounded to the closest millisecond, and must be at least 1ms.
+  
+  
+.. _envoy_api_field_config.common.dynamic_forward_proxy.v2alpha.DnsCacheConfig.host_ttl:
+
+host_ttl
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The TTL for hosts that are unused. Hosts that have not been used in the configured time
+  interval will be purged. If not specified defaults to 5m.
+  
+  .. note:
+  
+    The TTL is only checked at the time of DNS refresh, as specified by *dns_refresh_rate*. This
+    means that if the configured TTL is shorter than the refresh rate the host may not be removed
+    immediately.
+  
+   .. note:
+  
+    The TTL has no relation to DNS TTL and is only used to control Envoy's resource usage.
+  
+  
+.. _envoy_api_field_config.common.dynamic_forward_proxy.v2alpha.DnsCacheConfig.max_hosts:
+
+max_hosts
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The maximum number of hosts that the cache will hold. If not specified defaults to 1024.
+  
+  .. note:
+  
+    The implementation is approximate and enforced independently on each worker thread, thus
+    it is possible for the maximum hosts in the cache to go slightly above the configured
+    value depending on timing. This is similar to how other circuit breakers work.
+  
+  
+.. _envoy_api_field_config.common.dynamic_forward_proxy.v2alpha.DnsCacheConfig.dns_failure_refresh_rate:
+
+dns_failure_refresh_rate
+  (:ref:`Cluster.RefreshRate <envoy_api_msg_Cluster.RefreshRate>`) If the DNS failure refresh rate is specified,
+  this is used as the cache's DNS refresh rate when DNS requests are failing. If this setting is
+  not specified, the failure refresh rate defaults to the dns_refresh_rate.
+  
+  
+
