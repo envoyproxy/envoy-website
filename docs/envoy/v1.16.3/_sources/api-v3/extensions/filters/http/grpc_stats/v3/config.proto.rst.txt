@@ -1,0 +1,122 @@
+.. _envoy_v3_api_file_envoy/extensions/filters/http/grpc_stats/v3/config.proto:
+
+gRPC statistics
+===============
+
+.. _extension_envoy.filters.http.grpc_stats:
+
+
+This extension may be referenced by the qualified name *envoy.filters.http.grpc_stats*
+
+.. note::
+  This extension is functional but has not had substantial production burn time, use only with this caveat.
+
+  This extension has an unknown security posture and should only be used in deployments where both the downstream and upstream are trusted.
+
+gRPC statistics filter
+:ref:`configuration overview <config_http_filters_grpc_stats>`.
+
+.. _envoy_v3_api_msg_extensions.filters.http.grpc_stats.v3.FilterConfig:
+
+extensions.filters.http.grpc_stats.v3.FilterConfig
+--------------------------------------------------
+
+`[extensions.filters.http.grpc_stats.v3.FilterConfig proto] <https://github.com/envoyproxy/envoy/blob/v1.16.3/api/envoy/extensions/filters/http/grpc_stats/v3/config.proto#L22>`_
+
+gRPC statistics filter configuration
+
+.. code-block:: json
+
+  {
+    "emit_filter_state": "...",
+    "individual_method_stats_allowlist": "{...}",
+    "stats_for_all_methods": "{...}",
+    "enable_upstream_stats": "..."
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.grpc_stats.v3.FilterConfig.emit_filter_state:
+
+emit_filter_state
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If true, the filter maintains a filter state object with the request and response message
+  counts.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.grpc_stats.v3.FilterConfig.individual_method_stats_allowlist:
+
+individual_method_stats_allowlist
+  (:ref:`config.core.v3.GrpcMethodList <envoy_v3_api_msg_config.core.v3.GrpcMethodList>`) If set, specifies an allowlist of service/methods that will have individual stats
+  emitted for them. Any call that does not match the allowlist will be counted
+  in a stat with no method specifier: `cluster.<name>.grpc.*`.
+  
+  
+  
+  Only one of :ref:`individual_method_stats_allowlist <envoy_v3_api_field_extensions.filters.http.grpc_stats.v3.FilterConfig.individual_method_stats_allowlist>`, :ref:`stats_for_all_methods <envoy_v3_api_field_extensions.filters.http.grpc_stats.v3.FilterConfig.stats_for_all_methods>` may be set.
+  
+.. _envoy_v3_api_field_extensions.filters.http.grpc_stats.v3.FilterConfig.stats_for_all_methods:
+
+stats_for_all_methods
+  (`BoolValue <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue>`_) If set to true, emit stats for all service/method names.
+  
+  If set to false, emit stats for all service/message types to the same stats without including
+  the service/method in the name, with prefix `cluster.<name>.grpc`. This can be useful if
+  service/method granularity is not needed, or if each cluster only receives a single method.
+  
+  .. attention::
+    This option is only safe if all clients are trusted. If this option is enabled
+    with untrusted clients, the clients could cause unbounded growth in the number of stats in
+    Envoy, using unbounded memory and potentially slowing down stats pipelines.
+  
+  .. attention::
+    If neither `individual_method_stats_allowlist` nor `stats_for_all_methods` is set, the
+    behavior will default to `stats_for_all_methods=true`. This default value is deprecated,
+    and in a future release, if neither field is set, it will default to
+    `stats_for_all_methods=false` in order to be safe by default. This behavior can be
+    controlled with runtime override
+    `envoy.deprecated_features.grpc_stats_filter_enable_stats_for_all_methods_by_default`.
+  
+  
+  
+  Only one of :ref:`individual_method_stats_allowlist <envoy_v3_api_field_extensions.filters.http.grpc_stats.v3.FilterConfig.individual_method_stats_allowlist>`, :ref:`stats_for_all_methods <envoy_v3_api_field_extensions.filters.http.grpc_stats.v3.FilterConfig.stats_for_all_methods>` may be set.
+  
+.. _envoy_v3_api_field_extensions.filters.http.grpc_stats.v3.FilterConfig.enable_upstream_stats:
+
+enable_upstream_stats
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If true, the filter will gather a histogram for the request time of the upstream.
+  It works with :ref:`stats_for_all_methods
+  <envoy_v3_api_field_extensions.filters.http.grpc_stats.v3.FilterConfig.stats_for_all_methods>`
+  and :ref:`individual_method_stats_allowlist
+  <envoy_v3_api_field_extensions.filters.http.grpc_stats.v3.FilterConfig.individual_method_stats_allowlist>` the same way
+  request_message_count and response_message_count works.
+  
+  
+
+
+.. _envoy_v3_api_msg_extensions.filters.http.grpc_stats.v3.FilterObject:
+
+extensions.filters.http.grpc_stats.v3.FilterObject
+--------------------------------------------------
+
+`[extensions.filters.http.grpc_stats.v3.FilterObject proto] <https://github.com/envoyproxy/envoy/blob/v1.16.3/api/envoy/extensions/filters/http/grpc_stats/v3/config.proto#L67>`_
+
+gRPC statistics filter state object in protobuf form.
+
+.. code-block:: json
+
+  {
+    "request_message_count": "...",
+    "response_message_count": "..."
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.grpc_stats.v3.FilterObject.request_message_count:
+
+request_message_count
+  (`uint64 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Count of request messages in the request stream.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.grpc_stats.v3.FilterObject.response_message_count:
+
+response_message_count
+  (`uint64 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Count of response messages in the response stream.
+  
+  
+
