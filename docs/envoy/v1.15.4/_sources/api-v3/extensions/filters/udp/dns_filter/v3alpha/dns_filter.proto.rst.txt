@@ -1,0 +1,145 @@
+.. _envoy_v3_api_file_envoy/extensions/filters/udp/dns_filter/v3alpha/dns_filter.proto:
+
+DNS Filter
+==========
+
+.. _extension_envoy.filters.udp_listener.dns_filter:
+
+
+This extension may be referenced by the qualified name *envoy.filters.udp_listener.dns_filter*
+
+.. note::
+  This extension is functional but has not had substantial production burn time, use only with this caveat.
+
+  This extension is intended to be robust against untrusted downstream traffic. It assumes that the upstream is trusted.
+
+.. warning::
+   This API is work-in-progress and is subject to breaking changes.
+
+DNS Filter :ref:`configuration overview <config_udp_listener_filters_dns_filter>`.
+
+.. _envoy_v3_api_msg_extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig:
+
+extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig
+---------------------------------------------------------
+
+`[extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig proto] <https://github.com/envoyproxy/envoy/blob/v1.15.4/api/envoy/extensions/filters/udp/dns_filter/v3alpha/dns_filter.proto#L24>`_
+
+Configuration for the DNS filter.
+
+.. code-block:: json
+
+  {
+    "stat_prefix": "...",
+    "server_config": "{...}",
+    "client_config": "{...}"
+  }
+
+.. _envoy_v3_api_field_extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.stat_prefix:
+
+stat_prefix
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The stat prefix used when emitting DNS filter statistics
+  
+  
+.. _envoy_v3_api_field_extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.server_config:
+
+server_config
+  (:ref:`extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.ServerContextConfig <envoy_v3_api_msg_extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.ServerContextConfig>`) Server context configuration contains the data that the filter uses to respond
+  to DNS requests.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.client_config:
+
+client_config
+  (:ref:`extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.ClientContextConfig <envoy_v3_api_msg_extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.ClientContextConfig>`) Client context configuration controls Envoy's behavior when it must use external
+  resolvers to answer a query. This object is optional and if omitted instructs
+  the filter to resolve queries from the data in the server_config
+  
+  
+.. _envoy_v3_api_msg_extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.ServerContextConfig:
+
+extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.ServerContextConfig
+-----------------------------------------------------------------------------
+
+`[extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.ServerContextConfig proto] <https://github.com/envoyproxy/envoy/blob/v1.15.4/api/envoy/extensions/filters/udp/dns_filter/v3alpha/dns_filter.proto#L28>`_
+
+This message contains the configuration for the DNS Filter operating
+in a server context. This message will contain the virtual hosts and
+associated addresses with which Envoy will respond to queries
+
+.. code-block:: json
+
+  {
+    "inline_dns_table": "{...}",
+    "external_dns_table": "{...}"
+  }
+
+.. _envoy_v3_api_field_extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.ServerContextConfig.inline_dns_table:
+
+inline_dns_table
+  (:ref:`data.dns.v3.DnsTable <envoy_v3_api_msg_data.dns.v3.DnsTable>`) Load the configuration specified from the control plane
+  
+  
+  
+  Precisely one of :ref:`inline_dns_table <envoy_v3_api_field_extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.ServerContextConfig.inline_dns_table>`, :ref:`external_dns_table <envoy_v3_api_field_extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.ServerContextConfig.external_dns_table>` must be set.
+  
+.. _envoy_v3_api_field_extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.ServerContextConfig.external_dns_table:
+
+external_dns_table
+  (:ref:`config.core.v3.DataSource <envoy_v3_api_msg_config.core.v3.DataSource>`) Seed the filter configuration from an external path. This source
+  is a yaml formatted file that contains the DnsTable driving Envoy's
+  responses to DNS queries
+  
+  
+  
+  Precisely one of :ref:`inline_dns_table <envoy_v3_api_field_extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.ServerContextConfig.inline_dns_table>`, :ref:`external_dns_table <envoy_v3_api_field_extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.ServerContextConfig.external_dns_table>` must be set.
+  
+
+
+.. _envoy_v3_api_msg_extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.ClientContextConfig:
+
+extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.ClientContextConfig
+-----------------------------------------------------------------------------
+
+`[extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.ClientContextConfig proto] <https://github.com/envoyproxy/envoy/blob/v1.15.4/api/envoy/extensions/filters/udp/dns_filter/v3alpha/dns_filter.proto#L46>`_
+
+This message contains the configuration for the DNS Filter operating
+in a client context. This message will contain the timeouts, retry,
+and forwarding configuration for Envoy to make DNS requests to other
+resolvers
+
+.. code-block:: json
+
+  {
+    "resolver_timeout": "{...}",
+    "upstream_resolvers": [],
+    "max_pending_lookups": "..."
+  }
+
+.. _envoy_v3_api_field_extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.ClientContextConfig.resolver_timeout:
+
+resolver_timeout
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) Sets the maximum time we will wait for the upstream query to complete
+  We allow 5s for the upstream resolution to complete, so the minimum
+  value here is 1. Note that the total latency for a failed query is the
+  number of retries multiplied by the resolver_timeout.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.ClientContextConfig.upstream_resolvers:
+
+upstream_resolvers
+  (:ref:`config.core.v3.Address <envoy_v3_api_msg_config.core.v3.Address>`) A list of DNS servers to which we can forward queries. If not
+  specified, Envoy will use the ambient DNS resolvers in the
+  system.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.udp.dns_filter.v3alpha.DnsFilterConfig.ClientContextConfig.max_pending_lookups:
+
+max_pending_lookups
+  (`uint64 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Controls how many outstanding external lookup contexts the filter tracks.
+  The context structure allows the filter to respond to every query even if the external
+  resolution times out or is otherwise unsuccessful
+  
+  
+
+

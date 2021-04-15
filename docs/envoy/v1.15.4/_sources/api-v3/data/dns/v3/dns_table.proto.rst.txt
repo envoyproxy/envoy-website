@@ -1,0 +1,144 @@
+.. _envoy_v3_api_file_envoy/data/dns/v3/dns_table.proto:
+
+DNS Filter Table Data
+=====================
+
+:ref:`DNS Filter config overview <config_udp_listener_filters_dns_filter>`.
+
+.. _envoy_v3_api_msg_data.dns.v3.DnsTable:
+
+data.dns.v3.DnsTable
+--------------------
+
+`[data.dns.v3.DnsTable proto] <https://github.com/envoyproxy/envoy/blob/v1.15.4/api/envoy/data/dns/v3/dns_table.proto#L22>`_
+
+This message contains the configuration for the DNS Filter if populated
+from the control plane
+
+.. code-block:: json
+
+  {
+    "external_retry_count": "...",
+    "virtual_domains": [],
+    "known_suffixes": []
+  }
+
+.. _envoy_v3_api_field_data.dns.v3.DnsTable.external_retry_count:
+
+external_retry_count
+  (`uint32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Control how many times Envoy makes an attempt to forward a query to an external DNS server
+  
+  
+.. _envoy_v3_api_field_data.dns.v3.DnsTable.virtual_domains:
+
+virtual_domains
+  (:ref:`data.dns.v3.DnsTable.DnsVirtualDomain <envoy_v3_api_msg_data.dns.v3.DnsTable.DnsVirtualDomain>`) Fully qualified domain names for which Envoy will respond to DNS queries. By leaving this
+  list empty, Envoy will forward all queries to external resolvers
+  
+  
+.. _envoy_v3_api_field_data.dns.v3.DnsTable.known_suffixes:
+
+known_suffixes
+  (:ref:`type.matcher.v3.StringMatcher <envoy_v3_api_msg_type.matcher.v3.StringMatcher>`) This field serves to help Envoy determine whether it can authoritatively answer a query
+  for a name matching a suffix in this list. If the query name does not match a suffix in
+  this list, Envoy will forward the query to an upstream DNS server
+  
+  
+.. _envoy_v3_api_msg_data.dns.v3.DnsTable.AddressList:
+
+data.dns.v3.DnsTable.AddressList
+--------------------------------
+
+`[data.dns.v3.DnsTable.AddressList proto] <https://github.com/envoyproxy/envoy/blob/v1.15.4/api/envoy/data/dns/v3/dns_table.proto#L26>`_
+
+This message contains a list of IP addresses returned for a query for a known name
+
+.. code-block:: json
+
+  {
+    "address": []
+  }
+
+.. _envoy_v3_api_field_data.dns.v3.DnsTable.AddressList.address:
+
+address
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) This field contains a well formed IP address that is returned in the answer for a
+  name query. The address field can be an IPv4 or IPv6 address. Address family
+  detection is done automatically when Envoy parses the string. Since this field is
+  repeated, Envoy will return as many entries from this list in the DNS response while
+  keeping the response under 512 bytes
+  
+  
+
+
+.. _envoy_v3_api_msg_data.dns.v3.DnsTable.DnsEndpoint:
+
+data.dns.v3.DnsTable.DnsEndpoint
+--------------------------------
+
+`[data.dns.v3.DnsTable.DnsEndpoint proto] <https://github.com/envoyproxy/envoy/blob/v1.15.4/api/envoy/data/dns/v3/dns_table.proto#L43>`_
+
+This message type is extensible and can contain a list of addresses, clusters or
+dictate a different method for resolving the addresses for an endpoint
+
+.. code-block:: json
+
+  {
+    "address_list": "{...}",
+    "cluster_name": "..."
+  }
+
+.. _envoy_v3_api_field_data.dns.v3.DnsTable.DnsEndpoint.address_list:
+
+address_list
+  (:ref:`data.dns.v3.DnsTable.AddressList <envoy_v3_api_msg_data.dns.v3.DnsTable.AddressList>`) 
+  
+  
+  Precisely one of :ref:`address_list <envoy_v3_api_field_data.dns.v3.DnsTable.DnsEndpoint.address_list>`, :ref:`cluster_name <envoy_v3_api_field_data.dns.v3.DnsTable.DnsEndpoint.cluster_name>` must be set.
+  
+.. _envoy_v3_api_field_data.dns.v3.DnsTable.DnsEndpoint.cluster_name:
+
+cluster_name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
+  
+  
+  Precisely one of :ref:`address_list <envoy_v3_api_field_data.dns.v3.DnsTable.DnsEndpoint.address_list>`, :ref:`cluster_name <envoy_v3_api_field_data.dns.v3.DnsTable.DnsEndpoint.cluster_name>` must be set.
+  
+
+
+.. _envoy_v3_api_msg_data.dns.v3.DnsTable.DnsVirtualDomain:
+
+data.dns.v3.DnsTable.DnsVirtualDomain
+-------------------------------------
+
+`[data.dns.v3.DnsTable.DnsVirtualDomain proto] <https://github.com/envoyproxy/envoy/blob/v1.15.4/api/envoy/data/dns/v3/dns_table.proto#L56>`_
+
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "endpoint": "{...}",
+    "answer_ttl": "{...}"
+  }
+
+.. _envoy_v3_api_field_data.dns.v3.DnsTable.DnsVirtualDomain.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) A domain name for which Envoy will respond to query requests
+  
+  
+.. _envoy_v3_api_field_data.dns.v3.DnsTable.DnsVirtualDomain.endpoint:
+
+endpoint
+  (:ref:`data.dns.v3.DnsTable.DnsEndpoint <envoy_v3_api_msg_data.dns.v3.DnsTable.DnsEndpoint>`) The configuration containing the method to determine the address of this endpoint
+  
+  
+.. _envoy_v3_api_field_data.dns.v3.DnsTable.DnsVirtualDomain.answer_ttl:
+
+answer_ttl
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) Sets the TTL in DNS answers from Envoy returned to the client. The default TTL is 300s
+  
+  
+
+

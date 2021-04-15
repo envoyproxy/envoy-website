@@ -1,0 +1,367 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gRPC Access Log Service (ALS) &mdash; envoy tag-v1.15.4 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link rel="next" title="RBAC" href="../../../../config/rbac/rbac.html" />
+    <link rel="prev" title="File access log" href="../../file/v3/file.proto.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html">
+          
+
+          
+            
+            <img src="../../../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                tag-v1.15.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../install/install.html">Building and installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../version_history/version_history.html">Version history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../../api/api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../../../api/api_supported_versions.html">Supported API versions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../api-v2/api.html">v2 API reference</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../../../api.html">v3 API reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../../bootstrap/bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../clusters/clusters.html">Clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../http_routes/http_routes.html">HTTP route management</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../../../config/config.html">Extensions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/filter/filter.html">Filters</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../../../../config/accesslog/accesslog.html">Access loggers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/rbac/rbac.html">RBAC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/health_checker/health_checker.html">Health checkers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/transport_socket/transport_socket.html">Transport sockets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/resource_monitor/resource_monitor.html">Resource monitors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/common/common.html">Common</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/compression/compression.html">Compression</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/cluster/cluster.html">Cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/grpc_credential/grpc_credential.html">Grpc Credentials</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/retry/retry.html">Retry Predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/trace/trace.html">HTTP Tracers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/internal_redirect/internal_redirect.html">Internal Redirect Predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/endpoint/endpoint.html">Endpoint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../config/upstream/upstream.html">Upstream Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../admin/admin.html">Admin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../data/data.html">Envoy data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../service/service.html">Services</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../common_messages/common_messages.html">Common messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../types/types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../api-docs/xds_protocol.html">xDS REST and gRPC protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../api/client_features.html">Well Known Client Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../faq/overview.html">FAQ</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../../api/api.html">API</a> &raquo;</li>
+        
+          <li><a href="../../../../api.html">v3 API reference</a> &raquo;</li>
+        
+          <li><a href="../../../../config/config.html">Extensions</a> &raquo;</li>
+        
+          <li><a href="../../../../config/accesslog/accesslog.html">Access loggers</a> &raquo;</li>
+        
+      <li>gRPC Access Log Service (ALS)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../../../_sources/api-v3/extensions/access_loggers/grpc/v3/als.proto.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="grpc-access-log-service-als">
+<span id="envoy-v3-api-file-envoy-extensions-access-loggers-grpc-v3-als-proto"></span><h1>gRPC Access Log Service (ALS)<a class="headerlink" href="#grpc-access-log-service-als" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="extensions-access-loggers-grpc-v3-httpgrpcaccesslogconfig">
+<span id="envoy-v3-api-msg-extensions-access-loggers-grpc-v3-httpgrpcaccesslogconfig"></span><h2>extensions.access_loggers.grpc.v3.HttpGrpcAccessLogConfig<a class="headerlink" href="#extensions-access-loggers-grpc-v3-httpgrpcaccesslogconfig" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.15.4/api/envoy/extensions/access_loggers/grpc/v3/als.proto#L26">[extensions.access_loggers.grpc.v3.HttpGrpcAccessLogConfig proto]</a></p>
+<p>Configuration for the built-in <em>envoy.access_loggers.http_grpc</em>
+<a class="reference internal" href="../../../../config/accesslog/v3/accesslog.proto.html#envoy-v3-api-msg-config-accesslog-v3-accesslog"><span class="std std-ref">AccessLog</span></a>. This configuration will
+populate <a class="reference internal" href="../../../../service/accesslog/v3/als.proto.html#envoy-v3-api-field-service-accesslog-v3-streamaccesslogsmessage-http-logs"><span class="std std-ref">StreamAccessLogsMessage.http_logs</span></a>.</p>
+<p id="extension-envoy-access-loggers-http-grpc">This extension may be referenced by the qualified name <em>envoy.access_loggers.http_grpc</em></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This extension is intended to be robust against untrusted downstream traffic. It assumes that the upstream is trusted.</p>
+</div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;common_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;additional_request_headers_to_log&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;additional_response_headers_to_log&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;additional_response_trailers_to_log&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-extensions-access-loggers-grpc-v3-httpgrpcaccesslogconfig-common-config">
+<dt>common_config</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-extensions-access-loggers-grpc-v3-commongrpcaccesslogconfig"><span class="std std-ref">extensions.access_loggers.grpc.v3.CommonGrpcAccessLogConfig</span></a>, <em>REQUIRED</em>)</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-access-loggers-grpc-v3-httpgrpcaccesslogconfig-additional-request-headers-to-log">
+<dt>additional_request_headers_to_log</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Additional request headers to log in <a class="reference internal" href="../../../../data/accesslog/v3/accesslog.proto.html#envoy-v3-api-field-data-accesslog-v3-httprequestproperties-request-headers"><span class="std std-ref">HTTPRequestProperties.request_headers</span></a>.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-access-loggers-grpc-v3-httpgrpcaccesslogconfig-additional-response-headers-to-log">
+<dt>additional_response_headers_to_log</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Additional response headers to log in <a class="reference internal" href="../../../../data/accesslog/v3/accesslog.proto.html#envoy-v3-api-field-data-accesslog-v3-httpresponseproperties-response-headers"><span class="std std-ref">HTTPResponseProperties.response_headers</span></a>.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-access-loggers-grpc-v3-httpgrpcaccesslogconfig-additional-response-trailers-to-log">
+<dt>additional_response_trailers_to_log</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Additional response trailers to log in <a class="reference internal" href="../../../../data/accesslog/v3/accesslog.proto.html#envoy-v3-api-field-data-accesslog-v3-httpresponseproperties-response-trailers"><span class="std std-ref">HTTPResponseProperties.response_trailers</span></a>.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="extensions-access-loggers-grpc-v3-tcpgrpcaccesslogconfig">
+<span id="envoy-v3-api-msg-extensions-access-loggers-grpc-v3-tcpgrpcaccesslogconfig"></span><h2>extensions.access_loggers.grpc.v3.TcpGrpcAccessLogConfig<a class="headerlink" href="#extensions-access-loggers-grpc-v3-tcpgrpcaccesslogconfig" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.15.4/api/envoy/extensions/access_loggers/grpc/v3/als.proto#L48">[extensions.access_loggers.grpc.v3.TcpGrpcAccessLogConfig proto]</a></p>
+<p>Configuration for the built-in <em>envoy.access_loggers.tcp_grpc</em> type. This configuration will
+populate <em>StreamAccessLogsMessage.tcp_logs</em>.</p>
+<p id="extension-envoy-access-loggers-tcp-grpc">This extension may be referenced by the qualified name <em>envoy.access_loggers.tcp_grpc</em></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This extension is intended to be robust against untrusted downstream traffic. It assumes that the upstream is trusted.</p>
+</div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;common_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-extensions-access-loggers-grpc-v3-tcpgrpcaccesslogconfig-common-config">
+<dt>common_config</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-extensions-access-loggers-grpc-v3-commongrpcaccesslogconfig"><span class="std std-ref">extensions.access_loggers.grpc.v3.CommonGrpcAccessLogConfig</span></a>, <em>REQUIRED</em>)</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="extensions-access-loggers-grpc-v3-commongrpcaccesslogconfig">
+<span id="envoy-v3-api-msg-extensions-access-loggers-grpc-v3-commongrpcaccesslogconfig"></span><h2>extensions.access_loggers.grpc.v3.CommonGrpcAccessLogConfig<a class="headerlink" href="#extensions-access-loggers-grpc-v3-commongrpcaccesslogconfig" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.15.4/api/envoy/extensions/access_loggers/grpc/v3/als.proto#L57">[extensions.access_loggers.grpc.v3.CommonGrpcAccessLogConfig proto]</a></p>
+<p>Common configuration for gRPC access logs.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;log_name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;grpc_service&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;transport_api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;buffer_flush_interval&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;buffer_size_bytes&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;filter_state_objects_to_log&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-extensions-access-loggers-grpc-v3-commongrpcaccesslogconfig-log-name">
+<dt>log_name</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) The friendly name of the access log to be returned in <a class="reference internal" href="../../../../service/accesslog/v3/als.proto.html#envoy-v3-api-msg-service-accesslog-v3-streamaccesslogsmessage-identifier"><span class="std std-ref">StreamAccessLogsMessage.Identifier</span></a>. This allows the
+access log server to differentiate between different access logs coming from the same Envoy.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-access-loggers-grpc-v3-commongrpcaccesslogconfig-grpc-service">
+<dt>grpc_service</dt><dd><p>(<a class="reference internal" href="../../../../config/core/v3/grpc_service.proto.html#envoy-v3-api-msg-config-core-v3-grpcservice"><span class="std std-ref">config.core.v3.GrpcService</span></a>, <em>REQUIRED</em>) The gRPC service for the access log service.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-access-loggers-grpc-v3-commongrpcaccesslogconfig-transport-api-version">
+<dt>transport_api_version</dt><dd><p>(<a class="reference internal" href="../../../../config/core/v3/config_source.proto.html#envoy-v3-api-enum-config-core-v3-apiversion"><span class="std std-ref">config.core.v3.ApiVersion</span></a>) API version for access logs service transport protocol. This describes the access logs service
+gRPC endpoint and version of messages used on the wire.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-access-loggers-grpc-v3-commongrpcaccesslogconfig-buffer-flush-interval">
+<dt>buffer_flush_interval</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) Interval for flushing access logs to the gRPC stream. Logger will flush requests every time
+this interval is elapsed, or when batch size limit is hit, whichever comes first. Defaults to
+1 second.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-access-loggers-grpc-v3-commongrpcaccesslogconfig-buffer-size-bytes">
+<dt>buffer_size_bytes</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) Soft size limit in bytes for access log entries buffer. Logger will buffer requests until
+this limit it hit, or every time flush interval is elapsed, whichever comes first. Setting it
+to zero effectively disables the batching. Defaults to 16384.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-access-loggers-grpc-v3-commongrpcaccesslogconfig-filter-state-objects-to-log">
+<dt>filter_state_objects_to_log</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Additional filter state objects to log in <a class="reference internal" href="../../../../data/accesslog/v3/accesslog.proto.html#envoy-v3-api-field-data-accesslog-v3-accesslogcommon-filter-state-objects"><span class="std std-ref">filter_state_objects</span></a>.
+Logger will call <cite>FilterState::Object::serializeAsProto</cite> to serialize the filter state object.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../../../config/rbac/rbac.html" class="btn btn-neutral float-right" title="RBAC" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../../file/v3/file.proto.html" class="btn btn-neutral float-left" title="File access log" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2021, Envoy Project Authors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
