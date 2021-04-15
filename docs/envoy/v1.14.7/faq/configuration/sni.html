@@ -1,0 +1,309 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>How do I configure SNI for listeners? &mdash; envoy tag-v1.14.7 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="How do I configure zone aware routing?" href="zone_aware_routing.html" />
+    <link rel="prev" title="How do I configure Envoy as a level two proxy?" href="level_two.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                tag-v1.14.7
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/install.html">Building and installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../overview.html">FAQ</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#build">Build</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#performance">Performance</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../overview.html#configuration">Configuration</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="edge.html">How do I configure Envoy as an edge proxy?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="level_two.html">How do I configure Envoy as a level two proxy?</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">How do I configure SNI for listeners?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-do-i-configure-sni-for-clusters">How do I configure SNI for clusters?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zone_aware_routing.html">How do I configure zone aware routing?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">How do I configure Zipkin tracing?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flow_control.html">How do I configure flow control?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="timeouts.html">How do I configure timeouts?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deprecation.html">How are configuration deprecations handled?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="resource_limits.html">How does Envoy prevent file descriptor exhaustion?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#load-balancing">Load balancing</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../overview.html">FAQ</a> &raquo;</li>
+        
+      <li>How do I configure SNI for listeners?</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/faq/configuration/sni.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="how-do-i-configure-sni-for-listeners">
+<span id="faq-how-to-setup-sni"></span><h1>How do I configure SNI for listeners?<a class="headerlink" href="#how-do-i-configure-sni-for-listeners" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Server_Name_Indication">SNI</a> is only supported in the <a class="reference internal" href="../../configuration/overview/overview.html#config-overview"><span class="std std-ref">v2
+configuration/API</span></a>.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p><a class="reference internal" href="../../configuration/listeners/listener_filters/tls_inspector.html#config-listener-filters-tls-inspector"><span class="std std-ref">TLS Inspector</span></a> listener filter must be configured
+in order to detect requested SNI.</p>
+</div>
+<p>The following is a YAML example of the above requirement.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">address</span><span class="p">:</span>
+  <span class="nt">socket_address</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> address</span><span class="p">:</span> <span class="nv">127.0.0.1</span><span class="p p-Indicator">,</span><span class="nt"> port_value</span><span class="p">:</span> <span class="nv">1234</span> <span class="p p-Indicator">}</span>
+<span class="nt">listener_filters</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;envoy.filters.listener.tls_inspector&quot;</span>
+  <span class="nt">typed_config</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+<span class="nt">filter_chains</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="nt">filter_chain_match</span><span class="p">:</span>
+    <span class="nt">server_names</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;example.com&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;www.example.com&quot;</span><span class="p p-Indicator">]</span>
+  <span class="nt">transport_socket</span><span class="p">:</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.tls</span>
+    <span class="nt">typed_config</span><span class="p">:</span>
+      <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.api.v2.auth.DownstreamTlsContext</span>
+      <span class="nt">common_tls_context</span><span class="p">:</span>
+        <span class="nt">tls_certificates</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="nt">certificate_chain</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> filename</span><span class="p">:</span> <span class="s">&quot;example_com_cert.pem&quot;</span> <span class="p p-Indicator">}</span>
+          <span class="nt">private_key</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> filename</span><span class="p">:</span> <span class="s">&quot;example_com_key.pem&quot;</span> <span class="p p-Indicator">}</span>
+  <span class="nt">filters</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.network.http_connection_manager</span>
+    <span class="nt">typed_config</span><span class="p">:</span>
+      <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager</span>
+      <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ingress_http</span>
+      <span class="nt">route_config</span><span class="p">:</span>
+        <span class="nt">virtual_hosts</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
+          <span class="nt">domains</span><span class="p">:</span> <span class="s">&quot;*&quot;</span>
+          <span class="nt">routes</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> prefix</span><span class="p">:</span> <span class="s">&quot;/&quot;</span> <span class="p p-Indicator">}</span>
+            <span class="nt">route</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> cluster</span><span class="p">:</span> <span class="nv">service_foo</span> <span class="p p-Indicator">}</span>
+<span class="p p-Indicator">-</span> <span class="nt">filter_chain_match</span><span class="p">:</span>
+    <span class="nt">server_names</span><span class="p">:</span> <span class="s">&quot;api.example.com&quot;</span>
+  <span class="nt">transport_socket</span><span class="p">:</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.tls</span>
+    <span class="nt">typed_config</span><span class="p">:</span>
+      <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.api.v2.auth.DownstreamTlsContext</span>
+      <span class="nt">common_tls_context</span><span class="p">:</span>
+        <span class="nt">tls_certificates</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="nt">certificate_chain</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> filename</span><span class="p">:</span> <span class="s">&quot;api_example_com_cert.pem&quot;</span> <span class="p p-Indicator">}</span>
+          <span class="nt">private_key</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> filename</span><span class="p">:</span> <span class="s">&quot;api_example_com_key.pem&quot;</span> <span class="p p-Indicator">}</span>
+  <span class="nt">filters</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.network.http_connection_manager</span>
+    <span class="nt">typed_config</span><span class="p">:</span>
+      <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager</span>
+      <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ingress_http</span>
+      <span class="nt">route_config</span><span class="p">:</span>
+        <span class="nt">virtual_hosts</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
+          <span class="nt">domains</span><span class="p">:</span> <span class="s">&quot;*&quot;</span>
+          <span class="nt">routes</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> prefix</span><span class="p">:</span> <span class="s">&quot;/&quot;</span> <span class="p p-Indicator">}</span>
+            <span class="nt">route</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="nt"> cluster</span><span class="p">:</span> <span class="nv">service_foo</span> <span class="p p-Indicator">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="how-do-i-configure-sni-for-clusters">
+<h1>How do I configure SNI for clusters?<a class="headerlink" href="#how-do-i-configure-sni-for-clusters" title="Permalink to this headline">¶</a></h1>
+<p>For clusters, a fixed SNI can be set in <a class="reference internal" href="../../api-v2/api/v2/auth/cert.proto.html#envoy-api-field-auth-upstreamtlscontext-sni"><span class="std std-ref">UpstreamTlsContext</span></a>.
+To derive SNI from HTTP <cite>host</cite> or <cite>:authority</cite> header, turn on
+<a class="reference internal" href="../../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-upstreamhttpprotocoloptions-auto-sni"><span class="std std-ref">auto_sni</span></a> to override the fixed SNI in
+<cite>UpstreamTlsContext</cite>. If upstream will present certificates with the hostname in SAN, turn on
+<a class="reference internal" href="../../api-v2/api/v2/core/protocol.proto.html#envoy-api-field-core-upstreamhttpprotocoloptions-auto-san-validation"><span class="std std-ref">auto_san_validation</span></a> too.
+It still needs a trust CA in validation context in <cite>UpstreamTlsContext</cite> for trust anchor.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="zone_aware_routing.html" class="btn btn-neutral float-right" title="How do I configure zone aware routing?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="level_two.html" class="btn btn-neutral float-left" title="How do I configure Envoy as a level two proxy?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2021, Envoy Project Authors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
