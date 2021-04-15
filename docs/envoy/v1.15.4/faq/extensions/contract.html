@@ -1,0 +1,277 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Is there a contract my HTTP filter must adhere to? &mdash; envoy tag-v1.15.4 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="How do I make Envoy fail over to another region during service degradation?" href="../load_balancing/region_failover.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                tag-v1.15.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/install.html">Building and installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version_history/version_history.html">Version history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../overview.html">FAQ</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#build">Build</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#api">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#debugging">Debugging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#performance">Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#load-balancing">Load balancing</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../overview.html#extensions">Extensions</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Is there a contract my HTTP filter must adhere to?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#are-there-well-known-headers-that-will-appear-in-the-given-headers-map-of-decodeheaders">Are there well-known headers that will appear in the given headers map of <code class="docutils literal notranslate"><span class="pre">decodeHeaders()</span></code>?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../overview.html">FAQ</a> &raquo;</li>
+        
+      <li>Is there a contract my HTTP filter must adhere to?</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/faq/extensions/contract.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="is-there-a-contract-my-http-filter-must-adhere-to">
+<span id="faq-filter-contract"></span><h1>Is there a contract my HTTP filter must adhere to?<a class="headerlink" href="#is-there-a-contract-my-http-filter-must-adhere-to" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>Headers encoding/decoding</p>
+<ul>
+<li><p>During encoding/decoding of headers if a filter returns <code class="docutils literal notranslate"><span class="pre">FilterHeadersStatus::StopIteration</span></code>,
+the processing can be resumed if <code class="docutils literal notranslate"><span class="pre">encodeData()</span></code>/<code class="docutils literal notranslate"><span class="pre">decodeData()</span></code> return
+<code class="docutils literal notranslate"><span class="pre">FilterDataStatus::Continue</span></code> or by explicitly calling
+<code class="docutils literal notranslate"><span class="pre">continueEncoding()</span></code>/<code class="docutils literal notranslate"><span class="pre">continueDecoding()</span></code>.</p></li>
+<li><p>During encoding/decoding of headers if a filter returns
+<code class="docutils literal notranslate"><span class="pre">FilterHeadersStatus::StopAllIterationAndBuffer</span></code> or
+<code class="docutils literal notranslate"><span class="pre">FilterHeadersStatus::StopAllIterationAndWatermark</span></code>, the processing can be resumed by calling
+<code class="docutils literal notranslate"><span class="pre">continueEncoding()</span></code>/<code class="docutils literal notranslate"><span class="pre">continueDecoding()</span></code>.</p></li>
+<li><p>A filter’s <code class="docutils literal notranslate"><span class="pre">decodeHeaders()</span></code> implementation must not return
+<code class="docutils literal notranslate"><span class="pre">FilterHeadersStatus::ContinueAndEndStream</span></code> when called with <code class="docutils literal notranslate"><span class="pre">end_stream</span></code> set to <em>true</em>. In this case
+<code class="docutils literal notranslate"><span class="pre">FilterHeadersStatus::Continue</span></code> should be returned.</p></li>
+<li><p>A filter’s <code class="docutils literal notranslate"><span class="pre">encode100ContinueHeaders()</span></code> must return <code class="docutils literal notranslate"><span class="pre">FilterHeadersStatus::Continue</span></code> or
+<code class="docutils literal notranslate"><span class="pre">FilterHeadersStatus::StopIteration</span></code>.</p></li>
+</ul>
+</li>
+<li><p>Data encoding/decoding</p>
+<ul>
+<li><p>During encoding/decoding of data if a filter returns
+<code class="docutils literal notranslate"><span class="pre">FilterDataStatus::StopIterationAndBuffer</span></code>, <code class="docutils literal notranslate"><span class="pre">FilterDataStatus::StopIterationAndWatermark</span></code>,
+or <code class="docutils literal notranslate"><span class="pre">FilterDataStatus::StopIterationNoBuffer</span></code>, the processing can be resumed if
+<code class="docutils literal notranslate"><span class="pre">encodeData()</span></code>/<code class="docutils literal notranslate"><span class="pre">decodeData()</span></code> return <code class="docutils literal notranslate"><span class="pre">FilterDataStatus::Continue</span></code> or by explicitly
+calling <code class="docutils literal notranslate"><span class="pre">continueEncoding()</span></code>/<code class="docutils literal notranslate"><span class="pre">continueDecoding()</span></code>.</p></li>
+</ul>
+</li>
+<li><p>Trailers encoding/decoding</p>
+<ul>
+<li><p>During encoding/decoding of trailers if a filter returns <code class="docutils literal notranslate"><span class="pre">FilterTrailersStatus::StopIteration</span></code>,
+the processing can be resumed by explicitly calling <code class="docutils literal notranslate"><span class="pre">continueEncoding()</span></code>/<code class="docutils literal notranslate"><span class="pre">continueDecoding()</span></code>.</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="are-there-well-known-headers-that-will-appear-in-the-given-headers-map-of-decodeheaders">
+<h1>Are there well-known headers that will appear in the given headers map of <code class="docutils literal notranslate"><span class="pre">decodeHeaders()</span></code>?<a class="headerlink" href="#are-there-well-known-headers-that-will-appear-in-the-given-headers-map-of-decodeheaders" title="Permalink to this headline">¶</a></h1>
+<p>The first filter of the decoding filter chain will have the following headers in the map:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Host</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Path</span></code> (this might be omitted for CONNECT requests).</p></li>
+</ul>
+<p>Although these headers may be omitted by one of the filters on the decoding filter chain,
+they should be reinserted before the terminal filter is triggered.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../load_balancing/region_failover.html" class="btn btn-neutral float-left" title="How do I make Envoy fail over to another region during service degradation?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2021, Envoy Project Authors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
