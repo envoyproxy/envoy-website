@@ -1,0 +1,139 @@
+.. _envoy_v3_api_file_envoy/extensions/filters/http/local_ratelimit/v3/local_rate_limit.proto:
+
+Local Rate limit
+================
+
+
+.. _extension_envoy.filters.http.local_ratelimit:
+
+This extension may be referenced by the qualified name *envoy.filters.http.local_ratelimit*
+
+.. note::
+  
+
+  This extension has an unknown security posture and should only be used in deployments where both the downstream and upstream are trusted.
+
+.. tip::
+  This extension extends and can be used with the following extension category:
+
+
+  - :ref:`envoy.filters.http <extension_category_envoy.filters.http>`
+
+Local Rate limit :ref:`configuration overview <config_http_filters_local_rate_limit>`.
+
+.. _envoy_v3_api_msg_extensions.filters.http.local_ratelimit.v3.LocalRateLimit:
+
+extensions.filters.http.local_ratelimit.v3.LocalRateLimit
+---------------------------------------------------------
+
+`[extensions.filters.http.local_ratelimit.v3.LocalRateLimit proto] <https://github.com/envoyproxy/envoy/blob/v1.18.2/api/envoy/extensions/filters/http/local_ratelimit/v3/local_rate_limit.proto#L22>`_
+
+
+.. code-block:: json
+
+  {
+    "stat_prefix": "...",
+    "status": "{...}",
+    "token_bucket": "{...}",
+    "filter_enabled": "{...}",
+    "filter_enforced": "{...}",
+    "response_headers_to_add": [],
+    "descriptors": [],
+    "stage": "..."
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.local_ratelimit.v3.LocalRateLimit.stat_prefix:
+
+stat_prefix
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The human readable prefix to use when emitting stats.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.local_ratelimit.v3.LocalRateLimit.status:
+
+status
+  (:ref:`type.v3.HttpStatus <envoy_v3_api_msg_type.v3.HttpStatus>`) This field allows for a custom HTTP response status code to the downstream client when
+  the request has been rate limited.
+  Defaults to 429 (TooManyRequests).
+  
+  .. note::
+    If this is set to < 400, 429 will be used instead.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.local_ratelimit.v3.LocalRateLimit.token_bucket:
+
+token_bucket
+  (:ref:`type.v3.TokenBucket <envoy_v3_api_msg_type.v3.TokenBucket>`) The token bucket configuration to use for rate limiting requests that are processed by this
+  filter. Each request processed by the filter consumes a single token. If the token is available,
+  the request will be allowed. If no tokens are available, the request will receive the configured
+  rate limit status.
+  
+  .. note::
+    It's fine for the token bucket to be unset for the global configuration since the rate limit
+    can be applied at a the virtual host or route level. Thus, the token bucket must be set
+    for the per route configuration otherwise the config will be rejected.
+  
+  .. note::
+    When using per route configuration, the bucket becomes unique to that route.
+  
+  .. note::
+    In the current implementation the token bucket's :ref:`fill_interval
+    <envoy_v3_api_field_type.v3.TokenBucket.fill_interval>` must be >= 50ms to avoid too aggressive
+    refills.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.local_ratelimit.v3.LocalRateLimit.filter_enabled:
+
+filter_enabled
+  (:ref:`config.core.v3.RuntimeFractionalPercent <envoy_v3_api_msg_config.core.v3.RuntimeFractionalPercent>`) If set, this will enable -- but not necessarily enforce -- the rate limit for the given
+  fraction of requests.
+  Defaults to 0% of requests for safety.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.local_ratelimit.v3.LocalRateLimit.filter_enforced:
+
+filter_enforced
+  (:ref:`config.core.v3.RuntimeFractionalPercent <envoy_v3_api_msg_config.core.v3.RuntimeFractionalPercent>`) If set, this will enforce the rate limit decisions for the given fraction of requests.
+  
+  Note: this only applies to the fraction of enabled requests.
+  
+  Defaults to 0% of requests for safety.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.local_ratelimit.v3.LocalRateLimit.response_headers_to_add:
+
+response_headers_to_add
+  (**repeated** :ref:`config.core.v3.HeaderValueOption <envoy_v3_api_msg_config.core.v3.HeaderValueOption>`) Specifies a list of HTTP headers that should be added to each response for requests that
+  have been rate limited.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.local_ratelimit.v3.LocalRateLimit.descriptors:
+
+descriptors
+  (**repeated** :ref:`extensions.common.ratelimit.v3.LocalRateLimitDescriptor <envoy_v3_api_msg_extensions.common.ratelimit.v3.LocalRateLimitDescriptor>`) The rate limit descriptor list to use in the local rate limit to override
+  on. The rate limit descriptor is selected by the first full match from the
+  request descriptors.
+  
+  Example on how to use ::ref:`this <config_http_filters_local_rate_limit_descriptors>`
+  
+  .. note::
+  
+    In the current implementation the descriptor's token bucket :ref:`fill_interval
+    <envoy_v3_api_field_type.v3.TokenBucket.fill_interval>` must be a multiple
+    global :ref:`token bucket's<envoy_v3_api_field_extensions.filters.http.local_ratelimit.v3.LocalRateLimit.token_bucket>` fill interval.
+  
+    The descriptors must match verbatim for rate limiting to apply. There is no partial
+    match by a subset of descriptor entries in the current implementation.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.local_ratelimit.v3.LocalRateLimit.stage:
+
+stage
+  (`uint32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies the rate limit configurations to be applied with the same
+  stage number. If not set, the default stage number is 0.
+  
+  .. note::
+  
+   The filter supports a range of 0 - 10 inclusively for stage numbers.
+  
+  
+
