@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>xDS REST and gRPC protocol &mdash; envoy 1.19.0-dev-6d4b75 documentation</title>
+  <title>xDS REST and gRPC protocol &mdash; envoy 1.19.0-dev-d86bd1 documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.19.0-dev-6d4b75
+                1.19.0-dev-d86bd1
               </div>
             
           
@@ -212,7 +212,7 @@ below.</p>
 <div class="section" id="resource-types">
 <h2>Resource Types<a class="headerlink" href="#resource-types" title="Permalink to this headline">¶</a></h2>
 <p>Every configuration resource in the xDS API has a type associated with it. Resource types follow a
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/6d4b75f87e90670e9310f3feb57bf61a0e00be66/api/API_VERSIONING.md">versioning scheme</a>. Resource types are versioned independent of the
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/d86bd1140a53a32d7d5558af5be4ed778eaae179/api/API_VERSIONING.md">versioning scheme</a>. Resource types are versioned independent of the
 transports described below.</p>
 <p>The following v3 xDS resource types are supported:</p>
 <ul class="simple">
@@ -882,10 +882,13 @@ Later the xDS client spontaneously requests the “wc” resource.</p>
 <div class="figure align-default">
 <img alt="Incremental session example" src="../_images/incremental.svg" /></div>
 <p>On reconnect the Incremental xDS client may tell the server of its known
-resources to avoid resending them over the network. Because no state is
-assumed to be preserved from the previous stream, the reconnecting
-client must provide the server with all resource names it is interested
-in.</p>
+resources to avoid resending them over the network by sending them in
+<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-deltadiscoveryrequest-initial-resource-versions"><span class="std std-ref">initial_resource_versions</span></a>.
+Because no state is assumed to be preserved from the previous stream, the reconnecting
+client must provide the server with all resource names it is interested in. Note that for wildcard
+requests (CDS/LDS/SRDS), the request must have no resources in both
+<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-deltadiscoveryrequest-resource-names-subscribe"><span class="std std-ref">resource_names_subscribe</span></a> and
+<a class="reference internal" href="../api-v2/api/v2/discovery.proto.html#envoy-api-field-deltadiscoveryrequest-resource-names-unsubscribe"><span class="std std-ref">resource_names_unsubscribe</span></a>.</p>
 <div class="figure align-default">
 <img alt="Incremental reconnect example" src="../_images/incremental-reconnect.svg" /></div>
 <div class="section" id="resource-names">
