@@ -38,7 +38,7 @@ maintain state.
 service.ext_proc.v3alpha.ProcessingRequest
 ------------------------------------------
 
-`[service.ext_proc.v3alpha.ProcessingRequest proto] <https://github.com/envoyproxy/envoy/blob/eb18d71972e1f8af714d7843eb206108aad153c7/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L59>`_
+`[service.ext_proc.v3alpha.ProcessingRequest proto] <https://github.com/envoyproxy/envoy/blob/29eb17096e50fc9385edbf260c03da7adc4ca24c/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L59>`_
 
 This represents the different types of messages that Envoy can send
 to an external processing server.
@@ -59,19 +59,23 @@ to an external processing server.
 
 async_mode
   (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specify whether the filter that sent this request is running in synchronous
-  or asynchronous mode. If false, then the server must either respond
-  with exactly one ProcessingResponse message or close the stream.
-  If true, however, then the server must not respond with
-  an additional message, although it may still close the stream.
-  The choice of synchronous or asynchronous mode can be chosen in the
-  filter configuration.
+  or asynchronous mode. The choice of synchronous or asynchronous mode
+  can be set in the filter configuration, and defaults to false.
+  
+  * A value of "false" indicates that the server must respond
+    to this message by either sending back a matching ProcessingResponse message,
+    or by closing the stream.
+  * A value of "true" indicates that the server must not respond to this
+    message, although it may still close the stream to indicate that no more messages
+    are needed.
+  
   
   
 .. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_headers:
 
 request_headers
   (:ref:`service.ext_proc.v3alpha.HttpHeaders <envoy_v3_api_msg_service.ext_proc.v3alpha.HttpHeaders>`) Information about the HTTP request headers, as well as peer info and additional
-  properties. If "response_required" is set, the server must send back a
+  properties. Unless "async_mode" is true, the server must send back a
   HeaderResponse message, an ImmediateResponse message, or close the stream.
   
   Each request message will include one of the following sub-messages. Which
@@ -85,7 +89,7 @@ request_headers
 
 response_headers
   (:ref:`service.ext_proc.v3alpha.HttpHeaders <envoy_v3_api_msg_service.ext_proc.v3alpha.HttpHeaders>`) Information about the HTTP response headers, as well as peer info and additional
-  properties. If "response_required" is set, the server must send back a
+  properties. Unless "async_mode" is true, the server must send back a
   HeaderResponse message or close the stream.
   
   Each request message will include one of the following sub-messages. Which
@@ -98,7 +102,7 @@ response_headers
 .. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_body:
 
 request_body
-  (:ref:`service.ext_proc.v3alpha.HttpBody <envoy_v3_api_msg_service.ext_proc.v3alpha.HttpBody>`) A chunk of the HTTP request body. If "response_required" is set, the server must send back
+  (:ref:`service.ext_proc.v3alpha.HttpBody <envoy_v3_api_msg_service.ext_proc.v3alpha.HttpBody>`) A chunk of the HTTP request body. Unless "async_mode" is true, the server must send back
   a BodyResponse message, an ImmediateResponse message, or close the stream.
   
   Each request message will include one of the following sub-messages. Which
@@ -111,7 +115,7 @@ request_body
 .. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_body:
 
 response_body
-  (:ref:`service.ext_proc.v3alpha.HttpBody <envoy_v3_api_msg_service.ext_proc.v3alpha.HttpBody>`) A chunk of the HTTP request body. If "response_required" is set, the server must send back
+  (:ref:`service.ext_proc.v3alpha.HttpBody <envoy_v3_api_msg_service.ext_proc.v3alpha.HttpBody>`) A chunk of the HTTP request body. Unless "async_mode" is true, the server must send back
   a BodyResponse message or close the stream.
   
   Each request message will include one of the following sub-messages. Which
@@ -124,8 +128,14 @@ response_body
 .. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_trailers:
 
 request_trailers
-  (:ref:`service.ext_proc.v3alpha.HttpTrailers <envoy_v3_api_msg_service.ext_proc.v3alpha.HttpTrailers>`) The HTTP trailers for the request path. If "response_required" is set, the server
+  (:ref:`service.ext_proc.v3alpha.HttpTrailers <envoy_v3_api_msg_service.ext_proc.v3alpha.HttpTrailers>`) The HTTP trailers for the request path. Unless "async_mode" is true, the server
   must send back a TrailerResponse message or close the stream.
+  
+  This message is only sent if the trailers processing mode is set to "SEND".
+  If there are no trailers on the original downstream request, then this message
+  will only be sent (with empty trailers waiting to be populated) if the
+  processing mode is set before the request headers are sent, such as
+  in the filter configuration.
   
   Each request message will include one of the following sub-messages. Which
   ones are set for a particular HTTP request/response depend on the
@@ -137,8 +147,14 @@ request_trailers
 .. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_trailers:
 
 response_trailers
-  (:ref:`service.ext_proc.v3alpha.HttpTrailers <envoy_v3_api_msg_service.ext_proc.v3alpha.HttpTrailers>`) The HTTP trailers for the response path. If "response_required" is set, the server
+  (:ref:`service.ext_proc.v3alpha.HttpTrailers <envoy_v3_api_msg_service.ext_proc.v3alpha.HttpTrailers>`) The HTTP trailers for the response path. Unless "async_mode" is true, the server
   must send back a TrailerResponse message or close the stream.
+  
+  This message is only sent if the trailers processing mode is set to "SEND".
+  If there are no trailers on the original downstream request, then this message
+  will only be sent (with empty trailers waiting to be populated) if the
+  processing mode is set before the request headers are sent, such as
+  in the filter configuration.
   
   Each request message will include one of the following sub-messages. Which
   ones are set for a particular HTTP request/response depend on the
@@ -154,7 +170,7 @@ response_trailers
 service.ext_proc.v3alpha.ProcessingResponse
 -------------------------------------------
 
-`[service.ext_proc.v3alpha.ProcessingResponse proto] <https://github.com/envoyproxy/envoy/blob/eb18d71972e1f8af714d7843eb206108aad153c7/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L106>`_
+`[service.ext_proc.v3alpha.ProcessingResponse proto] <https://github.com/envoyproxy/envoy/blob/29eb17096e50fc9385edbf260c03da7adc4ca24c/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L122>`_
 
 For every ProcessingRequest received by the server with the "async_mode" field
 set to false, the server must send back exactly one ProcessingResponse message.
@@ -169,7 +185,6 @@ set to false, the server must send back exactly one ProcessingResponse message.
     "request_trailers": "{...}",
     "response_trailers": "{...}",
     "immediate_response": "{...}",
-    "dynamic_metadata": "{...}",
     "mode_override": "{...}"
   }
 
@@ -248,13 +263,7 @@ immediate_response
   
   Precisely one of :ref:`request_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_headers>`, :ref:`response_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_headers>`, :ref:`request_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_body>`, :ref:`response_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_body>`, :ref:`request_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_trailers>`, :ref:`response_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_trailers>`, :ref:`immediate_response <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.immediate_response>` must be set.
   
-.. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.dynamic_metadata:
 
-dynamic_metadata
-  (`Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_) Optional metadata that will be emitted as dynamic metadata to be consumed by the next
-  filter. This metadata will be placed in the namespace "envoy.filters.http.ext_proc".
-  
-  
 .. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.mode_override:
 
 mode_override
@@ -271,7 +280,7 @@ mode_override
 service.ext_proc.v3alpha.HttpHeaders
 ------------------------------------
 
-`[service.ext_proc.v3alpha.HttpHeaders proto] <https://github.com/envoyproxy/envoy/blob/eb18d71972e1f8af714d7843eb206108aad153c7/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L159>`_
+`[service.ext_proc.v3alpha.HttpHeaders proto] <https://github.com/envoyproxy/envoy/blob/29eb17096e50fc9385edbf260c03da7adc4ca24c/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L176>`_
 
 This message is sent to the external server when the HTTP request and responses
 are first received.
@@ -280,7 +289,6 @@ are first received.
 
   {
     "headers": "{...}",
-    "attributes": "{...}",
     "end_of_stream": "..."
   }
 
@@ -291,16 +299,7 @@ headers
   lower-cased, because HTTP header keys are case-insensitive.
   
   
-.. _envoy_v3_api_field_service.ext_proc.v3alpha.HttpHeaders.attributes:
 
-attributes
-  (**repeated** map<`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, `Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_>) The values of properties selected by the "request_attributes"
-  or "response_attributes" list in the configuration. Each entry
-  in the list is populated
-  from the standard :ref:`attributes <arch_overview_attributes>`
-  supported across Envoy.
-  
-  
 .. _envoy_v3_api_field_service.ext_proc.v3alpha.HttpHeaders.end_of_stream:
 
 end_of_stream
@@ -315,7 +314,7 @@ end_of_stream
 service.ext_proc.v3alpha.HttpBody
 ---------------------------------
 
-`[service.ext_proc.v3alpha.HttpBody proto] <https://github.com/envoyproxy/envoy/blob/eb18d71972e1f8af714d7843eb206108aad153c7/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L177>`_
+`[service.ext_proc.v3alpha.HttpBody proto] <https://github.com/envoyproxy/envoy/blob/29eb17096e50fc9385edbf260c03da7adc4ca24c/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L195>`_
 
 This message contains the message body that Envoy sends to the external server.
 
@@ -343,7 +342,7 @@ end_of_stream
 service.ext_proc.v3alpha.HttpTrailers
 -------------------------------------
 
-`[service.ext_proc.v3alpha.HttpTrailers proto] <https://github.com/envoyproxy/envoy/blob/eb18d71972e1f8af714d7843eb206108aad153c7/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L184>`_
+`[service.ext_proc.v3alpha.HttpTrailers proto] <https://github.com/envoyproxy/envoy/blob/29eb17096e50fc9385edbf260c03da7adc4ca24c/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L202>`_
 
 This message contains the trailers.
 
@@ -365,7 +364,7 @@ trailers
 service.ext_proc.v3alpha.HeadersResponse
 ----------------------------------------
 
-`[service.ext_proc.v3alpha.HeadersResponse proto] <https://github.com/envoyproxy/envoy/blob/eb18d71972e1f8af714d7843eb206108aad153c7/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L191>`_
+`[service.ext_proc.v3alpha.HeadersResponse proto] <https://github.com/envoyproxy/envoy/blob/29eb17096e50fc9385edbf260c03da7adc4ca24c/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L209>`_
 
 This message must be sent in response to an HttpHeaders message.
 
@@ -387,7 +386,7 @@ response
 service.ext_proc.v3alpha.TrailersResponse
 -----------------------------------------
 
-`[service.ext_proc.v3alpha.TrailersResponse proto] <https://github.com/envoyproxy/envoy/blob/eb18d71972e1f8af714d7843eb206108aad153c7/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L196>`_
+`[service.ext_proc.v3alpha.TrailersResponse proto] <https://github.com/envoyproxy/envoy/blob/29eb17096e50fc9385edbf260c03da7adc4ca24c/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L214>`_
 
 This message must be sent in response to an HttpTrailers message.
 
@@ -410,7 +409,7 @@ header_mutation
 service.ext_proc.v3alpha.BodyResponse
 -------------------------------------
 
-`[service.ext_proc.v3alpha.BodyResponse proto] <https://github.com/envoyproxy/envoy/blob/eb18d71972e1f8af714d7843eb206108aad153c7/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L202>`_
+`[service.ext_proc.v3alpha.BodyResponse proto] <https://github.com/envoyproxy/envoy/blob/29eb17096e50fc9385edbf260c03da7adc4ca24c/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L220>`_
 
 This message must be sent in response to an HttpBody message.
 
@@ -432,7 +431,7 @@ response
 service.ext_proc.v3alpha.CommonResponse
 ---------------------------------------
 
-`[service.ext_proc.v3alpha.CommonResponse proto] <https://github.com/envoyproxy/envoy/blob/eb18d71972e1f8af714d7843eb206108aad153c7/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L208>`_
+`[service.ext_proc.v3alpha.CommonResponse proto] <https://github.com/envoyproxy/envoy/blob/29eb17096e50fc9385edbf260c03da7adc4ca24c/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L226>`_
 
 This message contains common fields between header and body responses.
 
@@ -441,9 +440,7 @@ This message contains common fields between header and body responses.
   {
     "status": "...",
     "header_mutation": "{...}",
-    "body_mutation": "{...}",
-    "trailers": "{...}",
-    "clear_route_cache": "..."
+    "body_mutation": "{...}"
   }
 
 .. _envoy_v3_api_field_service.ext_proc.v3alpha.CommonResponse.status:
@@ -457,10 +454,8 @@ status
 
 header_mutation
   (:ref:`service.ext_proc.v3alpha.HeaderMutation <envoy_v3_api_msg_service.ext_proc.v3alpha.HeaderMutation>`) Instructions on how to manipulate the headers. When responding to an
-  HttpBody request, header mutations will only take effect if the
-  headers were not already sent further on the filter chain, which
-  happens only if the current processing mode for the body is BUFFERED
-  or BUFFERED_PARTIAL.
+  HttpBody request, header mutations will only take effect if
+  the current processing mode for the body is BUFFERED.
   
   
 .. _envoy_v3_api_field_service.ext_proc.v3alpha.CommonResponse.body_mutation:
@@ -468,34 +463,19 @@ header_mutation
 body_mutation
   (:ref:`service.ext_proc.v3alpha.BodyMutation <envoy_v3_api_msg_service.ext_proc.v3alpha.BodyMutation>`) Replace the body of the last message sent to the remote server on this
   stream. If responding to an HttpBody request, simply replace or clear
-  the body chunk that was sent with that request. If responding to an
-  HttpHeaders request, then a new body may be added to the request if this
-  message is returned along with the CONTINUE_AND_REPLACE status.
+  the body chunk that was sent with that request. Body mutations only take
+  effect in response to "body" messages and are ignored otherwise.
   
   
-.. _envoy_v3_api_field_service.ext_proc.v3alpha.CommonResponse.trailers:
 
-trailers
-  (:ref:`config.core.v3.HeaderMap <envoy_v3_api_msg_config.core.v3.HeaderMap>`) Add new trailers to the message. This may be used when responding to either a
-  HttpHeaders or HttpBody message, but only if this message is returned
-  along with the CONTINUE_AND_REPLACE status.
-  
-  
-.. _envoy_v3_api_field_service.ext_proc.v3alpha.CommonResponse.clear_route_cache:
 
-clear_route_cache
-  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Clear the route cache for the current request.
-  This is necessary if the remote server
-  modified headers that are used to calculate the route.
-  
-  
 
 .. _envoy_v3_api_enum_service.ext_proc.v3alpha.CommonResponse.ResponseStatus:
 
 Enum service.ext_proc.v3alpha.CommonResponse.ResponseStatus
 -----------------------------------------------------------
 
-`[service.ext_proc.v3alpha.CommonResponse.ResponseStatus proto] <https://github.com/envoyproxy/envoy/blob/eb18d71972e1f8af714d7843eb206108aad153c7/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L209>`_
+`[service.ext_proc.v3alpha.CommonResponse.ResponseStatus proto] <https://github.com/envoyproxy/envoy/blob/29eb17096e50fc9385edbf260c03da7adc4ca24c/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L227>`_
 
 
 .. _envoy_v3_api_enum_value_service.ext_proc.v3alpha.CommonResponse.ResponseStatus.CONTINUE:
@@ -506,26 +486,14 @@ CONTINUE
   stream as normal. This is the default.
   
   
-.. _envoy_v3_api_enum_value_service.ext_proc.v3alpha.CommonResponse.ResponseStatus.CONTINUE_AND_REPLACE:
 
-CONTINUE_AND_REPLACE
-  ⁣Replace the request or response with the contents
-  of this message. If header_mutation is set, apply it to the
-  headers. If body_mutation is set and contains a body, then add that
-  body to the request or response, even if one does not already exist --
-  otherwise, clear the body. Any additional body and trailers
-  received from downstream or upstream will be ignored.
-  This can be used to add a body to a request or response that does not
-  have one already.
-  
-  
 
 .. _envoy_v3_api_msg_service.ext_proc.v3alpha.ImmediateResponse:
 
 service.ext_proc.v3alpha.ImmediateResponse
 ------------------------------------------
 
-`[service.ext_proc.v3alpha.ImmediateResponse proto] <https://github.com/envoyproxy/envoy/blob/eb18d71972e1f8af714d7843eb206108aad153c7/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L262>`_
+`[service.ext_proc.v3alpha.ImmediateResponse proto] <https://github.com/envoyproxy/envoy/blob/29eb17096e50fc9385edbf260c03da7adc4ca24c/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L280>`_
 
 This message causes the filter to attempt to create a locally
 generated response, send it  downstream, stop processing
@@ -583,7 +551,7 @@ details
 service.ext_proc.v3alpha.GrpcStatus
 -----------------------------------
 
-`[service.ext_proc.v3alpha.GrpcStatus proto] <https://github.com/envoyproxy/envoy/blob/eb18d71972e1f8af714d7843eb206108aad153c7/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L282>`_
+`[service.ext_proc.v3alpha.GrpcStatus proto] <https://github.com/envoyproxy/envoy/blob/29eb17096e50fc9385edbf260c03da7adc4ca24c/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L300>`_
 
 This message specifies a gRPC status for an ImmediateResponse message.
 
@@ -606,7 +574,7 @@ status
 service.ext_proc.v3alpha.HeaderMutation
 ---------------------------------------
 
-`[service.ext_proc.v3alpha.HeaderMutation proto] <https://github.com/envoyproxy/envoy/blob/eb18d71972e1f8af714d7843eb206108aad153c7/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L289>`_
+`[service.ext_proc.v3alpha.HeaderMutation proto] <https://github.com/envoyproxy/envoy/blob/29eb17096e50fc9385edbf260c03da7adc4ca24c/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L307>`_
 
 Change HTTP headers or trailers by appending, replacing, or removing
 headers.
@@ -640,7 +608,7 @@ remove_headers
 service.ext_proc.v3alpha.BodyMutation
 -------------------------------------
 
-`[service.ext_proc.v3alpha.BodyMutation proto] <https://github.com/envoyproxy/envoy/blob/eb18d71972e1f8af714d7843eb206108aad153c7/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L302>`_
+`[service.ext_proc.v3alpha.BodyMutation proto] <https://github.com/envoyproxy/envoy/blob/29eb17096e50fc9385edbf260c03da7adc4ca24c/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L320>`_
 
 Replace the entire message body chunk received in the corresponding
 HttpBody message with this new body, or clear the body.

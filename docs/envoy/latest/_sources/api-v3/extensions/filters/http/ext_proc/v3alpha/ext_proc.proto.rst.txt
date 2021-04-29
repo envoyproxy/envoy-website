@@ -32,7 +32,8 @@ The External Processing filter allows an external service to act on HTTP traffic
 The filter will send the "request_headers" and "response_headers" messages by default.
 In addition, if the "processing mode" is set , the "request_body" and "response_body"
 messages will be sent if the corresponding fields of the "processing_mode" are
-set to BUFFERED. The other body processing modes, and trailer processing, are not
+set to BUFFERED, and trailers will be sent if the corresponding fields are set
+to SEND. The other body processing modes are not
 implemented yet. The filter will also respond to "immediate_response" messages
 at any point in the stream.
 
@@ -41,10 +42,10 @@ As designed, the filter supports up to six different processing steps, which are
 process of being implemented:
 * Request headers: IMPLEMENTED
 * Request body: Only BUFFERED mode is implemented
-* Request trailers: NOT IMPLEMENTED
+* Request trailers: IMPLEMENTED
 * Response headers: IMPLEMENTED
 * Response body: Only BUFFERED mode is implemented
-* Response trailers: NOT IMPLEMENTED
+* Response trailers: IMPLEMENTED
 
 
 The filter communicates with an external gRPC service that can use it to do a variety of things
@@ -65,6 +66,8 @@ By implementing the protocol specified by the stream, the external server can ch
 * Whether it receives the message body at all, in separate chunks, or as a single buffer
 * Whether subsequent HTTP requests are transmitted synchronously or whether they are
   sent asynchronously.
+* To modify request or response trailers if they already exist
+* To add request or response trailers where they are not present
 
 All of this together allows a server to process the filter traffic in fairly
 sophisticated ways. For example:
@@ -88,7 +91,7 @@ messages, and the server must reply with
 extensions.filters.http.ext_proc.v3alpha.ExternalProcessor
 ----------------------------------------------------------
 
-`[extensions.filters.http.ext_proc.v3alpha.ExternalProcessor proto] <https://github.com/envoyproxy/envoy/blob/eb18d71972e1f8af714d7843eb206108aad153c7/api/envoy/extensions/filters/http/ext_proc/v3alpha/ext_proc.proto#L78>`_
+`[extensions.filters.http.ext_proc.v3alpha.ExternalProcessor proto] <https://github.com/envoyproxy/envoy/blob/29eb17096e50fc9385edbf260c03da7adc4ca24c/api/envoy/extensions/filters/http/ext_proc/v3alpha/ext_proc.proto#L81>`_
 
 
 .. code-block:: json
