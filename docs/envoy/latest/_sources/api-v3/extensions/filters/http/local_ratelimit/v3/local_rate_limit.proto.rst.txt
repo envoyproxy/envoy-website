@@ -26,7 +26,7 @@ Local Rate limit :ref:`configuration overview <config_http_filters_local_rate_li
 extensions.filters.http.local_ratelimit.v3.LocalRateLimit
 ---------------------------------------------------------
 
-`[extensions.filters.http.local_ratelimit.v3.LocalRateLimit proto] <https://github.com/envoyproxy/envoy/blob/29eb17096e50fc9385edbf260c03da7adc4ca24c/api/envoy/extensions/filters/http/local_ratelimit/v3/local_rate_limit.proto#L22>`_
+`[extensions.filters.http.local_ratelimit.v3.LocalRateLimit proto] <https://github.com/envoyproxy/envoy/blob/ce1cb0ed18b6a6b8f6ddecb820424cec63b1cc31/api/envoy/extensions/filters/http/local_ratelimit/v3/local_rate_limit.proto#L22>`_
 
 
 .. code-block:: json
@@ -37,6 +37,7 @@ extensions.filters.http.local_ratelimit.v3.LocalRateLimit
     "token_bucket": "{...}",
     "filter_enabled": "{...}",
     "filter_enforced": "{...}",
+    "request_headers_to_add_when_not_enforced": [],
     "response_headers_to_add": [],
     "descriptors": [],
     "stage": "..."
@@ -99,11 +100,19 @@ filter_enforced
   Defaults to 0% of requests for safety.
   
   
+.. _envoy_v3_api_field_extensions.filters.http.local_ratelimit.v3.LocalRateLimit.request_headers_to_add_when_not_enforced:
+
+request_headers_to_add_when_not_enforced
+  (**repeated** :ref:`config.core.v3.HeaderValueOption <envoy_v3_api_msg_config.core.v3.HeaderValueOption>`) Specifies a list of HTTP headers that should be added to each request that
+  has been rate limited and is also forwarded upstream. This can only occur when the
+  filter is enabled but not enforced.
+  
+  
 .. _envoy_v3_api_field_extensions.filters.http.local_ratelimit.v3.LocalRateLimit.response_headers_to_add:
 
 response_headers_to_add
   (**repeated** :ref:`config.core.v3.HeaderValueOption <envoy_v3_api_msg_config.core.v3.HeaderValueOption>`) Specifies a list of HTTP headers that should be added to each response for requests that
-  have been rate limited.
+  have been rate limited. This occurs when the filter is either enabled or fully enforced.
   
   
 .. _envoy_v3_api_field_extensions.filters.http.local_ratelimit.v3.LocalRateLimit.descriptors:
