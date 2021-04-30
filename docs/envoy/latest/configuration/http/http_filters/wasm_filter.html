@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Wasm &mdash; envoy 1.19.0-dev-5886f0 documentation</title>
+  <title>Wasm &mdash; envoy 1.19.0-dev-63307f documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.19.0-dev-5886f0
+                1.19.0-dev-63307f
               </div>
             
           
@@ -255,19 +255,61 @@ be expanded over time and the configuration structures are likely to change.</p>
 <div class="section" id="example-configuration">
 <h2>Example configuration<a class="headerlink" href="#example-configuration" title="Permalink to this headline">¶</a></h2>
 <p>Example filter configuration:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.wasm</span>
-<span class="nt">typed_config</span><span class="p">:</span>
-  <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm</span>
-  <span class="nt">config</span><span class="p">:</span>
-    <span class="nt">config</span><span class="p">:</span>
-      <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;my_plugin&quot;</span>
-      <span class="nt">vm_config</span><span class="p">:</span>
-        <span class="nt">runtime</span><span class="p">:</span> <span class="s">&quot;envoy.wasm.runtime.v8&quot;</span>
-        <span class="nt">code</span><span class="p">:</span>
-          <span class="nt">local</span><span class="p">:</span>
-            <span class="nt">filename</span><span class="p">:</span> <span class="s">&quot;/etc/envoy_filter_http_wasm_example.wasm&quot;</span>
-        <span class="nt">allow_precompiled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text"><a class="reference download internal" download="" href="../../../_downloads/dc810b87bb1b9570c1b74a40d7ec8096/envoy.yaml"><code class="xref download docutils literal notranslate"><span class="pre">wasm</span> <span class="pre">envoy.yaml</span></code></a></span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>                  <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">web_service</span>
+
+         <span class=" -Error"> </span><span class="nt">http_filters</span><span class="p">:</span>
+<span class="hll">          <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.wasm</span>
+</span><span class="hll">            <span class="nt">typed_config</span><span class="p">:</span>
+</span><span class="hll">              <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm</span>
+</span><span class="hll">              <span class="nt">config</span><span class="p">:</span>
+</span><span class="hll">                <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;my_plugin&quot;</span>
+</span><span class="hll">                <span class="nt">root_id</span><span class="p">:</span> <span class="s">&quot;my_root_id&quot;</span>
+</span><span class="hll">                <span class="c1"># if your wasm filter requires custom configuration you can add</span>
+</span><span class="hll">                <span class="c1"># as follows</span>
+</span><span class="hll">                <span class="nt">configuration</span><span class="p">:</span>
+</span><span class="hll">                  <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="s">&quot;type.googleapis.com/google.protobuf.StringValue&quot;</span>
+</span><span class="hll">                  <span class="nt">value</span><span class="p">:</span> <span class="p p-Indicator">|</span>
+</span><span class="hll">                    <span class="no">{}</span>
+</span><span class="hll">                <span class="nt">vm_config</span><span class="p">:</span>
+</span><span class="hll">                  <span class="nt">runtime</span><span class="p">:</span> <span class="s">&quot;envoy.wasm.runtime.v8&quot;</span>
+</span><span class="hll">                  <span class="nt">vm_id</span><span class="p">:</span> <span class="s">&quot;my_vm_id&quot;</span>
+</span><span class="hll">                  <span class="nt">code</span><span class="p">:</span>
+</span><span class="hll">                    <span class="nt">local</span><span class="p">:</span>
+</span><span class="hll">                      <span class="nt">filename</span><span class="p">:</span> <span class="s">&quot;lib/envoy_filter_http_wasm_example.wasm&quot;</span>
+</span>          <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.router</span>
+            <span class="nt">typed_config</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+
+ <span class=" -Error"> </span><span class="nt">clusters</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">web_service</span>
 </pre></div>
+</td></tr></table></div>
 </div>
 <p>The preceding snippet configures a filter from a Wasm binary on local disk.</p>
 </div>
