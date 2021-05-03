@@ -26,7 +26,7 @@ UDP proxy :ref:`configuration overview <config_udp_listener_filters_udp_proxy>`.
 extensions.filters.udp.udp_proxy.v3.UdpProxyConfig
 --------------------------------------------------
 
-`[extensions.filters.udp.udp_proxy.v3.UdpProxyConfig proto] <https://github.com/envoyproxy/envoy/blob/e22e4a1011cf02003adea4736b0bbc35d9758db8/api/envoy/extensions/filters/udp/udp_proxy/v3/udp_proxy.proto#L23>`_
+`[extensions.filters.udp.udp_proxy.v3.UdpProxyConfig proto] <https://github.com/envoyproxy/envoy/blob/a058c6efe427a4d804d1924ae0daa3f6cbab633c/api/envoy/extensions/filters/udp/udp_proxy/v3/udp_proxy.proto#L23>`_
 
 Configuration for the UDP proxy filter.
 
@@ -101,7 +101,7 @@ upstream_socket_config
 extensions.filters.udp.udp_proxy.v3.UdpProxyConfig.HashPolicy
 -------------------------------------------------------------
 
-`[extensions.filters.udp.udp_proxy.v3.UdpProxyConfig.HashPolicy proto] <https://github.com/envoyproxy/envoy/blob/e22e4a1011cf02003adea4736b0bbc35d9758db8/api/envoy/extensions/filters/udp/udp_proxy/v3/udp_proxy.proto#L29>`_
+`[extensions.filters.udp.udp_proxy.v3.UdpProxyConfig.HashPolicy proto] <https://github.com/envoyproxy/envoy/blob/a058c6efe427a4d804d1924ae0daa3f6cbab633c/api/envoy/extensions/filters/udp/udp_proxy/v3/udp_proxy.proto#L29>`_
 
 Specifies the UDP hash policy.
 The packets can be routed by hash policy.
@@ -109,15 +109,31 @@ The packets can be routed by hash policy.
 .. code-block:: json
 
   {
-    "source_ip": "..."
+    "source_ip": "...",
+    "key": "..."
   }
 
 .. _envoy_v3_api_field_extensions.filters.udp.udp_proxy.v3.UdpProxyConfig.HashPolicy.source_ip:
 
 source_ip
-  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The source IP will be used to compute the hash used by hash-based load balancing algorithms.
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The source IP will be used to compute the hash used by hash-based load balancing algorithms.
   
   
+  
+  Precisely one of :ref:`source_ip <envoy_v3_api_field_extensions.filters.udp.udp_proxy.v3.UdpProxyConfig.HashPolicy.source_ip>`, :ref:`key <envoy_v3_api_field_extensions.filters.udp.udp_proxy.v3.UdpProxyConfig.HashPolicy.key>` must be set.
+  
+.. _envoy_v3_api_field_extensions.filters.udp.udp_proxy.v3.UdpProxyConfig.HashPolicy.key:
+
+key
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) A given key will be used to compute the hash used by hash-based load balancing algorithms.
+  In certain cases there is a need to direct different UDP streams jointly towards the selected set of endpoints.
+  A possible use-case is VoIP telephony, where media (RTP) and its corresponding control (RTCP) belong to the same logical session,
+  although they travel in separate streams. To ensure that these pair of streams are load-balanced on session level
+  (instead of individual stream level), dynamically created listeners can use the same hash key for each stream in the session.
+  
+  
+  
+  Precisely one of :ref:`source_ip <envoy_v3_api_field_extensions.filters.udp.udp_proxy.v3.UdpProxyConfig.HashPolicy.source_ip>`, :ref:`key <envoy_v3_api_field_extensions.filters.udp.udp_proxy.v3.UdpProxyConfig.HashPolicy.key>` must be set.
   
 
 
