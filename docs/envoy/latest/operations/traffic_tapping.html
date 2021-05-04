@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Traffic tapping &mdash; envoy 1.19.0-dev-a058c6 documentation</title>
+  <title>Traffic tapping &mdash; envoy 1.19.0-dev-38d1c1 documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.19.0-dev-a058c6
+                1.19.0-dev-38d1c1
               </div>
             
           
@@ -216,7 +216,7 @@ Capabilities will be expanded over time and the configuration structures are lik
 </div>
 <p>Tapping can be configured on <a class="reference internal" href="../api-v3/config/listener/v3/listener_components.proto.html#envoy-v3-api-field-config-listener-v3-filterchain-transport-socket"><span class="std std-ref">Listener</span></a> and <a class="reference internal" href="../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-transport-socket"><span class="std std-ref">Cluster</span></a> transport sockets, providing the ability to interpose on
 downstream and upstream L4 connections respectively.</p>
-<p>To configure traffic tapping, add an <cite>envoy.transport_sockets.tap</cite> transport socket
+<p>To configure traffic tapping, add an <code class="docutils literal notranslate"><span class="pre">envoy.transport_sockets.tap</span></code> transport socket
 <a class="reference internal" href="../api-v3/extensions/filters/http/tap/v3/tap.proto.html#envoy-v3-api-msg-extensions-filters-http-tap-v3-tap"><span class="std std-ref">configuration</span></a> to the listener
 or cluster. For a plain text socket this might look like:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">transport_socket</span><span class="p">:</span>
@@ -257,8 +257,8 @@ or cluster. For a plain text socket this might look like:</p>
 </div>
 <p>where the TLS context configuration replaces any existing <a class="reference internal" href="../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-downstreamtlscontext"><span class="std std-ref">downstream</span></a> or <a class="reference internal" href="../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-upstreamtlscontext"><span class="std std-ref">upstream</span></a>
 TLS configuration on the listener or cluster, respectively.</p>
-<p>Each unique socket instance will generate a trace file prefixed with <cite>path_prefix</cite>. E.g.
-<cite>/some/tap/path_0.pb</cite>.</p>
+<p>Each unique socket instance will generate a trace file prefixed with <code class="docutils literal notranslate"><span class="pre">path_prefix</span></code>. E.g.
+<code class="docutils literal notranslate"><span class="pre">/some/tap/path_0.pb</span></code>.</p>
 </div>
 <div class="section" id="buffered-data-limits">
 <h2>Buffered data limits<a class="headerlink" href="#buffered-data-limits" title="Permalink to this headline">¶</a></h2>
@@ -281,7 +281,7 @@ information. Most of the concepts overlap between the HTTP filter and the transp
 <h2>PCAP generation<a class="headerlink" href="#pcap-generation" title="Permalink to this headline">¶</a></h2>
 <p>The generated trace file can be converted to <a class="reference external" href="https://wiki.wireshark.org/Development/LibpcapFileFormat">libpcap format</a>, suitable for
 analysis with tools such as <a class="reference external" href="https://www.wireshark.org/">Wireshark</a> with the
-<cite>tap2pcap</cite> utility, e.g.:</p>
+<code class="docutils literal notranslate"><span class="pre">tap2pcap</span></code> utility, e.g.:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bazel run @envoy_api_canonical//tools:tap2pcap /some/tap/path_0.pb path_0.pcap
 tshark -r path_0.pcap -d <span class="s2">&quot;tcp.port==10000,http2&quot;</span> -P
   <span class="m">1</span>   <span class="m">0</span>.000000    <span class="m">127</span>.0.0.1 → <span class="m">127</span>.0.0.1    HTTP2 <span class="m">157</span> Magic, SETTINGS, WINDOW_UPDATE, HEADERS

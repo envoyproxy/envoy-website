@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Lua &mdash; envoy 1.19.0-dev-a058c6 documentation</title>
+  <title>Lua &mdash; envoy 1.19.0-dev-38d1c1 documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.19.0-dev-a058c6
+                1.19.0-dev-38d1c1
               </div>
             
           
@@ -243,7 +243,7 @@
 <p class="admonition-title">Attention</p>
 <p>By default Envoy is built without exporting symbols that you may need when interacting with Lua
 modules installed as shared objects. Envoy may need to be built with support for exported symbols.
-Please see the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a058c6efe427a4d804d1924ae0daa3f6cbab633c/bazel/README.md">Bazel docs</a> for more information.</p>
+Please see the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/38d1c1984f202a523e6ecf7c4da4b895bb7c9c93/bazel/README.md">Bazel docs</a> for more information.</p>
 </div>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
@@ -316,7 +316,7 @@ execute it for every HTTP request.</p>
 <p>The Lua HTTP filter also can be disabled or overridden on a per-route basis by providing a
 <a class="reference internal" href="../../../api-v3/extensions/filters/http/lua/v3/lua.proto.html#envoy-v3-api-msg-extensions-filters-http-lua-v3-luaperroute"><span class="std std-ref">LuaPerRoute</span></a> configuration
 on the virtual host, route, or weighted cluster.</p>
-<p>LuaPerRoute provides two ways of overriding the <cite>GLOBAL</cite> Lua script:</p>
+<p>LuaPerRoute provides two ways of overriding the <code class="docutils literal notranslate"><span class="pre">GLOBAL</span></code> Lua script:</p>
 <ul class="simple">
 <li><p>By providing a name reference to the defined <a class="reference internal" href="../../../api-v3/extensions/filters/http/lua/v3/lua.proto.html#envoy-v3-api-field-extensions-filters-http-lua-v3-lua-source-codes"><span class="std std-ref">named Lua source codes map</span></a>.</p></li>
 <li><p>By providing inline <a class="reference internal" href="../../../api-v3/extensions/filters/http/lua/v3/lua.proto.html#envoy-v3-api-field-extensions-filters-http-lua-v3-luaperroute-source-code"><span class="std std-ref">source code</span></a> (This allows the
@@ -365,7 +365,7 @@ The <code class="docutils literal notranslate"><span class="pre">GLOBAL</span></
 <p>The name <code class="docutils literal notranslate"><span class="pre">GLOBAL</span></code> is reserved for <a class="reference internal" href="../../../api-v3/extensions/filters/http/lua/v3/lua.proto.html#envoy-v3-api-field-extensions-filters-http-lua-v3-lua-inline-code"><span class="std std-ref">Lua.inline_code</span></a>. Therefore, do not use
 <code class="docutils literal notranslate"><span class="pre">GLOBAL</span></code> as name for other Lua scripts.</p>
 </div>
-<p>Or we can define a new Lua script in the LuaPerRoute configuration directly to override the <cite>GLOBAL</cite>
+<p>Or we can define a new Lua script in the LuaPerRoute configuration directly to override the <code class="docutils literal notranslate"><span class="pre">GLOBAL</span></code>
 Lua script as follows:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">typed_per_filter_config</span><span class="p">:</span>
   <span class="nt">envoy.filters.http.lua</span><span class="p">:</span>
@@ -454,7 +454,7 @@ more details on the supported API.</p>
 </div>
 <p>A common use-case is to rewrite upstream response body, for example: an upstream sends non-2xx
 response with JSON data, but the application requires HTML page to be sent to browsers.</p>
-<p>There are two ways of doing this, the first one is via the <cite>body()</cite> API.</p>
+<p>There are two ways of doing this, the first one is via the <code class="docutils literal notranslate"><span class="pre">body()</span></code> API.</p>
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">envoy_on_response</span><span class="p">(</span><span class="n">response_handle</span><span class="p">)</span>
   <span class="kd">local</span> <span class="n">content_length</span> <span class="o">=</span> <span class="n">response_handle</span><span class="p">:</span><span class="n">body</span><span class="p">():</span><span class="n">setBytes</span><span class="p">(</span><span class="s2">&quot;&lt;html&gt;&lt;b&gt;Not Found&lt;b&gt;&lt;/html&gt;&quot;</span><span class="p">)</span>
   <span class="n">response_handle</span><span class="p">:</span><span class="n">headers</span><span class="p">():</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;content-length&quot;</span><span class="p">,</span> <span class="n">content_length</span><span class="p">)</span>
@@ -462,7 +462,7 @@ response with JSON data, but the application requires HTML page to be sent to br
 <span class="kr">end</span>
 </pre></div>
 </div>
-<p>Or, through <cite>bodyChunks()</cite> API, which let Envoy to skip buffering the upstream response data.</p>
+<p>Or, through <code class="docutils literal notranslate"><span class="pre">bodyChunks()</span></code> API, which let Envoy to skip buffering the upstream response data.</p>
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kr">function</span> <span class="nf">envoy_on_response</span><span class="p">(</span><span class="n">response_handle</span><span class="p">)</span>
 
   <span class="c1">-- Sets the content-length.</span>
@@ -483,7 +483,7 @@ response with JSON data, but the application requires HTML page to be sent to br
 </div>
 <div class="section" id="complete-example">
 <span id="config-http-filters-lua-stream-handle-api"></span><h2>Complete example<a class="headerlink" href="#complete-example" title="Permalink to this headline">¶</a></h2>
-<p>A complete example using Docker is available in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a058c6efe427a4d804d1924ae0daa3f6cbab633c//examples/lua">/examples/lua</a>.</p>
+<p>A complete example using Docker is available in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/38d1c1984f202a523e6ecf7c4da4b895bb7c9c93//examples/lua">/examples/lua</a>.</p>
 </div>
 <div class="section" id="stream-handle-api">
 <h2>Stream handle API<a class="headerlink" href="#stream-handle-api" title="Permalink to this headline">¶</a></h2>
@@ -527,8 +527,8 @@ situation.</p>
 the entire body has been received in a buffer. Note that all buffering must adhere to the
 flow-control policies in place. Envoy will not buffer more data than is allowed by the connection
 manager.</p>
-<p>An optional boolean argument <cite>always_wrap_body</cite> can be used to require Envoy always returns a
-<cite>body</cite> object even if the body is empty. Therefore we can modify the body regardless of whether the
+<p>An optional boolean argument <code class="docutils literal notranslate"><span class="pre">always_wrap_body</span></code> can be used to require Envoy always returns a
+<code class="docutils literal notranslate"><span class="pre">body</span></code> object even if the body is empty. Therefore we can modify the body regardless of whether the
 original body exists or not.</p>
 <p>Returns a <a class="reference internal" href="#config-http-filters-lua-buffer-wrapper"><span class="std std-ref">buffer object</span></a>.</p>
 </div>
@@ -628,7 +628,7 @@ under the filter name i.e. <em>envoy.filters.http.lua</em>. Below is an example 
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span> <span class="n">streamInfo</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">streamInfo</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a058c6efe427a4d804d1924ae0daa3f6cbab633c/include/envoy/stream_info/stream_info.h">information</a> related to the current request.</p>
+<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/38d1c1984f202a523e6ecf7c4da4b895bb7c9c93/include/envoy/stream_info/stream_info.h">information</a> related to the current request.</p>
 <p>Returns a <a class="reference internal" href="#config-http-filters-lua-stream-info-wrapper"><span class="std std-ref">stream info object</span></a>.</p>
 </div>
 <div class="section" id="connection">
@@ -636,7 +636,7 @@ under the filter name i.e. <em>envoy.filters.http.lua</em>. Below is an example 
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span> <span class="n">connection</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">connection</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Returns the current request’s underlying <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a058c6efe427a4d804d1924ae0daa3f6cbab633c/include/envoy/network/connection.h">connection</a>.</p>
+<p>Returns the current request’s underlying <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/38d1c1984f202a523e6ecf7c4da4b895bb7c9c93/include/envoy/network/connection.h">connection</a>.</p>
 <p>Returns a <a class="reference internal" href="#config-http-filters-lua-connection-wrapper"><span class="std std-ref">connection object</span></a>.</p>
 </div>
 <div class="section" id="importpublickey">
@@ -705,7 +705,7 @@ that supplies the header value.</p>
 <p class="admonition-title">Attention</p>
 <p>In the current implementation, headers cannot be modified during iteration. Additionally, if
 it is necessary to modify headers after an iteration, the iteration must first be completed. This means that
-<cite>break</cite> or any other way to exit the loop early must not be used. This may be more flexible in the future.</p>
+<code class="docutils literal notranslate"><span class="pre">break</span></code> or any other way to exit the loop early must not be used. This may be more flexible in the future.</p>
 </div>
 </div>
 <div class="section" id="remove">
@@ -779,7 +779,7 @@ key. <em>value</em> is a <em>metadata</em> entry value.</p>
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">streamInfo</span><span class="p">:</span><span class="n">protocol</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Returns the string representation of <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a058c6efe427a4d804d1924ae0daa3f6cbab633c/include/envoy/http/protocol.h">HTTP protocol</a>
+<p>Returns the string representation of <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/38d1c1984f202a523e6ecf7c4da4b895bb7c9c93/include/envoy/http/protocol.h">HTTP protocol</a>
 used by the current request. The possible values are: <em>HTTP/1.0</em>, <em>HTTP/1.1</em>, and <em>HTTP/2</em>.</p>
 </div>
 <div class="section" id="downstreamlocaladdress">
@@ -787,7 +787,7 @@ used by the current request. The possible values are: <em>HTTP/1.0</em>, <em>HTT
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">streamInfo</span><span class="p">:</span><span class="n">downstreamLocalAddress</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Returns the string representation of <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a058c6efe427a4d804d1924ae0daa3f6cbab633c/include/envoy/stream_info/stream_info.h">downstream remote address</a>
+<p>Returns the string representation of <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/38d1c1984f202a523e6ecf7c4da4b895bb7c9c93/include/envoy/stream_info/stream_info.h">downstream remote address</a>
 used by the current request.</p>
 </div>
 <div class="section" id="downstreamdirectremoteaddress">
@@ -795,7 +795,7 @@ used by the current request.</p>
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">streamInfo</span><span class="p">:</span><span class="n">downstreamDirectRemoteAddress</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Returns the string representation of <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a058c6efe427a4d804d1924ae0daa3f6cbab633c/include/envoy/stream_info/stream_info.h">downstream directly connected address</a>
+<p>Returns the string representation of <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/38d1c1984f202a523e6ecf7c4da4b895bb7c9c93/include/envoy/stream_info/stream_info.h">downstream directly connected address</a>
 used by the current request. This is equivalent to the address of the physical connection.</p>
 </div>
 <div class="section" id="dynamicmetadata">
@@ -810,7 +810,7 @@ used by the current request. This is equivalent to the address of the physical c
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">streamInfo</span><span class="p">:</span><span class="n">downstreamSslConnection</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a058c6efe427a4d804d1924ae0daa3f6cbab633c/include/envoy/ssl/connection.h">information</a> related to the current SSL connection.</p>
+<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/38d1c1984f202a523e6ecf7c4da4b895bb7c9c93/include/envoy/ssl/connection.h">information</a> related to the current SSL connection.</p>
 <p>Returns a downstream <a class="reference internal" href="#config-http-filters-lua-ssl-socket-info"><span class="std std-ref">SSL connection info object</span></a>.</p>
 </div>
 <div class="section" id="requestedservername">
@@ -818,7 +818,7 @@ used by the current request. This is equivalent to the address of the physical c
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">streamInfo</span><span class="p">:</span><span class="n">requestedServerName</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Returns the string representation of <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a058c6efe427a4d804d1924ae0daa3f6cbab633c/include/envoy/stream_info/stream_info.h">requested server name</a>
+<p>Returns the string representation of <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/38d1c1984f202a523e6ecf7c4da4b895bb7c9c93/include/envoy/stream_info/stream_info.h">requested server name</a>
 (e.g. SNI in TLS) for the current request if present.</p>
 </div>
 </div>
@@ -880,7 +880,7 @@ key. <em>value</em> is a <em>dynamicMetadata</em> entry value.</p>
 <span class="kr">end</span>
 </pre></div>
 </div>
-<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a058c6efe427a4d804d1924ae0daa3f6cbab633c/include/envoy/ssl/connection.h">SSL connection</a> object when the connection is
+<p>Returns <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/38d1c1984f202a523e6ecf7c4da4b895bb7c9c93/include/envoy/ssl/connection.h">SSL connection</a> object when the connection is
 secured and <em>nil</em> when it is not.</p>
 <p>Returns an <a class="reference internal" href="#config-http-filters-lua-ssl-socket-info"><span class="std std-ref">SSL connection info object</span></a>.</p>
 </div>

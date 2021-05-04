@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Sharing data between filters &mdash; envoy 1.19.0-dev-a058c6 documentation</title>
+  <title>Sharing data between filters &mdash; envoy 1.19.0-dev-38d1c1 documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.19.0-dev-a058c6
+                1.19.0-dev-38d1c1
               </div>
             
           
@@ -238,18 +238,18 @@ logic for a specific key. Incoming config metadata (via xDS) is converted
 to class objects at config load time. Filters can then obtain a typed
 variant of the metadata at runtime (per request or connection), thereby
 eliminating the need for filters to repeatedly convert from
-<cite>ProtobufWkt::Struct</cite> to some internal object during request/connection
+<code class="docutils literal notranslate"><span class="pre">ProtobufWkt::Struct</span></code> to some internal object during request/connection
 processing.</p>
 <p>For example, a filter that desires to have a convenience wrapper class over
-an opaque metadata with key <cite>xxx.service.policy</cite> in <cite>ClusterInfo</cite> could
-register a factory <cite>ServicePolicyFactory</cite> that inherits from
-<cite>ClusterTypedMetadataFactory</cite>. The factory translates the <cite>ProtobufWkt::Struct</cite>
-into an instance of <cite>ServicePolicy</cite> class (inherited from
-<cite>FilterState::Object</cite>). When a <cite>Cluster</cite> is created, the associated
-<cite>ServicePolicy</cite> instance will be created and cached. Note that typed
+an opaque metadata with key <code class="docutils literal notranslate"><span class="pre">xxx.service.policy</span></code> in <code class="docutils literal notranslate"><span class="pre">ClusterInfo</span></code> could
+register a factory <code class="docutils literal notranslate"><span class="pre">ServicePolicyFactory</span></code> that inherits from
+<code class="docutils literal notranslate"><span class="pre">ClusterTypedMetadataFactory</span></code>. The factory translates the <code class="docutils literal notranslate"><span class="pre">ProtobufWkt::Struct</span></code>
+into an instance of <code class="docutils literal notranslate"><span class="pre">ServicePolicy</span></code> class (inherited from
+<code class="docutils literal notranslate"><span class="pre">FilterState::Object</span></code>). When a <code class="docutils literal notranslate"><span class="pre">Cluster</span></code> is created, the associated
+<code class="docutils literal notranslate"><span class="pre">ServicePolicy</span></code> instance will be created and cached. Note that typed
 metadata is not a new source of metadata. It is obtained from metadata that
-is specified as part of the configuration. A <cite>FilterState::Object</cite> implements
-<cite>serializeAsProto</cite> method can be configured in access loggers to log it.</p>
+is specified as part of the configuration. A <code class="docutils literal notranslate"><span class="pre">FilterState::Object</span></code> implements
+<code class="docutils literal notranslate"><span class="pre">serializeAsProto</span></code> method can be configured in access loggers to log it.</p>
 </div>
 <div class="section" id="http-per-route-filter-configuration">
 <h3>HTTP Per-Route Filter Configuration<a class="headerlink" href="#http-per-route-filter-configuration" title="Permalink to this headline">¶</a></h3>
@@ -260,9 +260,9 @@ and embedded into the route table. It is up to the HTTP filter
 implementation to treat the route-specific filter config as a replacement
 to global config or an enhancement. For example, the HTTP fault filter uses
 this technique to provide per-route fault configuration.</p>
-<p><cite>typed_per_filter_config</cite> is a <cite>map&lt;string, google.protobuf.Any&gt;</cite>. The Connection
+<p><code class="docutils literal notranslate"><span class="pre">typed_per_filter_config</span></code> is a <code class="docutils literal notranslate"><span class="pre">map&lt;string,</span> <span class="pre">google.protobuf.Any&gt;</span></code>. The Connection
 manager iterates over this map and invokes the filter factory interface
-<cite>createRouteSpecificFilterConfigTyped</cite> to parse/validate the struct value and
+<code class="docutils literal notranslate"><span class="pre">createRouteSpecificFilterConfigTyped</span></code> to parse/validate the struct value and
 convert it into a typed class object that’s stored with the route
 itself. HTTP filters can then query the route-specific filter config during
 request processing.</p>
@@ -273,13 +273,13 @@ request processing.</p>
 <p>Dynamic state is generated per network connection or per HTTP
 stream. Dynamic state can be mutable if desired by the filter generating
 the state.</p>
-<p><cite>Envoy::Network::Connection</cite> and <cite>Envoy::Http::Filter</cite> provide a
-<cite>StreamInfo</cite> object that contains information about the current TCP
+<p><code class="docutils literal notranslate"><span class="pre">Envoy::Network::Connection</span></code> and <code class="docutils literal notranslate"><span class="pre">Envoy::Http::Filter</span></code> provide a
+<code class="docutils literal notranslate"><span class="pre">StreamInfo</span></code> object that contains information about the current TCP
 connection and HTTP stream (i.e., HTTP request/response pair)
-respectively. <cite>StreamInfo</cite> contains a set of fixed attributes as part of
+respectively. <code class="docutils literal notranslate"><span class="pre">StreamInfo</span></code> contains a set of fixed attributes as part of
 the class definition (e.g., HTTP protocol, requested server name, etc.). In
 addition, it provides a facility to store typed objects in a map
-(<cite>map&lt;string, FilterState::Object&gt;</cite>). The state stored per filter can be
+(<code class="docutils literal notranslate"><span class="pre">map&lt;string,</span> <span class="pre">FilterState::Object&gt;</span></code>). The state stored per filter can be
 either write-once (immutable), or write-many (mutable).</p>
 </div>
 </div>

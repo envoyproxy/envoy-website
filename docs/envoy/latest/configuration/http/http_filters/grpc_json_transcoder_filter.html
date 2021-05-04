@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>gRPC-JSON transcoder &mdash; envoy 1.19.0-dev-a058c6 documentation</title>
+  <title>gRPC-JSON transcoder &mdash; envoy 1.19.0-dev-38d1c1 documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.19.0-dev-a058c6
+                1.19.0-dev-38d1c1
               </div>
             
           
@@ -264,7 +264,7 @@ in your include path, to define the HTTP mapping.</p>
 </pre></div>
 </div>
 <p>Then run protoc to generate the descriptor set. For example using the test
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a058c6efe427a4d804d1924ae0daa3f6cbab633c/test/proto/bookstore.proto">bookstore.proto</a> provided in the Envoy repository:</p>
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/38d1c1984f202a523e6ecf7c4da4b895bb7c9c93/test/proto/bookstore.proto">bookstore.proto</a> provided in the Envoy repository:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>protoc -I<span class="k">$(</span>GOOGLEAPIS_DIR<span class="k">)</span> -I. --include_imports --include_source_info <span class="se">\</span>
 <span class="go">    --descriptor_set_out=proto.pb test/proto/bookstore.proto</span>
 </pre></div>
@@ -274,13 +274,13 @@ in your include path, to define the HTTP mapping.</p>
 <div class="section" id="route-configs-for-transcoded-requests">
 <h2>Route configs for transcoded requests<a class="headerlink" href="#route-configs-for-transcoded-requests" title="Permalink to this headline">¶</a></h2>
 <p>The route configs to be used with the gRPC-JSON transcoder should be identical to the gRPC route.
-The requests processed by the transcoder filter will have <cite>/&lt;package&gt;.&lt;service&gt;/&lt;method&gt;</cite> path and
-<cite>POST</cite> method. The route configs for those requests should match on <cite>/&lt;package&gt;.&lt;service&gt;/&lt;method&gt;</cite>,
+The requests processed by the transcoder filter will have <code class="docutils literal notranslate"><span class="pre">/&lt;package&gt;.&lt;service&gt;/&lt;method&gt;</span></code> path and
+<code class="docutils literal notranslate"><span class="pre">POST</span></code> method. The route configs for those requests should match on <code class="docutils literal notranslate"><span class="pre">/&lt;package&gt;.&lt;service&gt;/&lt;method&gt;</span></code>,
 not the incoming request path. This allows the routes to be used for both gRPC requests and
 gRPC-JSON transcoded requests.</p>
-<p>For example, with the following proto example, the router will process <cite>/helloworld.Greeter/SayHello</cite>
-as the path, so the route config prefix <cite>/say</cite> won’t match requests to <cite>SayHello</cite>. If you want to
-match the incoming request path, set <cite>match_incoming_request_route</cite> to true.</p>
+<p>For example, with the following proto example, the router will process <code class="docutils literal notranslate"><span class="pre">/helloworld.Greeter/SayHello</span></code>
+as the path, so the route config prefix <code class="docutils literal notranslate"><span class="pre">/say</span></code> won’t match requests to <code class="docutils literal notranslate"><span class="pre">SayHello</span></code>. If you want to
+match the incoming request path, set <code class="docutils literal notranslate"><span class="pre">match_incoming_request_route</span></code> to true.</p>
 <div class="highlight-proto notranslate"><div class="highlight"><pre><span></span><span class="k">syntax</span> <span class="o">=</span> <span class="s">&quot;proto3&quot;</span><span class="p">;</span>
 
 <span class="kn">package</span> <span class="nn">helloworld</span><span class="p">;</span>
@@ -318,25 +318,25 @@ match the incoming request path, set <cite>match_incoming_request_route</cite> t
 <div class="section" id="sending-arbitrary-content">
 <h2>Sending arbitrary content<a class="headerlink" href="#sending-arbitrary-content" title="Permalink to this headline">¶</a></h2>
 <p>By default, when transcoding occurs, gRPC-JSON encodes the message output of a gRPC service method into
-JSON and sets the HTTP response <cite>Content-Type</cite> header to <cite>application/json</cite>. To send arbitrary content,
+JSON and sets the HTTP response <code class="docutils literal notranslate"><span class="pre">Content-Type</span></code> header to <code class="docutils literal notranslate"><span class="pre">application/json</span></code>. To send arbitrary content,
 a gRPC service method can use
 <a class="reference external" href="https://github.com/googleapis/googleapis/blob/master/google/api/httpbody.proto">google.api.HttpBody</a>
 as its output message type. The implementation needs to set
 <a class="reference external" href="https://github.com/googleapis/googleapis/blob/master/google/api/httpbody.proto#L68">content_type</a>
-(which sets the value of the HTTP response <cite>Content-Type</cite> header) and
+(which sets the value of the HTTP response <code class="docutils literal notranslate"><span class="pre">Content-Type</span></code> header) and
 <a class="reference external" href="https://github.com/googleapis/googleapis/blob/master/google/api/httpbody.proto#L71">data</a>
 (which sets the HTTP response body) accordingly.
 Multiple <a class="reference external" href="https://github.com/googleapis/googleapis/blob/master/google/api/httpbody.proto">google.api.HttpBody</a>
 can be send by the gRPC server in the server streaming case.
-In this case, HTTP response header <cite>Content-Type</cite> will use the <cite>content-type</cite> from the first
+In this case, HTTP response header <code class="docutils literal notranslate"><span class="pre">Content-Type</span></code> will use the <code class="docutils literal notranslate"><span class="pre">content-type</span></code> from the first
 <a class="reference external" href="https://github.com/googleapis/googleapis/blob/master/google/api/httpbody.proto">google.api.HttpBody</a>.</p>
 </div>
 <div class="section" id="headers">
 <h2>Headers<a class="headerlink" href="#headers" title="Permalink to this headline">¶</a></h2>
 <p>gRPC-JSON forwards the following headers to the gRPC server:</p>
 <ul class="simple">
-<li><p><cite>x-envoy-original-path</cite>, containing the value of the original path of HTTP request</p></li>
-<li><p><cite>x-envoy-original-method</cite>, containing the value of the original method of HTTP request</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x-envoy-original-path</span></code>, containing the value of the original path of HTTP request</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x-envoy-original-method</span></code>, containing the value of the original method of HTTP request</p></li>
 </ul>
 </div>
 <div class="section" id="sample-envoy-configuration">
