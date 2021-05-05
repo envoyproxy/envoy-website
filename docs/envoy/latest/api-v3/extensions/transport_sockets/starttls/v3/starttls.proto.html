@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>StartTls &mdash; envoy 1.19.0-dev-f06269 documentation</title>
+  <title>StartTls &mdash; envoy 1.19.0-dev-b7ce74 documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.19.0-dev-f06269
+                1.19.0-dev-b7ce74
               </div>
             
           
@@ -238,16 +238,19 @@
 </ul>
 </div>
 <p>StartTls transport socket addresses situations when a protocol starts in clear-text and
-negotiates an in-band switch to TLS. StartTls transport socket is protocol agnostic and requires
-a network filter which understands protocol exchange and a state machine to signal to the StartTls
-transport socket when a switch to TLS is required.</p>
+negotiates an in-band switch to TLS. StartTls transport socket is protocol agnostic. In the
+case of downstream StartTls a network filter is required which understands protocol exchange
+and a state machine to signal to the StartTls transport socket when a switch to TLS is
+required. Similarly, upstream StartTls requires the owner of an upstream transport socket to
+manage the state machine necessary to properly coordinate negotiation with the upstream and
+signal to the transport socket when a switch to secure transport is required.</p>
 <div class="section" id="extensions-transport-sockets-starttls-v3-starttlsconfig">
 <span id="envoy-v3-api-msg-extensions-transport-sockets-starttls-v3-starttlsconfig"></span><h2>extensions.transport_sockets.starttls.v3.StartTlsConfig<a class="headerlink" href="#extensions-transport-sockets-starttls-v3-starttlsconfig" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/f06269d02cb36686a2a1db777a15b70bb3229e29/api/envoy/extensions/transport_sockets/starttls/v3/starttls.proto#L27">[extensions.transport_sockets.starttls.v3.StartTlsConfig proto]</a></p>
-<p>Configuration for StartTls transport socket.
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/b7ce74e8cc8d882ef23146c5039712e84796950e/api/envoy/extensions/transport_sockets/starttls/v3/starttls.proto#L30">[extensions.transport_sockets.starttls.v3.StartTlsConfig proto]</a></p>
+<p>Configuration for a downstream StartTls transport socket.
 StartTls transport socket wraps two sockets:
-- raw_buffer socket which is used at the beginning of the session
-- TLS socket used when a protocol negotiates a switch to encrypted traffic.</p>
+* raw_buffer socket which is used at the beginning of the session
+* TLS socket used when a protocol negotiates a switch to encrypted traffic.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;cleartext_socket_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;tls_socket_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
@@ -259,7 +262,29 @@ StartTls transport socket wraps two sockets:
 </dd>
 </dl>
 <dl class="simple" id="envoy-v3-api-field-extensions-transport-sockets-starttls-v3-starttlsconfig-tls-socket-config">
-<dt>tls_socket_config</dt><dd><p>(<a class="reference internal" href="../../tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-downstreamtlscontext"><span class="std std-ref">extensions.transport_sockets.tls.v3.DownstreamTlsContext</span></a>, <em>REQUIRED</em>) Configuration for TLS socket.</p>
+<dt>tls_socket_config</dt><dd><p>(<a class="reference internal" href="../../tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-downstreamtlscontext"><span class="std std-ref">extensions.transport_sockets.tls.v3.DownstreamTlsContext</span></a>, <em>REQUIRED</em>) Configuration for a downstream TLS socket.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="extensions-transport-sockets-starttls-v3-upstreamstarttlsconfig">
+<span id="envoy-v3-api-msg-extensions-transport-sockets-starttls-v3-upstreamstarttlsconfig"></span><h2>extensions.transport_sockets.starttls.v3.UpstreamStartTlsConfig<a class="headerlink" href="#extensions-transport-sockets-starttls-v3-upstreamstarttlsconfig" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/b7ce74e8cc8d882ef23146c5039712e84796950e/api/envoy/extensions/transport_sockets/starttls/v3/starttls.proto#L43">[extensions.transport_sockets.starttls.v3.UpstreamStartTlsConfig proto]</a></p>
+<p>Configuration for an upstream StartTls transport socket.
+StartTls transport socket wraps two sockets:
+* raw_buffer socket which is used at the beginning of the session
+* TLS socket used when a protocol negotiates a switch to encrypted traffic.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;cleartext_socket_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;tls_socket_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-extensions-transport-sockets-starttls-v3-upstreamstarttlsconfig-cleartext-socket-config">
+<dt>cleartext_socket_config</dt><dd><p>(<a class="reference internal" href="../../raw_buffer/v3/raw_buffer.proto.html#envoy-v3-api-msg-extensions-transport-sockets-raw-buffer-v3-rawbuffer"><span class="std std-ref">extensions.transport_sockets.raw_buffer.v3.RawBuffer</span></a>) (optional) Configuration for clear-text socket used at the beginning of the session.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-transport-sockets-starttls-v3-upstreamstarttlsconfig-tls-socket-config">
+<dt>tls_socket_config</dt><dd><p>(<a class="reference internal" href="../../tls/v3/tls.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tls-v3-upstreamtlscontext"><span class="std std-ref">extensions.transport_sockets.tls.v3.UpstreamTlsContext</span></a>, <em>REQUIRED</em>) Configuration for an upstream TLS socket.</p>
 </dd>
 </dl>
 </div>
