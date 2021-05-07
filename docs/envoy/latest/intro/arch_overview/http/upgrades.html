@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>HTTP upgrades &mdash; envoy 1.19.0-dev-a5020c documentation</title>
+  <title>HTTP upgrades &mdash; envoy 1.19.0-dev-73ade9 documentation</title>
   
 
   
@@ -45,7 +45,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="HTTP dynamic forward proxy" href="http_proxy.html" />
-    <link rel="prev" title="HTTP routing" href="http_routing.html" /> 
+    <link rel="prev" title="HTTP3 overview" href="http3.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.19.0-dev-a5020c
+                1.19.0-dev-73ade9
               </div>
             
           
@@ -108,6 +108,7 @@
 <li class="toctree-l4"><a class="reference internal" href="http_connection_management.html">HTTP connection management</a></li>
 <li class="toctree-l4"><a class="reference internal" href="http_filters.html">HTTP filters</a></li>
 <li class="toctree-l4"><a class="reference internal" href="http_routing.html">HTTP routing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="http3.html">HTTP3 overview</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">HTTP upgrades</a></li>
 <li class="toctree-l4"><a class="reference internal" href="http_proxy.html">HTTP dynamic forward proxy</a></li>
 </ul>
@@ -261,25 +262,25 @@ laid out below, but custom filter chains can only be configured on a per-HttpCon
 <p>Note that the statistics for upgrades are all bundled together so WebSocket and other upgrades
 <a class="reference internal" href="../../../configuration/http/http_conn_man/stats.html#config-http-conn-man-stats"><span class="std std-ref">statistics</span></a> are tracked by stats such as
 downstream_cx_upgrades_total and downstream_cx_upgrades_active</p>
-<div class="section" id="websocket-over-http-2-hops">
-<h2>Websocket over HTTP/2 hops<a class="headerlink" href="#websocket-over-http-2-hops" title="Permalink to this headline">¶</a></h2>
-<p>While HTTP/2 support for WebSockets is off by default, Envoy does support tunneling WebSockets over
-HTTP/2 streams for deployments that prefer a uniform HTTP/2 mesh throughout; this enables, for example,
+<div class="section" id="websocket-over-http-2-or-http-3-hops">
+<h2>Websocket over HTTP/2 or HTTP/3 hops<a class="headerlink" href="#websocket-over-http-2-or-http-3-hops" title="Permalink to this headline">¶</a></h2>
+<p>While HTTP/2 and HTTP/3 support for WebSockets is off by default, Envoy does support tunneling WebSockets over
+HTTP/2 and above for deployments that prefer a uniform HTTP/2+ mesh throughout; this enables, for example,
 a deployment of the form:</p>
 <p>[Client] —- HTTP/1.1 —- [Front Envoy] —- HTTP/2 —- [Sidecar Envoy —- H1  —- App]</p>
 <p>In this case, if a client is for example using WebSocket, we want the Websocket to arrive at the
-upstream server functionally intact, which means it needs to traverse the HTTP/2 hop.</p>
+upstream server functionally intact, which means it needs to traverse the HTTP/2+ hop.</p>
 <p>This is accomplished via <a class="reference external" href="https://tools.ietf.org/html/rfc8441">Extended CONNECT (RFC8441)</a> support,
 turned on by setting <a class="reference internal" href="../../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-http2protocoloptions-allow-connect"><span class="std std-ref">allow_connect</span></a>
 true at the second layer Envoy. The
-WebSocket request will be transformed into an HTTP/2 CONNECT stream, with :protocol header
-indicating the original upgrade, traverse the HTTP/2 hop, and be downgraded back into an HTTP/1
+WebSocket request will be transformed into an HTTP/2+ CONNECT stream, with :protocol header
+indicating the original upgrade, traverse the HTTP/2+ hop, and be downgraded back into an HTTP/1
 WebSocket Upgrade. This same Upgrade-CONNECT-Upgrade transformation will be performed on any
-HTTP/2 hop, with the documented flaw that the HTTP/1.1 method is always assumed to be GET.
+HTTP/2+ hop, with the documented flaw that the HTTP/1.1 method is always assumed to be GET.
 Non-WebSocket upgrades are allowed to use any valid HTTP method (i.e. POST) and the current
 upgrade/downgrade mechanism will drop the original method and transform the Upgrade request to
 a GET method on the final Envoy-Upstream hop.</p>
-<p>Note that the HTTP/2 upgrade path has very strict HTTP/1.1 compliance, so will not proxy WebSocket
+<p>Note that the HTTP/2+ upgrade path has very strict HTTP/1.1 compliance, so will not proxy WebSocket
 upgrade requests or responses with bodies.</p>
 </div>
 <div class="section" id="connect-support">
@@ -287,7 +288,7 @@ upgrade requests or responses with bodies.</p>
 <p>Envoy CONNECT support is off by default (Envoy will send an internally generated 403 in response to
 CONNECT requests). CONNECT support can be enabled via the upgrade options described above, setting
 the upgrade value to the special keyword “CONNECT”.</p>
-<p>While for HTTP/2, CONNECT request may have a path, in general and for HTTP/1.1 CONNECT requests do
+<p>While for HTTP/2 and above, CONNECT request may have a path, in general and for HTTP/1.1 CONNECT requests do
 not have a path, and can only be matched using a
 <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-msg-config-route-v3-routematch-connectmatcher"><span class="std std-ref">connect_matcher</span></a>. Please also note
 that when doing non-wildcard domain matching for CONNECT requests, the CONNECT target is  matched
@@ -308,8 +309,8 @@ will synthesize 200 response headers, and then forward the TCP data as the HTTP 
 <p>This mode of CONNECT support can create major security holes if not configured correctly, as the upstream
 will be forwarded <em>unsanitized</em> headers if they are in the body payload. Please use with caution</p>
 </div>
-<p>For an example of proxying connect, please see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a5020ce885592e8e3a5d9bb644554a30c0f79a18/configs/proxy_connect.yaml">configs/proxy_connect.yaml</a>
-For an example of terminating connect, please see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a5020ce885592e8e3a5d9bb644554a30c0f79a18/configs/terminate_connect.yaml">configs/terminate_connect.yaml</a></p>
+<p>For an example of proxying connect, please see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/73ade9addeeac0f052f0b3e8fb29d76975b89aa9/configs/proxy_connect.yaml">configs/proxy_connect.yaml</a>
+For an example of terminating connect, please see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/73ade9addeeac0f052f0b3e8fb29d76975b89aa9/configs/terminate_connect.yaml">configs/terminate_connect.yaml</a></p>
 <p>Note that for CONNECT-over-tls, Envoy can not currently be configured to do the CONNECT request in the clear
 and encrypt previously unencrypted payload in one hop. To send CONNECT in plaintext and encrypt the payload,
 one must first forward the HTTP payload over an “upstream” TLS loopback connection to encrypt it, then have
@@ -319,7 +320,7 @@ a TCP listener take the encrypted payload and send the CONNECT upstream.</p>
 <span id="id1"></span><h2>Tunneling TCP over HTTP<a class="headerlink" href="#tunneling-tcp-over-http" title="Permalink to this headline">¶</a></h2>
 <p>Envoy also has support for tunneling raw TCP over HTTP CONNECT or HTTP POST requests. Find
 below some usage scenarios.</p>
-<p>HTTP/2 CONNECT can be used to proxy multiplexed TCP over pre-warmed secure connections and amortize
+<p>HTTP/2+ CONNECT can be used to proxy multiplexed TCP over pre-warmed secure connections and amortize
 the cost of any TLS handshake.
 An example set up proxying SMTP would look something like this:</p>
 <p>[SMTP Upstream] — raw SMTP — [L2 Envoy]  — SMTP tunneled over HTTP/2 CONNECT — [L1 Envoy]  — raw SMTP  — [Client]</p>
@@ -329,11 +330,11 @@ supporting HTTP/2):</p>
 <p>[HTTP Server] — raw HTTP — [L2 Envoy]  — HTTP tunneled over HTTP/1.1 CONNECT — [L1 Envoy]  — raw HTTP  — [HTTP Client]</p>
 <p>Note that when using HTTP/1 CONNECT you will end up having a TCP connection
 between L1 and L2 Envoy for each TCP client connection, it is preferable to use
-HTTP/2 when you have the choice.</p>
+HTTP/2 or above when you have the choice.</p>
 <p>HTTP POST can also be used to proxy multiplexed TCP when intermediate proxies that don’t support
 CONNECT. An example set up proxying HTTP would look something like this:</p>
 <p>[TCP Server] — raw TCP — [L2 Envoy]  — TCP tunneled over HTTP/2 or HTTP/1.1 POST — [Intermidate Proxies] — HTTP/2 or HTTP/1.1 POST — [L1 Envoy]  — raw TCP  — [TCP Client]</p>
-<p>Examples of such a set up can be found in the Envoy example config <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/a5020ce885592e8e3a5d9bb644554a30c0f79a18/configs/">directory</a>
+<p>Examples of such a set up can be found in the Envoy example config <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/73ade9addeeac0f052f0b3e8fb29d76975b89aa9/configs/">directory</a>
 For HTTP/1.1 CONNECT run <code class="docutils literal notranslate"><span class="pre">bazel-bin/source/exe/envoy-static</span> <span class="pre">--config-path</span> <span class="pre">configs/encapsulate_in_http1_connect.yaml</span> <span class="pre">--base-id</span> <span class="pre">1</span></code>
 and <code class="docutils literal notranslate"><span class="pre">bazel-bin/source/exe/envoy-static</span> <span class="pre">--config-path</span> <span class="pre">configs/terminate_http1_connect.yaml</span></code>.
 For HTTP/2 CONNECT run <code class="docutils literal notranslate"><span class="pre">bazel-bin/source/exe/envoy-static</span> <span class="pre">--config-path</span> <span class="pre">configs/encapsulate_in_http2_connect.yaml</span> <span class="pre">--base-id</span> <span class="pre">1</span></code>
@@ -356,7 +357,7 @@ before start streaming the downstream TCP data to the upstream.</p>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="http_proxy.html" class="btn btn-neutral float-right" title="HTTP dynamic forward proxy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="http_routing.html" class="btn btn-neutral float-left" title="HTTP routing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="http3.html" class="btn btn-neutral float-left" title="HTTP3 overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

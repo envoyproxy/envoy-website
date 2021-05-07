@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Configuring Envoy as a level two proxy &mdash; envoy 1.19.0-dev-a5020c documentation</title>
+  <title>Configuring Envoy as a level two proxy &mdash; envoy 1.19.0-dev-73ade9 documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.19.0-dev-a5020c
+                1.19.0-dev-73ade9
               </div>
             
           
@@ -201,19 +201,19 @@
 edge use case may need to be adjusted when using Envoy in a multi-level deployment as a
 “level two” proxy.</p>
 <img alt="../../_images/multilevel_deployment.svg" src="../../_images/multilevel_deployment.svg" /><p><strong>In summary, if you run level two Envoy version 1.11.1 or greater which terminates
-HTTP/2, we strongly advise you to change the HttpConnectionManager configuration of your level
+HTTP/2 or above, we strongly advise you to change the HttpConnectionManager configuration of your level
 two Envoy, by setting its downstream</strong>
 <a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-stream-error-on-invalid-http-message"><span class="std std-ref">validation of HTTP messaging option</span></a>
 <strong>to true.</strong></p>
-<p>If there is an invalid HTTP/2 request and this option is not set, the Envoy in
+<p>If there is an invalid request and this option is not set, the Envoy in
 question will reset the entire connection. This behavior was changed as part of
 the 1.11.1 security release, to increase the security of Edge Envoys. Unfortunately,
-because there are no guarantees that edge proxies will enforce HTTP/1 or HTTP/2
-standards compliance as rigorously as Envoy’s HTTP/2 stack does, this can result
+because there are no guarantees that edge proxies will enforce HTTP
+standards compliance as rigorously as Envoy’s stack does, this can result
 in a problem as follows. If one client sends a request that for example passes
 level one proxy’s validation checks, and it is forwarded over an upstream multiplexed
-HTTP/2 connection (potentially shared with other clients) the strict enforcement on
-the level two Envoy HTTP/2 will reset all the streams on that connection, causing
+connection (potentially shared with other clients) the strict enforcement on
+the level two Envoy will reset all the streams on that connection, causing
 a service disruption to the clients sharing that L1-L2 connection. If a malicious
 user has insight into what traffic will bypass level one checks, they could spray
 “bad” traffic across the level one fleet, causing serious disruption to other users’
