@@ -1,0 +1,181 @@
+.. _envoy_v3_api_file_envoy/config/trace/v3/opencensus.proto:
+
+OpenCensus tracer
+=================
+
+
+.. _envoy_v3_api_msg_config.trace.v3.OpenCensusConfig:
+
+config.trace.v3.OpenCensusConfig
+--------------------------------
+
+`[config.trace.v3.OpenCensusConfig proto] <https://github.com/envoyproxy/envoy/blob/v1.18.3/api/envoy/config/trace/v3/opencensus.proto#L25>`_
+
+Configuration for the OpenCensus tracer.
+
+
+.. _extension_envoy.tracers.opencensus:
+
+This extension may be referenced by the qualified name *envoy.tracers.opencensus*
+
+.. note::
+  
+
+  This extension is intended to be robust against untrusted downstream traffic. It assumes that the upstream is trusted.
+
+.. tip::
+  This extension extends and can be used with the following extension category:
+
+
+  - :ref:`envoy.tracers <extension_category_envoy.tracers>`
+
+.. code-block:: json
+
+  {
+    "trace_config": "{...}",
+    "stdout_exporter_enabled": "...",
+    "stackdriver_exporter_enabled": "...",
+    "stackdriver_project_id": "...",
+    "stackdriver_address": "...",
+    "stackdriver_grpc_service": "{...}",
+    "zipkin_exporter_enabled": "...",
+    "zipkin_url": "...",
+    "ocagent_exporter_enabled": "...",
+    "ocagent_address": "...",
+    "ocagent_grpc_service": "{...}",
+    "incoming_trace_context": [],
+    "outgoing_trace_context": []
+  }
+
+.. _envoy_v3_api_field_config.trace.v3.OpenCensusConfig.trace_config:
+
+trace_config
+  (.opencensus.proto.trace.v1.TraceConfig) Configures tracing, e.g. the sampler, max number of annotations, etc.
+  
+  
+.. _envoy_v3_api_field_config.trace.v3.OpenCensusConfig.stdout_exporter_enabled:
+
+stdout_exporter_enabled
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Enables the stdout exporter if set to true. This is intended for debugging
+  purposes.
+  
+  
+.. _envoy_v3_api_field_config.trace.v3.OpenCensusConfig.stackdriver_exporter_enabled:
+
+stackdriver_exporter_enabled
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Enables the Stackdriver exporter if set to true. The project_id must also
+  be set.
+  
+  
+.. _envoy_v3_api_field_config.trace.v3.OpenCensusConfig.stackdriver_project_id:
+
+stackdriver_project_id
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The Cloud project_id to use for Stackdriver tracing.
+  
+  
+.. _envoy_v3_api_field_config.trace.v3.OpenCensusConfig.stackdriver_address:
+
+stackdriver_address
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) (optional) By default, the Stackdriver exporter will connect to production
+  Stackdriver. If stackdriver_address is non-empty, it will instead connect
+  to this address, which is in the gRPC format:
+  https://github.com/grpc/grpc/blob/master/doc/naming.md
+  
+  
+.. _envoy_v3_api_field_config.trace.v3.OpenCensusConfig.stackdriver_grpc_service:
+
+stackdriver_grpc_service
+  (:ref:`config.core.v3.GrpcService <envoy_v3_api_msg_config.core.v3.GrpcService>`) (optional) The gRPC server that hosts Stackdriver tracing service. Only
+  Google gRPC is supported. If :ref:`target_uri <envoy_v3_api_field_config.core.v3.GrpcService.GoogleGrpc.target_uri>`
+  is not provided, the default production Stackdriver address will be used.
+  
+  
+.. _envoy_v3_api_field_config.trace.v3.OpenCensusConfig.zipkin_exporter_enabled:
+
+zipkin_exporter_enabled
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Enables the Zipkin exporter if set to true. The url and service name must
+  also be set. This is deprecated, prefer to use Envoy's :ref:`native Zipkin
+  tracer <envoy_v3_api_msg_config.trace.v3.ZipkinConfig>`.
+  
+  
+.. _envoy_v3_api_field_config.trace.v3.OpenCensusConfig.zipkin_url:
+
+zipkin_url
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The URL to Zipkin, e.g. "http://127.0.0.1:9411/api/v2/spans". This is
+  deprecated, prefer to use Envoy's :ref:`native Zipkin tracer
+  <envoy_v3_api_msg_config.trace.v3.ZipkinConfig>`.
+  
+  
+.. _envoy_v3_api_field_config.trace.v3.OpenCensusConfig.ocagent_exporter_enabled:
+
+ocagent_exporter_enabled
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Enables the OpenCensus Agent exporter if set to true. The ocagent_address or
+  ocagent_grpc_service must also be set.
+  
+  
+.. _envoy_v3_api_field_config.trace.v3.OpenCensusConfig.ocagent_address:
+
+ocagent_address
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The address of the OpenCensus Agent, if its exporter is enabled, in gRPC
+  format: https://github.com/grpc/grpc/blob/master/doc/naming.md
+  
+  
+.. _envoy_v3_api_field_config.trace.v3.OpenCensusConfig.ocagent_grpc_service:
+
+ocagent_grpc_service
+  (:ref:`config.core.v3.GrpcService <envoy_v3_api_msg_config.core.v3.GrpcService>`) (optional) The gRPC server hosted by the OpenCensus Agent. Only Google gRPC is supported.
+  This is only used if the ocagent_address is left empty.
+  
+  
+.. _envoy_v3_api_field_config.trace.v3.OpenCensusConfig.incoming_trace_context:
+
+incoming_trace_context
+  (**repeated** :ref:`config.trace.v3.OpenCensusConfig.TraceContext <envoy_v3_api_enum_config.trace.v3.OpenCensusConfig.TraceContext>`) List of incoming trace context headers we will accept. First one found
+  wins.
+  
+  
+.. _envoy_v3_api_field_config.trace.v3.OpenCensusConfig.outgoing_trace_context:
+
+outgoing_trace_context
+  (**repeated** :ref:`config.trace.v3.OpenCensusConfig.TraceContext <envoy_v3_api_enum_config.trace.v3.OpenCensusConfig.TraceContext>`) List of outgoing trace context headers we will produce.
+  
+  
+
+.. _envoy_v3_api_enum_config.trace.v3.OpenCensusConfig.TraceContext:
+
+Enum config.trace.v3.OpenCensusConfig.TraceContext
+--------------------------------------------------
+
+`[config.trace.v3.OpenCensusConfig.TraceContext proto] <https://github.com/envoyproxy/envoy/blob/v1.18.3/api/envoy/config/trace/v3/opencensus.proto#L29>`_
+
+
+.. _envoy_v3_api_enum_value_config.trace.v3.OpenCensusConfig.TraceContext.NONE:
+
+NONE
+  *(DEFAULT)* ⁣No-op default, no trace context is utilized.
+  
+  
+.. _envoy_v3_api_enum_value_config.trace.v3.OpenCensusConfig.TraceContext.TRACE_CONTEXT:
+
+TRACE_CONTEXT
+  ⁣W3C Trace-Context format "traceparent:" header.
+  
+  
+.. _envoy_v3_api_enum_value_config.trace.v3.OpenCensusConfig.TraceContext.GRPC_TRACE_BIN:
+
+GRPC_TRACE_BIN
+  ⁣Binary "grpc-trace-bin:" header.
+  
+  
+.. _envoy_v3_api_enum_value_config.trace.v3.OpenCensusConfig.TraceContext.CLOUD_TRACE_CONTEXT:
+
+CLOUD_TRACE_CONTEXT
+  ⁣"X-Cloud-Trace-Context:" header.
+  
+  
+.. _envoy_v3_api_enum_value_config.trace.v3.OpenCensusConfig.TraceContext.B3:
+
+B3
+  ⁣X-B3-* headers.
+  
+  

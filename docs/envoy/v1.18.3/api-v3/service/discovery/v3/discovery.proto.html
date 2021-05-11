@@ -1,0 +1,562 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Common discovery API components &mdash; envoy tag-v1.18.3 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="Configuration sources" href="../../../config/core/v3/config_source.proto.html" />
+    <link rel="prev" title="Proxy Protocol" href="../../../config/core/v3/proxy_protocol.proto.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html">
+          
+
+          
+            
+            <img src="../../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                tag-v1.18.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../api/api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/api_supported_versions.html">Supported API versions</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../../api.html">v3 API reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../bootstrap/bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../clusters/clusters.html">Clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../http_routes/http_routes.html">HTTP route management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../config/config.html">Extensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../admin/admin.html">Admin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/data.html">Envoy data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../service.html">Services</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../../common_messages/common_messages.html">Common messages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../../config/core/v3/base.proto.html">Common types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../config/core/v3/extension.proto.html">Extension configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../config/core/v3/address.proto.html">Network addresses</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../config/core/v3/backoff.proto.html">Backoff Strategy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../config/core/v3/protocol.proto.html">Protocol options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../config/core/v3/proxy_protocol.proto.html">Proxy Protocol</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Common discovery API components</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../config/core/v3/config_source.proto.html">Configuration sources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../config/core/v3/grpc_service.proto.html">gRPC services</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../config/core/v3/grpc_method_list.proto.html">gRPC method list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../config/core/v3/http_uri.proto.html">HTTP Service URI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../config/core/v3/socket_option.proto.html">Socket Option</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../config/core/v3/udp_socket_config.proto.html">UDP socket config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../config/core/v3/substitution_format_string.proto.html">Substitution format string</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../extensions/common/ratelimit/v3/ratelimit.proto.html">Common rate limit components</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../extensions/filters/common/fault/v3/fault.proto.html">Common fault injection types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../extensions/network/socket_interface/v3/default_socket_interface.proto.html">Default Socket Interface configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../extensions/common/matching/v3/extension_matcher.proto.html">Extension Matcher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../extensions/filters/common/dependency/v3/dependency.proto.html">Filter dependency specification</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../extensions/filters/common/matcher/action/v3/skip_action.proto.html">Common Match Actions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../extensions/matching/input_matchers/consistent_hashing/v3/consistent_hashing.proto.html">Consistent Hashing Matcher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../extensions/matching/common_inputs/environment_variable/v3/input.proto.html">Environment Variable Input</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../types/types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api-docs/xds_protocol.html">xDS REST and gRPC protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/client_features.html">Well Known Client Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../../api/api.html">API</a> &raquo;</li>
+        
+          <li><a href="../../../api.html">v3 API reference</a> &raquo;</li>
+        
+          <li><a href="../../../common_messages/common_messages.html">Common messages</a> &raquo;</li>
+        
+      <li>Common discovery API components</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../../../_sources/api-v3/service/discovery/v3/discovery.proto.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="common-discovery-api-components">
+<span id="envoy-v3-api-file-envoy-service-discovery-v3-discovery-proto"></span><h1>Common discovery API components<a class="headerlink" href="#common-discovery-api-components" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="service-discovery-v3-discoveryrequest">
+<span id="envoy-v3-api-msg-service-discovery-v3-discoveryrequest"></span><h2>service.discovery.v3.DiscoveryRequest<a class="headerlink" href="#service-discovery-v3-discoveryrequest" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.18.3/api/envoy/service/discovery/v3/discovery.proto#L23">[service.discovery.v3.DiscoveryRequest proto]</a></p>
+<p>A DiscoveryRequest requests a set of versioned resources of the same type for
+a given Envoy node on some API.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;version_info&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;node&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;resource_names&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;type_url&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;response_nonce&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;error_detail&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-discoveryrequest-version-info">
+<dt>version_info</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The version_info provided in the request messages will be the version_info
+received with the most recent successfully processed response or empty on
+the first request. It is expected that no new request is sent after a
+response is received until the Envoy instance is ready to ACK/NACK the new
+configuration. ACK/NACK takes place by returning the new API config version
+as applied or the previous API config version respectively. Each type_url
+(see below) has an independent version associated with it.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-discoveryrequest-node">
+<dt>node</dt><dd><p>(<a class="reference internal" href="../../../config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-node"><span class="std std-ref">config.core.v3.Node</span></a>) The node making the request.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-discoveryrequest-resource-names">
+<dt>resource_names</dt><dd><p>(<strong>repeated</strong> <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) List of resources to subscribe to, e.g. list of cluster names or a route
+configuration name. If this is empty, all resources for the API are
+returned. LDS/CDS may have empty resource_names, which will cause all
+resources for the Envoy instance to be returned. The LDS and CDS responses
+will then imply a number of resources that need to be fetched via EDS/RDS,
+which will be explicitly enumerated in resource_names.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-discoveryrequest-type-url">
+<dt>type_url</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Type of the resource that is being requested, e.g.
+“type.googleapis.com/envoy.api.v2.ClusterLoadAssignment”. This is implicit
+in requests made via singleton xDS APIs such as CDS, LDS, etc. but is
+required for ADS.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-discoveryrequest-response-nonce">
+<dt>response_nonce</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) nonce corresponding to DiscoveryResponse being ACK/NACKed. See above
+discussion on version_info and the DiscoveryResponse nonce comment. This
+may be empty only if 1) this is a non-persistent-stream xDS such as HTTP,
+or 2) the client has not yet accepted an update in this xDS stream (unlike
+delta, where it is populated only for new explicit ACKs).</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-discoveryrequest-error-detail">
+<dt>error_detail</dt><dd><p>(<a class="reference external" href="https://cloud.google.com/natural-language/docs/reference/rpc/google.rpc#status">Status</a>) This is populated when the previous <a class="reference internal" href="#envoy-v3-api-msg-service-discovery-v3-discoveryresponse"><span class="std std-ref">DiscoveryResponse</span></a>
+failed to update configuration. The <em>message</em> field in <em>error_details</em> provides the Envoy
+internal exception related to the failure. It is only intended for consumption during manual
+debugging, the string provided is not guaranteed to be stable across Envoy versions.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="service-discovery-v3-discoveryresponse">
+<span id="envoy-v3-api-msg-service-discovery-v3-discoveryresponse"></span><h2>service.discovery.v3.DiscoveryResponse<a class="headerlink" href="#service-discovery-v3-discoveryresponse" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.18.3/api/envoy/service/discovery/v3/discovery.proto#L67">[service.discovery.v3.DiscoveryResponse proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;version_info&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;resources&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;type_url&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;nonce&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;control_plane&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-discoveryresponse-version-info">
+<dt>version_info</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The version of the response data.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-discoveryresponse-resources">
+<dt>resources</dt><dd><p>(<strong>repeated</strong> <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any">Any</a>) The response resources. These resources are typed and depend on the API being called.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-discoveryresponse-type-url">
+<dt>type_url</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Type URL for resources. Identifies the xDS API when muxing over ADS.
+Must be consistent with the type_url in the ‘resources’ repeated Any (if non-empty).</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-discoveryresponse-nonce">
+<dt>nonce</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) For gRPC based subscriptions, the nonce provides a way to explicitly ack a
+specific DiscoveryResponse in a following DiscoveryRequest. Additional
+messages may have been sent by Envoy to the management server for the
+previous version on the stream prior to this DiscoveryResponse, that were
+unprocessed at response send time. The nonce allows the management server
+to ignore any further DiscoveryRequests for the previous version until a
+DiscoveryRequest bearing the nonce. The nonce is optional and is not
+required for non-stream based xDS implementations.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-discoveryresponse-control-plane">
+<dt>control_plane</dt><dd><p>(<a class="reference internal" href="../../../config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-controlplane"><span class="std std-ref">config.core.v3.ControlPlane</span></a>) The control plane instance that sent the response.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="service-discovery-v3-deltadiscoveryrequest">
+<span id="envoy-v3-api-msg-service-discovery-v3-deltadiscoveryrequest"></span><h2>service.discovery.v3.DeltaDiscoveryRequest<a class="headerlink" href="#service-discovery-v3-deltadiscoveryrequest" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.18.3/api/envoy/service/discovery/v3/discovery.proto#L143">[service.discovery.v3.DeltaDiscoveryRequest proto]</a></p>
+<p>DeltaDiscoveryRequest and DeltaDiscoveryResponse are used in a new gRPC
+endpoint for Delta xDS.</p>
+<p>With Delta xDS, the DeltaDiscoveryResponses do not need to include a full
+snapshot of the tracked resources. Instead, DeltaDiscoveryResponses are a
+diff to the state of a xDS client.
+In Delta XDS there are per-resource versions, which allow tracking state at
+the resource granularity.
+An xDS Delta session is always in the context of a gRPC bidirectional
+stream. This allows the xDS server to keep track of the state of xDS clients
+connected to it.</p>
+<p>In Delta xDS the nonce field is required and used to pair
+DeltaDiscoveryResponse to a DeltaDiscoveryRequest ACK or NACK.
+Optionally, a response message level system_version_info is present for
+debugging purposes only.</p>
+<p>DeltaDiscoveryRequest plays two independent roles. Any DeltaDiscoveryRequest
+can be either or both of: [1] informing the server of what resources the
+client has gained/lost interest in (using resource_names_subscribe and
+resource_names_unsubscribe), or [2] (N)ACKing an earlier resource update from
+the server (using response_nonce, with presence of error_detail making it a NACK).
+Additionally, the first message (for a given type_url) of a reconnected gRPC stream
+has a third role: informing the server of the resources (and their versions)
+that the client already possesses, using the initial_resource_versions field.</p>
+<p>As with state-of-the-world, when multiple resource types are multiplexed (ADS),
+all requests/acknowledgments/updates are logically walled off by type_url:
+a Cluster ACK exists in a completely separate world from a prior Route NACK.
+In particular, initial_resource_versions being sent at the “start” of every
+gRPC stream actually entails a message for each type_url, each with its own
+initial_resource_versions.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;node&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;type_url&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;resource_names_subscribe&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;resource_names_unsubscribe&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;initial_resource_versions&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;response_nonce&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;error_detail&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-deltadiscoveryrequest-node">
+<dt>node</dt><dd><p>(<a class="reference internal" href="../../../config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-node"><span class="std std-ref">config.core.v3.Node</span></a>) The node making the request.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-deltadiscoveryrequest-type-url">
+<dt>type_url</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Type of the resource that is being requested, e.g.
+“type.googleapis.com/envoy.api.v2.ClusterLoadAssignment”. This does not need to be set if
+resources are only referenced via <em>xds_resource_subscribe</em> and
+<em>xds_resources_unsubscribe</em>.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-service-discovery-v3-deltadiscoveryrequest-resource-names-subscribe">
+<dt>resource_names_subscribe</dt><dd><p>(<strong>repeated</strong> <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) DeltaDiscoveryRequests allow the client to add or remove individual
+resources to the set of tracked resources in the context of a stream.
+All resource names in the resource_names_subscribe list are added to the
+set of tracked resources and all resource names in the resource_names_unsubscribe
+list are removed from the set of tracked resources.</p>
+<p><em>Unlike</em> state-of-the-world xDS, an empty resource_names_subscribe or
+resource_names_unsubscribe list simply means that no resources are to be
+added or removed to the resource list.
+<em>Like</em> state-of-the-world xDS, the server must send updates for all tracked
+resources, but can also send updates for resources the client has not subscribed to.</p>
+<p>NOTE: the server must respond with all resources listed in resource_names_subscribe,
+even if it believes the client has the most recent version of them. The reason:
+the client may have dropped them, but then regained interest before it had a chance
+to send the unsubscribe message. See DeltaSubscriptionStateTest.RemoveThenAdd.</p>
+<p>These two fields can be set in any DeltaDiscoveryRequest, including ACKs
+and initial_resource_versions.</p>
+<p>A list of Resource names to add to the list of tracked resources.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-deltadiscoveryrequest-resource-names-unsubscribe">
+<dt>resource_names_unsubscribe</dt><dd><p>(<strong>repeated</strong> <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) A list of Resource names to remove from the list of tracked resources.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-deltadiscoveryrequest-initial-resource-versions">
+<dt>initial_resource_versions</dt><dd><p>(<strong>repeated</strong> map&lt;<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>&gt;) Informs the server of the versions of the resources the xDS client knows of, to enable the
+client to continue the same logical xDS session even in the face of gRPC stream reconnection.
+It will not be populated: [1] in the very first stream of a session, since the client will
+not yet have any resources,  [2] in any message after the first in a stream (for a given
+type_url), since the server will already be correctly tracking the client’s state.
+(In ADS, the first message <em>of each type_url</em> of a reconnected stream populates this map.)
+The map’s keys are names of xDS resources known to the xDS client.
+The map’s values are opaque resource versions.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-deltadiscoveryrequest-response-nonce">
+<dt>response_nonce</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) When the DeltaDiscoveryRequest is a ACK or NACK message in response
+to a previous DeltaDiscoveryResponse, the response_nonce must be the
+nonce in the DeltaDiscoveryResponse.
+Otherwise (unlike in DiscoveryRequest) response_nonce must be omitted.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-deltadiscoveryrequest-error-detail">
+<dt>error_detail</dt><dd><p>(<a class="reference external" href="https://cloud.google.com/natural-language/docs/reference/rpc/google.rpc#status">Status</a>) This is populated when the previous <a class="reference internal" href="#envoy-v3-api-msg-service-discovery-v3-discoveryresponse"><span class="std std-ref">DiscoveryResponse</span></a>
+failed to update configuration. The <em>message</em> field in <em>error_details</em>
+provides the Envoy internal exception related to the failure.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="service-discovery-v3-deltadiscoveryresponse">
+<span id="envoy-v3-api-msg-service-discovery-v3-deltadiscoveryresponse"></span><h2>service.discovery.v3.DeltaDiscoveryResponse<a class="headerlink" href="#service-discovery-v3-deltadiscoveryresponse" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.18.3/api/envoy/service/discovery/v3/discovery.proto#L204">[service.discovery.v3.DeltaDiscoveryResponse proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;system_version_info&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;resources&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;type_url&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;removed_resources&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;nonce&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-deltadiscoveryresponse-system-version-info">
+<dt>system_version_info</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The version of the response data (used for debugging).</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-deltadiscoveryresponse-resources">
+<dt>resources</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="#envoy-v3-api-msg-service-discovery-v3-resource"><span class="std std-ref">service.discovery.v3.Resource</span></a>) The response resources. These are typed resources, whose types must match
+the type_url field.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-deltadiscoveryresponse-type-url">
+<dt>type_url</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Type URL for resources. Identifies the xDS API when muxing over ADS.
+Must be consistent with the type_url in the Any within ‘resources’ if ‘resources’ is non-empty.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-deltadiscoveryresponse-removed-resources">
+<dt>removed_resources</dt><dd><p>(<strong>repeated</strong> <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Resources names of resources that have be deleted and to be removed from the xDS Client.
+Removed resources for missing resources can be ignored.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-deltadiscoveryresponse-nonce">
+<dt>nonce</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The nonce provides a way for DeltaDiscoveryRequests to uniquely
+reference a DeltaDiscoveryResponse when (N)ACKing. The nonce is required.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="service-discovery-v3-resource">
+<span id="envoy-v3-api-msg-service-discovery-v3-resource"></span><h2>service.discovery.v3.Resource<a class="headerlink" href="#service-discovery-v3-resource" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.18.3/api/envoy/service/discovery/v3/discovery.proto#L235">[service.discovery.v3.Resource proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;aliases&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;resource&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;ttl&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-resource-name">
+<dt>name</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The resource’s name, to distinguish it from others of the same type of resource.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-resource-aliases">
+<dt>aliases</dt><dd><p>(<strong>repeated</strong> <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The aliases are a list of other names that this resource can go by.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-resource-version">
+<dt>version</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The resource level version. It allows xDS to track the state of individual
+resources.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-discovery-v3-resource-resource">
+<dt>resource</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any">Any</a>) The resource being tracked.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-service-discovery-v3-resource-ttl">
+<dt>ttl</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) Time-to-live value for the resource. For each resource, a timer is started. The timer is
+reset each time the resource is received with a new TTL. If the resource is received with
+no TTL set, the timer is removed for the resource. Upon expiration of the timer, the
+configuration for the resource will be removed.</p>
+<p>The TTL can be refreshed or changed by sending a response that doesn’t change the resource
+version. In this case the resource field does not need to be populated, which allows for
+light-weight “heartbeat” updates to keep a resource with a TTL alive.</p>
+<p>The TTL feature is meant to support configurations that should be removed in the event of
+a management server failure. For example, the feature may be used for fault injection
+testing where the fault injection should be terminated in the event that Envoy loses contact
+with the management server.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="../../../config/core/v3/config_source.proto.html" class="btn btn-neutral float-right" title="Configuration sources" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../../../config/core/v3/proxy_protocol.proto.html" class="btn btn-neutral float-left" title="Proxy Protocol" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2016-2021, Envoy Project Authors.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
