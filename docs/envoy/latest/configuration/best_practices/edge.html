@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Configuring Envoy as an edge proxy &mdash; envoy 1.19.0-dev-5afbb4 documentation</title>
+  <title>Configuring Envoy as an edge proxy &mdash; envoy 1.19.0-dev-5333b9 documentation</title>
   
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                1.19.0-dev-5afbb4
+                1.19.0-dev-5333b9
               </div>
             
           
@@ -220,6 +220,18 @@ for details),</p></li>
 <li><p><a class="reference internal" href="../listeners/runtime.html#config-listeners-runtime"><span class="std std-ref">Listener connection limits.</span></a></p></li>
 <li><p><a class="reference internal" href="../operations/overload_manager/overload_manager.html#config-overload-manager"><span class="std std-ref">Global downstream connection limits</span></a>.</p></li>
 </ul>
+<p>If Envoy is configured with RBAC filter or makes route selection based on URL path it is recommended to enable the following path normalization options to minimize probability of path confusion vulnerabilities. Path confusion vulnerabilities occur when parties participating in request use different path representations.</p>
+<ul class="simple">
+<li><p>Enable <a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-normalize-path"><span class="std std-ref">normalize_path setting</span></a>.</p></li>
+<li><p>Enable <a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-merge-slashes"><span class="std std-ref">merge_slashes setting</span></a>.</p></li>
+</ul>
+<p>Additionally the <a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-path-with-escaped-slashes-action"><span class="std std-ref">path_with_escaped_slashes_action setting</span></a> should be set according to following recommendations:</p>
+<ul class="simple">
+<li><p>REJECT_REQUEST if dowstream clients are expected to use rfc3986 compliant normalized paths (i.e. gRPC clients).</p></li>
+<li><p>UNESCAPE_AND_REDIRECT if downstream client supports HTTP redirect (i.e. a browser). This option minimizes possibility of path confusion by forcing request to be re-issued with the same path across all parties: downstream client, Envoy and upstream server. Note that gRPC requests will still be rejected with the INTERNAL (13) error code, as gRPC clients do not support redirect.</p></li>
+<li><p>KEEP_UNCHANGED for servers that are not rfc3986 compliant and require encoded slashes.</p></li>
+<li><p>UNESCAPE_AND_FORWARD for servers that are known to treat escaped and unescaped slashes equivalently. Choosing this option may increase probablity of path confusion vulnerabilities if intermediaries perform path based access control.</p></li>
+</ul>
 <p>The following is a YAML example of the above recommendation (taken from the <a class="reference internal" href="../../intro/arch_overview/security/google_vrp.html#arch-overview-google-vrp"><span class="std std-ref">Google VRP</span></a> edge server configuration):</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">overload_manager</span><span class="p">:</span>
   <span class="nt">refresh_interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25s</span>
@@ -278,6 +290,9 @@ for details),</p></li>
           <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager</span>
           <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ingress_http</span>
           <span class="nt">use_remote_address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+          <span class="nt">normalize_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+          <span class="nt">merge_slashes</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+          <span class="nt">path_with_escaped_slashes_action</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">UNESCAPE_AND_REDIRECT</span>
           <span class="nt">common_http_protocol_options</span><span class="p">:</span>
             <span class="nt">idle_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3600s</span> <span class="c1"># 1 hour</span>
             <span class="nt">headers_with_underscores_action</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">REJECT_REQUEST</span>
