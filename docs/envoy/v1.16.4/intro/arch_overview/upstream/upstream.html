@@ -1,0 +1,334 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Upstream clusters &mdash; envoy tag-v1.16.4 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.4.1/segment.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.4.1/menu.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.4.1/tab.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Cluster manager" href="cluster_manager.html" />
+    <link rel="prev" title="HTTP dynamic forward proxy" href="../http/http_proxy.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                tag-v1.16.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../intro.html">Introduction</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../what_is_envoy.html">What is Envoy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../arch_overview.html">Architecture overview</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../intro/intro.html">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../listeners/listeners_toc.html">Listeners</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../http/http.html">HTTP</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Upstream clusters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cluster_manager.html">Cluster manager</a></li>
+<li class="toctree-l4"><a class="reference internal" href="service_discovery.html">Service discovery</a></li>
+<li class="toctree-l4"><a class="reference internal" href="health_checking.html">Health checking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="connection_pooling.html">Connection pooling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="load_balancing/load_balancing.html">Load Balancing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="aggregate_cluster.html">Aggregate Cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="outlier.html">Outlier detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="circuit_breaking.html">Circuit breaking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="upstream_filters.html">Upstream network filters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="load_reporting_service.html">Load Reporting Service (LRS)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../observability/observability.html">Observability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../security/security.html">Security</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../operations/operations.html">Operations &amp; configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../other_features/other_features.html">Other features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../advanced/advanced.html">Advanced</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../life_of_a_request.html">Life of a Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../deployment_types/deployment_types.html">Deployment types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_help.html">Getting help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../install/install.html">Building and installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../version_history/version_history.html">Version history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq/overview.html">FAQ</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../intro.html">Introduction</a> &raquo;</li>
+        
+          <li><a href="../arch_overview.html">Architecture overview</a> &raquo;</li>
+        
+      <li>Upstream clusters</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/intro/arch_overview/upstream/upstream.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="upstream-clusters">
+<h1>Upstream clusters<a class="headerlink" href="#upstream-clusters" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cluster_manager.html">Cluster manager</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cluster_manager.html#cluster-warming">Cluster warming</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="service_discovery.html">Service discovery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="service_discovery.html#supported-service-discovery-types">Supported service discovery types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service_discovery.html#on-eventually-consistent-service-discovery">On eventually consistent service discovery</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="health_checking.html">Health checking</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="health_checking.html#per-cluster-member-health-check-config">Per cluster member health check config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="health_checking.html#health-check-event-logging">Health check event logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="health_checking.html#passive-health-checking">Passive health checking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="health_checking.html#connection-pool-interactions">Connection pool interactions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="health_checking.html#http-health-checking-filter">HTTP health checking filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="health_checking.html#active-health-checking-fast-failure">Active health checking fast failure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="health_checking.html#health-check-identity">Health check identity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="health_checking.html#degraded-health">Degraded health</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="connection_pooling.html">Connection pooling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="connection_pooling.html#http-1-1">HTTP/1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection_pooling.html#http-2">HTTP/2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection_pooling.html#number-of-connection-pools">Number of connection pools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection_pooling.html#health-checking-interactions">Health checking interactions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="load_balancing/load_balancing.html">Load Balancing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="load_balancing/overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load_balancing/load_balancers.html">Supported load balancers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load_balancing/priority.html">Priority levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load_balancing/degraded.html">Degraded endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load_balancing/locality_weight.html">Locality weighted load balancing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load_balancing/overprovisioning.html">Overprovisioning Factor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load_balancing/panic_threshold.html">Panic threshold</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load_balancing/original_dst.html">Original destination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load_balancing/zone_aware.html">Zone aware routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load_balancing/subsets.html">Load Balancer Subsets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="aggregate_cluster.html">Aggregate Cluster</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="aggregate_cluster.html#linearize-priority-set">Linearize Priority Set</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aggregate_cluster.html#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aggregate_cluster.html#load-balancing-example">Load Balancing Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="outlier.html">Outlier detection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="outlier.html#ejection-algorithm">Ejection algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outlier.html#detection-types">Detection types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outlier.html#grpc">gRPC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outlier.html#ejection-event-logging">Ejection event logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outlier.html#configuration-reference">Configuration reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="circuit_breaking.html">Circuit breaking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upstream_filters.html">Upstream network filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="load_reporting_service.html">Load Reporting Service (LRS)</a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="cluster_manager.html" class="btn btn-neutral float-right" title="Cluster manager" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../http/http_proxy.html" class="btn btn-neutral float-left" title="HTTP dynamic forward proxy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2016-2021, Envoy Project Authors
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

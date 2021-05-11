@@ -1,0 +1,789 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Access logging &mdash; envoy tag-v1.16.4 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.4.1/segment.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.4.1/menu.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/semantic-ui-2.4.1/tab.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx_tabs/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Security" href="../../security/security.html" />
+    <link rel="prev" title="Statistics" href="stats.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                tag-v1.16.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../install/install.html">Building and installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../version_history/version_history.html">Version history</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../configuration.html">Configuration reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../overview/overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../http/http.html">HTTP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../upstream/upstream.html">Upstream clusters</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../observability.html">Observability</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../statistics.html">Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../application_logging.html">Application logging</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="access_log.html">Access Logs</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stats.html">Statistics</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Access logging</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../security/security.html">Security</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../operations/operations.html">Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../other_features/other_features.html">Other features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/advanced.html">Advanced</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../best_practices/best_practices.html">Configuration best practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq/overview.html">FAQ</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../configuration.html">Configuration reference</a> &raquo;</li>
+        
+          <li><a href="../observability.html">Observability</a> &raquo;</li>
+        
+          <li><a href="access_log.html">Access Logs</a> &raquo;</li>
+        
+      <li>Access logging</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/configuration/observability/access_log/usage.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="access-logging">
+<span id="config-access-log"></span><h1>Access logging<a class="headerlink" href="#access-logging" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<p>Access logs are configured as part of the <a class="reference internal" href="../../http/http_conn_man/http_conn_man.html#config-http-conn-man"><span class="std std-ref">HTTP connection manager config</span></a> or <a class="reference internal" href="../../listeners/network_filters/tcp_proxy_filter.html#config-network-filters-tcp-proxy"><span class="std std-ref">TCP Proxy</span></a>.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../api-v3/config/accesslog/v3/accesslog.proto.html#envoy-v3-api-msg-config-accesslog-v3-accesslog"><span class="std std-ref">v3 API reference</span></a></p></li>
+</ul>
+</div>
+<div class="section" id="format-rules">
+<span id="config-access-log-format"></span><h2>Format Rules<a class="headerlink" href="#format-rules" title="Permalink to this headline">¶</a></h2>
+<p>Access log formats contain command operators that extract the relevant data and insert it.
+They support two formats: <a class="reference internal" href="#config-access-log-format-strings"><span class="std std-ref">“format strings”</span></a> and
+<a class="reference internal" href="#config-access-log-format-dictionaries"><span class="std std-ref">“format dictionaries”</span></a>. In both cases, the command operators
+are used to extract the relevant data, which is then inserted into the specified log format.
+Only one access log format may be specified at a time.</p>
+</div>
+<div class="section" id="format-strings">
+<span id="config-access-log-format-strings"></span><h2>Format Strings<a class="headerlink" href="#format-strings" title="Permalink to this headline">¶</a></h2>
+<p>Format strings are plain strings, specified using the <code class="docutils literal notranslate"><span class="pre">format</span></code> key. They may contain
+either command operators or other characters interpreted as a plain string.
+The access log formatter does not make any assumptions about a new line separator, so one
+has to specified as part of the format string.
+See the <a class="reference internal" href="#config-access-log-default-format"><span class="std std-ref">default format</span></a> for an example.</p>
+</div>
+<div class="section" id="default-format-string">
+<span id="config-access-log-default-format"></span><h2>Default Format String<a class="headerlink" href="#default-format-string" title="Permalink to this headline">¶</a></h2>
+<p>If custom format string is not specified, Envoy uses the following default format:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[%START_TIME%] &quot;%REQ(:METHOD)% %REQ(X-ENVOY-ORIGINAL-PATH?:PATH)% %PROTOCOL%&quot;
+%RESPONSE_CODE% %RESPONSE_FLAGS% %BYTES_RECEIVED% %BYTES_SENT% %DURATION%
+%RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)% &quot;%REQ(X-FORWARDED-FOR)%&quot; &quot;%REQ(USER-AGENT)%&quot;
+&quot;%REQ(X-REQUEST-ID)%&quot; &quot;%REQ(:AUTHORITY)%&quot; &quot;%UPSTREAM_HOST%&quot;\n
+</pre></div>
+</div>
+<p>Example of the default Envoy access log format:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[2016-04-15T20:17:00.310Z] &quot;POST /api/v1/locations HTTP/2&quot; 204 - 154 0 226 100 &quot;10.0.35.28&quot;
+&quot;nsq2http&quot; &quot;cc21d9b0-cf5c-432b-8c7e-98aeb7988cd2&quot; &quot;locations&quot; &quot;tcp://10.0.2.1:80&quot;
+</pre></div>
+</div>
+</div>
+<div class="section" id="format-dictionaries">
+<span id="config-access-log-format-dictionaries"></span><h2>Format Dictionaries<a class="headerlink" href="#format-dictionaries" title="Permalink to this headline">¶</a></h2>
+<p>Format dictionaries are dictionaries that specify a structured access log output format,
+specified using the <code class="docutils literal notranslate"><span class="pre">json_format</span></code> or <code class="docutils literal notranslate"><span class="pre">typed_json_format</span></code> keys. This allows logs to be output in
+a structured format such as JSON. Similar to format strings, command operators are evaluated and
+their values inserted into the format dictionary to construct the log output.</p>
+<p>For example, with the following format provided in the configuration as <code class="docutils literal notranslate"><span class="pre">json_format</span></code>:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;json_format&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;protocol&quot;</span><span class="p">:</span> <span class="s2">&quot;%PROTOCOL%&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;duration&quot;</span><span class="p">:</span> <span class="s2">&quot;%DURATION%&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;my_custom_header&quot;</span><span class="p">:</span> <span class="s2">&quot;%REQ(MY_CUSTOM_HEADER)%&quot;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The following JSON object would be written to the log file:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;protocol&quot;</span><span class="p">:</span> <span class="s2">&quot;HTTP/1.1&quot;</span><span class="p">,</span> <span class="nt">&quot;duration&quot;</span><span class="p">:</span> <span class="s2">&quot;123&quot;</span><span class="p">,</span> <span class="nt">&quot;my_custom_header&quot;</span><span class="p">:</span> <span class="s2">&quot;value_of_MY_CUSTOM_HEADER&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>This allows you to specify a custom key for each command operator.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">typed_json_format</span></code> differs from <code class="docutils literal notranslate"><span class="pre">json_format</span></code> in that values are rendered as JSON numbers,
+booleans, and nested objects or lists where applicable. In the example, the request duration
+would be rendered as the number <code class="docutils literal notranslate"><span class="pre">123</span></code>.</p>
+<p>Format dictionaries have the following restrictions:</p>
+<ul class="simple">
+<li><p>The dictionary must map strings to strings (specifically, strings to command operators). Nesting
+is supported.</p></li>
+<li><p>When using the <code class="docutils literal notranslate"><span class="pre">typed_json_format</span></code> command operators will only produce typed output if the
+command operator is the only string that appears in the dictionary value. For example,
+<code class="docutils literal notranslate"><span class="pre">&quot;%DURATION%&quot;</span></code> will log a numeric duration value, but <code class="docutils literal notranslate"><span class="pre">&quot;%DURATION%.0&quot;</span></code> will log a string
+value.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When using the <code class="docutils literal notranslate"><span class="pre">typed_json_format</span></code>, integer values that exceed <span class="math notranslate nohighlight">\(2^{53}\)</span> will be
+represented with reduced precision as they must be converted to floating point numbers.</p>
+</div>
+</div>
+<div class="section" id="command-operators">
+<span id="config-access-log-command-operators"></span><h2>Command Operators<a class="headerlink" href="#command-operators" title="Permalink to this headline">¶</a></h2>
+<p>Command operators are used to extract values that will be inserted into the access logs.
+The same operators are used by different types of access logs (such as HTTP and TCP). Some
+fields may have slightly different meanings, depending on what type of log it is. Differences
+are noted.</p>
+<p>Note that if a value is not set/empty, the logs will contain a <code class="docutils literal notranslate"><span class="pre">-</span></code> character or, for JSON logs,
+the string <code class="docutils literal notranslate"><span class="pre">&quot;-&quot;</span></code>. For typed JSON logs unset values are represented as <code class="docutils literal notranslate"><span class="pre">null</span></code> values and empty
+strings are rendered as <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>. <a class="reference internal" href="../../../api-v3/config/core/v3/substitution_format_string.proto.html#envoy-v3-api-field-config-core-v3-substitutionformatstring-omit-empty-values"><span class="std std-ref">omit_empty_values</span></a> option could be used
+to omit empty values entirely.</p>
+<p>Unless otherwise noted, command operators produce string outputs for typed JSON logs.</p>
+<p>The following command operators are supported:</p>
+<dl id="config-access-log-format-start-time">
+<dt>%START_TIME%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>Request start time including milliseconds.</p>
+</dd>
+<dt>TCP</dt><dd><p>Downstream connection start time including milliseconds.</p>
+</dd>
+</dl>
+<p>START_TIME can be customized using a <a class="reference external" href="https://en.cppreference.com/w/cpp/io/manip/put_time">format string</a>.
+In addition to that, START_TIME also accepts following specifiers:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 72%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Specifier</p></th>
+<th class="head"><p>Explanation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">%s</span></code></p></td>
+<td><p>The number of seconds since the Epoch</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><code class="docutils literal notranslate"><span class="pre">%f</span></code>, <code class="docutils literal notranslate"><span class="pre">%[1-9]f</span></code></p></td>
+<td><p>Fractional seconds digits, default is 9 digits (nanosecond)</p></td>
+</tr>
+<tr class="row-even"><td><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">%3f</span></code> millisecond (3 digits)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">%6f</span></code> microsecond (6 digits)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">%9f</span></code> nanosecond (9 digits)</p></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Examples of formatting START_TIME is as follows:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%START_TIME(%Y/%m/%dT%H:%M:%S%z %s)%
+
+# To include millisecond fraction of the second (.000 ... .999). E.g. 1527590590.528.
+%START_TIME(%s.%3f)%
+
+%START_TIME(%s.%6f)%
+
+%START_TIME(%s.%9f)%
+</pre></div>
+</div>
+<p>In typed JSON logs, START_TIME is always rendered as a string.</p>
+</dd>
+<dt>%BYTES_RECEIVED%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>Body bytes received.</p>
+</dd>
+<dt>TCP</dt><dd><p>Downstream bytes received on connection.</p>
+</dd>
+</dl>
+<p>Renders a numeric value in typed JSON logs.</p>
+</dd>
+<dt>%PROTOCOL%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>Protocol. Currently either <em>HTTP/1.1</em> or <em>HTTP/2</em>.</p>
+</dd>
+<dt>TCP</dt><dd><p>Not implemented (“-“).</p>
+</dd>
+</dl>
+<p>In typed JSON logs, PROTOCOL will render the string <code class="docutils literal notranslate"><span class="pre">&quot;-&quot;</span></code> if the protocol is not
+available (e.g. in TCP logs).</p>
+</dd>
+<dt>%RESPONSE_CODE%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>HTTP response code. Note that a response code of ‘0’ means that the server never sent the
+beginning of a response. This generally means that the (downstream) client disconnected.</p>
+</dd>
+<dt>TCP</dt><dd><p>Not implemented (“-“).</p>
+</dd>
+</dl>
+<p>Renders a numeric value in typed JSON logs.</p>
+</dd>
+</dl>
+<dl class="simple" id="config-access-log-format-response-code-details">
+<dt>%RESPONSE_CODE_DETAILS%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>HTTP response code details provides additional information about the response code, such as
+who set it (the upstream or envoy) and why.</p>
+</dd>
+<dt>TCP</dt><dd><p>Not implemented (“-“)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl id="config-access-log-format-connection-termination-details">
+<dt>%CONNECTION_TERMINATION_DETAILS%</dt><dd><dl class="simple">
+<dt>HTTP and TCP</dt><dd><p>Connection termination details may provide additional information about why the connection was
+terminated by Envoy for L4 reasons.</p>
+</dd>
+</dl>
+</dd>
+<dt>%BYTES_SENT%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>Body bytes sent. For WebSocket connection it will also include response header bytes.</p>
+</dd>
+<dt>TCP</dt><dd><p>Downstream bytes sent on connection.</p>
+</dd>
+</dl>
+<p>Renders a numeric value in typed JSON logs.</p>
+</dd>
+<dt>%DURATION%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>Total duration in milliseconds of the request from the start time to the last byte out.</p>
+</dd>
+<dt>TCP</dt><dd><p>Total duration in milliseconds of the downstream connection.</p>
+</dd>
+</dl>
+<p>Renders a numeric value in typed JSON logs.</p>
+</dd>
+<dt>%REQUEST_DURATION%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>Total duration in milliseconds of the request from the start time to the last byte of
+the request received from the downstream.</p>
+</dd>
+<dt>TCP</dt><dd><p>Not implemented (“-“).</p>
+</dd>
+</dl>
+<p>Renders a numeric value in typed JSON logs.</p>
+</dd>
+<dt>%RESPONSE_DURATION%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>Total duration in milliseconds of the request from the start time to the first byte read from the
+upstream host.</p>
+</dd>
+<dt>TCP</dt><dd><p>Not implemented (“-“).</p>
+</dd>
+</dl>
+<p>Renders a numeric value in typed JSON logs.</p>
+</dd>
+<dt>%RESPONSE_TX_DURATION%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>Total duration in milliseconds of the request from the first byte read from the upstream host to the last
+byte sent downstream.</p>
+</dd>
+<dt>TCP</dt><dd><p>Not implemented (“-“).</p>
+</dd>
+</dl>
+<p>Renders a numeric value in typed JSON logs.</p>
+</dd>
+</dl>
+<dl id="config-access-log-format-response-flags">
+<dt>%RESPONSE_FLAGS%</dt><dd><p>Additional details about the response or connection, if any. For TCP connections, the response codes mentioned in
+the descriptions do not apply. Possible values are:</p>
+<dl class="simple">
+<dt>HTTP and TCP</dt><dd><ul class="simple">
+<li><p><strong>UH</strong>: No healthy upstream hosts in upstream cluster in addition to 503 response code.</p></li>
+<li><p><strong>UF</strong>: Upstream connection failure in addition to 503 response code.</p></li>
+<li><p><strong>UO</strong>: Upstream overflow (<a class="reference internal" href="../../../intro/arch_overview/upstream/circuit_breaking.html#arch-overview-circuit-break"><span class="std std-ref">circuit breaking</span></a>) in addition to 503 response code.</p></li>
+<li><p><strong>NR</strong>: No <a class="reference internal" href="../../../intro/arch_overview/http/http_routing.html#arch-overview-http-routing"><span class="std std-ref">route configured</span></a> for a given request in addition to 404 response code, or no matching filter chain for a downstream connection.</p></li>
+<li><p><strong>URX</strong>: The request was rejected because the <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-retrypolicy-num-retries"><span class="std std-ref">upstream retry limit (HTTP)</span></a>  or <a class="reference internal" href="../../../api-v3/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto.html#envoy-v3-api-field-extensions-filters-network-tcp-proxy-v3-tcpproxy-max-connect-attempts"><span class="std std-ref">maximum connect attempts (TCP)</span></a> was reached.</p></li>
+</ul>
+</dd>
+<dt>HTTP only</dt><dd><ul class="simple">
+<li><p><strong>DC</strong>: Downstream connection termination.</p></li>
+<li><p><strong>LH</strong>: Local service failed <a class="reference internal" href="../../../intro/arch_overview/upstream/health_checking.html#arch-overview-health-checking"><span class="std std-ref">health check request</span></a> in addition to 503 response code.</p></li>
+<li><p><strong>UT</strong>: Upstream request timeout in addition to 504 response code.</p></li>
+<li><p><strong>LR</strong>: Connection local reset in addition to 503 response code.</p></li>
+<li><p><strong>UR</strong>: Upstream remote reset in addition to 503 response code.</p></li>
+<li><p><strong>UC</strong>: Upstream connection termination in addition to 503 response code.</p></li>
+<li><p><strong>DI</strong>: The request processing was delayed for a period specified via <a class="reference internal" href="../../http/http_filters/fault_filter.html#config-http-filters-fault-injection"><span class="std std-ref">fault injection</span></a>.</p></li>
+<li><p><strong>FI</strong>: The request was aborted with a response code specified via <a class="reference internal" href="../../http/http_filters/fault_filter.html#config-http-filters-fault-injection"><span class="std std-ref">fault injection</span></a>.</p></li>
+<li><p><strong>RL</strong>: The request was ratelimited locally by the <a class="reference internal" href="../../http/http_filters/rate_limit_filter.html#config-http-filters-rate-limit"><span class="std std-ref">HTTP rate limit filter</span></a> in addition to 429 response code.</p></li>
+<li><p><strong>UAEX</strong>: The request was denied by the external authorization service.</p></li>
+<li><p><strong>RLSE</strong>: The request was rejected because there was an error in rate limit service.</p></li>
+<li><p><strong>IH</strong>: The request was rejected because it set an invalid value for a
+<a class="reference internal" href="../../../api-v3/extensions/filters/http/router/v3/router.proto.html#envoy-v3-api-field-extensions-filters-http-router-v3-router-strict-check-headers"><span class="std std-ref">strictly-checked header</span></a> in addition to 400 response code.</p></li>
+<li><p><strong>SI</strong>: Stream idle timeout in addition to 408 response code.</p></li>
+<li><p><strong>DPE</strong>: The downstream request had an HTTP protocol error.</p></li>
+<li><p><strong>UMSDR</strong>: The upstream request reached to max stream duration.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>%ROUTE_NAME%</dt><dd><p>Name of the route.</p>
+</dd>
+<dt>%UPSTREAM_HOST%</dt><dd><p>Upstream host URL (e.g., <a class="reference external" href="tcp://ip:port">tcp://ip:port</a> for TCP connections).</p>
+</dd>
+<dt>%UPSTREAM_CLUSTER%</dt><dd><p>Upstream cluster to which the upstream host belongs to.</p>
+</dd>
+<dt>%UPSTREAM_LOCAL_ADDRESS%</dt><dd><p>Local address of the upstream connection. If the address is an IP address it includes both
+address and port.</p>
+</dd>
+</dl>
+<dl id="config-access-log-format-upstream-transport-failure-reason">
+<dt>%UPSTREAM_TRANSPORT_FAILURE_REASON%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>If upstream connection failed due to transport socket (e.g. TLS handshake), provides the failure
+reason from the transport socket. The format of this field depends on the configured upstream
+transport socket. Common TLS failures are in <a class="reference internal" href="../../../intro/arch_overview/security/ssl.html#arch-overview-ssl-trouble-shooting"><span class="std std-ref">TLS trouble shooting</span></a>.</p>
+</dd>
+<dt>TCP</dt><dd><p>Not implemented (“-“)</p>
+</dd>
+</dl>
+</dd>
+<dt>%DOWNSTREAM_REMOTE_ADDRESS%</dt><dd><p>Remote address of the downstream connection. If the address is an IP address it includes both
+address and port.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This may not be the physical remote address of the peer if the address has been inferred from
+<a class="reference internal" href="../../../api-v3/config/listener/v3/listener_components.proto.html#envoy-v3-api-field-config-listener-v3-filterchain-use-proxy-proto"><span class="std std-ref">proxy proto</span></a> or <a class="reference internal" href="../../http/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a>.</p>
+</div>
+</dd>
+<dt>%DOWNSTREAM_REMOTE_ADDRESS_WITHOUT_PORT%</dt><dd><p>Remote address of the downstream connection. If the address is an IP address the output does
+<em>not</em> include port.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This may not be the physical remote address of the peer if the address has been inferred from
+<a class="reference internal" href="../../../api-v3/config/listener/v3/listener_components.proto.html#envoy-v3-api-field-config-listener-v3-filterchain-use-proxy-proto"><span class="std std-ref">proxy proto</span></a> or <a class="reference internal" href="../../http/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a>.</p>
+</div>
+</dd>
+<dt>%DOWNSTREAM_DIRECT_REMOTE_ADDRESS%</dt><dd><p>Direct remote address of the downstream connection. If the address is an IP address it includes both
+address and port.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is always the physical remote address of the peer even if the downstream remote address has
+been inferred from <a class="reference internal" href="../../../api-v3/config/listener/v3/listener_components.proto.html#envoy-v3-api-field-config-listener-v3-filterchain-use-proxy-proto"><span class="std std-ref">proxy proto</span></a>
+or <a class="reference internal" href="../../http/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a>.</p>
+</div>
+</dd>
+<dt>%DOWNSTREAM_DIRECT_REMOTE_ADDRESS_WITHOUT_PORT%</dt><dd><p>The direct remote address of the downstream connection. If the address is an IP address the output does
+<em>not</em> include port.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is always the physical remote address of the peer even if the downstream remote address has
+been inferred from <a class="reference internal" href="../../../api-v3/config/listener/v3/listener_components.proto.html#envoy-v3-api-field-config-listener-v3-filterchain-use-proxy-proto"><span class="std std-ref">proxy proto</span></a>
+or <a class="reference internal" href="../../http/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a>.</p>
+</div>
+</dd>
+<dt>%DOWNSTREAM_LOCAL_ADDRESS%</dt><dd><p>Local address of the downstream connection. If the address is an IP address it includes both
+address and port.
+If the original connection was redirected by iptables REDIRECT, this represents
+the original destination address restored by the
+<a class="reference internal" href="../../listeners/listener_filters/original_dst_filter.html#config-listener-filters-original-dst"><span class="std std-ref">Original Destination Filter</span></a> using SO_ORIGINAL_DST socket option.
+If the original connection was redirected by iptables TPROXY, and the listener’s transparent
+option was set to true, this represents the original destination address and port.</p>
+</dd>
+<dt>%DOWNSTREAM_LOCAL_ADDRESS_WITHOUT_PORT%</dt><dd><p>Same as <strong>%DOWNSTREAM_LOCAL_ADDRESS%</strong> excluding port if the address is an IP address.</p>
+</dd>
+</dl>
+<dl id="config-access-log-format-connection-id">
+<dt>%CONNECTION_ID%</dt><dd><p>An identifier for the downstream connection. It can be used to
+cross-reference TCP access logs across multiple log sinks, or to
+cross-reference timer-based reports for the same connection. The identifier
+is unique with high likelihood within an execution, but can duplicate across
+multiple instances or between restarts.</p>
+</dd>
+<dt>%GRPC_STATUS%</dt><dd><p>gRPC status code which is easy to interpret with text message corresponding with number.</p>
+</dd>
+<dt>%DOWNSTREAM_LOCAL_PORT%</dt><dd><p>Similar to <strong>%DOWNSTREAM_LOCAL_ADDRESS_WITHOUT_PORT%</strong>, but only extracts the port portion of the <strong>%DOWNSTREAM_LOCAL_ADDRESS%</strong></p>
+</dd>
+<dt>%REQ(X?Y):Z%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>An HTTP request header where X is the main HTTP header, Y is the alternative one, and Z is an
+optional parameter denoting string truncation up to Z characters long. The value is taken from
+the HTTP request header named X first and if it’s not set, then request header Y is used. If
+none of the headers are present ‘-‘ symbol will be in the log.</p>
+</dd>
+<dt>TCP</dt><dd><p>Not implemented (“-“).</p>
+</dd>
+</dl>
+</dd>
+<dt>%RESP(X?Y):Z%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>Same as <strong>%REQ(X?Y):Z%</strong> but taken from HTTP response headers.</p>
+</dd>
+<dt>TCP</dt><dd><p>Not implemented (“-“).</p>
+</dd>
+</dl>
+</dd>
+<dt>%TRAILER(X?Y):Z%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>Same as <strong>%REQ(X?Y):Z%</strong> but taken from HTTP response trailers.</p>
+</dd>
+<dt>TCP</dt><dd><p>Not implemented (“-“).</p>
+</dd>
+</dl>
+</dd>
+<dt>%DYNAMIC_METADATA(NAMESPACE:KEY*):Z%</dt><dd><dl>
+<dt>HTTP</dt><dd><p><a class="reference internal" href="../../../api-v3/config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-metadata"><span class="std std-ref">Dynamic Metadata</span></a> info,
+where NAMESPACE is the filter namespace used when setting the metadata, KEY is an optional
+lookup up key in the namespace with the option of specifying nested keys separated by ‘:’,
+and Z is an optional parameter denoting string truncation up to Z characters long. Dynamic Metadata
+can be set by filters using the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.16.4/include/envoy/stream_info/stream_info.h">StreamInfo</a> API:
+<em>setDynamicMetadata</em>. The data will be logged as a JSON string. For example, for the following dynamic metadata:</p>
+<p><code class="docutils literal notranslate"><span class="pre">com.test.my_filter:</span> <span class="pre">{&quot;test_key&quot;:</span> <span class="pre">&quot;foo&quot;,</span> <span class="pre">&quot;test_object&quot;:</span> <span class="pre">{&quot;inner_key&quot;:</span> <span class="pre">&quot;bar&quot;}}</span></code></p>
+<ul class="simple">
+<li><p>%DYNAMIC_METADATA(com.test.my_filter)% will log: <code class="docutils literal notranslate"><span class="pre">{&quot;test_key&quot;:</span> <span class="pre">&quot;foo&quot;,</span> <span class="pre">&quot;test_object&quot;:</span> <span class="pre">{&quot;inner_key&quot;:</span> <span class="pre">&quot;bar&quot;}}</span></code></p></li>
+<li><p>%DYNAMIC_METADATA(com.test.my_filter:test_key)% will log: <code class="docutils literal notranslate"><span class="pre">&quot;foo&quot;</span></code></p></li>
+<li><p>%DYNAMIC_METADATA(com.test.my_filter:test_object)% will log: <code class="docutils literal notranslate"><span class="pre">{&quot;inner_key&quot;:</span> <span class="pre">&quot;bar&quot;}</span></code></p></li>
+<li><p>%DYNAMIC_METADATA(com.test.my_filter:test_object:inner_key)% will log: <code class="docutils literal notranslate"><span class="pre">&quot;bar&quot;</span></code></p></li>
+<li><p>%DYNAMIC_METADATA(com.unknown_filter)% will log: <code class="docutils literal notranslate"><span class="pre">-</span></code></p></li>
+<li><p>%DYNAMIC_METADATA(com.test.my_filter:unknown_key)% will log: <code class="docutils literal notranslate"><span class="pre">-</span></code></p></li>
+<li><p>%DYNAMIC_METADATA(com.test.my_filter):25% will log (truncation at 25 characters): <code class="docutils literal notranslate"><span class="pre">{&quot;test_key&quot;:</span> <span class="pre">&quot;foo&quot;,</span> <span class="pre">&quot;test</span></code></p></li>
+</ul>
+</dd>
+<dt>TCP</dt><dd><p>Not implemented (“-“).</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For typed JSON logs, this operator renders a single value with string, numeric, or boolean type
+when the referenced key is a simple value. If the referenced key is a struct or list value, a
+JSON struct or list is rendered. Structs and lists may be nested. In any event, the maximum
+length is ignored</p>
+</div>
+</dd>
+</dl>
+<dl id="config-access-log-format-filter-state">
+<dt>%FILTER_STATE(KEY:F):Z%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p><a class="reference internal" href="../../../intro/arch_overview/advanced/data_sharing_between_filters.html#arch-overview-data-sharing-between-filters"><span class="std std-ref">Filter State</span></a> info, where the KEY is required to
+look up the filter state object. The serialized proto will be logged as JSON string if possible.
+If the serialized proto is unknown to Envoy it will be logged as protobuf debug string.
+Z is an optional parameter denoting string truncation up to Z characters long.
+F is an optional parameter used to indicate which method FilterState uses for serialization.
+If ‘PLAIN’ is set, the filter state object will be serialized as an unstructured string.
+If ‘TYPED’ is set or no F provided, the filter state object will be serialized as an JSON string.</p>
+</dd>
+<dt>TCP</dt><dd><p>Same as HTTP, the filter state is from connection instead of a L7 request.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For typed JSON logs, this operator renders a single value with string, numeric, or boolean type
+when the referenced key is a simple value. If the referenced key is a struct or list value, a
+JSON struct or list is rendered. Structs and lists may be nested. In any event, the maximum
+length is ignored</p>
+</div>
+</dd>
+<dt>%REQUESTED_SERVER_NAME%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>String value set on ssl connection socket for Server Name Indication (SNI)</p>
+</dd>
+<dt>TCP</dt><dd><p>String value set on ssl connection socket for Server Name Indication (SNI)</p>
+</dd>
+</dl>
+</dd>
+<dt>%DOWNSTREAM_LOCAL_URI_SAN%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>The URIs present in the SAN of the local certificate used to establish the downstream TLS connection.</p>
+</dd>
+<dt>TCP</dt><dd><p>The URIs present in the SAN of the local certificate used to establish the downstream TLS connection.</p>
+</dd>
+</dl>
+</dd>
+<dt>%DOWNSTREAM_PEER_URI_SAN%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>The URIs present in the SAN of the peer certificate used to establish the downstream TLS connection.</p>
+</dd>
+<dt>TCP</dt><dd><p>The URIs present in the SAN of the peer certificate used to establish the downstream TLS connection.</p>
+</dd>
+</dl>
+</dd>
+<dt>%DOWNSTREAM_LOCAL_SUBJECT%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>The subject present in the local certificate used to establish the downstream TLS connection.</p>
+</dd>
+<dt>TCP</dt><dd><p>The subject present in the local certificate used to establish the downstream TLS connection.</p>
+</dd>
+</dl>
+</dd>
+<dt>%DOWNSTREAM_PEER_SUBJECT%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>The subject present in the peer certificate used to establish the downstream TLS connection.</p>
+</dd>
+<dt>TCP</dt><dd><p>The subject present in the peer certificate used to establish the downstream TLS connection.</p>
+</dd>
+</dl>
+</dd>
+<dt>%DOWNSTREAM_PEER_ISSUER%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>The issuer present in the peer certificate used to establish the downstream TLS connection.</p>
+</dd>
+<dt>TCP</dt><dd><p>The issuer present in the peer certificate used to establish the downstream TLS connection.</p>
+</dd>
+</dl>
+</dd>
+<dt>%DOWNSTREAM_TLS_SESSION_ID%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>The session ID for the established downstream TLS connection.</p>
+</dd>
+<dt>TCP</dt><dd><p>The session ID for the established downstream TLS connection.</p>
+</dd>
+</dl>
+</dd>
+<dt>%DOWNSTREAM_TLS_CIPHER%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>The OpenSSL name for the set of ciphers used to establish the downstream TLS connection.</p>
+</dd>
+<dt>TCP</dt><dd><p>The OpenSSL name for the set of ciphers used to establish the downstream TLS connection.</p>
+</dd>
+</dl>
+</dd>
+<dt>%DOWNSTREAM_TLS_VERSION%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>The TLS version (e.g., <code class="docutils literal notranslate"><span class="pre">TLSv1.2</span></code>, <code class="docutils literal notranslate"><span class="pre">TLSv1.3</span></code>) used to establish the downstream TLS connection.</p>
+</dd>
+<dt>TCP</dt><dd><p>The TLS version (e.g., <code class="docutils literal notranslate"><span class="pre">TLSv1.2</span></code>, <code class="docutils literal notranslate"><span class="pre">TLSv1.3</span></code>) used to establish the downstream TLS connection.</p>
+</dd>
+</dl>
+</dd>
+<dt>%DOWNSTREAM_PEER_FINGERPRINT_256%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>The hex-encoded SHA256 fingerprint of the client certificate used to establish the downstream TLS connection.</p>
+</dd>
+<dt>TCP</dt><dd><p>The hex-encoded SHA256 fingerprint of the client certificate used to establish the downstream TLS connection.</p>
+</dd>
+</dl>
+</dd>
+<dt>%DOWNSTREAM_PEER_FINGERPRINT_1%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>The hex-encoded SHA1 fingerprint of the client certificate used to establish the downstream TLS connection.</p>
+</dd>
+<dt>TCP</dt><dd><p>The hex-encoded SHA1 fingerprint of the client certificate used to establish the downstream TLS connection.</p>
+</dd>
+</dl>
+</dd>
+<dt>%DOWNSTREAM_PEER_SERIAL%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>The serial number of the client certificate used to establish the downstream TLS connection.</p>
+</dd>
+<dt>TCP</dt><dd><p>The serial number of the client certificate used to establish the downstream TLS connection.</p>
+</dd>
+</dl>
+</dd>
+<dt>%DOWNSTREAM_PEER_CERT%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>The client certificate in the URL-encoded PEM format used to establish the downstream TLS connection.</p>
+</dd>
+<dt>TCP</dt><dd><p>The client certificate in the URL-encoded PEM format used to establish the downstream TLS connection.</p>
+</dd>
+</dl>
+</dd>
+<dt>%DOWNSTREAM_PEER_CERT_V_START%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>The validity start date of the client certificate used to establish the downstream TLS connection.</p>
+</dd>
+<dt>TCP</dt><dd><p>The validity start date of the client certificate used to establish the downstream TLS connection.</p>
+</dd>
+</dl>
+</dd>
+<dt>%DOWNSTREAM_PEER_CERT_V_END%</dt><dd><dl class="simple">
+<dt>HTTP</dt><dd><p>The validity end date of the client certificate used to establish the downstream TLS connection.</p>
+</dd>
+<dt>TCP</dt><dd><p>The validity end date of the client certificate used to establish the downstream TLS connection.</p>
+</dd>
+</dl>
+</dd>
+<dt>%HOSTNAME%</dt><dd><p>The system hostname.</p>
+</dd>
+<dt>%LOCAL_REPLY_BODY%</dt><dd><p>The body text for the requests rejected by the Envoy.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../security/security.html" class="btn btn-neutral float-right" title="Security" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="stats.html" class="btn btn-neutral float-left" title="Statistics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2016-2021, Envoy Project Authors
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

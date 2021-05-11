@@ -1,0 +1,173 @@
+.. _envoy_api_file_envoy/config/filter/http/adaptive_concurrency/v2alpha/adaptive_concurrency.proto:
+
+Adaptive Concurrency
+====================
+
+.. _extension_envoy.filters.http.adaptive_concurrency:
+
+
+This extension may be referenced by the qualified name *envoy.filters.http.adaptive_concurrency*
+
+.. note::
+  This extension is functional but has not had substantial production burn time, use only with this caveat.
+
+  This extension has an unknown security posture and should only be used in deployments where both the downstream and upstream are trusted.
+
+Adaptive Concurrency Control :ref:`configuration overview
+<config_http_filters_adaptive_concurrency>`.
+
+.. _envoy_api_msg_config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig:
+
+config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig
+------------------------------------------------------------------------
+
+`[config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig proto] <https://github.com/envoyproxy/envoy/blob/v1.16.4/api/envoy/config/filter/http/adaptive_concurrency/v2alpha/adaptive_concurrency.proto#L28>`_
+
+Configuration parameters for the gradient controller.
+
+.. code-block:: json
+
+  {
+    "sample_aggregate_percentile": "{...}",
+    "concurrency_limit_params": "{...}",
+    "min_rtt_calc_params": "{...}"
+  }
+
+.. _envoy_api_field_config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig.sample_aggregate_percentile:
+
+sample_aggregate_percentile
+  (:ref:`type.Percent <envoy_api_msg_type.Percent>`) The percentile to use when summarizing aggregated samples. Defaults to p50.
+  
+  
+.. _envoy_api_field_config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig.concurrency_limit_params:
+
+concurrency_limit_params
+  (:ref:`config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig.ConcurrencyLimitCalculationParams <envoy_api_msg_config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig.ConcurrencyLimitCalculationParams>`, *REQUIRED*) 
+  
+.. _envoy_api_field_config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig.min_rtt_calc_params:
+
+min_rtt_calc_params
+  (:ref:`config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig.MinimumRTTCalculationParams <envoy_api_msg_config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig.MinimumRTTCalculationParams>`, *REQUIRED*) 
+  
+.. _envoy_api_msg_config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig.ConcurrencyLimitCalculationParams:
+
+config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig.ConcurrencyLimitCalculationParams
+----------------------------------------------------------------------------------------------------------
+
+`[config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig.ConcurrencyLimitCalculationParams proto] <https://github.com/envoyproxy/envoy/blob/v1.16.4/api/envoy/config/filter/http/adaptive_concurrency/v2alpha/adaptive_concurrency.proto#L31>`_
+
+Parameters controlling the periodic recalculation of the concurrency limit from sampled request
+latencies.
+
+.. code-block:: json
+
+  {
+    "max_concurrency_limit": "{...}",
+    "concurrency_update_interval": "{...}"
+  }
+
+.. _envoy_api_field_config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig.ConcurrencyLimitCalculationParams.max_concurrency_limit:
+
+max_concurrency_limit
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The allowed upper-bound on the calculated concurrency limit. Defaults to 1000.
+  
+  
+.. _envoy_api_field_config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig.ConcurrencyLimitCalculationParams.concurrency_update_interval:
+
+concurrency_update_interval
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_, *REQUIRED*) The period of time samples are taken to recalculate the concurrency limit.
+  
+  
+
+
+.. _envoy_api_msg_config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig.MinimumRTTCalculationParams:
+
+config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig.MinimumRTTCalculationParams
+----------------------------------------------------------------------------------------------------
+
+`[config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig.MinimumRTTCalculationParams proto] <https://github.com/envoyproxy/envoy/blob/v1.16.4/api/envoy/config/filter/http/adaptive_concurrency/v2alpha/adaptive_concurrency.proto#L44>`_
+
+Parameters controlling the periodic minRTT recalculation.
+
+.. code-block:: json
+
+  {
+    "interval": "{...}",
+    "request_count": "{...}",
+    "jitter": "{...}",
+    "min_concurrency": "{...}",
+    "buffer": "{...}"
+  }
+
+.. _envoy_api_field_config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig.MinimumRTTCalculationParams.interval:
+
+interval
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_, *REQUIRED*) The time interval between recalculating the minimum request round-trip time.
+  
+  
+.. _envoy_api_field_config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig.MinimumRTTCalculationParams.request_count:
+
+request_count
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The number of requests to aggregate/sample during the minRTT recalculation window before
+  updating. Defaults to 50.
+  
+  
+.. _envoy_api_field_config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig.MinimumRTTCalculationParams.jitter:
+
+jitter
+  (:ref:`type.Percent <envoy_api_msg_type.Percent>`) Randomized time delta that will be introduced to the start of the minRTT calculation window.
+  This is represented as a percentage of the interval duration. Defaults to 15%.
+  
+  Example: If the interval is 10s and the jitter is 15%, the next window will begin
+  somewhere in the range (10s - 11.5s).
+  
+  
+.. _envoy_api_field_config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig.MinimumRTTCalculationParams.min_concurrency:
+
+min_concurrency
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The concurrency limit set while measuring the minRTT. Defaults to 3.
+  
+  
+.. _envoy_api_field_config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig.MinimumRTTCalculationParams.buffer:
+
+buffer
+  (:ref:`type.Percent <envoy_api_msg_type.Percent>`) Amount added to the measured minRTT to add stability to the concurrency limit during natural
+  variability in latency. This is expressed as a percentage of the measured value and can be
+  adjusted to allow more or less tolerance to the sampled latency values.
+  
+  Defaults to 25%.
+  
+  
+
+
+
+.. _envoy_api_msg_config.filter.http.adaptive_concurrency.v2alpha.AdaptiveConcurrency:
+
+config.filter.http.adaptive_concurrency.v2alpha.AdaptiveConcurrency
+-------------------------------------------------------------------
+
+`[config.filter.http.adaptive_concurrency.v2alpha.AdaptiveConcurrency proto] <https://github.com/envoyproxy/envoy/blob/v1.16.4/api/envoy/config/filter/http/adaptive_concurrency/v2alpha/adaptive_concurrency.proto#L82>`_
+
+
+.. code-block:: json
+
+  {
+    "gradient_controller_config": "{...}",
+    "enabled": "{...}"
+  }
+
+.. _envoy_api_field_config.filter.http.adaptive_concurrency.v2alpha.AdaptiveConcurrency.gradient_controller_config:
+
+gradient_controller_config
+  (:ref:`config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig <envoy_api_msg_config.filter.http.adaptive_concurrency.v2alpha.GradientControllerConfig>`, *REQUIRED*) Gradient concurrency control will be used.
+  
+  
+  
+.. _envoy_api_field_config.filter.http.adaptive_concurrency.v2alpha.AdaptiveConcurrency.enabled:
+
+enabled
+  (:ref:`core.RuntimeFeatureFlag <envoy_api_msg_core.RuntimeFeatureFlag>`) If set to false, the adaptive concurrency filter will operate as a pass-through filter. If the
+  message is unspecified, the filter will be enabled.
+  
+  
+
