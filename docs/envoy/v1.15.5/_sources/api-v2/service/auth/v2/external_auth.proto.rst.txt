@@ -1,0 +1,148 @@
+.. _envoy_api_file_envoy/service/auth/v2/external_auth.proto:
+
+Authorization Service 
+======================
+
+
+
+The authorization service request messages used by external authorization :ref:`network filter
+<config_network_filters_ext_authz>` and :ref:`HTTP filter <config_http_filters_ext_authz>`.
+
+.. _envoy_api_msg_service.auth.v2.CheckRequest:
+
+service.auth.v2.CheckRequest
+----------------------------
+
+`[service.auth.v2.CheckRequest proto] <https://github.com/envoyproxy/envoy/blob/v1.15.5/api/envoy/service/auth/v2/external_auth.proto#L33>`_
+
+
+.. code-block:: json
+
+  {
+    "attributes": "{...}"
+  }
+
+.. _envoy_api_field_service.auth.v2.CheckRequest.attributes:
+
+attributes
+  (:ref:`service.auth.v2.AttributeContext <envoy_api_msg_service.auth.v2.AttributeContext>`) The request attributes.
+  
+  
+
+
+.. _envoy_api_msg_service.auth.v2.DeniedHttpResponse:
+
+service.auth.v2.DeniedHttpResponse
+----------------------------------
+
+`[service.auth.v2.DeniedHttpResponse proto] <https://github.com/envoyproxy/envoy/blob/v1.15.5/api/envoy/service/auth/v2/external_auth.proto#L39>`_
+
+HTTP attributes for a denied response.
+
+.. code-block:: json
+
+  {
+    "status": "{...}",
+    "headers": [],
+    "body": "..."
+  }
+
+.. _envoy_api_field_service.auth.v2.DeniedHttpResponse.status:
+
+status
+  (:ref:`type.HttpStatus <envoy_api_msg_type.HttpStatus>`, *REQUIRED*) This field allows the authorization service to send a HTTP response status
+  code to the downstream client other than 403 (Forbidden).
+  
+  
+.. _envoy_api_field_service.auth.v2.DeniedHttpResponse.headers:
+
+headers
+  (:ref:`core.HeaderValueOption <envoy_api_msg_core.HeaderValueOption>`) This field allows the authorization service to send HTTP response headers
+  to the downstream client.
+  
+  
+.. _envoy_api_field_service.auth.v2.DeniedHttpResponse.body:
+
+body
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) This field allows the authorization service to send a response body data
+  to the downstream client.
+  
+  
+
+
+.. _envoy_api_msg_service.auth.v2.OkHttpResponse:
+
+service.auth.v2.OkHttpResponse
+------------------------------
+
+`[service.auth.v2.OkHttpResponse proto] <https://github.com/envoyproxy/envoy/blob/v1.15.5/api/envoy/service/auth/v2/external_auth.proto#L54>`_
+
+HTTP attributes for an ok response.
+
+.. code-block:: json
+
+  {
+    "headers": []
+  }
+
+.. _envoy_api_field_service.auth.v2.OkHttpResponse.headers:
+
+headers
+  (:ref:`core.HeaderValueOption <envoy_api_msg_core.HeaderValueOption>`) HTTP entity headers in addition to the original request headers. This allows the authorization
+  service to append, to add or to override headers from the original request before
+  dispatching it to the upstream. By setting `append` field to `true` in the `HeaderValueOption`,
+  the filter will append the correspondent header value to the matched request header. Note that
+  by Leaving `append` as false, the filter will either add a new header, or override an existing
+  one if there is a match.
+  
+  
+
+
+.. _envoy_api_msg_service.auth.v2.CheckResponse:
+
+service.auth.v2.CheckResponse
+-----------------------------
+
+`[service.auth.v2.CheckResponse proto] <https://github.com/envoyproxy/envoy/blob/v1.15.5/api/envoy/service/auth/v2/external_auth.proto#L65>`_
+
+Intended for gRPC and Network Authorization servers `only`.
+
+.. code-block:: json
+
+  {
+    "status": "{...}",
+    "denied_response": "{...}",
+    "ok_response": "{...}"
+  }
+
+.. _envoy_api_field_service.auth.v2.CheckResponse.status:
+
+status
+  (`Status <https://cloud.google.com/natural-language/docs/reference/rpc/google.rpc#status>`_) Status `OK` allows the request. Any other status indicates the request should be denied.
+  
+  
+.. _envoy_api_field_service.auth.v2.CheckResponse.denied_response:
+
+denied_response
+  (:ref:`service.auth.v2.DeniedHttpResponse <envoy_api_msg_service.auth.v2.DeniedHttpResponse>`) Supplies http attributes for a denied response.
+  
+  An message that contains HTTP response attributes. This message is
+  used when the authorization service needs to send custom responses to the
+  downstream client or, to modify/add request headers being dispatched to the upstream.
+  
+  
+  Only one of :ref:`denied_response <envoy_api_field_service.auth.v2.CheckResponse.denied_response>`, :ref:`ok_response <envoy_api_field_service.auth.v2.CheckResponse.ok_response>` may be set.
+  
+.. _envoy_api_field_service.auth.v2.CheckResponse.ok_response:
+
+ok_response
+  (:ref:`service.auth.v2.OkHttpResponse <envoy_api_msg_service.auth.v2.OkHttpResponse>`) Supplies http attributes for an ok response.
+  
+  An message that contains HTTP response attributes. This message is
+  used when the authorization service needs to send custom responses to the
+  downstream client or, to modify/add request headers being dispatched to the upstream.
+  
+  
+  Only one of :ref:`denied_response <envoy_api_field_service.auth.v2.CheckResponse.denied_response>`, :ref:`ok_response <envoy_api_field_service.auth.v2.CheckResponse.ok_response>` may be set.
+  
+

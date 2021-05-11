@@ -1,0 +1,340 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>CSRF Filter &mdash; envoy tag-v1.15.5 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="External Authorization Filter" href="ext_authz.html" />
+    <link rel="prev" title="CORS Filter" href="cors.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                tag-v1.15.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../start.html">Getting Started</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../start.html#quick-start-to-run-simple-example">Quick Start to Run Simple Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../start.html#simple-configuration">Simple Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../start.html#using-the-envoy-docker-image">Using the Envoy Docker Image</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../start.html#sandboxes">Sandboxes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="cors.html">CORS Filter</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">CSRF Filter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#running-the-sandboxes">Running the Sandboxes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ext_authz.html">External Authorization Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault Injection Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front Proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC Bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger Native Tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_tracing.html">Jaeger Tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="load_reporting_service.html">Load Reporting Service (LRS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mysql.html">MySQL Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">Zipkin Tracing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../start.html#other-use-cases">Other use cases</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/install.html">Building and installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version_history/version_history.html">Version history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/overview.html">FAQ</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../start.html">Getting Started</a> &raquo;</li>
+        
+      <li>CSRF Filter</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/start/sandboxes/csrf.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="csrf-filter">
+<span id="install-sandboxes-csrf"></span><h1>CSRF Filter<a class="headerlink" href="#csrf-filter" title="Permalink to this headline">¶</a></h1>
+<p>Cross-Site Request Forgery (CSRF) is an attack that occurs when a malicious
+third-party website exploits a vulnerability that allows them to submit an
+undesired request on a user’s behalf. To mitigate this attack this filter
+checks where a request is coming from to determine if the request’s origin
+is the same as it’s destination.</p>
+<p>To help demonstrate how front-envoy can enforce CSRF policies, we are releasing
+a <a class="reference external" href="https://docs.docker.com/compose/">docker compose</a> sandbox that
+deploys a service with both a frontend and backed. This service will be started
+on two different virtual machines with different origins.</p>
+<p>The frontend has a field to input the remote domain of where you would like to
+send POST requests along with radio buttons to select the remote domain’s CSRF
+enforcement. The CSRF enforcement choices are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Disabled: CSRF is disabled on the requested route. This will result in a
+successful request since there is no CSRF enforcement.</p></li>
+<li><p>Shadow Mode: CSRF is not enforced on the requested route but will record
+if the request contains a valid source origin.</p></li>
+<li><p>Enabled: CSRF is enabled and will return a 403 (Forbidden) status code when
+a request is made from a different origin.</p></li>
+<li><p>Ignored: CSRF is enabled but the request type is a GET. This should bypass
+the CSRF filter and return successfully.</p></li>
+</ul>
+</div></blockquote>
+<div class="section" id="running-the-sandboxes">
+<h2>Running the Sandboxes<a class="headerlink" href="#running-the-sandboxes" title="Permalink to this headline">¶</a></h2>
+<p>The following documentation runs through the setup of both services.</p>
+<p><strong>Step 1: Install Docker</strong></p>
+<p>Ensure that you have a recent versions of <code class="docutils literal notranslate"><span class="pre">docker</span></code> and <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code>.</p>
+<p>A simple way to achieve this is via the <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p>
+<p><strong>Step 2: Clone the Envoy repo and start all of our containers</strong></p>
+<p>If you have not cloned the Envoy repo, clone it with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:envoyproxy/envoy</span></code>
+or <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/envoyproxy/envoy.git</span></code></p>
+<p>Terminal 1 (samesite)</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
+<span class="go">envoy/examples/csrf/samesite</span>
+<span class="gp">$</span> docker-compose pull
+<span class="gp">$</span> docker-compose up --build -d
+<span class="gp">$</span> docker-compose ps
+
+<span class="go">          Name                        Command              State                            Ports</span>
+<span class="go">----------------------------------------------------------------------------------------------------------------------</span>
+<span class="go">samesite_front-envoy_1      /docker-entrypoint.sh /bin ... Up      10000/tcp, 0.0.0.0:8000-&gt;8000/tcp, 0.0.0.0:8001-&gt;8001/tcp</span>
+<span class="go">samesite_service_1          /bin/sh -c /usr/local/bin/ ... Up      10000/tcp, 8000/tcp</span>
+</pre></div>
+</div>
+<p>Terminal 2 (crosssite)</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
+<span class="go">envoy/examples/csrf/crosssite</span>
+<span class="gp">$</span> docker-compose up --build -d
+<span class="gp">$</span> docker-compose ps
+
+<span class="go">          Name                       Command                State                            Ports</span>
+<span class="go">----------------------------------------------------------------------------------------------------------------------</span>
+<span class="go">crosssite_front-envoy_1      /bin/sh -c /usr/local/bin/ ... Up      10000/tcp, 0.0.0.0:8002-&gt;8000/tcp, 0.0.0.0:8003-&gt;8001/tcp</span>
+<span class="go">crosssite_service_1          /docker-entrypoint.sh /bin ... Up      10000/tcp, 8000/tcp</span>
+</pre></div>
+</div>
+<p><strong>Step 3: Test Envoy’s CSRF capabilities</strong></p>
+<p>You can now open a browser to view your <code class="docutils literal notranslate"><span class="pre">crosssite</span></code> frontend service.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> open <span class="s2">&quot;http://localhost:8002&quot;</span>
+</pre></div>
+</div>
+<p>Enter the IP of the <code class="docutils literal notranslate"><span class="pre">samesite</span></code> machine to demonstrate cross-site requests. Requests
+with the enabled enforcement will fail. By default this field will be populated
+with <code class="docutils literal notranslate"><span class="pre">localhost</span></code>.</p>
+<p>To demonstrate same-site requests open the frontend service for <code class="docutils literal notranslate"><span class="pre">samesite</span></code> and enter
+the IP address of the <code class="docutils literal notranslate"><span class="pre">samesite</span></code> machine as the destination.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> open <span class="s2">&quot;http://localhost:8000&quot;</span>
+</pre></div>
+</div>
+<p>Results of the cross-site request will be shown on the page under <em>Request Results</em>.
+Your browser’s CSRF enforcement logs can be found in the console and in the
+network tab.</p>
+<p>For example:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Failed to load resource: the server responded with a status of 403 (Forbidden)</span>
+</pre></div>
+</div>
+<p>If you change the destination to be the same as one displaying the website and
+set the CSRF enforcement to enabled the request will go through successfully.</p>
+<p><strong>Step 4: Check stats of backend via admin</strong></p>
+<p>When Envoy runs, it can listen to <code class="docutils literal notranslate"><span class="pre">admin</span></code> requests if a port is configured. In
+the example configs, the backend admin is bound to port <code class="docutils literal notranslate"><span class="pre">8001</span></code>.</p>
+<p>If you go to <code class="docutils literal notranslate"><span class="pre">localhost:8001/stats</span></code> you will be able to view
+all of the Envoy stats for the backend. You should see the CORS stats for
+invalid and valid origins increment as you make requests from the frontend cluster.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>http.ingress_http.csrf.missing_source_origin: 0
+http.ingress_http.csrf.request_invalid: 1
+http.ingress_http.csrf.request_valid: 0
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ext_authz.html" class="btn btn-neutral float-right" title="External Authorization Filter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="cors.html" class="btn btn-neutral float-left" title="CORS Filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2021, Envoy Project Authors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
