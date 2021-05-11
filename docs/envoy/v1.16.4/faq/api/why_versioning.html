@@ -1,0 +1,291 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Why are the Envoy xDS APIs versioned? What is the benefit? &mdash; envoy tag-v1.16.4 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinx_tabs/semantic-ui-2.4.1/segment.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinx_tabs/semantic-ui-2.4.1/menu.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinx_tabs/semantic-ui-2.4.1/tab.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinx_tabs/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="What is the status of incremental xDS support?" href="incremental.html" />
+    <link rel="prev" title="What do the v2, v3, vN etc. mean in API package names?" href="package_naming.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                tag-v1.16.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/install.html">Building and installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version_history/version_history.html">Version history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../overview.html">FAQ</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#build">Build</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../overview.html#api">API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="envoy_v2_support.html">How long will the v2 APIs be supported?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="envoy_v3.html">How do I configure Envoy to use the v3 API?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="envoy_upgrade_v3.html">If I upgrade to Envoy 1.13+, do I need to use the v3 API?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions.html">How does API versioning interact with a new extension?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control_plane_version_support.html">Which xDS transport and resource versions does my control plane need to support?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control_plane.html">How do I support multiple xDS API major versions in my control plane?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="package_naming.html">What do the v2, v3, vN etc. mean in API package names?</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Why are the Envoy xDS APIs versioned? What is the benefit?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="incremental.html">What is the status of incremental xDS support?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#debugging">Debugging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#performance">Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#load-balancing">Load balancing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#extensions">Extensions</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../overview.html">FAQ</a> &raquo;</li>
+        
+      <li>Why are the Envoy xDS APIs versioned? What is the benefit?</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/faq/api/why_versioning.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="why-are-the-envoy-xds-apis-versioned-what-is-the-benefit">
+<h1>Why are the Envoy xDS APIs versioned? What is the benefit?<a class="headerlink" href="#why-are-the-envoy-xds-apis-versioned-what-is-the-benefit" title="Permalink to this headline">¶</a></h1>
+<p>Envoy is a platform and needs to allow its APIs to grow and evolve to encompass new features,
+improve ergonomics and address new use cases. At the same time, we need a disciplined approach to
+turning down stale functionality and removing APIs and their supporting code that are no longer
+maintained. If we don’t do this, we lose the ability in the long term to provide a reliable,
+maintainable, scalable code base and set of APIs for our users.</p>
+<p>We had previously put in place policies around <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.16.4/CONTRIBUTING.md#breaking-change-policy">breaking changes</a> across releases, the <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.16.4/api/API_VERSIONING.md">API versioning policy</a> takes this a step further, articulating a guaranteed multi-year support
+window for APIs that provides control plane authors a predictable clock when considering support
+for a range of Envoy versions.</p>
+<p>For the v3 xDS APIs, a brief list of the key improvements that were made with a clean break from v2:</p>
+<ul class="simple">
+<li><p>Packages organization was improved to reflect a more logical grouping of related APIs:</p>
+<ul>
+<li><p>The legacy <cite>envoy.api.v2</cite> tree was eliminated, with protos moved to their logical groupings,
+e.g. <cite>envoy.config.core.v3</cite>, <cite>envoy.server.listener.v3</cite>.</p></li>
+<li><p>All packages are now versioned with a <cite>vN</cite> at the end. This allows for type-level identification
+of major version.</p></li>
+<li><p>xDS service endpoints/transport and configuration are split between <cite>envoy.service</cite> and
+<cite>envoy.config</cite>.</p></li>
+<li><p>Extensions now reflect the Envoy source tree layout under <cite>envoy.extensions</cite>.</p></li>
+</ul>
+</li>
+<li><p><cite>std::regex</cite> regular expressions were dropped from the API, in favor of RE2. The former have dangerous
+security implications.</p></li>
+<li><p><cite>google.protobuf.Struct</cite> configuration of extensions was dropped from the API, in favor of
+typed configuration. This provides for better support for multiple instances of extensions, e.g.
+in filter chains, and more flexible naming of extension instances.</p></li>
+<li><p>Over 60 deprecated fields were removed from the API.</p></li>
+<li><p>Tooling and processes were established for API versioning support. This has now been reflected in
+the bootstrap <cite>Node</cite>, providing a long term notion of API support that control planes can depend
+upon for client negotiation.</p></li>
+</ul>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="incremental.html" class="btn btn-neutral float-right" title="What is the status of incremental xDS support?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="package_naming.html" class="btn btn-neutral float-left" title="What do the v2, v3, vN etc. mean in API package names?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2016-2021, Envoy Project Authors
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
