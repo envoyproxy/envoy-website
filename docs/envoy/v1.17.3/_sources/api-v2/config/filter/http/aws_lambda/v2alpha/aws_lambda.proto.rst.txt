@@ -1,0 +1,104 @@
+.. _envoy_api_file_envoy/config/filter/http/aws_lambda/v2alpha/aws_lambda.proto:
+
+AWS Lambda
+==========
+
+.. _extension_envoy.filters.http.aws_lambda:
+
+
+This extension may be referenced by the qualified name *envoy.filters.http.aws_lambda*
+
+.. note::
+  This extension is functional but has not had substantial production burn time, use only with this caveat.
+
+  This extension is not hardened and should only be used in deployments where both the downstream and upstream are trusted.
+
+.. warning::
+   This API is work-in-progress and is subject to breaking changes.
+
+AWS Lambda :ref:`configuration overview <config_http_filters_aws_lambda>`.
+
+.. _envoy_api_msg_config.filter.http.aws_lambda.v2alpha.Config:
+
+config.filter.http.aws_lambda.v2alpha.Config
+--------------------------------------------
+
+`[config.filter.http.aws_lambda.v2alpha.Config proto] <https://github.com/envoyproxy/envoy/blob/v1.17.3/api/envoy/config/filter/http/aws_lambda/v2alpha/aws_lambda.proto#L21>`_
+
+AWS Lambda filter config
+
+.. code-block:: json
+
+  {
+    "arn": "...",
+    "payload_passthrough": "...",
+    "invocation_mode": "..."
+  }
+
+.. _envoy_api_field_config.filter.http.aws_lambda.v2alpha.Config.arn:
+
+arn
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The ARN of the AWS Lambda to invoke when the filter is engaged
+  Must be in the following format:
+  arn:<partition>:lambda:<region>:<account-number>:function:<function-name>
+  
+  
+.. _envoy_api_field_config.filter.http.aws_lambda.v2alpha.Config.payload_passthrough:
+
+payload_passthrough
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Whether to transform the request (headers and body) to a JSON payload or pass it as is.
+  
+  
+.. _envoy_api_field_config.filter.http.aws_lambda.v2alpha.Config.invocation_mode:
+
+invocation_mode
+  (:ref:`config.filter.http.aws_lambda.v2alpha.Config.InvocationMode <envoy_api_enum_config.filter.http.aws_lambda.v2alpha.Config.InvocationMode>`) Determines the way to invoke the Lambda function.
+  
+  
+
+.. _envoy_api_enum_config.filter.http.aws_lambda.v2alpha.Config.InvocationMode:
+
+Enum config.filter.http.aws_lambda.v2alpha.Config.InvocationMode
+----------------------------------------------------------------
+
+`[config.filter.http.aws_lambda.v2alpha.Config.InvocationMode proto] <https://github.com/envoyproxy/envoy/blob/v1.17.3/api/envoy/config/filter/http/aws_lambda/v2alpha/aws_lambda.proto#L22>`_
+
+
+.. _envoy_api_enum_value_config.filter.http.aws_lambda.v2alpha.Config.InvocationMode.SYNCHRONOUS:
+
+SYNCHRONOUS
+  *(DEFAULT)* ⁣This is the more common mode of invocation, in which Lambda responds after it has completed the function. In
+  this mode the output of the Lambda function becomes the response of the HTTP request.
+  
+  
+.. _envoy_api_enum_value_config.filter.http.aws_lambda.v2alpha.Config.InvocationMode.ASYNCHRONOUS:
+
+ASYNCHRONOUS
+  ⁣In this mode Lambda responds immediately but continues to process the function asynchronously. This mode can be
+  used to signal events for example. In this mode, Lambda responds with an acknowledgment that it received the
+  call which is translated to an HTTP 200 OK by the filter.
+  
+  
+
+.. _envoy_api_msg_config.filter.http.aws_lambda.v2alpha.PerRouteConfig:
+
+config.filter.http.aws_lambda.v2alpha.PerRouteConfig
+----------------------------------------------------
+
+`[config.filter.http.aws_lambda.v2alpha.PerRouteConfig proto] <https://github.com/envoyproxy/envoy/blob/v1.17.3/api/envoy/config/filter/http/aws_lambda/v2alpha/aws_lambda.proto#L47>`_
+
+Per-route configuration for AWS Lambda. This can be useful when invoking a different Lambda function or a different
+version of the same Lambda depending on the route.
+
+.. code-block:: json
+
+  {
+    "invoke_config": "{...}"
+  }
+
+.. _envoy_api_field_config.filter.http.aws_lambda.v2alpha.PerRouteConfig.invoke_config:
+
+invoke_config
+  (:ref:`config.filter.http.aws_lambda.v2alpha.Config <envoy_api_msg_config.filter.http.aws_lambda.v2alpha.Config>`) 
+  
+

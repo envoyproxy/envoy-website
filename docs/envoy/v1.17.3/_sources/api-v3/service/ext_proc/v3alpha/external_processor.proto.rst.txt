@@ -1,0 +1,673 @@
+.. _envoy_v3_api_file_envoy/service/ext_proc/v3alpha/external_processor.proto:
+
+External Processing Service
+===========================
+
+.. warning::
+   This API is work-in-progress and is subject to breaking changes.
+
+
+
+A service that can access and modify HTTP requests and responses
+as part of a filter chain.
+The overall external processing protocol works like this:
+
+1. Envoy sends to the service information about the HTTP request.
+2. The service sends back a ProcessingResponse message that directs Envoy
+   to either stop processing, continue without it, or send it the
+   next chunk of the message body.
+3. If so requested, Envoy sends the server chunks of the message body,
+   or the entire body at once. In either case, the server sends back
+   a ProcessingResponse after each message it receives.
+4. If so requested, Envoy sends the server the HTTP trailers,
+   and the server sends back a ProcessingResponse.
+5. At this point, request processing is done, and we pick up again
+   at step 1 when Envoy receives a response from the upstream server.
+6. At any point above, if the server closes the gRPC stream cleanly,
+   then Envoy proceeds without consulting the server.
+7. At any point above, if the server closes the gRPC stream with an error,
+   then Envoy returns a 500 error to the client, unless the filter
+   was configured to ignore errors.
+
+In other words, the process is a request/response conversation, but
+using a gRPC stream to make it easier for the server to
+maintain state.
+
+.. _envoy_v3_api_msg_service.ext_proc.v3alpha.ProcessingRequest:
+
+service.ext_proc.v3alpha.ProcessingRequest
+------------------------------------------
+
+`[service.ext_proc.v3alpha.ProcessingRequest proto] <https://github.com/envoyproxy/envoy/blob/v1.17.3/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L59>`_
+
+This represents the different types of messages that Envoy can send
+to an external processing server.
+
+.. code-block:: json
+
+  {
+    "async_mode": "...",
+    "request_headers": "{...}",
+    "response_headers": "{...}",
+    "request_body": "{...}",
+    "response_body": "{...}",
+    "request_trailers": "{...}",
+    "response_trailers": "{...}"
+  }
+
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.async_mode:
+
+async_mode
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specify whether the filter that sent this request is running in synchronous
+  or asynchronous mode. If false, then the server must either respond
+  with exactly one ProcessingResponse message or close the stream.
+  If true, however, then the server must not respond with
+  an additional message, although it may still close the stream.
+  The choice of synchronous or asynchronous mode can be chosen in the
+  filter configuration.
+  
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_headers:
+
+request_headers
+  (:ref:`service.ext_proc.v3alpha.HttpHeaders <envoy_v3_api_msg_service.ext_proc.v3alpha.HttpHeaders>`) Information about the HTTP request headers, as well as peer info and additional
+  properties. If "response_required" is set, the server must send back a
+  HeaderResponse message, an ImmediateResponse message, or close the stream.
+  
+  Each request message will include one of the following sub-messages. Which
+  ones are set for a particular HTTP request/response depend on the
+  processing mode.
+  
+  
+  Precisely one of :ref:`request_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_headers>`, :ref:`response_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_headers>`, :ref:`request_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_body>`, :ref:`response_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_body>`, :ref:`request_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_trailers>`, :ref:`response_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_trailers>` must be set.
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_headers:
+
+response_headers
+  (:ref:`service.ext_proc.v3alpha.HttpHeaders <envoy_v3_api_msg_service.ext_proc.v3alpha.HttpHeaders>`) Information about the HTTP response headers, as well as peer info and additional
+  properties. If "response_required" is set, the server must send back a
+  HeaderResponse message or close the stream.
+  
+  Each request message will include one of the following sub-messages. Which
+  ones are set for a particular HTTP request/response depend on the
+  processing mode.
+  
+  
+  Precisely one of :ref:`request_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_headers>`, :ref:`response_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_headers>`, :ref:`request_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_body>`, :ref:`response_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_body>`, :ref:`request_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_trailers>`, :ref:`response_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_trailers>` must be set.
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_body:
+
+request_body
+  (:ref:`service.ext_proc.v3alpha.HttpBody <envoy_v3_api_msg_service.ext_proc.v3alpha.HttpBody>`) A chunk of the HTTP request body. If "response_required" is set, the server must send back
+  a BodyResponse message, an ImmediateResponse message, or close the stream.
+  
+  Each request message will include one of the following sub-messages. Which
+  ones are set for a particular HTTP request/response depend on the
+  processing mode.
+  
+  
+  Precisely one of :ref:`request_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_headers>`, :ref:`response_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_headers>`, :ref:`request_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_body>`, :ref:`response_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_body>`, :ref:`request_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_trailers>`, :ref:`response_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_trailers>` must be set.
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_body:
+
+response_body
+  (:ref:`service.ext_proc.v3alpha.HttpBody <envoy_v3_api_msg_service.ext_proc.v3alpha.HttpBody>`) A chunk of the HTTP request body. If "response_required" is set, the server must send back
+  a BodyResponse message or close the stream.
+  
+  Each request message will include one of the following sub-messages. Which
+  ones are set for a particular HTTP request/response depend on the
+  processing mode.
+  
+  
+  Precisely one of :ref:`request_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_headers>`, :ref:`response_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_headers>`, :ref:`request_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_body>`, :ref:`response_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_body>`, :ref:`request_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_trailers>`, :ref:`response_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_trailers>` must be set.
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_trailers:
+
+request_trailers
+  (:ref:`service.ext_proc.v3alpha.HttpTrailers <envoy_v3_api_msg_service.ext_proc.v3alpha.HttpTrailers>`) The HTTP trailers for the request path. If "response_required" is set, the server
+  must send back a TrailerResponse message or close the stream.
+  
+  Each request message will include one of the following sub-messages. Which
+  ones are set for a particular HTTP request/response depend on the
+  processing mode.
+  
+  
+  Precisely one of :ref:`request_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_headers>`, :ref:`response_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_headers>`, :ref:`request_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_body>`, :ref:`response_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_body>`, :ref:`request_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_trailers>`, :ref:`response_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_trailers>` must be set.
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_trailers:
+
+response_trailers
+  (:ref:`service.ext_proc.v3alpha.HttpTrailers <envoy_v3_api_msg_service.ext_proc.v3alpha.HttpTrailers>`) The HTTP trailers for the response path. If "response_required" is set, the server
+  must send back a TrailerResponse message or close the stream.
+  
+  Each request message will include one of the following sub-messages. Which
+  ones are set for a particular HTTP request/response depend on the
+  processing mode.
+  
+  
+  Precisely one of :ref:`request_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_headers>`, :ref:`response_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_headers>`, :ref:`request_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_body>`, :ref:`response_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_body>`, :ref:`request_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.request_trailers>`, :ref:`response_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingRequest.response_trailers>` must be set.
+  
+
+
+.. _envoy_v3_api_msg_service.ext_proc.v3alpha.ProcessingResponse:
+
+service.ext_proc.v3alpha.ProcessingResponse
+-------------------------------------------
+
+`[service.ext_proc.v3alpha.ProcessingResponse proto] <https://github.com/envoyproxy/envoy/blob/v1.17.3/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L106>`_
+
+For every ProcessingRequest received by the server with the "async_mode" field
+set to false, the server must send back exactly one ProcessingResponse message.
+
+.. code-block:: json
+
+  {
+    "request_headers": "{...}",
+    "response_headers": "{...}",
+    "request_body": "{...}",
+    "response_body": "{...}",
+    "request_trailers": "{...}",
+    "response_trailers": "{...}",
+    "immediate_response": "{...}",
+    "dynamic_metadata": "{...}",
+    "mode_override": "{...}"
+  }
+
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_headers:
+
+request_headers
+  (:ref:`service.ext_proc.v3alpha.HeadersResponse <envoy_v3_api_msg_service.ext_proc.v3alpha.HeadersResponse>`) The server must send back this message in response to a message with the
+  "request_headers" field set.
+  
+  
+  
+  Precisely one of :ref:`request_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_headers>`, :ref:`response_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_headers>`, :ref:`request_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_body>`, :ref:`response_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_body>`, :ref:`request_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_trailers>`, :ref:`response_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_trailers>`, :ref:`immediate_response <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.immediate_response>` must be set.
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_headers:
+
+response_headers
+  (:ref:`service.ext_proc.v3alpha.HeadersResponse <envoy_v3_api_msg_service.ext_proc.v3alpha.HeadersResponse>`) The server must send back this message in response to a message with the
+  "response_headers" field set.
+  
+  
+  
+  Precisely one of :ref:`request_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_headers>`, :ref:`response_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_headers>`, :ref:`request_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_body>`, :ref:`response_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_body>`, :ref:`request_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_trailers>`, :ref:`response_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_trailers>`, :ref:`immediate_response <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.immediate_response>` must be set.
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_body:
+
+request_body
+  (:ref:`service.ext_proc.v3alpha.BodyResponse <envoy_v3_api_msg_service.ext_proc.v3alpha.BodyResponse>`) The server must send back this message in response to a message with
+  the "request_body" field set.
+  
+  
+  
+  Precisely one of :ref:`request_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_headers>`, :ref:`response_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_headers>`, :ref:`request_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_body>`, :ref:`response_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_body>`, :ref:`request_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_trailers>`, :ref:`response_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_trailers>`, :ref:`immediate_response <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.immediate_response>` must be set.
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_body:
+
+response_body
+  (:ref:`service.ext_proc.v3alpha.BodyResponse <envoy_v3_api_msg_service.ext_proc.v3alpha.BodyResponse>`) The server must send back this message in response to a message with
+  the "response_body" field set.
+  
+  
+  
+  Precisely one of :ref:`request_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_headers>`, :ref:`response_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_headers>`, :ref:`request_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_body>`, :ref:`response_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_body>`, :ref:`request_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_trailers>`, :ref:`response_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_trailers>`, :ref:`immediate_response <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.immediate_response>` must be set.
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_trailers:
+
+request_trailers
+  (:ref:`service.ext_proc.v3alpha.TrailersResponse <envoy_v3_api_msg_service.ext_proc.v3alpha.TrailersResponse>`) The server must send back this message in response to a message with
+  the "request_trailers" field set.
+  
+  
+  
+  Precisely one of :ref:`request_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_headers>`, :ref:`response_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_headers>`, :ref:`request_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_body>`, :ref:`response_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_body>`, :ref:`request_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_trailers>`, :ref:`response_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_trailers>`, :ref:`immediate_response <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.immediate_response>` must be set.
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_trailers:
+
+response_trailers
+  (:ref:`service.ext_proc.v3alpha.TrailersResponse <envoy_v3_api_msg_service.ext_proc.v3alpha.TrailersResponse>`) The server must send back this message in response to a message with
+  the "response_trailers" field set.
+  
+  
+  
+  Precisely one of :ref:`request_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_headers>`, :ref:`response_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_headers>`, :ref:`request_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_body>`, :ref:`response_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_body>`, :ref:`request_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_trailers>`, :ref:`response_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_trailers>`, :ref:`immediate_response <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.immediate_response>` must be set.
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.immediate_response:
+
+immediate_response
+  (:ref:`service.ext_proc.v3alpha.ImmediateResponse <envoy_v3_api_msg_service.ext_proc.v3alpha.ImmediateResponse>`) If specified, attempt to create a locally generated response, send it
+  downstream, and stop processing additional filters and ignore any
+  additional messages received from the remote server for this request or
+  response. If a response has already started -- for example, if this
+  message is sent response to a "response_body" message -- then
+  this will either ship the reply directly to the downstream codec,
+  or reset the stream.
+  
+  
+  
+  Precisely one of :ref:`request_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_headers>`, :ref:`response_headers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_headers>`, :ref:`request_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_body>`, :ref:`response_body <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_body>`, :ref:`request_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.request_trailers>`, :ref:`response_trailers <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.response_trailers>`, :ref:`immediate_response <envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.immediate_response>` must be set.
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.dynamic_metadata:
+
+dynamic_metadata
+  (`Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_) Optional metadata that will be emitted as dynamic metadata to be consumed by the next
+  filter. This metadata will be placed in the namespace "envoy.filters.http.ext_proc".
+  
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.ProcessingResponse.mode_override:
+
+mode_override
+  (:ref:`extensions.filters.http.ext_proc.v3alpha.ProcessingMode <envoy_v3_api_msg_extensions.filters.http.ext_proc.v3alpha.ProcessingMode>`) Override how parts of the HTTP request and response are processed
+  for the duration of this particular request/response only. Servers
+  may use this to intelligently control how requests are processed
+  based on the headers and other metadata that they see.
+  
+  
+
+
+.. _envoy_v3_api_msg_service.ext_proc.v3alpha.HttpHeaders:
+
+service.ext_proc.v3alpha.HttpHeaders
+------------------------------------
+
+`[service.ext_proc.v3alpha.HttpHeaders proto] <https://github.com/envoyproxy/envoy/blob/v1.17.3/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L159>`_
+
+This message is sent to the external server when the HTTP request and responses
+are first received.
+
+.. code-block:: json
+
+  {
+    "headers": "{...}",
+    "attributes": "{...}",
+    "end_of_stream": "..."
+  }
+
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.HttpHeaders.headers:
+
+headers
+  (:ref:`config.core.v3.HeaderMap <envoy_v3_api_msg_config.core.v3.HeaderMap>`) The HTTP request headers. All header keys will be
+  lower-cased, because HTTP header keys are case-insensitive.
+  
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.HttpHeaders.attributes:
+
+attributes
+  (**repeated** map<`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, `Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_>) The values of properties selected by the "request_attributes"
+  or "response_attributes" list in the configuration. Each entry
+  in the list is populated
+  from the standard :ref:`attributes <arch_overview_attributes>`
+  supported across Envoy.
+  
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.HttpHeaders.end_of_stream:
+
+end_of_stream
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If true, then there is no message body associated with this
+  request or response.
+  
+  
+
+
+.. _envoy_v3_api_msg_service.ext_proc.v3alpha.HttpBody:
+
+service.ext_proc.v3alpha.HttpBody
+---------------------------------
+
+`[service.ext_proc.v3alpha.HttpBody proto] <https://github.com/envoyproxy/envoy/blob/v1.17.3/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L177>`_
+
+This message contains the message body that Envoy sends to the external server.
+
+.. code-block:: json
+
+  {
+    "body": "...",
+    "end_of_stream": "..."
+  }
+
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.HttpBody.body:
+
+body
+  (`bytes <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.HttpBody.end_of_stream:
+
+end_of_stream
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) 
+  
+
+
+.. _envoy_v3_api_msg_service.ext_proc.v3alpha.HttpTrailers:
+
+service.ext_proc.v3alpha.HttpTrailers
+-------------------------------------
+
+`[service.ext_proc.v3alpha.HttpTrailers proto] <https://github.com/envoyproxy/envoy/blob/v1.17.3/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L184>`_
+
+This message contains the trailers.
+
+.. code-block:: json
+
+  {
+    "trailers": "{...}"
+  }
+
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.HttpTrailers.trailers:
+
+trailers
+  (:ref:`config.core.v3.HeaderMap <envoy_v3_api_msg_config.core.v3.HeaderMap>`) 
+  
+
+
+.. _envoy_v3_api_msg_service.ext_proc.v3alpha.HeadersResponse:
+
+service.ext_proc.v3alpha.HeadersResponse
+----------------------------------------
+
+`[service.ext_proc.v3alpha.HeadersResponse proto] <https://github.com/envoyproxy/envoy/blob/v1.17.3/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L191>`_
+
+This message must be sent in response to an HttpHeaders message.
+
+.. code-block:: json
+
+  {
+    "response": "{...}"
+  }
+
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.HeadersResponse.response:
+
+response
+  (:ref:`service.ext_proc.v3alpha.CommonResponse <envoy_v3_api_msg_service.ext_proc.v3alpha.CommonResponse>`) 
+  
+
+
+.. _envoy_v3_api_msg_service.ext_proc.v3alpha.TrailersResponse:
+
+service.ext_proc.v3alpha.TrailersResponse
+-----------------------------------------
+
+`[service.ext_proc.v3alpha.TrailersResponse proto] <https://github.com/envoyproxy/envoy/blob/v1.17.3/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L196>`_
+
+This message must be sent in response to an HttpTrailers message.
+
+.. code-block:: json
+
+  {
+    "header_mutation": "{...}"
+  }
+
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.TrailersResponse.header_mutation:
+
+header_mutation
+  (:ref:`service.ext_proc.v3alpha.HeaderMutation <envoy_v3_api_msg_service.ext_proc.v3alpha.HeaderMutation>`) Instructions on how to manipulate the trailers
+  
+  
+
+
+.. _envoy_v3_api_msg_service.ext_proc.v3alpha.BodyResponse:
+
+service.ext_proc.v3alpha.BodyResponse
+-------------------------------------
+
+`[service.ext_proc.v3alpha.BodyResponse proto] <https://github.com/envoyproxy/envoy/blob/v1.17.3/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L202>`_
+
+This message must be sent in response to an HttpBody message.
+
+.. code-block:: json
+
+  {
+    "response": "{...}"
+  }
+
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.BodyResponse.response:
+
+response
+  (:ref:`service.ext_proc.v3alpha.CommonResponse <envoy_v3_api_msg_service.ext_proc.v3alpha.CommonResponse>`) 
+  
+
+
+.. _envoy_v3_api_msg_service.ext_proc.v3alpha.CommonResponse:
+
+service.ext_proc.v3alpha.CommonResponse
+---------------------------------------
+
+`[service.ext_proc.v3alpha.CommonResponse proto] <https://github.com/envoyproxy/envoy/blob/v1.17.3/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L208>`_
+
+This message contains common fields between header and body responses.
+
+.. code-block:: json
+
+  {
+    "status": "...",
+    "header_mutation": "{...}",
+    "body_mutation": "{...}",
+    "trailers": "{...}",
+    "clear_route_cache": "..."
+  }
+
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.CommonResponse.status:
+
+status
+  (:ref:`service.ext_proc.v3alpha.CommonResponse.ResponseStatus <envoy_v3_api_enum_service.ext_proc.v3alpha.CommonResponse.ResponseStatus>`) If set, provide additional direction on how the Envoy proxy should
+  handle the rest of the HTTP filter chain.
+  
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.CommonResponse.header_mutation:
+
+header_mutation
+  (:ref:`service.ext_proc.v3alpha.HeaderMutation <envoy_v3_api_msg_service.ext_proc.v3alpha.HeaderMutation>`) Instructions on how to manipulate the headers. When responding to an
+  HttpBody request, header mutations will only take effect if the
+  headers were not already sent further on the filter chain, which
+  happens only if the current processing mode for the body is BUFFERED
+  or BUFFERED_PARTIAL.
+  
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.CommonResponse.body_mutation:
+
+body_mutation
+  (:ref:`service.ext_proc.v3alpha.BodyMutation <envoy_v3_api_msg_service.ext_proc.v3alpha.BodyMutation>`) Replace the body of the last message sent to the remote server on this
+  stream. If responding to an HttpBody request, simply replace or clear
+  the body chunk that was sent with that request. If responding to an
+  HttpHeaders request, then a new body may be added to the request if this
+  message is returned along with the CONTINUE_AND_REPLACE status.
+  
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.CommonResponse.trailers:
+
+trailers
+  (:ref:`config.core.v3.HeaderMap <envoy_v3_api_msg_config.core.v3.HeaderMap>`) Add new trailers to the message. This may be used when responding to either a
+  HttpHeaders or HttpBody message, but only if this message is returned
+  along with the CONTINUE_AND_REPLACE status.
+  
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.CommonResponse.clear_route_cache:
+
+clear_route_cache
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Clear the route cache for the current request.
+  This is necessary if the remote server
+  modified headers that are used to calculate the route.
+  
+  
+
+.. _envoy_v3_api_enum_service.ext_proc.v3alpha.CommonResponse.ResponseStatus:
+
+Enum service.ext_proc.v3alpha.CommonResponse.ResponseStatus
+-----------------------------------------------------------
+
+`[service.ext_proc.v3alpha.CommonResponse.ResponseStatus proto] <https://github.com/envoyproxy/envoy/blob/v1.17.3/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L209>`_
+
+
+.. _envoy_v3_api_enum_value_service.ext_proc.v3alpha.CommonResponse.ResponseStatus.CONTINUE:
+
+CONTINUE
+  *(DEFAULT)* ⁣Apply the mutation instructions in this message to the
+  request or response, and then continue processing the filter
+  stream as normal. This is the default.
+  
+  
+.. _envoy_v3_api_enum_value_service.ext_proc.v3alpha.CommonResponse.ResponseStatus.CONTINUE_AND_REPLACE:
+
+CONTINUE_AND_REPLACE
+  ⁣Replace the request or response with the contents
+  of this message. If header_mutation is set, apply it to the
+  headers. If body_mutation is set and contains a body, then add that
+  body to the request or response, even if one does not already exist --
+  otherwise, clear the body. Any additional body and trailers
+  received from downstream or upstream will be ignored.
+  This can be used to add a body to a request or response that does not
+  have one already.
+  
+  
+
+.. _envoy_v3_api_msg_service.ext_proc.v3alpha.ImmediateResponse:
+
+service.ext_proc.v3alpha.ImmediateResponse
+------------------------------------------
+
+`[service.ext_proc.v3alpha.ImmediateResponse proto] <https://github.com/envoyproxy/envoy/blob/v1.17.3/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L262>`_
+
+This message causes the filter to attempt to create a locally
+generated response, send it  downstream, stop processing
+additional filters, and ignore any additional messages received
+from the remote server for this request or response. If a response
+has already started, then  this will either ship the reply directly
+to the downstream codec, or reset the stream.
+
+.. code-block:: json
+
+  {
+    "status": "{...}",
+    "headers": "{...}",
+    "body": "...",
+    "grpc_status": "{...}",
+    "details": "..."
+  }
+
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.ImmediateResponse.status:
+
+status
+  (:ref:`type.v3.HttpStatus <envoy_v3_api_msg_type.v3.HttpStatus>`, *REQUIRED*) The response code to return
+  
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.ImmediateResponse.headers:
+
+headers
+  (:ref:`service.ext_proc.v3alpha.HeaderMutation <envoy_v3_api_msg_service.ext_proc.v3alpha.HeaderMutation>`) Apply changes to the default headers, which will include content-type.
+  
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.ImmediateResponse.body:
+
+body
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The message body to return with the response which is sent using the
+  text/plain content type, or encoded in the grpc-message header.
+  
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.ImmediateResponse.grpc_status:
+
+grpc_status
+  (:ref:`service.ext_proc.v3alpha.GrpcStatus <envoy_v3_api_msg_service.ext_proc.v3alpha.GrpcStatus>`) If set, then include a gRPC status trailer.
+  
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.ImmediateResponse.details:
+
+details
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) A string detailing why this local reply was sent, which may be included
+  in log and debug output.
+  
+  
+
+
+.. _envoy_v3_api_msg_service.ext_proc.v3alpha.GrpcStatus:
+
+service.ext_proc.v3alpha.GrpcStatus
+-----------------------------------
+
+`[service.ext_proc.v3alpha.GrpcStatus proto] <https://github.com/envoyproxy/envoy/blob/v1.17.3/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L282>`_
+
+This message specifies a gRPC status for an ImmediateResponse message.
+
+.. code-block:: json
+
+  {
+    "status": "..."
+  }
+
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.GrpcStatus.status:
+
+status
+  (`uint32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The actual gRPC status
+  
+  
+
+
+.. _envoy_v3_api_msg_service.ext_proc.v3alpha.HeaderMutation:
+
+service.ext_proc.v3alpha.HeaderMutation
+---------------------------------------
+
+`[service.ext_proc.v3alpha.HeaderMutation proto] <https://github.com/envoyproxy/envoy/blob/v1.17.3/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L289>`_
+
+Change HTTP headers or trailers by appending, replacing, or removing
+headers.
+
+.. code-block:: json
+
+  {
+    "set_headers": [],
+    "remove_headers": []
+  }
+
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.HeaderMutation.set_headers:
+
+set_headers
+  (**repeated** :ref:`config.core.v3.HeaderValueOption <envoy_v3_api_msg_config.core.v3.HeaderValueOption>`) Add or replace HTTP headers. Attempts to set the value of
+  any "x-envoy" header, and attempts to set the ":method",
+  ":authority", ":scheme", or "host" headers will be ignored.
+  
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.HeaderMutation.remove_headers:
+
+remove_headers
+  (**repeated** `string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Remove these HTTP headers. Attempts to remove system headers --
+  any header starting with ":", plus "host" -- will be ignored.
+  
+  
+
+
+.. _envoy_v3_api_msg_service.ext_proc.v3alpha.BodyMutation:
+
+service.ext_proc.v3alpha.BodyMutation
+-------------------------------------
+
+`[service.ext_proc.v3alpha.BodyMutation proto] <https://github.com/envoyproxy/envoy/blob/v1.17.3/api/envoy/service/ext_proc/v3alpha/external_processor.proto#L302>`_
+
+Replace the entire message body chunk received in the corresponding
+HttpBody message with this new body, or clear the body.
+
+.. code-block:: json
+
+  {
+    "body": "...",
+    "clear_body": "..."
+  }
+
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.BodyMutation.body:
+
+body
+  (`bytes <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The entire body to replace
+  
+  
+  
+  Only one of :ref:`body <envoy_v3_api_field_service.ext_proc.v3alpha.BodyMutation.body>`, :ref:`clear_body <envoy_v3_api_field_service.ext_proc.v3alpha.BodyMutation.clear_body>` may be set.
+  
+.. _envoy_v3_api_field_service.ext_proc.v3alpha.BodyMutation.clear_body:
+
+clear_body
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Clear the corresponding body chunk
+  
+  
+  
+  Only one of :ref:`body <envoy_v3_api_field_service.ext_proc.v3alpha.BodyMutation.body>`, :ref:`clear_body <envoy_v3_api_field_service.ext_proc.v3alpha.BodyMutation.clear_body>` may be set.
+  
+
