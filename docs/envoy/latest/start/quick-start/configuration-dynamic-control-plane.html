@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Configuration: Dynamic from control plane &mdash; envoy 1.19.0-dev-06c8d4 documentation</title>
+  <title>Configuration: Dynamic from control plane &mdash; envoy 1.19.0-dev-db0666 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
 
@@ -33,6 +35,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -72,7 +75,7 @@
             
             
               <div class="version">
-                1.19.0-dev-06c8d4
+                1.19.0-dev-db0666
               </div>
             
           
@@ -221,17 +224,13 @@ retrieve stats or configuration information.</p>
 <div class="section" id="node">
 <span id="start-quick-start-dynamic-node"></span><h2><code class="docutils literal notranslate"><span class="pre">node</span></code><a class="headerlink" href="#node" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="../../api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-bootstrap-node"><span class="std std-ref">node</span></a> should specify <code class="docutils literal notranslate"><span class="pre">cluster</span></code> and <code class="docutils literal notranslate"><span class="pre">id</span></code>.</p>
-<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="nt">node</span><span class="p">:</span>
-</span><span class="hll">  <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test-cluster</span>
-</span><span class="hll">  <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test-id</span>
-</span>
-<span class="nt">dynamic_resources</span><span class="p">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="linenos">1</span><span class="nt">node</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">2</span>  <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test-cluster</span>
+</span><span class="hll"><span class="linenos">3</span>  <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test-id</span>
+</span><span class="linenos">4</span>
+<span class="linenos">5</span><span class="nt">dynamic_resources</span><span class="p">:</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="dynamic-resources">
 <span id="start-quick-start-dynamic-dynamic-resources"></span><h2><code class="docutils literal notranslate"><span class="pre">dynamic_resources</span></code><a class="headerlink" href="#dynamic-resources" title="Permalink to this headline">¶</a></h2>
@@ -239,94 +238,56 @@ retrieve stats or configuration information.</p>
 the configuration to load dynamically, and the <a class="reference internal" href="#start-quick-start-dynamic-static-resources"><span class="std std-ref">cluster</span></a>
 to connect for dynamic configuration updates.</p>
 <p>In this example, the configuration is provided by the <code class="docutils literal notranslate"><span class="pre">xds_cluster</span></code> configured below.</p>
-<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>  <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test-id</span>
-
-<span class="hll"><span class="nt">dynamic_resources</span><span class="p">:</span>
-</span><span class="hll">  <span class="nt">ads_config</span><span class="p">:</span>
-</span><span class="hll">    <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GRPC</span>
-</span><span class="hll">    <span class="nt">transport_api_version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">V3</span>
-</span><span class="hll">    <span class="nt">grpc_services</span><span class="p">:</span>
-</span><span class="hll">    <span class="p p-Indicator">-</span> <span class="nt">envoy_grpc</span><span class="p">:</span>
-</span><span class="hll">        <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xds_cluster</span>
-</span><span class="hll">  <span class="nt">cds_config</span><span class="p">:</span>
-</span><span class="hll">    <span class="nt">resource_api_version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">V3</span>
-</span><span class="hll">    <span class="nt">ads</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
-</span><span class="hll">  <span class="nt">lds_config</span><span class="p">:</span>
-</span><span class="hll">    <span class="nt">resource_api_version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">V3</span>
-</span><span class="hll">    <span class="nt">ads</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
-</span>
-<span class="nt">static_resources</span><span class="p">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 3</span>  <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test-id</span>
+<span class="linenos"> 4</span>
+<span class="hll"><span class="linenos"> 5</span><span class="nt">dynamic_resources</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos"> 6</span>  <span class="nt">ads_config</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos"> 7</span>    <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GRPC</span>
+</span><span class="hll"><span class="linenos"> 8</span>    <span class="nt">transport_api_version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">V3</span>
+</span><span class="hll"><span class="linenos"> 9</span>    <span class="nt">grpc_services</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">10</span>    <span class="p p-Indicator">-</span> <span class="nt">envoy_grpc</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">11</span>        <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xds_cluster</span>
+</span><span class="hll"><span class="linenos">12</span>  <span class="nt">cds_config</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">13</span>    <span class="nt">resource_api_version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">V3</span>
+</span><span class="hll"><span class="linenos">14</span>    <span class="nt">ads</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+</span><span class="hll"><span class="linenos">15</span>  <span class="nt">lds_config</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">16</span>    <span class="nt">resource_api_version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">V3</span>
+</span><span class="hll"><span class="linenos">17</span>    <span class="nt">ads</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+</span><span class="linenos">18</span>
+<span class="linenos">19</span><span class="nt">static_resources</span><span class="p">:</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="static-resources">
 <span id="start-quick-start-dynamic-static-resources"></span><h2><code class="docutils literal notranslate"><span class="pre">static_resources</span></code><a class="headerlink" href="#static-resources" title="Permalink to this headline">¶</a></h2>
 <p>Here we specify the <a class="reference internal" href="../../api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-bootstrap-static-resources"><span class="std std-ref">static_resources</span></a>
 to retrieve dynamic configuration from.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">xds_cluster</span></code> is configured to query a control plane at <a class="reference external" href="http://my-control-plane:18000">http://my-control-plane:18000</a> .</p>
-<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="nt">ads</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
-
-<span class="hll"><span class="nt">static_resources</span><span class="p">:</span>
-</span><span class="hll">  <span class="nt">clusters</span><span class="p">:</span>
-</span><span class="hll">  <span class="p p-Indicator">-</span> <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1s</span>
-</span><span class="hll">    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">STRICT_DNS</span>
-</span><span class="hll">    <span class="nt">typed_extension_protocol_options</span><span class="p">:</span>
-</span><span class="hll">      <span class="nt">envoy.extensions.upstreams.http.v3.HttpProtocolOptions</span><span class="p">:</span>
-</span><span class="hll">        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions</span>
-</span><span class="hll">        <span class="nt">explicit_http_config</span><span class="p">:</span>
-</span><span class="hll">          <span class="nt">http2_protocol_options</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
-</span><span class="hll">    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xds_cluster</span>
-</span><span class="hll">    <span class="nt">load_assignment</span><span class="p">:</span>
-</span><span class="hll">      <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xds_cluster</span>
-</span><span class="hll">      <span class="nt">endpoints</span><span class="p">:</span>
-</span><span class="hll">      <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
-</span><span class="hll">        <span class="p p-Indicator">-</span> <span class="nt">endpoint</span><span class="p">:</span>
-</span><span class="hll">            <span class="nt">address</span><span class="p">:</span>
-</span><span class="hll">              <span class="nt">socket_address</span><span class="p">:</span>
-</span><span class="hll">                <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">my-control-plane</span>
-</span><span class="hll">                <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">18000</span>
-</span>
-<span class="nt">admin</span><span class="p">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="linenos">17</span>    <span class="nt">ads</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+<span class="linenos">18</span>
+<span class="hll"><span class="linenos">19</span><span class="nt">static_resources</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">20</span>  <span class="nt">clusters</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">21</span>  <span class="p p-Indicator">-</span> <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1s</span>
+</span><span class="hll"><span class="linenos">22</span>    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">STRICT_DNS</span>
+</span><span class="hll"><span class="linenos">23</span>    <span class="nt">typed_extension_protocol_options</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">24</span>      <span class="nt">envoy.extensions.upstreams.http.v3.HttpProtocolOptions</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">25</span>        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions</span>
+</span><span class="hll"><span class="linenos">26</span>        <span class="nt">explicit_http_config</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">27</span>          <span class="nt">http2_protocol_options</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+</span><span class="hll"><span class="linenos">28</span>    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xds_cluster</span>
+</span><span class="hll"><span class="linenos">29</span>    <span class="nt">load_assignment</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">30</span>      <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xds_cluster</span>
+</span><span class="hll"><span class="linenos">31</span>      <span class="nt">endpoints</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">32</span>      <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">33</span>        <span class="p p-Indicator">-</span> <span class="nt">endpoint</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">34</span>            <span class="nt">address</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">35</span>              <span class="nt">socket_address</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">36</span>                <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">my-control-plane</span>
+</span><span class="hll"><span class="linenos">37</span>                <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">18000</span>
+</span><span class="linenos">38</span>
+<span class="linenos">39</span><span class="nt">admin</span><span class="p">:</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 </div>
 

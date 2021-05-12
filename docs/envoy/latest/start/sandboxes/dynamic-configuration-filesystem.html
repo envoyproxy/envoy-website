@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Dynamic configuration (filesystem) &mdash; envoy 1.19.0-dev-06c8d4 documentation</title>
+  <title>Dynamic configuration (filesystem) &mdash; envoy 1.19.0-dev-db0666 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
 
@@ -33,6 +35,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -72,7 +75,7 @@
             
             
               <div class="version">
-                1.19.0-dev-06c8d4
+                1.19.0-dev-db0666
               </div>
             
           
@@ -325,25 +328,17 @@ discovery service (LDS)</span></a>.</p></li>
 </ul>
 <p>Edit <code class="docutils literal notranslate"><span class="pre">cds.yaml</span></code> inside the container and change the cluster address
 from <code class="docutils literal notranslate"><span class="pre">service1</span></code> to <code class="docutils literal notranslate"><span class="pre">service2</span></code>:</p>
-<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>  <span class="nt">load_assignment</span><span class="p">:</span>
-    <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">example_proxy_cluster</span>
-    <span class="nt">endpoints</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">endpoint</span><span class="p">:</span>
-          <span class="nt">address</span><span class="p">:</span>
-            <span class="nt">socket_address</span><span class="p">:</span>
-<span class="hll">              <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service1</span>
-</span>              <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8080</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 6</span>  <span class="nt">load_assignment</span><span class="p">:</span>
+<span class="linenos"> 7</span>    <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">example_proxy_cluster</span>
+<span class="linenos"> 8</span>    <span class="nt">endpoints</span><span class="p">:</span>
+<span class="linenos"> 9</span>    <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
+<span class="linenos">10</span>      <span class="p p-Indicator">-</span> <span class="nt">endpoint</span><span class="p">:</span>
+<span class="linenos">11</span>          <span class="nt">address</span><span class="p">:</span>
+<span class="linenos">12</span>            <span class="nt">socket_address</span><span class="p">:</span>
+<span class="hll"><span class="linenos">13</span>              <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service1</span>
+</span><span class="linenos">14</span>              <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8080</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <p>You can do this using <code class="docutils literal notranslate"><span class="pre">sed</span></code> inside the container:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docker-compose exec -T proxy sed -i s/service1/service2/ /var/lib/envoy/cds.yaml</span>
 </pre></div>
