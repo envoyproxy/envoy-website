@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>WebSockets &mdash; envoy 1.19.0-dev-955f15 documentation</title>
+  <title>WebSockets &mdash; envoy 1.19.0-dev-55a23b documentation</title>
   
 
   
   <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
 
@@ -33,6 +35,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -72,7 +75,7 @@
             
             
               <div class="version">
-                1.19.0-dev-955f15
+                1.19.0-dev-55a23b
               </div>
             
           
@@ -289,65 +292,37 @@ to an upstream socket, also without <code class="docutils literal notranslate"><
 <a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-msg-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-upgradeconfig"><span class="std std-ref">upgrade_configs</span></a>
 in <a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-msg-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager"><span class="std std-ref">HttpConnectionManager</span></a>
 must be set, as can be seen in the provided <a class="reference download internal" download="" href="../../_downloads/1ab278c53aed7b4844c89c7856334949/envoy-ws.yaml"><code class="xref download docutils literal notranslate"><span class="pre">ws</span> <span class="pre">-&gt;</span> <span class="pre">ws</span> <span class="pre">configuration</span></code></a>:</p>
-<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">static_resources</span><span class="p">:</span>
-  <span class="nt">listeners</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">address</span><span class="p">:</span>
-      <span class="nt">socket_address</span><span class="p">:</span>
-        <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.0.0.0</span>
-        <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10000</span>
-    <span class="nt">filter_chains</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="nt">filters</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.network.http_connection_manager</span>
-        <span class="nt">typed_config</span><span class="p">:</span>
-          <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager</span>
-          <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ingress_ws_to_ws</span>
-<span class="hll">          <span class="nt">upgrade_configs</span><span class="p">:</span>
-</span><span class="hll">          <span class="p p-Indicator">-</span> <span class="nt">upgrade_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">websocket</span>
-</span>          <span class="nt">route_config</span><span class="p">:</span>
-            <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_route</span>
-            <span class="nt">virtual_hosts</span><span class="p">:</span>
-            <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">app</span>
-              <span class="nt">domains</span><span class="p">:</span>
-              <span class="p p-Indicator">-</span> <span class="s">&quot;*&quot;</span>
-              <span class="nt">routes</span><span class="p">:</span>
-              <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span>
-                  <span class="nt">prefix</span><span class="p">:</span> <span class="s">&quot;/&quot;</span>
-                <span class="nt">route</span><span class="p">:</span>
-                  <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service_ws</span>
-          <span class="nt">http_filters</span><span class="p">:</span>
-          <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.router</span>
-
-  <span class="nt">clusters</span><span class="p">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="nt">static_resources</span><span class="p">:</span>
+<span class="linenos"> 2</span>  <span class="nt">listeners</span><span class="p">:</span>
+<span class="linenos"> 3</span>  <span class="p p-Indicator">-</span> <span class="nt">address</span><span class="p">:</span>
+<span class="linenos"> 4</span>      <span class="nt">socket_address</span><span class="p">:</span>
+<span class="linenos"> 5</span>        <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.0.0.0</span>
+<span class="linenos"> 6</span>        <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10000</span>
+<span class="linenos"> 7</span>    <span class="nt">filter_chains</span><span class="p">:</span>
+<span class="linenos"> 8</span>    <span class="p p-Indicator">-</span> <span class="nt">filters</span><span class="p">:</span>
+<span class="linenos"> 9</span>      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.network.http_connection_manager</span>
+<span class="linenos">10</span>        <span class="nt">typed_config</span><span class="p">:</span>
+<span class="linenos">11</span>          <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager</span>
+<span class="linenos">12</span>          <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ingress_ws_to_ws</span>
+<span class="hll"><span class="linenos">13</span>          <span class="nt">upgrade_configs</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">14</span>          <span class="p p-Indicator">-</span> <span class="nt">upgrade_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">websocket</span>
+</span><span class="linenos">15</span>          <span class="nt">route_config</span><span class="p">:</span>
+<span class="linenos">16</span>            <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_route</span>
+<span class="linenos">17</span>            <span class="nt">virtual_hosts</span><span class="p">:</span>
+<span class="linenos">18</span>            <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="linenos">19</span>              <span class="nt">domains</span><span class="p">:</span>
+<span class="linenos">20</span>              <span class="p p-Indicator">-</span> <span class="s">&quot;*&quot;</span>
+<span class="linenos">21</span>              <span class="nt">routes</span><span class="p">:</span>
+<span class="linenos">22</span>              <span class="p p-Indicator">-</span> <span class="nt">match</span><span class="p">:</span>
+<span class="linenos">23</span>                  <span class="nt">prefix</span><span class="p">:</span> <span class="s">&quot;/&quot;</span>
+<span class="linenos">24</span>                <span class="nt">route</span><span class="p">:</span>
+<span class="linenos">25</span>                  <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service_ws</span>
+<span class="linenos">26</span>          <span class="nt">http_filters</span><span class="p">:</span>
+<span class="linenos">27</span>          <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.router</span>
+<span class="linenos">28</span>
+<span class="linenos">29</span>  <span class="nt">clusters</span><span class="p">:</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <p>You can start an interactive session with the socket as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker run -ti --network<span class="o">=</span>host solsson/websocat ws://localhost:10000
 <span class="go">HELO</span>

@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Dynamic configuration (control plane) &mdash; envoy 1.19.0-dev-955f15 documentation</title>
+  <title>Dynamic configuration (control plane) &mdash; envoy 1.19.0-dev-55a23b documentation</title>
   
 
   
   <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
 
@@ -33,6 +35,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -72,7 +75,7 @@
             
             
               <div class="version">
-                1.19.0-dev-955f15
+                1.19.0-dev-55a23b
               </div>
             
           
@@ -410,48 +413,31 @@ specifies the configuration provided to Envoy.</p>
 <p>Update this to have Envoy proxy instead to <code class="docutils literal notranslate"><span class="pre">service2</span></code>.</p>
 <p>Edit <code class="docutils literal notranslate"><span class="pre">resource.go</span></code> in the dynamic configuration example folder and change the <code class="docutils literal notranslate"><span class="pre">UpstreamHost</span></code>
 from <code class="docutils literal notranslate"><span class="pre">service1</span></code> to <code class="docutils literal notranslate"><span class="pre">service2</span></code>:</p>
-<div class="highlight-go notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kd">const</span> <span class="p">(</span>
-	<span class="nx">ClusterName</span>  <span class="p">=</span> <span class="s">&quot;example_proxy_cluster&quot;</span>
-	<span class="nx">RouteName</span>    <span class="p">=</span> <span class="s">&quot;local_route&quot;</span>
-	<span class="nx">ListenerName</span> <span class="p">=</span> <span class="s">&quot;listener_0&quot;</span>
-	<span class="nx">ListenerPort</span> <span class="p">=</span> <span class="mi">10000</span>
-<span class="hll">	<span class="nx">UpstreamHost</span> <span class="p">=</span> <span class="s">&quot;service1&quot;</span>
-</span>	<span class="nx">UpstreamPort</span> <span class="p">=</span> <span class="mi">8080</span>
-<span class="p">)</span>
+<div class="highlight-go notranslate"><div class="highlight"><pre><span></span><span class="linenos">33</span><span class="kd">const</span> <span class="p">(</span>
+<span class="linenos">34</span>	<span class="nx">ClusterName</span>  <span class="p">=</span> <span class="s">&quot;example_proxy_cluster&quot;</span>
+<span class="linenos">35</span>	<span class="nx">RouteName</span>    <span class="p">=</span> <span class="s">&quot;local_route&quot;</span>
+<span class="linenos">36</span>	<span class="nx">ListenerName</span> <span class="p">=</span> <span class="s">&quot;listener_0&quot;</span>
+<span class="linenos">37</span>	<span class="nx">ListenerPort</span> <span class="p">=</span> <span class="mi">10000</span>
+<span class="hll"><span class="linenos">38</span>	<span class="nx">UpstreamHost</span> <span class="p">=</span> <span class="s">&quot;service1&quot;</span>
+</span><span class="linenos">39</span>	<span class="nx">UpstreamPort</span> <span class="p">=</span> <span class="mi">8080</span>
+<span class="linenos">40</span><span class="p">)</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <p>Further down in this file you must also change the configuration snapshot version number from
 <code class="docutils literal notranslate"><span class="pre">&quot;1&quot;</span></code> to <code class="docutils literal notranslate"><span class="pre">&quot;2&quot;</span></code> to ensure Envoy sees the configuration as newer:</p>
-<div class="highlight-go notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">164</span>
-<span class="normal">165</span>
-<span class="normal">166</span>
-<span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span>
-<span class="normal">172</span>
-<span class="normal">173</span>
-<span class="normal">174</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kd">func</span> <span class="nx">GenerateSnapshot</span><span class="p">()</span> <span class="nx">cache</span><span class="p">.</span><span class="nx">Snapshot</span> <span class="p">{</span>
-	<span class="k">return</span> <span class="nx">cache</span><span class="p">.</span><span class="nx">NewSnapshot</span><span class="p">(</span>
-<span class="hll">		<span class="s">&quot;1&quot;</span><span class="p">,</span>
-</span>		<span class="p">[]</span><span class="nx">types</span><span class="p">.</span><span class="nx">Resource</span><span class="p">{},</span> <span class="c1">// endpoints</span>
-		<span class="p">[]</span><span class="nx">types</span><span class="p">.</span><span class="nx">Resource</span><span class="p">{</span><span class="nx">makeCluster</span><span class="p">(</span><span class="nx">ClusterName</span><span class="p">)},</span>
-		<span class="p">[]</span><span class="nx">types</span><span class="p">.</span><span class="nx">Resource</span><span class="p">{</span><span class="nx">makeRoute</span><span class="p">(</span><span class="nx">RouteName</span><span class="p">,</span> <span class="nx">ClusterName</span><span class="p">)},</span>
-		<span class="p">[]</span><span class="nx">types</span><span class="p">.</span><span class="nx">Resource</span><span class="p">{</span><span class="nx">makeHTTPListener</span><span class="p">(</span><span class="nx">ListenerName</span><span class="p">,</span> <span class="nx">RouteName</span><span class="p">)},</span>
-		<span class="p">[]</span><span class="nx">types</span><span class="p">.</span><span class="nx">Resource</span><span class="p">{},</span> <span class="c1">// runtimes</span>
-		<span class="p">[]</span><span class="nx">types</span><span class="p">.</span><span class="nx">Resource</span><span class="p">{},</span> <span class="c1">// secrets</span>
-	<span class="p">)</span>
-<span class="p">}</span>
+<div class="highlight-go notranslate"><div class="highlight"><pre><span></span><span class="linenos">164</span><span class="kd">func</span> <span class="nx">GenerateSnapshot</span><span class="p">()</span> <span class="nx">cache</span><span class="p">.</span><span class="nx">Snapshot</span> <span class="p">{</span>
+<span class="linenos">165</span>	<span class="k">return</span> <span class="nx">cache</span><span class="p">.</span><span class="nx">NewSnapshot</span><span class="p">(</span>
+<span class="hll"><span class="linenos">166</span>		<span class="s">&quot;1&quot;</span><span class="p">,</span>
+</span><span class="linenos">167</span>		<span class="p">[]</span><span class="nx">types</span><span class="p">.</span><span class="nx">Resource</span><span class="p">{},</span> <span class="c1">// endpoints</span>
+<span class="linenos">168</span>		<span class="p">[]</span><span class="nx">types</span><span class="p">.</span><span class="nx">Resource</span><span class="p">{</span><span class="nx">makeCluster</span><span class="p">(</span><span class="nx">ClusterName</span><span class="p">)},</span>
+<span class="linenos">169</span>		<span class="p">[]</span><span class="nx">types</span><span class="p">.</span><span class="nx">Resource</span><span class="p">{</span><span class="nx">makeRoute</span><span class="p">(</span><span class="nx">RouteName</span><span class="p">,</span> <span class="nx">ClusterName</span><span class="p">)},</span>
+<span class="linenos">170</span>		<span class="p">[]</span><span class="nx">types</span><span class="p">.</span><span class="nx">Resource</span><span class="p">{</span><span class="nx">makeHTTPListener</span><span class="p">(</span><span class="nx">ListenerName</span><span class="p">,</span> <span class="nx">RouteName</span><span class="p">)},</span>
+<span class="linenos">171</span>		<span class="p">[]</span><span class="nx">types</span><span class="p">.</span><span class="nx">Resource</span><span class="p">{},</span> <span class="c1">// runtimes</span>
+<span class="linenos">172</span>		<span class="p">[]</span><span class="nx">types</span><span class="p">.</span><span class="nx">Resource</span><span class="p">{},</span> <span class="c1">// secrets</span>
+<span class="linenos">173</span>	<span class="p">)</span>
+<span class="linenos">174</span><span class="p">}</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <p>Now rebuild and restart the control plane:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker-compose up --build -d go-control-plane
 </pre></div>
