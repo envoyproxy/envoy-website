@@ -7,14 +7,12 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Wasm C++ filter &mdash; envoy 1.19.0-dev-db0666 documentation</title>
+  <title>Wasm C++ filter &mdash; envoy 1.19.0-dev-955f15 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
 
@@ -35,7 +33,6 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -75,7 +72,7 @@
             
             
               <div class="version">
-                1.19.0-dev-db0666
+                1.19.0-dev-955f15
               </div>
             
           
@@ -332,13 +329,17 @@ You will need 4-5GB of disk space to accommodate this image.</p>
 <h2>Step 4: Edit the Dockerfile and restart the proxy<a class="headerlink" href="#step-4-edit-the-dockerfile-and-restart-the-proxy" title="Permalink to this headline">¶</a></h2>
 <p>Edit the <code class="docutils literal notranslate"><span class="pre">Dockerfile-proxy</span></code> recipe provided in the example to use the updated binary you created in step 3.</p>
 <p>Find the <code class="docutils literal notranslate"><span class="pre">COPY</span></code> line that adds the Wasm binary to the image:</p>
-<div class="highlight-dockerfile notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">FROM</span> <span class="s">envoyproxy/envoy-dev:latest</span>
-<span class="linenos">2</span><span class="k">COPY</span> ./envoy.yaml /etc/envoy.yaml
-<span class="hll"><span class="linenos">3</span><span class="k">COPY</span> ./lib/envoy_filter_http_wasm_example.wasm /lib/envoy_filter_http_wasm_example.wasm
-</span><span class="linenos">4</span><span class="k">RUN</span> chmod go+r /etc/envoy.yaml /lib/envoy_filter_http_wasm_example.wasm
-<span class="linenos">5</span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&quot;/usr/local/bin/envoy&quot;</span><span class="p">,</span> <span class="s2">&quot;-c&quot;</span><span class="p">,</span> <span class="s2">&quot;/etc/envoy.yaml&quot;</span><span class="p">,</span> <span class="s2">&quot;--service-cluster&quot;</span><span class="p">,</span> <span class="s2">&quot;proxy&quot;</span><span class="p">]</span>
+<div class="highlight-dockerfile notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span> <span class="s">envoyproxy/envoy-dev:latest</span>
+<span class="k">COPY</span> ./envoy.yaml /etc/envoy.yaml
+<span class="hll"><span class="k">COPY</span> ./lib/envoy_filter_http_wasm_example.wasm /lib/envoy_filter_http_wasm_example.wasm
+</span><span class="k">RUN</span> chmod go+r /etc/envoy.yaml /lib/envoy_filter_http_wasm_example.wasm
+<span class="k">CMD</span> <span class="p">[</span><span class="s2">&quot;/usr/local/bin/envoy&quot;</span><span class="p">,</span> <span class="s2">&quot;-c&quot;</span><span class="p">,</span> <span class="s2">&quot;/etc/envoy.yaml&quot;</span><span class="p">,</span> <span class="s2">&quot;--service-cluster&quot;</span><span class="p">,</span> <span class="s2">&quot;proxy&quot;</span><span class="p">]</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 <p>Replace this line with the following:</p>
 <div class="highlight-dockerfile notranslate"><div class="highlight"><pre><span></span><span class="k">COPY</span> ./lib/envoy_filter_http_wasm_updated_example.wasm /lib/envoy_filter_http_wasm_example.wasm
 </pre></div>
