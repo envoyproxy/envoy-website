@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>AWS Request Signing &mdash; envoy 1.19.0-dev-bacffe documentation</title>
+  <title>AWS Request Signing &mdash; envoy 1.19.0-dev-80e1ca documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.19.0-dev-bacffe
+                1.19.0-dev-80e1ca
               </div>
             
           
@@ -253,6 +253,13 @@
 <p>The HTTP AWS request signing filter is used to access authenticated AWS services. It uses the
 existing AWS Credential Provider to get the secrets used for generating the required
 headers.</p>
+<p>The <a class="reference internal" href="../../../api-v3/extensions/filters/http/aws_request_signing/v3/aws_request_signing.proto.html#envoy-v3-api-field-extensions-filters-http-aws-request-signing-v3-awsrequestsigning-use-unsigned-payload"><span class="std std-ref">use_unsigned_payload</span></a>
+option determines whether or not requests are buffered so the request body can be used to compute the payload hash. Some
+services, such as S3, allow requests with unsigned payloads. Consult the AWS documentation and your service’s resource
+policies to determine if this option is appropriate.</p>
+<p>When <a class="reference internal" href="../../../api-v3/extensions/filters/http/aws_request_signing/v3/aws_request_signing.proto.html#envoy-v3-api-field-extensions-filters-http-aws-request-signing-v3-awsrequestsigning-use-unsigned-payload"><span class="std std-ref">use_unsigned_payload</span></a>
+is false (the default), requests which exceed the configured buffer limit will receive a 413 response. See the
+ref:<cite>flow control docs &lt;faq_flow_control&gt;</cite> for details.</p>
 <div class="section" id="example-configuration">
 <h2>Example configuration<a class="headerlink" href="#example-configuration" title="Permalink to this headline">¶</a></h2>
 <p>Example filter configuration:</p>
@@ -261,6 +268,7 @@ headers.</p>
   <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.aws_request_signing.v3.AwsRequestSigning</span>
   <span class="nt">service_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">s3</span>
   <span class="nt">region</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">us-west-2</span>
+  <span class="nt">use_unsigned_payload</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 </pre></div>
 </div>
 </div>
@@ -284,11 +292,19 @@ comes from the owning HTTP connection manager.</p>
 <tbody>
 <tr class="row-even"><td><p>signing_added</p></td>
 <td><p>Counter</p></td>
-<td><p>Total authentication headers added to requests</p></td>
+<td><p>Total requests for which signing succeeded (includes payload_signing_added)</p></td>
 </tr>
 <tr class="row-odd"><td><p>signing_failed</p></td>
 <td><p>Counter</p></td>
-<td><p>Total requests for which a signature was not added</p></td>
+<td><p>Total requests for which signing failed (includes payload_signing_failed)</p></td>
+</tr>
+<tr class="row-even"><td><p>payload_signing_added</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests for which the payload was buffered signing succeeded</p></td>
+</tr>
+<tr class="row-odd"><td><p>payload_signing_failed</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests for which the payload was buffered but signing failed</p></td>
 </tr>
 </tbody>
 </table>
