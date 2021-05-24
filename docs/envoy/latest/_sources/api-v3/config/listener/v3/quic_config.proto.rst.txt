@@ -19,7 +19,7 @@ If you are upgrading from v2 API config you may wish to view the v2 API document
 config.listener.v3.QuicProtocolOptions
 --------------------------------------
 
-:repo:`[config.listener.v3.QuicProtocolOptions proto] <api/envoy/config/listener/v3/quic_config.proto#L20>`
+:repo:`[config.listener.v3.QuicProtocolOptions proto] <api/envoy/config/listener/v3/quic_config.proto#L23>`
 
 Configuration specific to the UDP QUIC listener.
 
@@ -29,7 +29,8 @@ Configuration specific to the UDP QUIC listener.
     "quic_protocol_options": "{...}",
     "idle_timeout": "{...}",
     "crypto_handshake_timeout": "{...}",
-    "enabled": "{...}"
+    "enabled": "{...}",
+    "packets_to_read_to_connection_count_ratio": "{...}"
   }
 
 .. _envoy_v3_api_field_config.listener.v3.QuicProtocolOptions.quic_protocol_options:
@@ -56,6 +57,18 @@ crypto_handshake_timeout
 enabled
   (:ref:`config.core.v3.RuntimeFeatureFlag <envoy_v3_api_msg_config.core.v3.RuntimeFeatureFlag>`) Runtime flag that controls whether the listener is enabled or not. If not specified, defaults
   to enabled.
+  
+  
+.. _envoy_v3_api_field_config.listener.v3.QuicProtocolOptions.packets_to_read_to_connection_count_ratio:
+
+packets_to_read_to_connection_count_ratio
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) A multiplier to number of connections which is used to determine how many packets to read per
+  event loop. A reasonable number should allow the listener to process enough payload but not
+  starve TCP and other UDP sockets and also prevent long event loop duration.
+  The default value is 32. This means if there are N QUIC connections, the total number of
+  packets to read in each read event will be 32 * N.
+  The actual number of packets to read in total by the UDP listener is also
+  bound by 6000, regardless of this field or how many connections there are.
   
   
 

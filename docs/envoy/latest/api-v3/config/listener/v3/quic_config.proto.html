@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>QUIC listener config &mdash; envoy 1.19.0-dev-c76f2b documentation</title>
+  <title>QUIC listener config &mdash; envoy 1.19.0-dev-8db01a documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.19.0-dev-c76f2b
+                1.19.0-dev-8db01a
               </div>
             
           
@@ -218,13 +218,14 @@
 </div></blockquote>
 <div class="section" id="config-listener-v3-quicprotocoloptions">
 <span id="envoy-v3-api-msg-config-listener-v3-quicprotocoloptions"></span><h2>config.listener.v3.QuicProtocolOptions<a class="headerlink" href="#config-listener-v3-quicprotocoloptions" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/c76f2b25f7573f49db6b1a58033c0b6ed7c0f839/api/envoy/config/listener/v3/quic_config.proto#L20">[config.listener.v3.QuicProtocolOptions proto]</a></p>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/8db01a4a7ab41268d28c323a0f3f80efae8af977/api/envoy/config/listener/v3/quic_config.proto#L23">[config.listener.v3.QuicProtocolOptions proto]</a></p>
 <p>Configuration specific to the UDP QUIC listener.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;quic_protocol_options&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;idle_timeout&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
   <span class="nt">&quot;crypto_handshake_timeout&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;enabled&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+  <span class="nt">&quot;enabled&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;packets_to_read_to_connection_count_ratio&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -245,6 +246,16 @@ no network activity. 300000ms if not specified.</p>
 <dl class="simple" id="envoy-v3-api-field-config-listener-v3-quicprotocoloptions-enabled">
 <dt>enabled</dt><dd><p>(<a class="reference internal" href="../../core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-runtimefeatureflag"><span class="std std-ref">config.core.v3.RuntimeFeatureFlag</span></a>) Runtime flag that controls whether the listener is enabled or not. If not specified, defaults
 to enabled.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-listener-v3-quicprotocoloptions-packets-to-read-to-connection-count-ratio">
+<dt>packets_to_read_to_connection_count_ratio</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) A multiplier to number of connections which is used to determine how many packets to read per
+event loop. A reasonable number should allow the listener to process enough payload but not
+starve TCP and other UDP sockets and also prevent long event loop duration.
+The default value is 32. This means if there are N QUIC connections, the total number of
+packets to read in each read event will be 32 * N.
+The actual number of packets to read in total by the UDP listener is also
+bound by 6000, regardless of this field or how many connections there are.</p>
 </dd>
 </dl>
 </div>
