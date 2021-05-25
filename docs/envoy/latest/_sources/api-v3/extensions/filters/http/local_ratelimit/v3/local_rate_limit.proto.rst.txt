@@ -42,7 +42,8 @@ extensions.filters.http.local_ratelimit.v3.LocalRateLimit
     "request_headers_to_add_when_not_enforced": [],
     "response_headers_to_add": [],
     "descriptors": [],
-    "stage": "..."
+    "stage": "...",
+    "local_rate_limit_per_downstream_connection": "..."
   }
 
 .. _envoy_v3_api_field_extensions.filters.http.local_ratelimit.v3.LocalRateLimit.stat_prefix:
@@ -145,6 +146,18 @@ stage
   .. note::
   
    The filter supports a range of 0 - 10 inclusively for stage numbers.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.local_ratelimit.v3.LocalRateLimit.local_rate_limit_per_downstream_connection:
+
+local_rate_limit_per_downstream_connection
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies the scope of the rate limiter's token bucket.
+  If set to false, the token bucket is shared across all worker threads,
+  thus the rate limits are applied per Envoy process.
+  If set to true, a token bucket is allocated for each connection.
+  Thus the rate limits are applied per connection thereby allowing
+  one to rate limit requests on a per connection basis.
+  If unspecified, the default value is false.
   
   
 
