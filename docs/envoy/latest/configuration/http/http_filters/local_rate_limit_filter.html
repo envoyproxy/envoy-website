@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Local rate limit &mdash; envoy 1.19.0-dev-7d4b2c documentation</title>
+  <title>Local rate limit &mdash; envoy 1.19.0-dev-94ea72 documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.19.0-dev-7d4b2c
+                1.19.0-dev-94ea72
               </div>
             
           
@@ -257,10 +257,9 @@ limit when the request’s route or virtual host has a per filter
 configured to be returned.</p>
 <p><a class="reference internal" href="../../../api-v3/extensions/filters/http/local_ratelimit/v3/local_rate_limit.proto.html#envoy-v3-api-field-extensions-filters-http-local-ratelimit-v3-localratelimit-request-headers-to-add-when-not-enforced"><span class="std std-ref">Request headers</span></a> can be
 configured to be added to forwarded requests to the upstream when the local rate limit filter is enabled but not enforced.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The token bucket is shared across all workers, thus the rate limits are applied per Envoy process.</p>
-</div>
+<p>Depending on the value of the config <a class="reference internal" href="../../../api-v3/extensions/filters/http/local_ratelimit/v3/local_rate_limit.proto.html#envoy-v3-api-field-extensions-filters-http-local-ratelimit-v3-localratelimit-local-rate-limit-per-downstream-connection"><span class="std std-ref">local_rate_limit_per_downstream_connection</span></a>,
+the token bucket is either shared across all workers or on a per connection basis. This results in the local rate limits being applied either per Envoy process or per downstream connection.
+By default the rate limits are applied per Envoy process.</p>
 <div class="section" id="example-configuration">
 <h2>Example configuration<a class="headerlink" href="#example-configuration" title="Permalink to this headline">¶</a></h2>
 <p>Example filter configuration for a globally set rate limiter (e.g.: all vhosts/routes share the same token bucket):</p>
@@ -287,6 +286,7 @@ configured to be added to forwarded requests to the upstream when the local rate
       <span class="nt">header</span><span class="p">:</span>
         <span class="nt">key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">x-local-rate-limit</span>
         <span class="nt">value</span><span class="p">:</span> <span class="s">&#39;true&#39;</span>
+  <span class="nt">local_rate_limit_per_downstream_connection</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
 </pre></div>
 </div>
 <p>Example filter configuration for a globally disabled rate limiter but enabled for a specific route:</p>
