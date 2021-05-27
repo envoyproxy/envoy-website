@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>How do I configure timeouts? &mdash; envoy 1.19.0-dev-941318 documentation</title>
+  <title>How do I configure timeouts? &mdash; envoy 1.19.0-dev-aede3f documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.19.0-dev-941318
+                1.19.0-dev-aede3f
               </div>
             
           
@@ -297,6 +297,19 @@ can be used to override the HttpConnectionManager’s
 <a class="reference internal" href="../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-httpprotocoloptions-max-stream-duration"><span class="std std-ref">max_stream_duration</span></a>
 for individual routes as well as setting both limits and a fixed time offset on grpc-timeout headers.</p></li>
 </ul>
+</div>
+<div class="section" id="scaled-timeouts">
+<h3>Scaled timeouts<a class="headerlink" href="#scaled-timeouts" title="Permalink to this headline">¶</a></h3>
+<p>In situations where envoy is under high load, Envoy can dynamically configure timeouts using scaled timeouts.
+Envoy supports scaled timeouts through the <a class="reference internal" href="../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-msg-config-overload-v3-overloadmanager"><span class="std std-ref">Overload Manager</span></a>, configured
+in envoy <a class="reference internal" href="../../api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-bootstrap-overload-manager"><span class="std std-ref">bootstrap configuration</span></a>.
+Using a <a class="reference internal" href="../../configuration/operations/overload_manager/overload_manager.html#config-overload-manager-reducing-timeouts"><span class="std std-ref">reduce timeouts</span></a> overload action,
+the Overload Manager can be configured to monitor <a class="reference internal" href="../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-msg-config-overload-v3-resourcemonitor"><span class="std std-ref">resources</span></a>
+and scale timeouts accordingly. For example, a common use case may be to monitor the Envoy <a class="reference internal" href="../../api-v3/extensions/resource_monitors/fixed_heap/v3/fixed_heap.proto.html#envoy-v3-api-msg-extensions-resource-monitors-fixed-heap-v3-fixedheapconfig"><span class="std std-ref">heap size</span></a>
+and set the scaled TimerType to <a class="reference internal" href="../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-enum-value-config-overload-v3-scaletimersoverloadactionconfig-timertype-http-downstream-connection-idle"><span class="std std-ref">HTTP_DOWNSTREAM_CONNECTION_IDLE</span></a>.
+The overload manager will scale down the <a class="reference internal" href="../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-httpprotocoloptions-idle-timeout"><span class="std std-ref">idle timeout</span></a> once the <a class="reference internal" href="../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-field-config-overload-v3-scaledtrigger-scaling-threshold"><span class="std std-ref">scaling_threshold</span></a> has been met
+and will set the timeout to the <a class="reference internal" href="../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-field-config-overload-v3-scaletimersoverloadactionconfig-scaletimer-min-timeout"><span class="std std-ref">min timeout</span></a> once the <a class="reference internal" href="../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-field-config-overload-v3-scaledtrigger-scaling-threshold"><span class="std std-ref">scaling_threshold</span></a> is met.
+The full list of supported timers that can be scaled is available in the overload manager <a class="reference internal" href="../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-enum-config-overload-v3-scaletimersoverloadactionconfig-timertype"><span class="std std-ref">docs</span></a>.</p>
 </div>
 </div>
 <div class="section" id="tcp">
