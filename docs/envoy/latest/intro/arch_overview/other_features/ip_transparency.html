@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>IP Transparency &mdash; envoy 1.19.0-dev-735944 documentation</title>
+  <title>IP Transparency &mdash; envoy 1.19.0-dev-dcee6e documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.19.0-dev-735944
+                1.19.0-dev-dcee6e
               </div>
             
           
@@ -257,8 +257,11 @@ the downstream remote address for propagation into an
 <a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a> header. It can also be used in
 conjunction with the
 <a class="reference internal" href="#arch-overview-ip-transparency-original-src-listener"><span class="std std-ref">Original Src Listener Filter</span></a>. Finally,
-Envoy supports generating this header using the <a class="reference internal" href="../../../api-v3/extensions/transport_sockets/proxy_protocol/v3/upstream_proxy_protocol.proto.html#extension-envoy-transport-sockets-upstream-proxy-protocol"><span class="std std-ref">Proxy Protocol Transport Socket</span></a>.
-Here is an example config for setting up the socket:</p>
+Envoy supports generating this header using the <a class="reference internal" href="../../../api-v3/extensions/transport_sockets/proxy_protocol/v3/upstream_proxy_protocol.proto.html#extension-envoy-transport-sockets-upstream-proxy-protocol"><span class="std std-ref">Proxy Protocol Transport Socket</span></a>.</p>
+<p>IMPORTANT: There is currently a memory <a class="reference external" href="https://github.com/envoyproxy/envoy/issues/16682">issue</a> in Envoy where upstream connection pools are
+not cleaned up after they are created. This heavily affects the usage of this transport socket as new pools are created for every downstream client
+IP and port pair. Removing a cluster will clean up its associated connection pools, which could be used to mitigate this issue in the current state.</p>
+<p>Here is an example config for setting up the socket:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">clusters</span><span class="p">:</span>
 <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service1</span>
   <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25s</span>
@@ -275,7 +278,15 @@ Here is an example config for setting up the socket:</p>
   <span class="l l-Scalar l-Scalar-Plain">...</span>
 </pre></div>
 </div>
-<p>Note: If you are wrapping a TLS socket, the header will be sent before the TLS handshake occurs.</p>
+<p>There are several things to consider if you plan to use this socket in conjunction with the
+<a class="reference internal" href="../../../configuration/http/http_conn_man/http_conn_man.html#config-http-conn-man"><span class="std std-ref">HTTP connection manager</span></a>. There will be a performance hit as there will be no upstream connection
+re-use among downstream clients. Every client that connects to Envoy will get a new connection to the upstream server.
+This is due to the nature of proxy protocol being a connection based protocol. Downstream client info is only forwarded to the
+upstream at the start of a connection before any other data has been sent (Note: this includes before a TLS handshake occurs).
+If possible, using the <a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a> header should be preferred as Envoy
+will be able to re-use upstream connections with this method. Due to the disconnect between Envoy’s handling of downstream and upstream
+connections, it is a good idea to enforce short <a class="reference internal" href="../../../faq/configuration/timeouts.html#faq-configuration-timeouts"><span class="std std-ref">idle timeouts</span></a> on upstream connections as
+Envoy will not inherently close a corresponding upstream connection when a downstream connection is closed.</p>
 <p>Some drawbacks to Proxy Protocol:</p>
 <ul class="simple">
 <li><p>It only supports TCP protocols.</p></li>
