@@ -19,7 +19,7 @@ If you are upgrading from v2 API config you may wish to view the v2 API document
 extensions.common.dynamic_forward_proxy.v3.DnsCacheCircuitBreakers
 ------------------------------------------------------------------
 
-:repo:`[extensions.common.dynamic_forward_proxy.v3.DnsCacheCircuitBreakers proto] <api/envoy/extensions/common/dynamic_forward_proxy/v3/dns_cache.proto#L22>`
+:repo:`[extensions.common.dynamic_forward_proxy.v3.DnsCacheCircuitBreakers proto] <api/envoy/extensions/common/dynamic_forward_proxy/v3/dns_cache.proto#L23>`
 
 Configuration of circuit breakers for resolver.
 
@@ -43,7 +43,7 @@ max_pending_requests
 extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig
 ---------------------------------------------------------
 
-:repo:`[extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig proto] <api/envoy/extensions/common/dynamic_forward_proxy/v3/dns_cache.proto#L31>`
+:repo:`[extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig proto] <api/envoy/extensions/common/dynamic_forward_proxy/v3/dns_cache.proto#L32>`
 
 Configuration for the dynamic forward proxy DNS cache. See the :ref:`architecture overview
 <arch_overview_http_dynamic_forward_proxy>` for more information.
@@ -59,7 +59,7 @@ Configuration for the dynamic forward proxy DNS cache. See the :ref:`architectur
     "dns_failure_refresh_rate": "{...}",
     "dns_cache_circuit_breaker": "{...}",
     "use_tcp_for_dns_lookups": "...",
-    "dns_resolver": "{...}"
+    "dns_resolution_config": "{...}"
   }
 
 .. _envoy_v3_api_field_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig.name:
@@ -145,14 +145,14 @@ use_tcp_for_dns_lookups
   Setting this value causes failure if the
   ``envoy.restart_features.use_apple_api_for_dns_lookups`` runtime value is true during
   server startup. Apple' API only uses UDP for DNS resolution.
+  This field is deprecated in favor of *dns_resolution_config*
+  which aggregates all of the DNS resolver configuration in a single message.
   
   
-.. _envoy_v3_api_field_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig.dns_resolver:
+.. _envoy_v3_api_field_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig.dns_resolution_config:
 
-dns_resolver
-  (:ref:`config.core.v3.DnsResolver <envoy_v3_api_msg_config.core.v3.DnsResolver>`) DNS resolver configuration
-  If specified, DNS cache will perform resolution via the underlying DNS resolvers.
-  Otherwise, the default system resolvers (e.g., /etc/resolv.conf) will be used.
+dns_resolution_config
+  (:ref:`config.core.v3.DnsResolutionConfig <envoy_v3_api_msg_config.core.v3.DnsResolutionConfig>`) DNS resolution configuration which includes the underlying dns resolver addresses and options.
   
   
 

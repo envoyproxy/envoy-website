@@ -22,7 +22,7 @@ of the Envoy v3 configuration. See the :ref:`v3 configuration overview
 config.bootstrap.v3.Bootstrap
 -----------------------------
 
-:repo:`[config.bootstrap.v3.Bootstrap proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L42>`
+:repo:`[config.bootstrap.v3.Bootstrap proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L43>`
 
 Bootstrap :ref:`configuration overview <config_overview_bootstrap>`.
 
@@ -49,6 +49,7 @@ Bootstrap :ref:`configuration overview <config_overview_bootstrap>`.
     "header_prefix": "...",
     "stats_server_version_override": "{...}",
     "use_tcp_for_dns_lookups": "...",
+    "dns_resolution_config": "{...}",
     "bootstrap_extensions": [],
     "fatal_actions": [],
     "default_socket_interface": "..."
@@ -251,6 +252,17 @@ use_tcp_for_dns_lookups
   Setting this value causes failure if the
   ``envoy.restart_features.use_apple_api_for_dns_lookups`` runtime value is true during
   server startup. Apple' API only uses UDP for DNS resolution.
+  This field is deprecated in favor of *dns_resolution_config*
+  which aggregates all of the DNS resolver configuration in a single message.
+  
+  
+.. _envoy_v3_api_field_config.bootstrap.v3.Bootstrap.dns_resolution_config:
+
+dns_resolution_config
+  (:ref:`config.core.v3.DnsResolutionConfig <envoy_v3_api_msg_config.core.v3.DnsResolutionConfig>`) DNS resolution configuration which includes the underlying dns resolver addresses and options.
+  This may be overridden on a per-cluster basis in cds_config, when
+  :ref:`dns_resolution_config <envoy_v3_api_field_config.cluster.v3.Cluster.dns_resolution_config>`
+  is specified.
   
   
 .. _envoy_v3_api_field_config.bootstrap.v3.Bootstrap.bootstrap_extensions:
@@ -291,7 +303,7 @@ default_socket_interface
 config.bootstrap.v3.Bootstrap.StaticResources
 ---------------------------------------------
 
-:repo:`[config.bootstrap.v3.Bootstrap.StaticResources proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L46>`
+:repo:`[config.bootstrap.v3.Bootstrap.StaticResources proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L47>`
 
 
 .. code-block:: json
@@ -334,7 +346,7 @@ secrets
 config.bootstrap.v3.Bootstrap.DynamicResources
 ----------------------------------------------
 
-:repo:`[config.bootstrap.v3.Bootstrap.DynamicResources proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L68>`
+:repo:`[config.bootstrap.v3.Bootstrap.DynamicResources proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L69>`
 
 
 .. code-block:: json
@@ -383,7 +395,7 @@ ads_config
 config.bootstrap.v3.Admin
 -------------------------
 
-:repo:`[config.bootstrap.v3.Admin proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L302>`
+:repo:`[config.bootstrap.v3.Admin proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L312>`
 
 Administration interface :ref:`operations documentation
 <operations_admin_interface>`.
@@ -442,7 +454,7 @@ socket_options
 config.bootstrap.v3.ClusterManager
 ----------------------------------
 
-:repo:`[config.bootstrap.v3.ClusterManager proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L330>`
+:repo:`[config.bootstrap.v3.ClusterManager proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L340>`
 
 Cluster manager :ref:`architecture overview <arch_overview_cluster_manager>`.
 
@@ -496,7 +508,7 @@ load_stats_config
 config.bootstrap.v3.ClusterManager.OutlierDetection
 ---------------------------------------------------
 
-:repo:`[config.bootstrap.v3.ClusterManager.OutlierDetection proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L334>`
+:repo:`[config.bootstrap.v3.ClusterManager.OutlierDetection proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L344>`
 
 
 .. code-block:: json
@@ -520,7 +532,7 @@ event_log_path
 config.bootstrap.v3.Watchdogs
 -----------------------------
 
-:repo:`[config.bootstrap.v3.Watchdogs proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L375>`
+:repo:`[config.bootstrap.v3.Watchdogs proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L385>`
 
 Allows you to specify different watchdog configs for different subsystems.
 This allows finer tuned policies for the watchdog. If a subsystem is omitted
@@ -552,7 +564,7 @@ worker_watchdog
 config.bootstrap.v3.Watchdog
 ----------------------------
 
-:repo:`[config.bootstrap.v3.Watchdog proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L387>`
+:repo:`[config.bootstrap.v3.Watchdog proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L397>`
 
 Envoy process watchdog configuration. When configured, this monitors for
 nonresponsive threads and kills the process after the configured thresholds.
@@ -631,7 +643,7 @@ multikill_threshold
 config.bootstrap.v3.Watchdog.WatchdogAction
 -------------------------------------------
 
-:repo:`[config.bootstrap.v3.Watchdog.WatchdogAction proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L390>`
+:repo:`[config.bootstrap.v3.Watchdog.WatchdogAction proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L400>`
 
 
 .. code-block:: json
@@ -658,7 +670,7 @@ event
 Enum config.bootstrap.v3.Watchdog.WatchdogAction.WatchdogEvent
 --------------------------------------------------------------
 
-:repo:`[config.bootstrap.v3.Watchdog.WatchdogAction.WatchdogEvent proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L397>`
+:repo:`[config.bootstrap.v3.Watchdog.WatchdogAction.WatchdogEvent proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L407>`
 
 The events are fired in this order: KILL, MULTIKILL, MEGAMISS, MISS.
 Within an event type, actions execute in the order they are configured.
@@ -699,7 +711,7 @@ MISS
 config.bootstrap.v3.FatalAction
 -------------------------------
 
-:repo:`[config.bootstrap.v3.FatalAction proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L455>`
+:repo:`[config.bootstrap.v3.FatalAction proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L465>`
 
 Fatal actions to run while crashing. Actions can be safe (meaning they are
 async-signal safe) or unsafe. We run all safe actions before we run unsafe actions.
@@ -730,7 +742,7 @@ config
 config.bootstrap.v3.Runtime
 ---------------------------
 
-:repo:`[config.bootstrap.v3.Runtime proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L462>`
+:repo:`[config.bootstrap.v3.Runtime proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L472>`
 
 Runtime :ref:`configuration overview <config_runtime>` (deprecated).
 
@@ -789,7 +801,7 @@ base
 config.bootstrap.v3.RuntimeLayer
 --------------------------------
 
-:repo:`[config.bootstrap.v3.RuntimeLayer proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L494>`
+:repo:`[config.bootstrap.v3.RuntimeLayer proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L504>`
 
 
 .. code-block:: json
@@ -850,7 +862,7 @@ rtds_layer
 config.bootstrap.v3.RuntimeLayer.DiskLayer
 ------------------------------------------
 
-:repo:`[config.bootstrap.v3.RuntimeLayer.DiskLayer proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L499>`
+:repo:`[config.bootstrap.v3.RuntimeLayer.DiskLayer proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L509>`
 
 :ref:`Disk runtime <config_runtime_local_disk>` layer.
 
@@ -896,7 +908,7 @@ append_service_cluster
 config.bootstrap.v3.RuntimeLayer.AdminLayer
 -------------------------------------------
 
-:repo:`[config.bootstrap.v3.RuntimeLayer.AdminLayer proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L523>`
+:repo:`[config.bootstrap.v3.RuntimeLayer.AdminLayer proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L533>`
 
 :ref:`Admin console runtime <config_runtime_admin>` layer.
 
@@ -908,7 +920,7 @@ config.bootstrap.v3.RuntimeLayer.AdminLayer
 config.bootstrap.v3.RuntimeLayer.RtdsLayer
 ------------------------------------------
 
-:repo:`[config.bootstrap.v3.RuntimeLayer.RtdsLayer proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L529>`
+:repo:`[config.bootstrap.v3.RuntimeLayer.RtdsLayer proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L539>`
 
 :ref:`Runtime Discovery Service (RTDS) <config_runtime_rtds>` layer.
 
@@ -939,7 +951,7 @@ rtds_config
 config.bootstrap.v3.LayeredRuntime
 ----------------------------------
 
-:repo:`[config.bootstrap.v3.LayeredRuntime proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L562>`
+:repo:`[config.bootstrap.v3.LayeredRuntime proto] <api/envoy/config/bootstrap/v3/bootstrap.proto#L572>`
 
 Runtime :ref:`configuration overview <config_runtime>`.
 

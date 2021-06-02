@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Resolver &mdash; envoy 1.19.0-dev-13f186 documentation</title>
+  <title>Resolver &mdash; envoy 1.19.0-dev-2c0e1f documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.19.0-dev-13f186
+                1.19.0-dev-2c0e1f
               </div>
             
           
@@ -228,20 +228,49 @@
             
   <div class="section" id="resolver">
 <span id="envoy-v3-api-file-envoy-config-core-v3-resolver-proto"></span><h1>Resolver<a class="headerlink" href="#resolver" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="config-core-v3-dnsresolver">
-<span id="envoy-v3-api-msg-config-core-v3-dnsresolver"></span><h2>config.core.v3.DnsResolver<a class="headerlink" href="#config-core-v3-dnsresolver" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/13f1860e3c31366ed6bdfde62289e8a81acc7605/api/envoy/config/core/v3/resolver.proto#L17">[config.core.v3.DnsResolver proto]</a></p>
-<p>DNS resolver configuration which includes the underlying dns resolver addresses and options.</p>
+<div class="section" id="config-core-v3-dnsresolveroptions">
+<span id="envoy-v3-api-msg-config-core-v3-dnsresolveroptions"></span><h2>config.core.v3.DnsResolverOptions<a class="headerlink" href="#config-core-v3-dnsresolveroptions" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2c0e1f21837fdf78cc91d2eb8c3735731d510f7e/api/envoy/config/core/v3/resolver.proto#L17">[config.core.v3.DnsResolverOptions proto]</a></p>
+<p>Configuration of DNS resolver option flags which control the behavior of the DNS resolver.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;resolvers&quot;</span><span class="p">:</span> <span class="p">[]</span>
+  <span class="nt">&quot;use_tcp_for_dns_lookups&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;no_default_search_domain&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<dl class="simple" id="envoy-v3-api-field-config-core-v3-dnsresolver-resolvers">
-<dt>resolvers</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="address.proto.html#envoy-v3-api-msg-config-core-v3-address"><span class="std std-ref">config.core.v3.Address</span></a>, <em>REQUIRED</em>) A list of dns resolver addresses
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-dnsresolveroptions-use-tcp-for-dns-lookups">
+<dt>use_tcp_for_dns_lookups</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Use TCP for all DNS queries instead of the default protocol UDP.
+Setting this value causes failure if the
+<code class="docutils literal notranslate"><span class="pre">envoy.restart_features.use_apple_api_for_dns_lookups</span></code> runtime value is true during
+server startup. Apple’s API only uses UDP for DNS resolution.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-dnsresolveroptions-no-default-search-domain">
+<dt>no_default_search_domain</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Do not use the default search domains; only query hostnames as-is or as aliases.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-core-v3-dnsresolutionconfig">
+<span id="envoy-v3-api-msg-config-core-v3-dnsresolutionconfig"></span><h2>config.core.v3.DnsResolutionConfig<a class="headerlink" href="#config-core-v3-dnsresolutionconfig" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/2c0e1f21837fdf78cc91d2eb8c3735731d510f7e/api/envoy/config/core/v3/resolver.proto#L29">[config.core.v3.DnsResolutionConfig proto]</a></p>
+<p>DNS resolution configuration which includes the underlying dns resolver addresses and options.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;resolvers&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;dns_resolver_options&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-dnsresolutionconfig-resolvers">
+<dt>resolvers</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="address.proto.html#envoy-v3-api-msg-config-core-v3-address"><span class="std std-ref">config.core.v3.Address</span></a>, <em>REQUIRED</em>) A list of dns resolver addresses. If specified, the DNS client library will perform resolution
+via the underlying DNS resolvers. Otherwise, the default system resolvers
+(e.g., /etc/resolv.conf) will be used.
 Setting this value causes failure if the
 <code class="docutils literal notranslate"><span class="pre">envoy.restart_features.use_apple_api_for_dns_lookups</span></code> runtime value is true during
 server startup. Apple’s API only allows overriding DNS resolvers via system settings.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-dnsresolutionconfig-dns-resolver-options">
+<dt>dns_resolver_options</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-core-v3-dnsresolveroptions"><span class="std std-ref">config.core.v3.DnsResolverOptions</span></a>) Configuration of DNS resolver option flags which control the behavior of the DNS resolver.</p>
 </dd>
 </dl>
 </div>

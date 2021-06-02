@@ -20,7 +20,7 @@ If you are upgrading from v2 API config you may wish to view the v2 API document
 config.cluster.v3.Cluster
 -------------------------
 
-:repo:`[config.cluster.v3.Cluster proto] <api/envoy/config/cluster/v3/cluster.proto#L45>`
+:repo:`[config.cluster.v3.Cluster proto] <api/envoy/config/cluster/v3/cluster.proto#L46>`
 
 Configuration for a single upstream cluster.
 
@@ -51,6 +51,7 @@ Configuration for a single upstream cluster.
     "dns_lookup_family": "...",
     "dns_resolvers": [],
     "use_tcp_for_dns_lookups": "...",
+    "dns_resolution_config": "{...}",
     "outlier_detection": "{...}",
     "cleanup_interval": "{...}",
     "upstream_bind_config": "{...}",
@@ -384,6 +385,8 @@ dns_resolvers
   Setting this value causes failure if the
   ``envoy.restart_features.use_apple_api_for_dns_lookups`` runtime value is true during
   server startup. Apple's API only allows overriding DNS resolvers via system settings.
+  This field is deprecated in favor of *dns_resolution_config*
+  which aggregates all of the DNS resolver configuration in a single message.
   
   
 .. _envoy_v3_api_field_config.cluster.v3.Cluster.use_tcp_for_dns_lookups:
@@ -393,6 +396,14 @@ use_tcp_for_dns_lookups
   Setting this value causes failure if the
   ``envoy.restart_features.use_apple_api_for_dns_lookups`` runtime value is true during
   server startup. Apple' API only uses UDP for DNS resolution.
+  This field is deprecated in favor of *dns_resolution_config*
+  which aggregates all of the DNS resolver configuration in a single message.
+  
+  
+.. _envoy_v3_api_field_config.cluster.v3.Cluster.dns_resolution_config:
+
+dns_resolution_config
+  (:ref:`config.core.v3.DnsResolutionConfig <envoy_v3_api_msg_config.core.v3.DnsResolutionConfig>`) DNS resolution configuration which includes the underlying dns resolver addresses and options.
   
   
 .. _envoy_v3_api_field_config.cluster.v3.Cluster.outlier_detection:
@@ -660,7 +671,7 @@ connection_pool_per_downstream_connection
 config.cluster.v3.Cluster.TransportSocketMatch
 ----------------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.TransportSocketMatch proto] <api/envoy/config/cluster/v3/cluster.proto#L147>`
+:repo:`[config.cluster.v3.Cluster.TransportSocketMatch proto] <api/envoy/config/cluster/v3/cluster.proto#L148>`
 
 TransportSocketMatch specifies what transport socket config will be used
 when the match conditions are satisfied.
@@ -721,7 +732,7 @@ transport_socket
 config.cluster.v3.Cluster.CustomClusterType
 -------------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.CustomClusterType proto] <api/envoy/config/cluster/v3/cluster.proto#L167>`
+:repo:`[config.cluster.v3.Cluster.CustomClusterType proto] <api/envoy/config/cluster/v3/cluster.proto#L168>`
 
 Extended cluster type.
 
@@ -765,7 +776,7 @@ typed_config
 config.cluster.v3.Cluster.EdsClusterConfig
 ------------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.EdsClusterConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L181>`
+:repo:`[config.cluster.v3.Cluster.EdsClusterConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L182>`
 
 Only valid when discovery type is EDS.
 
@@ -797,7 +808,7 @@ service_name
 config.cluster.v3.Cluster.LbSubsetConfig
 ----------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.LbSubsetConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L197>`
+:repo:`[config.cluster.v3.Cluster.LbSubsetConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L198>`
 
 Optionally divide the endpoints in this cluster into subsets defined by
 endpoint metadata and selected by route and weighted cluster metadata.
@@ -902,7 +913,7 @@ list_as_any
 config.cluster.v3.Cluster.LbSubsetConfig.LbSubsetSelector
 ---------------------------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.LbSubsetConfig.LbSubsetSelector proto] <api/envoy/config/cluster/v3/cluster.proto#L213>`
+:repo:`[config.cluster.v3.Cluster.LbSubsetConfig.LbSubsetSelector proto] <api/envoy/config/cluster/v3/cluster.proto#L214>`
 
 Specifications for subsets.
 
@@ -965,7 +976,7 @@ fallback_keys_subset
 Enum config.cluster.v3.Cluster.LbSubsetConfig.LbSubsetSelector.LbSubsetSelectorFallbackPolicy
 ---------------------------------------------------------------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.LbSubsetConfig.LbSubsetSelector.LbSubsetSelectorFallbackPolicy proto] <api/envoy/config/cluster/v3/cluster.proto#L218>`
+:repo:`[config.cluster.v3.Cluster.LbSubsetConfig.LbSubsetSelector.LbSubsetSelectorFallbackPolicy proto] <api/envoy/config/cluster/v3/cluster.proto#L219>`
 
 Allows to override top level fallback policy per selector.
 
@@ -1011,7 +1022,7 @@ KEYS_SUBSET
 Enum config.cluster.v3.Cluster.LbSubsetConfig.LbSubsetFallbackPolicy
 --------------------------------------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.LbSubsetConfig.LbSubsetFallbackPolicy proto] <api/envoy/config/cluster/v3/cluster.proto#L206>`
+:repo:`[config.cluster.v3.Cluster.LbSubsetConfig.LbSubsetFallbackPolicy proto] <api/envoy/config/cluster/v3/cluster.proto#L207>`
 
 If NO_FALLBACK is selected, a result
 equivalent to no healthy hosts is reported. If ANY_ENDPOINT is selected,
@@ -1040,7 +1051,7 @@ DEFAULT_SUBSET
 config.cluster.v3.Cluster.LeastRequestLbConfig
 ----------------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.LeastRequestLbConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L339>`
+:repo:`[config.cluster.v3.Cluster.LeastRequestLbConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L340>`
 
 Specific configuration for the LeastRequest load balancing policy.
 
@@ -1093,7 +1104,7 @@ active_request_bias
 config.cluster.v3.Cluster.RingHashLbConfig
 ------------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.RingHashLbConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L375>`
+:repo:`[config.cluster.v3.Cluster.RingHashLbConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L376>`
 
 Specific configuration for the :ref:`RingHash<arch_overview_load_balancing_types_ring_hash>`
 load balancing policy.
@@ -1136,7 +1147,7 @@ maximum_ring_size
 Enum config.cluster.v3.Cluster.RingHashLbConfig.HashFunction
 ------------------------------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.RingHashLbConfig.HashFunction proto] <api/envoy/config/cluster/v3/cluster.proto#L380>`
+:repo:`[config.cluster.v3.Cluster.RingHashLbConfig.HashFunction proto] <api/envoy/config/cluster/v3/cluster.proto#L381>`
 
 The hash function used to hash hosts onto the ketama ring.
 
@@ -1160,7 +1171,7 @@ MURMUR_HASH_2
 config.cluster.v3.Cluster.MaglevLbConfig
 ----------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.MaglevLbConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L410>`
+:repo:`[config.cluster.v3.Cluster.MaglevLbConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L411>`
 
 Specific configuration for the :ref:`Maglev<arch_overview_load_balancing_types_maglev>`
 load balancing policy.
@@ -1187,7 +1198,7 @@ table_size
 config.cluster.v3.Cluster.OriginalDstLbConfig
 ---------------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.OriginalDstLbConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L421>`
+:repo:`[config.cluster.v3.Cluster.OriginalDstLbConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L422>`
 
 Specific configuration for the
 :ref:`Original Destination <arch_overview_load_balancing_types_original_destination>`
@@ -1224,7 +1235,7 @@ use_http_header
 config.cluster.v3.Cluster.CommonLbConfig
 ----------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.CommonLbConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L443>`
+:repo:`[config.cluster.v3.Cluster.CommonLbConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L444>`
 
 Common configuration for all load balancer implementations.
 
@@ -1312,7 +1323,7 @@ consistent_hashing_lb_config
 config.cluster.v3.Cluster.CommonLbConfig.ZoneAwareLbConfig
 ----------------------------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.CommonLbConfig.ZoneAwareLbConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L449>`
+:repo:`[config.cluster.v3.Cluster.CommonLbConfig.ZoneAwareLbConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L450>`
 
 Configuration for :ref:`zone aware routing
 <arch_overview_load_balancing_zone_aware_routing>`.
@@ -1360,7 +1371,7 @@ fail_traffic_on_panic
 config.cluster.v3.Cluster.CommonLbConfig.LocalityWeightedLbConfig
 -----------------------------------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.CommonLbConfig.LocalityWeightedLbConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L475>`
+:repo:`[config.cluster.v3.Cluster.CommonLbConfig.LocalityWeightedLbConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L476>`
 
 Configuration for :ref:`locality weighted load balancing
 <arch_overview_load_balancing_locality_weighted_lb>`
@@ -1373,7 +1384,7 @@ Configuration for :ref:`locality weighted load balancing
 config.cluster.v3.Cluster.CommonLbConfig.ConsistentHashingLbConfig
 ------------------------------------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.CommonLbConfig.ConsistentHashingLbConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L481>`
+:repo:`[config.cluster.v3.Cluster.CommonLbConfig.ConsistentHashingLbConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L482>`
 
 Common Configuration for all consistent hashing load balancers (MaglevLb, RingHashLb, etc.)
 
@@ -1422,7 +1433,7 @@ hash_balance_factor
 config.cluster.v3.Cluster.RefreshRate
 -------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.RefreshRate proto] <api/envoy/config/cluster/v3/cluster.proto#L553>`
+:repo:`[config.cluster.v3.Cluster.RefreshRate proto] <api/envoy/config/cluster/v3/cluster.proto#L554>`
 
 
 .. code-block:: json
@@ -1456,7 +1467,7 @@ max_interval
 config.cluster.v3.Cluster.PreconnectPolicy
 ------------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.PreconnectPolicy proto] <api/envoy/config/cluster/v3/cluster.proto#L571>`
+:repo:`[config.cluster.v3.Cluster.PreconnectPolicy proto] <api/envoy/config/cluster/v3/cluster.proto#L572>`
 
 
 .. code-block:: json
@@ -1530,7 +1541,7 @@ predictive_preconnect_ratio
 Enum config.cluster.v3.Cluster.DiscoveryType
 --------------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.DiscoveryType proto] <api/envoy/config/cluster/v3/cluster.proto#L50>`
+:repo:`[config.cluster.v3.Cluster.DiscoveryType proto] <api/envoy/config/cluster/v3/cluster.proto#L51>`
 
 Refer to :ref:`service discovery type <arch_overview_service_discovery_types>`
 for an explanation on each type.
@@ -1579,7 +1590,7 @@ ORIGINAL_DST
 Enum config.cluster.v3.Cluster.LbPolicy
 ---------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.LbPolicy proto] <api/envoy/config/cluster/v3/cluster.proto#L77>`
+:repo:`[config.cluster.v3.Cluster.LbPolicy proto] <api/envoy/config/cluster/v3/cluster.proto#L78>`
 
 Refer to :ref:`load balancer type <arch_overview_load_balancing_types>` architecture
 overview section for information on each type.
@@ -1638,7 +1649,7 @@ CLUSTER_PROVIDED
 Enum config.cluster.v3.Cluster.DnsLookupFamily
 ----------------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.DnsLookupFamily proto] <api/envoy/config/cluster/v3/cluster.proto#L129>`
+:repo:`[config.cluster.v3.Cluster.DnsLookupFamily proto] <api/envoy/config/cluster/v3/cluster.proto#L130>`
 
 When V4_ONLY is selected, the DNS resolver will only perform a lookup for
 addresses in the IPv4 family. If V6_ONLY is selected, the DNS resolver will
@@ -1672,7 +1683,7 @@ V6_ONLY
 Enum config.cluster.v3.Cluster.ClusterProtocolSelection
 -------------------------------------------------------
 
-:repo:`[config.cluster.v3.Cluster.ClusterProtocolSelection proto] <api/envoy/config/cluster/v3/cluster.proto#L135>`
+:repo:`[config.cluster.v3.Cluster.ClusterProtocolSelection proto] <api/envoy/config/cluster/v3/cluster.proto#L136>`
 
 
 .. _envoy_v3_api_enum_value_config.cluster.v3.Cluster.ClusterProtocolSelection.USE_CONFIGURED_PROTOCOL:
@@ -1696,7 +1707,7 @@ USE_DOWNSTREAM_PROTOCOL
 config.cluster.v3.UpstreamBindConfig
 ------------------------------------
 
-:repo:`[config.cluster.v3.UpstreamBindConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L1082>`
+:repo:`[config.cluster.v3.UpstreamBindConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L1091>`
 
 An extensible structure containing the address Envoy should bind to when
 establishing upstream connections.
@@ -1720,7 +1731,7 @@ source_address
 config.cluster.v3.UpstreamConnectionOptions
 -------------------------------------------
 
-:repo:`[config.cluster.v3.UpstreamConnectionOptions proto] <api/envoy/config/cluster/v3/cluster.proto#L1089>`
+:repo:`[config.cluster.v3.UpstreamConnectionOptions proto] <api/envoy/config/cluster/v3/cluster.proto#L1098>`
 
 
 .. code-block:: json
@@ -1742,7 +1753,7 @@ tcp_keepalive
 config.cluster.v3.TrackClusterStats
 -----------------------------------
 
-:repo:`[config.cluster.v3.TrackClusterStats proto] <api/envoy/config/cluster/v3/cluster.proto#L1097>`
+:repo:`[config.cluster.v3.TrackClusterStats proto] <api/envoy/config/cluster/v3/cluster.proto#L1106>`
 
 
 .. code-block:: json
