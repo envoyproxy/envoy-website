@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>ZooKeeper proxy &mdash; envoy 1.19.0-dev-e6ac31 documentation</title>
+  <title>ZooKeeper proxy &mdash; envoy 1.19.0-dev-f25fbb documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.19.0-dev-e6ac31
+                1.19.0-dev-f25fbb
               </div>
             
           
@@ -246,40 +246,40 @@ configuration structures are likely to change.</p>
 in the configuration snippet below:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">static_resources</span><span class="p">:</span>
   <span class="nt">listeners</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">main</span>
-      <span class="nt">address</span><span class="p">:</span>
-        <span class="nt">socket_address</span><span class="p">:</span>
-          <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span> <span class="c1"># Host that zookeeper clients should connect to.</span>
-          <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10001</span>  <span class="c1"># Port that zookeeper clients should connect to.</span>
-      <span class="nt">filter_chains</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">filters</span><span class="p">:</span>
-        <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.network.zookeeper_proxy</span>
-          <span class="nt">typed_config</span><span class="p">:</span>
-            <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.zookeeper_proxy.v3.ZooKeeperProxy</span>
-            <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">zookeeper</span>
-        <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.network.tcp_proxy</span>
-          <span class="nt">typed_config</span><span class="p">:</span>
-            <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.tcp_proxy.v3.TcpProxy</span>
-            <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">tcp</span>
-            <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_zk_server</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">main</span>
+    <span class="nt">address</span><span class="p">:</span>
+      <span class="nt">socket_address</span><span class="p">:</span>
+        <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span>  <span class="c1"># Host that zookeeper clients should connect to.</span>
+        <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10001</span>  <span class="c1"># Port that zookeeper clients should connect to.</span>
+    <span class="nt">filter_chains</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">filters</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.network.zookeeper_proxy</span>
+        <span class="nt">typed_config</span><span class="p">:</span>
+          <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.zookeeper_proxy.v3.ZooKeeperProxy</span>
+          <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">zookeeper</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.filters.network.tcp_proxy</span>
+        <span class="nt">typed_config</span><span class="p">:</span>
+          <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.tcp_proxy.v3.TcpProxy</span>
+          <span class="nt">stat_prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">tcp</span>
+          <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_zk_server</span>
   <span class="nt">clusters</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_zk_server</span>
-      <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">LOGICAL_DNS</span>
-      <span class="nt">lb_policy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ROUND_ROBIN</span>
-      <span class="nt">typed_extension_protocol_options</span><span class="p">:</span>
-        <span class="nt">envoy.extensions.upstreams.http.v3.HttpProtocolOptions</span><span class="p">:</span>
-          <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions</span>
-          <span class="nt">explicit_http_config</span><span class="p">:</span>
-            <span class="nt">http2_protocol_options</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
-      <span class="nt">load_assignment</span><span class="p">:</span>
-        <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_zk_server</span>
-        <span class="nt">endpoints</span><span class="p">:</span>
-          <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
-              <span class="p p-Indicator">-</span> <span class="nt">endpoint</span><span class="p">:</span>
-                  <span class="nt">address</span><span class="p">:</span>
-                    <span class="nt">socket_address</span><span class="p">:</span>
-                      <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span>
-                      <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2181</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_zk_server</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">LOGICAL_DNS</span>
+    <span class="nt">lb_policy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ROUND_ROBIN</span>
+    <span class="nt">typed_extension_protocol_options</span><span class="p">:</span>
+      <span class="nt">envoy.extensions.upstreams.http.v3.HttpProtocolOptions</span><span class="p">:</span>
+        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions</span>
+        <span class="nt">explicit_http_config</span><span class="p">:</span>
+          <span class="nt">http2_protocol_options</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+    <span class="nt">load_assignment</span><span class="p">:</span>
+      <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local_zk_server</span>
+      <span class="nt">endpoints</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="nt">endpoint</span><span class="p">:</span>
+            <span class="nt">address</span><span class="p">:</span>
+              <span class="nt">socket_address</span><span class="p">:</span>
+                <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span>
+                <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2181</span>
 </pre></div>
 </div>
 </div>
