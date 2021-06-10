@@ -418,13 +418,15 @@ config.core.v3.KeepaliveSettings
   {
     "interval": "{...}",
     "timeout": "{...}",
-    "interval_jitter": "{...}"
+    "interval_jitter": "{...}",
+    "connection_idle_interval": "{...}"
   }
 
 .. _envoy_v3_api_field_config.core.v3.KeepaliveSettings.interval:
 
 interval
-  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_, *REQUIRED*) Send HTTP/2 PING frames at this period, in order to test that the connection is still alive.
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) Send HTTP/2 PING frames at this period, in order to test that the connection is still alive.
+  If this is zero, interval PINGs will not be sent.
   
   
 .. _envoy_v3_api_field_config.core.v3.KeepaliveSettings.timeout:
@@ -442,6 +444,16 @@ interval_jitter
   The default value is 15%.
   
   
+.. _envoy_v3_api_field_config.core.v3.KeepaliveSettings.connection_idle_interval:
+
+connection_idle_interval
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) If the connection has been idle for this duration, send a HTTP/2 ping ahead
+  of new stream creation, to quickly detect dead connections.
+  If this is zero, this type of PING will not be sent.
+  If an interval ping is outstanding, a second ping will not be sent as the
+  interval ping will determine if the connection is dead.
+  
+  
 
 
 .. _envoy_v3_api_msg_config.core.v3.Http2ProtocolOptions:
@@ -449,7 +461,7 @@ interval_jitter
 config.core.v3.Http2ProtocolOptions
 -----------------------------------
 
-:repo:`[config.core.v3.Http2ProtocolOptions proto] <api/envoy/config/core/v3/protocol.proto#L265>`
+:repo:`[config.core.v3.Http2ProtocolOptions proto] <api/envoy/config/core/v3/protocol.proto#L271>`
 
 
 .. code-block:: json
@@ -643,7 +655,7 @@ connection_keepalive
 config.core.v3.Http2ProtocolOptions.SettingsParameter
 -----------------------------------------------------
 
-:repo:`[config.core.v3.Http2ProtocolOptions.SettingsParameter proto] <api/envoy/config/core/v3/protocol.proto#L271>`
+:repo:`[config.core.v3.Http2ProtocolOptions.SettingsParameter proto] <api/envoy/config/core/v3/protocol.proto#L277>`
 
 Defines a parameter to be sent in the SETTINGS frame.
 See `RFC7540, sec. 6.5.1 <https://tools.ietf.org/html/rfc7540#section-6.5.1>`_ for details.
@@ -676,7 +688,7 @@ value
 config.core.v3.Http3ProtocolOptions
 -----------------------------------
 
-:repo:`[config.core.v3.Http3ProtocolOptions proto] <api/envoy/config/core/v3/protocol.proto#L463>`
+:repo:`[config.core.v3.Http3ProtocolOptions proto] <api/envoy/config/core/v3/protocol.proto#L469>`
 
 A message which allows using HTTP/3.
 
