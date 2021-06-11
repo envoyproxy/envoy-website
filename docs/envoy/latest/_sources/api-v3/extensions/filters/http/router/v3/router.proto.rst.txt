@@ -47,7 +47,8 @@ extensions.filters.http.router.v3.Router
     "upstream_log": [],
     "suppress_envoy_headers": "...",
     "strict_check_headers": [],
-    "respect_expected_rq_timeout": "..."
+    "respect_expected_rq_timeout": "...",
+    "suppress_grpc_request_failure_code_stats": "..."
   }
 
 .. _envoy_v3_api_field_extensions.filters.http.router.v3.Router.dynamic_stats:
@@ -111,6 +112,19 @@ respect_expected_rq_timeout
   (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If not set, ingress Envoy will ignore
   :ref:`config_http_filters_router_x-envoy-expected-rq-timeout-ms` header, populated by egress
   Envoy, when deriving timeout for upstream cluster.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.router.v3.Router.suppress_grpc_request_failure_code_stats:
+
+suppress_grpc_request_failure_code_stats
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If set, Envoy will avoid incrementing HTTP failure code stats
+  on gRPC requests. This includes the individual status code value
+  (e.g. upstream_rq_504) and group stats (e.g. upstream_rq_5xx).
+  This field is useful if interested in relying only on the gRPC
+  stats filter to define success and failure metrics for gRPC requests
+  as not all failed gRPC requests charge HTTP status code metrics. See
+  :ref:`gRPC stats filter<config_http_filters_grpc_stats>` documentation
+  for more details.
   
   
 
