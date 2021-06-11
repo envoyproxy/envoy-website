@@ -40,7 +40,9 @@ extensions.filters.http.admission_control.v3alpha.AdmissionControl
     "success_criteria": "{...}",
     "sampling_window": "{...}",
     "aggression": "{...}",
-    "sr_threshold": "{...}"
+    "sr_threshold": "{...}",
+    "rps_threshold": "{...}",
+    "max_rejection_probability": "{...}"
   }
 
 .. _envoy_v3_api_field_extensions.filters.http.admission_control.v3alpha.AdmissionControl.enabled:
@@ -85,6 +87,21 @@ sr_threshold
   (:ref:`config.core.v3.RuntimePercent <envoy_v3_api_msg_config.core.v3.RuntimePercent>`) Dictates the success rate at which the rejection probability is non-zero. As success rate drops
   below this threshold, rejection probability will increase. Any success rate above the threshold
   results in a rejection probability of 0. Defaults to 95%.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.admission_control.v3alpha.AdmissionControl.rps_threshold:
+
+rps_threshold
+  (:ref:`config.core.v3.RuntimeUInt32 <envoy_v3_api_msg_config.core.v3.RuntimeUInt32>`) If the average RPS of the sampling window is below this threshold, the request
+  will not be rejected, even if the success rate is lower than sr_threshold.
+  Defaults to 0.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.admission_control.v3alpha.AdmissionControl.max_rejection_probability:
+
+max_rejection_probability
+  (:ref:`config.core.v3.RuntimePercent <envoy_v3_api_msg_config.core.v3.RuntimePercent>`) The probability of rejection will never exceed this value, even if the failure rate is rising.
+  Defaults to 80%.
   
   
 .. _envoy_v3_api_msg_extensions.filters.http.admission_control.v3alpha.AdmissionControl.SuccessCriteria:

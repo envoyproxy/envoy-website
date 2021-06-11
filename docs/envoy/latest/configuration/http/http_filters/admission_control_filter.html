@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Admission Control &mdash; envoy 1.19.0-dev-eb291c documentation</title>
+  <title>Admission Control &mdash; envoy 1.19.0-dev-6ee568 documentation</title>
   
 
   
@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                1.19.0-dev-eb291c
+                1.19.0-dev-6ee568
               </div>
             
           
@@ -273,6 +273,11 @@ rejection probability as the success rate decreases. As the <strong>aggression</
 rejection probability will be higher for higher success rates. See <a class="reference internal" href="#aggression">Aggression</a> for a more
 detailed explanation.</p></li>
 </ul>
+<p>Note that there are additional parameters that affect the rejection probability:</p>
+<ul class="simple">
+<li><p><em>rps_threshold</em> is a configurable value that when RPS is lower than it, requests will pass through the filter.</p></li>
+<li><p><em>max_reject_probability</em> represents the upper limit of the rejection probability.</p></li>
+</ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The success rate calculations are performed on a per-thread basis for increased performance. In
@@ -316,6 +321,12 @@ fields can be overridden via runtime settings.</p>
   <span class="nt">aggression</span><span class="p">:</span>
     <span class="nt">default_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.5</span>
     <span class="nt">runtime_key</span><span class="p">:</span> <span class="s">&quot;admission_control.aggression&quot;</span>
+  <span class="nt">rps_threshold</span><span class="p">:</span>
+    <span class="nt">default_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+    <span class="nt">runtime_key</span><span class="p">:</span> <span class="s">&quot;admission_control.rps_threshold&quot;</span>
+  <span class="nt">max_rejection_probability</span><span class="p">:</span>
+    <span class="nt">default_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">80.0</span>
+    <span class="nt">runtime_key</span><span class="p">:</span> <span class="s">&quot;admission_control.max_rejection_probability&quot;</span>
   <span class="nt">success_criteria</span><span class="p">:</span>
     <span class="nt">http_criteria</span><span class="p">:</span>
       <span class="nt">http_success_status</span><span class="p">:</span>
@@ -336,6 +347,8 @@ fields can be overridden via runtime settings.</p>
 window.</p></li>
 <li><p>HTTP requests are considered successful if they are 1xx, 2xx, 3xx, or a 404.</p></li>
 <li><p>gRPC requests are considered successful if they are OK or CANCELLED.</p></li>
+<li><p>Requests will never be rejeted from this filter if the RPS is lower than 5.</p></li>
+<li><p>Rejection probability will never exceed 80% even if the failure rate is 100%.</p></li>
 </ul>
 </div>
 <div class="section" id="statistics">
