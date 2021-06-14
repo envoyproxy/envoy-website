@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>1.19.0 (Pending) &mdash; envoy 1.19.0-dev-573663 documentation</title>
+  <title>1.19.0 (Pending) &mdash; envoy 1.19.0-dev-cfc260 documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.19.0-dev-573663
+                1.19.0-dev-cfc260
               </div>
             
           
@@ -328,6 +328,7 @@ filter. This means that we now properly compute the number of bytes sent as well
 <li><p>bandwidth_limit: added new <a class="reference internal" href="../configuration/http/http_filters/bandwidth_limit_filter.html#config-http-filters-bandwidth-limit"><span class="std std-ref">HTTP bandwidth limit filter</span></a>.</p></li>
 <li><p>bootstrap: added <a class="reference internal" href="../api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-bootstrap-dns-resolution-config"><span class="std std-ref">dns_resolution_config</span></a> to aggregate all of the DNS resolver configuration in a single message. By setting one such configuration option <em>no_default_search_domain</em> as true the DNS resolver will not use the default search domains. And by setting the configuration <em>resolvers</em> we can specify the external DNS servers to be used for external DNS query.</p></li>
 <li><p>cluster: added <a class="reference internal" href="../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-dns-resolution-config"><span class="std std-ref">dns_resolution_config</span></a> to aggregate all of the DNS resolver configuration in a single message. By setting one such configuration option <em>no_default_search_domain</em> as true the DNS resolver will not use the default search domains.</p></li>
+<li><p>composite filter: can now be used with filters that also add an access logger, such as the WASM filter.</p></li>
 <li><p>crash support: restore crash context when continuing to processing requests or responses as a result of an asynchronous callback that invokes a filter directly. This is unlike the call stacks that go through the various network layers, to eventually reach the filter. For a concrete example see: <code class="docutils literal notranslate"><span class="pre">Envoy::Extensions::HttpFilters::Cache::CacheFilter::getHeaders</span></code> which posts a callback on the dispatcher that will invoke the filter directly.</p></li>
 <li><p>dns resolver: added <em>DnsResolverOptions</em> protobuf message to reconcile all of the DNS lookup option flags. By setting the configuration option <a class="reference internal" href="../api-v3/config/core/v3/resolver.proto.html#envoy-v3-api-field-config-core-v3-dnsresolveroptions-use-tcp-for-dns-lookups"><span class="std std-ref">use_tcp_for_dns_lookups</span></a> as true we can make the underlying dns resolver library to make only TCP queries to the DNS servers and by setting the configuration option <a class="reference internal" href="../api-v3/config/core/v3/resolver.proto.html#envoy-v3-api-field-config-core-v3-dnsresolveroptions-no-default-search-domain"><span class="std std-ref">no_default_search_domain</span></a> as true the DNS resolver library will not use the default search domains.</p></li>
 <li><p>dns resolver: added <em>DnsResolutionConfig</em> to combine <a class="reference internal" href="../api-v3/config/core/v3/resolver.proto.html#envoy-v3-api-field-config-core-v3-dnsresolutionconfig-dns-resolver-options"><span class="std std-ref">dns_resolver_options</span></a> and <a class="reference internal" href="../api-v3/config/core/v3/resolver.proto.html#envoy-v3-api-field-config-core-v3-dnsresolutionconfig-resolvers"><span class="std std-ref">resolvers</span></a> in a single protobuf message. The field <em>resolvers</em> can be specified with a list of DNS resolver addresses. If specified, DNS client library will perform resolution via the underlying DNS resolvers. Otherwise, the default system resolvers (e.g., /etc/resolv.conf) will be used.</p></li>
