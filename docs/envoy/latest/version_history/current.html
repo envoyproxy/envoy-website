@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>1.19.0 (Pending) &mdash; envoy 1.19.0-dev-321a3a documentation</title>
+  <title>1.19.0 (Pending) &mdash; envoy 1.19.0-dev-c496b6 documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.19.0-dev-321a3a
+                1.19.0-dev-c496b6
               </div>
             
           
@@ -296,6 +296,10 @@ defined within the listener where the sockets are redirected to. Clear that fiel
 <li><p>cluster: fixed the <a class="reference internal" href="../configuration/upstream/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats-request-response-sizes"><span class="std std-ref">cluster stats</span></a> histograms by moving the accounting into the router
 filter. This means that we now properly compute the number of bytes sent as well as handling retries which were previously ignored.</p></li>
 <li><p>hot_restart: fix double counting of <cite>server.seconds_until_first_ocsp_response_expiring</cite> and <cite>server.days_until_first_cert_expiring</cite> during hot-restart. This stat was only incorrect until the parent process terminated.</p></li>
+<li><p>http: fix erroneous handling of invalid nghttp2 frames with the <cite>NGHTTP2_ERR_REFUSED_STREAM</cite> error. Prior to the fix,
+Envoy would close the entire connection when nghttp2 triggered the invalid frame callback for the said error. The fix
+will cause Envoy to terminate just the refused stream and retain the connection. This behavior can be temporarily
+reverted by setting the <code class="docutils literal notranslate"><span class="pre">envoy.reloadable_features.http2_consume_stream_refused_errors</span></code> runtime guard to false.</p></li>
 <li><p>http: port stripping now works for CONNECT requests, though the port will be restored if the CONNECT request is sent upstream. This behavior can be temporarily reverted by setting <code class="docutils literal notranslate"><span class="pre">envoy.reloadable_features.strip_port_from_connect</span></code> to false.</p></li>
 <li><p>http: raise max configurable max_request_headers_kb limit to 8192 KiB (8MiB) from 96 KiB in http connection manager.</p></li>
 <li><p>listener: fix the crash which could happen when the ongoing filter chain only listener update is followed by the listener removal or full listener update.</p></li>
