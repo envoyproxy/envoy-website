@@ -104,7 +104,7 @@ typed_config
 config.listener.v3.FilterChainMatch
 -----------------------------------
 
-:repo:`[config.listener.v3.FilterChainMatch proto] <api/envoy/config/listener/v3/listener_components.proto#L93>`
+:repo:`[config.listener.v3.FilterChainMatch proto] <api/envoy/config/listener/v3/listener_components.proto#L96>`
 
 Specifies the match criteria for selecting a specific filter chain for a
 listener.
@@ -120,9 +120,12 @@ The following order applies:
 3. Server name (e.g. SNI for TLS protocol),
 4. Transport protocol.
 5. Application protocols (e.g. ALPN for TLS protocol).
-6. Source type (e.g. any, local or external network).
-7. Source IP address.
-8. Source port.
+6. Directly connected source IP address (this will only be different from the source IP address
+   when using a listener filter that overrides the source address, such as the :ref:`Proxy Protocol
+   listener filter <config_listener_filters_proxy_protocol>`).
+7. Source type (e.g. any, local or external network).
+8. Source IP address.
+9. Source port.
 
 For criteria that allow ranges or wildcards, the most specific value in any
 of the configured filter chains that matches the incoming connection is going
@@ -148,6 +151,7 @@ wrong port can never be the most specific match.
   {
     "destination_port": "{...}",
     "prefix_ranges": [],
+    "direct_source_prefix_ranges": [],
     "source_type": "...",
     "source_prefix_ranges": [],
     "source_ports": [],
@@ -172,6 +176,14 @@ prefix_ranges
   
 
 
+.. _envoy_v3_api_field_config.listener.v3.FilterChainMatch.direct_source_prefix_ranges:
+
+direct_source_prefix_ranges
+  (**repeated** :ref:`config.core.v3.CidrRange <envoy_v3_api_msg_config.core.v3.CidrRange>`) The criteria is satisfied if the directly connected source IP address of the downstream
+  connection is contained in at least one of the specified subnets. If the parameter is not
+  specified or the list is empty, the directly connected source IP address is ignored.
+  
+  
 .. _envoy_v3_api_field_config.listener.v3.FilterChainMatch.source_type:
 
 source_type
@@ -257,7 +269,7 @@ application_protocols
 Enum config.listener.v3.FilterChainMatch.ConnectionSourceType
 -------------------------------------------------------------
 
-:repo:`[config.listener.v3.FilterChainMatch.ConnectionSourceType proto] <api/envoy/config/listener/v3/listener_components.proto#L97>`
+:repo:`[config.listener.v3.FilterChainMatch.ConnectionSourceType proto] <api/envoy/config/listener/v3/listener_components.proto#L100>`
 
 
 .. _envoy_v3_api_enum_value_config.listener.v3.FilterChainMatch.ConnectionSourceType.ANY:
@@ -284,7 +296,7 @@ EXTERNAL
 config.listener.v3.FilterChain
 ------------------------------
 
-:repo:`[config.listener.v3.FilterChain proto] <api/envoy/config/listener/v3/listener_components.proto#L192>`
+:repo:`[config.listener.v3.FilterChain proto] <api/envoy/config/listener/v3/listener_components.proto#L200>`
 
 A filter chain wraps a set of match criteria, an option TLS context, a set of filters, and
 various other parameters.
@@ -372,7 +384,7 @@ transport_socket_connect_timeout
 config.listener.v3.FilterChain.OnDemandConfiguration
 ----------------------------------------------------
 
-:repo:`[config.listener.v3.FilterChain.OnDemandConfiguration proto] <api/envoy/config/listener/v3/listener_components.proto#L200>`
+:repo:`[config.listener.v3.FilterChain.OnDemandConfiguration proto] <api/envoy/config/listener/v3/listener_components.proto#L208>`
 
 The configuration for on-demand filter chain. If this field is not empty in FilterChain message,
 a filter chain will be built on-demand.
@@ -405,7 +417,7 @@ rebuild_timeout
 config.listener.v3.ListenerFilterChainMatchPredicate
 ----------------------------------------------------
 
-:repo:`[config.listener.v3.ListenerFilterChainMatchPredicate proto] <api/envoy/config/listener/v3/listener_components.proto#L290>`
+:repo:`[config.listener.v3.ListenerFilterChainMatchPredicate proto] <api/envoy/config/listener/v3/listener_components.proto#L298>`
 
 Listener filter chain match configuration. This is a recursive structure which allows complex
 nested match configurations to be built using various logical operators.
@@ -497,7 +509,7 @@ destination_port_range
 config.listener.v3.ListenerFilterChainMatchPredicate.MatchSet
 -------------------------------------------------------------
 
-:repo:`[config.listener.v3.ListenerFilterChainMatchPredicate.MatchSet proto] <api/envoy/config/listener/v3/listener_components.proto#L295>`
+:repo:`[config.listener.v3.ListenerFilterChainMatchPredicate.MatchSet proto] <api/envoy/config/listener/v3/listener_components.proto#L303>`
 
 A set of match configurations used for logical operations.
 
@@ -521,7 +533,7 @@ rules
 config.listener.v3.ListenerFilter
 ---------------------------------
 
-:repo:`[config.listener.v3.ListenerFilter proto] <api/envoy/config/listener/v3/listener_components.proto#L327>`
+:repo:`[config.listener.v3.ListenerFilter proto] <api/envoy/config/listener/v3/listener_components.proto#L335>`
 
 
 .. code-block:: json
