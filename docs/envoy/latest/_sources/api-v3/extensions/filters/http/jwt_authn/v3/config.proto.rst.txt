@@ -80,6 +80,7 @@ Example:
     "from_headers": [],
     "from_params": [],
     "forward_payload_header": "...",
+    "pad_forward_payload_header": "...",
     "payload_in_metadata": "...",
     "clock_skew_seconds": "..."
   }
@@ -244,6 +245,18 @@ forward_payload_header
   If it is not specified, the payload will not be forwarded.
   
   
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtProvider.pad_forward_payload_header:
+
+pad_forward_payload_header
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) When :ref:`forward_payload_header <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtProvider.forward_payload_header>`
+  is specified, the base64 encoded payload will be added to the headers.
+  Normally JWT based64 encode doesn't add padding. If this field is true,
+  the header will be padded.
+  
+  This field is only relevant if :ref:`forward_payload_header <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtProvider.forward_payload_header>`
+  is specified.
+  
+  
 .. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtProvider.payload_in_metadata:
 
 payload_in_metadata
@@ -279,7 +292,7 @@ clock_skew_seconds
 extensions.filters.http.jwt_authn.v3.RemoteJwks
 -----------------------------------------------
 
-:repo:`[extensions.filters.http.jwt_authn.v3.RemoteJwks proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L216>`
+:repo:`[extensions.filters.http.jwt_authn.v3.RemoteJwks proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L225>`
 
 This message specifies how to fetch JWKS from remote and how to cache it.
 
@@ -339,7 +352,7 @@ async_fetch
 extensions.filters.http.jwt_authn.v3.JwksAsyncFetch
 ---------------------------------------------------
 
-:repo:`[extensions.filters.http.jwt_authn.v3.JwksAsyncFetch proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L257>`
+:repo:`[extensions.filters.http.jwt_authn.v3.JwksAsyncFetch proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L266>`
 
 Fetch Jwks asynchronously in the main thread when the filter config is parsed.
 The listener is activated only after the Jwks is fetched.
@@ -368,7 +381,7 @@ fast_listener
 extensions.filters.http.jwt_authn.v3.JwtHeader
 ----------------------------------------------
 
-:repo:`[extensions.filters.http.jwt_authn.v3.JwtHeader proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L266>`
+:repo:`[extensions.filters.http.jwt_authn.v3.JwtHeader proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L275>`
 
 This message specifies a header location to extract JWT token.
 
@@ -400,7 +413,7 @@ value_prefix
 extensions.filters.http.jwt_authn.v3.ProviderWithAudiences
 ----------------------------------------------------------
 
-:repo:`[extensions.filters.http.jwt_authn.v3.ProviderWithAudiences proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L282>`
+:repo:`[extensions.filters.http.jwt_authn.v3.ProviderWithAudiences proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L291>`
 
 Specify a required provider with audiences.
 
@@ -430,7 +443,7 @@ audiences
 extensions.filters.http.jwt_authn.v3.JwtRequirement
 ---------------------------------------------------
 
-:repo:`[extensions.filters.http.jwt_authn.v3.JwtRequirement proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L350>`
+:repo:`[extensions.filters.http.jwt_authn.v3.JwtRequirement proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L359>`
 
 This message specifies a Jwt requirement. An empty message means JWT verification is not
 required. Here are some config examples:
@@ -569,7 +582,7 @@ allow_missing
 extensions.filters.http.jwt_authn.v3.JwtRequirementOrList
 ---------------------------------------------------------
 
-:repo:`[extensions.filters.http.jwt_authn.v3.JwtRequirementOrList proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L385>`
+:repo:`[extensions.filters.http.jwt_authn.v3.JwtRequirementOrList proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L394>`
 
 This message specifies a list of RequiredProvider.
 Their results are OR-ed; if any one of them passes, the result is passed
@@ -593,7 +606,7 @@ requirements
 extensions.filters.http.jwt_authn.v3.JwtRequirementAndList
 ----------------------------------------------------------
 
-:repo:`[extensions.filters.http.jwt_authn.v3.JwtRequirementAndList proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L395>`
+:repo:`[extensions.filters.http.jwt_authn.v3.JwtRequirementAndList proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L404>`
 
 This message specifies a list of RequiredProvider.
 Their results are AND-ed; all of them must pass, if one of them fails or missing, it fails.
@@ -617,7 +630,7 @@ requirements
 extensions.filters.http.jwt_authn.v3.RequirementRule
 ----------------------------------------------------
 
-:repo:`[extensions.filters.http.jwt_authn.v3.RequirementRule proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L424>`
+:repo:`[extensions.filters.http.jwt_authn.v3.RequirementRule proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L433>`
 
 This message specifies a Jwt requirement for a specific Route condition.
 Example 1:
@@ -696,7 +709,7 @@ requirement_name
 extensions.filters.http.jwt_authn.v3.FilterStateRule
 ----------------------------------------------------
 
-:repo:`[extensions.filters.http.jwt_authn.v3.FilterStateRule proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L471>`
+:repo:`[extensions.filters.http.jwt_authn.v3.FilterStateRule proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L480>`
 
 This message specifies Jwt requirements based on stream_info.filterState.
 This FilterState should use `Router::StringAccessor` object to set a string value.
@@ -743,7 +756,7 @@ requires
 extensions.filters.http.jwt_authn.v3.JwtAuthentication
 ------------------------------------------------------
 
-:repo:`[extensions.filters.http.jwt_authn.v3.JwtAuthentication proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L526>`
+:repo:`[extensions.filters.http.jwt_authn.v3.JwtAuthentication proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L535>`
 
 This is the Envoy HTTP filter config for JWT authentication.
 
@@ -890,7 +903,7 @@ requirement_map
 extensions.filters.http.jwt_authn.v3.PerRouteConfig
 ---------------------------------------------------
 
-:repo:`[extensions.filters.http.jwt_authn.v3.PerRouteConfig proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L601>`
+:repo:`[extensions.filters.http.jwt_authn.v3.PerRouteConfig proto] <api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L610>`
 
 Specify per-route config.
 
