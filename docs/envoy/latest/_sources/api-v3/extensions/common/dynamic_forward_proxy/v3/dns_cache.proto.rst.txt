@@ -60,7 +60,8 @@ Configuration for the dynamic forward proxy DNS cache. See the :ref:`architectur
     "dns_cache_circuit_breaker": "{...}",
     "use_tcp_for_dns_lookups": "...",
     "dns_resolution_config": "{...}",
-    "preresolve_hostnames": []
+    "preresolve_hostnames": [],
+    "dns_query_timeout": "{...}"
   }
 
 .. _envoy_v3_api_field_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig.name:
@@ -162,6 +163,15 @@ preresolve_hostnames
   (**repeated** :ref:`config.core.v3.SocketAddress <envoy_v3_api_msg_config.core.v3.SocketAddress>`) Hostnames that should be preresolved into the cache upon creation. This might provide a
   performance improvement, in the form of cache hits, for hostnames that are going to be
   resolved during steady state and are known at config load time.
+  
+  
+.. _envoy_v3_api_field_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig.dns_query_timeout:
+
+dns_query_timeout
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The timeout used for DNS queries. This timeout is independent of any timeout and retry policy
+  used by the underlying DNS implementation (e.g., c-areas and Apple DNS) which are opaque.
+  Setting this timeout will ensure that queries succeed or fail within the specified time frame
+  and are then retried using the standard refresh rates. Defaults to 5s if not set.
   
   
 
