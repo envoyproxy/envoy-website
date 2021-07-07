@@ -4,10 +4,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>xDS configuration API overview &mdash; envoy 1.19.0-dev-fe8f22 documentation</title>
+  <title>xDS configuration API overview &mdash; envoy 1.19.0-dev-45c1fe documentation</title>
   
 
   
@@ -75,7 +76,7 @@
             
             
               <div class="version">
-                1.19.0-dev-fe8f22
+                1.19.0-dev-45c1fe
               </div>
             
           
@@ -210,7 +211,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="xds-configuration-api-overview">
+  <section id="xds-configuration-api-overview">
 <span id="arch-overview-dynamic-config"></span><h1>xDS configuration API overview<a class="headerlink" href="#xds-configuration-api-overview" title="Permalink to this headline">¶</a></h1>
 <p>Envoy is architected such that different types of configuration management approaches are possible.
 The approach taken in a deployment will be dependent on the needs of the implementor. Simple
@@ -225,23 +226,23 @@ overview of the options currently available.</p>
 <li><p>Envoy <a class="reference internal" href="../../../configuration/overview/overview.html#config-overview"><span class="std std-ref">v3 API overview</span></a>.</p></li>
 <li><p><a class="reference internal" href="../../../configuration/overview/xds_api.html#config-overview-management-server"><span class="std std-ref">xDS API endpoints</span></a>.</p></li>
 </ul>
-<div class="section" id="fully-static">
+<section id="fully-static">
 <h2>Fully static<a class="headerlink" href="#fully-static" title="Permalink to this headline">¶</a></h2>
 <p>In a fully static configuration, the implementor provides a set of <a class="reference internal" href="../../../configuration/listeners/listeners.html#config-listeners"><span class="std std-ref">listeners</span></a> (and <a class="reference internal" href="../../../api-v3/config/listener/v3/listener_components.proto.html#envoy-v3-api-msg-config-listener-v3-filter"><span class="std std-ref">filter chains</span></a>), <a class="reference internal" href="../../../configuration/upstream/cluster_manager/cluster_manager.html#config-cluster-manager"><span class="std std-ref">clusters</span></a>, etc. Dynamic host discovery is only possible via DNS based
 <a class="reference internal" href="../upstream/service_discovery.html#arch-overview-service-discovery"><span class="std std-ref">service discovery</span></a>. Configuration reloads must take place
 via the built in <a class="reference internal" href="hot_restart.html#arch-overview-hot-restart"><span class="std std-ref">hot restart</span></a> mechanism.</p>
 <p>Though simplistic, fairly complicated deployments can be created using static configurations and
 graceful hot restarts.</p>
-</div>
-<div class="section" id="eds">
+</section>
+<section id="eds">
 <span id="arch-overview-dynamic-config-eds"></span><h2>EDS<a class="headerlink" href="#eds" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="../upstream/service_discovery.html#arch-overview-service-discovery-types-eds"><span class="std std-ref">Endpoint Discovery Service (EDS) API</span></a> provides
 a more advanced mechanism by which Envoy can discover members of an upstream cluster. Layered on top
 of a static configuration, EDS allows an Envoy deployment to circumvent the limitations of DNS
 (maximum records in a response, etc.) as well as consume more information used in load balancing and
 routing (e.g., canary status, zone, etc.).</p>
-</div>
-<div class="section" id="cds">
+</section>
+<section id="cds">
 <span id="arch-overview-dynamic-config-cds"></span><h2>CDS<a class="headerlink" href="#cds" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="../../../configuration/upstream/cluster_manager/cds.html#config-cluster-manager-cds"><span class="std std-ref">Cluster Discovery Service (CDS) API</span></a> layers on a mechanism by
 which Envoy can discover upstream clusters used during routing. Envoy will gracefully add, update,
@@ -255,8 +256,8 @@ still using the EDS API for clusters specified via CDS. Internally, when a clust
 updated, the operation is graceful. However, all existing connection pools will be drained and
 reconnected. EDS does not suffer from this limitation. When hosts are added and removed via EDS, the
 existing hosts in the cluster are unaffected.</p>
-</div>
-<div class="section" id="rds">
+</section>
+<section id="rds">
 <span id="arch-overview-dynamic-config-rds"></span><h2>RDS<a class="headerlink" href="#rds" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="../../../configuration/http/http_conn_man/rds.html#config-http-conn-man-rds"><span class="std std-ref">Route Discovery Service (RDS) API</span></a> layers on a mechanism by
 which Envoy can discover the entire route configuration for an HTTP connection manager filter at
@@ -264,21 +265,21 @@ runtime. The route configuration will be gracefully swapped in without affecting
 This API, when used alongside EDS and CDS, allows implementors to build a complex routing topology
 (<a class="reference internal" href="../../../configuration/http/http_conn_man/traffic_splitting.html#config-http-conn-man-route-table-traffic-splitting"><span class="std std-ref">traffic shifting</span></a>, blue/green
 deployment, etc).</p>
-</div>
-<div class="section" id="vhds">
+</section>
+<section id="vhds">
 <h2>VHDS<a class="headerlink" href="#vhds" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="../../../configuration/http/http_conn_man/vhds.html#config-http-conn-man-vhds"><span class="std std-ref">Virtual Host Discovery Service</span></a> allows the virtual hosts belonging
 to a route configuration to be requested as needed separately from the route configuration itself. This
 API is typically used in deployments in which there are a large number of virtual hosts in a route
 configuration.</p>
-</div>
-<div class="section" id="srds">
+</section>
+<section id="srds">
 <h2>SRDS<a class="headerlink" href="#srds" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="../http/http_routing.html#arch-overview-http-routing-route-scope"><span class="std std-ref">Scoped Route Discovery Service (SRDS) API</span></a> allows
 a route table to be broken up into multiple pieces. This API is typically used in deployments of
 HTTP routing with massive route tables in which simple linear searches are not feasible.</p>
-</div>
-<div class="section" id="lds">
+</section>
+<section id="lds">
 <span id="arch-overview-dynamic-config-lds"></span><h2>LDS<a class="headerlink" href="#lds" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="../../../configuration/listeners/lds.html#config-listeners-lds"><span class="std std-ref">Listener Discovery Service (LDS) API</span></a> layers on a mechanism by which
 Envoy can discover entire listeners at runtime. This includes all filter stacks, up to and including
@@ -286,49 +287,49 @@ HTTP filters with embedded references to <a class="reference internal" href="../
 the mix allows almost every aspect of Envoy to be dynamically configured. Hot restart should
 only be required for very rare configuration changes (admin, tracing driver, etc.), certificate
 rotation, or binary updates.</p>
-</div>
-<div class="section" id="sds">
+</section>
+<section id="sds">
 <h2>SDS<a class="headerlink" href="#sds" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="../../../configuration/security/secret.html#config-secret-discovery-service"><span class="std std-ref">Secret Discovery Service (SDS) API</span></a> layers on a mechanism
 by which Envoy can discover cryptographic secrets (certificate plus private key, TLS session
 ticket keys) for its listeners, as well as configuration of peer certificate validation logic
 (trusted root certs, revocations, etc).</p>
-</div>
-<div class="section" id="rtds">
+</section>
+<section id="rtds">
 <h2>RTDS<a class="headerlink" href="#rtds" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="../../../configuration/operations/runtime.html#config-runtime-rtds"><span class="std std-ref">RunTime Discovery Service (RTDS) API</span></a> allows
 <a class="reference internal" href="../../../configuration/operations/runtime.html#config-runtime"><span class="std std-ref">runtime</span></a> layers to be fetched via an xDS API. This may be favorable to,
 or augmented by, file system layers.</p>
-</div>
-<div class="section" id="ecds">
+</section>
+<section id="ecds">
 <h2>ECDS<a class="headerlink" href="#ecds" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="../../../configuration/overview/extension.html#config-overview-extension-discovery"><span class="std std-ref">Extension Config Discovery Service (ECDS) API</span></a>
 allows extension configurations (e.g. HTTP filter configuration) to be served independently from
 the listener. This is useful when building systems that are more appropriately split from the
 primary control plane such as WAF, fault testing, etc.</p>
-</div>
-<div class="section" id="aggregated-xds-ads">
+</section>
+<section id="aggregated-xds-ads">
 <h2>Aggregated xDS (“ADS”)<a class="headerlink" href="#aggregated-xds-ads" title="Permalink to this headline">¶</a></h2>
 <p>EDS, CDS, etc. are each separate services, with different REST/gRPC service names, e.g.
 StreamListeners, StreamSecrets. For users looking to enforce the order in which resources of
 different types reach Envoy, there is aggregated xDS, a single gRPC service that carries all
 resource types in a single gRPC stream. (ADS is only supported by gRPC).
 <a class="reference internal" href="../../../configuration/overview/xds_api.html#config-overview-ads"><span class="std std-ref">More details about ADS</span></a>.</p>
-</div>
-<div class="section" id="delta-grpc-xds">
+</section>
+<section id="delta-grpc-xds">
 <span id="arch-overview-dynamic-config-delta"></span><h2>Delta gRPC xDS<a class="headerlink" href="#delta-grpc-xds" title="Permalink to this headline">¶</a></h2>
 <p>Standard xDS is “state-of-the-world”: every update must contain every resource, with the absence of
 a resource from an update implying that the resource is gone. Envoy supports a “delta” variant of
 xDS (including ADS), where updates only contain resources added/changed/removed. Delta xDS is a
 new protocol, with request/response APIs different from SotW.
 <a class="reference internal" href="../../../configuration/overview/xds_api.html#config-overview-delta"><span class="std std-ref">More details about delta</span></a>.</p>
-</div>
-<div class="section" id="xds-ttl">
+</section>
+<section id="xds-ttl">
 <h2>xDS TTL<a class="headerlink" href="#xds-ttl" title="Permalink to this headline">¶</a></h2>
 <p>Certain xDS updates might want to set a TTL to guard against control plane unavailability, read more
 <a class="reference internal" href="../../../configuration/overview/xds_api.html#config-overview-ttl"><span class="std std-ref">here</span></a>.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

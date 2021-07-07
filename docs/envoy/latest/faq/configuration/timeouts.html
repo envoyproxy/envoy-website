@@ -4,10 +4,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>How do I configure timeouts? &mdash; envoy 1.19.0-dev-fe8f22 documentation</title>
+  <title>How do I configure timeouts? &mdash; envoy 1.19.0-dev-45c1fe documentation</title>
   
 
   
@@ -75,7 +76,7 @@
             
             
               <div class="version">
-                1.19.0-dev-fe8f22
+                1.19.0-dev-45c1fe
               </div>
             
           
@@ -206,7 +207,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="how-do-i-configure-timeouts">
+  <section id="how-do-i-configure-timeouts">
 <span id="faq-configuration-timeouts"></span><h1>How do I configure timeouts?<a class="headerlink" href="#how-do-i-configure-timeouts" title="Permalink to this headline">¶</a></h1>
 <p>Envoy supports a wide range of timeouts that may need to be configured depending on the deployment.
 This page summarizes the most important timeouts used in various scenarios.</p>
@@ -215,9 +216,9 @@ This page summarizes the most important timeouts used in various scenarios.</p>
 <p>This is not an exhaustive list of all of the configurable timeouts that Envoy supports. Depending
 on the deployment additional configuration may be required.</p>
 </div>
-<div class="section" id="http-grpc">
+<section id="http-grpc">
 <h2>HTTP/gRPC<a class="headerlink" href="#http-grpc" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="connection-timeouts">
+<section id="connection-timeouts">
 <h3>Connection timeouts<a class="headerlink" href="#connection-timeouts" title="Permalink to this headline">¶</a></h3>
 <p>Connection timeouts apply to the entire HTTP connection and all streams the connection carries.</p>
 <ul class="simple">
@@ -232,8 +233,8 @@ connections use the
 <a class="reference internal" href="../../api-v3/extensions/upstreams/http/v3/http_protocol_options.proto.html#envoy-v3-api-field-extensions-upstreams-http-v3-httpprotocoloptions-common-http-protocol-options"><span class="std std-ref">common_http_protocol_options</span></a> field in the Cluster’s <a class="reference internal" href="../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-typed-extension-protocol-options"><span class="std std-ref">extension_protocol_options</span></a>, keyed by <cite>envoy.extensions.upstreams.http.v3.HttpProtocolOptions</cite></p></li>
 </ul>
 <p>See <a class="reference internal" href="#faq-configuration-timeouts-transport-socket"><span class="std std-ref">below</span></a> for other connection timeouts.</p>
-</div>
-<div class="section" id="stream-timeouts">
+</section>
+<section id="stream-timeouts">
 <h3>Stream timeouts<a class="headerlink" href="#stream-timeouts" title="Permalink to this headline">¶</a></h3>
 <p>Stream timeouts apply to individual streams carried by an HTTP connection. Note that a stream is
 an HTTP/2 and HTTP/3 concept, however internally Envoy maps HTTP/1 requests to streams so in this
@@ -267,8 +268,8 @@ HTTP request/response streams periodically. You can’t use <a class="reference 
 in this situation because this timer will be disarmed if a response header is received on the request/response streams.
 This timeout is available on both upstream and downstream connections.</p></li>
 </ul>
-</div>
-<div class="section" id="route-timeouts">
+</section>
+<section id="route-timeouts">
 <h3>Route timeouts<a class="headerlink" href="#route-timeouts" title="Permalink to this headline">¶</a></h3>
 <p>Envoy supports additional stream timeouts at the route level, as well as overriding some of the
 stream timeouts already introduced above.</p>
@@ -297,8 +298,8 @@ can be used to override the HttpConnectionManager’s
 <a class="reference internal" href="../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-httpprotocoloptions-max-stream-duration"><span class="std std-ref">max_stream_duration</span></a>
 for individual routes as well as setting both limits and a fixed time offset on grpc-timeout headers.</p></li>
 </ul>
-</div>
-<div class="section" id="scaled-timeouts">
+</section>
+<section id="scaled-timeouts">
 <h3>Scaled timeouts<a class="headerlink" href="#scaled-timeouts" title="Permalink to this headline">¶</a></h3>
 <p>In situations where envoy is under high load, Envoy can dynamically configure timeouts using scaled timeouts.
 Envoy supports scaled timeouts through the <a class="reference internal" href="../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-msg-config-overload-v3-overloadmanager"><span class="std std-ref">Overload Manager</span></a>, configured
@@ -310,9 +311,9 @@ and set the scaled TimerType to <a class="reference internal" href="../../api-v3
 The overload manager will scale down the <a class="reference internal" href="../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-httpprotocoloptions-idle-timeout"><span class="std std-ref">idle timeout</span></a> once the <a class="reference internal" href="../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-field-config-overload-v3-scaledtrigger-scaling-threshold"><span class="std std-ref">scaling_threshold</span></a> has been met
 and will set the timeout to the <a class="reference internal" href="../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-field-config-overload-v3-scaletimersoverloadactionconfig-scaletimer-min-timeout"><span class="std std-ref">min timeout</span></a> once the <a class="reference internal" href="../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-field-config-overload-v3-scaledtrigger-scaling-threshold"><span class="std std-ref">scaling_threshold</span></a> is met.
 The full list of supported timers that can be scaled is available in the overload manager <a class="reference internal" href="../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-enum-config-overload-v3-scaletimersoverloadactionconfig-timertype"><span class="std std-ref">docs</span></a>.</p>
-</div>
-</div>
-<div class="section" id="tcp">
+</section>
+</section>
+<section id="tcp">
 <h2>TCP<a class="headerlink" href="#tcp" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p>The cluster <a class="reference internal" href="../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-connect-timeout"><span class="std std-ref">connect_timeout</span></a> specifies the amount
@@ -328,8 +329,8 @@ connections, see <a class="reference internal" href="#faq-configuration-timeouts
 is the amount of time that the TCP proxy will allow a connection to exist with no upstream
 or downstream activity. The default idle timeout if not otherwise specified is <em>1 hour</em>.</p></li>
 </ul>
-</div>
-<div class="section" id="transport-socket">
+</section>
+<section id="transport-socket">
 <span id="faq-configuration-timeouts-transport-socket"></span><h2>Transport Socket<a class="headerlink" href="#transport-socket" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>The <a class="reference internal" href="../../api-v3/config/listener/v3/listener_components.proto.html#envoy-v3-api-field-config-listener-v3-filterchain-transport-socket-connect-timeout"><span class="std std-ref">transport_socket_connect_timeout</span></a>
@@ -337,8 +338,8 @@ specifies the amount of time Envoy will wait for a downstream client to complete
 negotiations. When configured on a filter chain with a TLS or ALTS transport socket, this limits
 the amount of time allowed to finish the encrypted handshake after establishing a TCP connection.</p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

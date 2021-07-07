@@ -4,10 +4,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Double proxy (with mTLS encryption) &mdash; envoy 1.19.0-dev-fe8f22 documentation</title>
+  <title>Double proxy (with mTLS encryption) &mdash; envoy 1.19.0-dev-45c1fe documentation</title>
   
 
   
@@ -75,7 +76,7 @@
             
             
               <div class="version">
-                1.19.0-dev-fe8f22
+                1.19.0-dev-45c1fe
               </div>
             
           
@@ -227,9 +228,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="double-proxy-with-mtls-encryption">
+  <section id="double-proxy-with-mtls-encryption">
 <span id="install-sandboxes-double-proxy"></span><h1>Double proxy (with <code class="docutils literal notranslate"><span class="pre">mTLS</span></code> encryption)<a class="headerlink" href="#double-proxy-with-mtls-encryption" title="Permalink to this headline">¶</a></h1>
-<div class="sidebar">
+<aside class="sidebar">
 <p class="sidebar-title">Requirements</p>
 <dl class="simple">
 <dt><a class="reference internal" href="setup.html#start-sandboxes-setup"><span class="std std-ref">Sandbox environment</span></a></dt><dd><p>Setup your sandbox environment with Docker and Docker Compose,
@@ -240,7 +241,7 @@ and clone the Envoy repository with Git.</p>
 <dt><a class="reference internal" href="setup.html#start-sandboxes-setup-openssl"><span class="std std-ref">openssl</span></a></dt><dd><p>Generate <code class="docutils literal notranslate"><span class="pre">SSL</span></code> keys and certificates.</p>
 </dd>
 </dl>
-</div>
+</aside>
 <p>This sandbox demonstrates a basic “double proxy” configuration, in which a simple Flask app
 connects to a PostgreSQL database, with two Envoy proxies in between.</p>
 <p><code class="docutils literal notranslate"><span class="pre">Envoy</span> <span class="pre">(front)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Flask</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Envoy</span> <span class="pre">(postgres-front)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Envoy</span> <span class="pre">(postgres-back)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">PostgreSQL</span></code></p>
@@ -256,7 +257,7 @@ using <code class="docutils literal notranslate"><span class="pre">mTLS</span></
 <p>This example walks through creating a certificate authority, and using it to create a domain key and sign
 certificates for the proxies.</p>
 <p>Change to the <code class="docutils literal notranslate"><span class="pre">examples/double-proxy</span></code> directory.</p>
-<div class="section" id="step-1-create-a-certificate-authority">
+<section id="step-1-create-a-certificate-authority">
 <h2>Step 1: Create a certificate authority<a class="headerlink" href="#step-1-create-a-certificate-authority" title="Permalink to this headline">¶</a></h2>
 <p>First create a key for the certificate authority:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">pwd</span>
@@ -290,8 +291,8 @@ certificates for the proxies.</p>
 <span class="go">Email Address []:</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="step-2-create-a-domain-key">
+</section>
+<section id="step-2-create-a-domain-key">
 <h2>Step 2: Create a domain key<a class="headerlink" href="#step-2-create-a-domain-key" title="Permalink to this headline">¶</a></h2>
 <p>Create a key for the example domain:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openssl genrsa -out certs/example.com.key <span class="m">2048</span>
@@ -301,8 +302,8 @@ certificates for the proxies.</p>
 <span class="go">e is 65537 (0x010001)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="step-3-generate-certificate-signing-requests-for-the-proxies">
+</section>
+<section id="step-3-generate-certificate-signing-requests-for-the-proxies">
 <h2>Step 3: Generate certificate signing requests for the proxies<a class="headerlink" href="#step-3-generate-certificate-signing-requests-for-the-proxies" title="Permalink to this headline">¶</a></h2>
 <p>Use the domain key to generate certificate signing requests for each of the proxies:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openssl req -new -sha256 <span class="se">\</span>
@@ -315,8 +316,8 @@ certificates for the proxies.</p>
 <span class="go">     -out certs/proxy-postgres-backend.example.com.csr</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="step-4-sign-the-proxy-certificates">
+</section>
+<section id="step-4-sign-the-proxy-certificates">
 <h2>Step 4: Sign the proxy certificates<a class="headerlink" href="#step-4-sign-the-proxy-certificates" title="Permalink to this headline">¶</a></h2>
 <p>You can now use the certificate authority that you created to sign the certificate requests.</p>
 <p>Note the <code class="docutils literal notranslate"><span class="pre">subjectAltName</span></code>. This is used for reciprocally matching and validating the certificates.</p>
@@ -350,8 +351,8 @@ certificates for the proxies.</p>
 <p>At this point you should have the necessary keys and certificates to secure the connection between
 the proxies.</p>
 <p>The keys and certificates are stored in the <code class="docutils literal notranslate"><span class="pre">certs/</span></code> directory.</p>
-</div>
-<div class="section" id="step-5-start-all-of-our-containers">
+</section>
+<section id="step-5-start-all-of-our-containers">
 <h2>Step 5: Start all of our containers<a class="headerlink" href="#step-5-start-all-of-our-containers" title="Permalink to this headline">¶</a></h2>
 <p>Build and start the containers.</p>
 <p>This will load the required keys and certificates into the frontend and backend proxies.</p>
@@ -370,8 +371,8 @@ the proxies.</p>
 <span class="go">double-proxy_proxy-postgres-frontend_1   /docker-entrypoint.sh /usr ... Up      10000/tcp</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="step-6-check-the-flask-app-can-connect-to-the-database">
+</section>
+<section id="step-6-check-the-flask-app-can-connect-to-the-database">
 <h2>Step 6: Check the flask app can connect to the database<a class="headerlink" href="#step-6-check-the-flask-app-can-connect-to-the-database" title="Permalink to this headline">¶</a></h2>
 <p>Checking the response at <a class="reference external" href="http://localhost:10000">http://localhost:10000</a>, you should see the output from the Flask app:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl -s http://localhost:10000
@@ -387,8 +388,8 @@ the proxies.</p>
 </dd>
 </dl>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

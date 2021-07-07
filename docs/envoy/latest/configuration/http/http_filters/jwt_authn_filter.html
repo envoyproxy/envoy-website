@@ -4,10 +4,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>JWT Authentication &mdash; envoy 1.19.0-dev-fe8f22 documentation</title>
+  <title>JWT Authentication &mdash; envoy 1.19.0-dev-45c1fe documentation</title>
   
 
   
@@ -75,7 +76,7 @@
             
             
               <div class="version">
-                1.19.0-dev-fe8f22
+                1.19.0-dev-45c1fe
               </div>
             
           
@@ -241,7 +242,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="jwt-authentication">
+  <section id="jwt-authentication">
 <span id="config-http-filters-jwt-authn"></span><h1>JWT Authentication<a class="headerlink" href="#jwt-authentication" title="Permalink to this headline">¶</a></h1>
 <p>This HTTP filter can be used to verify JSON Web Token (JWT). It will verify its signature, audiences and issuer. It will also check its time restrictions, such as expiration and nbf (not before) time. If the JWT verification fails, its request will be rejected. If the JWT verification succeeds, its payload can be forwarded to the upstream for further authorization if desired.</p>
 <p>JWKS is needed to verify JWT signatures. They can be specified in the filter config or can be fetched remotely from a JWKS server.</p>
@@ -253,7 +254,7 @@
 <span class="n">EdDSA</span>
 </pre></div>
 </div>
-<div class="section" id="configuration">
+<section id="configuration">
 <h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
 <p>This filter should be configured with the name <em>envoy.filters.http.jwt_authn</em>.</p>
 <p>This HTTP <a class="reference internal" href="../../../api-v3/extensions/filters/http/jwt_authn/v3/config.proto.html#envoy-v3-api-msg-extensions-filters-http-jwt-authn-v3-jwtauthentication"><span class="std std-ref">filter config</span></a> has two fields:</p>
@@ -261,7 +262,7 @@
 <li><p>Field <em>providers</em> specifies how a JWT should be verified, such as where to extract the token, where to fetch the public key (JWKS) and where to output its payload.</p></li>
 <li><p>Field <em>rules</em> specifies matching rules and their requirements. If a request matches a rule, its requirement applies. The requirement specifies which JWT providers should be used.</p></li>
 </ul>
-<div class="section" id="jwtprovider">
+<section id="jwtprovider">
 <h3>JwtProvider<a class="headerlink" href="#jwtprovider" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference internal" href="../../../api-v3/extensions/filters/http/jwt_authn/v3/config.proto.html#envoy-v3-api-msg-extensions-filters-http-jwt-authn-v3-jwtprovider"><span class="std std-ref">JwtProvider</span></a> specifies how a JWT should be verified. It has the following fields:</p>
 <ul class="simple">
@@ -275,8 +276,8 @@ If not specified, the audiences in JWT will not be checked.</p></li>
 <li><p><em>from_params</em>: extract JWT from query parameters.</p></li>
 <li><p><em>forward_payload_header</em>: forward the JWT payload in the specified HTTP header.</p></li>
 </ul>
-</div>
-<div class="section" id="default-extract-location">
+</section>
+<section id="default-extract-location">
 <h3>Default Extract Location<a class="headerlink" href="#default-extract-location" title="Permalink to this headline">¶</a></h3>
 <p>If <em>from_headers</em> and <em>from_params</em> is empty, the default location to extract JWT is from HTTP header:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Authorization</span><span class="p">:</span> <span class="n">Bearer</span> <span class="o">&lt;</span><span class="n">token</span><span class="o">&gt;</span>
@@ -293,8 +294,8 @@ If not specified, the audiences in JWT will not be checked.</p></li>
 <p>For <em>remote_jwks</em>, a <strong>jwks_cluster</strong> cluster is required.</p>
 </div>
 <p>Due to above requirement, <a class="reference external" href="https://openid.net/specs/openid-connect-discovery-1_0.html">OpenID Connect Discovery</a> is not supported since the URL to fetch JWKS is in the response of the discovery. It is not easy to setup a cluster config for a dynamic URL.</p>
-</div>
-<div class="section" id="remote-jwks-config-example">
+</section>
+<section id="remote-jwks-config-example">
 <h3>Remote JWKS config example<a class="headerlink" href="#remote-jwks-config-example" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">providers</span><span class="p">:</span>
   <span class="nt">provider_name1</span><span class="p">:</span>
@@ -329,8 +330,8 @@ If not specified, the audiences in JWT will not be checked.</p></li>
     <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.tls</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="inline-jwks-config-example">
+</section>
+<section id="inline-jwks-config-example">
 <h3>Inline JWKS config example<a class="headerlink" href="#inline-jwks-config-example" title="Permalink to this headline">¶</a></h3>
 <p>Another config example using inline JWKS:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">providers</span><span class="p">:</span>
@@ -352,8 +353,8 @@ If not specified, the audiences in JWT will not be checked.</p></li>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="o">-</span><span class="n">jwt</span><span class="o">-</span><span class="n">payload</span><span class="p">:</span> <span class="n">base64url_encoded</span><span class="p">(</span><span class="n">jwt_payload_in_JSON</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="requirementrule">
+</section>
+<section id="requirementrule">
 <h3>RequirementRule<a class="headerlink" href="#requirementrule" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference internal" href="../../../api-v3/extensions/filters/http/jwt_authn/v3/config.proto.html#envoy-v3-api-msg-extensions-filters-http-jwt-authn-v3-requirementrule"><span class="std std-ref">RequirementRule</span></a> has two fields:</p>
 <ul class="simple">
@@ -368,8 +369,8 @@ If not specified, the audiences in JWT will not be checked.</p></li>
 <li><p>If a request doesn’t match any rules, <strong>JWT verification is not required</strong>.</p></li>
 </ul>
 </div>
-</div>
-<div class="section" id="single-requirement-config-example">
+</section>
+<section id="single-requirement-config-example">
 <h3>Single requirement config example<a class="headerlink" href="#single-requirement-config-example" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">providers</span><span class="p">:</span>
   <span class="nt">jwt_provider1</span><span class="p">:</span>
@@ -395,8 +396,8 @@ If not specified, the audiences in JWT will not be checked.</p></li>
 </pre></div>
 </div>
 <p>Above config uses single requirement rule, each rule may have either an empty requirement or a single requirement with one provider name.</p>
-</div>
-<div class="section" id="group-requirement-config-example">
+</section>
+<section id="group-requirement-config-example">
 <h3>Group requirement config example<a class="headerlink" href="#group-requirement-config-example" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">providers</span><span class="p">:</span>
   <span class="nt">provider1</span><span class="p">:</span>
@@ -429,9 +430,9 @@ If not specified, the audiences in JWT will not be checked.</p></li>
 <li><p>The first <em>rule</em> specifies <em>requires_any</em>; if any of <strong>provider1</strong> or <strong>provider2</strong> requirement is satisfied, the request is OK to proceed.</p></li>
 <li><p>The second <em>rule</em> specifies <em>requires_all</em>; only if both <strong>provider1</strong> and <strong>provider2</strong> requirements are satisfied, the request is OK to proceed.</p></li>
 </ul>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>

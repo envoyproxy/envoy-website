@@ -4,10 +4,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Dynamic configuration (control plane) &mdash; envoy 1.19.0-dev-fe8f22 documentation</title>
+  <title>Dynamic configuration (control plane) &mdash; envoy 1.19.0-dev-45c1fe documentation</title>
   
 
   
@@ -75,7 +76,7 @@
             
             
               <div class="version">
-                1.19.0-dev-fe8f22
+                1.19.0-dev-45c1fe
               </div>
             
           
@@ -229,9 +230,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="dynamic-configuration-control-plane">
+  <section id="dynamic-configuration-control-plane">
 <span id="install-sandboxes-dynamic-config-cp"></span><h1>Dynamic configuration (control plane)<a class="headerlink" href="#dynamic-configuration-control-plane" title="Permalink to this headline">¶</a></h1>
-<div class="sidebar">
+<aside class="sidebar">
 <p class="sidebar-title">Requirements</p>
 <dl class="simple">
 <dt><a class="reference internal" href="setup.html#start-sandboxes-setup"><span class="std std-ref">Sandbox environment</span></a></dt><dd><p>Setup your sandbox environment with Docker and Docker Compose,
@@ -242,12 +243,12 @@ and clone the Envoy repository with Git.</p>
 <dt><a class="reference internal" href="setup.html#start-sandboxes-setup-jq"><span class="std std-ref">jq</span></a></dt><dd><p>Parse <code class="docutils literal notranslate"><span class="pre">json</span></code> output from the upstream echo servers.</p>
 </dd>
 </dl>
-</div>
+</aside>
 <p>This example walks through configuring Envoy using the <a class="reference external" href="https://github.com/envoyproxy/go-control-plane">Go Control Plane</a>
 reference implementation.</p>
 <p>It demonstrates how configuration provided to Envoy persists, even when the control plane is not available,
 and provides a trivial example of how to update Envoy’s configuration dynamically.</p>
-<div class="section" id="step-1-start-the-proxy-container">
+<section id="step-1-start-the-proxy-container">
 <h2>Step 1: Start the proxy container<a class="headerlink" href="#step-1-start-the-proxy-container" title="Permalink to this headline">¶</a></h2>
 <p>Change directory to <code class="docutils literal notranslate"><span class="pre">examples/dynamic-config-cp</span></code> in the Envoy repository.</p>
 <p>First build the containers and start the <code class="docutils literal notranslate"><span class="pre">proxy</span></code> container.</p>
@@ -266,8 +267,8 @@ and provides a trivial example of how to update Envoy’s configuration dynamica
 <span class="go">dynamic-config-cp_service2_1   /bin/echo-server               Up      8080/tcp</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="step-2-check-initial-config-and-web-response">
+</section>
+<section id="step-2-check-initial-config-and-web-response">
 <h2>Step 2: Check initial config and web response<a class="headerlink" href="#step-2-check-initial-config-and-web-response" title="Permalink to this headline">¶</a></h2>
 <p>As we have not yet started the control plane, nothing should be responding on port <code class="docutils literal notranslate"><span class="pre">10000</span></code>.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl http://localhost:10000
@@ -318,8 +319,8 @@ have been configured yet:</p>
 <span class="go">null</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="step-3-start-the-control-plane">
+</section>
+<section id="step-3-start-the-control-plane">
 <h2>Step 3: Start the control plane<a class="headerlink" href="#step-3-start-the-control-plane" title="Permalink to this headline">¶</a></h2>
 <p>Start up the <code class="docutils literal notranslate"><span class="pre">go-control-plane</span></code> service.</p>
 <p>You may need to wait a moment or two for it to become <code class="docutils literal notranslate"><span class="pre">healthy</span></code>.</p>
@@ -334,8 +335,8 @@ have been configured yet:</p>
 <span class="go">dynamic-config-cp_service2_1          /bin/echo-server               Up            8080/tcp</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="step-4-query-the-proxy">
+</section>
+<section id="step-4-query-the-proxy">
 <h2>Step 4: Query the proxy<a class="headerlink" href="#step-4-query-the-proxy" title="Permalink to this headline">¶</a></h2>
 <p>Once the control plane has started and is <code class="docutils literal notranslate"><span class="pre">healthy</span></code>, you should be able to make a request to port <code class="docutils literal notranslate"><span class="pre">10000</span></code>,
 which will be served by <code class="docutils literal notranslate"><span class="pre">service1</span></code>.</p>
@@ -353,8 +354,8 @@ which will be served by <code class="docutils literal notranslate"><span class="
 <span class="go">User-Agent: curl/7.72.0</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="step-5-dump-envoy-s-dynamic-active-clusters-config">
+</section>
+<section id="step-5-dump-envoy-s-dynamic-active-clusters-config">
 <h2>Step 5: Dump Envoy’s <code class="docutils literal notranslate"><span class="pre">dynamic_active_clusters</span></code> config<a class="headerlink" href="#step-5-dump-envoy-s-dynamic-active-clusters-config" title="Permalink to this headline">¶</a></h2>
 <p>If you now dump the proxy’s <a class="reference internal" href="../../api-v3/admin/v3/config_dump.proto.html#envoy-v3-api-field-admin-v3-clustersconfigdump-dynamic-active-clusters"><span class="std std-ref">dynamic_active_clusters</span></a>
 configuration, you should see it is configured with the <code class="docutils literal notranslate"><span class="pre">example_proxy_cluster</span></code> pointing to <code class="docutils literal notranslate"><span class="pre">service1</span></code>, and a version of <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
@@ -395,8 +396,8 @@ configuration, you should see it is configured with the <code class="docutils li
 <span class="p">]</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="step-6-stop-the-control-plane">
+</section>
+<section id="step-6-stop-the-control-plane">
 <h2>Step 6: Stop the control plane<a class="headerlink" href="#step-6-stop-the-control-plane" title="Permalink to this headline">¶</a></h2>
 <p>Stop the <code class="docutils literal notranslate"><span class="pre">go-control-plane</span></code> service:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker-compose stop go-control-plane
@@ -407,8 +408,8 @@ configuration, you should see it is configured with the <code class="docutils li
 <span class="go">Request served by service1</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="step-7-edit-go-file-and-restart-the-control-plane">
+</section>
+<section id="step-7-edit-go-file-and-restart-the-control-plane">
 <h2>Step 7: Edit <code class="docutils literal notranslate"><span class="pre">go</span></code> file and restart the control plane<a class="headerlink" href="#step-7-edit-go-file-and-restart-the-control-plane" title="Permalink to this headline">¶</a></h2>
 <p>The example setup starts the <code class="docutils literal notranslate"><span class="pre">go-control-plane</span></code>
 service with a custom <a class="reference download internal" download="" href="../../_downloads/ef307e1c6786b51ee38110d4bc3a839b/resource.go"><code class="xref download docutils literal notranslate"><span class="pre">resource.go</span></code></a> file which
@@ -446,8 +447,8 @@ from <code class="docutils literal notranslate"><span class="pre">service1</span
 </pre></div>
 </div>
 <p>You may need to wait a moment or two for the <code class="docutils literal notranslate"><span class="pre">go-control-plane</span></code> service to become <code class="docutils literal notranslate"><span class="pre">healthy</span></code> again.</p>
-</div>
-<div class="section" id="step-8-check-envoy-uses-the-updated-configuration">
+</section>
+<section id="step-8-check-envoy-uses-the-updated-configuration">
 <h2>Step 8: Check Envoy uses the updated configuration<a class="headerlink" href="#step-8-check-envoy-uses-the-updated-configuration" title="Permalink to this headline">¶</a></h2>
 <p>Now when you make a request to the proxy it should be served by the <code class="docutils literal notranslate"><span class="pre">service2</span></code> upstream service.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl http://localhost:10000 <span class="p">|</span> grep <span class="s2">&quot;served by&quot;</span>
@@ -507,8 +508,8 @@ is configured to proxy to <code class="docutils literal notranslate"><span class
 </dd>
 </dl>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

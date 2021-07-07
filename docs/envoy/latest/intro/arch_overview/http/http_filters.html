@@ -4,10 +4,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>HTTP filters &mdash; envoy 1.19.0-dev-fe8f22 documentation</title>
+  <title>HTTP filters &mdash; envoy 1.19.0-dev-45c1fe documentation</title>
   
 
   
@@ -75,7 +76,7 @@
             
             
               <div class="version">
-                1.19.0-dev-fe8f22
+                1.19.0-dev-45c1fe
               </div>
             
           
@@ -210,7 +211,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="http-filters">
+  <section id="http-filters">
 <span id="arch-overview-http-filters"></span><h1>HTTP filters<a class="headerlink" href="#http-filters" title="Permalink to this headline">¶</a></h1>
 <p>Much like the <a class="reference internal" href="../listeners/network_filters.html#arch-overview-network-filters"><span class="std std-ref">network level filter</span></a> stack, Envoy supports an
 HTTP level filter stack within the connection manager. Filters can be written that operate on HTTP
@@ -234,7 +235,7 @@ themselves within the context of a single request stream. Refer to <a class="ref
 between filters</span></a> for more details. Envoy already
 includes several HTTP level filters that are documented in this architecture overview as well as
 the <a class="reference internal" href="../../../configuration/http/http_filters/http_filters.html#config-http-filters"><span class="std std-ref">configuration reference</span></a>.</p>
-<div class="section" id="filter-ordering">
+<section id="filter-ordering">
 <span id="arch-overview-http-filters-ordering"></span><h2>Filter ordering<a class="headerlink" href="#filter-ordering" title="Permalink to this headline">¶</a></h2>
 <p>Filter ordering in the <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-http-filters"><span class="std std-ref">http_filters field</span></a>
 matters. If filters are configured in the following order (and assuming all three filters are
@@ -251,31 +252,31 @@ decoder/encoder filters):</p>
 <p>The connection manager will invoke decoder filters in the order: <code class="docutils literal notranslate"><span class="pre">A</span></code>, <code class="docutils literal notranslate"><span class="pre">B</span></code>, <code class="docutils literal notranslate"><span class="pre">C</span></code>.
 On the other hand, the connection manager will invoke encoder filters in the <strong>reverse</strong>
 order: <code class="docutils literal notranslate"><span class="pre">C</span></code>, <code class="docutils literal notranslate"><span class="pre">B</span></code>, <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p>
-</div>
-<div class="section" id="conditional-filter-configuration">
+</section>
+<section id="conditional-filter-configuration">
 <h2>Conditional Filter Configuration<a class="headerlink" href="#conditional-filter-configuration" title="Permalink to this headline">¶</a></h2>
 <p>There is some support for having the filter configuration used change based on the incoming
 request. See the <a class="reference internal" href="../../../configuration/http/http_filters/composite_filter.html#config-http-filters-composite"><span class="std std-ref">composite filter</span></a> for details on how to
 configure a match tree that can resolve filter configuration to use for a given request.</p>
-</div>
-<div class="section" id="filter-route-mutation">
+</section>
+<section id="filter-route-mutation">
 <span id="arch-overview-http-filters-route-mutation"></span><h2>Filter route mutation<a class="headerlink" href="#filter-route-mutation" title="Permalink to this headline">¶</a></h2>
 <p>During HTTP filter chain processing, when <code class="docutils literal notranslate"><span class="pre">decodeHeaders()</span></code> is invoked by a filter, the
 connection manager performs route resolution and sets a <em>cached route</em> pointing to an upstream
 cluster.</p>
 <p>Filters have the capability to directly mutate this <em>cached route</em> after route resolution, via the
-<code class="docutils literal notranslate"><span class="pre">setRoute</span></code> callback and <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/fe8f2243b287feb2d6868a151e299e54c71036d3/source/common/router/delegating_route_impl.h">DelegatingRoute</a>
+<code class="docutils literal notranslate"><span class="pre">setRoute</span></code> callback and <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/45c1fe82432869499c148dab1d7c5648639eb1f1/source/common/router/delegating_route_impl.h">DelegatingRoute</a>
 mechanism. A filter may create a derived/child class of <code class="docutils literal notranslate"><span class="pre">DelegatingRoute</span></code> to override specific
 methods (for example, the route’s timeout value or the route entry’s cluster name) while preserving
 the rest of the properties/behavior of the base route that the <code class="docutils literal notranslate"><span class="pre">DelegatingRoute</span></code> wraps around.
 Then, <code class="docutils literal notranslate"><span class="pre">setRoute</span></code> can be invoked to manually set the cached route to this <code class="docutils literal notranslate"><span class="pre">DelegatingRoute</span></code>
-instance. An example of such a derived class can be found in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/fe8f2243b287feb2d6868a151e299e54c71036d3/test/test_common/delegating_route_utility.h">ExampleDerivedDelegatingRoute</a>.</p>
+instance. An example of such a derived class can be found in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/45c1fe82432869499c148dab1d7c5648639eb1f1/test/test_common/delegating_route_utility.h">ExampleDerivedDelegatingRoute</a>.</p>
 <p>If no other filters in the chain modify the cached route selection (for example, a common operation
 that filters do is <code class="docutils literal notranslate"><span class="pre">clearRouteCache()</span></code>, and <code class="docutils literal notranslate"><span class="pre">setRoute</span></code> will not survive that), this route
 selection makes it way to the router filter which finalizes the upstream cluster that the request
 will get forwarded to.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

@@ -4,10 +4,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Dynamic configuration (filesystem) &mdash; envoy 1.19.0-dev-fe8f22 documentation</title>
+  <title>Dynamic configuration (filesystem) &mdash; envoy 1.19.0-dev-45c1fe documentation</title>
   
 
   
@@ -75,7 +76,7 @@
             
             
               <div class="version">
-                1.19.0-dev-fe8f22
+                1.19.0-dev-45c1fe
               </div>
             
           
@@ -226,9 +227,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="dynamic-configuration-filesystem">
+  <section id="dynamic-configuration-filesystem">
 <span id="install-sandboxes-dynamic-config-fs"></span><h1>Dynamic configuration (filesystem)<a class="headerlink" href="#dynamic-configuration-filesystem" title="Permalink to this headline">¶</a></h1>
-<div class="sidebar">
+<aside class="sidebar">
 <p class="sidebar-title">Requirements</p>
 <dl class="simple">
 <dt><a class="reference internal" href="setup.html#start-sandboxes-setup"><span class="std std-ref">Sandbox environment</span></a></dt><dd><p>Setup your sandbox environment with Docker and Docker Compose,
@@ -239,11 +240,11 @@ and clone the Envoy repository with Git.</p>
 <dt><a class="reference internal" href="setup.html#start-sandboxes-setup-jq"><span class="std std-ref">jq</span></a></dt><dd><p>Parse <code class="docutils literal notranslate"><span class="pre">json</span></code> output from the upstream echo servers.</p>
 </dd>
 </dl>
-</div>
+</aside>
 <p>This example walks through configuring Envoy using filesystem-based dynamic configuration.</p>
 <p>It demonstrates how configuration provided to Envoy dynamically can be updated without
 restarting the server.</p>
-<div class="section" id="step-1-start-the-proxy-container">
+<section id="step-1-start-the-proxy-container">
 <h2>Step 1: Start the proxy container<a class="headerlink" href="#step-1-start-the-proxy-container" title="Permalink to this headline">¶</a></h2>
 <p>Change directory to <code class="docutils literal notranslate"><span class="pre">examples/dynamic-config-fs</span></code> in the Envoy repository.</p>
 <p>Build and start the containers.</p>
@@ -261,8 +262,8 @@ restarting the server.</p>
 <span class="go">dynamic-config-fs_service2_1   /bin/echo-server               Up      8080/tcp</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="step-2-check-web-response">
+</section>
+<section id="step-2-check-web-response">
 <h2>Step 2: Check web response<a class="headerlink" href="#step-2-check-web-response" title="Permalink to this headline">¶</a></h2>
 <p>You should be able to make a request to port <code class="docutils literal notranslate"><span class="pre">10000</span></code>, which will be served by <code class="docutils literal notranslate"><span class="pre">service1</span></code>.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl -s http://localhost:10000
@@ -278,8 +279,8 @@ restarting the server.</p>
 <span class="go">X-Envoy-Expected-Rq-Timeout-Ms: 15000</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="step-3-dump-envoy-s-dynamic-active-clusters-config">
+</section>
+<section id="step-3-dump-envoy-s-dynamic-active-clusters-config">
 <h2>Step 3: Dump Envoy’s <code class="docutils literal notranslate"><span class="pre">dynamic_active_clusters</span></code> config<a class="headerlink" href="#step-3-dump-envoy-s-dynamic-active-clusters-config" title="Permalink to this headline">¶</a></h2>
 <p>If you now dump the proxy’s <a class="reference internal" href="../../api-v3/admin/v3/config_dump.proto.html#envoy-v3-api-field-admin-v3-clustersconfigdump-dynamic-active-clusters"><span class="std std-ref">dynamic_active_clusters</span></a>
 configuration, you should see it is configured with the <code class="docutils literal notranslate"><span class="pre">example_proxy_cluster</span></code> pointing to <code class="docutils literal notranslate"><span class="pre">service1</span></code>.</p>
@@ -319,8 +320,8 @@ configuration, you should see it is configured with the <code class="docutils li
 <span class="p">]</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="step-4-edit-cds-yaml-inside-the-container-to-update-upstream-cluster">
+</section>
+<section id="step-4-edit-cds-yaml-inside-the-container-to-update-upstream-cluster">
 <h2>Step 4: Edit <code class="docutils literal notranslate"><span class="pre">cds.yaml</span></code> inside the container to update upstream cluster<a class="headerlink" href="#step-4-edit-cds-yaml-inside-the-container-to-update-upstream-cluster" title="Permalink to this headline">¶</a></h2>
 <p>The example setup provides Envoy with two dynamic configuration files:</p>
 <ul class="simple">
@@ -345,8 +346,8 @@ from <code class="docutils literal notranslate"><span class="pre">service1</span
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docker-compose exec -T proxy sed -i s/service1/service2/ /var/lib/envoy/cds.yaml</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="step-5-check-envoy-uses-updated-configuration">
+</section>
+<section id="step-5-check-envoy-uses-updated-configuration">
 <h2>Step 5: Check Envoy uses updated configuration<a class="headerlink" href="#step-5-check-envoy-uses-updated-configuration" title="Permalink to this headline">¶</a></h2>
 <p>Checking the web response again, the request should now be handled by <code class="docutils literal notranslate"><span class="pre">service2</span></code>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl http://localhost:10000 <span class="p">|</span> grep <span class="s2">&quot;served by&quot;</span>
@@ -402,8 +403,8 @@ the <code class="docutils literal notranslate"><span class="pre">example_proxy_c
 </dd>
 </dl>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

@@ -4,10 +4,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>HTTP connection management &mdash; envoy 1.19.0-dev-fe8f22 documentation</title>
+  <title>HTTP connection management &mdash; envoy 1.19.0-dev-45c1fe documentation</title>
   
 
   
@@ -75,7 +76,7 @@
             
             
               <div class="version">
-                1.19.0-dev-fe8f22
+                1.19.0-dev-45c1fe
               </div>
             
           
@@ -210,7 +211,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="http-connection-management">
+  <section id="http-connection-management">
 <span id="arch-overview-http-conn-man"></span><h1>HTTP connection management<a class="headerlink" href="#http-connection-management" title="Permalink to this headline">¶</a></h1>
 <p>HTTP is such a critical component of modern service oriented architectures that Envoy implements a
 large amount of HTTP specific functionality. Envoy has a built in network level filter called the
@@ -219,7 +220,7 @@ level messages and events (e.g., headers received, body data received, trailers 
 also handles functionality common to all HTTP connections and requests such as <a class="reference internal" href="../observability/access_logging.html#arch-overview-access-logs"><span class="std std-ref">access logging</span></a>, <a class="reference internal" href="../observability/tracing.html#arch-overview-tracing"><span class="std std-ref">request ID generation and tracing</span></a>,
 <a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers"><span class="std std-ref">request/response header manipulation</span></a>, <a class="reference internal" href="http_routing.html#arch-overview-http-routing"><span class="std std-ref">route table</span></a> management, and <a class="reference internal" href="../../../configuration/http/http_conn_man/stats.html#config-http-conn-man-stats"><span class="std std-ref">statistics</span></a>.</p>
 <p>HTTP connection manager <a class="reference internal" href="../../../configuration/http/http_conn_man/http_conn_man.html#config-http-conn-man"><span class="std std-ref">configuration</span></a>.</p>
-<div class="section" id="http-protocols">
+<section id="http-protocols">
 <span id="arch-overview-http-protocols"></span><h2>HTTP protocols<a class="headerlink" href="#http-protocols" title="Permalink to this headline">¶</a></h2>
 <p>Envoy’s HTTP connection manager has native support for HTTP/1.1, WebSockets, HTTP/2 and HTTP/3. It does not support
 SPDY. Envoy’s HTTP support was designed to first and foremost be an HTTP/2 multiplexing proxy.
@@ -229,12 +230,12 @@ protocols into a protocol agnostic form for streams, requests, responses, etc. I
 HTTP/1.1, the codec translates the serial/pipelining capabilities of the protocol into something
 that looks like HTTP/2 to higher layers. This means that the majority of the code does not need to
 understand whether a stream originated on an HTTP/1.1, HTTP/2, or HTTP/3 connection.</p>
-</div>
-<div class="section" id="http-header-sanitizing">
+</section>
+<section id="http-header-sanitizing">
 <h2>HTTP header sanitizing<a class="headerlink" href="#http-header-sanitizing" title="Permalink to this headline">¶</a></h2>
 <p>The HTTP connection manager performs various <a class="reference internal" href="../../../configuration/http/http_conn_man/header_sanitizing.html#config-http-conn-man-header-sanitizing"><span class="std std-ref">header sanitizing</span></a> actions for security reasons.</p>
-</div>
-<div class="section" id="route-table-configuration">
+</section>
+<section id="route-table-configuration">
 <h2>Route table configuration<a class="headerlink" href="#route-table-configuration" title="Permalink to this headline">¶</a></h2>
 <p>Each <a class="reference internal" href="../../../configuration/http/http_conn_man/http_conn_man.html#config-http-conn-man"><span class="std std-ref">HTTP connection manager filter</span></a> has an associated <a class="reference internal" href="http_routing.html#arch-overview-http-routing"><span class="std std-ref">route
 table</span></a>. The route table can be specified in one of two ways:</p>
@@ -242,8 +243,8 @@ table</span></a>. The route table can be specified in one of two ways:</p>
 <li><p>Statically.</p></li>
 <li><p>Dynamically via the <a class="reference internal" href="../../../configuration/http/http_conn_man/rds.html#config-http-conn-man-rds"><span class="std std-ref">RDS API</span></a>.</p></li>
 </ul>
-</div>
-<div class="section" id="retry-plugin-configuration">
+</section>
+<section id="retry-plugin-configuration">
 <span id="arch-overview-http-retry-plugins"></span><h2>Retry plugin configuration<a class="headerlink" href="#retry-plugin-configuration" title="Permalink to this headline">¶</a></h2>
 <p>Normally during retries, host selection follows the same process as the original request. Retry plugins
 can be used to modify this behavior, and they fall into two categories:</p>
@@ -327,8 +328,8 @@ previously attempted priorities.</p>
       <span class="nt">update_frequency</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="internal-redirects">
+</section>
+<section id="internal-redirects">
 <span id="arch-overview-internal-redirects"></span><h2>Internal redirects<a class="headerlink" href="#internal-redirects" title="Permalink to this headline">¶</a></h2>
 <p>Envoy supports handling 3xx redirects internally, that is capturing a configurable 3xx redirect
 response, synthesizing a new request, sending it to the upstream specified by the new route match,
@@ -399,14 +400,14 @@ Upstream 2, to fetch <em>http://baz.com/eep</em> with the additional request hea
 <li><p>Envoy proxies the response data for <em>http://baz.com/eep</em> to the client as the response to the original
 request.</p></li>
 </ol>
-</div>
-<div class="section" id="timeouts">
+</section>
+<section id="timeouts">
 <h2>Timeouts<a class="headerlink" href="#timeouts" title="Permalink to this headline">¶</a></h2>
 <p>Various configurable timeouts apply to an HTTP connection and its constituent streams. Please see
 <a class="reference internal" href="../../../faq/configuration/timeouts.html#faq-configuration-timeouts"><span class="std std-ref">this FAQ entry</span></a> for an overview of important timeout
 configuration.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

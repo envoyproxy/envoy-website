@@ -4,10 +4,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Using the Envoy Docker Image &mdash; envoy 1.19.0-dev-fe8f22 documentation</title>
+  <title>Using the Envoy Docker Image &mdash; envoy 1.19.0-dev-45c1fe documentation</title>
   
 
   
@@ -75,7 +76,7 @@
             
             
               <div class="version">
-                1.19.0-dev-fe8f22
+                1.19.0-dev-45c1fe
               </div>
             
           
@@ -197,18 +198,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="using-the-envoy-docker-image">
+  <section id="using-the-envoy-docker-image">
 <span id="start-docker"></span><h1>Using the Envoy Docker Image<a class="headerlink" href="#using-the-envoy-docker-image" title="Permalink to this headline">¶</a></h1>
 <p>The following examples use the <a class="reference internal" href="install.html#start-install-docker"><span class="std std-ref">official Envoy Docker image</span></a>.</p>
 <p>These instructions are known to work for the <code class="docutils literal notranslate"><span class="pre">x86_64</span></code> and <code class="docutils literal notranslate"><span class="pre">arm64</span></code> architectures.</p>
-<div class="section" id="running-envoy-with-docker-compose">
+<section id="running-envoy-with-docker-compose">
 <h2>Running Envoy with docker-compose<a class="headerlink" href="#running-envoy-with-docker-compose" title="Permalink to this headline">¶</a></h2>
 <p>If you would like to use Envoy with docker-compose you can overwrite the provided configuration file
 by using a volume.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span> <span class="s">&#39;3&#39;</span>
 <span class="nt">services</span><span class="p">:</span>
   <span class="nt">envoy</span><span class="p">:</span>
-    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoyproxy/envoy-dev:fe8f2243b287feb2d6868a151e299e54c71036d3</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoyproxy/envoy-dev:45c1fe82432869499c148dab1d7c5648639eb1f1</span>
     <span class="nt">ports</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="s">&quot;10000:10000&quot;</span>
     <span class="nt">volumes</span><span class="p">:</span>
@@ -218,13 +219,13 @@ by using a volume.</p>
 <p>If you use this method, you will have to ensure that the <code class="docutils literal notranslate"><span class="pre">envoy</span></code> user can read the mounted file
 either by ensuring the correct permissions on the file, or making it world-readable, as described
 below.</p>
-</div>
-<div class="section" id="build-and-run-a-docker-image">
+</section>
+<section id="build-and-run-a-docker-image">
 <h2>Build and run a Docker image<a class="headerlink" href="#build-and-run-a-docker-image" title="Permalink to this headline">¶</a></h2>
 <p>Create a simple Dockerfile to execute Envoy.</p>
 <p>If you create a custom <code class="docutils literal notranslate"><span class="pre">envoy.yaml</span></code> you can create your own Docker image with it using the following
 Dockerfile recipe:</p>
-<div class="highlight-dockerfile notranslate"><div class="highlight"><pre><span></span><span class="k">FROM</span> <span class="s">envoyproxy/envoy-dev:fe8f2243b287feb2d6868a151e299e54c71036d3</span>
+<div class="highlight-dockerfile notranslate"><div class="highlight"><pre><span></span><span class="k">FROM</span> <span class="s">envoyproxy/envoy-dev:45c1fe82432869499c148dab1d7c5648639eb1f1</span>
 <span class="k">COPY</span> envoy.yaml /etc/envoy/envoy.yaml
 <span class="k">RUN</span> chmod go+r /etc/envoy/envoy.yaml
 </pre></div>
@@ -238,29 +239,29 @@ with:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker run -d --name envoy -p <span class="m">9901</span>:9901 -p <span class="m">10000</span>:10000 envoy:v1
 </pre></div>
 </div>
-</div>
-<div class="section" id="permissions-for-running-docker-envoy-containers-as-a-non-root-user">
+</section>
+<section id="permissions-for-running-docker-envoy-containers-as-a-non-root-user">
 <h2>Permissions for running Docker Envoy containers as a non-root user<a class="headerlink" href="#permissions-for-running-docker-envoy-containers-as-a-non-root-user" title="Permalink to this headline">¶</a></h2>
 <p>By default, the Envoy Docker image will start as the root user but will switch to the <code class="docutils literal notranslate"><span class="pre">envoy</span></code>
 user created at build time, in the Docker <code class="docutils literal notranslate"><span class="pre">ENTRYPOINT</span></code>.</p>
 <p>Alternatively, you can start the container specifying the Docker <code class="docutils literal notranslate"><span class="pre">user</span></code>.</p>
 <p>In this case the container will not attempt to drop privileges, but you will still need to ensure
 that the user running inside the container has any required permissions, as described below.</p>
-<div class="section" id="changing-the-uid-and-or-gid-of-the-envoy-user-inside-the-container">
+<section id="changing-the-uid-and-or-gid-of-the-envoy-user-inside-the-container">
 <h3>Changing the <code class="docutils literal notranslate"><span class="pre">uid</span></code> and/or <code class="docutils literal notranslate"><span class="pre">gid</span></code> of the <code class="docutils literal notranslate"><span class="pre">envoy</span></code> user inside the container<a class="headerlink" href="#changing-the-uid-and-or-gid-of-the-envoy-user-inside-the-container" title="Permalink to this headline">¶</a></h3>
 <p>The default <code class="docutils literal notranslate"><span class="pre">uid</span></code> and <code class="docutils literal notranslate"><span class="pre">gid</span></code> for the <code class="docutils literal notranslate"><span class="pre">envoy</span></code> user are <code class="docutils literal notranslate"><span class="pre">101</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">uid</span></code> and <code class="docutils literal notranslate"><span class="pre">gid</span></code> of this user can be set at runtime using the <code class="docutils literal notranslate"><span class="pre">ENVOY_UID</span></code> and <code class="docutils literal notranslate"><span class="pre">ENVOY_GID</span></code>
 environment variables.</p>
 <p>This can be done, for example, on the Docker command line:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker run -d --name envoy -e <span class="nv">ENVOY_UID</span><span class="o">=</span><span class="m">777</span> -e <span class="nv">ENVOY_GID</span><span class="o">=</span><span class="m">777</span> envoyproxy/envoy-dev:fe8f2243b287feb2d6868a151e299e54c71036d3
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker run -d --name envoy -e <span class="nv">ENVOY_UID</span><span class="o">=</span><span class="m">777</span> -e <span class="nv">ENVOY_GID</span><span class="o">=</span><span class="m">777</span> envoyproxy/envoy-dev:45c1fe82432869499c148dab1d7c5648639eb1f1
 </pre></div>
 </div>
 <p>This can be useful if you wish to restrict or provide access to <code class="docutils literal notranslate"><span class="pre">unix</span></code> sockets inside the container, or
 for controlling access to an Envoy socket from outside of the container.</p>
 <p>To run the process inside  the container as the <code class="docutils literal notranslate"><span class="pre">root</span></code> user you can set <code class="docutils literal notranslate"><span class="pre">ENVOY_UID</span></code> to <code class="docutils literal notranslate"><span class="pre">0</span></code>,
 but doing so has the potential to weaken the security of your running container.</p>
-</div>
-<div class="section" id="logging-permissions-inside-the-envoy-container">
+</section>
+<section id="logging-permissions-inside-the-envoy-container">
 <h3>Logging permissions inside the Envoy container<a class="headerlink" href="#logging-permissions-inside-the-envoy-container" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">envoy</span></code> image sends application logs to <code class="docutils literal notranslate"><span class="pre">/dev/stdout</span></code> and <code class="docutils literal notranslate"><span class="pre">/dev/stderr</span></code> by default, and these
 can be viewed in the container log.</p>
@@ -270,12 +271,12 @@ by making the file writeable by the envoy user.</p>
 <p>For example, to mount a log folder from the host and make it writable, you can:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>mkdir logs
 <span class="gp">$ </span>chown <span class="m">777</span> logs
-<span class="gp">$ </span>docker run -d --name envoy -v <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/logs:/var/log -e <span class="nv">ENVOY_UID</span><span class="o">=</span><span class="m">777</span> envoyproxy/envoy-dev:fe8f2243b287feb2d6868a151e299e54c71036d3
+<span class="gp">$ </span>docker run -d --name envoy -v <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/logs:/var/log -e <span class="nv">ENVOY_UID</span><span class="o">=</span><span class="m">777</span> envoyproxy/envoy-dev:45c1fe82432869499c148dab1d7c5648639eb1f1
 </pre></div>
 </div>
 <p>You can then configure <code class="docutils literal notranslate"><span class="pre">envoy</span></code> to log to files in <code class="docutils literal notranslate"><span class="pre">/var/log</span></code></p>
-</div>
-<div class="section" id="configuration-and-binary-file-permissions-inside-the-envoy-container">
+</section>
+<section id="configuration-and-binary-file-permissions-inside-the-envoy-container">
 <h3>Configuration and binary file permissions inside the Envoy container<a class="headerlink" href="#configuration-and-binary-file-permissions-inside-the-envoy-container" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">envoy</span></code> user also needs to have permission to access any required configuration files mounted
 into the container.</p>
@@ -284,21 +285,21 @@ into the container.</p>
 with access by setting the ownership and/or permissions of the file.</p>
 <p>One method of doing this without changing any file permissions is to start the container with the
 host user’s <code class="docutils literal notranslate"><span class="pre">uid</span></code>, for example:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker run -d --name envoy -v <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/envoy.yaml:/etc/envoy/envoy.yaml -e <span class="nv">ENVOY_UID</span><span class="o">=</span><span class="k">$(</span>id -u<span class="k">)</span> envoyproxy/envoy-dev:fe8f2243b287feb2d6868a151e299e54c71036d3
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker run -d --name envoy -v <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/envoy.yaml:/etc/envoy/envoy.yaml -e <span class="nv">ENVOY_UID</span><span class="o">=</span><span class="k">$(</span>id -u<span class="k">)</span> envoyproxy/envoy-dev:45c1fe82432869499c148dab1d7c5648639eb1f1
 </pre></div>
 </div>
-</div>
-<div class="section" id="listen-only-on-ports-1024-inside-the-docker-envoy-container">
+</section>
+<section id="listen-only-on-ports-1024-inside-the-docker-envoy-container">
 <h3>Listen only on ports &gt; 1024 inside the Docker Envoy container<a class="headerlink" href="#listen-only-on-ports-1024-inside-the-docker-envoy-container" title="Permalink to this headline">¶</a></h3>
 <p>Unix-based systems restrict opening <code class="docutils literal notranslate"><span class="pre">well-known</span></code> ports (ie. with a port number &lt; <code class="docutils literal notranslate"><span class="pre">1024</span></code>) to the <code class="docutils literal notranslate"><span class="pre">root</span></code> user.</p>
 <p>If you need to listen on a <code class="docutils literal notranslate"><span class="pre">well-known</span></code> port you can use Docker to do so.</p>
 <p>For example, to create an Envoy server listening on port <code class="docutils literal notranslate"><span class="pre">8000</span></code>, with forwarding from port <code class="docutils literal notranslate"><span class="pre">80</span></code>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker run -d --name envoy -p <span class="m">80</span>:8000 envoyproxy/envoy-dev:fe8f2243b287feb2d6868a151e299e54c71036d3
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker run -d --name envoy -p <span class="m">80</span>:8000 envoyproxy/envoy-dev:45c1fe82432869499c148dab1d7c5648639eb1f1
 </pre></div>
 </div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>

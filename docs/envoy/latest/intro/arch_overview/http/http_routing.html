@@ -4,10 +4,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>HTTP routing &mdash; envoy 1.19.0-dev-fe8f22 documentation</title>
+  <title>HTTP routing &mdash; envoy 1.19.0-dev-45c1fe documentation</title>
   
 
   
@@ -75,7 +76,7 @@
             
             
               <div class="version">
-                1.19.0-dev-fe8f22
+                1.19.0-dev-45c1fe
               </div>
             
           
@@ -210,7 +211,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="http-routing">
+  <section id="http-routing">
 <span id="arch-overview-http-routing"></span><h1>HTTP routing<a class="headerlink" href="#http-routing" title="Permalink to this headline">¶</a></h1>
 <p>Envoy includes an HTTP <a class="reference internal" href="../../../configuration/http/http_filters/router_filter.html#config-http-filters-router"><span class="std std-ref">router filter</span></a> which can be installed to
 perform advanced routing tasks. This is useful both for handling edge traffic (traditional reverse
@@ -250,7 +251,7 @@ clusters can use regex matching.</p></li>
 <li><p><a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-hash-policy"><span class="std std-ref">Hash policy</span></a> based routing.</p></li>
 <li><p><a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-http-protocol-options"><span class="std std-ref">Absolute urls</span></a> are supported for non-tls forward proxies.</p></li>
 </ul>
-<div class="section" id="route-scope">
+<section id="route-scope">
 <span id="arch-overview-http-routing-route-scope"></span><h2>Route Scope<a class="headerlink" href="#route-scope" title="Permalink to this headline">¶</a></h2>
 <p>Scoped routing enables Envoy to put constraints on search space of domains and route rules.
 A <a class="reference internal" href="../../../api-v3/config/route/v3/scoped_route.proto.html#envoy-v3-api-msg-config-route-v3-scopedrouteconfiguration"><span class="std std-ref">Route Scope</span></a> associates a key with a <a class="reference internal" href="#arch-overview-http-routing-route-table"><span class="std std-ref">route table</span></a>.
@@ -275,8 +276,8 @@ If the “addr” header value is “foo=1;x-foo-key=127.0.0.1;x-bar-key=1.1.1.1
 the <a class="reference internal" href="../../../api-v3/config/route/v3/scoped_route.proto.html#envoy-v3-api-msg-config-route-v3-scopedrouteconfiguration"><span class="std std-ref">ScopedRouteConfiguration</span></a>.
 Then fragments are matched in order. A missing fragment(treated as NULL) in the built key makes the request unable to match any scope,
 i.e. no route entry can be found for the request.</p>
-</div>
-<div class="section" id="route-table">
+</section>
+<section id="route-table">
 <h2>Route table<a class="headerlink" href="#route-table" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="../../../configuration/http/http_conn_man/http_conn_man.html#config-http-conn-man"><span class="std std-ref">configuration</span></a> for the HTTP connection manager owns the <a class="reference internal" href="../../../api-v3/config/route/v3/route.proto.html#envoy-v3-api-msg-config-route-v3-routeconfiguration"><span class="std std-ref">route
 table</span></a> that is used by all configured HTTP filters. Although the
@@ -286,8 +287,8 @@ in rate limit filter consults the route table to determine whether the global ra
 should be called based on the route. The connection manager makes sure that all calls to acquire a
 route are stable for a particular request, even if the decision involves randomness (e.g. in the
 case of a runtime configuration route rule).</p>
-</div>
-<div class="section" id="retry-semantics">
+</section>
+<section id="retry-semantics">
 <span id="arch-overview-http-routing-retry"></span><h2>Retry semantics<a class="headerlink" href="#retry-semantics" title="Permalink to this headline">¶</a></h2>
 <p>Envoy allows retries to be configured both in the <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-retry-policy"><span class="std std-ref">route configuration</span></a> as well as for specific requests via <a class="reference internal" href="../../../configuration/http/http_filters/router_filter.html#config-http-filters-router-headers-consumed"><span class="std std-ref">request
 headers</span></a>. The following configurations are possible:</p>
@@ -312,8 +313,8 @@ configured to adjust the priority load used when selecting a priority for retrie
 <p>Note that Envoy retries requests when <a class="reference internal" href="../../../configuration/http/http_filters/router_filter.html#config-http-filters-router-x-envoy-overloaded-set"><span class="std std-ref">x-envoy-overloaded</span></a> is present. It is recommended to either configure
 <a class="reference internal" href="../../../api-v3/config/cluster/v3/circuit_breaker.proto.html#envoy-v3-api-field-config-cluster-v3-circuitbreakers-thresholds-retry-budget"><span class="std std-ref">retry budgets (preferred)</span></a> or set
 <a class="reference internal" href="../upstream/circuit_breaking.html#arch-overview-circuit-break"><span class="std std-ref">maximum active retries circuit breaker</span></a> to an appropriate value to avoid retry storms.</p>
-</div>
-<div class="section" id="request-hedging">
+</section>
+<section id="request-hedging">
 <span id="arch-overview-http-routing-hedging"></span><h2>Request Hedging<a class="headerlink" href="#request-hedging" title="Permalink to this headline">¶</a></h2>
 <p>Envoy supports request hedging which can be enabled by specifying a <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-msg-config-route-v3-hedgepolicy"><span class="std std-ref">hedge
 policy</span></a>. This means that Envoy will race
@@ -328,8 +329,8 @@ response according to retry policy will be returned downstream.</p>
 <p>The implementation ensures that the same upstream request is not retried twice.
 This might otherwise occur if a request times out and then results in a 5xx
 response, creating two retriable events.</p>
-</div>
-<div class="section" id="priority-routing">
+</section>
+<section id="priority-routing">
 <span id="arch-overview-http-routing-priority"></span><h2>Priority routing<a class="headerlink" href="#priority-routing" title="Permalink to this headline">¶</a></h2>
 <p>Envoy supports priority routing at the <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-msg-config-route-v3-route"><span class="std std-ref">route</span></a> level.
 The current priority implementation uses different <a class="reference internal" href="../upstream/connection_pooling.html#arch-overview-conn-pool"><span class="std std-ref">connection pool</span></a>
@@ -338,8 +339,8 @@ priority level. This means that even for HTTP/2 requests, two physical connectio
 an upstream host. In the future Envoy will likely support true HTTP/2 priority over a single
 connection.</p>
 <p>The currently supported priorities are <em>default</em> and <em>high</em>.</p>
-</div>
-<div class="section" id="direct-responses">
+</section>
+<section id="direct-responses">
 <span id="arch-overview-http-routing-direct-response"></span><h2>Direct responses<a class="headerlink" href="#direct-responses" title="Permalink to this headline">¶</a></h2>
 <p>Envoy supports the sending of “direct” responses. These are preconfigured HTTP responses
 that do not require proxying to an upstream server.</p>
@@ -365,8 +366,8 @@ field.</p>
 </div>
 <p>If <strong>response_headers_to_add</strong> has been set for the Route or the enclosing Virtual Host,
 Envoy will include the specified headers in the direct HTTP response.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
