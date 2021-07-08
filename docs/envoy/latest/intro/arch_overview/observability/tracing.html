@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Tracing &mdash; envoy 1.19.0-dev-eba55c documentation</title>
+  <title>Tracing &mdash; envoy 1.19.0-dev-9170b3 documentation</title>
   
 
   
@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                1.19.0-dev-eba55c
+                1.19.0-dev-9170b3
               </div>
             
           
@@ -273,6 +273,16 @@ header documentation. However, trace reason packing my break externally generate
 that must be maintained. The <a class="reference internal" href="../../../api-v3/extensions/request_id/uuid/v3/uuid.proto.html#envoy-v3-api-field-extensions-request-id-uuid-v3-uuidrequestidconfig-pack-trace-reason"><span class="std std-ref">pack_trace_reason</span></a>
 field can be used to disable this behavior at the expense of also disabling stable trace reason
 propagation and associated features within a deployment.</p>
+</div>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>The sampling policy for Envoy is determined by the value of <a class="reference internal" href="../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a> by default.
+However, such a sampling policy is only valid for a fleet of Envoys. If a service proxy
+that is not Envoy is present in the fleet, sampling is performed without considering the policy of that proxy.
+For meshes consisting of multiple service proxies such as this, it is more effective to
+bypass Envoy’s sampling policy and sample based on the trace provider’s sampling policy. This can be achieved by setting
+<a class="reference internal" href="../../../api-v3/extensions/request_id/uuid/v3/uuid.proto.html#envoy-v3-api-field-extensions-request-id-uuid-v3-uuidrequestidconfig-use-request-id-for-trace-sampling"><span class="std std-ref">use_request_id_for_trace_sampling</span></a>
+to false.</p>
 </div>
 <p>The tracing providers also require additional context, to enable the parent/child relationships
 between the spans (logical units of work) to be understood. This can be achieved by using the
