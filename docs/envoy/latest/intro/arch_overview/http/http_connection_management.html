@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>HTTP connection management &mdash; envoy 1.20.0-dev-85583b documentation</title>
+  <title>HTTP connection management &mdash; envoy 1.20.0-dev-2f54f3 documentation</title>
   
 
   
@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                1.20.0-dev-85583b
+                1.20.0-dev-2f54f3
               </div>
             
           
@@ -406,6 +406,16 @@ request.</p></li>
 <p>Various configurable timeouts apply to an HTTP connection and its constituent streams. Please see
 <a class="reference internal" href="../../../faq/configuration/timeouts.html#faq-configuration-timeouts"><span class="std std-ref">this FAQ entry</span></a> for an overview of important timeout
 configuration.</p>
+</section>
+<section id="http-header-map-settings">
+<span id="arch-overview-http-header-map-settings"></span><h2>HTTP header map settings<a class="headerlink" href="#http-header-map-settings" title="Permalink to this headline">¶</a></h2>
+<p>Envoy maintains the insertion order of headers (and pseudo headers that begin with “:”) in the
+HTTP header map using a linked list data-structure, which is very fast when the number of headers
+is small. In addition it can use a map data-structure to ensure fast access to the various headers.
+The map will be used once the number of headers in a HTTP request/response reaches the value of the
+<code class="docutils literal notranslate"><span class="pre">envoy.http.headermap.lazy_map_min_size</span></code> runtime feature. The default threshold value is set to
+3, as previous experiments empirically showed that this value provides good performance for many
+use-cases.</p>
 </section>
 </section>
 
