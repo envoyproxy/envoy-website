@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>IP Transparency &mdash; envoy 1.19.0-dev-7ca89e documentation</title>
+  <title>IP Transparency &mdash; envoy 1.19.0-dev-b7bc53 documentation</title>
   
 
   
@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                1.19.0-dev-7ca89e
+                1.19.0-dev-b7bc53
               </div>
             
           
@@ -259,6 +259,9 @@ the downstream remote address for propagation into an
 conjunction with the
 <a class="reference internal" href="#arch-overview-ip-transparency-original-src-listener"><span class="std std-ref">Original Src Listener Filter</span></a>. Finally,
 Envoy supports generating this header using the <a class="reference internal" href="../../../api-v3/extensions/transport_sockets/proxy_protocol/v3/upstream_proxy_protocol.proto.html#extension-envoy-transport-sockets-upstream-proxy-protocol"><span class="std std-ref">Proxy Protocol Transport Socket</span></a>.</p>
+<p>IMPORTANT: There is currently a memory <a class="reference external" href="https://github.com/envoyproxy/envoy/issues/16682">issue</a> in Envoy where upstream connection pools are
+not cleaned up after they are created. This heavily affects the usage of this transport socket as new pools are created for every downstream client
+IP and port pair. Removing a cluster will clean up its associated connection pools, which could be used to mitigate this issue in the current state.</p>
 <p>Here is an example config for setting up the socket:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">clusters</span><span class="p">:</span>
 <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service1</span>
