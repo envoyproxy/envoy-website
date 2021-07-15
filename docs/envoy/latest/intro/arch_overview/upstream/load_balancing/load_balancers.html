@@ -4,11 +4,10 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Supported load balancers &mdash; envoy 1.20.0-dev-b62dae documentation</title>
+  <title>Supported load balancers &mdash; envoy 1.20.0-dev-eb18f0 documentation</title>
   
 
   
@@ -68,7 +67,7 @@
 
           
             
-            <img src="../../../../_static/_static/img/envoy-logo.png" class="logo" alt="Logo"/>
+            <img src="../../../../_static/img/envoy-logo.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -76,7 +75,7 @@
             
             
               <div class="version">
-                1.20.0-dev-b62dae
+                1.20.0-dev-eb18f0
               </div>
             
           
@@ -218,22 +217,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="supported-load-balancers">
+  <div class="section" id="supported-load-balancers">
 <span id="arch-overview-load-balancing-types"></span><h1>Supported load balancers<a class="headerlink" href="#supported-load-balancers" title="Permalink to this headline">¶</a></h1>
 <p>When a filter needs to acquire a connection to a host in an upstream cluster, the cluster manager
 uses a load balancing policy to determine which host is selected. The load balancing policies are
 pluggable and are specified on a per upstream cluster basis in the <a class="reference internal" href="../../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-msg-config-cluster-v3-cluster"><span class="std std-ref">configuration</span></a>. Note that if no active health checking policy is <a class="reference internal" href="../../../../configuration/upstream/cluster_manager/cluster_hc.html#config-cluster-manager-cluster-hc"><span class="std std-ref">configured</span></a> for a cluster, all upstream cluster members are considered
 healthy, unless otherwise specified through
 <a class="reference internal" href="../../../../api-v3/config/endpoint/v3/endpoint_components.proto.html#envoy-v3-api-field-config-endpoint-v3-lbendpoint-health-status"><span class="std std-ref">health_status</span></a>.</p>
-<section id="weighted-round-robin">
+<div class="section" id="weighted-round-robin">
 <span id="arch-overview-load-balancing-types-round-robin"></span><h2>Weighted round robin<a class="headerlink" href="#weighted-round-robin" title="Permalink to this headline">¶</a></h2>
 <p>This is a simple policy in which each available upstream host is selected in round
 robin order. If <a class="reference internal" href="../../../../api-v3/config/endpoint/v3/endpoint_components.proto.html#envoy-v3-api-field-config-endpoint-v3-lbendpoint-load-balancing-weight"><span class="std std-ref">weights</span></a> are assigned to
 endpoints in a locality, then a weighted round robin schedule is used, where
 higher weighted endpoints will appear more often in the rotation to achieve the
 effective weighting.</p>
-</section>
-<section id="weighted-least-request">
+</div>
+<div class="section" id="weighted-least-request">
 <span id="arch-overview-load-balancing-types-least-request"></span><h2>Weighted least request<a class="headerlink" href="#weighted-least-request" title="Permalink to this headline">¶</a></h2>
 <p>The least request load balancer uses different algorithms depending on whether hosts have the
 same or different weights.</p>
@@ -262,8 +261,8 @@ steady state but may not adapt to load imbalance as quickly. Additionally, unlik
 never truly drain, though it will receive fewer requests over time.</p>
 </li>
 </ul>
-</section>
-<section id="ring-hash">
+</div>
+<div class="section" id="ring-hash">
 <span id="arch-overview-load-balancing-types-ring-hash"></span><h2>Ring hash<a class="headerlink" href="#ring-hash" title="Permalink to this headline">¶</a></h2>
 <p>The ring/modulo hash load balancer implements consistent hashing to upstream hosts. Each host is
 mapped onto a circle (the “ring”) by hashing its address; each request is then routed to a host by
@@ -294,8 +293,8 @@ ring partitioned appropriately, the addition or removal of one host from a set o
 affect only 1/N requests.</p>
 <p>When priority based load balancing is in use, the priority level is also chosen by hash, so the
 endpoint selected will still be consistent when the set of backends is stable.</p>
-</section>
-<section id="maglev">
+</div>
+<div class="section" id="maglev">
 <span id="arch-overview-load-balancing-types-maglev"></span><h2>Maglev<a class="headerlink" href="#maglev" title="Permalink to this headline">¶</a></h2>
 <p>The Maglev load balancer implements consistent hashing to upstream hosts. It uses the algorithm
 described in section 3.4 of <a class="reference external" href="https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/44824.pdf">this paper</a>
@@ -328,16 +327,16 @@ when using a large ring size of 256K entries). The downside of Maglev is that it
 as ring hash. More keys will move position when hosts are removed (simulations show approximately
 double the keys will move). With that said, for many applications including Redis, Maglev is very
 likely a superior drop in replacement for ring hash. The advanced reader can use
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/b62dae29a5dd06b7f689899b26974d9567a98f0e//test/common/upstream/load_balancer_benchmark.cc">this benchmark</a> to compare ring hash
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/eb18f0b4338179c980680d1f448bcdb3fb043668//test/common/upstream/load_balancer_benchmark.cc">this benchmark</a> to compare ring hash
 versus Maglev with different parameters.</p>
-</section>
-<section id="random">
+</div>
+<div class="section" id="random">
 <span id="arch-overview-load-balancing-types-random"></span><h2>Random<a class="headerlink" href="#random" title="Permalink to this headline">¶</a></h2>
 <p>The random load balancer selects a random available host. The random load balancer generally performs
 better than round robin if no health checking policy is configured. Random selection avoids bias
 towards the host in the set that comes after a failed host.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

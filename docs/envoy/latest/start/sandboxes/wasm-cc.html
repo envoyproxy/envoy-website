@@ -4,11 +4,10 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Wasm C++ filter &mdash; envoy 1.20.0-dev-b62dae documentation</title>
+  <title>Wasm C++ filter &mdash; envoy 1.20.0-dev-eb18f0 documentation</title>
   
 
   
@@ -68,7 +67,7 @@
 
           
             
-            <img src="../../_static/_static/img/envoy-logo.png" class="logo" alt="Logo"/>
+            <img src="../../_static/img/envoy-logo.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -76,7 +75,7 @@
             
             
               <div class="version">
-                1.20.0-dev-b62dae
+                1.20.0-dev-eb18f0
               </div>
             
           
@@ -227,9 +226,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="wasm-c-filter">
+  <div class="section" id="wasm-c-filter">
 <span id="install-sandboxes-wasm-filter"></span><h1>Wasm C++ filter<a class="headerlink" href="#wasm-c-filter" title="Permalink to this headline">¶</a></h1>
-<aside class="sidebar">
+<div class="sidebar">
 <p class="sidebar-title">Requirements</p>
 <dl class="simple">
 <dt><a class="reference internal" href="setup.html#start-sandboxes-setup"><span class="std std-ref">Sandbox environment</span></a></dt><dd><p>Setup your sandbox environment with Docker and Docker Compose,
@@ -238,17 +237,17 @@ and clone the Envoy repository with Git.</p>
 <dt><a class="reference internal" href="setup.html#start-sandboxes-setup-curl"><span class="std std-ref">curl</span></a></dt><dd><p>Used to make <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> requests.</p>
 </dd>
 </dl>
-</aside>
-<aside class="sidebar">
+</div>
+<div class="sidebar">
 <p class="sidebar-title">Compatibility</p>
 <p>The provided Wasm binary was compiled for the <code class="docutils literal notranslate"><span class="pre">x86_64</span></code> architecture. If you would like to use this sandbox
 with the <code class="docutils literal notranslate"><span class="pre">arm64</span></code> architecture, change directory to <code class="docutils literal notranslate"><span class="pre">examples/wasm-cc</span></code> and skip to Step 3.</p>
-</aside>
+</div>
 <p>This sandbox demonstrates a basic <a class="reference internal" href="../../configuration/http/http_filters/wasm_filter.html#config-http-filters-wasm"><span class="std std-ref">Envoy Wasm filter</span></a> written in C++ which injects
 content into the body of an <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> response, and adds and updates some headers.</p>
 <p>It also takes you through the steps required to build your own C++ <a class="reference internal" href="../../configuration/http/http_filters/wasm_filter.html#config-http-filters-wasm"><span class="std std-ref">Wasm filter</span></a>,
 and run it with Envoy.</p>
-<section id="step-1-start-all-of-our-containers">
+<div class="section" id="step-1-start-all-of-our-containers">
 <h2>Step 1: Start all of our containers<a class="headerlink" href="#step-1-start-all-of-our-containers" title="Permalink to this headline">¶</a></h2>
 <p>First lets start the containers - an Envoy proxy which uses a Wasm Filter, and a backend which echos back our request.</p>
 <p>Change to the <code class="docutils literal notranslate"><span class="pre">examples/wasm-cc</span></code> folder in the Envoy repo, and start the composition:</p>
@@ -264,8 +263,8 @@ and run it with Envoy.</p>
 <span class="go">wasm_web_service_1   node ./index.js                Up</span>
 </pre></div>
 </div>
-</section>
-<section id="step-2-check-web-response">
+</div>
+<div class="section" id="step-2-check-web-response">
 <h2>Step 2: Check web response<a class="headerlink" href="#step-2-check-web-response" title="Permalink to this headline">¶</a></h2>
 <p>The Wasm filter should inject “Hello, world” at the end of the response body when you make a request to the proxy.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl -s http://localhost:8000 <span class="p">|</span> grep <span class="s2">&quot;Hello, world&quot;</span>
@@ -280,8 +279,8 @@ and run it with Envoy.</p>
 <span class="go">x-wasm-custom: FOO</span>
 </pre></div>
 </div>
-</section>
-<section id="step-3-compile-the-updated-filter">
+</div>
+<div class="section" id="step-3-compile-the-updated-filter">
 <h2>Step 3: Compile the updated filter<a class="headerlink" href="#step-3-compile-the-updated-filter" title="Permalink to this headline">¶</a></h2>
 <p>There are two source code files provided for the Wasm filter.</p>
 <p><a class="reference download internal" download="" href="../../_downloads/fbba116ecfd0961809317acd2df6e3c2/envoy_filter_http_wasm_example.cc"><code class="xref download docutils literal notranslate"><span class="pre">envoy_filter_http_wasm_example.cc</span></code></a> provides the source code for
@@ -289,8 +288,8 @@ the included prebuilt binary.</p>
 <p><a class="reference download internal" download="" href="../../_downloads/f0bfe8781fcb09521c213c890f09f399/envoy_filter_http_wasm_updated_example.cc"><code class="xref download docutils literal notranslate"><span class="pre">envoy_filter_http_wasm_updated_example.cc</span></code></a> makes a few
 changes to the original.</p>
 <p>The following diff shows the changes that have been made:</p>
-<div class="highlight-udiff notranslate"><div class="highlight"><pre><span></span><span class="gd">--- /tmp/tmps_l55y_y/generated/rst/start/sandboxes/_include/wasm-cc/envoy_filter_http_wasm_example.cc</span>
-<span class="gi">+++ /tmp/tmps_l55y_y/generated/rst/start/sandboxes/_include/wasm-cc/envoy_filter_http_wasm_updated_example.cc</span>
+<div class="highlight-udiff notranslate"><div class="highlight"><pre><span></span><span class="gd">--- /tmp/tmp7yi4f0xi/generated/rst/start/sandboxes/_include/wasm-cc/envoy_filter_http_wasm_example.cc</span>
+<span class="gi">+++ /tmp/tmp7yi4f0xi/generated/rst/start/sandboxes/_include/wasm-cc/envoy_filter_http_wasm_updated_example.cc</span>
 <span class="gu">@@ -65,8 +65,8 @@</span>
    for (auto&amp; p : pairs) {
      LOG_INFO(std::string(p.first) + std::string(&quot; -&gt; &quot;) + std::string(p.second));
@@ -334,8 +333,8 @@ You will need 4-5GB of disk space to accommodate this image.</p>
 <span class="go">-r-xr-xr-x 1 root root 59653 Oct 20 10:16 envoy_filter_http_wasm_updated_example.wasm</span>
 </pre></div>
 </div>
-</section>
-<section id="step-4-edit-the-dockerfile-and-restart-the-proxy">
+</div>
+<div class="section" id="step-4-edit-the-dockerfile-and-restart-the-proxy">
 <h2>Step 4: Edit the Dockerfile and restart the proxy<a class="headerlink" href="#step-4-edit-the-dockerfile-and-restart-the-proxy" title="Permalink to this headline">¶</a></h2>
 <p>Edit the <code class="docutils literal notranslate"><span class="pre">Dockerfile-proxy</span></code> recipe provided in the example to use the updated binary you created in step 3.</p>
 <p>Find the <code class="docutils literal notranslate"><span class="pre">COPY</span></code> line that adds the Wasm binary to the image:</p>
@@ -354,8 +353,8 @@ You will need 4-5GB of disk space to accommodate this image.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker-compose up --build -d proxy
 </pre></div>
 </div>
-</section>
-<section id="step-5-check-the-proxy-has-been-updated">
+</div>
+<div class="section" id="step-5-check-the-proxy-has-been-updated">
 <h2>Step 5: Check the proxy has been updated<a class="headerlink" href="#step-5-check-the-proxy-has-been-updated" title="Permalink to this headline">¶</a></h2>
 <p>The Wasm filter should instead inject “Hello, Wasm world” at the end of the response body.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl -s http://localhost:8000 <span class="p">|</span> grep <span class="s2">&quot;Hello, Wasm world&quot;</span>
@@ -381,8 +380,8 @@ You will need 4-5GB of disk space to accommodate this image.</p>
 </dd>
 </dl>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

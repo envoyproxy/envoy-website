@@ -4,11 +4,10 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>1.16.0 (October 8, 2020) &mdash; envoy 1.20.0-dev-b62dae documentation</title>
+  <title>1.16.0 (October 8, 2020) &mdash; envoy 1.20.0-dev-eb18f0 documentation</title>
   
 
   
@@ -68,7 +67,7 @@
 
           
             
-            <img src="../_static/_static/img/envoy-logo.png" class="logo" alt="Logo"/>
+            <img src="../_static/img/envoy-logo.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -76,7 +75,7 @@
             
             
               <div class="version">
-                1.20.0-dev-b62dae
+                1.20.0-dev-eb18f0
               </div>
             
           
@@ -248,13 +247,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="october-8-2020">
+  <div class="section" id="october-8-2020">
 <h1>1.16.0 (October 8, 2020)<a class="headerlink" href="#october-8-2020" title="Permalink to this headline">¶</a></h1>
-<section id="incompatible-behavior-changes">
+<div class="section" id="incompatible-behavior-changes">
 <h2>Incompatible Behavior Changes<a class="headerlink" href="#incompatible-behavior-changes" title="Permalink to this headline">¶</a></h2>
 <p><em>Changes that are expected to cause an incompatibility if applicable; deployment changes are likely required</em></p>
 <ul class="simple">
-<li><p>build: added visibility rules for upstream. If these cause visibility related breakage, see notes in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/b62dae29a5dd06b7f689899b26974d9567a98f0e/v1.16.0:BUILD">BUILD</a>.</p></li>
+<li><p>build: added visibility rules for upstream. If these cause visibility related breakage, see notes in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/eb18f0b4338179c980680d1f448bcdb3fb043668/v1.16.0:BUILD">BUILD</a>.</p></li>
 <li><p>build: tcmalloc changes require Clang 9. This requirement change can be avoided by building with <code class="docutils literal notranslate"><span class="pre">--define</span> <span class="pre">tcmalloc=gperftools</span></code> to use the older tcmalloc code.</p></li>
 <li><p>config: additional warnings have been added for the use of v2 APIs. These appear as log messages
 and are also captured in the <a class="reference external" href="https://www.envoyproxy.io/docs/envoy/v1.16.0/configuration/operations/runtime.html#runtime-stats" title="(in envoy vtag-v1.16.0)"><span class="xref std std-ref">deprecated_feature_use</span></a> counter after server
@@ -262,8 +261,8 @@ initialization.</p></li>
 <li><p>dns: <code class="docutils literal notranslate"><span class="pre">envoy.restart_features.use_apple_api_for_dns_lookups</span></code> is on by default. This flag only affects Apple platforms (macOS, iOS). It is incompatible to have the runtime flag set to true at the same time as specifying the <code class="docutils literal notranslate"><span class="pre">``use_tcp_for_dns_lookups``</span></code> option or custom dns resolvers. Doing so will cause failure.</p></li>
 <li><p>watchdog: added two guarddogs, breaking the aggregated stats for the single guarddog system. The aggregated stats for the guarddogs will have the following prefixes: <code class="docutils literal notranslate"><span class="pre">main_thread</span></code> and <code class="docutils literal notranslate"><span class="pre">workers</span></code>. Concretely, anything monitoring <code class="docutils literal notranslate"><span class="pre">server.watchdog_miss</span></code> and <code class="docutils literal notranslate"><span class="pre">server.watchdog_mega_miss</span></code> will need to be updated.</p></li>
 </ul>
-</section>
-<section id="minor-behavior-changes">
+</div>
+<div class="section" id="minor-behavior-changes">
 <h2>Minor Behavior Changes<a class="headerlink" href="#minor-behavior-changes" title="Permalink to this headline">¶</a></h2>
 <p><em>Changes that may cause incompatibilities for some users, but should not for most</em></p>
 <ul class="simple">
@@ -301,11 +300,11 @@ in the environment.</p></li>
 <li><p>router: added transport failure reason to response body when upstream reset happens. After this change, the response body will be of the form <code class="docutils literal notranslate"><span class="pre">upstream</span> <span class="pre">connect</span> <span class="pre">error</span> <span class="pre">or</span> <span class="pre">disconnect/reset</span> <span class="pre">before</span> <span class="pre">headers.</span> <span class="pre">reset</span> <span class="pre">reason:{},</span> <span class="pre">transport</span> <span class="pre">failure</span> <span class="pre">reason:{}</span></code>.This behavior may be reverted by setting runtime feature <code class="docutils literal notranslate"><span class="pre">envoy.reloadable_features.http_transport_failure_reason_in_body</span></code> to false.</p></li>
 <li><p>router: now consumes all retry related headers to prevent them from being propagated to the upstream. This behavior may be reverted by setting runtime feature <code class="docutils literal notranslate"><span class="pre">envoy.reloadable_features.consume_all_retry_headers</span></code> to false.</p></li>
 <li><p>stats: the fake symbol table implemention has been removed from the binary, and the option <code class="docutils literal notranslate"><span class="pre">--use-fake-symbol-table</span></code> is now a no-op with a warning.</p></li>
-<li><p>thrift_proxy: special characters {’0’, ‘r’, ‘n’} will be stripped from thrift headers.</p></li>
+<li><p>thrift_proxy: special characters {‘0’, ‘r’, ‘n’} will be stripped from thrift headers.</p></li>
 <li><p>watchdog: replaced single watchdog with separate watchdog configuration for worker threads and for the main thread configured via <a class="reference external" href="https://www.envoyproxy.io/docs/envoy/v1.16.0/api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-bootstrap-watchdogs" title="(in envoy vtag-v1.16.0)"><span class="xref std std-ref">Watchdogs</span></a>. It works with <a class="reference external" href="https://www.envoyproxy.io/docs/envoy/v1.16.0/api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-bootstrap-watchdog" title="(in envoy vtag-v1.16.0)"><span class="xref std std-ref">watchdog</span></a> by having the worker thread and main thread watchdogs have same config.</p></li>
 </ul>
-</section>
-<section id="bug-fixes">
+</div>
+<div class="section" id="bug-fixes">
 <h2>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this headline">¶</a></h2>
 <p><em>Changes expected to improve the state of the world and are unlikely to have negative effects</em></p>
 <ul class="simple">
@@ -323,8 +322,8 @@ in the environment.</p></li>
 <li><p>thrift_proxy: fixed crashing bug on request overflow.</p></li>
 <li><p>udp_proxy: fixed a crash due to UDP packets being processed after listener removal.</p></li>
 </ul>
-</section>
-<section id="removed-config-or-runtime">
+</div>
+<div class="section" id="removed-config-or-runtime">
 <h2>Removed Config or Runtime<a class="headerlink" href="#removed-config-or-runtime" title="Permalink to this headline">¶</a></h2>
 <p><em>Normally occurs at the end of the</em> <a class="reference external" href="https://www.envoyproxy.io/docs/envoy/v1.16.0/version_history/version_history.html#deprecated" title="(in envoy vtag-v1.16.0)"><span class="xref std std-ref">deprecation period</span></a></p>
 <ul class="simple">
@@ -333,8 +332,8 @@ in the environment.</p></li>
 <li><p>http: removed configurable strict host validation and runtime guard <code class="docutils literal notranslate"><span class="pre">envoy.reloadable_features.strict_authority_validation</span></code>.</p></li>
 <li><p>http: removed the connection header sanitization runtime guard <code class="docutils literal notranslate"><span class="pre">envoy.reloadable_features.connection_header_sanitization</span></code>.</p></li>
 </ul>
-</section>
-<section id="new-features">
+</div>
+<div class="section" id="new-features">
 <h2>New Features<a class="headerlink" href="#new-features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>access log: added a <a class="reference external" href="https://www.envoyproxy.io/docs/envoy/v1.16.0/api-v3/config/accesslog/v3/accesslog.proto.html#envoy-v3-api-msg-config-accesslog-v3-metadatafilter" title="(in envoy vtag-v1.16.0)"><span class="xref std std-ref">dynamic metadata filter</span></a> for access logs, which filters whether to log based on matching dynamic metadata.</p></li>
@@ -418,8 +417,8 @@ that track headers and body sizes of requests and responses.</p></li>
 <li><p>xds: added support for mixed v2/v3 discovery response, which enable type url downgrade and upgrade. This feature is disabled by default and is controlled by runtime guard <code class="docutils literal notranslate"><span class="pre">envoy.reloadable_features.enable_type_url_downgrade_and_upgrade</span></code>.</p></li>
 <li><p>zlib: added option to use <a class="reference external" href="https://github.com/zlib-ng/zlib-ng">zlib-ng</a> as zlib library.</p></li>
 </ul>
-</section>
-<section id="deprecated">
+</div>
+<div class="section" id="deprecated">
 <h2>Deprecated<a class="headerlink" href="#deprecated" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>build: alpine based debug image is deprecated in favor of <a class="reference external" href="https://www.envoyproxy.io/docs/envoy/v1.16.0/install/building.html#install-binaries" title="(in envoy vtag-v1.16.0)"><span class="xref std std-ref">Ubuntu based debug image</span></a>.</p></li>
@@ -437,8 +436,8 @@ grouping by cluster and locality.</p></li>
 <li><p>router_check_tool: <code class="docutils literal notranslate"><span class="pre">request_header_fields</span></code>, <code class="docutils literal notranslate"><span class="pre">response_header_fields</span></code> config deprecated in favor of <code class="docutils literal notranslate"><span class="pre">request_header_matches</span></code>, <code class="docutils literal notranslate"><span class="pre">response_header_matches</span></code>.</p></li>
 <li><p>watchdog: <a class="reference external" href="https://www.envoyproxy.io/docs/envoy/v1.16.0/api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-bootstrap-watchdog" title="(in envoy vtag-v1.16.0)"><span class="xref std std-ref">watchdog</span></a> deprecated in favor of <a class="reference external" href="https://www.envoyproxy.io/docs/envoy/v1.16.0/api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-bootstrap-watchdogs" title="(in envoy vtag-v1.16.0)"><span class="xref std std-ref">watchdogs</span></a>.</p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

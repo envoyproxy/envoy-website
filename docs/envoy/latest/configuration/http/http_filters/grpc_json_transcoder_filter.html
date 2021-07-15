@@ -4,11 +4,10 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>gRPC-JSON transcoder &mdash; envoy 1.20.0-dev-b62dae documentation</title>
+  <title>gRPC-JSON transcoder &mdash; envoy 1.20.0-dev-eb18f0 documentation</title>
   
 
   
@@ -68,7 +67,7 @@
 
           
             
-            <img src="../../../_static/_static/img/envoy-logo.png" class="logo" alt="Logo"/>
+            <img src="../../../_static/img/envoy-logo.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -76,7 +75,7 @@
             
             
               <div class="version">
-                1.20.0-dev-b62dae
+                1.20.0-dev-eb18f0
               </div>
             
           
@@ -242,7 +241,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="grpc-json-transcoder">
+  <div class="section" id="grpc-json-transcoder">
 <span id="config-http-filters-grpc-json-transcoder"></span><h1>gRPC-JSON transcoder<a class="headerlink" href="#grpc-json-transcoder" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
 <li><p>gRPC <a class="reference internal" href="../../../intro/arch_overview/other_protocols/grpc.html#arch-overview-grpc"><span class="std std-ref">architecture overview</span></a></p></li>
@@ -252,13 +251,13 @@
 <p>This is a filter which allows a RESTful JSON API client to send requests to Envoy over HTTP
 and get proxied to a gRPC service. The HTTP mapping for the gRPC service has to be defined by
 <a class="reference external" href="https://cloud.google.com/service-management/reference/rpc/google.api#http">custom options</a>.</p>
-<section id="json-mapping">
+<div class="section" id="json-mapping">
 <h2>JSON mapping<a class="headerlink" href="#json-mapping" title="Permalink to this headline">¶</a></h2>
 <p>The protobuf to JSON mapping is defined <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto3#json">here</a>. For
 gRPC stream request parameters, Envoy expects an array of messages, and it returns an array of messages for stream
 response parameters.</p>
-</section>
-<section id="how-to-generate-proto-descriptor-set">
+</div>
+<div class="section" id="how-to-generate-proto-descriptor-set">
 <span id="config-grpc-json-generate-proto-descriptor-set"></span><h2>How to generate proto descriptor set<a class="headerlink" href="#how-to-generate-proto-descriptor-set" title="Permalink to this headline">¶</a></h2>
 <p>Envoy has to know the proto descriptor of your gRPC service in order to do the transcoding.</p>
 <p>To generate a protobuf descriptor set for the gRPC service, you’ll also need to clone the
@@ -269,14 +268,14 @@ in your include path, to define the HTTP mapping.</p>
 </pre></div>
 </div>
 <p>Then run protoc to generate the descriptor set. For example using the test
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/b62dae29a5dd06b7f689899b26974d9567a98f0e/test/proto/bookstore.proto">bookstore.proto</a> provided in the Envoy repository:</p>
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/eb18f0b4338179c980680d1f448bcdb3fb043668/test/proto/bookstore.proto">bookstore.proto</a> provided in the Envoy repository:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>protoc -I<span class="k">$(</span>GOOGLEAPIS_DIR<span class="k">)</span> -I. --include_imports --include_source_info <span class="se">\</span>
 <span class="go">    --descriptor_set_out=proto.pb test/proto/bookstore.proto</span>
 </pre></div>
 </div>
 <p>If you have more than one proto source files, you can pass all of them in one command.</p>
-</section>
-<section id="route-configs-for-transcoded-requests">
+</div>
+<div class="section" id="route-configs-for-transcoded-requests">
 <h2>Route configs for transcoded requests<a class="headerlink" href="#route-configs-for-transcoded-requests" title="Permalink to this headline">¶</a></h2>
 <p>The route configs to be used with the gRPC-JSON transcoder should be identical to the gRPC route.
 The requests processed by the transcoder filter will have <code class="docutils literal notranslate"><span class="pre">/&lt;package&gt;.&lt;service&gt;/&lt;method&gt;</span></code> path and
@@ -319,8 +318,8 @@ match the incoming request path, set <code class="docutils literal notranslate">
 <span class="go">    --descriptor_set_out=protos/helloworld.pb protos/helloworld.proto</span>
 </pre></div>
 </div>
-</section>
-<section id="sending-arbitrary-content">
+</div>
+<div class="section" id="sending-arbitrary-content">
 <h2>Sending arbitrary content<a class="headerlink" href="#sending-arbitrary-content" title="Permalink to this headline">¶</a></h2>
 <p>By default, when transcoding occurs, gRPC-JSON encodes the message output of a gRPC service method into
 JSON and sets the HTTP response <code class="docutils literal notranslate"><span class="pre">Content-Type</span></code> header to <code class="docutils literal notranslate"><span class="pre">application/json</span></code>. To send arbitrary content,
@@ -335,16 +334,16 @@ Multiple <a class="reference external" href="https://github.com/googleapis/googl
 can be send by the gRPC server in the server streaming case.
 In this case, HTTP response header <code class="docutils literal notranslate"><span class="pre">Content-Type</span></code> will use the <code class="docutils literal notranslate"><span class="pre">content-type</span></code> from the first
 <a class="reference external" href="https://github.com/googleapis/googleapis/blob/master/google/api/httpbody.proto">google.api.HttpBody</a>.</p>
-</section>
-<section id="headers">
+</div>
+<div class="section" id="headers">
 <h2>Headers<a class="headerlink" href="#headers" title="Permalink to this headline">¶</a></h2>
 <p>gRPC-JSON forwards the following headers to the gRPC server:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">x-envoy-original-path</span></code>, containing the value of the original path of HTTP request</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">x-envoy-original-method</span></code>, containing the value of the original method of HTTP request</p></li>
 </ul>
-</section>
-<section id="sample-envoy-configuration">
+</div>
+<div class="section" id="sample-envoy-configuration">
 <h2>Sample Envoy configuration<a class="headerlink" href="#sample-envoy-configuration" title="Permalink to this headline">¶</a></h2>
 <p>Here’s a sample Envoy configuration that proxies to a gRPC server running on localhost:50051. Port 51051 proxies
 gRPC requests and uses the gRPC-JSON transcoder filter to provide the RESTful JSON mapping. I.e., you can make either
@@ -412,8 +411,8 @@ gRPC or RESTful JSON requests to localhost:51051.</p>
                 <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50051</span>
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

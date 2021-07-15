@@ -4,11 +4,10 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>HTTP upgrades &mdash; envoy 1.20.0-dev-b62dae documentation</title>
+  <title>HTTP upgrades &mdash; envoy 1.20.0-dev-eb18f0 documentation</title>
   
 
   
@@ -68,7 +67,7 @@
 
           
             
-            <img src="../../../_static/_static/img/envoy-logo.png" class="logo" alt="Logo"/>
+            <img src="../../../_static/img/envoy-logo.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -76,7 +75,7 @@
             
             
               <div class="version">
-                1.20.0-dev-b62dae
+                1.20.0-dev-eb18f0
               </div>
             
           
@@ -211,7 +210,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="http-upgrades">
+  <div class="section" id="http-upgrades">
 <span id="arch-overview-upgrades"></span><h1>HTTP upgrades<a class="headerlink" href="#http-upgrades" title="Permalink to this headline">¶</a></h1>
 <p>Envoy Upgrade support is intended mainly for WebSocket and CONNECT support, but may be used for
 arbitrary upgrades as well. Upgrades pass both the HTTP headers and the upgrade payload
@@ -266,7 +265,7 @@ laid out below, but custom filter chains can only be configured on a per-HttpCon
 <p>Note that the statistics for upgrades are all bundled together so WebSocket and other upgrades
 <a class="reference internal" href="../../../configuration/http/http_conn_man/stats.html#config-http-conn-man-stats"><span class="std std-ref">statistics</span></a> are tracked by stats such as
 downstream_cx_upgrades_total and downstream_cx_upgrades_active</p>
-<section id="websocket-over-http-2-or-http-3-hops">
+<div class="section" id="websocket-over-http-2-or-http-3-hops">
 <h2>Websocket over HTTP/2 or HTTP/3 hops<a class="headerlink" href="#websocket-over-http-2-or-http-3-hops" title="Permalink to this headline">¶</a></h2>
 <p>While HTTP/2 and HTTP/3 support for WebSockets is off by default, Envoy does support tunneling WebSockets over
 HTTP/2 and above for deployments that prefer a uniform HTTP/2+ mesh throughout; this enables, for example,
@@ -286,8 +285,8 @@ upgrade/downgrade mechanism will drop the original method and transform the Upgr
 a GET method on the final Envoy-Upstream hop.</p>
 <p>Note that the HTTP/2+ upgrade path has very strict HTTP/1.1 compliance, so will not proxy WebSocket
 upgrade requests or responses with bodies.</p>
-</section>
-<section id="connect-support">
+</div>
+<div class="section" id="connect-support">
 <h2>CONNECT support<a class="headerlink" href="#connect-support" title="Permalink to this headline">¶</a></h2>
 <p>Envoy CONNECT support is off by default (Envoy will send an internally generated 403 in response to
 CONNECT requests). CONNECT support can be enabled via the upgrade options described above, setting
@@ -313,14 +312,14 @@ will synthesize 200 response headers, and then forward the TCP data as the HTTP 
 <p>This mode of CONNECT support can create major security holes if not configured correctly, as the upstream
 will be forwarded <em>unsanitized</em> headers if they are in the body payload. Please use with caution</p>
 </div>
-<p>For an example of proxying connect, please see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/b62dae29a5dd06b7f689899b26974d9567a98f0e/configs/proxy_connect.yaml">configs/proxy_connect.yaml</a>
-For an example of terminating connect, please see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/b62dae29a5dd06b7f689899b26974d9567a98f0e/configs/terminate_http1_connect.yaml">configs/terminate_http1_connect.yaml</a> and <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/b62dae29a5dd06b7f689899b26974d9567a98f0e/configs/terminate_http2_connect.yaml">configs/terminate_http2_connect.yaml</a></p>
+<p>For an example of proxying connect, please see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/eb18f0b4338179c980680d1f448bcdb3fb043668/configs/proxy_connect.yaml">configs/proxy_connect.yaml</a>
+For an example of terminating connect, please see <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/eb18f0b4338179c980680d1f448bcdb3fb043668/configs/terminate_http1_connect.yaml">configs/terminate_http1_connect.yaml</a> and <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/eb18f0b4338179c980680d1f448bcdb3fb043668/configs/terminate_http2_connect.yaml">configs/terminate_http2_connect.yaml</a></p>
 <p>Note that for CONNECT-over-tls, Envoy can not currently be configured to do the CONNECT request in the clear
 and encrypt previously unencrypted payload in one hop. To send CONNECT in plaintext and encrypt the payload,
 one must first forward the HTTP payload over an “upstream” TLS loopback connection to encrypt it, then have
 a TCP listener take the encrypted payload and send the CONNECT upstream.</p>
-</section>
-<section id="tunneling-tcp-over-http">
+</div>
+<div class="section" id="tunneling-tcp-over-http">
 <span id="id1"></span><h2>Tunneling TCP over HTTP<a class="headerlink" href="#tunneling-tcp-over-http" title="Permalink to this headline">¶</a></h2>
 <p>Envoy also has support for tunneling raw TCP over HTTP CONNECT or HTTP POST requests. Find
 below some usage scenarios.</p>
@@ -338,7 +337,7 @@ HTTP/2 or above when you have the choice.</p>
 <p>HTTP POST can also be used to proxy multiplexed TCP when intermediate proxies that don’t support
 CONNECT. An example set up proxying HTTP would look something like this:</p>
 <p>[TCP Server] — raw TCP — [L2 Envoy]  — TCP tunneled over HTTP/2 or HTTP/1.1 POST — [Intermidate Proxies] — HTTP/2 or HTTP/1.1 POST — [L1 Envoy]  — raw TCP  — [TCP Client]</p>
-<p>Examples of such a set up can be found in the Envoy example config <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/b62dae29a5dd06b7f689899b26974d9567a98f0e/configs/">directory</a>
+<p>Examples of such a set up can be found in the Envoy example config <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/eb18f0b4338179c980680d1f448bcdb3fb043668/configs/">directory</a>
 For HTTP/1.1 CONNECT run <code class="docutils literal notranslate"><span class="pre">bazel-bin/source/exe/envoy-static</span> <span class="pre">--config-path</span> <span class="pre">configs/encapsulate_in_http1_connect.yaml</span> <span class="pre">--base-id</span> <span class="pre">1</span></code>
 and <code class="docutils literal notranslate"><span class="pre">bazel-bin/source/exe/envoy-static</span> <span class="pre">--config-path</span> <span class="pre">configs/terminate_http1_connect.yaml</span></code>.
 For HTTP/2 CONNECT run <code class="docutils literal notranslate"><span class="pre">bazel-bin/source/exe/envoy-static</span> <span class="pre">--config-path</span> <span class="pre">configs/encapsulate_in_http2_connect.yaml</span> <span class="pre">--base-id</span> <span class="pre">1</span></code>
@@ -351,8 +350,8 @@ stripping the CONNECT headers (not needed for POST request), and forwarding the 
 upstream, in this case to google.com.</p>
 <p>Envoy waits for the HTTP tunnel to be established (i.e. a successful response to the  CONNECT request is received),
 before start streaming the downstream TCP data to the upstream.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

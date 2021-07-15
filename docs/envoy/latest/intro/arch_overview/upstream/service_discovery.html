@@ -4,11 +4,10 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Service discovery &mdash; envoy 1.20.0-dev-b62dae documentation</title>
+  <title>Service discovery &mdash; envoy 1.20.0-dev-eb18f0 documentation</title>
   
 
   
@@ -68,7 +67,7 @@
 
           
             
-            <img src="../../../_static/_static/img/envoy-logo.png" class="logo" alt="Logo"/>
+            <img src="../../../_static/img/envoy-logo.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -76,7 +75,7 @@
             
             
               <div class="version">
-                1.20.0-dev-b62dae
+                1.20.0-dev-eb18f0
               </div>
             
           
@@ -216,18 +215,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="service-discovery">
+  <div class="section" id="service-discovery">
 <span id="arch-overview-service-discovery"></span><h1>Service discovery<a class="headerlink" href="#service-discovery" title="Permalink to this headline">¶</a></h1>
 <p>When an upstream cluster is defined in the <a class="reference internal" href="../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-msg-config-cluster-v3-cluster"><span class="std std-ref">configuration</span></a>,
 Envoy needs to know how to resolve the members of the cluster. This is known as <em>service discovery</em>.</p>
-<section id="supported-service-discovery-types">
+<div class="section" id="supported-service-discovery-types">
 <span id="arch-overview-service-discovery-types"></span><h2>Supported service discovery types<a class="headerlink" href="#supported-service-discovery-types" title="Permalink to this headline">¶</a></h2>
-<section id="static">
+<div class="section" id="static">
 <span id="arch-overview-service-discovery-types-static"></span><h3>Static<a class="headerlink" href="#static" title="Permalink to this headline">¶</a></h3>
 <p>Static is the simplest service discovery type. The configuration explicitly specifies the resolved
 network name (IP address/port, unix domain socket, etc.) of each upstream host.</p>
-</section>
-<section id="strict-dns">
+</div>
+<div class="section" id="strict-dns">
 <span id="arch-overview-service-discovery-types-strict-dns"></span><h3>Strict DNS<a class="headerlink" href="#strict-dns" title="Permalink to this headline">¶</a></h3>
 <p>When using strict DNS service discovery, Envoy will continuously and asynchronously resolve the
 specified DNS targets. Each returned IP address in the DNS result will be considered an explicit
@@ -250,8 +249,8 @@ will be used as the cluster’s DNS refresh rate. <a class="reference internal" 
 defaults to 5000ms if not specified. The <a class="reference internal" href="../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-dns-failure-refresh-rate"><span class="std std-ref">dns_failure_refresh_rate</span></a>
 controls the refresh frequency during failures, and, if not configured, the DNS refresh rate will be used.</p>
 <p>DNS resolving emits <a class="reference internal" href="../../../configuration/upstream/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats"><span class="std std-ref">cluster statistics</span></a> fields <em>update_attempt</em>, <em>update_success</em> and <em>update_failure</em>.</p>
-</section>
-<section id="logical-dns">
+</div>
+<div class="section" id="logical-dns">
 <span id="arch-overview-service-discovery-types-logical-dns"></span><h3>Logical DNS<a class="headerlink" href="#logical-dns" title="Permalink to this headline">¶</a></h3>
 <p>Logical DNS uses a similar asynchronous resolution mechanism to strict DNS. However, instead of
 strictly taking the results of the DNS query and assuming that they comprise the entire upstream
@@ -275,8 +274,8 @@ will be used as the cluster’s DNS refresh rate. <a class="reference internal" 
 defaults to 5000ms if not specified. The <a class="reference internal" href="../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-dns-failure-refresh-rate"><span class="std std-ref">dns_failure_refresh_rate</span></a>
 controls the refresh frequency during failures, and, if not configured, the DNS refresh rate will be used.</p>
 <p>DNS resolving emits <a class="reference internal" href="../../../configuration/upstream/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats"><span class="std std-ref">cluster statistics</span></a> fields <em>update_attempt</em>, <em>update_success</em> and <em>update_failure</em>.</p>
-</section>
-<section id="original-destination">
+</div>
+<div class="section" id="original-destination">
 <span id="arch-overview-service-discovery-types-original-destination"></span><h3>Original destination<a class="headerlink" href="#original-destination" title="Permalink to this headline">¶</a></h3>
 <p>Original destination cluster can be used when incoming connections are redirected to Envoy either
 via an iptables REDIRECT or TPROXY target or with Proxy Protocol. In these cases requests routed
@@ -288,8 +287,8 @@ Connections to upstream hosts are pooled and unused hosts are flushed out when t
 Envoy can also pickup the original destination from a <a class="reference internal" href="load_balancing/original_dst.html#arch-overview-load-balancing-types-original-destination-request-header"><span class="std std-ref">HTTP header</span></a>.
 Original destination service discovery must be used with the original destination <a class="reference internal" href="load_balancing/original_dst.html#arch-overview-load-balancing-types-original-destination"><span class="std std-ref">load
 balancer</span></a>.</p>
-</section>
-<section id="endpoint-discovery-service-eds">
+</div>
+<div class="section" id="endpoint-discovery-service-eds">
 <span id="arch-overview-service-discovery-types-eds"></span><h3>Endpoint discovery service (EDS)<a class="headerlink" href="#endpoint-discovery-service-eds" title="Permalink to this headline">¶</a></h3>
 <p>The <em>endpoint discovery service</em> is a <a class="reference internal" href="../../../configuration/overview/xds_api.html#config-overview-management-server"><span class="std std-ref">xDS management server based on gRPC or REST-JSON API server</span></a> used by Envoy to fetch cluster members. The cluster members are called
 “endpoint” in Envoy terminology. For each cluster, Envoy fetch the endpoints from the discovery service. EDS is the
@@ -305,17 +304,17 @@ by the Envoy mesh during load balancing, statistic gathering, etc.</p></li>
 <a class="reference internal" href="../operations/dynamic_configuration.html#arch-overview-dynamic-config"><span class="std std-ref">other discovery services</span></a>
 in both <a class="reference external" href="https://github.com/envoyproxy/java-control-plane">Java</a>
 and <a class="reference external" href="https://github.com/envoyproxy/go-control-plane">Go</a>.</p>
-</section>
-<section id="custom-cluster">
+</div>
+<div class="section" id="custom-cluster">
 <span id="arch-overview-service-discovery-types-custom"></span><h3>Custom cluster<a class="headerlink" href="#custom-cluster" title="Permalink to this headline">¶</a></h3>
 <p>Envoy also supports custom cluster discovery mechanism. Custom clusters are specified using
 <a class="reference internal" href="../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-cluster-type"><span class="std std-ref">cluster_type field</span></a> on the cluster configuration.</p>
 <p>Generally active health checking is used in conjunction with the eventually consistent service
 discovery service data to making load balancing and routing decisions. This is discussed further in
 the following section.</p>
-</section>
-</section>
-<section id="on-eventually-consistent-service-discovery">
+</div>
+</div>
+<div class="section" id="on-eventually-consistent-service-discovery">
 <span id="arch-overview-service-discovery-eventually-consistent"></span><h2>On eventually consistent service discovery<a class="headerlink" href="#on-eventually-consistent-service-discovery" title="Permalink to this headline">¶</a></h2>
 <p>Many existing RPC systems treat service discovery as a fully consistent process. To this end, they
 use fully consistent leader election backing stores such as Zookeeper, etcd, Consul, etc. Our
@@ -371,8 +370,8 @@ discovery data.</p>
 is the only state in which Envoy will purge host data.</p>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

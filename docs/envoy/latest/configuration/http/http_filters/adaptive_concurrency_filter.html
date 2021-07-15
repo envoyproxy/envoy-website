@@ -4,11 +4,10 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Adaptive Concurrency &mdash; envoy 1.20.0-dev-b62dae documentation</title>
+  <title>Adaptive Concurrency &mdash; envoy 1.20.0-dev-eb18f0 documentation</title>
   
 
   
@@ -69,7 +68,7 @@
 
           
             
-            <img src="../../../_static/_static/img/envoy-logo.png" class="logo" alt="Logo"/>
+            <img src="../../../_static/img/envoy-logo.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -77,7 +76,7 @@
             
             
               <div class="version">
-                1.20.0-dev-b62dae
+                1.20.0-dev-eb18f0
               </div>
             
           
@@ -243,7 +242,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="adaptive-concurrency">
+  <div class="section" id="adaptive-concurrency">
 <span id="config-http-filters-adaptive-concurrency"></span><h1>Adaptive Concurrency<a class="headerlink" href="#adaptive-concurrency" title="Permalink to this headline">¶</a></h1>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
@@ -251,23 +250,23 @@
 </div>
 <p>This filter should be configured with the name <code class="docutils literal notranslate"><span class="pre">envoy.filters.http.adaptive_concurrency</span></code>.</p>
 <p>See the <a class="reference internal" href="../../../api-v3/extensions/filters/http/adaptive_concurrency/v3/adaptive_concurrency.proto.html#envoy-v3-api-msg-extensions-filters-http-adaptive-concurrency-v3-adaptiveconcurrency"><span class="std std-ref">v3 API reference</span></a> for details on each configuration parameter.</p>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>The adaptive concurrency filter dynamically adjusts the allowed number of requests that can be
 outstanding (concurrency) to all hosts in a given cluster at any time. Concurrency values are
 calculated using latency sampling of completed requests and comparing the measured samples in a time
 window against the expected latency for hosts in the cluster.</p>
-</section>
-<section id="concurrency-controllers">
+</div>
+<div class="section" id="concurrency-controllers">
 <h2>Concurrency Controllers<a class="headerlink" href="#concurrency-controllers" title="Permalink to this headline">¶</a></h2>
 <p>Concurrency controllers implement the algorithm responsible for making forwarding decisions for each
 request and recording latency samples to use in the calculation of the concurrency limit.</p>
-<section id="gradient-controller">
+<div class="section" id="gradient-controller">
 <h3>Gradient Controller<a class="headerlink" href="#gradient-controller" title="Permalink to this headline">¶</a></h3>
 <p>The gradient controller makes forwarding decisions based on a periodically measured ideal round-trip
 time (minRTT) for an upstream.</p>
 <p><a class="reference internal" href="../../../api-v3/extensions/filters/http/adaptive_concurrency/v3/adaptive_concurrency.proto.html#envoy-v3-api-msg-extensions-filters-http-adaptive-concurrency-v3-gradientcontrollerconfig"><span class="std std-ref">v3 API reference</span></a></p>
-<section id="calculating-the-minrtt">
+<div class="section" id="calculating-the-minrtt">
 <h4>Calculating the minRTT<a class="headerlink" href="#calculating-the-minrtt" title="Permalink to this headline">¶</a></h4>
 <p>The minRTT is periodically measured by only allowing a very low outstanding request count to an
 upstream cluster and measuring the latency under these ideal conditions. The calculation is also
@@ -291,8 +290,8 @@ in the cluster will have a higher likelihood of success in this scenario.</p>
 </div>
 <p>Once calculated, the minRTT is then used in the calculation of a value referred to as the
 <em>gradient</em>.</p>
-</section>
-<section id="the-gradient">
+</div>
+<div class="section" id="the-gradient">
 <h4>The Gradient<a class="headerlink" href="#the-gradient" title="Permalink to this headline">¶</a></h4>
 <p>The gradient is calculated using summarized sampled request latencies (sampleRTT):</p>
 <div class="math notranslate nohighlight">
@@ -307,8 +306,8 @@ before decreasing the gradient value.</p>
 <p>The gradient value is then used to update the concurrency limit via:</p>
 <div class="math notranslate nohighlight">
 \[limit_{new} = gradient * limit_{old} + headroom\]</div>
-</section>
-<section id="concurrency-limit-headroom">
+</div>
+<div class="section" id="concurrency-limit-headroom">
 <h4>Concurrency Limit Headroom<a class="headerlink" href="#concurrency-limit-headroom" title="Permalink to this headline">¶</a></h4>
 <p>The headroom value is necessary as a driving factor to increase the concurrency limit when the
 sampleRTT is in the same ballpark as the minRTT. This value must be present in the limit
@@ -317,10 +316,10 @@ minRTT latency. In the absence of a headroom value, the concurrency limit could 
 at an unnecessary small value if the sampleRTT and minRTT are close to each other.</p>
 <p>Because the headroom value is so necessary to the proper function for the gradient controller, the
 headroom value is unconfigurable and pinned to the square-root of the concurrency limit.</p>
-</section>
-</section>
-</section>
-<section id="limitations">
+</div>
+</div>
+</div>
+<div class="section" id="limitations">
 <h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
 <p>The adaptive concurrency filter’s control loop relies on latency measurements
 and adjustments to the concurrency limit based on those measurements. Because of
@@ -334,8 +333,8 @@ there must not be requests destined for a cluster that are not decoded by
 the adaptive concurrency filter.</p></li>
 </ol>
 </div></blockquote>
-</section>
-<section id="example-configuration">
+</div>
+<div class="section" id="example-configuration">
 <h2>Example Configuration<a class="headerlink" href="#example-configuration" title="Permalink to this headline">¶</a></h2>
 <p>An example filter configuration can be found below. Not all fields are required and many of the
 fields can be overridden via runtime settings.</p>
@@ -373,8 +372,8 @@ minRTT recalculation. The delay is dictated by the jitter value.</p></li>
 filter chain to prevent latency sampling of health checks. If health check traffic is sampled,
 it could potentially affect the accuracy of the minRTT measurements.</p>
 </div>
-</section>
-<section id="runtime">
+</div>
+<div class="section" id="runtime">
 <h2>Runtime<a class="headerlink" href="#runtime" title="Permalink to this headline">¶</a></h2>
 <p>The adaptive concurrency filter supports the following runtime settings:</p>
 <dl class="simple">
@@ -403,14 +402,14 @@ clamped to the range [0,100].</p>
 <dt>adaptive_concurrency.gradient_controller.min_concurrency</dt><dd><p>Overrides the concurrency that is pinned while measuring the minRTT.</p>
 </dd>
 </dl>
-</section>
-<section id="statistics">
+</div>
+<div class="section" id="statistics">
 <h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
 <p>The adaptive concurrency filter outputs statistics in the
 <em>http.&lt;stat_prefix&gt;.adaptive_concurrency.</em> namespace. The <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-stat-prefix"><span class="std std-ref">stat prefix</span></a>
 comes from the owning HTTP connection manager. Statistics are specific to the concurrency
 controllers.</p>
-<section id="gradient-controller-statistics">
+<div class="section" id="gradient-controller-statistics">
 <h3>Gradient Controller Statistics<a class="headerlink" href="#gradient-controller-statistics" title="Permalink to this headline">¶</a></h3>
 <p>The gradient controller uses the namespace
 <em>http.&lt;stat_prefix&gt;.adaptive_concurrency.gradient_controller</em>.</p>
@@ -452,9 +451,9 @@ controllers.</p>
 </tr>
 </tbody>
 </table>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

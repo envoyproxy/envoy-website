@@ -4,11 +4,10 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Sharing data between filters &mdash; envoy 1.20.0-dev-b62dae documentation</title>
+  <title>Sharing data between filters &mdash; envoy 1.20.0-dev-eb18f0 documentation</title>
   
 
   
@@ -68,7 +67,7 @@
 
           
             
-            <img src="../../../_static/_static/img/envoy-logo.png" class="logo" alt="Logo"/>
+            <img src="../../../_static/img/envoy-logo.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -76,7 +75,7 @@
             
             
               <div class="version">
-                1.20.0-dev-b62dae
+                1.20.0-dev-eb18f0
               </div>
             
           
@@ -208,16 +207,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="sharing-data-between-filters">
+  <div class="section" id="sharing-data-between-filters">
 <span id="arch-overview-data-sharing-between-filters"></span><h1>Sharing data between filters<a class="headerlink" href="#sharing-data-between-filters" title="Permalink to this headline">¶</a></h1>
 <p>Envoy provides the following mechanisms for the transfer of configuration,
 metadata and per-request/connection state to, from and between filters, as
 well as to other core subsystems (e.g., access logging).</p>
-<section id="static-state">
+<div class="section" id="static-state">
 <h2>Static State<a class="headerlink" href="#static-state" title="Permalink to this headline">¶</a></h2>
 <p>Static state is any immutable state specified at configuration load time
 (e.g., through xDS). There are three categories of static state:</p>
-<section id="metadata">
+<div class="section" id="metadata">
 <h3>Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h3>
 <p>Several parts of Envoy configuration (e.g. listeners, routes, clusters)
 contain a <a class="reference internal" href="../../../api-v3/config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-metadata"><span class="std std-ref">metadata</span></a> where arbitrary
@@ -230,8 +229,8 @@ HTTP routes use the metadata to indicate the labels on the endpoints
 corresponding to the weighted cluster. Another example, the subset load
 balancer uses the metadata from the route entry corresponding to the
 weighted cluster to select appropriate endpoints in a cluster</p>
-</section>
-<section id="typed-metadata">
+</div>
+<div class="section" id="typed-metadata">
 <h3>Typed Metadata<a class="headerlink" href="#typed-metadata" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference internal" href="../../../api-v3/config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-metadata"><span class="std std-ref">Metadata</span></a> as such is untyped. Before
 acting on the metadata, callers typically convert it to a typed class
@@ -254,8 +253,8 @@ into an instance of <code class="docutils literal notranslate"><span class="pre"
 metadata is not a new source of metadata. It is obtained from metadata that
 is specified as part of the configuration. A <code class="docutils literal notranslate"><span class="pre">FilterState::Object</span></code> implements
 <code class="docutils literal notranslate"><span class="pre">serializeAsProto</span></code> method can be configured in access loggers to log it.</p>
-</section>
-<section id="http-per-route-filter-configuration">
+</div>
+<div class="section" id="http-per-route-filter-configuration">
 <h3>HTTP Per-Route Filter Configuration<a class="headerlink" href="#http-per-route-filter-configuration" title="Permalink to this headline">¶</a></h3>
 <p>In HTTP routes, <a class="reference internal" href="../../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-virtualhost-typed-per-filter-config"><span class="std std-ref">typed_per_filter_config</span></a> allows HTTP filters
 to have virtualhost/route-specific configuration in addition to a global
@@ -270,9 +269,9 @@ manager iterates over this map and invokes the filter factory interface
 convert it into a typed class object that’s stored with the route
 itself. HTTP filters can then query the route-specific filter config during
 request processing.</p>
-</section>
-</section>
-<section id="dynamic-state">
+</div>
+</div>
+<div class="section" id="dynamic-state">
 <h2>Dynamic State<a class="headerlink" href="#dynamic-state" title="Permalink to this headline">¶</a></h2>
 <p>Dynamic state is generated per network connection or per HTTP
 stream. Dynamic state can be mutable if desired by the filter generating
@@ -285,8 +284,8 @@ the class definition (e.g., HTTP protocol, requested server name, etc.). In
 addition, it provides a facility to store typed objects in a map
 (<code class="docutils literal notranslate"><span class="pre">map&lt;string,</span> <span class="pre">FilterState::Object&gt;</span></code>). The state stored per filter can be
 either write-once (immutable), or write-many (mutable).</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

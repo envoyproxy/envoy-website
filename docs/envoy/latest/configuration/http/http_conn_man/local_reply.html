@@ -4,11 +4,10 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Local reply modification &mdash; envoy 1.20.0-dev-b62dae documentation</title>
+  <title>Local reply modification &mdash; envoy 1.20.0-dev-eb18f0 documentation</title>
   
 
   
@@ -68,7 +67,7 @@
 
           
             
-            <img src="../../../_static/_static/img/envoy-logo.png" class="logo" alt="Logo"/>
+            <img src="../../../_static/img/envoy-logo.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -76,7 +75,7 @@
             
             
               <div class="version">
-                1.20.0-dev-b62dae
+                1.20.0-dev-eb18f0
               </div>
             
           
@@ -215,7 +214,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="local-reply-modification">
+  <div class="section" id="local-reply-modification">
 <span id="config-http-conn-man-local-reply"></span><h1>Local reply modification<a class="headerlink" href="#local-reply-modification" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="../../../intro/arch_overview/http/http_connection_management.html#arch-overview-http-conn-man"><span class="std std-ref">HTTP connection manager</span></a> supports modification of local reply which is response returned by Envoy itself.</p>
 <p>Features:</p>
@@ -223,7 +222,7 @@
 <li><p><a class="reference internal" href="#config-http-conn-man-local-reply-modification"><span class="std std-ref">Local reply content modification</span></a>.</p></li>
 <li><p><a class="reference internal" href="#config-http-conn-man-local-reply-format"><span class="std std-ref">Local reply format modification</span></a>.</p></li>
 </ul>
-<section id="local-reply-content-modification">
+<div class="section" id="local-reply-content-modification">
 <span id="config-http-conn-man-local-reply-modification"></span><h2>Local reply content modification<a class="headerlink" href="#local-reply-content-modification" title="Permalink to this headline">¶</a></h2>
 <p>The local response content returned by Envoy can be customized. A list of <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-localreplyconfig-mappers"><span class="std std-ref">mappers</span></a> can be specified. Each mapper must have a <a class="reference internal" href="../../../api-v3/config/accesslog/v3/accesslog.proto.html#envoy-v3-api-field-config-accesslog-v3-accesslog-filter"><span class="std std-ref">filter</span></a>. It may have following rewrite rules; a <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-responsemapper-status-code"><span class="std std-ref">status_code</span></a> rule to rewrite response code, a <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-responsemapper-headers-to-add"><span class="std std-ref">headers_to_add</span></a> rule to add/override/append response HTTP headers, a <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-responsemapper-body"><span class="std std-ref">body</span></a> rule to rewrite the local reply body and a <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-responsemapper-body-format-override"><span class="std std-ref">body_format_override</span></a> to specify the response body format. Envoy checks each <code class="docutils literal notranslate"><span class="pre">mapper</span></code> according to the specified order until the first one is matched. If a <code class="docutils literal notranslate"><span class="pre">mapper</span></code> is matched, all its rewrite rules will apply.</p>
 <p>Example of a LocalReplyConfig</p>
@@ -246,8 +245,8 @@
 </pre></div>
 </div>
 <p>In above example, if the status_code is 400,  it will be rewritten to 401, the response body will be rewritten to as “not allowed”.</p>
-</section>
-<section id="local-reply-format-modification">
+</div>
+<div class="section" id="local-reply-format-modification">
 <span id="config-http-conn-man-local-reply-format"></span><h2>Local reply format modification<a class="headerlink" href="#local-reply-format-modification" title="Permalink to this headline">¶</a></h2>
 <p>The response body content type can be customized. If not specified, the content type is plain/text. There are two <code class="docutils literal notranslate"><span class="pre">body_format</span></code> fields; one is the <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-localreplyconfig-body-format"><span class="std std-ref">body_format</span></a> field in the <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-msg-extensions-filters-network-http-connection-manager-v3-localreplyconfig"><span class="std std-ref">LocalReplyConfig</span></a> message and the other <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-responsemapper-body-format-override"><span class="std std-ref">body_format_override</span></a> field in the <code class="docutils literal notranslate"><span class="pre">mapper</span></code>. The latter is only used when its mapper is matched. The former is used if there is no any matched mappers, or the matched mapper doesn’t have the <code class="docutils literal notranslate"><span class="pre">body_format</span></code> specified.</p>
 <p>Local reply format can be specified as <a class="reference internal" href="../../../api-v3/config/core/v3/substitution_format_string.proto.html#envoy-v3-api-msg-config-core-v3-substitutionformatstring"><span class="std std-ref">SubstitutionFormatString</span></a>. It supports <a class="reference internal" href="../../../api-v3/config/core/v3/substitution_format_string.proto.html#envoy-v3-api-field-config-core-v3-substitutionformatstring-text-format"><span class="std std-ref">text_format</span></a> and <a class="reference internal" href="../../../api-v3/config/core/v3/substitution_format_string.proto.html#envoy-v3-api-field-config-core-v3-substitutionformatstring-json-format"><span class="std std-ref">json_format</span></a>.</p>
@@ -278,8 +277,8 @@
 </pre></div>
 </div>
 <p>In above example, there is a <code class="docutils literal notranslate"><span class="pre">body_format_override</span></code> inside the first <code class="docutils literal notranslate"><span class="pre">mapper</span></code> with a filter matching <code class="docutils literal notranslate"><span class="pre">status_code</span> <span class="pre">==</span> <span class="pre">400</span></code>. It generates the response body in plain text format by concatenating %LOCAL_REPLY_BODY% with the <code class="docutils literal notranslate"><span class="pre">:path</span></code> request header. It is only used when the first mapper is matched. There is a <code class="docutils literal notranslate"><span class="pre">body_format</span></code> at the bottom of the config and at the same level as field <code class="docutils literal notranslate"><span class="pre">mappers</span></code>. It is used when non of the mappers is matched or the matched mapper doesn’t have its own <code class="docutils literal notranslate"><span class="pre">body_format_override</span></code> specified.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

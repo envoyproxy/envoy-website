@@ -4,11 +4,10 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Cache filter &mdash; envoy 1.20.0-dev-b62dae documentation</title>
+  <title>Cache filter &mdash; envoy 1.20.0-dev-eb18f0 documentation</title>
   
 
   
@@ -68,7 +67,7 @@
 
           
             
-            <img src="../../_static/_static/img/envoy-logo.png" class="logo" alt="Logo"/>
+            <img src="../../_static/img/envoy-logo.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -76,7 +75,7 @@
             
             
               <div class="version">
-                1.20.0-dev-b62dae
+                1.20.0-dev-eb18f0
               </div>
             
           
@@ -224,9 +223,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="cache-filter">
+  <div class="section" id="cache-filter">
 <span id="install-sandboxes-cache-filter"></span><h1>Cache filter<a class="headerlink" href="#cache-filter" title="Permalink to this headline">¶</a></h1>
-<aside class="sidebar">
+<div class="sidebar">
 <p class="sidebar-title">Requirements</p>
 <dl class="simple">
 <dt><a class="reference internal" href="setup.html#start-sandboxes-setup"><span class="std std-ref">Sandbox environment</span></a></dt><dd><p>Setup your sandbox environment with Docker and Docker Compose,
@@ -235,7 +234,7 @@ and clone the Envoy repository with Git.</p>
 <dt><a class="reference internal" href="setup.html#start-sandboxes-setup-curl"><span class="std std-ref">curl</span></a></dt><dd><p>Used to make <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> requests.</p>
 </dd>
 </dl>
-</aside>
+</div>
 <p>In this example, we demonstrate how HTTP caching can be utilized in Envoy by using the Cache Filter.
 The setup of this sandbox is based on the setup of the <a class="reference internal" href="front_proxy.html#install-sandboxes-front-proxy"><span class="std std-ref">Front Proxy sandbox</span></a>.</p>
 <p>All incoming requests are routed via the front Envoy, which acts as a reverse proxy sitting on
@@ -252,7 +251,7 @@ An Etag is computed for every response for validation purposes, which only depen
 Cached responses can be identified by having an <code class="docutils literal notranslate"><span class="pre">age</span></code> header. Validated responses can be identified by having a generation date older than the <code class="docutils literal notranslate"><span class="pre">date</span></code> header;
 as when a response is validated the <code class="docutils literal notranslate"><span class="pre">date</span></code> header is updated, while the body stays the same. Validated responses do not have an <code class="docutils literal notranslate"><span class="pre">age</span></code> header.
 Responses served from the backend service have no <code class="docutils literal notranslate"><span class="pre">age</span></code> header, and their <code class="docutils literal notranslate"><span class="pre">date</span></code> header is the same as their generation date.</p>
-<section id="step-1-start-all-of-our-containers">
+<div class="section" id="step-1-start-all-of-our-containers">
 <h2>Step 1: Start all of our containers<a class="headerlink" href="#step-1-start-all-of-our-containers" title="Permalink to this headline">¶</a></h2>
 <p>Change to the <code class="docutils literal notranslate"><span class="pre">examples/cache</span></code> directory.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">pwd</span>
@@ -268,8 +267,8 @@ Responses served from the backend service have no <code class="docutils literal 
 <span class="go">cache_service2_1      /bin/sh -c /usr/local/bin/ ... Up      10000/tcp, 8000/tcp</span>
 </pre></div>
 </div>
-</section>
-<section id="step-2-test-envoy-s-http-caching-capabilities">
+</div>
+<div class="section" id="step-2-test-envoy-s-http-caching-capabilities">
 <h2>Step 2: Test Envoy’s HTTP caching capabilities<a class="headerlink" href="#step-2-test-envoy-s-http-caching-capabilities" title="Permalink to this headline">¶</a></h2>
 <p>You can now send a request to both services via the <code class="docutils literal notranslate"><span class="pre">front-envoy</span></code>. Note that since the two services have different routes,
 identical requests to different services have different cache entries (i.e. a request sent to service 2 will not be served by a cached
@@ -299,9 +298,9 @@ If found to be updated, the new response is served (and cached). Otherwise, the 
 </li>
 </ul>
 <p>You can change the responses’ headers and bodies (or add new ones) while the sandbox is running to experiment.</p>
-<section id="example-responses">
+<div class="section" id="example-responses">
 <h3>Example responses<a class="headerlink" href="#example-responses" title="Permalink to this headline">¶</a></h3>
-<section id="valid-for-minute">
+<div class="section" id="valid-for-minute">
 <h4>1. valid-for-minute<a class="headerlink" href="#valid-for-minute" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl -i localhost:8000/service/1/valid-for-minute
 <span class="go">HTTP/1.1 200 OK</span>
@@ -360,8 +359,8 @@ Also, no <code class="docutils literal notranslate"><span class="pre">age</span>
 <p>Every time the response is validated, it stays fresh for another minute.
 If the response body changes while the cached response is still fresh,
 the cached response will still be served. The cached response will only be updated when it is no longer fresh.</p>
-</section>
-<section id="private">
+</div>
+<div class="section" id="private">
 <h4>2. private<a class="headerlink" href="#private" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl -i localhost:8000/service/1/private
 <span class="go">HTTP/1.1 200 OK</span>
@@ -379,8 +378,8 @@ the cached response will still be served. The cached response will only be updat
 </div>
 <p>No matter how many times you make this request, you will always receive a new response;
 new date of generation, new <code class="docutils literal notranslate"><span class="pre">date</span></code> header, and no <code class="docutils literal notranslate"><span class="pre">age</span></code> header.</p>
-</section>
-<section id="no-cache">
+</div>
+<div class="section" id="no-cache">
 <h4>3. no-cache<a class="headerlink" href="#no-cache" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl -i localhost:8000/service/1/no-cache
 <span class="go">HTTP/1.1 200 OK</span>
@@ -439,10 +438,10 @@ The new response will be cached for subsequent requests.</p>
 </dd>
 </dl>
 </div>
-</section>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
+</div>
 
 
            </div>
