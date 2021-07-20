@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>1.20.0 (Pending) &mdash; envoy 1.20.0-dev-e0380a documentation</title>
+  <title>1.20.0 (Pending) &mdash; envoy 1.20.0-dev-ba474a documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.20.0-dev-e0380a
+                1.20.0-dev-ba474a
               </div>
             
           
@@ -262,6 +262,16 @@
 which defines the minimal number of headers in a request/response/trailers required for using a
 dictionary in addition to the list. Setting the <cite>envoy.http.headermap.lazy_map_min_size</cite> runtime
 feature to a non-negative number will override the default value.</p></li>
+<li><p>listener: added the <a class="reference internal" href="../api-v3/config/listener/v3/listener.proto.html#envoy-v3-api-field-config-listener-v3-listener-enable-reuse-port"><span class="std std-ref">enable_reuse_port</span></a>
+field and changed the default for reuse_port from false to true, as the feature is now well
+supported on the majority of production Linux kernels in use. The default change is aware of hot
+restart, as otherwise the change would not be backwards compatible between restarts. This means
+that hot restarting on to a new binary will retain the default of false until the binary undergoes
+a full restart. To retain the previous behavior, either explicitly set the new configuration
+field to false, or set the runtime feature flag <cite>envoy.reloadable_features.listener_reuse_port_default_enabled</cite>
+to false. As part of this change, the use of reuse_port for TCP listeners on both macOS and
+Windows has been disabled due to suboptimal behavior. See the field documentation for more
+information.</p></li>
 </ul>
 </div>
 <div class="section" id="bug-fixes">
@@ -291,6 +301,9 @@ feature to a non-negative number will override the default value.</p></li>
 <li><p>http: the HeaderMatcher fields <a class="reference internal" href="../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-headermatcher-exact-match"><span class="std std-ref">exact_match</span></a>, <a class="reference internal" href="../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-headermatcher-safe-regex-match"><span class="std std-ref">safe_regex_match</span></a>,
 <a class="reference internal" href="../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-headermatcher-prefix-match"><span class="std std-ref">prefix_match</span></a>, <a class="reference internal" href="../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-headermatcher-suffix-match"><span class="std std-ref">suffix_match</span></a> and
 <a class="reference internal" href="../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-headermatcher-contains-match"><span class="std std-ref">contains_match</span></a> are deprecated by <a class="reference internal" href="../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-headermatcher-string-match"><span class="std std-ref">string_match</span></a>.</p></li>
+<li><p>listener: <a class="reference internal" href="../api-v3/config/listener/v3/listener.proto.html#envoy-v3-api-field-config-listener-v3-listener-reuse-port"><span class="std std-ref">reuse_port</span></a> has been
+deprecated in favor of <a class="reference internal" href="../api-v3/config/listener/v3/listener.proto.html#envoy-v3-api-field-config-listener-v3-listener-enable-reuse-port"><span class="std std-ref">enable_reuse_port</span></a>.
+At the same time, the default has been changed from false to true. See above for more information.</p></li>
 </ul>
 </div>
 </div>

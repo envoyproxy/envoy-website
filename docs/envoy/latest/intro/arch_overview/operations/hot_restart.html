@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Hot restart &mdash; envoy 1.20.0-dev-e0380a documentation</title>
+  <title>Hot restart &mdash; envoy 1.20.0-dev-ba474a documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.20.0-dev-e0380a
+                1.20.0-dev-ba474a
               </div>
             
           
@@ -245,6 +245,19 @@ independently.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This feature is not supported on Windows.</p>
+</div>
+<div class="section" id="socket-handling">
+<h2>Socket handling<a class="headerlink" href="#socket-handling" title="Permalink to this headline">¶</a></h2>
+<p>By default, Envoy uses <a class="reference internal" href="../../../api-v3/config/listener/v3/listener.proto.html#envoy-v3-api-field-config-listener-v3-listener-enable-reuse-port"><span class="std std-ref">reuse_port</span></a> sockets on Linux for better
+performance. This feature workers correctly during hot restart because Envoy passes each socket
+to the new process by worker index. Thus, no connections are dropped in the accept queues of
+the draining process.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>In the uncommon case in which concurrency changes during hot restart, no connections will be
+dropped if concurrency increases. However, if concurrency decreases some connections may be
+dropped in the accept queues of the old process workers.</p>
+</div>
 </div>
 </div>
 
