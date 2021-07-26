@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>External Processing &mdash; envoy 1.20.0-dev-683408 documentation</title>
+  <title>External Processing &mdash; envoy 1.20.0-dev-b4027c documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.20.0-dev-683408
+                1.20.0-dev-b4027c
               </div>
             
           
@@ -247,16 +247,25 @@
 <li><p><a class="reference internal" href="../../../api-v3/extensions/filters/http/ext_proc/v3alpha/ext_proc.proto.html#envoy-v3-api-msg-extensions-filters-http-ext-proc-v3alpha-externalprocessor"><span class="std std-ref">Http filter v3 API reference</span></a></p></li>
 <li><p>This filter should be configured with the name <em>envoy.filters.http.ext_proc</em></p></li>
 </ul>
-<p>The external processing filter calls an external gRPC service to enable it to participate in
-HTTP filter chain processing. The filter is called using a gRPC bidirectional stream, and allows
-the filter to make decisions in real time about what parts of the HTTP request / response stream
-are sent to the filter for processing.</p>
+<p>The external processing filter connects an external service, called an “external processor,”
+to the filter chain. The processing service itself implements a gRPC interface that allows
+it to respond to events in the lifecycle of an HTTP request / response by examining
+and modifying the headers, body, and trailers of each message, or by returning a brand-new response.</p>
 <p>The protocol itself is based on a bidirectional gRPC stream. Envoy will send the
-server
+external processor
 <a class="reference internal" href="../../../api-v3/service/ext_proc/v3alpha/external_processor.proto.html#envoy-v3-api-msg-service-ext-proc-v3alpha-processingrequest"><span class="std std-ref">ProcessingRequest</span></a>
-messages, and the server must reply with
-<a class="reference internal" href="../../../api-v3/service/ext_proc/v3alpha/external_processor.proto.html#envoy-v3-api-msg-service-ext-proc-v3alpha-processingresponse"><span class="std std-ref">ProcessingResponse</span></a>.</p>
-<p>This filter is a work in progress. In its current state, it actually does nothing.</p>
+messages, and the processor must reply with
+<a class="reference internal" href="../../../api-v3/service/ext_proc/v3alpha/external_processor.proto.html#envoy-v3-api-msg-service-ext-proc-v3alpha-processingresponse"><span class="std std-ref">ProcessingResponse</span></a>
+messages.</p>
+<p>Configuration options are provided to control which events are sent to the processor.
+This way, the processor may receive headers, body, and trailers for both
+request and response in any combination. The processor may also change this configuration
+on a message-by-message basis. This allows for the construction of sophisticated processors
+that decide how to respond to each message individually to eliminate unnecessary
+stream requests from the proxy.</p>
+<p>This filter is a work in progress. Most of the major bits of functionality
+are complete. The updated list of supported features and implementation status may
+be found on the <a class="reference internal" href="../../../api-v3/extensions/filters/http/ext_proc/v3alpha/ext_proc.proto.html#envoy-v3-api-msg-extensions-filters-http-ext-proc-v3alpha-externalprocessor"><span class="std std-ref">reference page</span></a>.</p>
 <div class="section" id="statistics">
 <h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
 <p>This filter outputs statistics in the
