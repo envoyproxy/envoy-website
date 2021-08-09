@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>HTTP header manipulation &mdash; envoy 1.20.0-dev-7a9361 documentation</title>
+  <title>HTTP header manipulation &mdash; envoy 1.20.0-dev-57c172 documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.20.0-dev-7a9361
+                1.20.0-dev-57c172
               </div>
             
           
@@ -399,9 +399,14 @@ Given an HTTP request that has traveled through a series of zero or more proxies
 Envoy, the trusted client address is the earliest source IP address that is known to be
 accurate. The source IP address of the immediate downstream node’s connection to Envoy is
 trusted. XFF <em>sometimes</em> can be trusted. Malicious clients can forge XFF, but the last
-address in XFF can be trusted if it was put there by a trusted proxy. Alternatively, Envoy
-supports <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-original-ip-detection-extensions"><span class="std std-ref">extensions</span></a>
+address in XFF can be trusted if it was put there by a trusted proxy.</p>
+<p>Alternatively, Envoy supports
+<a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-original-ip-detection-extensions"><span class="std std-ref">extensions</span></a>
 for determining the <em>trusted client address</em> or original IP address.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The use of such extensions cannot be mixed with <em>use_remote_address</em> nor <em>xff_num_trusted_hops</em>.</p>
+</div>
 <p>Envoy’s default rules for determining the trusted client address (<em>before</em> appending anything
 to XFF) are:</p>
 <ul class="simple">
@@ -411,10 +416,8 @@ present in the request, the trusted client address is the <em>last</em> (rightmo
 node’s connection to Envoy.</p></li>
 </ul>
 <p>In an environment where there are one or more trusted proxies in front of an edge
-Envoy instance, the <a class="reference internal" href="../../../api-v3/extensions/http/original_ip_detection/xff/v3/xff.proto.html#envoy-v3-api-msg-extensions-http-original-ip-detection-xff-v3-xffconfig"><span class="std std-ref">XFF extension</span></a>
-can be configured via the <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-original-ip-detection-extensions"><span class="std std-ref">original_ip_detection_extensions field</span></a>
-to set the <em>xff_num_trusted_hops</em> option which controls the number of additional
-addresses that are to be trusted:</p>
+Envoy instance, the <em>xff_num_trusted_hops</em> configuration option can be used to trust
+additional addresses from XFF:</p>
 <ul class="simple">
 <li><p>If <em>use_remote_address</em> is false and <em>xff_num_trusted_hops</em> is set to a value <em>N</em> that is
 greater than zero, the trusted client address is the (N+1)th address from the right end

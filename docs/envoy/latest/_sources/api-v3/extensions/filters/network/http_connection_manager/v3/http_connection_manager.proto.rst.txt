@@ -36,7 +36,7 @@ HTTP connection manager :ref:`configuration overview <config_http_conn_man>`.
 extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
 ---------------------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.HttpConnectionManager proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L38>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.HttpConnectionManager proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L37>`
 
 
 .. code-block:: json
@@ -399,22 +399,6 @@ xff_num_trusted_hops
   is not specified. See the documentation for
   :ref:`config_http_conn_man_headers_x-forwarded-for` for more information.
   
-  .. note::
-     This field is deprecated and instead :ref:`original_ip_detection_extensions
-     <envoy_v3_api_field_extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.original_ip_detection_extensions>`
-     should be used to configure the :ref:`xff extension <envoy_v3_api_msg_extensions.http.original_ip_detection.xff.v3.XffConfig>`
-     to configure IP detection using the :ref:`config_http_conn_man_headers_x-forwarded-for` header. To replace
-     this field use a config like the following:
-  
-  .. code-block:: yaml
-  
-     original_ip_detection_extensions:
-     - name: envoy.http.original_ip_detection.xff
-       typed_config:
-         "@type": type.googleapis.com/envoy.extensions.http.original_ip_detection.xff.v3.XffConfig
-         xff_num_trusted_hops: 1
-  
-  
   
 .. _envoy_v3_api_field_extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.original_ip_detection_extensions:
 
@@ -428,6 +412,12 @@ original_ip_detection_extensions
   the request, the HCM will try the remaining extensions until one succeeds or rejects
   the request. If the request isn't rejected nor any extension succeeds, the HCM will
   fallback to using the remote address.
+  
+  .. WARNING::
+     Extensions cannot be used in conjunction with :ref:`use_remote_address
+     <envoy_v3_api_field_extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.use_remote_address>`
+     nor :ref:`xff_num_trusted_hops
+     <envoy_v3_api_field_extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.xff_num_trusted_hops>`.
   
   
   
@@ -672,7 +662,7 @@ strip_trailing_host_dot
 extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.Tracing
 -----------------------------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.Tracing proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L131>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.Tracing proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L130>`
 
 
 .. code-block:: json
@@ -763,7 +753,7 @@ provider
 Enum extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.Tracing.OperationName
 ------------------------------------------------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.Tracing.OperationName proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L135>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.Tracing.OperationName proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L134>`
 
 
 .. _envoy_v3_api_enum_value_extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.Tracing.OperationName.INGRESS:
@@ -784,7 +774,7 @@ EGRESS
 extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.InternalAddressConfig
 -------------------------------------------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.InternalAddressConfig proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L197>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.InternalAddressConfig proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L196>`
 
 
 .. code-block:: json
@@ -806,7 +796,7 @@ unix_sockets
 extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.SetCurrentClientCertDetails
 -------------------------------------------------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.SetCurrentClientCertDetails proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L207>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.SetCurrentClientCertDetails proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L206>`
 
 
 .. code-block:: json
@@ -863,7 +853,7 @@ uri
 extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.UpgradeConfig
 -----------------------------------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.UpgradeConfig proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L249>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.UpgradeConfig proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L248>`
 
 The configuration for HTTP upgrades.
 For each upgrade type desired, an UpgradeConfig must be added.
@@ -920,7 +910,7 @@ enabled
 Enum extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.CodecType
 ------------------------------------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.CodecType proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L42>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.CodecType proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L41>`
 
 
 .. _envoy_v3_api_enum_value_extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.CodecType.AUTO:
@@ -954,7 +944,7 @@ HTTP2
 Enum extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.ServerHeaderTransformation
 -----------------------------------------------------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.ServerHeaderTransformation proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L64>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.ServerHeaderTransformation proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L63>`
 
 
 .. _envoy_v3_api_enum_value_extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.ServerHeaderTransformation.OVERWRITE:
@@ -983,7 +973,7 @@ PASS_THROUGH
 Enum extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.ForwardClientCertDetails
 ---------------------------------------------------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.ForwardClientCertDetails proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L79>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.ForwardClientCertDetails proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L78>`
 
 How to handle the :ref:`config_http_conn_man_headers_x-forwarded-client-cert` (XFCC) HTTP
 header.
@@ -1028,7 +1018,7 @@ ALWAYS_FORWARD_ONLY
 Enum extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.PathWithEscapedSlashesAction
 -------------------------------------------------------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.PathWithEscapedSlashesAction proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L102>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.PathWithEscapedSlashesAction proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L101>`
 
 Determines the action for request that contain %2F, %2f, %5C or %5c sequences in the URI path.
 This operation occurs before URL normalization and the merge slashes transformations if they were enabled.
@@ -1080,7 +1070,7 @@ UNESCAPE_AND_FORWARD
 extensions.filters.network.http_connection_manager.v3.LocalReplyConfig
 ----------------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.LocalReplyConfig proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L723>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.LocalReplyConfig proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L711>`
 
 The configuration to customize local reply returned by Envoy.
 
@@ -1148,7 +1138,7 @@ body_format
 extensions.filters.network.http_connection_manager.v3.ResponseMapper
 --------------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.ResponseMapper proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L771>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.ResponseMapper proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L759>`
 
 The configuration to filter and change local response.
 
@@ -1202,7 +1192,7 @@ headers_to_add
 extensions.filters.network.http_connection_manager.v3.Rds
 ---------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.Rds proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L792>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.Rds proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L780>`
 
 
 .. code-block:: json
@@ -1234,7 +1224,7 @@ route_config_name
 extensions.filters.network.http_connection_manager.v3.ScopedRouteConfigurationsList
 -----------------------------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.ScopedRouteConfigurationsList proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L807>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.ScopedRouteConfigurationsList proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L795>`
 
 This message is used to work around the limitations with 'oneof' and repeated fields.
 
@@ -1256,7 +1246,7 @@ scoped_route_configurations
 extensions.filters.network.http_connection_manager.v3.ScopedRoutes
 ------------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.ScopedRoutes proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L816>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.ScopedRoutes proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L804>`
 
 
 .. code-block:: json
@@ -1320,7 +1310,7 @@ scoped_rds
 extensions.filters.network.http_connection_manager.v3.ScopedRoutes.ScopeKeyBuilder
 ----------------------------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.ScopedRoutes.ScopeKeyBuilder proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L829>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.ScopedRoutes.ScopeKeyBuilder proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L817>`
 
 Specifies the mechanism for constructing "scope keys" based on HTTP request attributes. These
 keys are matched against a set of :ref:`Key<envoy_v3_api_msg_config.route.v3.ScopedRouteConfiguration.Key>`
@@ -1351,7 +1341,7 @@ fragments
 extensions.filters.network.http_connection_manager.v3.ScopedRoutes.ScopeKeyBuilder.FragmentBuilder
 --------------------------------------------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.ScopedRoutes.ScopeKeyBuilder.FragmentBuilder proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L834>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.ScopedRoutes.ScopeKeyBuilder.FragmentBuilder proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L822>`
 
 Specifies the mechanism for constructing key fragments which are composed into scope keys.
 
@@ -1373,7 +1363,7 @@ header_value_extractor
 extensions.filters.network.http_connection_manager.v3.ScopedRoutes.ScopeKeyBuilder.FragmentBuilder.HeaderValueExtractor
 -----------------------------------------------------------------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.ScopedRoutes.ScopeKeyBuilder.FragmentBuilder.HeaderValueExtractor proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L856>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.ScopedRoutes.ScopeKeyBuilder.FragmentBuilder.HeaderValueExtractor proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L844>`
 
 Specifies how the value of a header should be extracted.
 The following example maps the structure of a header to the fields in this message.
@@ -1446,7 +1436,7 @@ element
 extensions.filters.network.http_connection_manager.v3.ScopedRoutes.ScopeKeyBuilder.FragmentBuilder.HeaderValueExtractor.KvElement
 ---------------------------------------------------------------------------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.ScopedRoutes.ScopeKeyBuilder.FragmentBuilder.HeaderValueExtractor.KvElement proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L862>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.ScopedRoutes.ScopeKeyBuilder.FragmentBuilder.HeaderValueExtractor.KvElement proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L850>`
 
 Specifies a header field's key value pair to match on.
 
@@ -1484,7 +1474,7 @@ key
 extensions.filters.network.http_connection_manager.v3.ScopedRds
 ---------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.ScopedRds proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L946>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.ScopedRds proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L934>`
 
 
 .. code-block:: json
@@ -1507,7 +1497,7 @@ scoped_rds_config_source
 extensions.filters.network.http_connection_manager.v3.HttpFilter
 ----------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.HttpFilter proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L960>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.HttpFilter proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L948>`
 
 
 .. code-block:: json
@@ -1662,7 +1652,7 @@ is_optional
 extensions.filters.network.http_connection_manager.v3.RequestIDExtension
 ------------------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.RequestIDExtension proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L1001>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.RequestIDExtension proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L989>`
 
 
 .. code-block:: json
@@ -1684,7 +1674,7 @@ typed_config
 extensions.filters.network.http_connection_manager.v3.EnvoyMobileHttpConnectionManager
 --------------------------------------------------------------------------------------
 
-:repo:`[extensions.filters.network.http_connection_manager.v3.EnvoyMobileHttpConnectionManager proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L1012>`
+:repo:`[extensions.filters.network.http_connection_manager.v3.EnvoyMobileHttpConnectionManager proto] <api/envoy/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#L1000>`
 
 HTTP connection manager for use in Envoy mobile.
 
