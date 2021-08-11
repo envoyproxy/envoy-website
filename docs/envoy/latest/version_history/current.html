@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>1.20.0 (Pending) &mdash; envoy 1.20.0-dev-e85a7f documentation</title>
+  <title>1.20.0 (Pending) &mdash; envoy 1.20.0-dev-2aebcd documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.20.0-dev-e85a7f
+                1.20.0-dev-2aebcd
               </div>
             
           
@@ -252,6 +252,9 @@
 <div class="section" id="incompatible-behavior-changes">
 <h2>Incompatible Behavior Changes<a class="headerlink" href="#incompatible-behavior-changes" title="Permalink to this headline">¶</a></h2>
 <p><em>Changes that are expected to cause an incompatibility if applicable; deployment changes are likely required</em></p>
+<ul class="simple">
+<li><p>ext_authz: fixed skipping authentication when returning either a direct response or a redirect. This behavior can be temporarily reverted by setting the <code class="docutils literal notranslate"><span class="pre">envoy.reloadable_features.http_ext_authz_do_not_skip_direct_response_and_redirect</span></code> runtime guard to false.</p></li>
+</ul>
 </div>
 <div class="section" id="minor-behavior-changes">
 <h2>Minor Behavior Changes<a class="headerlink" href="#minor-behavior-changes" title="Permalink to this headline">¶</a></h2>
@@ -291,7 +294,6 @@ information.</p></li>
 <li><p>access log: fix <code class="docutils literal notranslate"><span class="pre">%UPSTREAM_CLUSTER%</span></code> when used in http upstream access logs. Previously, it was always logging as an unset value.</p></li>
 <li><p>aws request signer: fix the AWS Request Signer extension to correctly normalize the path and query string to be signed according to AWS’ guidelines, so that the hash on the server side matches. See <a class="reference external" href="https://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html">AWS SigV4 documentaion</a>.</p></li>
 <li><p>cluster: delete pools when they’re idle to fix unbounded memory use when using PROXY protocol upstream with tcp_proxy. This behavior can be temporarily reverted by setting the <code class="docutils literal notranslate"><span class="pre">envoy.reloadable_features.conn_pool_delete_when_idle</span></code> runtime guard to false.</p></li>
-<li><p>ext_authz: fixed skipping authentication when returning either a direct response or a redirect. This behavior can be temporarily reverted by setting the <code class="docutils literal notranslate"><span class="pre">envoy.reloadable_features.http_ext_authz_do_not_skip_direct_response_and_redirect</span></code> runtime guard to false.</p></li>
 <li><p>hcm: remove deprecation for <a class="reference internal" href="../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-xff-num-trusted-hops"><span class="std std-ref">xff_num_trusted_hops</span></a> and forbid mixing ip detection extensions with old related knobs.</p></li>
 <li><p>listener: fixed an issue on Windows where connections are not handled by all worker threads.</p></li>
 <li><p>xray: fix the AWS X-Ray tracer bug where span’s error, fault and throttle information was not reported properly as per the <a class="reference external" href="https://docs.aws.amazon.com/xray/latest/devguide/xray-api-segmentdocuments.html">AWS X-Ray documentation</a>. Before this fix, server error was reported under ‘annotations’ section of the segment data.</p></li>
