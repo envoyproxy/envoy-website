@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Hot restart &mdash; envoy 1.20.0-dev-c98cd1 documentation</title>
+  <title>Hot restart &mdash; envoy 1.20.0-dev-07139f documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.20.0-dev-c98cd1
+                1.20.0-dev-07139f
               </div>
             
           
@@ -218,10 +218,11 @@ Envoy can fully reload itself (both code and configuration) without dropping exi
 during the <a class="reference internal" href="draining.html#arch-overview-draining"><span class="std std-ref">drain process</span></a>. The hot restart functionality has the
 following general architecture:</p>
 <ul class="simple">
-<li><p>Statistics and some locks are kept in a shared memory region. This means that gauges will be
-consistent across both processes as restart is taking place.</p></li>
 <li><p>The two active processes communicate with each other over unix domain sockets using a basic RPC
-protocol.</p></li>
+protocol. All counters are sent from the old process to the new process over the unix domain, and
+gauges are transported except those marked with <cite>NeverImport</cite>. After hot restart is finished, the
+gauges transported from the old process will be cleanup, but special gauge like
+<a class="reference internal" href="../../../configuration/observability/statistics.html#server-statistics"><span class="std std-ref">server.hot_restart_generation statistic</span></a> is retained.</p></li>
 <li><p>The new process fully initializes itself (loads the configuration, does an initial service
 discovery and health checking phase, etc.) before it asks for copies of the listen sockets from
 the old process. The new process starts listening and then tells the old process to start
