@@ -69,6 +69,7 @@ Configuration for a single upstream cluster.
     "close_connections_on_host_health_failure": "...",
     "ignore_health_on_host_removal": "...",
     "filters": [],
+    "load_balancing_policy": "{...}",
     "track_timeout_budgets": "...",
     "upstream_config": "{...}",
     "track_cluster_stats": "{...}",
@@ -609,7 +610,14 @@ filters
   servers of this cluster.
   
   
+.. _envoy_v3_api_field_config.cluster.v3.Cluster.load_balancing_policy:
 
+load_balancing_policy
+  (:ref:`config.cluster.v3.LoadBalancingPolicy <envoy_v3_api_msg_config.cluster.v3.LoadBalancingPolicy>`) New mechanism for LB policy configuration. Used only if the
+  :ref:`lb_policy<envoy_v3_api_field_config.cluster.v3.Cluster.lb_policy>` field has the value
+  :ref:`LOAD_BALANCING_POLICY_CONFIG<envoy_v3_api_enum_value_config.cluster.v3.Cluster.LbPolicy.LOAD_BALANCING_POLICY_CONFIG>`.
+  
+  
 
 .. _envoy_v3_api_field_config.cluster.v3.Cluster.track_timeout_budgets:
 
@@ -1672,7 +1680,13 @@ CLUSTER_PROVIDED
   this option or not.
   
   
+.. _envoy_v3_api_enum_value_config.cluster.v3.Cluster.LbPolicy.LOAD_BALANCING_POLICY_CONFIG:
 
+LOAD_BALANCING_POLICY_CONFIG
+  ⁣Use the new :ref:`load_balancing_policy
+  <envoy_v3_api_field_config.cluster.v3.Cluster.load_balancing_policy>` field to determine the LB policy.
+  
+  
 
 .. _envoy_v3_api_enum_config.cluster.v3.Cluster.DnsLookupFamily:
 
@@ -1731,13 +1745,75 @@ USE_DOWNSTREAM_PROTOCOL
   
   
 
+.. _envoy_v3_api_msg_config.cluster.v3.LoadBalancingPolicy:
+
+config.cluster.v3.LoadBalancingPolicy
+-------------------------------------
+
+:repo:`[config.cluster.v3.LoadBalancingPolicy proto] <api/envoy/config/cluster/v3/cluster.proto#L1093>`
+
+Extensible load balancing policy configuration.
+
+Every LB policy defined via this mechanism will be identified via a unique name using reverse
+DNS notation. If the policy needs configuration parameters, it must define a message for its
+own configuration, which will be stored in the config field. The name of the policy will tell
+clients which type of message they should expect to see in the config field.
+
+Note that there are cases where it is useful to be able to independently select LB policies
+for choosing a locality and for choosing an endpoint within that locality. For example, a
+given deployment may always use the same policy to choose the locality, but for choosing the
+endpoint within the locality, some clusters may use weighted-round-robin, while others may
+use some sort of session-based balancing.
+
+This can be accomplished via hierarchical LB policies, where the parent LB policy creates a
+child LB policy for each locality. For each request, the parent chooses the locality and then
+delegates to the child policy for that locality to choose the endpoint within the locality.
+
+To facilitate this, the config message for the top-level LB policy may include a field of
+type LoadBalancingPolicy that specifies the child policy.
+
+.. code-block:: json
+
+  {
+    "policies": []
+  }
+
+.. _envoy_v3_api_field_config.cluster.v3.LoadBalancingPolicy.policies:
+
+policies
+  (**repeated** :ref:`config.cluster.v3.LoadBalancingPolicy.Policy <envoy_v3_api_msg_config.cluster.v3.LoadBalancingPolicy.Policy>`) Each client will iterate over the list in order and stop at the first policy that it
+  supports. This provides a mechanism for starting to use new LB policies that are not yet
+  supported by all clients.
+  
+  
+.. _envoy_v3_api_msg_config.cluster.v3.LoadBalancingPolicy.Policy:
+
+config.cluster.v3.LoadBalancingPolicy.Policy
+--------------------------------------------
+
+:repo:`[config.cluster.v3.LoadBalancingPolicy.Policy proto] <api/envoy/config/cluster/v3/cluster.proto#L1096>`
+
+
+.. code-block:: json
+
+  {
+    "typed_extension_config": "{...}"
+  }
+
+.. _envoy_v3_api_field_config.cluster.v3.LoadBalancingPolicy.Policy.typed_extension_config:
+
+typed_extension_config
+  (:ref:`config.core.v3.TypedExtensionConfig <envoy_v3_api_msg_config.core.v3.TypedExtensionConfig>`) 
+  
+
+
 
 .. _envoy_v3_api_msg_config.cluster.v3.UpstreamBindConfig:
 
 config.cluster.v3.UpstreamBindConfig
 ------------------------------------
 
-:repo:`[config.cluster.v3.UpstreamBindConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L1119>`
+:repo:`[config.cluster.v3.UpstreamBindConfig proto] <api/envoy/config/cluster/v3/cluster.proto#L1115>`
 
 An extensible structure containing the address Envoy should bind to when
 establishing upstream connections.
@@ -1761,7 +1837,7 @@ source_address
 config.cluster.v3.UpstreamConnectionOptions
 -------------------------------------------
 
-:repo:`[config.cluster.v3.UpstreamConnectionOptions proto] <api/envoy/config/cluster/v3/cluster.proto#L1126>`
+:repo:`[config.cluster.v3.UpstreamConnectionOptions proto] <api/envoy/config/cluster/v3/cluster.proto#L1122>`
 
 
 .. code-block:: json
@@ -1783,7 +1859,7 @@ tcp_keepalive
 config.cluster.v3.TrackClusterStats
 -----------------------------------
 
-:repo:`[config.cluster.v3.TrackClusterStats proto] <api/envoy/config/cluster/v3/cluster.proto#L1134>`
+:repo:`[config.cluster.v3.TrackClusterStats proto] <api/envoy/config/cluster/v3/cluster.proto#L1130>`
 
 
 .. code-block:: json
