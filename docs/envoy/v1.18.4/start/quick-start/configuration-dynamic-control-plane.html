@@ -1,0 +1,381 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Configuration: Dynamic from control plane &mdash; envoy tag-v1.18.4 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Envoy admin interface" href="admin.html" />
+    <link rel="prev" title="Configuration: Dynamic from filesystem" href="configuration-dynamic-filesystem.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                tag-v1.18.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../start.html">Getting Started</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../install.html">Installing Envoy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Quick start</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="run-envoy.html">Run Envoy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration-static.html">Configuration: Static</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration-dynamic-filesystem.html">Configuration: Dynamic from filesystem</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Configuration: Dynamic from control plane</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#node"><code class="docutils literal notranslate"><span class="pre">node</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dynamic-resources"><code class="docutils literal notranslate"><span class="pre">dynamic_resources</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#static-resources"><code class="docutils literal notranslate"><span class="pre">static_resources</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="admin.html">Envoy admin interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="securing.html">Securing Envoy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="next-steps.html">Next steps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../sandboxes/index.html">Sandboxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docker.html">Using the Envoy Docker Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../building.html">Building</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../start.html">Getting Started</a> &raquo;</li>
+        
+          <li><a href="index.html">Quick start</a> &raquo;</li>
+        
+      <li>Configuration: Dynamic from control plane</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/start/quick-start/configuration-dynamic-control-plane.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="configuration-dynamic-from-control-plane">
+<span id="start-quick-start-dynamic-control-plane"></span><h1>Configuration: Dynamic from control plane<a class="headerlink" href="#configuration-dynamic-from-control-plane" title="Permalink to this headline">¶</a></h1>
+<p>These instructions are slightly more complex as you must also set up a control plane to provide Envoy with its
+configuration.</p>
+<p>There are a number of control planes compatible with Envoy’s API such as <a class="reference external" href="https://docs.solo.io/gloo/latest/">Gloo</a>
+or <a class="reference external" href="https://istio.io">Istio</a>.</p>
+<p>You may also wish to explore implementing your own control plane, in which case the
+<a class="reference external" href="https://github.com/envoyproxy/go-control-plane">Go Control Plane</a> provides a reference implementation
+that is a good place to start.</p>
+<p>At a minimum, you will need to start Envoy configured with the following sections:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#start-quick-start-dynamic-node"><span class="std std-ref">node</span></a> to uniquely identify the proxy node.</p></li>
+<li><p><a class="reference internal" href="#start-quick-start-dynamic-dynamic-resources"><span class="std std-ref">dynamic_resources</span></a> to tell Envoy which configurations should be updated dynamically</p></li>
+<li><p><a class="reference internal" href="#start-quick-start-dynamic-static-resources"><span class="std std-ref">static_resources</span></a> to specify where Envoy should retrieve its configuration from.</p></li>
+</ul>
+<p>You can also add an <a class="reference internal" href="admin.html#start-quick-start-admin"><span class="std std-ref">admin</span></a> section if you wish to monitor Envoy or
+retrieve stats or configuration information.</p>
+<p>The following sections walk through the dynamic configuration provided in the
+<a class="reference download internal" download="" href="../../_downloads/fe2234c3a6762bdffb5300e299973700/envoy-dynamic-control-plane-demo.yaml"><code class="xref download docutils literal notranslate"><span class="pre">demo</span> <span class="pre">dynamic</span> <span class="pre">control</span> <span class="pre">plane</span> <span class="pre">configuration</span> <span class="pre">file</span></code></a>.</p>
+<div class="section" id="node">
+<span id="start-quick-start-dynamic-node"></span><h2><code class="docutils literal notranslate"><span class="pre">node</span></code><a class="headerlink" href="#node" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="../../api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-bootstrap-node"><span class="std std-ref">node</span></a> should specify <code class="docutils literal notranslate"><span class="pre">cluster</span></code> and <code class="docutils literal notranslate"><span class="pre">id</span></code>.</p>
+<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="nt">node</span><span class="p">:</span>
+</span><span class="hll">  <span class="nt">cluster</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test-cluster</span>
+</span><span class="hll">  <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test-id</span>
+</span>
+<span class="nt">dynamic_resources</span><span class="p">:</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="dynamic-resources">
+<span id="start-quick-start-dynamic-dynamic-resources"></span><h2><code class="docutils literal notranslate"><span class="pre">dynamic_resources</span></code><a class="headerlink" href="#dynamic-resources" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="../../api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-bootstrap-dynamic-resources"><span class="std std-ref">dynamic_resources</span></a> specify
+the configuration to load dynamically, and the <a class="reference internal" href="#start-quick-start-dynamic-static-resources"><span class="std std-ref">cluster</span></a>
+to connect for dynamic configuration updates.</p>
+<p>In this example, the configuration is provided by the <code class="docutils literal notranslate"><span class="pre">xds_cluster</span></code> configured below.</p>
+<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>  <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test-id</span>
+
+<span class="hll"><span class="nt">dynamic_resources</span><span class="p">:</span>
+</span><span class="hll">  <span class="nt">ads_config</span><span class="p">:</span>
+</span><span class="hll">    <span class="nt">api_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GRPC</span>
+</span><span class="hll">    <span class="nt">transport_api_version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">V3</span>
+</span><span class="hll">    <span class="nt">grpc_services</span><span class="p">:</span>
+</span><span class="hll">    <span class="p p-Indicator">-</span> <span class="nt">envoy_grpc</span><span class="p">:</span>
+</span><span class="hll">        <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xds_cluster</span>
+</span><span class="hll">  <span class="nt">cds_config</span><span class="p">:</span>
+</span><span class="hll">    <span class="nt">resource_api_version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">V3</span>
+</span><span class="hll">    <span class="nt">ads</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+</span><span class="hll">  <span class="nt">lds_config</span><span class="p">:</span>
+</span><span class="hll">    <span class="nt">resource_api_version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">V3</span>
+</span><span class="hll">    <span class="nt">ads</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+</span>
+<span class="nt">static_resources</span><span class="p">:</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="static-resources">
+<span id="start-quick-start-dynamic-static-resources"></span><h2><code class="docutils literal notranslate"><span class="pre">static_resources</span></code><a class="headerlink" href="#static-resources" title="Permalink to this headline">¶</a></h2>
+<p>Here we specify the <a class="reference internal" href="../../api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-bootstrap-static-resources"><span class="std std-ref">static_resources</span></a>
+to retrieve dynamic configuration from.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">xds_cluster</span></code> is configured to query a control plane at <a class="reference external" href="http://my-control-plane:18000">http://my-control-plane:18000</a> .</p>
+<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="nt">ads</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+
+<span class="hll"><span class="nt">static_resources</span><span class="p">:</span>
+</span><span class="hll">  <span class="nt">clusters</span><span class="p">:</span>
+</span><span class="hll">  <span class="p p-Indicator">-</span> <span class="nt">connect_timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1s</span>
+</span><span class="hll">    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">STRICT_DNS</span>
+</span><span class="hll">    <span class="nt">typed_extension_protocol_options</span><span class="p">:</span>
+</span><span class="hll">      <span class="nt">envoy.extensions.upstreams.http.v3.HttpProtocolOptions</span><span class="p">:</span>
+</span><span class="hll">        <span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions</span>
+</span><span class="hll">        <span class="nt">explicit_http_config</span><span class="p">:</span>
+</span><span class="hll">          <span class="nt">http2_protocol_options</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+</span><span class="hll">    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xds_cluster</span>
+</span><span class="hll">    <span class="nt">load_assignment</span><span class="p">:</span>
+</span><span class="hll">      <span class="nt">cluster_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xds_cluster</span>
+</span><span class="hll">      <span class="nt">endpoints</span><span class="p">:</span>
+</span><span class="hll">      <span class="p p-Indicator">-</span> <span class="nt">lb_endpoints</span><span class="p">:</span>
+</span><span class="hll">        <span class="p p-Indicator">-</span> <span class="nt">endpoint</span><span class="p">:</span>
+</span><span class="hll">            <span class="nt">address</span><span class="p">:</span>
+</span><span class="hll">              <span class="nt">socket_address</span><span class="p">:</span>
+</span><span class="hll">                <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">my-control-plane</span>
+</span><span class="hll">                <span class="nt">port_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">18000</span>
+</span>
+<span class="nt">admin</span><span class="p">:</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="admin.html" class="btn btn-neutral float-right" title="Envoy admin interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="configuration-dynamic-filesystem.html" class="btn btn-neutral float-left" title="Configuration: Dynamic from filesystem" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2016-2021, Envoy Project Authors.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
