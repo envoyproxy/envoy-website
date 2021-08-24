@@ -1,0 +1,364 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Jaeger tracing &mdash; envoy tag-v1.18.4 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Load reporting service (LRS)" href="load_reporting_service.html" />
+    <link rel="prev" title="Jaeger native tracing" href="jaeger_native_tracing.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                tag-v1.18.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../start.html">Getting Started</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../install.html">Installing Envoy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quick-start/index.html">Quick start</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Sandboxes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="setup.html">Setup the sandbox environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cors.html">CORS filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="double-proxy.html">Double proxy (with <code class="docutils literal notranslate"><span class="pre">mTLS</span></code> encryption)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-filesystem.html">Dynamic configuration (filesystem)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-control-plane.html">Dynamic configuration (control plane)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ext_authz.html">External authorization (<code class="docutils literal notranslate"><span class="pre">ext_authz</span></code>) filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault injection filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger native tracing</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Jaeger tracing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#step-1-build-the-sandbox">Step 1: Build the sandbox</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-2-generate-some-load">Step 2: Generate some load</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-3-view-the-traces-in-jaeger-ui">Step 3: View the traces in Jaeger UI</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="load_reporting_service.html">Load reporting service (<code class="docutils literal notranslate"><span class="pre">LRS</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mysql.html">MySQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="postgres.html">PostgreSQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skywalking_tracing.html">SkyWalking tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls-inspector.html">TLS Inspector Listener Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls-sni.html">TLS Server name indication (<code class="docutils literal notranslate"><span class="pre">SNI</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls.html">Transport layer security (<code class="docutils literal notranslate"><span class="pre">TLS</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="udp.html">User Datagram Protocol (<code class="docutils literal notranslate"><span class="pre">UDP</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wasm-cc.html">Wasm C++ filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="websocket.html">WebSockets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">Zipkin tracing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docker.html">Using the Envoy Docker Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../building.html">Building</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../start.html">Getting Started</a> &raquo;</li>
+        
+          <li><a href="index.html">Sandboxes</a> &raquo;</li>
+        
+      <li>Jaeger tracing</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/start/sandboxes/jaeger_tracing.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="jaeger-tracing">
+<span id="install-sandboxes-jaeger-tracing"></span><h1>Jaeger tracing<a class="headerlink" href="#jaeger-tracing" title="Permalink to this headline">¶</a></h1>
+<div class="sidebar">
+<p class="sidebar-title">Requirements</p>
+<dl class="simple">
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup"><span class="std std-ref">Sandbox environment</span></a></dt><dd><p>Setup your sandbox environment with Docker and Docker Compose,
+and clone the Envoy repository with Git.</p>
+</dd>
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup-curl"><span class="std std-ref">curl</span></a></dt><dd><p>Used to make <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> requests.</p>
+</dd>
+</dl>
+</div>
+<p>The Jaeger tracing sandbox demonstrates Envoy’s <a class="reference internal" href="../../intro/arch_overview/observability/tracing.html#arch-overview-tracing"><span class="std std-ref">request tracing</span></a>
+capabilities using <a class="reference external" href="https://jaegertracing.io/">Jaeger</a> as the tracing provider. This sandbox
+is very similar to the front proxy architecture described above, with one difference:
+service1 makes an API call to service2 before returning a response.
+The three containers will be deployed inside a virtual network called <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code>.</p>
+<p>All incoming requests are routed via the front Envoy, which is acting as a reverse proxy
+sitting on the edge of the <code class="docutils literal notranslate"><span class="pre">envoymesh</span></code> network. Port <code class="docutils literal notranslate"><span class="pre">8000</span></code> is exposed
+by docker compose (see <a class="reference download internal" download="" href="../../_downloads/39ff526a726d28fb80c2ee7fce918290/docker-compose.yaml"><code class="xref download docutils literal notranslate"><span class="pre">docker-compose.yaml</span></code></a>). Notice that
+all Envoys are configured to collect request traces (e.g., http_connection_manager/config/tracing setup in
+<a class="reference download internal" download="" href="../../_downloads/676cbd957e92c51ff258ecd6ea265be9/front-envoy-jaeger.yaml"><code class="xref download docutils literal notranslate"><span class="pre">front-envoy-jaeger.yaml</span></code></a>) and setup to propagate the spans generated
+by the Jaeger tracer to a Jaeger cluster (trace driver setup
+in <a class="reference download internal" download="" href="../../_downloads/676cbd957e92c51ff258ecd6ea265be9/front-envoy-jaeger.yaml"><code class="xref download docutils literal notranslate"><span class="pre">front-envoy-jaeger.yaml</span></code></a>).</p>
+<p>Before routing a request to the appropriate service Envoy or the application, Envoy will take
+care of generating the appropriate spans for tracing (parent/child context spans).
+At a high-level, each span records the latency of upstream API calls as well as information
+needed to correlate the span with other related spans (e.g., the trace ID).</p>
+<p>One of the most important benefits of tracing from Envoy is that it will take care of
+propagating the traces to the Jaeger service cluster. However, in order to fully take advantage
+of tracing, the application has to propagate trace headers that Envoy generates, while making
+calls to other services. In the sandbox we have provided, the simple flask app
+(see trace function in <a class="reference download internal" download="" href="../../_downloads/b83f56e350f8f11cad52851544ac7789/service.py"><code class="xref download docutils literal notranslate"><span class="pre">service.py</span></code></a>) acting as service1 propagates
+the trace headers while making an outbound call to service2.</p>
+<div class="section" id="step-1-build-the-sandbox">
+<h2>Step 1: Build the sandbox<a class="headerlink" href="#step-1-build-the-sandbox" title="Permalink to this headline">¶</a></h2>
+<p>To build this sandbox example, and start the example apps run the following commands:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">pwd</span>
+<span class="go">envoy/examples/jaeger-tracing</span>
+<span class="gp">$ </span>docker-compose pull
+<span class="gp">$ </span>docker-compose up --build -d
+<span class="gp">$ </span>docker-compose ps
+
+<span class="go">            Name                          Command             State                                    Ports</span>
+<span class="go">------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="go">jaeger-tracing_front-envoy_1   /docker-entrypoint.sh /bin ... Up      10000/tcp, 0.0.0.0:8000-&gt;8000/tcp, 0.0.0.0:8001-&gt;8001/tcp</span>
+<span class="go">jaeger-tracing_jaeger_1        /go/bin/all-in-one-linux - ... Up      14250/tcp, 14268/tcp, 0.0.0.0:16686-&gt;16686/tcp, 5775/udp, 5778/tcp, 6831/udp, 6832/udp, 0.0.0.0:9411-&gt;9411/tcp</span>
+<span class="go">jaeger-tracing_service1_1      /bin/sh -c /usr/local/bin/ ... Up      10000/tcp</span>
+<span class="go">jaeger-tracing_service2_1      /bin/sh -c /usr/local/bin/ ... Up      10000/tcp</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-2-generate-some-load">
+<h2>Step 2: Generate some load<a class="headerlink" href="#step-2-generate-some-load" title="Permalink to this headline">¶</a></h2>
+<p>You can now send a request to service1 via the front-envoy as follows:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl -v localhost:8000/trace/1
+<span class="go">*   Trying 192.168.99.100...</span>
+<span class="go">* Connected to 192.168.99.100 (192.168.99.100) port 8000 (#0)</span>
+<span class="go">&gt; GET /trace/1 HTTP/1.1</span>
+<span class="go">&gt; Host: 192.168.99.100:8000</span>
+<span class="go">&gt; User-Agent: curl/7.54.0</span>
+<span class="go">&gt; Accept: */*</span>
+<span class="go">&gt;</span>
+<span class="go">&lt; HTTP/1.1 200 OK</span>
+<span class="go">&lt; content-type: text/html; charset=utf-8</span>
+<span class="go">&lt; content-length: 89</span>
+<span class="go">&lt; x-envoy-upstream-service-time: 9</span>
+<span class="go">&lt; server: envoy</span>
+<span class="go">&lt; date: Fri, 26 Aug 2018 19:39:19 GMT</span>
+<span class="go">&lt;</span>
+<span class="go">Hello from behind Envoy (service 1)! hostname: f26027f1ce28 resolvedhostname: 172.19.0.6</span>
+<span class="go">* Connection #0 to host 192.168.99.100 left intact</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-3-view-the-traces-in-jaeger-ui">
+<h2>Step 3: View the traces in Jaeger UI<a class="headerlink" href="#step-3-view-the-traces-in-jaeger-ui" title="Permalink to this headline">¶</a></h2>
+<p>Point your browser to <a class="reference external" href="http://localhost:16686">http://localhost:16686</a> . You should see the Jaeger dashboard.
+Set the service to “front-proxy” and hit ‘Find Traces’. You should see traces from the front-proxy.
+Click on a trace to explore the path taken by the request from front-proxy to service1
+to service2, as well as the latency incurred at each hop.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="../../intro/arch_overview/observability/tracing.html#arch-overview-tracing"><span class="std std-ref">Request tracing</span></a></dt><dd><p>Learn more about using Envoy’s request tracing.</p>
+</dd>
+<dt><a class="reference internal" href="jaeger_native_tracing.html#install-sandboxes-jaeger-native-tracing"><span class="std std-ref">Jaeger native tracing sandbox</span></a></dt><dd><p>An example of using Jaeger natively with Envoy.</p>
+</dd>
+<dt><a class="reference external" href="https://jaegertracing.io/">Jaeger</a></dt><dd><p>Jaeger tracing website.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="load_reporting_service.html" class="btn btn-neutral float-right" title="Load reporting service (LRS)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="jaeger_native_tracing.html" class="btn btn-neutral float-left" title="Jaeger native tracing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2016-2021, Envoy Project Authors.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

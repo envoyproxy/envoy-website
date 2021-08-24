@@ -1,0 +1,865 @@
+.. _envoy_v3_api_file_envoy/extensions/filters/http/jwt_authn/v3/config.proto:
+
+JWT Authentication
+==================
+
+
+.. _extension_envoy.filters.http.jwt_authn:
+
+This extension may be referenced by the qualified name *envoy.filters.http.jwt_authn*
+
+.. note::
+  This extension is functional but has not had substantial production burn time, use only with this caveat.
+
+  This extension is intended to be robust against untrusted downstream traffic. It assumes that the upstream is trusted.
+
+.. tip::
+  This extension extends and can be used with the following extension category:
+
+
+  - :ref:`envoy.filters.http <extension_category_envoy.filters.http>`
+
+JWT Authentication :ref:`configuration overview <config_http_filters_jwt_authn>`.
+
+.. _envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.JwtProvider:
+
+extensions.filters.http.jwt_authn.v3.JwtProvider
+------------------------------------------------
+
+`[extensions.filters.http.jwt_authn.v3.JwtProvider proto] <https://github.com/envoyproxy/envoy/blob/v1.18.4/api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L55>`_
+
+Please see following for JWT authentication flow:
+
+* `JSON Web Token (JWT) <https://tools.ietf.org/html/rfc7519>`_
+* `The OAuth 2.0 Authorization Framework <https://tools.ietf.org/html/rfc6749>`_
+* `OpenID Connect <http://openid.net/connect>`_
+
+A JwtProvider message specifies how a JSON Web Token (JWT) can be verified. It specifies:
+
+* issuer: the principal that issues the JWT. If specified, it has to match the *iss* field in JWT.
+* allowed audiences: the ones in the token have to be listed here.
+* how to fetch public key JWKS to verify the token signature.
+* how to extract JWT token in the request.
+* how to pass successfully verified token payload.
+
+Example:
+
+.. code-block:: yaml
+
+    issuer: https://example.com
+    audiences:
+    - bookstore_android.apps.googleusercontent.com
+    - bookstore_web.apps.googleusercontent.com
+    remote_jwks:
+      http_uri:
+        uri: https://example.com/.well-known/jwks.json
+        cluster: example_jwks_cluster
+        timeout: 1s
+      cache_duration:
+        seconds: 300
+
+
+.. code-block:: json
+
+  {
+    "issuer": "...",
+    "audiences": [],
+    "remote_jwks": "{...}",
+    "local_jwks": "{...}",
+    "forward": "...",
+    "from_headers": [],
+    "from_params": [],
+    "forward_payload_header": "...",
+    "payload_in_metadata": "...",
+    "clock_skew_seconds": "..."
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtProvider.issuer:
+
+issuer
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specify the `principal <https://tools.ietf.org/html/rfc7519#section-4.1.1>`_ that issued
+  the JWT, usually a URL or an email address.
+  
+  It is optional. If specified, it has to match the *iss* field in JWT.
+  
+  If a JWT has *iss* field and this field is specified, they have to match, otherwise the
+  JWT *iss* field is not checked.
+  
+  Note: *JwtRequirement* :ref:`allow_missing <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.allow_missing>`
+  and :ref:`allow_missing_or_failed <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.allow_missing_or_failed>`
+  are implemented differently than other *JwtRequirements*. Hence the usage of this field
+  is different as follows if *allow_missing* or *allow_missing_or_failed* is used:
+  
+  * If a JWT has *iss* field, it needs to be specified by this field in one of *JwtProviders*.
+  * If a JWT doesn't have *iss* field, one of *JwtProviders* should fill this field empty.
+  * Multiple *JwtProviders* should not have same value in this field.
+  
+  Example: https://securetoken.google.com
+  Example: 1234567-compute@developer.gserviceaccount.com
+  
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtProvider.audiences:
+
+audiences
+  (**repeated** `string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The list of JWT `audiences <https://tools.ietf.org/html/rfc7519#section-4.1.3>`_ are
+  allowed to access. A JWT containing any of these audiences will be accepted. If not specified,
+  will not check audiences in the token.
+  
+  Example:
+  
+  .. code-block:: yaml
+  
+      audiences:
+      - bookstore_android.apps.googleusercontent.com
+      - bookstore_web.apps.googleusercontent.com
+  
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtProvider.remote_jwks:
+
+remote_jwks
+  (:ref:`extensions.filters.http.jwt_authn.v3.RemoteJwks <envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.RemoteJwks>`) JWKS can be fetched from remote server via HTTP/HTTPS. This field specifies the remote HTTP
+  URI and how the fetched JWKS should be cached.
+  
+  Example:
+  
+  .. code-block:: yaml
+  
+     remote_jwks:
+       http_uri:
+         uri: https://www.googleapis.com/oauth2/v1/certs
+         cluster: jwt.www.googleapis.com|443
+         timeout: 1s
+       cache_duration:
+         seconds: 300
+  
+  
+  `JSON Web Key Set (JWKS) <https://tools.ietf.org/html/rfc7517#appendix-A>`_ is needed to
+  validate signature of a JWT. This field specifies where to fetch JWKS.
+  
+  
+  Precisely one of :ref:`remote_jwks <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtProvider.remote_jwks>`, :ref:`local_jwks <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtProvider.local_jwks>` must be set.
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtProvider.local_jwks:
+
+local_jwks
+  (:ref:`config.core.v3.DataSource <envoy_v3_api_msg_config.core.v3.DataSource>`) JWKS is in local data source. It could be either in a local file or embedded in the
+  inline_string.
+  
+  Example: local file
+  
+  .. code-block:: yaml
+  
+     local_jwks:
+       filename: /etc/envoy/jwks/jwks1.txt
+  
+  Example: inline_string
+  
+  .. code-block:: yaml
+  
+     local_jwks:
+       inline_string: ACADADADADA
+  
+  
+  `JSON Web Key Set (JWKS) <https://tools.ietf.org/html/rfc7517#appendix-A>`_ is needed to
+  validate signature of a JWT. This field specifies where to fetch JWKS.
+  
+  
+  Precisely one of :ref:`remote_jwks <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtProvider.remote_jwks>`, :ref:`local_jwks <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtProvider.local_jwks>` must be set.
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtProvider.forward:
+
+forward
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If false, the JWT is removed in the request after a success verification. If true, the JWT is
+  not removed in the request. Default value is false.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtProvider.from_headers:
+
+from_headers
+  (**repeated** :ref:`extensions.filters.http.jwt_authn.v3.JwtHeader <envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.JwtHeader>`) Two fields below define where to extract the JWT from an HTTP request.
+  
+  If no explicit location is specified, the following default locations are tried in order:
+  
+  1. The Authorization header using the `Bearer schema
+  <https://tools.ietf.org/html/rfc6750#section-2.1>`_. Example::
+  
+     Authorization: Bearer <token>.
+  
+  2. `access_token <https://tools.ietf.org/html/rfc6750#section-2.3>`_ query parameter.
+  
+  Multiple JWTs can be verified for a request. Each JWT has to be extracted from the locations
+  its provider specified or from the default locations.
+  
+  Specify the HTTP headers to extract JWT token. For examples, following config:
+  
+  .. code-block:: yaml
+  
+    from_headers:
+    - name: x-goog-iap-jwt-assertion
+  
+  can be used to extract token from header::
+  
+    ``x-goog-iap-jwt-assertion: <JWT>``.
+  
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtProvider.from_params:
+
+from_params
+  (**repeated** `string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) JWT is sent in a query parameter. `jwt_params` represents the query parameter names.
+  
+  For example, if config is:
+  
+  .. code-block:: yaml
+  
+    from_params:
+    - jwt_token
+  
+  The JWT format in query parameter is::
+  
+     /path?jwt_token=<JWT>
+  
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtProvider.forward_payload_header:
+
+forward_payload_header
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) This field specifies the header name to forward a successfully verified JWT payload to the
+  backend. The forwarded data is::
+  
+     base64url_encoded(jwt_payload_in_JSON)
+  
+  If it is not specified, the payload will not be forwarded.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtProvider.payload_in_metadata:
+
+payload_in_metadata
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If non empty, successfully verified JWT payloads will be written to StreamInfo DynamicMetadata
+  in the format as: *namespace* is the jwt_authn filter name as **envoy.filters.http.jwt_authn**
+  The value is the *protobuf::Struct*. The value of this field will be the key for its *fields*
+  and the value is the *protobuf::Struct* converted from JWT JSON payload.
+  
+  For example, if payload_in_metadata is *my_payload*:
+  
+  .. code-block:: yaml
+  
+    envoy.filters.http.jwt_authn:
+      my_payload:
+        iss: https://example.com
+        sub: test@example.com
+        aud: https://example.com
+        exp: 1501281058
+  
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtProvider.clock_skew_seconds:
+
+clock_skew_seconds
+  (`uint32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specify the clock skew in seconds when verifying JWT time constraint,
+  such as `exp`, and `nbf`. If not specified, default is 60 seconds.
+  
+  
+
+
+.. _envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.RemoteJwks:
+
+extensions.filters.http.jwt_authn.v3.RemoteJwks
+-----------------------------------------------
+
+`[extensions.filters.http.jwt_authn.v3.RemoteJwks proto] <https://github.com/envoyproxy/envoy/blob/v1.18.4/api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L216>`_
+
+This message specifies how to fetch JWKS from remote and how to cache it.
+
+.. code-block:: json
+
+  {
+    "http_uri": "{...}",
+    "cache_duration": "{...}"
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.RemoteJwks.http_uri:
+
+http_uri
+  (:ref:`config.core.v3.HttpUri <envoy_v3_api_msg_config.core.v3.HttpUri>`) The HTTP URI to fetch the JWKS. For example:
+  
+  .. code-block:: yaml
+  
+     http_uri:
+       uri: https://www.googleapis.com/oauth2/v1/certs
+       cluster: jwt.www.googleapis.com|443
+       timeout: 1s
+  
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.RemoteJwks.cache_duration:
+
+cache_duration
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) Duration after which the cached JWKS should be expired. If not specified, default cache
+  duration is 5 minutes.
+  
+  
+
+
+.. _envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.JwtHeader:
+
+extensions.filters.http.jwt_authn.v3.JwtHeader
+----------------------------------------------
+
+`[extensions.filters.http.jwt_authn.v3.JwtHeader proto] <https://github.com/envoyproxy/envoy/blob/v1.18.4/api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L237>`_
+
+This message specifies a header location to extract JWT token.
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "value_prefix": "..."
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtHeader.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The HTTP header name.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtHeader.value_prefix:
+
+value_prefix
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The value prefix. The value format is "value_prefix<token>"
+  For example, for "Authorization: Bearer <token>", value_prefix="Bearer " with a space at the
+  end.
+  
+  
+
+
+.. _envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.ProviderWithAudiences:
+
+extensions.filters.http.jwt_authn.v3.ProviderWithAudiences
+----------------------------------------------------------
+
+`[extensions.filters.http.jwt_authn.v3.ProviderWithAudiences proto] <https://github.com/envoyproxy/envoy/blob/v1.18.4/api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L253>`_
+
+Specify a required provider with audiences.
+
+.. code-block:: json
+
+  {
+    "provider_name": "...",
+    "audiences": []
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.ProviderWithAudiences.provider_name:
+
+provider_name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specify a required provider name.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.ProviderWithAudiences.audiences:
+
+audiences
+  (**repeated** `string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) This field overrides the one specified in the JwtProvider.
+  
+  
+
+
+.. _envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.JwtRequirement:
+
+extensions.filters.http.jwt_authn.v3.JwtRequirement
+---------------------------------------------------
+
+`[extensions.filters.http.jwt_authn.v3.JwtRequirement proto] <https://github.com/envoyproxy/envoy/blob/v1.18.4/api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L321>`_
+
+This message specifies a Jwt requirement. An empty message means JWT verification is not
+required. Here are some config examples:
+
+.. code-block:: yaml
+
+ # Example 1: not required with an empty message
+
+ # Example 2: require A
+ provider_name: provider-A
+
+ # Example 3: require A or B
+ requires_any:
+   requirements:
+     - provider_name: provider-A
+     - provider_name: provider-B
+
+ # Example 4: require A and B
+ requires_all:
+   requirements:
+     - provider_name: provider-A
+     - provider_name: provider-B
+
+ # Example 5: require A and (B or C)
+ requires_all:
+   requirements:
+     - provider_name: provider-A
+     - requires_any:
+       requirements:
+         - provider_name: provider-B
+         - provider_name: provider-C
+
+ # Example 6: require A or (B and C)
+ requires_any:
+   requirements:
+     - provider_name: provider-A
+     - requires_all:
+       requirements:
+         - provider_name: provider-B
+         - provider_name: provider-C
+
+ # Example 7: A is optional (if token from A is provided, it must be valid, but also allows
+ missing token.)
+ requires_any:
+   requirements:
+   - provider_name: provider-A
+   - allow_missing: {}
+
+ # Example 8: A is optional and B is required.
+ requires_all:
+   requirements:
+   - requires_any:
+       requirements:
+       - provider_name: provider-A
+       - allow_missing: {}
+   - provider_name: provider-B
+
+
+.. code-block:: json
+
+  {
+    "provider_name": "...",
+    "provider_and_audiences": "{...}",
+    "requires_any": "{...}",
+    "requires_all": "{...}",
+    "allow_missing_or_failed": "{...}",
+    "allow_missing": "{...}"
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.provider_name:
+
+provider_name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specify a required provider name.
+  
+  
+  
+  Only one of :ref:`provider_name <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.provider_name>`, :ref:`provider_and_audiences <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.provider_and_audiences>`, :ref:`requires_any <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.requires_any>`, :ref:`requires_all <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.requires_all>`, :ref:`allow_missing_or_failed <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.allow_missing_or_failed>`, :ref:`allow_missing <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.allow_missing>` may be set.
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.provider_and_audiences:
+
+provider_and_audiences
+  (:ref:`extensions.filters.http.jwt_authn.v3.ProviderWithAudiences <envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.ProviderWithAudiences>`) Specify a required provider with audiences.
+  
+  
+  
+  Only one of :ref:`provider_name <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.provider_name>`, :ref:`provider_and_audiences <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.provider_and_audiences>`, :ref:`requires_any <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.requires_any>`, :ref:`requires_all <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.requires_all>`, :ref:`allow_missing_or_failed <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.allow_missing_or_failed>`, :ref:`allow_missing <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.allow_missing>` may be set.
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.requires_any:
+
+requires_any
+  (:ref:`extensions.filters.http.jwt_authn.v3.JwtRequirementOrList <envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.JwtRequirementOrList>`) Specify list of JwtRequirement. Their results are OR-ed.
+  If any one of them passes, the result is passed.
+  
+  
+  
+  Only one of :ref:`provider_name <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.provider_name>`, :ref:`provider_and_audiences <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.provider_and_audiences>`, :ref:`requires_any <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.requires_any>`, :ref:`requires_all <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.requires_all>`, :ref:`allow_missing_or_failed <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.allow_missing_or_failed>`, :ref:`allow_missing <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.allow_missing>` may be set.
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.requires_all:
+
+requires_all
+  (:ref:`extensions.filters.http.jwt_authn.v3.JwtRequirementAndList <envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.JwtRequirementAndList>`) Specify list of JwtRequirement. Their results are AND-ed.
+  All of them must pass, if one of them fails or missing, it fails.
+  
+  
+  
+  Only one of :ref:`provider_name <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.provider_name>`, :ref:`provider_and_audiences <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.provider_and_audiences>`, :ref:`requires_any <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.requires_any>`, :ref:`requires_all <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.requires_all>`, :ref:`allow_missing_or_failed <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.allow_missing_or_failed>`, :ref:`allow_missing <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.allow_missing>` may be set.
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.allow_missing_or_failed:
+
+allow_missing_or_failed
+  (`Empty <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty>`_) The requirement is always satisfied even if JWT is missing or the JWT
+  verification fails. A typical usage is: this filter is used to only verify
+  JWTs and pass the verified JWT payloads to another filter, the other filter
+  will make decision. In this mode, all JWT tokens will be verified.
+  
+  
+  
+  Only one of :ref:`provider_name <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.provider_name>`, :ref:`provider_and_audiences <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.provider_and_audiences>`, :ref:`requires_any <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.requires_any>`, :ref:`requires_all <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.requires_all>`, :ref:`allow_missing_or_failed <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.allow_missing_or_failed>`, :ref:`allow_missing <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.allow_missing>` may be set.
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.allow_missing:
+
+allow_missing
+  (`Empty <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty>`_) The requirement is satisfied if JWT is missing, but failed if JWT is
+  presented but invalid. Similar to allow_missing_or_failed, this is used
+  to only verify JWTs and pass the verified payload to another filter. The
+  different is this mode will reject requests with invalid tokens.
+  
+  
+  
+  Only one of :ref:`provider_name <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.provider_name>`, :ref:`provider_and_audiences <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.provider_and_audiences>`, :ref:`requires_any <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.requires_any>`, :ref:`requires_all <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.requires_all>`, :ref:`allow_missing_or_failed <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.allow_missing_or_failed>`, :ref:`allow_missing <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirement.allow_missing>` may be set.
+  
+
+
+.. _envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.JwtRequirementOrList:
+
+extensions.filters.http.jwt_authn.v3.JwtRequirementOrList
+---------------------------------------------------------
+
+`[extensions.filters.http.jwt_authn.v3.JwtRequirementOrList proto] <https://github.com/envoyproxy/envoy/blob/v1.18.4/api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L356>`_
+
+This message specifies a list of RequiredProvider.
+Their results are OR-ed; if any one of them passes, the result is passed
+
+.. code-block:: json
+
+  {
+    "requirements": []
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirementOrList.requirements:
+
+requirements
+  (**repeated** :ref:`extensions.filters.http.jwt_authn.v3.JwtRequirement <envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.JwtRequirement>`, *REQUIRED*) Specify a list of JwtRequirement.
+  
+  
+
+
+.. _envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.JwtRequirementAndList:
+
+extensions.filters.http.jwt_authn.v3.JwtRequirementAndList
+----------------------------------------------------------
+
+`[extensions.filters.http.jwt_authn.v3.JwtRequirementAndList proto] <https://github.com/envoyproxy/envoy/blob/v1.18.4/api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L366>`_
+
+This message specifies a list of RequiredProvider.
+Their results are AND-ed; all of them must pass, if one of them fails or missing, it fails.
+
+.. code-block:: json
+
+  {
+    "requirements": []
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtRequirementAndList.requirements:
+
+requirements
+  (**repeated** :ref:`extensions.filters.http.jwt_authn.v3.JwtRequirement <envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.JwtRequirement>`, *REQUIRED*) Specify a list of JwtRequirement.
+  
+  
+
+
+.. _envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.RequirementRule:
+
+extensions.filters.http.jwt_authn.v3.RequirementRule
+----------------------------------------------------
+
+`[extensions.filters.http.jwt_authn.v3.RequirementRule proto] <https://github.com/envoyproxy/envoy/blob/v1.18.4/api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L395>`_
+
+This message specifies a Jwt requirement for a specific Route condition.
+Example 1:
+
+.. code-block:: yaml
+
+   - match:
+       prefix: /healthz
+
+In above example, "requires" field is empty for /healthz prefix match,
+it means that requests matching the path prefix don't require JWT authentication.
+
+Example 2:
+
+.. code-block:: yaml
+
+   - match:
+       prefix: /
+     requires: { provider_name: provider-A }
+
+In above example, all requests matched the path prefix require jwt authentication
+from "provider-A".
+
+.. code-block:: json
+
+  {
+    "match": "{...}",
+    "requires": "{...}",
+    "requirement_name": "..."
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.RequirementRule.match:
+
+match
+  (:ref:`config.route.v3.RouteMatch <envoy_v3_api_msg_config.route.v3.RouteMatch>`, *REQUIRED*) The route matching parameter. Only when the match is satisfied, the "requires" field will
+  apply.
+  
+  For example: following match will match all requests.
+  
+  .. code-block:: yaml
+  
+     match:
+       prefix: /
+  
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.RequirementRule.requires:
+
+requires
+  (:ref:`extensions.filters.http.jwt_authn.v3.JwtRequirement <envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.JwtRequirement>`) Specify a Jwt requirement. Please see detail comment in message JwtRequirement.
+  
+  Specify a Jwt requirement.
+  If not specified, Jwt verification is disabled.
+  
+  
+  Only one of :ref:`requires <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.RequirementRule.requires>`, :ref:`requirement_name <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.RequirementRule.requirement_name>` may be set.
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.RequirementRule.requirement_name:
+
+requirement_name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Use requirement_name to specify a Jwt requirement.
+  This requirement_name MUST be specified at the
+  :ref:`requirement_map <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtAuthentication.requirement_map>`
+  in `JwtAuthentication`.
+  
+  Specify a Jwt requirement.
+  If not specified, Jwt verification is disabled.
+  
+  
+  Only one of :ref:`requires <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.RequirementRule.requires>`, :ref:`requirement_name <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.RequirementRule.requirement_name>` may be set.
+  
+
+
+.. _envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.FilterStateRule:
+
+extensions.filters.http.jwt_authn.v3.FilterStateRule
+----------------------------------------------------
+
+`[extensions.filters.http.jwt_authn.v3.FilterStateRule proto] <https://github.com/envoyproxy/envoy/blob/v1.18.4/api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L442>`_
+
+This message specifies Jwt requirements based on stream_info.filterState.
+This FilterState should use `Router::StringAccessor` object to set a string value.
+Other HTTP filters can use it to specify Jwt requirements dynamically.
+
+Example:
+
+.. code-block:: yaml
+
+   name: jwt_selector
+   requires:
+     issuer_1:
+       provider_name: issuer1
+     issuer_2:
+       provider_name: issuer2
+
+If a filter set "jwt_selector" with "issuer_1" to FilterState for a request,
+jwt_authn filter will use JwtRequirement{"provider_name": "issuer1"} to verify.
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "requires": "{...}"
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.FilterStateRule.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The filter state name to retrieve the `Router::StringAccessor` object.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.FilterStateRule.requires:
+
+requires
+  (**repeated** map<`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, :ref:`extensions.filters.http.jwt_authn.v3.JwtRequirement <envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.JwtRequirement>`>) A map of string keys to requirements. The string key is the string value
+  in the FilterState with the name specified in the *name* field above.
+  
+  
+
+
+.. _envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.JwtAuthentication:
+
+extensions.filters.http.jwt_authn.v3.JwtAuthentication
+------------------------------------------------------
+
+`[extensions.filters.http.jwt_authn.v3.JwtAuthentication proto] <https://github.com/envoyproxy/envoy/blob/v1.18.4/api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L497>`_
+
+This is the Envoy HTTP filter config for JWT authentication.
+
+For example:
+
+.. code-block:: yaml
+
+  providers:
+     provider1:
+       issuer: issuer1
+       audiences:
+       - audience1
+       - audience2
+       remote_jwks:
+         http_uri:
+           uri: https://example.com/.well-known/jwks.json
+           cluster: example_jwks_cluster
+           timeout: 1s
+     provider2:
+       issuer: issuer2
+       local_jwks:
+         inline_string: jwks_string
+
+  rules:
+     # Not jwt verification is required for /health path
+     - match:
+         prefix: /health
+
+     # Jwt verification for provider1 is required for path prefixed with "prefix"
+     - match:
+         prefix: /prefix
+       requires:
+         provider_name: provider1
+
+     # Jwt verification for either provider1 or provider2 is required for all other requests.
+     - match:
+         prefix: /
+       requires:
+         requires_any:
+           requirements:
+             - provider_name: provider1
+             - provider_name: provider2
+
+
+.. code-block:: json
+
+  {
+    "providers": "{...}",
+    "rules": [],
+    "filter_state_rules": "{...}",
+    "bypass_cors_preflight": "...",
+    "requirement_map": "{...}"
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtAuthentication.providers:
+
+providers
+  (**repeated** map<`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, :ref:`extensions.filters.http.jwt_authn.v3.JwtProvider <envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.JwtProvider>`>) Map of provider names to JwtProviders.
+  
+  .. code-block:: yaml
+  
+    providers:
+      provider1:
+         issuer: issuer1
+         audiences:
+         - audience1
+         - audience2
+         remote_jwks:
+           http_uri:
+             uri: https://example.com/.well-known/jwks.json
+             cluster: example_jwks_cluster
+             timeout: 1s
+       provider2:
+         issuer: provider2
+         local_jwks:
+           inline_string: jwks_string
+  
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtAuthentication.rules:
+
+rules
+  (**repeated** :ref:`extensions.filters.http.jwt_authn.v3.RequirementRule <envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.RequirementRule>`) Specifies requirements based on the route matches. The first matched requirement will be
+  applied. If there are overlapped match conditions, please put the most specific match first.
+  
+  Examples
+  
+  .. code-block:: yaml
+  
+    rules:
+      - match:
+          prefix: /healthz
+      - match:
+          prefix: /baz
+        requires:
+          provider_name: provider1
+      - match:
+          prefix: /foo
+        requires:
+          requires_any:
+            requirements:
+              - provider_name: provider1
+              - provider_name: provider2
+      - match:
+          prefix: /bar
+        requires:
+          requires_all:
+            requirements:
+              - provider_name: provider1
+              - provider_name: provider2
+  
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtAuthentication.filter_state_rules:
+
+filter_state_rules
+  (:ref:`extensions.filters.http.jwt_authn.v3.FilterStateRule <envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.FilterStateRule>`) This message specifies Jwt requirements based on stream_info.filterState.
+  Other HTTP filters can use it to specify Jwt requirements dynamically.
+  The *rules* field above is checked first, if it could not find any matches,
+  check this one.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtAuthentication.bypass_cors_preflight:
+
+bypass_cors_preflight
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) When set to true, bypass the `CORS preflight request
+  <http://www.w3.org/TR/cors/#cross-origin-request-with-preflight>`_ regardless of JWT
+  requirements specified in the rules.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtAuthentication.requirement_map:
+
+requirement_map
+  (**repeated** map<`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, :ref:`extensions.filters.http.jwt_authn.v3.JwtRequirement <envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.JwtRequirement>`>) A map of unique requirement_names to JwtRequirements.
+  :ref:`requirement_name <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.PerRouteConfig.requirement_name>`
+  in `PerRouteConfig` uses this map to specify a JwtRequirement.
+  
+  
+
+
+
+.. _envoy_v3_api_msg_extensions.filters.http.jwt_authn.v3.PerRouteConfig:
+
+extensions.filters.http.jwt_authn.v3.PerRouteConfig
+---------------------------------------------------
+
+`[extensions.filters.http.jwt_authn.v3.PerRouteConfig proto] <https://github.com/envoyproxy/envoy/blob/v1.18.4/api/envoy/extensions/filters/http/jwt_authn/v3/config.proto#L572>`_
+
+Specify per-route config.
+
+.. code-block:: json
+
+  {
+    "disabled": "...",
+    "requirement_name": "..."
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.PerRouteConfig.disabled:
+
+disabled
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Disable Jwt Authentication for this route.
+  
+  
+  
+  Precisely one of :ref:`disabled <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.PerRouteConfig.disabled>`, :ref:`requirement_name <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.PerRouteConfig.requirement_name>` must be set.
+  
+.. _envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.PerRouteConfig.requirement_name:
+
+requirement_name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Use requirement_name to specify a JwtRequirement.
+  This requirement_name MUST be specified at the
+  :ref:`requirement_map <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.JwtAuthentication.requirement_map>`
+  in `JwtAuthentication`. If no, the requests using this route will be rejected with 403.
+  
+  
+  
+  Precisely one of :ref:`disabled <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.PerRouteConfig.disabled>`, :ref:`requirement_name <envoy_v3_api_field_extensions.filters.http.jwt_authn.v3.PerRouteConfig.requirement_name>` must be set.
+  
+
