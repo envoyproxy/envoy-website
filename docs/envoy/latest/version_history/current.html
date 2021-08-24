@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>1.20.0 (Pending) &mdash; envoy 1.20.0-dev-df9cee documentation</title>
+  <title>1.20.0 (Pending) &mdash; envoy 1.20.0-dev-6f2726 documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.20.0-dev-df9cee
+                1.20.0-dev-6f2726
               </div>
             
           
@@ -278,10 +278,18 @@ seconds.</p></li>
 <li><p>http: correct the use of the <code class="docutils literal notranslate"><span class="pre">x-forwarded-proto</span></code> header and the <code class="docutils literal notranslate"><span class="pre">:scheme</span></code> header. Where they differ
 (which is rare) <code class="docutils literal notranslate"><span class="pre">:scheme</span></code> will now be used for serving redirect URIs and cached content. This behavior
 can be reverted by setting runtime guard <code class="docutils literal notranslate"><span class="pre">correct_scheme_and_xfp</span></code> to false.</p></li>
+<li><p>http: reject requests with #fragment in the URI path. The fragment is not allowed to be part of request
+URI according to RFC3986 (3.5), RFC7230 (5.1) and RFC 7540 (8.1.2.3). Rejection of requests can be changed
+to stripping the #fragment instead by setting the runtime guard <code class="docutils literal notranslate"><span class="pre">envoy.reloadable_features.http_reject_path_with_fragment</span></code>
+to false. This behavior can further be changed to the deprecated behavior of keeping the fragment by setting the runtime guard
+<code class="docutils literal notranslate"><span class="pre">envoy.reloadable_features.http_strip_fragment_from_path_unsafe_if_disabled</span></code>. This runtime guard must only be set
+to false when existing non-compliant traffic relies on #fragment in URI. When this option is enabled, Envoy request
+authorization extensions may be bypassed. This override and its associated behavior will be decommissioned after the standard deprecation period.</p></li>
 <li><p>http: set the default <a class="reference internal" href="../intro/arch_overview/http/http_connection_management.html#arch-overview-http-header-map-settings"><span class="std std-ref">lazy headermap threshold</span></a> to 3,
 which defines the minimal number of headers in a request/response/trailers required for using a
 dictionary in addition to the list. Setting the <code class="docutils literal notranslate"><span class="pre">envoy.http.headermap.lazy_map_min_size</span></code> runtime
 feature to a non-negative number will override the default value.</p></li>
+<li><p>http: stop processing pending H/2 frames if connection transitioned to a closed state. This behavior can be temporarily reverted by setting the <code class="docutils literal notranslate"><span class="pre">envoy.reloadable_features.skip_dispatching_frames_for_closed_connection</span></code> to false.</p></li>
 <li><p>listener: added the <a class="reference internal" href="../api-v3/config/listener/v3/listener.proto.html#envoy-v3-api-field-config-listener-v3-listener-enable-reuse-port"><span class="std std-ref">enable_reuse_port</span></a>
 field and changed the default for reuse_port from false to true, as the feature is now well
 supported on the majority of production Linux kernels in use. The default change is aware of hot
@@ -302,7 +310,9 @@ information.</p></li>
 <li><p>access log: fix <code class="docutils literal notranslate"><span class="pre">%UPSTREAM_CLUSTER%</span></code> when used in http upstream access logs. Previously, it was always logging as an unset value.</p></li>
 <li><p>aws request signer: fix the AWS Request Signer extension to correctly normalize the path and query string to be signed according to AWS’ guidelines, so that the hash on the server side matches. See <a class="reference external" href="https://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html">AWS SigV4 documentaion</a>.</p></li>
 <li><p>cluster: delete pools when they’re idle to fix unbounded memory use when using PROXY protocol upstream with tcp_proxy. This behavior can be temporarily reverted by setting the <code class="docutils literal notranslate"><span class="pre">envoy.reloadable_features.conn_pool_delete_when_idle</span></code> runtime guard to false.</p></li>
+<li><p>ext_authz: fix the ext_authz filter to correctly merge multiple same headers using the ‘,’ as separator in the check request to the external authorization service.</p></li>
 <li><p>hcm: remove deprecation for <a class="reference internal" href="../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-xff-num-trusted-hops"><span class="std std-ref">xff_num_trusted_hops</span></a> and forbid mixing ip detection extensions with old related knobs.</p></li>
+<li><p>http: limit use of deferred resets in the http2 codec to server-side connections. Use of deferred reset for client connections can result in incorrect behavior and performance problems.</p></li>
 <li><p>listener: fixed an issue on Windows where connections are not handled by all worker threads.</p></li>
 <li><p>xray: fix the AWS X-Ray tracer bug where span’s error, fault and throttle information was not reported properly as per the <a class="reference external" href="https://docs.aws.amazon.com/xray/latest/devguide/xray-api-segmentdocuments.html">AWS X-Ray documentation</a>. Before this fix, server error was reported under ‘annotations’ section of the segment data.</p></li>
 </ul>
