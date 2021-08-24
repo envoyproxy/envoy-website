@@ -1,0 +1,93 @@
+.. _envoy_v3_api_file_envoy/extensions/filters/http/dynamic_forward_proxy/v3/dynamic_forward_proxy.proto:
+
+Dynamic forward proxy
+=====================
+
+
+.. _envoy_v3_api_msg_extensions.filters.http.dynamic_forward_proxy.v3.FilterConfig:
+
+extensions.filters.http.dynamic_forward_proxy.v3.FilterConfig
+-------------------------------------------------------------
+
+`[extensions.filters.http.dynamic_forward_proxy.v3.FilterConfig proto] <https://github.com/envoyproxy/envoy/blob/v1.16.5/api/envoy/extensions/filters/http/dynamic_forward_proxy/v3/dynamic_forward_proxy.proto#L20>`_
+
+Configuration for the dynamic forward proxy HTTP filter. See the :ref:`architecture overview
+<arch_overview_http_dynamic_forward_proxy>` for more information.
+
+.. _extension_envoy.filters.http.dynamic_forward_proxy:
+
+
+This extension may be referenced by the qualified name *envoy.filters.http.dynamic_forward_proxy*
+
+.. note::
+  
+
+  This extension is intended to be robust against untrusted downstream traffic. It assumes that the upstream is trusted.
+
+.. code-block:: json
+
+  {
+    "dns_cache_config": "{...}"
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.dynamic_forward_proxy.v3.FilterConfig.dns_cache_config:
+
+dns_cache_config
+  (:ref:`extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig <envoy_v3_api_msg_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig>`, *REQUIRED*) The DNS cache configuration that the filter will attach to. Note this configuration must
+  match that of associated :ref:`dynamic forward proxy cluster configuration
+  <envoy_v3_api_field_extensions.clusters.dynamic_forward_proxy.v3.ClusterConfig.dns_cache_config>`.
+  
+  
+
+
+.. _envoy_v3_api_msg_extensions.filters.http.dynamic_forward_proxy.v3.PerRouteConfig:
+
+extensions.filters.http.dynamic_forward_proxy.v3.PerRouteConfig
+---------------------------------------------------------------
+
+`[extensions.filters.http.dynamic_forward_proxy.v3.PerRouteConfig proto] <https://github.com/envoyproxy/envoy/blob/v1.16.5/api/envoy/extensions/filters/http/dynamic_forward_proxy/v3/dynamic_forward_proxy.proto#L32>`_
+
+Per route Configuration for the dynamic forward proxy HTTP filter.
+
+.. code-block:: json
+
+  {
+    "host_rewrite_literal": "...",
+    "host_rewrite_header": "..."
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.dynamic_forward_proxy.v3.PerRouteConfig.host_rewrite_literal:
+
+host_rewrite_literal
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Indicates that before DNS lookup, the host header will be swapped with
+  this value. If not set or empty, the original host header value
+  will be used and no rewrite will happen.
+  
+  Note: this rewrite affects both DNS lookup and host header forwarding. However, this
+  option shouldn't be used with
+  :ref:`HCM host rewrite <envoy_v3_api_field_config.route.v3.RouteAction.host_rewrite_literal>` given that the
+  value set here would be used for DNS lookups whereas the value set in the HCM would be used
+  for host header forwarding which is not the desired outcome.
+  
+  
+  
+  Only one of :ref:`host_rewrite_literal <envoy_v3_api_field_extensions.filters.http.dynamic_forward_proxy.v3.PerRouteConfig.host_rewrite_literal>`, :ref:`host_rewrite_header <envoy_v3_api_field_extensions.filters.http.dynamic_forward_proxy.v3.PerRouteConfig.host_rewrite_header>` may be set.
+  
+.. _envoy_v3_api_field_extensions.filters.http.dynamic_forward_proxy.v3.PerRouteConfig.host_rewrite_header:
+
+host_rewrite_header
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Indicates that before DNS lookup, the host header will be swapped with
+  the value of this header. If not set or empty, the original host header
+  value will be used and no rewrite will happen.
+  
+  Note: this rewrite affects both DNS lookup and host header forwarding. However, this
+  option shouldn't be used with
+  :ref:`HCM host rewrite header <envoy_v3_api_field_config.route.v3.RouteAction.auto_host_rewrite>`
+  given that the value set here would be used for DNS lookups whereas the value set in the HCM
+  would be used for host header forwarding which is not the desired outcome.
+  
+  
+  
+  Only one of :ref:`host_rewrite_literal <envoy_v3_api_field_extensions.filters.http.dynamic_forward_proxy.v3.PerRouteConfig.host_rewrite_literal>`, :ref:`host_rewrite_header <envoy_v3_api_field_extensions.filters.http.dynamic_forward_proxy.v3.PerRouteConfig.host_rewrite_header>` may be set.
+  
+
