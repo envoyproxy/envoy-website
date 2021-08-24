@@ -1,0 +1,123 @@
+.. _envoy_v3_api_file_envoy/extensions/filters/http/bandwidth_limit/v3alpha/bandwidth_limit.proto:
+
+Bandwidth limit
+===============
+
+
+
+
+.. _extension_envoy.filters.http.bandwidth_limit:
+
+This extension may be referenced by the qualified name ``envoy.filters.http.bandwidth_limit``
+
+.. note::
+  
+
+  This extension has an unknown security posture and should only be used in deployments where both the downstream and upstream are trusted.
+
+.. tip::
+  This extension extends and can be used with the following extension category:
+
+
+  - :ref:`envoy.filters.http <extension_category_envoy.filters.http>`
+
+.. warning::
+   This API is work-in-progress and is subject to breaking changes.
+
+Bandwidth limit :ref:`configuration overview <config_http_filters_bandwidth_limit>`.
+
+.. _envoy_v3_api_msg_extensions.filters.http.bandwidth_limit.v3alpha.BandwidthLimit:
+
+extensions.filters.http.bandwidth_limit.v3alpha.BandwidthLimit
+--------------------------------------------------------------
+
+:repo:`[extensions.filters.http.bandwidth_limit.v3alpha.BandwidthLimit proto] <api/envoy/extensions/filters/http/bandwidth_limit/v3alpha/bandwidth_limit.proto#L23>`
+
+
+.. code-block:: json
+
+  {
+    "stat_prefix": "...",
+    "enable_mode": "...",
+    "limit_kbps": "{...}",
+    "fill_interval": "{...}",
+    "runtime_enabled": "{...}"
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.bandwidth_limit.v3alpha.BandwidthLimit.stat_prefix:
+
+stat_prefix
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The human readable prefix to use when emitting stats.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.bandwidth_limit.v3alpha.BandwidthLimit.enable_mode:
+
+enable_mode
+  (:ref:`extensions.filters.http.bandwidth_limit.v3alpha.BandwidthLimit.EnableMode <envoy_v3_api_enum_extensions.filters.http.bandwidth_limit.v3alpha.BandwidthLimit.EnableMode>`) The enable mode for the bandwidth limit filter.
+  Default is Disabled.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.bandwidth_limit.v3alpha.BandwidthLimit.limit_kbps:
+
+limit_kbps
+  (`UInt64Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint64value>`_) The limit supplied in KiB/s.
+  
+  .. note::
+    It's fine for the limit to be unset for the global configuration since the bandwidth limit
+    can be applied at a the virtual host or route level. Thus, the limit must be set for the
+    per route configuration otherwise the config will be rejected.
+  
+  .. note::
+    When using per route configuration, the limit becomes unique to that route.
+  
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.bandwidth_limit.v3alpha.BandwidthLimit.fill_interval:
+
+fill_interval
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) Optional Fill interval in milliseconds for the token refills. Defaults to 50ms.
+  It must be at least 20ms to avoid too aggressive refills.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.http.bandwidth_limit.v3alpha.BandwidthLimit.runtime_enabled:
+
+runtime_enabled
+  (:ref:`config.core.v3.RuntimeFeatureFlag <envoy_v3_api_msg_config.core.v3.RuntimeFeatureFlag>`) Runtime flag that controls whether the filter is enabled or not. If not specified, defaults
+  to enabled.
+  
+  
+
+.. _envoy_v3_api_enum_extensions.filters.http.bandwidth_limit.v3alpha.BandwidthLimit.EnableMode:
+
+Enum extensions.filters.http.bandwidth_limit.v3alpha.BandwidthLimit.EnableMode
+------------------------------------------------------------------------------
+
+:repo:`[extensions.filters.http.bandwidth_limit.v3alpha.BandwidthLimit.EnableMode proto] <api/envoy/extensions/filters/http/bandwidth_limit/v3alpha/bandwidth_limit.proto#L26>`
+
+Defines the mode for the bandwidth limit filter.
+Values represent bitmask.
+
+.. _envoy_v3_api_enum_value_extensions.filters.http.bandwidth_limit.v3alpha.BandwidthLimit.EnableMode.DISABLED:
+
+DISABLED
+  *(DEFAULT)* ⁣Filter is disabled.
+  
+  
+.. _envoy_v3_api_enum_value_extensions.filters.http.bandwidth_limit.v3alpha.BandwidthLimit.EnableMode.REQUEST:
+
+REQUEST
+  ⁣Filter enabled only for incoming traffic.
+  
+  
+.. _envoy_v3_api_enum_value_extensions.filters.http.bandwidth_limit.v3alpha.BandwidthLimit.EnableMode.RESPONSE:
+
+RESPONSE
+  ⁣Filter enabled only for outgoing traffic.
+  
+  
+.. _envoy_v3_api_enum_value_extensions.filters.http.bandwidth_limit.v3alpha.BandwidthLimit.EnableMode.REQUEST_AND_RESPONSE:
+
+REQUEST_AND_RESPONSE
+  ⁣Filter enabled for both incoming and outgoing traffic.
+  
+  
