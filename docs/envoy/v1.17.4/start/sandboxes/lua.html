@@ -1,0 +1,375 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Lua filter &mdash; envoy tag-v1.17.4 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinx_tabs/semantic-ui-2.4.1/segment.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinx_tabs/semantic-ui-2.4.1/menu.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinx_tabs/semantic-ui-2.4.1/tab.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinx_tabs/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="MySQL filter" href="mysql.html" />
+    <link rel="prev" title="Load reporting service (LRS)" href="load_reporting_service.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                tag-v1.17.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../start.html">Getting Started</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../install.html">Installing Envoy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quick-start/index.html">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docker.html">Using the Envoy Docker Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../building.html">Building</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Sandboxes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="setup.html">Setup the sandbox environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cors.html">CORS filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="double-proxy.html">Double proxy (with <code class="docutils literal notranslate"><span class="pre">mTLS</span></code> encryption)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-filesystem.html">Dynamic configuration (filesystem)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-control-plane.html">Dynamic configuration (control plane)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ext_authz.html">External authorization (<code class="docutils literal notranslate"><span class="pre">ext_authz</span></code>) filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault injection filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger native tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_tracing.html">Jaeger tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="load_reporting_service.html">Load reporting service (<code class="docutils literal notranslate"><span class="pre">LRS</span></code>)</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Lua filter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#step-1-build-the-sandbox">Step 1: Build the sandbox</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-2-send-a-request-to-the-service">Step 2: Send a request to the service</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="mysql.html">MySQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="postgres.html">PostgreSQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skywalking_tracing.html">SkyWalking tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls.html">Transport layer security (<code class="docutils literal notranslate"><span class="pre">TLS</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wasm-cc.html">Wasm C++ filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="websocket.html">WebSockets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">Zipkin tracing</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../start.html">Getting Started</a> &raquo;</li>
+        
+          <li><a href="index.html">Sandboxes</a> &raquo;</li>
+        
+      <li>Lua filter</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/start/sandboxes/lua.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="lua-filter">
+<span id="install-sandboxes-lua"></span><h1>Lua filter<a class="headerlink" href="#lua-filter" title="Permalink to this headline">¶</a></h1>
+<div class="sidebar">
+<p class="sidebar-title">Requirements</p>
+<dl class="simple">
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup"><span class="std std-ref">Sandbox environment</span></a></dt><dd><p>Setup your sandbox environment with Docker and Docker Compose,
+and clone the Envoy repository with Git.</p>
+</dd>
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup-curl"><span class="std std-ref">curl</span></a></dt><dd><p>Used to make <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> requests.</p>
+</dd>
+</dl>
+</div>
+<p>In this example, we show how a <a class="reference external" href="https://www.lua.org/">Lua</a> filter can be used with the Envoy
+proxy.</p>
+<p>The Envoy proxy configuration includes a Lua filter that contains two functions:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">envoy_on_request(request_handle)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">envoy_on_response(response_handle)</span></code></p></li>
+</ul>
+<p><a class="reference internal" href="../../configuration/http/http_filters/lua_filter.html#config-http-filters-lua"><span class="std std-ref">See here</span></a> for an overview of Envoy’s Lua filter and documentation
+regarding these functions.</p>
+<div class="section" id="step-1-build-the-sandbox">
+<h2>Step 1: Build the sandbox<a class="headerlink" href="#step-1-build-the-sandbox" title="Permalink to this headline">¶</a></h2>
+<p>Change to the <code class="docutils literal notranslate"><span class="pre">examples/lua</span></code> directory.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">pwd</span>
+<span class="go">envoy/examples/lua</span>
+<span class="gp">$</span> docker-compose pull
+<span class="gp">$</span> docker-compose up --build -d
+<span class="gp">$</span> docker-compose ps
+
+<span class="go">    Name                     Command               State             Ports</span>
+<span class="go">--------------------------------------------------------------------------------------------</span>
+<span class="go">lua_proxy_1         /docker-entrypoint.sh /bin ... Up      10000/tcp, 0.0.0.0:8000-&gt;8000/tcp</span>
+<span class="go">lua_web_service_1   node ./index.js                Up      0.0.0.0:8080-&gt;80/tcp</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-2-send-a-request-to-the-service">
+<h2>Step 2: Send a request to the service<a class="headerlink" href="#step-2-send-a-request-to-the-service" title="Permalink to this headline">¶</a></h2>
+<p>The output from the <code class="docutils literal notranslate"><span class="pre">curl</span></code> command below should include the headers <code class="docutils literal notranslate"><span class="pre">foo</span></code>.</p>
+<p>Terminal 1</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -v localhost:8000
+
+<span class="go">   Trying ::1...</span>
+<span class="go">* TCP_NODELAY set</span>
+<span class="go">* Connected to localhost (::1) port 8000 (#0)</span>
+<span class="gp">&gt;</span> GET / HTTP/1.1
+<span class="gp">&gt;</span> Host: localhost:8000
+<span class="gp">&gt;</span> User-Agent: curl/7.64.1
+<span class="gp">&gt;</span> Accept: */*
+<span class="gp">&gt;</span>
+<span class="go">&lt; HTTP/1.1 200 OK</span>
+<span class="go">&lt; x-powered-by: Express</span>
+<span class="go">&lt; content-type: application/json; charset=utf-8</span>
+<span class="go">&lt; content-length: 544</span>
+<span class="go">&lt; etag: W/&quot;220-IhsqVTh4HjcpuJQ3C+rEL1Cw1jA&quot;</span>
+<span class="go">&lt; date: Thu, 31 Oct 2019 03:13:24 GMT</span>
+<span class="go">&lt; x-envoy-upstream-service-time: 1</span>
+<span class="go">&lt; response-body-size: 544                      &lt;-- This is added to the response header by our Lua script. --&lt;</span>
+<span class="go">&lt; server: envoy</span>
+<span class="go">&lt;</span>
+<span class="go">{</span>
+<span class="go">  &quot;path&quot;: &quot;/&quot;,</span>
+<span class="go">  &quot;headers&quot;: {</span>
+<span class="go">    &quot;host&quot;: &quot;localhost:8000&quot;,</span>
+<span class="go">    &quot;user-agent&quot;: &quot;curl/7.64.1&quot;,</span>
+<span class="go">    &quot;accept&quot;: &quot;*/*&quot;,</span>
+<span class="go">    &quot;x-forwarded-proto&quot;: &quot;http&quot;,</span>
+<span class="go">    &quot;x-request-id&quot;: &quot;a78fcce7-2d67-4eeb-890a-73eebb942a17&quot;,</span>
+<span class="go">    &quot;foo&quot;: &quot;bar&quot;,                              &lt;-- This is added to the request header by our Lua script. --&lt;</span>
+<span class="go">    &quot;x-envoy-expected-rq-timeout-ms&quot;: &quot;15000&quot;,</span>
+<span class="go">    &quot;content-length&quot;: &quot;0&quot;</span>
+<span class="go">  },</span>
+<span class="go">  &quot;method&quot;: &quot;GET&quot;,</span>
+<span class="go">  &quot;body&quot;: &quot;&quot;,</span>
+<span class="go">  &quot;fresh&quot;: false,</span>
+<span class="go">  &quot;hostname&quot;: &quot;localhost&quot;,</span>
+<span class="go">  &quot;ip&quot;: &quot;::ffff:172.20.0.2&quot;,</span>
+<span class="go">  &quot;ips&quot;: [],</span>
+<span class="go">  &quot;protocol&quot;: &quot;http&quot;,</span>
+<span class="go">  &quot;query&quot;: {},</span>
+<span class="go">  &quot;subdomains&quot;: [],</span>
+<span class="go">  &quot;xhr&quot;: false,</span>
+<span class="go">  &quot;os&quot;: {</span>
+<span class="go">    &quot;hostname&quot;: &quot;7ca39ead805a&quot;</span>
+<span class="go">  }</span>
+<span class="go">* Connection #0 to host localhost left intact</span>
+<span class="go">}* Closing connection 0</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="../../configuration/http/http_filters/lua_filter.html#config-http-filters-lua"><span class="std std-ref">Envoy Lua filter</span></a></dt><dd><p>Learn  more about the Envoy Lua filter.</p>
+</dd>
+<dt><a class="reference external" href="https://www.lua.org/">Lua</a></dt><dd><p>The Lua programming language.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="mysql.html" class="btn btn-neutral float-right" title="MySQL filter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="load_reporting_service.html" class="btn btn-neutral float-left" title="Load reporting service (LRS)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2016-2021, Envoy Project Authors
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
