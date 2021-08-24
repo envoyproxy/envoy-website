@@ -1,0 +1,699 @@
+.. _envoy_api_file_envoy/config/bootstrap/v2/bootstrap.proto:
+
+Bootstrap
+=========
+
+This proto is supplied via the :option:`-c` CLI flag and acts as the root
+of the Envoy v2 configuration. See the :ref:`v2 configuration overview
+<config_overview_bootstrap>` for more detail.
+
+.. _envoy_api_msg_config.bootstrap.v2.Bootstrap:
+
+config.bootstrap.v2.Bootstrap
+-----------------------------
+
+`[config.bootstrap.v2.Bootstrap proto] <https://github.com/envoyproxy/envoy/blob/v1.16.5/api/envoy/config/bootstrap/v2/bootstrap.proto#L36>`_
+
+Bootstrap :ref:`configuration overview <config_overview_bootstrap>`.
+
+.. code-block:: json
+
+  {
+    "node": "{...}",
+    "static_resources": "{...}",
+    "dynamic_resources": "{...}",
+    "cluster_manager": "{...}",
+    "hds_config": "{...}",
+    "flags_path": "...",
+    "stats_sinks": [],
+    "stats_config": "{...}",
+    "stats_flush_interval": "{...}",
+    "watchdog": "{...}",
+    "tracing": "{...}",
+    "runtime": "{...}",
+    "layered_runtime": "{...}",
+    "admin": "{...}",
+    "overload_manager": "{...}",
+    "enable_dispatcher_stats": "...",
+    "header_prefix": "...",
+    "stats_server_version_override": "{...}",
+    "use_tcp_for_dns_lookups": "..."
+  }
+
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.node:
+
+node
+  (:ref:`core.Node <envoy_api_msg_core.Node>`) Node identity to present to the management server and for instance
+  identification purposes (e.g. in generated headers).
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.static_resources:
+
+static_resources
+  (:ref:`config.bootstrap.v2.Bootstrap.StaticResources <envoy_api_msg_config.bootstrap.v2.Bootstrap.StaticResources>`) Statically specified resources.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.dynamic_resources:
+
+dynamic_resources
+  (:ref:`config.bootstrap.v2.Bootstrap.DynamicResources <envoy_api_msg_config.bootstrap.v2.Bootstrap.DynamicResources>`) xDS configuration sources.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.cluster_manager:
+
+cluster_manager
+  (:ref:`config.bootstrap.v2.ClusterManager <envoy_api_msg_config.bootstrap.v2.ClusterManager>`) Configuration for the cluster manager which owns all upstream clusters
+  within the server.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.hds_config:
+
+hds_config
+  (:ref:`core.ApiConfigSource <envoy_api_msg_core.ApiConfigSource>`) Health discovery service config option.
+  (:ref:`core.ApiConfigSource <envoy_api_msg_core.ApiConfigSource>`)
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.flags_path:
+
+flags_path
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Optional file system path to search for startup flag files.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.stats_sinks:
+
+stats_sinks
+  (:ref:`config.metrics.v2.StatsSink <envoy_api_msg_config.metrics.v2.StatsSink>`) Optional set of stats sinks.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.stats_config:
+
+stats_config
+  (:ref:`config.metrics.v2.StatsConfig <envoy_api_msg_config.metrics.v2.StatsConfig>`) Configuration for internal processing of stats.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.stats_flush_interval:
+
+stats_flush_interval
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) Optional duration between flushes to configured stats sinks. For
+  performance reasons Envoy latches counters and only flushes counters and
+  gauges at a periodic interval. If not specified the default is 5000ms (5
+  seconds).
+  Duration must be at least 1ms and at most 5 min.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.watchdog:
+
+watchdog
+  (:ref:`config.bootstrap.v2.Watchdog <envoy_api_msg_config.bootstrap.v2.Watchdog>`) Optional watchdog configuration.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.tracing:
+
+tracing
+  (:ref:`config.trace.v2.Tracing <envoy_api_msg_config.trace.v2.Tracing>`) Configuration for an external tracing provider.
+  
+  .. attention::
+   This field has been deprecated in favor of :ref:`HttpConnectionManager.Tracing.provider
+   <envoy_api_field_config.filter.network.http_connection_manager.v2.HttpConnectionManager.Tracing.provider>`.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.runtime:
+
+runtime
+  (:ref:`config.bootstrap.v2.Runtime <envoy_api_msg_config.bootstrap.v2.Runtime>`) Configuration for the runtime configuration provider (deprecated). If not
+  specified, a “null” provider will be used which will result in all defaults
+  being used.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.layered_runtime:
+
+layered_runtime
+  (:ref:`config.bootstrap.v2.LayeredRuntime <envoy_api_msg_config.bootstrap.v2.LayeredRuntime>`) Configuration for the runtime configuration provider. If not
+  specified, a “null” provider will be used which will result in all defaults
+  being used.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.admin:
+
+admin
+  (:ref:`config.bootstrap.v2.Admin <envoy_api_msg_config.bootstrap.v2.Admin>`) Configuration for the local administration HTTP server.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.overload_manager:
+
+overload_manager
+  (:ref:`config.overload.v2alpha.OverloadManager <envoy_api_msg_config.overload.v2alpha.OverloadManager>`) Optional overload manager configuration.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.enable_dispatcher_stats:
+
+enable_dispatcher_stats
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Enable :ref:`stats for event dispatcher <operations_performance>`, defaults to false.
+  Note that this records a value for each iteration of the event loop on every thread. This
+  should normally be minimal overhead, but when using
+  :ref:`statsd <envoy_api_msg_config.metrics.v2.StatsdSink>`, it will send each observed value
+  over the wire individually because the statsd protocol doesn't have any way to represent a
+  histogram summary. Be aware that this can be a very large volume of data.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.header_prefix:
+
+header_prefix
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Optional string which will be used in lieu of x-envoy in prefixing headers.
+  
+  For example, if this string is present and set to X-Foo, then x-envoy-retry-on will be
+  transformed into x-foo-retry-on etc.
+  
+  Note this applies to the headers Envoy will generate, the headers Envoy will sanitize, and the
+  headers Envoy will trust for core code and core extensions only. Be VERY careful making
+  changes to this string, especially in multi-layer Envoy deployments or deployments using
+  extensions which are not upstream.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.stats_server_version_override:
+
+stats_server_version_override
+  (`UInt64Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint64value>`_) Optional proxy version which will be used to set the value of :ref:`server.version statistic
+  <server_statistics>` if specified. Envoy will not process this value, it will be sent as is to
+  :ref:`stats sinks <envoy_api_msg_config.metrics.v2.StatsSink>`.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.use_tcp_for_dns_lookups:
+
+use_tcp_for_dns_lookups
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Always use TCP queries instead of UDP queries for DNS lookups.
+  This may be overridden on a per-cluster basis in cds_config,
+  when :ref:`dns_resolvers <envoy_api_field_Cluster.dns_resolvers>` and
+  :ref:`use_tcp_for_dns_lookups <envoy_api_field_Cluster.use_tcp_for_dns_lookups>` are
+  specified.
+  Setting this value causes failure if the
+  ``envoy.restart_features.use_apple_api_for_dns_lookups`` runtime value is true during
+  server startup. Apple' API only uses UDP for DNS resolution.
+  
+  
+.. _envoy_api_msg_config.bootstrap.v2.Bootstrap.StaticResources:
+
+config.bootstrap.v2.Bootstrap.StaticResources
+---------------------------------------------
+
+`[config.bootstrap.v2.Bootstrap.StaticResources proto] <https://github.com/envoyproxy/envoy/blob/v1.16.5/api/envoy/config/bootstrap/v2/bootstrap.proto#L37>`_
+
+
+.. code-block:: json
+
+  {
+    "listeners": [],
+    "clusters": [],
+    "secrets": []
+  }
+
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.StaticResources.listeners:
+
+listeners
+  (:ref:`Listener <envoy_api_msg_Listener>`) Static :ref:`Listeners <envoy_api_msg_Listener>`. These listeners are
+  available regardless of LDS configuration.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.StaticResources.clusters:
+
+clusters
+  (:ref:`Cluster <envoy_api_msg_Cluster>`) If a network based configuration source is specified for :ref:`cds_config
+  <envoy_api_field_config.bootstrap.v2.Bootstrap.DynamicResources.cds_config>`, it's necessary
+  to have some initial cluster definitions available to allow Envoy to know
+  how to speak to the management server. These cluster definitions may not
+  use :ref:`EDS <arch_overview_dynamic_config_eds>` (i.e. they should be static
+  IP or DNS-based).
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.StaticResources.secrets:
+
+secrets
+  (:ref:`auth.Secret <envoy_api_msg_auth.Secret>`) These static secrets can be used by :ref:`SdsSecretConfig
+  <envoy_api_msg_auth.SdsSecretConfig>`
+  
+  
+
+
+.. _envoy_api_msg_config.bootstrap.v2.Bootstrap.DynamicResources:
+
+config.bootstrap.v2.Bootstrap.DynamicResources
+----------------------------------------------
+
+`[config.bootstrap.v2.Bootstrap.DynamicResources proto] <https://github.com/envoyproxy/envoy/blob/v1.16.5/api/envoy/config/bootstrap/v2/bootstrap.proto#L55>`_
+
+
+.. code-block:: json
+
+  {
+    "lds_config": "{...}",
+    "cds_config": "{...}",
+    "ads_config": "{...}"
+  }
+
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.DynamicResources.lds_config:
+
+lds_config
+  (:ref:`core.ConfigSource <envoy_api_msg_core.ConfigSource>`) All :ref:`Listeners <envoy_api_msg_Listener>` are provided by a single
+  :ref:`LDS <arch_overview_dynamic_config_lds>` configuration source.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.DynamicResources.cds_config:
+
+cds_config
+  (:ref:`core.ConfigSource <envoy_api_msg_core.ConfigSource>`) All post-bootstrap :ref:`Cluster <envoy_api_msg_Cluster>` definitions are
+  provided by a single :ref:`CDS <arch_overview_dynamic_config_cds>`
+  configuration source.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Bootstrap.DynamicResources.ads_config:
+
+ads_config
+  (:ref:`core.ApiConfigSource <envoy_api_msg_core.ApiConfigSource>`) A single :ref:`ADS <config_overview_ads>` source may be optionally
+  specified. This must have :ref:`api_type
+  <envoy_api_field_core.ApiConfigSource.api_type>` :ref:`GRPC
+  <envoy_api_enum_value_core.ApiConfigSource.ApiType.GRPC>`. Only
+  :ref:`ConfigSources <envoy_api_msg_core.ConfigSource>` that have
+  the :ref:`ads <envoy_api_field_core.ConfigSource.ads>` field set will be
+  streamed on the ADS channel.
+  
+  
+
+
+
+.. _envoy_api_msg_config.bootstrap.v2.Admin:
+
+config.bootstrap.v2.Admin
+-------------------------
+
+`[config.bootstrap.v2.Admin proto] <https://github.com/envoyproxy/envoy/blob/v1.16.5/api/envoy/config/bootstrap/v2/bootstrap.proto#L179>`_
+
+Administration interface :ref:`operations documentation
+<operations_admin_interface>`.
+
+.. code-block:: json
+
+  {
+    "access_log_path": "...",
+    "profile_path": "...",
+    "address": "{...}",
+    "socket_options": []
+  }
+
+.. _envoy_api_field_config.bootstrap.v2.Admin.access_log_path:
+
+access_log_path
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The path to write the access log for the administration server. If no
+  access log is desired specify ‘/dev/null’. This is only required if
+  :ref:`address <envoy_api_field_config.bootstrap.v2.Admin.address>` is set.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Admin.profile_path:
+
+profile_path
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The cpu profiler output path for the administration server. If no profile
+  path is specified, the default is ‘/var/log/envoy/envoy.prof’.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Admin.address:
+
+address
+  (:ref:`core.Address <envoy_api_msg_core.Address>`) The TCP address that the administration server will listen on.
+  If not specified, Envoy will not start an administration server.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Admin.socket_options:
+
+socket_options
+  (:ref:`core.SocketOption <envoy_api_msg_core.SocketOption>`) Additional socket options that may not be present in Envoy source code or
+  precompiled binaries.
+  
+  
+
+
+.. _envoy_api_msg_config.bootstrap.v2.ClusterManager:
+
+config.bootstrap.v2.ClusterManager
+----------------------------------
+
+`[config.bootstrap.v2.ClusterManager proto] <https://github.com/envoyproxy/envoy/blob/v1.16.5/api/envoy/config/bootstrap/v2/bootstrap.proto#L199>`_
+
+Cluster manager :ref:`architecture overview <arch_overview_cluster_manager>`.
+
+.. code-block:: json
+
+  {
+    "local_cluster_name": "...",
+    "outlier_detection": "{...}",
+    "upstream_bind_config": "{...}",
+    "load_stats_config": "{...}"
+  }
+
+.. _envoy_api_field_config.bootstrap.v2.ClusterManager.local_cluster_name:
+
+local_cluster_name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Name of the local cluster (i.e., the cluster that owns the Envoy running
+  this configuration). In order to enable :ref:`zone aware routing
+  <arch_overview_load_balancing_zone_aware_routing>` this option must be set.
+  If *local_cluster_name* is defined then :ref:`clusters
+  <envoy_api_msg_Cluster>` must be defined in the :ref:`Bootstrap
+  static cluster resources
+  <envoy_api_field_config.bootstrap.v2.Bootstrap.StaticResources.clusters>`. This is unrelated to
+  the :option:`--service-cluster` option which does not `affect zone aware
+  routing <https://github.com/envoyproxy/envoy/issues/774>`_.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.ClusterManager.outlier_detection:
+
+outlier_detection
+  (:ref:`config.bootstrap.v2.ClusterManager.OutlierDetection <envoy_api_msg_config.bootstrap.v2.ClusterManager.OutlierDetection>`) Optional global configuration for outlier detection.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.ClusterManager.upstream_bind_config:
+
+upstream_bind_config
+  (:ref:`core.BindConfig <envoy_api_msg_core.BindConfig>`) Optional configuration used to bind newly established upstream connections.
+  This may be overridden on a per-cluster basis by upstream_bind_config in the cds_config.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.ClusterManager.load_stats_config:
+
+load_stats_config
+  (:ref:`core.ApiConfigSource <envoy_api_msg_core.ApiConfigSource>`) A management server endpoint to stream load stats to via
+  *StreamLoadStats*. This must have :ref:`api_type
+  <envoy_api_field_core.ApiConfigSource.api_type>` :ref:`GRPC
+  <envoy_api_enum_value_core.ApiConfigSource.ApiType.GRPC>`.
+  
+  
+.. _envoy_api_msg_config.bootstrap.v2.ClusterManager.OutlierDetection:
+
+config.bootstrap.v2.ClusterManager.OutlierDetection
+---------------------------------------------------
+
+`[config.bootstrap.v2.ClusterManager.OutlierDetection proto] <https://github.com/envoyproxy/envoy/blob/v1.16.5/api/envoy/config/bootstrap/v2/bootstrap.proto#L200>`_
+
+
+.. code-block:: json
+
+  {
+    "event_log_path": "..."
+  }
+
+.. _envoy_api_field_config.bootstrap.v2.ClusterManager.OutlierDetection.event_log_path:
+
+event_log_path
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies the path to the outlier event log.
+  
+  
+
+
+
+
+.. _envoy_api_msg_config.bootstrap.v2.Watchdog:
+
+config.bootstrap.v2.Watchdog
+----------------------------
+
+`[config.bootstrap.v2.Watchdog proto] <https://github.com/envoyproxy/envoy/blob/v1.16.5/api/envoy/config/bootstrap/v2/bootstrap.proto#L238>`_
+
+Envoy process watchdog configuration. When configured, this monitors for
+nonresponsive threads and kills the process after the configured thresholds.
+See the :ref:`watchdog documentation <operations_performance_watchdog>` for more information.
+
+.. code-block:: json
+
+  {
+    "miss_timeout": "{...}",
+    "megamiss_timeout": "{...}",
+    "kill_timeout": "{...}",
+    "multikill_timeout": "{...}"
+  }
+
+.. _envoy_api_field_config.bootstrap.v2.Watchdog.miss_timeout:
+
+miss_timeout
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The duration after which Envoy counts a nonresponsive thread in the
+  *watchdog_miss* statistic. If not specified the default is 200ms.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Watchdog.megamiss_timeout:
+
+megamiss_timeout
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The duration after which Envoy counts a nonresponsive thread in the
+  *watchdog_mega_miss* statistic. If not specified the default is
+  1000ms.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Watchdog.kill_timeout:
+
+kill_timeout
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) If a watched thread has been nonresponsive for this duration, assume a
+  programming error and kill the entire Envoy process. Set to 0 to disable
+  kill behavior. If not specified the default is 0 (disabled).
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Watchdog.multikill_timeout:
+
+multikill_timeout
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) If at least two watched threads have been nonresponsive for at least this
+  duration assume a true deadlock and kill the entire Envoy process. Set to 0
+  to disable this behavior. If not specified the default is 0 (disabled).
+  
+  
+
+
+.. _envoy_api_msg_config.bootstrap.v2.Runtime:
+
+config.bootstrap.v2.Runtime
+---------------------------
+
+`[config.bootstrap.v2.Runtime proto] <https://github.com/envoyproxy/envoy/blob/v1.16.5/api/envoy/config/bootstrap/v2/bootstrap.proto#L260>`_
+
+Runtime :ref:`configuration overview <config_runtime>` (deprecated).
+
+.. code-block:: json
+
+  {
+    "symlink_root": "...",
+    "subdirectory": "...",
+    "override_subdirectory": "...",
+    "base": "{...}"
+  }
+
+.. _envoy_api_field_config.bootstrap.v2.Runtime.symlink_root:
+
+symlink_root
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The implementation assumes that the file system tree is accessed via a
+  symbolic link. An atomic link swap is used when a new tree should be
+  switched to. This parameter specifies the path to the symbolic link. Envoy
+  will watch the location for changes and reload the file system tree when
+  they happen. If this parameter is not set, there will be no disk based
+  runtime.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Runtime.subdirectory:
+
+subdirectory
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies the subdirectory to load within the root directory. This is
+  useful if multiple systems share the same delivery mechanism. Envoy
+  configuration elements can be contained in a dedicated subdirectory.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Runtime.override_subdirectory:
+
+override_subdirectory
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies an optional subdirectory to load within the root directory. If
+  specified and the directory exists, configuration values within this
+  directory will override those found in the primary subdirectory. This is
+  useful when Envoy is deployed across many different types of servers.
+  Sometimes it is useful to have a per service cluster directory for runtime
+  configuration. See below for exactly how the override directory is used.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.Runtime.base:
+
+base
+  (`Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_) Static base runtime. This will be :ref:`overridden
+  <config_runtime_layering>` by other runtime layers, e.g.
+  disk or admin. This follows the :ref:`runtime protobuf JSON representation
+  encoding <config_runtime_proto_json>`.
+  
+  
+
+
+.. _envoy_api_msg_config.bootstrap.v2.RuntimeLayer:
+
+config.bootstrap.v2.RuntimeLayer
+--------------------------------
+
+`[config.bootstrap.v2.RuntimeLayer proto] <https://github.com/envoyproxy/envoy/blob/v1.16.5/api/envoy/config/bootstrap/v2/bootstrap.proto#L290>`_
+
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "static_layer": "{...}",
+    "disk_layer": "{...}",
+    "admin_layer": "{...}",
+    "rtds_layer": "{...}"
+  }
+
+.. _envoy_api_field_config.bootstrap.v2.RuntimeLayer.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Descriptive name for the runtime layer. This is only used for the runtime
+  :http:get:`/runtime` output.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.RuntimeLayer.static_layer:
+
+static_layer
+  (`Struct <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct>`_) :ref:`Static runtime <config_runtime_bootstrap>` layer.
+  This follows the :ref:`runtime protobuf JSON representation encoding
+  <config_runtime_proto_json>`. Unlike static xDS resources, this static
+  layer is overridable by later layers in the runtime virtual filesystem.
+  
+  
+  
+  Precisely one of :ref:`static_layer <envoy_api_field_config.bootstrap.v2.RuntimeLayer.static_layer>`, :ref:`disk_layer <envoy_api_field_config.bootstrap.v2.RuntimeLayer.disk_layer>`, :ref:`admin_layer <envoy_api_field_config.bootstrap.v2.RuntimeLayer.admin_layer>`, :ref:`rtds_layer <envoy_api_field_config.bootstrap.v2.RuntimeLayer.rtds_layer>` must be set.
+  
+.. _envoy_api_field_config.bootstrap.v2.RuntimeLayer.disk_layer:
+
+disk_layer
+  (:ref:`config.bootstrap.v2.RuntimeLayer.DiskLayer <envoy_api_msg_config.bootstrap.v2.RuntimeLayer.DiskLayer>`) 
+  
+  
+  Precisely one of :ref:`static_layer <envoy_api_field_config.bootstrap.v2.RuntimeLayer.static_layer>`, :ref:`disk_layer <envoy_api_field_config.bootstrap.v2.RuntimeLayer.disk_layer>`, :ref:`admin_layer <envoy_api_field_config.bootstrap.v2.RuntimeLayer.admin_layer>`, :ref:`rtds_layer <envoy_api_field_config.bootstrap.v2.RuntimeLayer.rtds_layer>` must be set.
+  
+.. _envoy_api_field_config.bootstrap.v2.RuntimeLayer.admin_layer:
+
+admin_layer
+  (:ref:`config.bootstrap.v2.RuntimeLayer.AdminLayer <envoy_api_msg_config.bootstrap.v2.RuntimeLayer.AdminLayer>`) 
+  
+  
+  Precisely one of :ref:`static_layer <envoy_api_field_config.bootstrap.v2.RuntimeLayer.static_layer>`, :ref:`disk_layer <envoy_api_field_config.bootstrap.v2.RuntimeLayer.disk_layer>`, :ref:`admin_layer <envoy_api_field_config.bootstrap.v2.RuntimeLayer.admin_layer>`, :ref:`rtds_layer <envoy_api_field_config.bootstrap.v2.RuntimeLayer.rtds_layer>` must be set.
+  
+.. _envoy_api_field_config.bootstrap.v2.RuntimeLayer.rtds_layer:
+
+rtds_layer
+  (:ref:`config.bootstrap.v2.RuntimeLayer.RtdsLayer <envoy_api_msg_config.bootstrap.v2.RuntimeLayer.RtdsLayer>`) 
+  
+  
+  Precisely one of :ref:`static_layer <envoy_api_field_config.bootstrap.v2.RuntimeLayer.static_layer>`, :ref:`disk_layer <envoy_api_field_config.bootstrap.v2.RuntimeLayer.disk_layer>`, :ref:`admin_layer <envoy_api_field_config.bootstrap.v2.RuntimeLayer.admin_layer>`, :ref:`rtds_layer <envoy_api_field_config.bootstrap.v2.RuntimeLayer.rtds_layer>` must be set.
+  
+.. _envoy_api_msg_config.bootstrap.v2.RuntimeLayer.DiskLayer:
+
+config.bootstrap.v2.RuntimeLayer.DiskLayer
+------------------------------------------
+
+`[config.bootstrap.v2.RuntimeLayer.DiskLayer proto] <https://github.com/envoyproxy/envoy/blob/v1.16.5/api/envoy/config/bootstrap/v2/bootstrap.proto#L292>`_
+
+:ref:`Disk runtime <config_runtime_local_disk>` layer.
+
+.. code-block:: json
+
+  {
+    "symlink_root": "...",
+    "subdirectory": "...",
+    "append_service_cluster": "..."
+  }
+
+.. _envoy_api_field_config.bootstrap.v2.RuntimeLayer.DiskLayer.symlink_root:
+
+symlink_root
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The implementation assumes that the file system tree is accessed via a
+  symbolic link. An atomic link swap is used when a new tree should be
+  switched to. This parameter specifies the path to the symbolic link.
+  Envoy will watch the location for changes and reload the file system tree
+  when they happen. See documentation on runtime :ref:`atomicity
+  <config_runtime_atomicity>` for further details on how reloads are
+  treated.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.RuntimeLayer.DiskLayer.subdirectory:
+
+subdirectory
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Specifies the subdirectory to load within the root directory. This is
+  useful if multiple systems share the same delivery mechanism. Envoy
+  configuration elements can be contained in a dedicated subdirectory.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.RuntimeLayer.DiskLayer.append_service_cluster:
+
+append_service_cluster
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) :ref:`Append <config_runtime_local_disk_service_cluster_subdirs>` the
+  service cluster to the path under symlink root.
+  
+  
+
+
+.. _envoy_api_msg_config.bootstrap.v2.RuntimeLayer.AdminLayer:
+
+config.bootstrap.v2.RuntimeLayer.AdminLayer
+-------------------------------------------
+
+`[config.bootstrap.v2.RuntimeLayer.AdminLayer proto] <https://github.com/envoyproxy/envoy/blob/v1.16.5/api/envoy/config/bootstrap/v2/bootstrap.proto#L313>`_
+
+:ref:`Admin console runtime <config_runtime_admin>` layer.
+
+.. code-block:: json
+
+  {}
+
+
+
+
+.. _envoy_api_msg_config.bootstrap.v2.RuntimeLayer.RtdsLayer:
+
+config.bootstrap.v2.RuntimeLayer.RtdsLayer
+------------------------------------------
+
+`[config.bootstrap.v2.RuntimeLayer.RtdsLayer proto] <https://github.com/envoyproxy/envoy/blob/v1.16.5/api/envoy/config/bootstrap/v2/bootstrap.proto#L317>`_
+
+:ref:`Runtime Discovery Service (RTDS) <config_runtime_rtds>` layer.
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "rtds_config": "{...}"
+  }
+
+.. _envoy_api_field_config.bootstrap.v2.RuntimeLayer.RtdsLayer.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Resource to subscribe to at *rtds_config* for the RTDS layer.
+  
+  
+.. _envoy_api_field_config.bootstrap.v2.RuntimeLayer.RtdsLayer.rtds_config:
+
+rtds_config
+  (:ref:`core.ConfigSource <envoy_api_msg_core.ConfigSource>`) RTDS configuration source.
+  
+  
+
+
+
+.. _envoy_api_msg_config.bootstrap.v2.LayeredRuntime:
+
+config.bootstrap.v2.LayeredRuntime
+----------------------------------
+
+`[config.bootstrap.v2.LayeredRuntime proto] <https://github.com/envoyproxy/envoy/blob/v1.16.5/api/envoy/config/bootstrap/v2/bootstrap.proto#L347>`_
+
+Runtime :ref:`configuration overview <config_runtime>`.
+
+.. code-block:: json
+
+  {
+    "layers": []
+  }
+
+.. _envoy_api_field_config.bootstrap.v2.LayeredRuntime.layers:
+
+layers
+  (:ref:`config.bootstrap.v2.RuntimeLayer <envoy_api_msg_config.bootstrap.v2.RuntimeLayer>`) The :ref:`layers <config_runtime_layering>` of the runtime. This is ordered
+  such that later layers in the list overlay earlier entries.
+  
+  
+
