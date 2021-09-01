@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>TLS Server name indication (SNI) &mdash; envoy 1.20.0-dev-51b451 documentation</title>
+  <title>TLS Server name indication (SNI) &mdash; envoy 1.20.0-dev-e50d80 documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.20.0-dev-51b451
+                1.20.0-dev-e50d80
               </div>
             
           
@@ -257,9 +257,9 @@ keypairs.</p>
 <span class="gp">$ </span>mkdir -p certs
 
 <span class="gp">$ </span>openssl req -new -newkey rsa:2048 -days <span class="m">365</span> -nodes -x509 <span class="se">\</span>
-         -subj <span class="s2">&quot;/C=US/ST=CA/O=MyExample, Inc./CN=domain1.example.com&quot;</span> <span class="se">\</span>
-         -keyout certs/domain1.key.pem <span class="se">\</span>
-         -out certs/domain1.crt.pem
+<span class="go">         -subj &quot;/C=US/ST=CA/O=MyExample, Inc./CN=domain1.example.com&quot; \</span>
+<span class="go">         -keyout certs/domain1.key.pem \</span>
+<span class="go">         -out certs/domain1.crt.pem</span>
 <span class="go">Generating a RSA private key</span>
 <span class="go">.............+++++</span>
 <span class="go">...................+++++</span>
@@ -267,9 +267,9 @@ keypairs.</p>
 <span class="go">-----</span>
 
 <span class="gp">$ </span>openssl req -new -newkey rsa:2048 -days <span class="m">365</span> -nodes -x509 <span class="se">\</span>
-         -subj <span class="s2">&quot;/C=US/ST=CA/O=MyExample, Inc./CN=domain2.example.com&quot;</span> <span class="se">\</span>
-         -keyout certs/domain2.key.pem <span class="se">\</span>
-         -out certs/domain2.crt.pem
+<span class="go">         -subj &quot;/C=US/ST=CA/O=MyExample, Inc./CN=domain2.example.com&quot; \</span>
+<span class="go">         -keyout certs/domain2.key.pem \</span>
+<span class="go">         -out certs/domain2.crt.pem</span>
 <span class="go">Generating a RSA private key</span>
 <span class="go">.............+++++</span>
 <span class="go">...................+++++</span>
@@ -325,18 +325,18 @@ proxy to the two upstream <code class="docutils literal notranslate"><span class
 <p>To do this you must explicitly tell curl to resolve the <code class="docutils literal notranslate"><span class="pre">DNS</span></code> for the endpoints correctly.</p>
 <p>Each endpoint should proxy to the respective <code class="docutils literal notranslate"><span class="pre">http-upstream</span></code> or <code class="docutils literal notranslate"><span class="pre">https-upstream</span></code> service.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl -sk --resolve domain1.example.com:10000:127.0.0.1 <span class="se">\</span>
-      https://domain1.example.com:10000 <span class="se">\</span>
-     <span class="p">|</span> jq -r <span class="s1">&#39;.os.hostname&#39;</span>
+<span class="go">      https://domain1.example.com:10000 \</span>
+<span class="go">     | jq -r &#39;.os.hostname&#39;</span>
 <span class="go">http-upstream1</span>
 
 <span class="gp">$ </span>curl -sk --resolve domain2.example.com:10000:127.0.0.1 <span class="se">\</span>
-      https://domain2.example.com:10000 <span class="se">\</span>
-     <span class="p">|</span> jq -r <span class="s1">&#39;.os.hostname&#39;</span>
+<span class="go">      https://domain2.example.com:10000 \</span>
+<span class="go">     | jq -r &#39;.os.hostname&#39;</span>
 <span class="go">http-upstream2</span>
 
 <span class="gp">$ </span>curl -sk --resolve domain3.example.com:10000:127.0.0.1 <span class="se">\</span>
-      https://domain3.example.com:10000 <span class="se">\</span>
-     <span class="p">|</span> jq -r <span class="s1">&#39;.os.hostname&#39;</span>
+<span class="go">      https://domain3.example.com:10000 \</span>
+<span class="go">     | jq -r &#39;.os.hostname&#39;</span>
 <span class="go">https-upstream3</span>
 </pre></div>
 </div>
@@ -347,15 +347,15 @@ proxy to the two upstream <code class="docutils literal notranslate"><span class
 <p>These route via the <code class="docutils literal notranslate"><span class="pre">SNI</span></code> proxy endpoints to the respective <code class="docutils literal notranslate"><span class="pre">http-upstream</span></code> or
 <code class="docutils literal notranslate"><span class="pre">https-upstream</span></code> services.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl -s http://localhost:20000/domain1 <span class="se">\</span>
-     <span class="p">|</span> jq <span class="s1">&#39;.os.hostname&#39;</span>
+<span class="go">     | jq &#39;.os.hostname&#39;</span>
 <span class="go">http-upstream1</span>
 
 <span class="gp">$ </span>curl -s http://localhost:20000/domain2 <span class="se">\</span>
-     <span class="p">|</span> jq <span class="s1">&#39;.os.hostname&#39;</span>
+<span class="go">     | jq &#39;.os.hostname&#39;</span>
 <span class="go">http-upstream2</span>
 
 <span class="gp">$ </span>curl -s http://localhost:20000/domain3 <span class="se">\</span>
-     <span class="p">|</span> jq <span class="s1">&#39;.os.hostname&#39;</span>
+<span class="go">     | jq &#39;.os.hostname&#39;</span>
 <span class="go">https-upstream3</span>
 </pre></div>
 </div>
