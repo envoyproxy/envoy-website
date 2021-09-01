@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Double proxy (with mTLS encryption) &mdash; envoy 1.20.0-dev-e50d80 documentation</title>
+  <title>Double proxy (with mTLS encryption) &mdash; envoy 1.20.0-dev-3123c1 documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.20.0-dev-e50d80
+                1.20.0-dev-3123c1
               </div>
             
           
@@ -306,13 +306,13 @@ certificates for the proxies.</p>
 <h2>Step 3: Generate certificate signing requests for the proxies<a class="headerlink" href="#step-3-generate-certificate-signing-requests-for-the-proxies" title="Permalink to this headline">¶</a></h2>
 <p>Use the domain key to generate certificate signing requests for each of the proxies:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openssl req -new -sha256 <span class="se">\</span>
-<span class="go">     -key certs/example.com.key \</span>
-<span class="go">     -subj &quot;/C=US/ST=CA/O=MyExample, Inc./CN=proxy-postgres-frontend.example.com&quot; \</span>
-<span class="go">     -out certs/proxy-postgres-frontend.example.com.csr</span>
+     -key certs/example.com.key <span class="se">\</span>
+     -subj <span class="s2">&quot;/C=US/ST=CA/O=MyExample, Inc./CN=proxy-postgres-frontend.example.com&quot;</span> <span class="se">\</span>
+     -out certs/proxy-postgres-frontend.example.com.csr
 <span class="gp">$ </span>openssl req -new -sha256 <span class="se">\</span>
-<span class="go">     -key certs/example.com.key \</span>
-<span class="go">     -subj &quot;/C=US/ST=CA/O=MyExample, Inc./CN=proxy-postgres-backend.example.com&quot; \</span>
-<span class="go">     -out certs/proxy-postgres-backend.example.com.csr</span>
+     -key certs/example.com.key <span class="se">\</span>
+     -subj <span class="s2">&quot;/C=US/ST=CA/O=MyExample, Inc./CN=proxy-postgres-backend.example.com&quot;</span> <span class="se">\</span>
+     -out certs/proxy-postgres-backend.example.com.csr
 </pre></div>
 </div>
 </div>
@@ -321,27 +321,27 @@ certificates for the proxies.</p>
 <p>You can now use the certificate authority that you created to sign the certificate requests.</p>
 <p>Note the <code class="docutils literal notranslate"><span class="pre">subjectAltName</span></code>. This is used for reciprocally matching and validating the certificates.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>openssl x509 -req <span class="se">\</span>
-<span class="go">     -in certs/proxy-postgres-frontend.example.com.csr \</span>
-<span class="go">     -CA certs/ca.crt \</span>
-<span class="go">     -CAkey certs/ca.key \</span>
-<span class="go">     -CAcreateserial \</span>
-<span class="go">     -extfile &lt;(printf &quot;subjectAltName=DNS:proxy-postgres-frontend.example.com&quot;) \</span>
-<span class="go">     -out certs/postgres-frontend.example.com.crt \</span>
-<span class="go">     -days 500 \</span>
-<span class="go">     -sha256</span>
+     -in certs/proxy-postgres-frontend.example.com.csr <span class="se">\</span>
+     -CA certs/ca.crt <span class="se">\</span>
+     -CAkey certs/ca.key <span class="se">\</span>
+     -CAcreateserial <span class="se">\</span>
+     -extfile &lt;<span class="o">(</span><span class="nb">printf</span> <span class="s2">&quot;subjectAltName=DNS:proxy-postgres-frontend.example.com&quot;</span><span class="o">)</span> <span class="se">\</span>
+     -out certs/postgres-frontend.example.com.crt <span class="se">\</span>
+     -days <span class="m">500</span> <span class="se">\</span>
+     -sha256
 <span class="go">Signature ok</span>
 <span class="go">subject=C = US, ST = CA, O = &quot;MyExample, Inc.&quot;, CN = proxy-postgres-frontend.example.com</span>
 <span class="go">Getting CA Private Key</span>
 
 <span class="gp">$ </span>openssl x509 -req <span class="se">\</span>
-<span class="go">     -in certs/proxy-postgres-backend.example.com.csr \</span>
-<span class="go">     -CA certs/ca.crt \</span>
-<span class="go">     -CAkey certs/ca.key \</span>
-<span class="go">     -CAcreateserial \</span>
-<span class="go">     -extfile &lt;(printf &quot;subjectAltName=DNS:proxy-postgres-backend.example.com&quot;) \</span>
-<span class="go">     -out certs/postgres-backend.example.com.crt \</span>
-<span class="go">     -days 500 \</span>
-<span class="go">     -sha256</span>
+     -in certs/proxy-postgres-backend.example.com.csr <span class="se">\</span>
+     -CA certs/ca.crt <span class="se">\</span>
+     -CAkey certs/ca.key <span class="se">\</span>
+     -CAcreateserial <span class="se">\</span>
+     -extfile &lt;<span class="o">(</span><span class="nb">printf</span> <span class="s2">&quot;subjectAltName=DNS:proxy-postgres-backend.example.com&quot;</span><span class="o">)</span> <span class="se">\</span>
+     -out certs/postgres-backend.example.com.crt <span class="se">\</span>
+     -days <span class="m">500</span> <span class="se">\</span>
+     -sha256
 <span class="go">Signature ok</span>
 <span class="go">subject=C = US, ST = CA, O = &quot;MyExample, Inc.&quot;, CN = proxy-postgres-backend.example.com</span>
 <span class="go">Getting CA Private Key</span>
