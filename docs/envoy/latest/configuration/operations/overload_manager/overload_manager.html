@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Overload manager &mdash; envoy 1.20.0-dev-d00129 documentation</title>
+  <title>Overload manager &mdash; envoy 1.20.0-dev-7bf466 documentation</title>
   
 
   
@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                1.20.0-dev-d00129
+                1.20.0-dev-7bf466
               </div>
             
           
@@ -303,6 +303,10 @@ pressure is above the
 <td><p>Envoy will reduce the waiting period for a configured set of timeouts. See
 <a class="reference internal" href="#config-overload-manager-reducing-timeouts"><span class="std std-ref">below</span></a> for details on configuration.</p></td>
 </tr>
+<tr class="row-even"><td><p>envoy.overload_actions.reset_high_memory_stream</p></td>
+<td><p>Envoy will reset expensive streams to terminate them. See
+<a class="reference internal" href="#config-overload-manager-reset-streams"><span class="std std-ref">below</span></a> for details on configuration.</p></td>
+</tr>
 </tbody>
 </table>
 <div class="section" id="reducing-timeouts">
@@ -361,6 +365,88 @@ should have a smaller number of open connections than others, one may specify a 
 limit for that specific listener and allow the global limit to enforce resource utilization among
 all listeners.</p>
 <p>An example configuration can be found in the <a class="reference internal" href="../../best_practices/edge.html#best-practices-edge"><span class="std std-ref">edge best practices document</span></a>.</p>
+<div class="section" id="reset-streams">
+<span id="config-overload-manager-reset-streams"></span><h3>Reset Streams<a class="headerlink" href="#reset-streams" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Resetting streams via an overload action currently only works with HTTP2.</p>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">envoy.overload_actions.reset_high_memory_stream</span></code> overload action will reset
+expensive streams. This requires <cite>minimum_account_to_track_power_of_two</cite> to be
+configured via <a class="reference internal" href="../../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-field-config-overload-v3-overloadmanager-buffer-factory-config"><span class="std std-ref">buffer_factory_config</span></a>.
+To understand the memory class scheme in detail see <a class="reference internal" href="../../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-field-config-overload-v3-bufferfactoryconfig-minimum-account-to-track-power-of-two"><span class="std std-ref">minimum_account_to_track_power_of_two</span></a></p>
+<p>As an example, here is a partial Overload Manager configuration with minimum
+threshold for tracking and a single overload action entry that resets streams:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">buffer_factory_config</span><span class="p">:</span>
+  <span class="nt">minimum_account_to_track_power_of_two</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+<span class="nt">actions</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;envoy.overload_actions.reset_high_memory_stream&quot;</span>
+  <span class="nt">triggers</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;envoy.resource_monitors.fixed_heap&quot;</span>
+      <span class="nt">scaled</span><span class="p">:</span>
+        <span class="nt">scaling_threshold</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.85</span>
+        <span class="nt">saturation_threshold</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.95</span>
+<span class="nn">...</span>
+</pre></div>
+</div>
+<p>We will only track streams using &gt;=
+<span class="math notranslate nohighlight">\(2^minimum_account_to_track_power_of_two\)</span> worth of allocated memory in
+buffers. In this case, by setting the <cite>minimum_account_to_track_power_of_two</cite>
+to <cite>20</cite> we will track streams using &gt;= 1MiB since <span class="math notranslate nohighlight">\(2^20\)</span> is 1MiB. Streams
+using &gt;= 1MiB will be classified into 8 power of two sized buckets. Currently,
+the number of buckets is hardcoded to 8.  For this example, the buckets are as
+follows:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 67%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Bucket index</p></th>
+<th class="head"><p>Contains streams using</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>[1MiB,2MiB)</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>[2MiB,4MiB)</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>[4MiB,8MiB)</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>[8MiB,16MiB)</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>[16MiB,32MiB)</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p>[32MiB,64MiB)</p></td>
+</tr>
+<tr class="row-even"><td><p>6</p></td>
+<td><p>[64MiB,128MiB)</p></td>
+</tr>
+<tr class="row-odd"><td><p>7</p></td>
+<td><p>&gt;= 128MiB</p></td>
+</tr>
+</tbody>
+</table>
+<p>The above configuration also configures the overload manager to reset our tracked
+streams based on heap usage as a trigger. When the heap usage is less than 85%,
+no streams will be reset.  When heap usage is at or above 85%, we start to
+reset buckets according to the strategy described below. When the heap
+usage is at 95% all streams using &gt;= 1MiB memory are eligible for reset.</p>
+<p>Given that there are only 8 buckets, we partition the space with a gradation of
+<span class="math notranslate nohighlight">\(gradation = (saturation_threshold - scaling_threshold)/8\)</span>. Hence at 85%
+heap usage we reset streams in the last bucket e.g. those using <cite>&gt;= 128MiB</cite>. At
+<span class="math notranslate nohighlight">\(85% + 1 * gradation\)</span> heap usage we reset streams in the last two buckets
+e.g. those using <cite>&gt;= 64MiB</cite>. And so forth as the heap usage is higher.</p>
+<p>It’s expected that the first few gradations shouldn’t trigger anything, unless
+there’s something seriously wrong e.g. in this example streams using <cite>&gt;=
+128MiB</cite> in buffers.</p>
+</div>
 </div>
 <div class="section" id="statistics">
 <h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
