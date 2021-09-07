@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Overload manager &mdash; envoy 1.20.0-dev-94153b documentation</title>
+  <title>Overload manager &mdash; envoy 1.20.0-dev-de5bf9 documentation</title>
   
 
   
@@ -76,7 +76,7 @@
             
             
               <div class="version">
-                1.20.0-dev-94153b
+                1.20.0-dev-de5bf9
               </div>
             
           
@@ -437,12 +437,19 @@ follows:</p>
 streams based on heap usage as a trigger. When the heap usage is less than 85%,
 no streams will be reset.  When heap usage is at or above 85%, we start to
 reset buckets according to the strategy described below. When the heap
-usage is at 95% all streams using &gt;= 1MiB memory are eligible for reset.</p>
+usage is at 95% all streams using &gt;= 1MiB memory are eligible for reset.
+This overload action will reset up to 50 streams (this is a hardcoded limit)
+per worker everytime the action is invoked. This is both to reduce the amount
+of streams that end up getting reset and to prevent the worker thread from
+locking up and triggering the Watchdog system.</p>
 <p>Given that there are only 8 buckets, we partition the space with a gradation of
 <span class="math notranslate nohighlight">\(gradation = (saturation_threshold - scaling_threshold)/8\)</span>. Hence at 85%
 heap usage we reset streams in the last bucket e.g. those using <cite>&gt;= 128MiB</cite>. At
 <span class="math notranslate nohighlight">\(85% + 1 * gradation\)</span> heap usage we reset streams in the last two buckets
-e.g. those using <cite>&gt;= 64MiB</cite>. And so forth as the heap usage is higher.</p>
+e.g. those using <cite>&gt;= 64MiB</cite>, prioritizing the streams in the last bucket since
+there’s a hard limit on the number of streams we can reset per invokation.
+At <span class="math notranslate nohighlight">\(85% + 2 * gradation\)</span> heap usage we reset streams in the last three
+buckets e.g. those using <cite>&gt;= 32MiB</cite>. And so forth as the heap usage is higher.</p>
 <p>It’s expected that the first few gradations shouldn’t trigger anything, unless
 there’s something seriously wrong e.g. in this example streams using <cite>&gt;=
 128MiB</cite> in buffers.</p>
