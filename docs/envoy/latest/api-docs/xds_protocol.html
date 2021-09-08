@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>xDS REST and gRPC protocol &mdash; envoy 1.20.0-dev-01ea37 documentation</title>
+  <title>xDS REST and gRPC protocol &mdash; envoy 1.20.0-dev-4a2874 documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.20.0-dev-01ea37
+                1.20.0-dev-4a2874
               </div>
             
           
@@ -215,7 +215,7 @@ below.</p>
 <div class="section" id="resource-types">
 <h2>Resource Types<a class="headerlink" href="#resource-types" title="Permalink to this headline">¶</a></h2>
 <p>Every configuration resource in the xDS API has a type associated with it. Resource types follow a
-<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/01ea37b280d980c25bb9e2c8069d62e4aef37961/api/API_VERSIONING.md">versioning scheme</a>. Resource types are versioned independent of the
+<a class="reference external" href="https://github.com/envoyproxy/envoy/blob/4a287413c777e17c2a383a023059b2552121331b/api/API_VERSIONING.md">versioning scheme</a>. Resource types are versioned independent of the
 transports described below.</p>
 <p>The following v3 xDS resource types are supported:</p>
 <ul class="simple">
@@ -948,12 +948,29 @@ may be resource names or aliases.</p>
 names, which the server thought the client was already not subscribed
 to. The server must cleanly process such a request; it can simply ignore
 these phantom unsubscriptions.</p>
+<p>In most cases (see below for exception), a server does not need to send any response if a request
+does nothing except unsubscribe from a resource; in particular, servers are not generally required
+to send a response with the unsubscribed resource name in the
+<a class="reference internal" href="../api-v3/service/discovery/v3/discovery.proto.html#envoy-v3-api-field-service-discovery-v3-deltadiscoveryresponse-removed-resources"><span class="std std-ref">removed_resources</span></a>
+field.</p>
+<p>However, there is one exception to the above: When a client has a wildcard subscription (“*”) <em>and</em>
+a subscription to another specific resource name, it is possible that the specific resource name is
+also included in the wildcard subscription, so if the client unsubscribes from that specific
+resource name, it does not know whether or not to continue to cache the resource. To address this,
+the server must send a response that includes the specific resource in either the
+<a class="reference internal" href="../api-v3/service/discovery/v3/discovery.proto.html#envoy-v3-api-field-service-discovery-v3-deltadiscoveryresponse-removed-resources"><span class="std std-ref">removed_resources</span></a>
+field (if it is not included in the wildcard) or in the
+<a class="reference internal" href="../api-v3/service/discovery/v3/discovery.proto.html#envoy-v3-api-field-service-discovery-v3-deltadiscoveryresponse-resources"><span class="std std-ref">resources</span></a>
+field (if it <em>is</em> included in the wildcard).</p>
 </div>
 <div class="section" id="id2">
 <h4>Knowing When a Requested Resource Does Not Exist<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
-<p>When a resource subscribed to by a client does not exist, the server will send a <a class="reference internal" href="../api-v3/service/discovery/v3/discovery.proto.html#envoy-v3-api-msg-service-discovery-v3-resource"><span class="std std-ref">Resource</span></a> whose <a class="reference internal" href="../api-v3/service/discovery/v3/discovery.proto.html#envoy-v3-api-field-service-discovery-v3-resource-name"><span class="std std-ref">name</span></a> field matches the
-name that the client subscribed to and whose <a class="reference internal" href="../api-v3/service/discovery/v3/discovery.proto.html#envoy-v3-api-msg-service-discovery-v3-resource"><span class="std std-ref">resource</span></a>
-field is unset. This allows the client to quickly determine when a resource does not exist without
+<p>When a resource subscribed to by a client does not exist, the server
+will send a
+<a class="reference internal" href="../api-v3/service/discovery/v3/discovery.proto.html#envoy-v3-api-msg-service-discovery-v3-deltadiscoveryresponse"><span class="std std-ref">DeltaDiscoveryResponse</span></a>
+message that contains that resource’s name in the
+<a class="reference internal" href="../api-v3/service/discovery/v3/discovery.proto.html#envoy-v3-api-field-service-discovery-v3-deltadiscoveryresponse-removed-resources"><span class="std std-ref">removed_resources</span></a>
+field. This allows the client to quickly determine when a resource does not exist without
 waiting for a timeout, as would be done in the SotW protocol variants. However, clients are still
 encouraged to use a timeout to protect against the case where the management server fails to send
 a response in a timely manner.</p>
