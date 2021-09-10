@@ -1,0 +1,152 @@
+.. _envoy_v3_api_file_contrib/envoy/extensions/filters/network/kafka_mesh/v3alpha/kafka_mesh.proto:
+
+Kafka Mesh
+==========
+
+
+
+
+.. _extension_envoy.filters.network.kafka_mesh:
+
+This extension may be referenced by the qualified name ``envoy.filters.network.kafka_mesh``
+
+
+.. note::
+  This extension is only available in :ref:`contrib <install_contrib>` images.
+
+
+.. note::
+  This extension is work-in-progress. Functionality is incomplete and it is not intended for production use.
+
+  This extension is not hardened and should only be used in deployments where both the downstream and upstream are trusted.
+
+.. tip::
+  This extension extends and can be used with the following extension category:
+
+
+  - :ref:`envoy.filters.network <extension_category_envoy.filters.network>`
+
+.. warning::
+   This API is work-in-progress and is subject to breaking changes.
+
+Kafka Mesh :ref:`configuration overview <config_network_filters_kafka_mesh>`.
+
+.. _envoy_v3_api_msg_extensions.filters.network.kafka_mesh.v3alpha.KafkaMesh:
+
+extensions.filters.network.kafka_mesh.v3alpha.KafkaMesh
+-------------------------------------------------------
+
+:repo:`[extensions.filters.network.kafka_mesh.v3alpha.KafkaMesh proto] <api/contrib/envoy/extensions/filters/network/kafka_mesh/v3alpha/kafka_mesh.proto#L17>`
+
+
+.. code-block:: json
+
+  {
+    "advertised_host": "...",
+    "advertised_port": "...",
+    "upstream_clusters": [],
+    "forwarding_rules": []
+  }
+
+.. _envoy_v3_api_field_extensions.filters.network.kafka_mesh.v3alpha.KafkaMesh.advertised_host:
+
+advertised_host
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Envoy's host that's advertised to clients.
+  Has the same meaning as corresponding Kafka broker properties.
+  Usually equal to filter chain's listener config, but needs to be reachable by clients
+  (so 0.0.0.0 will not work).
+  
+  
+.. _envoy_v3_api_field_extensions.filters.network.kafka_mesh.v3alpha.KafkaMesh.advertised_port:
+
+advertised_port
+  (`int32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Envoy's port that's advertised to clients.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.network.kafka_mesh.v3alpha.KafkaMesh.upstream_clusters:
+
+upstream_clusters
+  (**repeated** :ref:`extensions.filters.network.kafka_mesh.v3alpha.KafkaClusterDefinition <envoy_v3_api_msg_extensions.filters.network.kafka_mesh.v3alpha.KafkaClusterDefinition>`) Upstream clusters this filter will connect to.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.network.kafka_mesh.v3alpha.KafkaMesh.forwarding_rules:
+
+forwarding_rules
+  (**repeated** :ref:`extensions.filters.network.kafka_mesh.v3alpha.ForwardingRule <envoy_v3_api_msg_extensions.filters.network.kafka_mesh.v3alpha.ForwardingRule>`) Rules that will decide which cluster gets which request.
+  
+  
+
+
+.. _envoy_v3_api_msg_extensions.filters.network.kafka_mesh.v3alpha.KafkaClusterDefinition:
+
+extensions.filters.network.kafka_mesh.v3alpha.KafkaClusterDefinition
+--------------------------------------------------------------------
+
+:repo:`[extensions.filters.network.kafka_mesh.v3alpha.KafkaClusterDefinition proto] <api/contrib/envoy/extensions/filters/network/kafka_mesh/v3alpha/kafka_mesh.proto#L34>`
+
+
+.. code-block:: json
+
+  {
+    "cluster_name": "...",
+    "bootstrap_servers": "...",
+    "partition_count": "...",
+    "producer_config": "{...}"
+  }
+
+.. _envoy_v3_api_field_extensions.filters.network.kafka_mesh.v3alpha.KafkaClusterDefinition.cluster_name:
+
+cluster_name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Cluster name.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.network.kafka_mesh.v3alpha.KafkaClusterDefinition.bootstrap_servers:
+
+bootstrap_servers
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) Kafka cluster address.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.network.kafka_mesh.v3alpha.KafkaClusterDefinition.partition_count:
+
+partition_count
+  (`int32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Default number of partitions present in this cluster.
+  This is especially important for clients that do not specify partition in their payloads and depend on this value for hashing.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.network.kafka_mesh.v3alpha.KafkaClusterDefinition.producer_config:
+
+producer_config
+  (**repeated** map<`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, `string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_>) Custom configuration passed to Kafka producer.
+  
+  
+
+
+.. _envoy_v3_api_msg_extensions.filters.network.kafka_mesh.v3alpha.ForwardingRule:
+
+extensions.filters.network.kafka_mesh.v3alpha.ForwardingRule
+------------------------------------------------------------
+
+:repo:`[extensions.filters.network.kafka_mesh.v3alpha.ForwardingRule proto] <api/contrib/envoy/extensions/filters/network/kafka_mesh/v3alpha/kafka_mesh.proto#L49>`
+
+
+.. code-block:: json
+
+  {
+    "target_cluster": "...",
+    "topic_prefix": "..."
+  }
+
+.. _envoy_v3_api_field_extensions.filters.network.kafka_mesh.v3alpha.ForwardingRule.target_cluster:
+
+target_cluster
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Cluster name.
+  
+  
+.. _envoy_v3_api_field_extensions.filters.network.kafka_mesh.v3alpha.ForwardingRule.topic_prefix:
+
+topic_prefix
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Intended place for future types of forwarding rules.
+  
+  
+  
+
