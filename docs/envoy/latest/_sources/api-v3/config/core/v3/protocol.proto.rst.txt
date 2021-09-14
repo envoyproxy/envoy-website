@@ -79,24 +79,38 @@ config.core.v3.UpstreamHttpProtocolOptions
 
   {
     "auto_sni": "...",
-    "auto_san_validation": "..."
+    "auto_san_validation": "...",
+    "override_auto_sni_header": "..."
   }
 
 .. _envoy_v3_api_field_config.core.v3.UpstreamHttpProtocolOptions.auto_sni:
 
 auto_sni
   (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Set transport socket `SNI <https://en.wikipedia.org/wiki/Server_Name_Indication>`_ for new
-  upstream connections based on the downstream HTTP host/authority header, as seen by the
-  :ref:`router filter <config_http_filters_router>`.
+  upstream connections based on the downstream HTTP host/authority header or any other arbitrary
+  header when :ref:`override_auto_sni_header <envoy_v3_api_field_config.core.v3.UpstreamHttpProtocolOptions.override_auto_sni_header>`
+  is set, as seen by the :ref:`router filter <config_http_filters_router>`.
   
   
 .. _envoy_v3_api_field_config.core.v3.UpstreamHttpProtocolOptions.auto_san_validation:
 
 auto_san_validation
   (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Automatic validate upstream presented certificate for new upstream connections based on the
-  downstream HTTP host/authority header, as seen by the
+  downstream HTTP host/authority header or any other arbitrary header when :ref:`override_auto_sni_header <envoy_v3_api_field_config.core.v3.UpstreamHttpProtocolOptions.override_auto_sni_header>`
+  is set, as seen by the :ref:`router filter <config_http_filters_router>`.
+  This field is intended to be set with `auto_sni` field.
+  
+  
+.. _envoy_v3_api_field_config.core.v3.UpstreamHttpProtocolOptions.override_auto_sni_header:
+
+override_auto_sni_header
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) An optional alternative to the host/authority header to be used for setting the SNI value.
+  It should be a valid downstream HTTP header, as seen by the
   :ref:`router filter <config_http_filters_router>`.
-  This field is intended to set with `auto_sni` field.
+  If unset, host/authority header will be used for populating the SNI. If the specified header
+  is not found or the value is empty, host/authority header will be used instead.
+  This field is intended to be set with `auto_sni` and/or `auto_san_validation` fields.
+  If none of these fields are set then setting this would be a no-op.
   
   
 
@@ -106,7 +120,7 @@ auto_san_validation
 config.core.v3.AlternateProtocolsCacheOptions
 ---------------------------------------------
 
-:repo:`[config.core.v3.AlternateProtocolsCacheOptions proto] <api/envoy/config/core/v3/protocol.proto#L77>`
+:repo:`[config.core.v3.AlternateProtocolsCacheOptions proto] <api/envoy/config/core/v3/protocol.proto#L88>`
 
 Configures the alternate protocols cache which tracks alternate protocols that can be used to
 make an HTTP connection to an origin server. See https://tools.ietf.org/html/rfc7838 for
@@ -149,7 +163,7 @@ max_entries
 config.core.v3.HttpProtocolOptions
 ----------------------------------
 
-:repo:`[config.core.v3.HttpProtocolOptions proto] <api/envoy/config/core/v3/protocol.proto#L96>`
+:repo:`[config.core.v3.HttpProtocolOptions proto] <api/envoy/config/core/v3/protocol.proto#L107>`
 
 
 .. code-block:: json
@@ -233,7 +247,7 @@ max_requests_per_connection
 Enum config.core.v3.HttpProtocolOptions.HeadersWithUnderscoresAction
 --------------------------------------------------------------------
 
-:repo:`[config.core.v3.HttpProtocolOptions.HeadersWithUnderscoresAction proto] <api/envoy/config/core/v3/protocol.proto#L105>`
+:repo:`[config.core.v3.HttpProtocolOptions.HeadersWithUnderscoresAction proto] <api/envoy/config/core/v3/protocol.proto#L116>`
 
 Action to take when Envoy receives client request with header names containing underscore
 characters.
@@ -269,7 +283,7 @@ DROP_HEADER
 config.core.v3.Http1ProtocolOptions
 -----------------------------------
 
-:repo:`[config.core.v3.Http1ProtocolOptions proto] <api/envoy/config/core/v3/protocol.proto#L168>`
+:repo:`[config.core.v3.Http1ProtocolOptions proto] <api/envoy/config/core/v3/protocol.proto#L179>`
 
 
 .. code-block:: json
@@ -360,7 +374,7 @@ override_stream_error_on_invalid_http_message
 config.core.v3.Http1ProtocolOptions.HeaderKeyFormat
 ---------------------------------------------------
 
-:repo:`[config.core.v3.Http1ProtocolOptions.HeaderKeyFormat proto] <api/envoy/config/core/v3/protocol.proto#L173>`
+:repo:`[config.core.v3.Http1ProtocolOptions.HeaderKeyFormat proto] <api/envoy/config/core/v3/protocol.proto#L184>`
 
 
 .. code-block:: json
@@ -411,7 +425,7 @@ stateful_formatter
 config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords
 -------------------------------------------------------------------
 
-:repo:`[config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords proto] <api/envoy/config/core/v3/protocol.proto#L177>`
+:repo:`[config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords proto] <api/envoy/config/core/v3/protocol.proto#L188>`
 
 
 
@@ -424,7 +438,7 @@ config.core.v3.Http1ProtocolOptions.HeaderKeyFormat.ProperCaseWords
 config.core.v3.KeepaliveSettings
 --------------------------------
 
-:repo:`[config.core.v3.KeepaliveSettings proto] <api/envoy/config/core/v3/protocol.proto#L250>`
+:repo:`[config.core.v3.KeepaliveSettings proto] <api/envoy/config/core/v3/protocol.proto#L261>`
 
 
 .. code-block:: json
@@ -475,7 +489,7 @@ connection_idle_interval
 config.core.v3.Http2ProtocolOptions
 -----------------------------------
 
-:repo:`[config.core.v3.Http2ProtocolOptions proto] <api/envoy/config/core/v3/protocol.proto#L277>`
+:repo:`[config.core.v3.Http2ProtocolOptions proto] <api/envoy/config/core/v3/protocol.proto#L288>`
 
 
 .. code-block:: json
@@ -669,7 +683,7 @@ connection_keepalive
 config.core.v3.Http2ProtocolOptions.SettingsParameter
 -----------------------------------------------------
 
-:repo:`[config.core.v3.Http2ProtocolOptions.SettingsParameter proto] <api/envoy/config/core/v3/protocol.proto#L283>`
+:repo:`[config.core.v3.Http2ProtocolOptions.SettingsParameter proto] <api/envoy/config/core/v3/protocol.proto#L294>`
 
 Defines a parameter to be sent in the SETTINGS frame.
 See `RFC7540, sec. 6.5.1 <https://tools.ietf.org/html/rfc7540#section-6.5.1>`_ for details.
@@ -702,7 +716,7 @@ value
 config.core.v3.Http3ProtocolOptions
 -----------------------------------
 
-:repo:`[config.core.v3.Http3ProtocolOptions proto] <api/envoy/config/core/v3/protocol.proto#L476>`
+:repo:`[config.core.v3.Http3ProtocolOptions proto] <api/envoy/config/core/v3/protocol.proto#L487>`
 
 A message which allows using HTTP/3.
 
@@ -748,7 +762,7 @@ allow_extended_connect
 config.core.v3.SchemeHeaderTransformation
 -----------------------------------------
 
-:repo:`[config.core.v3.SchemeHeaderTransformation proto] <api/envoy/config/core/v3/protocol.proto#L497>`
+:repo:`[config.core.v3.SchemeHeaderTransformation proto] <api/envoy/config/core/v3/protocol.proto#L508>`
 
 A message to control transformations to the :scheme header
 
