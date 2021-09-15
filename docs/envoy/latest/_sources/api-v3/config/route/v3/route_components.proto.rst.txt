@@ -1801,6 +1801,7 @@ HTTP retry :ref:`architecture overview <arch_overview_http_routing_retry>`.
     "retry_on": "...",
     "num_retries": "{...}",
     "per_try_timeout": "{...}",
+    "per_try_idle_timeout": "{...}",
     "retry_priority": "{...}",
     "retry_host_predicate": [],
     "host_selection_retry_max_attempts": "...",
@@ -1830,8 +1831,8 @@ num_retries
 .. _envoy_v3_api_field_config.route.v3.RetryPolicy.per_try_timeout:
 
 per_try_timeout
-  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) Specifies a non-zero upstream timeout per retry attempt. This parameter is optional. The
-  same conditions documented for
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) Specifies a non-zero upstream timeout per retry attempt (including the initial attempt). This
+  parameter is optional. The same conditions documented for
   :ref:`config_http_filters_router_x-envoy-upstream-rq-per-try-timeout-ms` apply.
   
   .. note::
@@ -1841,6 +1842,30 @@ per_try_timeout
     Consequently, when using a :ref:`5xx <config_http_filters_router_x-envoy-retry-on>` based
     retry policy, a request that times out will not be retried as the total timeout budget
     would have been exhausted.
+  
+  
+.. _envoy_v3_api_field_config.route.v3.RetryPolicy.per_try_idle_timeout:
+
+per_try_idle_timeout
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) Specifies an upstream idle timeout per retry attempt (including the initial attempt). This
+  parameter is optional and if absent there is no per try idle timeout. The semantics of the per
+  try idle timeout are similar to the
+  :ref:`route idle timeout <envoy_v3_api_field_config.route.v3.RouteAction.timeout>` and
+  :ref:`stream idle timeout
+  <envoy_v3_api_field_extensions.filters.network.http_connection_manager.v3.HttpConnectionManager.stream_idle_timeout>`
+  both enforced by the HTTP connection manager. The difference is that this idle timeout
+  is enforced by the router for each individual attempt and thus after all previous filters have
+  run, as opposed to *before* all previous filters run for the other idle timeouts. This timeout
+  is useful in cases in which total request timeout is bounded by a number of retries and a
+  :ref:`per_try_timeout <envoy_v3_api_field_config.route.v3.RetryPolicy.per_try_timeout>`, but
+  there is a desire to ensure each try is making incremental progress. Note also that similar
+  to :ref:`per_try_timeout <envoy_v3_api_field_config.route.v3.RetryPolicy.per_try_timeout>`,
+  this idle timeout does not start until after both the entire request has been received by the
+  router *and* a connection pool connection has been obtained. Unlike
+  :ref:`per_try_timeout <envoy_v3_api_field_config.route.v3.RetryPolicy.per_try_timeout>`,
+  the idle timer continues once the response starts streaming back to the downstream client.
+  This ensures that response data continues to make progress without using one of the HTTP
+  connection manager idle timeouts.
   
   
 .. _envoy_v3_api_field_config.route.v3.RetryPolicy.retry_priority:
@@ -2165,7 +2190,7 @@ UNIX_TIMESTAMP
 config.route.v3.HedgePolicy
 ---------------------------
 
-:repo:`[config.route.v3.HedgePolicy proto] <api/envoy/config/route/v3/route_components.proto#L1365>`
+:repo:`[config.route.v3.HedgePolicy proto] <api/envoy/config/route/v3/route_components.proto#L1386>`
 
 HTTP request hedging :ref:`architecture overview <arch_overview_http_routing_hedging>`.
 
@@ -2202,7 +2227,7 @@ hedge_on_per_try_timeout
 config.route.v3.RedirectAction
 ------------------------------
 
-:repo:`[config.route.v3.RedirectAction proto] <api/envoy/config/route/v3/route_components.proto#L1397>`
+:repo:`[config.route.v3.RedirectAction proto] <api/envoy/config/route/v3/route_components.proto#L1418>`
 
 
 .. code-block:: json
@@ -2350,7 +2375,7 @@ strip_query
 Enum config.route.v3.RedirectAction.RedirectResponseCode
 --------------------------------------------------------
 
-:repo:`[config.route.v3.RedirectAction.RedirectResponseCode proto] <api/envoy/config/route/v3/route_components.proto#L1400>`
+:repo:`[config.route.v3.RedirectAction.RedirectResponseCode proto] <api/envoy/config/route/v3/route_components.proto#L1421>`
 
 
 .. _envoy_v3_api_enum_value_config.route.v3.RedirectAction.RedirectResponseCode.MOVED_PERMANENTLY:
@@ -2389,7 +2414,7 @@ PERMANENT_REDIRECT
 config.route.v3.DirectResponseAction
 ------------------------------------
 
-:repo:`[config.route.v3.DirectResponseAction proto] <api/envoy/config/route/v3/route_components.proto#L1503>`
+:repo:`[config.route.v3.DirectResponseAction proto] <api/envoy/config/route/v3/route_components.proto#L1524>`
 
 
 .. code-block:: json
@@ -2426,7 +2451,7 @@ body
 config.route.v3.Decorator
 -------------------------
 
-:repo:`[config.route.v3.Decorator proto] <api/envoy/config/route/v3/route_components.proto#L1525>`
+:repo:`[config.route.v3.Decorator proto] <api/envoy/config/route/v3/route_components.proto#L1546>`
 
 
 .. code-block:: json
@@ -2462,7 +2487,7 @@ propagate
 config.route.v3.Tracing
 -----------------------
 
-:repo:`[config.route.v3.Tracing proto] <api/envoy/config/route/v3/route_components.proto#L1542>`
+:repo:`[config.route.v3.Tracing proto] <api/envoy/config/route/v3/route_components.proto#L1563>`
 
 
 .. code-block:: json
@@ -2526,7 +2551,7 @@ custom_tags
 config.route.v3.VirtualCluster
 ------------------------------
 
-:repo:`[config.route.v3.VirtualCluster proto] <api/envoy/config/route/v3/route_components.proto#L1596>`
+:repo:`[config.route.v3.VirtualCluster proto] <api/envoy/config/route/v3/route_components.proto#L1617>`
 
 A virtual cluster is a way of specifying a regex matching rule against
 certain important endpoints such that statistics are generated explicitly for
@@ -2576,7 +2601,7 @@ name
 config.route.v3.RateLimit
 -------------------------
 
-:repo:`[config.route.v3.RateLimit proto] <api/envoy/config/route/v3/route_components.proto#L1616>`
+:repo:`[config.route.v3.RateLimit proto] <api/envoy/config/route/v3/route_components.proto#L1637>`
 
 Global rate limiting :ref:`architecture overview <arch_overview_global_rate_limit>`.
 Also applies to Local rate limiting :ref:`using descriptors <config_http_filters_local_rate_limit_descriptors>`.
@@ -2633,7 +2658,7 @@ limit
 config.route.v3.RateLimit.Action
 --------------------------------
 
-:repo:`[config.route.v3.RateLimit.Action proto] <api/envoy/config/route/v3/route_components.proto#L1620>`
+:repo:`[config.route.v3.RateLimit.Action proto] <api/envoy/config/route/v3/route_components.proto#L1641>`
 
 
 .. code-block:: json
@@ -2752,7 +2777,7 @@ extension
 config.route.v3.RateLimit.Action.SourceCluster
 ----------------------------------------------
 
-:repo:`[config.route.v3.RateLimit.Action.SourceCluster proto] <api/envoy/config/route/v3/route_components.proto#L1631>`
+:repo:`[config.route.v3.RateLimit.Action.SourceCluster proto] <api/envoy/config/route/v3/route_components.proto#L1652>`
 
 The following descriptor entry is appended to the descriptor:
 
@@ -2770,7 +2795,7 @@ The following descriptor entry is appended to the descriptor:
 config.route.v3.RateLimit.Action.DestinationCluster
 ---------------------------------------------------
 
-:repo:`[config.route.v3.RateLimit.Action.DestinationCluster proto] <api/envoy/config/route/v3/route_components.proto#L1652>`
+:repo:`[config.route.v3.RateLimit.Action.DestinationCluster proto] <api/envoy/config/route/v3/route_components.proto#L1673>`
 
 The following descriptor entry is appended to the descriptor:
 
@@ -2797,7 +2822,7 @@ settings:
 config.route.v3.RateLimit.Action.RequestHeaders
 -----------------------------------------------
 
-:repo:`[config.route.v3.RateLimit.Action.RequestHeaders proto] <api/envoy/config/route/v3/route_components.proto#L1663>`
+:repo:`[config.route.v3.RateLimit.Action.RequestHeaders proto] <api/envoy/config/route/v3/route_components.proto#L1684>`
 
 The following descriptor entry is appended when a header contains a key that matches the
 *header_name*:
@@ -2843,7 +2868,7 @@ skip_if_absent
 config.route.v3.RateLimit.Action.RemoteAddress
 ----------------------------------------------
 
-:repo:`[config.route.v3.RateLimit.Action.RemoteAddress proto] <api/envoy/config/route/v3/route_components.proto#L1688>`
+:repo:`[config.route.v3.RateLimit.Action.RemoteAddress proto] <api/envoy/config/route/v3/route_components.proto#L1709>`
 
 The following descriptor entry is appended to the descriptor and is populated using the
 trusted address from :ref:`x-forwarded-for <config_http_conn_man_headers_x-forwarded-for>`:
@@ -2860,7 +2885,7 @@ trusted address from :ref:`x-forwarded-for <config_http_conn_man_headers_x-forwa
 config.route.v3.RateLimit.Action.GenericKey
 -------------------------------------------
 
-:repo:`[config.route.v3.RateLimit.Action.GenericKey proto] <api/envoy/config/route/v3/route_components.proto#L1698>`
+:repo:`[config.route.v3.RateLimit.Action.GenericKey proto] <api/envoy/config/route/v3/route_components.proto#L1719>`
 
 The following descriptor entry is appended to the descriptor:
 
@@ -2895,7 +2920,7 @@ descriptor_key
 config.route.v3.RateLimit.Action.HeaderValueMatch
 -------------------------------------------------
 
-:repo:`[config.route.v3.RateLimit.Action.HeaderValueMatch proto] <api/envoy/config/route/v3/route_components.proto#L1715>`
+:repo:`[config.route.v3.RateLimit.Action.HeaderValueMatch proto] <api/envoy/config/route/v3/route_components.proto#L1736>`
 
 The following descriptor entry is appended to the descriptor:
 
@@ -2943,7 +2968,7 @@ headers
 config.route.v3.RateLimit.Action.DynamicMetaData
 ------------------------------------------------
 
-:repo:`[config.route.v3.RateLimit.Action.DynamicMetaData proto] <api/envoy/config/route/v3/route_components.proto#L1745>`
+:repo:`[config.route.v3.RateLimit.Action.DynamicMetaData proto] <api/envoy/config/route/v3/route_components.proto#L1766>`
 
 The following descriptor entry is appended when the
 :ref:`dynamic metadata <well_known_dynamic_metadata>` contains a key value:
@@ -2990,7 +3015,7 @@ default_value
 config.route.v3.RateLimit.Action.MetaData
 -----------------------------------------
 
-:repo:`[config.route.v3.RateLimit.Action.MetaData proto] <api/envoy/config/route/v3/route_components.proto#L1763>`
+:repo:`[config.route.v3.RateLimit.Action.MetaData proto] <api/envoy/config/route/v3/route_components.proto#L1784>`
 
 The following descriptor entry is appended when the metadata contains a key value:
 
@@ -3039,7 +3064,7 @@ source
 Enum config.route.v3.RateLimit.Action.MetaData.Source
 -----------------------------------------------------
 
-:repo:`[config.route.v3.RateLimit.Action.MetaData.Source proto] <api/envoy/config/route/v3/route_components.proto#L1764>`
+:repo:`[config.route.v3.RateLimit.Action.MetaData.Source proto] <api/envoy/config/route/v3/route_components.proto#L1785>`
 
 
 .. _envoy_v3_api_enum_value_config.route.v3.RateLimit.Action.MetaData.Source.DYNAMIC:
@@ -3061,7 +3086,7 @@ ROUTE_ENTRY
 config.route.v3.RateLimit.Override
 ----------------------------------
 
-:repo:`[config.route.v3.RateLimit.Override proto] <api/envoy/config/route/v3/route_components.proto#L1827>`
+:repo:`[config.route.v3.RateLimit.Override proto] <api/envoy/config/route/v3/route_components.proto#L1848>`
 
 
 .. code-block:: json
@@ -3082,7 +3107,7 @@ dynamic_metadata
 config.route.v3.RateLimit.Override.DynamicMetadata
 --------------------------------------------------
 
-:repo:`[config.route.v3.RateLimit.Override.DynamicMetadata proto] <api/envoy/config/route/v3/route_components.proto#L1829>`
+:repo:`[config.route.v3.RateLimit.Override.DynamicMetadata proto] <api/envoy/config/route/v3/route_components.proto#L1850>`
 
 Fetches the override from the dynamic metadata.
 
@@ -3110,7 +3135,7 @@ metadata_key
 config.route.v3.HeaderMatcher
 -----------------------------
 
-:repo:`[config.route.v3.HeaderMatcher proto] <api/envoy/config/route/v3/route_components.proto#L1897>`
+:repo:`[config.route.v3.HeaderMatcher proto] <api/envoy/config/route/v3/route_components.proto#L1918>`
 
 .. attention::
 
@@ -3289,7 +3314,7 @@ invert_match
 config.route.v3.QueryParameterMatcher
 -------------------------------------
 
-:repo:`[config.route.v3.QueryParameterMatcher proto] <api/envoy/config/route/v3/route_components.proto#L1995>`
+:repo:`[config.route.v3.QueryParameterMatcher proto] <api/envoy/config/route/v3/route_components.proto#L2016>`
 
 Query parameter matching treats the query string of a request's :path header
 as an ampersand-separated list of keys and/or key=value elements.
@@ -3334,7 +3359,7 @@ present_match
 config.route.v3.InternalRedirectPolicy
 --------------------------------------
 
-:repo:`[config.route.v3.InternalRedirectPolicy proto] <api/envoy/config/route/v3/route_components.proto#L2017>`
+:repo:`[config.route.v3.InternalRedirectPolicy proto] <api/envoy/config/route/v3/route_components.proto#L2038>`
 
 HTTP Internal Redirect :ref:`architecture overview <arch_overview_internal_redirects>`.
 
