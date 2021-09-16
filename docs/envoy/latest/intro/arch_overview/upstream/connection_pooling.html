@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Connection pooling &mdash; envoy 1.20.0-dev-44bcb1 documentation</title>
+  <title>Connection pooling &mdash; envoy 1.20.0-dev-d7fdbb documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.20.0-dev-44bcb1
+                1.20.0-dev-d7fdbb
               </div>
             
           
@@ -256,8 +256,7 @@ pool will drain the affected connection. Once a connection reaches its <a class=
 stream limit</span></a>, it
 will be marked as busy until a stream is available. New connections are established anytime there is
 a pending request without a connection that can be dispatched to (up to circuit breaker limits for
-connections). HTTP/3 upstream support is currently only usable in situations where HTTP/3 is guaranteed
-to work, but automatic failover to TCP is coming soon!.</p>
+connections).</p>
 </div>
 <div class="section" id="automatic-protocol-selection">
 <h2>Automatic protocol selection<a class="headerlink" href="#automatic-protocol-selection" title="Permalink to this headline">¶</a></h2>
@@ -270,10 +269,19 @@ By default it will use TCP and ALPN to select the best available protocol of HTT
 then 300ms later, if a QUIC connection is not established, will also attempt to establish a TCP connection.
 Whichever handshake succeeds will be used for the initial
 stream, but if both TCP and QUIC connections are established, QUIC will eventually be preferred.</p>
-<p>Upcoming versions of HTTP/3 support will include only selecting HTTP/3 if the upstream advertises support
-either via <a class="reference external" href="https://tools.ietf.org/html/rfc7838">HTTP Alternative Services</a>,
-<a class="reference external" href="https://datatracker.ietf.org/doc/html/draft-ietf-dnsop-svcb-https-04">HTTPS DNS RR</a>, or “QUIC hints” which
-will be manually configured. This path is alpha and rapidly undergoing improvements with the goal of having
+<p>If an alternate protocol cache is configured via
+<a class="reference internal" href="../../../api-v3/extensions/upstreams/http/v3/http_protocol_options.proto.html#envoy-v3-api-field-extensions-upstreams-http-v3-httpprotocoloptions-autohttpconfig-alternate-protocols-cache-options"><span class="std std-ref">alternate_protocols_cache_options</span></a>
+then HTTP/3 connections will only be attempted to servers which
+advertise HTTP/3 support either via <cite>HTTP Alternative Services &lt;https://tools.ietf.org/html/rfc7838&gt;</cite>, (eventually
+the <cite>HTTPS DNS resource record&lt;https://datatracker.ietf.org/doc/html/draft-ietf-dnsop-svcb-https-04&gt;</cite> or “QUIC hints”
+which will be manually configured).
+If no such advertisement exists, then HTTP/2 or HTTP/1 will be used instead.</p>
+<p>If no alternate protocol cache is configured, then HTTP/3 connections will be attempted to
+all servers, even those which do not advertise HTTP/3.</p>
+<p>Further, HTTP/3 runs over QUIC (which uses UDP) and not over TCP (which HTTP/1 and HTTP/2 use).
+It is not uncommon for network devices to block UDP traffic, and hence block HTTP/3. This
+means that upstream HTTP/3 connection attempts might be blocked by the network and will fall
+back to using HTTP/2 or HTTP/1.  This path is alpha and rapidly undergoing improvements with the goal of having
 the default behavior result in optimal latency for internet environments, so please be patient and follow along with Envoy release notes
 to stay aprised of the latest and greatest changes.</p>
 </div>
