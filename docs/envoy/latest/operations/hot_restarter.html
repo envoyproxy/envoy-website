@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hot restart Python wrapper &mdash; envoy 1.20.0-dev-da572d documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Administration interface" href="admin.html" />
+    <link rel="prev" title="Command line options" href="cli.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html">
+            <img src="../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.20.0-dev-da572d
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="operations.html">Operations and administration</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="cli.html">Command line options</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Hot restart Python wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin.html">Administration interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stats_overview.html">Statistics overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="runtime.html">Runtime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fs_flags.html">File system flags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="traffic_tapping.html">Traffic tapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="certificates.html">Certificate Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="performance.html">Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools/tools.html">Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="operations.html">Operations and administration</a> &raquo;</li>
+      <li>Hot restart Python wrapper</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/operations/hot_restarter.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="hot-restart-python-wrapper">
+<span id="operations-hot-restarter"></span><h1>Hot restart Python wrapper<a class="headerlink" href="#hot-restart-python-wrapper" title="Permalink to this headline">¶</a></h1>
+<p>Typically, Envoy will be <a class="reference internal" href="../intro/arch_overview/operations/hot_restart.html#arch-overview-hot-restart"><span class="std std-ref">hot restarted</span></a> for config changes and
+binary updates. However, in many cases, users will wish to use a standard process manager such as
+monit, runit, etc. We provide <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/da572da7ca123d89539e467cfbc3f10b6029b54d//restarter/hot-restarter.py">/restarter/hot-restarter.py</a> to make this straightforward.</p>
+<p>The restarter is invoked like so:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">hot-restarter.py start_envoy.sh</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">start_envoy.sh</span></code> might be defined like so (using salt/jinja like syntax):</p>
+<div class="highlight-jinja notranslate"><div class="highlight"><pre><span></span><span class="x">#!/bin/bash</span>
+
+<span class="x">ulimit -n </span><span class="cp">{{</span> <span class="nv">pillar.get</span><span class="o">(</span><span class="s1">&#39;envoy_max_open_files&#39;</span><span class="o">,</span> <span class="s1">&#39;102400&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+<span class="x">sysctl fs.inotify.max_user_watches=</span><span class="cp">{{</span> <span class="nv">pillar.get</span><span class="o">(</span><span class="s1">&#39;envoy_max_inotify_watches&#39;</span><span class="o">,</span> <span class="s1">&#39;524288&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+
+<span class="x">exec /usr/sbin/envoy -c /etc/envoy/envoy.cfg --restart-epoch $RESTART_EPOCH --service-cluster </span><span class="cp">{{</span> <span class="nv">grains</span><span class="o">[</span><span class="s1">&#39;cluster_name&#39;</span><span class="o">]</span> <span class="cp">}}</span><span class="x"> --service-node </span><span class="cp">{{</span> <span class="nv">grains</span><span class="o">[</span><span class="s1">&#39;service_node&#39;</span><span class="o">]</span> <span class="cp">}}</span><span class="x"> --service-zone </span><span class="cp">{{</span> <span class="nv">grains.get</span><span class="o">(</span><span class="s1">&#39;ec2_availability-zone&#39;</span><span class="o">,</span> <span class="s1">&#39;unknown&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
+</pre></div>
+</div>
+<p>Note on <code class="docutils literal notranslate"><span class="pre">inotify.max_user_watches</span></code>: If Envoy is being configured to watch many files for configuration in a directory
+on a Linux machine, increase this value as Linux enforces limits on the maximum number of files that can be watched.</p>
+<p>The <em>RESTART_EPOCH</em> environment variable is set by the restarter on each restart and must be passed
+to the <a class="reference internal" href="cli.html#cmdoption-restart-epoch"><code class="xref std std-option docutils literal notranslate"><span class="pre">--restart-epoch</span></code></a> option.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Special care must be taken if you wish to use the <a class="reference internal" href="cli.html#cmdoption-use-dynamic-base-id"><code class="xref std std-option docutils literal notranslate"><span class="pre">--use-dynamic-base-id</span></code></a> option. That
+flag may only be set when the <em>RESTART_EPOCH</em> is 0 and your <em>start_envoy.sh</em> must obtain the
+chosen base ID (via <a class="reference internal" href="cli.html#cmdoption-base-id-path"><code class="xref std std-option docutils literal notranslate"><span class="pre">--base-id-path</span></code></a>), store it, and use it as the <a class="reference internal" href="cli.html#cmdoption-base-id"><code class="xref std std-option docutils literal notranslate"><span class="pre">--base-id</span></code></a>
+value on subsequent invocations (when <em>RESTART_EPOCH</em> is greater than 0).</p>
+</div>
+<p>The restarter handles the following signals:</p>
+<ul class="simple">
+<li><p><strong>SIGTERM</strong> or <strong>SIGINT</strong> (Ctrl-C): Will cleanly terminate all child processes and exit.</p></li>
+<li><p><strong>SIGHUP</strong>: Will hot restart by re-invoking whatever is passed as the first argument to the
+hot restart script.</p></li>
+<li><p><strong>SIGCHLD</strong>: If any of the child processes shut down unexpectedly, the restart script will shut
+everything down and exit to avoid being in an unexpected state. The controlling process manager
+should then restart the restarter script to start Envoy again.</p></li>
+<li><p><strong>SIGUSR1</strong>: Will be forwarded to Envoy as a signal to reopen all access logs. This is used for
+atomic move and reopen log rotation.</p></li>
+</ul>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cli.html" class="btn btn-neutral float-left" title="Command line options" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="admin.html" class="btn btn-neutral float-right" title="Administration interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2021, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
