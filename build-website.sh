@@ -29,11 +29,11 @@ build_latest_docs () {
          --version="${version}" \
          --overwrite \
          ./envoy-docs-rst.tar.gz \
-         ./_site/docs/envoy/latest
+         ./_site/docs/envoy/latest || echo "Sphinx had issues, continuing..."
 }
 
 build_latest_docs
 
 # copy envoy docs to the main website
 # (we don't want jekyll to parse the docs)
-cp -r docs/ _site/docs/
+cp -a docs/* _site/docs/
