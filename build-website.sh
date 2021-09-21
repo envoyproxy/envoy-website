@@ -1,18 +1,13 @@
 #!/bin/bash
 set -ex
 
-# tmp
-INCOMING_HOOK_BODY="${INCOMING_HOOK_BODY:-29d837a}"
-
 # build docs with jekyll
 jekyll build
 
 build_latest_docs () {
     local bucket envoy_commit version
-    # bucket="https://storage.googleapis.com/envoy-postsubmit"
-    bucket="https://storage.googleapis.com/envoy-pr"
-    # upstream=https://github.com/envoyproxy/envoy
-    upstream="https://github.com/phlax/envoy"
+    bucket="https://storage.googleapis.com/envoy-postsubmit"
+    upstream="https://github.com/envoyproxy/envoy"
 
     envoy_commit=${INCOMING_HOOK_BODY:-"$(git ls-remote "${upstream}" main | cut -f1 | head -c7)"}
     echo "BUILDING LATEST DOCS FOR ${envoy_commit}"
