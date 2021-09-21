@@ -9,7 +9,8 @@ build_latest_docs () {
     bucket="https://storage.googleapis.com/envoy-postsubmit"
     upstream="https://github.com/envoyproxy/envoy"
 
-    envoy_commit=${INCOMING_HOOK_BODY:-"$(git ls-remote "${upstream}" main | cut -f1 | head -c7)"}
+    envoy_commit=${INCOMING_HOOK_BODY:-"$(git ls-remote "${upstream}" main | cut -f1)"}
+    envoy_commit="$(echo "$envoy_commit" | head -c7)"
     echo "BUILDING LATEST DOCS FOR ${envoy_commit}"
 
     # fetch the rst tarball
