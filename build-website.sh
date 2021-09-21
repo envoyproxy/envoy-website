@@ -29,7 +29,7 @@ build_latest_docs () {
          --version="${version}" \
          --overwrite \
          ./envoy-docs-rst.tar.gz \
-         ./_site/docs/envoy/latest || echo "Sphinx had issues, continuing..."
+         ./_site/docs/envoy/latest
 }
 
 build_latest_docs
