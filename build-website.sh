@@ -4,6 +4,9 @@ set -ex
 # build docs with jekyll
 jekyll build
 
+# tmp hack...
+INCOMING_HOOK_BODY=${INCOMING_HOOK_BODY:-da572da}
+
 build_latest_docs () {
     local bucket envoy_commit version
     bucket="https://storage.googleapis.com/envoy-postsubmit"
