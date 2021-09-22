@@ -9,6 +9,10 @@ MAX_COMMITS=20
 DOCS_PUBLISH_PATH=docs/envoy-docs-rst.tar.gz
 VERSION_FILE_PATH=VERSION
 
+if [[ -e _site/docs ]]; then
+    rm -rf _site/docs
+fi
+
 # build docs with jekyll
 jekyll build
 
@@ -76,8 +80,8 @@ build_latest_docs () {
          ./_site/docs/envoy/latest
 }
 
-build_latest_docs || echo "Problem with sphinx"
-
 # copy envoy docs to the main website
 # (we don't want jekyll to parse the docs)
 cp -a docs/* _site/docs/
+
+build_latest_docs
