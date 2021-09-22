@@ -1,26 +1,68 @@
 #!/bin/bash
 set -ex
 
-# build docs with jekyll
-jekyll build
+INCOMING_HOOK_BODY=${INCOMING_HOOK_BODY:-}
+BUCKET="https://storage.googleapis.com/envoy-postsubmit"
+UPSTREAM="https://github.com/envoyproxy/envoy"
+TMP_CHECKOUT=/tmp/repository
+MAX_COMMITS=20
+DOCS_PUBLISH_PATH=docs/envoy-docs-rst.tar.gz
+VERSION_FILE_PATH=VERSION
 
-# tmp hack...
-INCOMING_HOOK_BODY=${INCOMING_HOOK_BODY:-da572da}
+
+check_docs_build_availability () {
+    local commit
+    commit="$1"
+    docs_bucket="${BUCKET}/${commit}/${DOCS_PUBLISH_PATH}"
+    result="$(curl -IL "${docs_bucket}" 2>/dev/null | head -n 1 | cut -d$' ' -f2)"
+    if [[ "$result" == "200" ]]; then
+        return 0
+    fi
+    return 1
+}
+
+build_commit_sha () {
+    local commit
+
+    # first check the last commit on Envoy main
+    commit=${INCOMING_HOOK_BODY:-"$(git ls-remote "${UPSTREAM}" main | cut -f1)"}
+
+    if check_docs_build_availability "$commit"; then
+        echo "$commit"
+        return 0
+    fi
+
+    if [[ -e "$TMP_CHECKOUT" ]]; then
+        rm -rf "$TMP_CHECKOUT"
+    fi
+
+    # Last commit has no published docs, check through git logs for a commit that does
+    git clone --bare --filter=blob:none --no-checkout --single-branch --branch main "$UPSTREAM" "$TMP_CHECKOUT"
+    read -ra commits <<< "$(git -C "$TMP_CHECKOUT" log --pretty=%P "-${MAX_COMMITS}" | xargs)"
+    for commit in "${commits[@]}"; do
+        commit="$(echo "$commit" | head -c7)"
+        if check_docs_build_availability "$commit"; then
+            echo "$commit"
+            return 0
+        fi
+    done
+}
 
 build_latest_docs () {
-    local bucket envoy_commit version
-    bucket="https://storage.googleapis.com/envoy-postsubmit"
-    upstream="https://github.com/envoyproxy/envoy"
+    local envoy_commit version
 
-    envoy_commit=${INCOMING_HOOK_BODY:-"$(git ls-remote "${upstream}" main | cut -f1)"}
-    envoy_commit="$(echo "$envoy_commit" | head -c7)"
-    echo "BUILDING LATEST DOCS FOR ${envoy_commit}"
+    envoy_commit="$(build_commit_sha)"
+
+    if [[ -z "$envoy_commit" ]]; then
+        echo "Unable to find any published docs"
+        exit 1
+    fi
 
     # fetch the rst tarball
-    curl "${bucket}/${envoy_commit}/docs/envoy-docs-rst.tar.gz" > envoy-docs-rst.tar.gz
+    curl -Ls "${BUCKET}/${envoy_commit}/${DOCS_PUBLISH_PATH}" > envoy-docs-rst.tar.gz
 
     # fetch the envoy version
-    version="$(curl -L -s "${upstream}/raw/${envoy_commit}/VERSION")"
+    version="$(curl -Ls "${UPSTREAM}/raw/${envoy_commit}/${VERSION_FILE_PATH}")"
 
     # build the docs
     mkdir -p _site/docs/envoy
@@ -33,6 +75,9 @@ build_latest_docs () {
 }
 
 build_latest_docs
+
+# build docs with jekyll
+jekyll build
 
 # copy envoy docs to the main website
 # (we don't want jekyll to parse the docs)
