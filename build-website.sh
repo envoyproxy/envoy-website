@@ -46,8 +46,8 @@ build_commit_sha () {
     git clone --bare --filter=blob:none --no-checkout --single-branch --branch main "$UPSTREAM" "$TMP_CHECKOUT"
     read -ra commits <<< "$(git -C "$TMP_CHECKOUT" log --pretty=%P "-${MAX_COMMITS}" | xargs)"
     for commit in "${commits[@]}"; do
-        commit="$(echo "$commit" | head -c7)"
-        if check_docs_build_availability "$commit"; then
+        short_commit="$(echo "$commit" | head -c7)"
+        if check_docs_build_availability "$short_commit"; then
             echo "$commit"
             return 0
         fi
@@ -64,16 +64,20 @@ build_latest_docs () {
         exit 1
     fi
 
+    short_commit="$(echo "$envoy_commit" | head -c7)"
+
     # fetch the rst tarball
-    curl -Ls "${BUCKET}/${envoy_commit}/${DOCS_PUBLISH_PATH}" > envoy-docs-rst.tar.gz
+    curl -Ls "${BUCKET}/${short_commit}/${DOCS_PUBLISH_PATH}" > envoy-docs-rst.tar.gz
 
     # fetch the envoy version
+    # use the full commit hash as retrieving files with the short commit
+    # is unreliable
     version="$(curl -Ls "${UPSTREAM}/raw/${envoy_commit}/${VERSION_FILE_PATH}")"
 
     # build the docs
     mkdir -p _site/docs/envoy
     envoy.docs.sphinx_runner \
-         --build_sha="${envoy_commit}" \
+         --build_sha="${short_commit}" \
          --version="${version}" \
          --overwrite \
          ./envoy-docs-rst.tar.gz \
