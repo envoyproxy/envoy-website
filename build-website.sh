@@ -77,7 +77,7 @@ build_latest_docs () {
     # build the docs
     mkdir -p _site/docs/envoy
     envoy.docs.sphinx_runner \
-         --build_sha="${short_commit}" \
+         --build_sha="${envoy_commit}" \
          --version="${version}" \
          --overwrite \
          ./envoy-docs-rst.tar.gz \
