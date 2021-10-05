@@ -1,0 +1,69 @@
+.. _envoy_v3_api_file_envoy/extensions/access_loggers/open_telemetry/v3/logs_service.proto:
+
+OpenTelemetry (gRPC) Access Log
+===============================
+
+
+
+
+.. _envoy_v3_api_msg_extensions.access_loggers.open_telemetry.v3.OpenTelemetryAccessLogConfig:
+
+extensions.access_loggers.open_telemetry.v3.OpenTelemetryAccessLogConfig
+------------------------------------------------------------------------
+
+:repo:`[extensions.access_loggers.open_telemetry.v3.OpenTelemetryAccessLogConfig proto] <api/envoy/extensions/access_loggers/open_telemetry/v3/logs_service.proto#L26>`
+
+Configuration for the built-in *envoy.access_loggers.open_telemetry*
+:ref:`AccessLog <envoy_v3_api_msg_config.accesslog.v3.AccessLog>`. This configuration will
+populate `opentelemetry.proto.collector.v1.logs.ExportLogsServiceRequest.resource_logs <https://github.com/open-telemetry/opentelemetry-proto/blob/main/opentelemetry/proto/collector/logs/v1/logs_service.proto>`_.
+OpenTelemetry `Resource <https://github.com/open-telemetry/opentelemetry-proto/blob/main/opentelemetry/proto/resource/v1/resource.proto>`_
+attributes are filled with Envoy node info. In addition, the request start time is set in the
+dedicated field.
+
+
+.. _extension_envoy.access_loggers.open_telemetry:
+
+This extension may be referenced by the qualified name ``envoy.access_loggers.open_telemetry``
+
+.. note::
+  
+
+  This extension is intended to be robust against untrusted downstream traffic. It assumes that the upstream is trusted.
+
+.. tip::
+  This extension extends and can be used with the following extension category:
+
+
+  - :ref:`envoy.access_loggers <extension_category_envoy.access_loggers>`
+
+.. code-block:: json
+
+  {
+    "common_config": "{...}",
+    "body": "{...}",
+    "attributes": "{...}"
+  }
+
+.. _envoy_v3_api_field_extensions.access_loggers.open_telemetry.v3.OpenTelemetryAccessLogConfig.common_config:
+
+common_config
+  (:ref:`extensions.access_loggers.grpc.v3.CommonGrpcAccessLogConfig <envoy_v3_api_msg_extensions.access_loggers.grpc.v3.CommonGrpcAccessLogConfig>`, *REQUIRED*) 
+  
+.. _envoy_v3_api_field_extensions.access_loggers.open_telemetry.v3.OpenTelemetryAccessLogConfig.body:
+
+body
+  (.opentelemetry.proto.common.v1.AnyValue) OpenTelemetry `LogResource <https://github.com/open-telemetry/opentelemetry-proto/blob/main/opentelemetry/proto/logs/v1/logs.proto>`_
+  fields, following `Envoy access logging formatting <https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage>`_.
+  
+  See 'body' in the LogResource proto for more details.
+  Example: ``body { string_value: "%PROTOCOL%" }``.
+  
+  
+.. _envoy_v3_api_field_extensions.access_loggers.open_telemetry.v3.OpenTelemetryAccessLogConfig.attributes:
+
+attributes
+  (.opentelemetry.proto.common.v1.KeyValueList) See 'attributes' in the LogResource proto for more details.
+  Example: ``attributes { values { key: "user_agent" value { string_value: "%REQ(USER-AGENT)%" } } }``.
+  
+  
+

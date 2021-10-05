@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unified Matcher API &mdash; envoy tag-v1.20.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../../_static/copybutton.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link rel="next" title="Dynamic forward proxy common configuration" href="../../../../extensions/common/dynamic_forward_proxy/v3/dns_cache.proto.html" />
+    <link rel="prev" title="Common" href="../../common.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html">
+            <img src="../../../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                tag-v1.20.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../../api/api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../../../api/api_supported_versions.html">Supported API versions</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../../../api.html">v3 API reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../../bootstrap/bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../clusters/clusters.html">Clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../http_routes/http_routes.html">HTTP route management</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../../config.html">Extensions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../../filter/filter.html">Filters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../accesslog/accesslog.html">Access loggers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../rbac/rbac.html">RBAC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../health_checker/health_checker.html">Health checkers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../transport_socket/transport_socket.html">Transport sockets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../resource_monitor/resource_monitor.html">Resource monitors</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../../common.html">Common</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../compression/compression.html">Compression</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../cluster/cluster.html">Cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../grpc_credential/grpc_credential.html">Grpc Credentials</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../retry/retry.html">Retry Predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../trace/trace.html">HTTP Tracers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../internal_redirect/internal_redirect.html">Internal Redirect Predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../endpoint/endpoint.html">Endpoint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../upstream/upstream.html">Upstream Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../wasm/wasm.html">WASM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../watchdog/watchdog.html">Watchdog</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../descriptors/descriptors.html">Rate limit descriptors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../request_id/request_id.html">Request ID</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../http/header_formatters.html">HTTP header formatters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../http/original_ip_detection.html">Original IP Detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../stat_sinks/stat_sinks.html">Stat sinks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../quic/quic_extensions.html">Quic Extensions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../formatter/formatter.html">Access log formatters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contrib/contrib.html">Contrib Extensions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../rbac/matchers.html">RBAC Matchers</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../admin/admin.html">Admin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../data/data.html">Envoy data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../service/service.html">Services</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../common_messages/common_messages.html">Common messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../types/types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../api-docs/xds_protocol.html">xDS REST and gRPC protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../api/client_features.html">Well Known Client Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../../api/api.html">API</a> &raquo;</li>
+          <li><a href="../../../../api.html">v3 API reference</a> &raquo;</li>
+          <li><a href="../../../config.html">Extensions</a> &raquo;</li>
+          <li><a href="../../common.html">Common</a> &raquo;</li>
+      <li>Unified Matcher API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../_sources/api-v3/config/common/matcher/v3/matcher.proto.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="unified-matcher-api">
+<span id="envoy-v3-api-file-envoy-config-common-matcher-v3-matcher-proto"></span><h1>Unified Matcher API<a class="headerlink" href="#unified-matcher-api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="config-common-matcher-v3-matcher">
+<span id="envoy-v3-api-msg-config-common-matcher-v3-matcher"></span><h2>config.common.matcher.v3.Matcher<a class="headerlink" href="#config-common-matcher-v3-matcher" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.0/api/envoy/config/common/matcher/v3/matcher.proto#L25">[config.common.matcher.v3.Matcher proto]</a></p>
+<p>A matcher, which may traverse a matching tree in order to result in a match action.
+During matching, the tree will be traversed until a match is found, or if no match
+is found the action specified by the most specific on_no_match will be evaluated.
+As an on_no_match might result in another matching tree being evaluated, this process
+might repeat several times until the final OnMatch (or no match) is decided.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This API feature is currently work-in-progress. API features marked as work-in-progress are not considered stable, are not covered by the <a class="reference internal" href="../../../../../intro/arch_overview/security/threat_model.html#arch-overview-threat-model"><span class="std std-ref">threat model</span></a>, are not supported by the security team, and are subject to breaking changes. Do not use this feature without understanding each of the previous points.</p>
+</div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;matcher_list&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;matcher_tree&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;on_no_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matcher-matcher-list">
+<dt>matcher_list</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-matcher-matcherlist"><span class="std std-ref">config.common.matcher.v3.Matcher.MatcherList</span></a>) A linear list of matchers to evaluate.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcher-list"><span class="std std-ref">matcher_list</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcher-tree"><span class="std std-ref">matcher_tree</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matcher-matcher-tree">
+<dt>matcher_tree</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-matcher-matchertree"><span class="std std-ref">config.common.matcher.v3.Matcher.MatcherTree</span></a>) A match tree to evaluate.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcher-list"><span class="std std-ref">matcher_list</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcher-tree"><span class="std std-ref">matcher_tree</span></a> must be set.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-common-matcher-v3-matcher-on-no-match">
+<dt>on_no_match</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-matcher-onmatch"><span class="std std-ref">config.common.matcher.v3.Matcher.OnMatch</span></a>) Optional OnMatch to use if the matcher failed.
+If specified, the OnMatch is used, and the matcher is considered
+to have matched.
+If not specified, the matcher is considered not to have matched.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-common-matcher-v3-matcher-onmatch">
+<span id="envoy-v3-api-msg-config-common-matcher-v3-matcher-onmatch"></span><h2>config.common.matcher.v3.Matcher.OnMatch<a class="headerlink" href="#config-common-matcher-v3-matcher-onmatch" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.0/api/envoy/config/common/matcher/v3/matcher.proto#L29">[config.common.matcher.v3.Matcher.OnMatch proto]</a></p>
+<p>What to do if a match is successful.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;matcher&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matcher-onmatch-matcher">
+<dt>matcher</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-matcher"><span class="std std-ref">config.common.matcher.v3.Matcher</span></a>) Nested matcher to evaluate.
+If the nested matcher does not match and does not specify
+on_no_match, then this matcher is considered not to have
+matched, even if a predicate at this level or above returned
+true.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-onmatch-matcher"><span class="std std-ref">matcher</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-onmatch-action"><span class="std std-ref">action</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matcher-onmatch-action">
+<dt>action</dt><dd><p>(<a class="reference internal" href="../../../core/v3/extension.proto.html#envoy-v3-api-msg-config-core-v3-typedextensionconfig"><span class="std std-ref">config.core.v3.TypedExtensionConfig</span></a>) Protocol-specific action to take.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-onmatch-matcher"><span class="std std-ref">matcher</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-onmatch-action"><span class="std std-ref">action</span></a> must be set.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-common-matcher-v3-matcher-matcherlist">
+<span id="envoy-v3-api-msg-config-common-matcher-v3-matcher-matcherlist"></span><h2>config.common.matcher.v3.Matcher.MatcherList<a class="headerlink" href="#config-common-matcher-v3-matcher-matcherlist" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.0/api/envoy/config/common/matcher/v3/matcher.proto#L48">[config.common.matcher.v3.Matcher.MatcherList proto]</a></p>
+<p>A linear list of field matchers.
+The field matchers are evaluated in order, and the first match
+wins.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;matchers&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-matchers">
+<dt>matchers</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-matcher-matcherlist-fieldmatcher"><span class="std std-ref">config.common.matcher.v3.Matcher.MatcherList.FieldMatcher</span></a>, <em>REQUIRED</em>) A list of matchers. First match wins.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-common-matcher-v3-matcher-matcherlist-predicate">
+<span id="envoy-v3-api-msg-config-common-matcher-v3-matcher-matcherlist-predicate"></span><h2>config.common.matcher.v3.Matcher.MatcherList.Predicate<a class="headerlink" href="#config-common-matcher-v3-matcher-matcherlist-predicate" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.0/api/envoy/config/common/matcher/v3/matcher.proto#L50">[config.common.matcher.v3.Matcher.MatcherList.Predicate proto]</a></p>
+<p>Predicate to determine if a match is successful.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;single_predicate&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;or_matcher&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;and_matcher&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;not_matcher&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-single-predicate">
+<dt>single_predicate</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-matcher-matcherlist-predicate-singlepredicate"><span class="std std-ref">config.common.matcher.v3.Matcher.MatcherList.Predicate.SinglePredicate</span></a>) A single predicate to evaluate.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-single-predicate"><span class="std std-ref">single_predicate</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-or-matcher"><span class="std std-ref">or_matcher</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-and-matcher"><span class="std std-ref">and_matcher</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-not-matcher"><span class="std std-ref">not_matcher</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-or-matcher">
+<dt>or_matcher</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-matcher-matcherlist-predicate-predicatelist"><span class="std std-ref">config.common.matcher.v3.Matcher.MatcherList.Predicate.PredicateList</span></a>) A list of predicates to be OR-ed together.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-single-predicate"><span class="std std-ref">single_predicate</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-or-matcher"><span class="std std-ref">or_matcher</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-and-matcher"><span class="std std-ref">and_matcher</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-not-matcher"><span class="std std-ref">not_matcher</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-and-matcher">
+<dt>and_matcher</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-matcher-matcherlist-predicate-predicatelist"><span class="std std-ref">config.common.matcher.v3.Matcher.MatcherList.Predicate.PredicateList</span></a>) A list of predicates to be AND-ed together.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-single-predicate"><span class="std std-ref">single_predicate</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-or-matcher"><span class="std std-ref">or_matcher</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-and-matcher"><span class="std std-ref">and_matcher</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-not-matcher"><span class="std std-ref">not_matcher</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-not-matcher">
+<dt>not_matcher</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-matcher-matcherlist-predicate"><span class="std std-ref">config.common.matcher.v3.Matcher.MatcherList.Predicate</span></a>) The invert of a predicate</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-single-predicate"><span class="std std-ref">single_predicate</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-or-matcher"><span class="std std-ref">or_matcher</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-and-matcher"><span class="std std-ref">and_matcher</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-not-matcher"><span class="std std-ref">not_matcher</span></a> must be set.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-common-matcher-v3-matcher-matcherlist-predicate-singlepredicate">
+<span id="envoy-v3-api-msg-config-common-matcher-v3-matcher-matcherlist-predicate-singlepredicate"></span><h2>config.common.matcher.v3.Matcher.MatcherList.Predicate.SinglePredicate<a class="headerlink" href="#config-common-matcher-v3-matcher-matcherlist-predicate-singlepredicate" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.0/api/envoy/config/common/matcher/v3/matcher.proto#L52">[config.common.matcher.v3.Matcher.MatcherList.Predicate.SinglePredicate proto]</a></p>
+<p>Predicate for a single input field.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;input&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;value_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;custom_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-singlepredicate-input">
+<dt>input</dt><dd><p>(<a class="reference internal" href="../../../core/v3/extension.proto.html#envoy-v3-api-msg-config-core-v3-typedextensionconfig"><span class="std std-ref">config.core.v3.TypedExtensionConfig</span></a>, <em>REQUIRED</em>) Protocol-specific specification of input field to match on.</p>
+<div class="admonition tip" id="extension-category-envoy-matching-common-inputs">
+<p class="admonition-title">Tip</p>
+<p>This extension category has the following known extensions:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../../extensions/matching/common_inputs/environment_variable/v3/input.proto.html#extension-envoy-matching-common-inputs-environment-variable"><span class="std std-ref">envoy.matching.common_inputs.environment_variable</span></a></p></li>
+</ul>
+</div>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-singlepredicate-value-match">
+<dt>value_match</dt><dd><p>(<a class="reference internal" href="../../../../type/matcher/v3/string.proto.html#envoy-v3-api-msg-type-matcher-v3-stringmatcher"><span class="std std-ref">type.matcher.v3.StringMatcher</span></a>) Built-in string matcher.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-singlepredicate-value-match"><span class="std std-ref">value_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-singlepredicate-custom-match"><span class="std std-ref">custom_match</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-singlepredicate-custom-match">
+<dt>custom_match</dt><dd><p>(<a class="reference internal" href="../../../core/v3/extension.proto.html#envoy-v3-api-msg-config-core-v3-typedextensionconfig"><span class="std std-ref">config.core.v3.TypedExtensionConfig</span></a>) Extension for custom matching logic.</p>
+<div class="admonition tip" id="extension-category-envoy-matching-input-matchers">
+<p class="admonition-title">Tip</p>
+<p>This extension category has the following known extensions:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../../extensions/matching/input_matchers/consistent_hashing/v3/consistent_hashing.proto.html#extension-envoy-matching-input-matchers-consistent-hashing"><span class="std std-ref">envoy.matching.input_matchers.consistent_hashing</span></a></p></li>
+<li><p><a class="reference internal" href="../../../../extensions/matching/input_matchers/ip/v3/ip.proto.html#extension-envoy-matching-input-matchers-ip"><span class="std std-ref">envoy.matching.input_matchers.ip</span></a></p></li>
+</ul>
+</div>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-singlepredicate-value-match"><span class="std std-ref">value_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-singlepredicate-custom-match"><span class="std std-ref">custom_match</span></a> must be set.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-common-matcher-v3-matcher-matcherlist-predicate-predicatelist">
+<span id="envoy-v3-api-msg-config-common-matcher-v3-matcher-matcherlist-predicate-predicatelist"></span><h2>config.common.matcher.v3.Matcher.MatcherList.Predicate.PredicateList<a class="headerlink" href="#config-common-matcher-v3-matcher-matcherlist-predicate-predicatelist" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.0/api/envoy/config/common/matcher/v3/matcher.proto#L70">[config.common.matcher.v3.Matcher.MatcherList.Predicate.PredicateList proto]</a></p>
+<p>A list of two or more matchers. Used to allow using a list within a oneof.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;predicate&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-predicate-predicatelist-predicate">
+<dt>predicate</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-matcher-matcherlist-predicate"><span class="std std-ref">config.common.matcher.v3.Matcher.MatcherList.Predicate</span></a>, <em>REQUIRED</em>)</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-common-matcher-v3-matcher-matcherlist-fieldmatcher">
+<span id="envoy-v3-api-msg-config-common-matcher-v3-matcher-matcherlist-fieldmatcher"></span><h2>config.common.matcher.v3.Matcher.MatcherList.FieldMatcher<a class="headerlink" href="#config-common-matcher-v3-matcher-matcherlist-fieldmatcher" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.0/api/envoy/config/common/matcher/v3/matcher.proto#L92">[config.common.matcher.v3.Matcher.MatcherList.FieldMatcher proto]</a></p>
+<p>An individual matcher.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;predicate&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;on_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-fieldmatcher-predicate">
+<dt>predicate</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-matcher-matcherlist-predicate"><span class="std std-ref">config.common.matcher.v3.Matcher.MatcherList.Predicate</span></a>, <em>REQUIRED</em>) Determines if the match succeeds.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-common-matcher-v3-matcher-matcherlist-fieldmatcher-on-match">
+<dt>on_match</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-matcher-onmatch"><span class="std std-ref">config.common.matcher.v3.Matcher.OnMatch</span></a>, <em>REQUIRED</em>) What to do if the match succeeds.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-common-matcher-v3-matcher-matchertree">
+<span id="envoy-v3-api-msg-config-common-matcher-v3-matcher-matchertree"></span><h2>config.common.matcher.v3.Matcher.MatcherTree<a class="headerlink" href="#config-common-matcher-v3-matcher-matchertree" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.0/api/envoy/config/common/matcher/v3/matcher.proto#L104">[config.common.matcher.v3.Matcher.MatcherTree proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;input&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;exact_match_map&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;prefix_match_map&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;custom_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-common-matcher-v3-matcher-matchertree-input">
+<dt>input</dt><dd><p>(<a class="reference internal" href="../../../core/v3/extension.proto.html#envoy-v3-api-msg-config-core-v3-typedextensionconfig"><span class="std std-ref">config.core.v3.TypedExtensionConfig</span></a>, <em>REQUIRED</em>) Protocol-specific specification of input field to match on.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matcher-matchertree-exact-match-map">
+<dt>exact_match_map</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-matcher-matchertree-matchmap"><span class="std std-ref">config.common.matcher.v3.Matcher.MatcherTree.MatchMap</span></a>)
+Exact or prefix match maps in which to look up the input value.
+If the lookup succeeds, the match is considered successful, and
+the corresponding OnMatch is used.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matchertree-exact-match-map"><span class="std std-ref">exact_match_map</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matchertree-prefix-match-map"><span class="std std-ref">prefix_match_map</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matchertree-custom-match"><span class="std std-ref">custom_match</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matcher-matchertree-prefix-match-map">
+<dt>prefix_match_map</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-matcher-matchertree-matchmap"><span class="std std-ref">config.common.matcher.v3.Matcher.MatcherTree.MatchMap</span></a>) Longest matching prefix wins.</p>
+<p>Exact or prefix match maps in which to look up the input value.
+If the lookup succeeds, the match is considered successful, and
+the corresponding OnMatch is used.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matchertree-exact-match-map"><span class="std std-ref">exact_match_map</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matchertree-prefix-match-map"><span class="std std-ref">prefix_match_map</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matchertree-custom-match"><span class="std std-ref">custom_match</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matcher-matchertree-custom-match">
+<dt>custom_match</dt><dd><p>(<a class="reference internal" href="../../../core/v3/extension.proto.html#envoy-v3-api-msg-config-core-v3-typedextensionconfig"><span class="std std-ref">config.core.v3.TypedExtensionConfig</span></a>) Extension for custom matching logic.</p>
+<p>Exact or prefix match maps in which to look up the input value.
+If the lookup succeeds, the match is considered successful, and
+the corresponding OnMatch is used.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matchertree-exact-match-map"><span class="std std-ref">exact_match_map</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matchertree-prefix-match-map"><span class="std std-ref">prefix_match_map</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matcher-matchertree-custom-match"><span class="std std-ref">custom_match</span></a> must be set.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-common-matcher-v3-matcher-matchertree-matchmap">
+<span id="envoy-v3-api-msg-config-common-matcher-v3-matcher-matchertree-matchmap"></span><h2>config.common.matcher.v3.Matcher.MatcherTree.MatchMap<a class="headerlink" href="#config-common-matcher-v3-matcher-matchertree-matchmap" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.0/api/envoy/config/common/matcher/v3/matcher.proto#L106">[config.common.matcher.v3.Matcher.MatcherTree.MatchMap proto]</a></p>
+<p>A map of configured matchers. Used to allow using a map within a oneof.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;map&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-common-matcher-v3-matcher-matchertree-matchmap-map">
+<dt>map</dt><dd><p>(<strong>repeated</strong> map&lt;<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-matcher-onmatch"><span class="std std-ref">config.common.matcher.v3.Matcher.OnMatch</span></a>&gt;)</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-common-matcher-v3-matchpredicate">
+<span id="envoy-v3-api-msg-config-common-matcher-v3-matchpredicate"></span><h2>config.common.matcher.v3.MatchPredicate<a class="headerlink" href="#config-common-matcher-v3-matchpredicate" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.0/api/envoy/config/common/matcher/v3/matcher.proto#L149">[config.common.matcher.v3.MatchPredicate proto]</a></p>
+<p>Match configuration. This is a recursive structure which allows complex nested match
+configurations to be built using various logical operators.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;or_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;and_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;not_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;any_match&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;http_request_headers_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;http_request_trailers_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;http_response_headers_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;http_response_trailers_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;http_request_generic_body_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;http_response_generic_body_match&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matchpredicate-or-match">
+<dt>or_match</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-matchpredicate-matchset"><span class="std std-ref">config.common.matcher.v3.MatchPredicate.MatchSet</span></a>) A set that describes a logical OR. If any member of the set matches, the match configuration
+matches.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-headers-match"><span class="std std-ref">http_request_headers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-trailers-match"><span class="std std-ref">http_request_trailers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-headers-match"><span class="std std-ref">http_response_headers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-trailers-match"><span class="std std-ref">http_response_trailers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-generic-body-match"><span class="std std-ref">http_request_generic_body_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-generic-body-match"><span class="std std-ref">http_response_generic_body_match</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matchpredicate-and-match">
+<dt>and_match</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-matchpredicate-matchset"><span class="std std-ref">config.common.matcher.v3.MatchPredicate.MatchSet</span></a>) A set that describes a logical AND. If all members of the set match, the match configuration
+matches.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-headers-match"><span class="std std-ref">http_request_headers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-trailers-match"><span class="std std-ref">http_request_trailers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-headers-match"><span class="std std-ref">http_response_headers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-trailers-match"><span class="std std-ref">http_response_trailers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-generic-body-match"><span class="std std-ref">http_request_generic_body_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-generic-body-match"><span class="std std-ref">http_response_generic_body_match</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matchpredicate-not-match">
+<dt>not_match</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-matchpredicate"><span class="std std-ref">config.common.matcher.v3.MatchPredicate</span></a>) A negation match. The match configuration will match if the negated match condition matches.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-headers-match"><span class="std std-ref">http_request_headers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-trailers-match"><span class="std std-ref">http_request_trailers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-headers-match"><span class="std std-ref">http_response_headers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-trailers-match"><span class="std std-ref">http_response_trailers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-generic-body-match"><span class="std std-ref">http_request_generic_body_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-generic-body-match"><span class="std std-ref">http_response_generic_body_match</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matchpredicate-any-match">
+<dt>any_match</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) The match configuration will always match.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-headers-match"><span class="std std-ref">http_request_headers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-trailers-match"><span class="std std-ref">http_request_trailers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-headers-match"><span class="std std-ref">http_response_headers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-trailers-match"><span class="std std-ref">http_response_trailers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-generic-body-match"><span class="std std-ref">http_request_generic_body_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-generic-body-match"><span class="std std-ref">http_response_generic_body_match</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-headers-match">
+<dt>http_request_headers_match</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-httpheadersmatch"><span class="std std-ref">config.common.matcher.v3.HttpHeadersMatch</span></a>) HTTP request headers match configuration.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-headers-match"><span class="std std-ref">http_request_headers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-trailers-match"><span class="std std-ref">http_request_trailers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-headers-match"><span class="std std-ref">http_response_headers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-trailers-match"><span class="std std-ref">http_response_trailers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-generic-body-match"><span class="std std-ref">http_request_generic_body_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-generic-body-match"><span class="std std-ref">http_response_generic_body_match</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-trailers-match">
+<dt>http_request_trailers_match</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-httpheadersmatch"><span class="std std-ref">config.common.matcher.v3.HttpHeadersMatch</span></a>) HTTP request trailers match configuration.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-headers-match"><span class="std std-ref">http_request_headers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-trailers-match"><span class="std std-ref">http_request_trailers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-headers-match"><span class="std std-ref">http_response_headers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-trailers-match"><span class="std std-ref">http_response_trailers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-generic-body-match"><span class="std std-ref">http_request_generic_body_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-generic-body-match"><span class="std std-ref">http_response_generic_body_match</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-headers-match">
+<dt>http_response_headers_match</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-httpheadersmatch"><span class="std std-ref">config.common.matcher.v3.HttpHeadersMatch</span></a>) HTTP response headers match configuration.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-headers-match"><span class="std std-ref">http_request_headers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-trailers-match"><span class="std std-ref">http_request_trailers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-headers-match"><span class="std std-ref">http_response_headers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-trailers-match"><span class="std std-ref">http_response_trailers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-generic-body-match"><span class="std std-ref">http_request_generic_body_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-generic-body-match"><span class="std std-ref">http_response_generic_body_match</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-trailers-match">
+<dt>http_response_trailers_match</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-httpheadersmatch"><span class="std std-ref">config.common.matcher.v3.HttpHeadersMatch</span></a>) HTTP response trailers match configuration.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-headers-match"><span class="std std-ref">http_request_headers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-trailers-match"><span class="std std-ref">http_request_trailers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-headers-match"><span class="std std-ref">http_response_headers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-trailers-match"><span class="std std-ref">http_response_trailers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-generic-body-match"><span class="std std-ref">http_request_generic_body_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-generic-body-match"><span class="std std-ref">http_response_generic_body_match</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-generic-body-match">
+<dt>http_request_generic_body_match</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-httpgenericbodymatch"><span class="std std-ref">config.common.matcher.v3.HttpGenericBodyMatch</span></a>) HTTP request generic body match configuration.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-headers-match"><span class="std std-ref">http_request_headers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-trailers-match"><span class="std std-ref">http_request_trailers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-headers-match"><span class="std std-ref">http_response_headers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-trailers-match"><span class="std std-ref">http_response_trailers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-generic-body-match"><span class="std std-ref">http_request_generic_body_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-generic-body-match"><span class="std std-ref">http_response_generic_body_match</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-generic-body-match">
+<dt>http_response_generic_body_match</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-httpgenericbodymatch"><span class="std std-ref">config.common.matcher.v3.HttpGenericBodyMatch</span></a>) HTTP response generic body match configuration.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-or-match"><span class="std std-ref">or_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-and-match"><span class="std std-ref">and_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-not-match"><span class="std std-ref">not_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-any-match"><span class="std std-ref">any_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-headers-match"><span class="std std-ref">http_request_headers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-trailers-match"><span class="std std-ref">http_request_trailers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-headers-match"><span class="std std-ref">http_response_headers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-trailers-match"><span class="std std-ref">http_response_trailers_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-request-generic-body-match"><span class="std std-ref">http_request_generic_body_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-matchpredicate-http-response-generic-body-match"><span class="std std-ref">http_response_generic_body_match</span></a> must be set.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-common-matcher-v3-matchpredicate-matchset">
+<span id="envoy-v3-api-msg-config-common-matcher-v3-matchpredicate-matchset"></span><h2>config.common.matcher.v3.MatchPredicate.MatchSet<a class="headerlink" href="#config-common-matcher-v3-matchpredicate-matchset" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.0/api/envoy/config/common/matcher/v3/matcher.proto#L151">[config.common.matcher.v3.MatchPredicate.MatchSet proto]</a></p>
+<p>A set of match configurations used for logical operations.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;rules&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-common-matcher-v3-matchpredicate-matchset-rules">
+<dt>rules</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-matchpredicate"><span class="std std-ref">config.common.matcher.v3.MatchPredicate</span></a>, <em>REQUIRED</em>) The list of rules that make up the set.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-common-matcher-v3-httpheadersmatch">
+<span id="envoy-v3-api-msg-config-common-matcher-v3-httpheadersmatch"></span><h2>config.common.matcher.v3.HttpHeadersMatch<a class="headerlink" href="#config-common-matcher-v3-httpheadersmatch" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.0/api/envoy/config/common/matcher/v3/matcher.proto#L194">[config.common.matcher.v3.HttpHeadersMatch proto]</a></p>
+<p>HTTP headers match configuration.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;headers&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-common-matcher-v3-httpheadersmatch-headers">
+<dt>headers</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="../../../route/v3/route_components.proto.html#envoy-v3-api-msg-config-route-v3-headermatcher"><span class="std std-ref">config.route.v3.HeaderMatcher</span></a>) HTTP headers to match.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-common-matcher-v3-httpgenericbodymatch">
+<span id="envoy-v3-api-msg-config-common-matcher-v3-httpgenericbodymatch"></span><h2>config.common.matcher.v3.HttpGenericBodyMatch<a class="headerlink" href="#config-common-matcher-v3-httpgenericbodymatch" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.0/api/envoy/config/common/matcher/v3/matcher.proto#L209">[config.common.matcher.v3.HttpGenericBodyMatch proto]</a></p>
+<p>HTTP generic body match configuration.
+List of text strings and hex strings to be located in HTTP body.
+All specified strings must be found in the HTTP body for positive match.
+The search may be limited to specified number of bytes from the body start.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Searching for patterns in HTTP body is potentially cpu intensive. For each specified pattern, http body is scanned byte by byte to find a match.
+If multiple patterns are specified, the process is repeated for each pattern. If location of a pattern is known, <code class="docutils literal notranslate"><span class="pre">bytes_limit</span></code> should be specified
+to scan only part of the http body.</p>
+</div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;bytes_limit&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;patterns&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-common-matcher-v3-httpgenericbodymatch-bytes-limit">
+<dt>bytes_limit</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">uint32</a>) Limits search to specified number of bytes - default zero (no limit - match entire captured buffer).</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-common-matcher-v3-httpgenericbodymatch-patterns">
+<dt>patterns</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="#envoy-v3-api-msg-config-common-matcher-v3-httpgenericbodymatch-generictextmatch"><span class="std std-ref">config.common.matcher.v3.HttpGenericBodyMatch.GenericTextMatch</span></a>, <em>REQUIRED</em>) List of patterns to match.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-common-matcher-v3-httpgenericbodymatch-generictextmatch">
+<span id="envoy-v3-api-msg-config-common-matcher-v3-httpgenericbodymatch-generictextmatch"></span><h2>config.common.matcher.v3.HttpGenericBodyMatch.GenericTextMatch<a class="headerlink" href="#config-common-matcher-v3-httpgenericbodymatch-generictextmatch" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.0/api/envoy/config/common/matcher/v3/matcher.proto#L210">[config.common.matcher.v3.HttpGenericBodyMatch.GenericTextMatch proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;string_match&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;binary_match&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-httpgenericbodymatch-generictextmatch-string-match">
+<dt>string_match</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Text string to be located in HTTP body.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-httpgenericbodymatch-generictextmatch-string-match"><span class="std std-ref">string_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-httpgenericbodymatch-generictextmatch-binary-match"><span class="std std-ref">binary_match</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-common-matcher-v3-httpgenericbodymatch-generictextmatch-binary-match">
+<dt>binary_match</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bytes</a>) Sequence of bytes to be located in HTTP body.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-httpgenericbodymatch-generictextmatch-string-match"><span class="std std-ref">string_match</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-common-matcher-v3-httpgenericbodymatch-generictextmatch-binary-match"><span class="std std-ref">binary_match</span></a> must be set.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../../common.html" class="btn btn-neutral float-left" title="Common" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../../../extensions/common/dynamic_forward_proxy/v3/dns_cache.proto.html" class="btn btn-neutral float-right" title="Dynamic forward proxy common configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2021, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
