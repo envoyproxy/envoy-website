@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HTTP header sanitizing &mdash; envoy tag-v1.20.1 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Local reply modification" href="local_reply.html" />
+    <link rel="prev" title="HTTP header manipulation" href="headers.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html">
+            <img src="../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                tag-v1.20.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../configuration.html">Configuration reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../overview/overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../http.html">HTTP</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="http_conn_man.html">HTTP connection manager</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="route_matching.html">Route matching</a></li>
+<li class="toctree-l4"><a class="reference internal" href="traffic_splitting.html">Traffic Shifting/Splitting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="header_casing.html">HTTP/1.1 Header Casing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="headers.html">HTTP header manipulation</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">HTTP header sanitizing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="local_reply.html">Local reply modification</a></li>
+<li class="toctree-l4"><a class="reference internal" href="response_code_details.html">Response Code Details</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stats.html">Statistics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html">Runtime</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rds.html">Route discovery service (RDS)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vhds.html">Virtual Host Discovery Service (VHDS)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../http_filters/http_filters.html">HTTP filters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../upstream/upstream.html">Upstream clusters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../observability/observability.html">Observability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../security/security.html">Security</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../operations/operations.html">Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../other_features/other_features.html">Other features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/advanced.html">Advanced</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../best_practices/best_practices.html">Configuration best practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../configuration.html">Configuration reference</a> &raquo;</li>
+          <li><a href="../http.html">HTTP</a> &raquo;</li>
+          <li><a href="http_conn_man.html">HTTP connection manager</a> &raquo;</li>
+      <li>HTTP header sanitizing</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/configuration/http/http_conn_man/header_sanitizing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="http-header-sanitizing">
+<span id="config-http-conn-man-header-sanitizing"></span><h1>HTTP header sanitizing<a class="headerlink" href="#http-header-sanitizing" title="Permalink to this headline">¶</a></h1>
+<p>For security reasons, Envoy will “sanitize” various incoming HTTP headers depending on whether the
+request is an internal or external request. The sanitizing action depends on the header and may
+result in addition, removal, or modification. Ultimately, whether the request is considered internal
+or external is governed by the <a class="reference internal" href="headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a>
+header (please read the linked section carefully as how Envoy populates the header is complex and depends on the
+<a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-use-remote-address"><span class="std std-ref">use_remote_address</span></a>
+setting). In addition, the
+<a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-internal-address-config"><span class="std std-ref">internal_address_config</span></a>
+setting can be used to configure the internal/external determination.</p>
+<p>Envoy will potentially sanitize the following headers:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../http_filters/router_filter.html#config-http-filters-router-x-envoy-decorator-operation"><span class="std std-ref">x-envoy-decorator-operation</span></a></p></li>
+<li><p><a class="reference internal" href="headers.html#config-http-conn-man-headers-downstream-service-cluster"><span class="std std-ref">x-envoy-downstream-service-cluster</span></a></p></li>
+<li><p><a class="reference internal" href="headers.html#config-http-conn-man-headers-downstream-service-node"><span class="std std-ref">x-envoy-downstream-service-node</span></a></p></li>
+<li><p><a class="reference internal" href="../http_filters/router_filter.html#config-http-filters-router-x-envoy-expected-rq-timeout-ms"><span class="std std-ref">x-envoy-expected-rq-timeout-ms</span></a></p></li>
+<li><p><a class="reference internal" href="headers.html#config-http-conn-man-headers-x-envoy-external-address"><span class="std std-ref">x-envoy-external-address</span></a></p></li>
+<li><p><a class="reference internal" href="headers.html#config-http-conn-man-headers-x-envoy-force-trace"><span class="std std-ref">x-envoy-force-trace</span></a></p></li>
+<li><p><a class="reference internal" href="headers.html#config-http-conn-man-headers-x-envoy-internal"><span class="std std-ref">x-envoy-internal</span></a></p></li>
+<li><p><a class="reference internal" href="../http_filters/ip_tagging_filter.html#config-http-filters-ip-tagging"><span class="std std-ref">x-envoy-ip-tags</span></a></p></li>
+<li><p><a class="reference internal" href="../http_filters/router_filter.html#config-http-filters-router-x-envoy-max-retries"><span class="std std-ref">x-envoy-max-retries</span></a></p></li>
+<li><p><a class="reference internal" href="../http_filters/router_filter.html#config-http-filters-router-x-envoy-retry-grpc-on"><span class="std std-ref">x-envoy-retry-grpc-on</span></a></p></li>
+<li><p><a class="reference internal" href="../http_filters/router_filter.html#config-http-filters-router-x-envoy-retry-on"><span class="std std-ref">x-envoy-retry-on</span></a></p></li>
+<li><p><a class="reference internal" href="../http_filters/router_filter.html#config-http-filters-router-x-envoy-upstream-alt-stat-name"><span class="std std-ref">x-envoy-upstream-alt-stat-name</span></a></p></li>
+<li><p><a class="reference internal" href="../http_filters/router_filter.html#config-http-filters-router-x-envoy-upstream-rq-per-try-timeout-ms"><span class="std std-ref">x-envoy-upstream-rq-per-try-timeout-ms</span></a></p></li>
+<li><p><a class="reference internal" href="../http_filters/router_filter.html#config-http-filters-router-x-envoy-upstream-rq-timeout-alt-response"><span class="std std-ref">x-envoy-upstream-rq-timeout-alt-response</span></a></p></li>
+<li><p><a class="reference internal" href="../http_filters/router_filter.html#config-http-filters-router-x-envoy-upstream-rq-timeout-ms"><span class="std std-ref">x-envoy-upstream-rq-timeout-ms</span></a></p></li>
+<li><p><a class="reference internal" href="headers.html#config-http-conn-man-headers-x-forwarded-client-cert"><span class="std std-ref">x-forwarded-client-cert</span></a></p></li>
+<li><p><a class="reference internal" href="headers.html#config-http-conn-man-headers-x-forwarded-for"><span class="std std-ref">x-forwarded-for</span></a></p></li>
+<li><p><a class="reference internal" href="headers.html#config-http-conn-man-headers-x-forwarded-proto"><span class="std std-ref">x-forwarded-proto</span></a></p></li>
+<li><p><a class="reference internal" href="headers.html#config-http-conn-man-headers-x-request-id"><span class="std std-ref">x-request-id</span></a></p></li>
+<li><p><a class="reference internal" href="headers.html#config-http-conn-man-headers-referer"><span class="std std-ref">referer</span></a></p></li>
+</ul>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="headers.html" class="btn btn-neutral float-left" title="HTTP header manipulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="local_reply.html" class="btn btn-neutral float-right" title="Local reply modification" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2021, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
