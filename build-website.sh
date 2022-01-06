@@ -84,7 +84,7 @@ build_latest_docs () {
          ./_site/docs/envoy/latest
 }
 
-build_latest_docs || echo "Netlify, you are supposed to be good at one thing"
+build_latest_docs
 
 # copy envoy docs to the main website
 # (we don't want jekyll to parse the docs)
