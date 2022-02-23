@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How do I configure timeouts? &mdash; envoy tag-v1.21.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="How are configuration deprecations handled?" href="deprecation.html" />
+    <link rel="prev" title="How do I configure flow control?" href="flow_control.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html">
+            <img src="../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                tag-v1.21.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../overview.html">FAQ</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#build">Build</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#api">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#debugging">Debugging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#performance">Performance</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../overview.html#configuration">Configuration</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="edge.html">How do I configure Envoy as an edge proxy?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="level_two.html">How do I configure Envoy as a level two proxy?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sni.html">How do I configure SNI for listeners?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sni.html#how-do-i-configure-sni-for-clusters">How do I configure SNI for clusters?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zone_aware_routing.html">How do I configure zone aware routing?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tracing.html">How do I configure tracing?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flow_control.html">How do I configure flow control?</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">How do I configure timeouts?</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#http-grpc">HTTP/gRPC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tcp">TCP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transport-socket">Transport Socket</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="deprecation.html">How are configuration deprecations handled?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="resource_limits.html">How does Envoy prevent file descriptor exhaustion?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#load-balancing">Load balancing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#extensions">Extensions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#windows">Windows</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../overview.html">FAQ</a> &raquo;</li>
+      <li>How do I configure timeouts?</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/faq/configuration/timeouts.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="how-do-i-configure-timeouts">
+<span id="faq-configuration-timeouts"></span><h1>How do I configure timeouts?<a class="headerlink" href="#how-do-i-configure-timeouts" title="Permalink to this headline">¶</a></h1>
+<p>Envoy supports a wide range of timeouts that may need to be configured depending on the deployment.
+This page summarizes the most important timeouts used in various scenarios.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>This is not an exhaustive list of all of the configurable timeouts that Envoy supports. Depending
+on the deployment additional configuration may be required.</p>
+</div>
+<div class="section" id="http-grpc">
+<h2>HTTP/gRPC<a class="headerlink" href="#http-grpc" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="connection-timeouts">
+<h3>Connection timeouts<a class="headerlink" href="#connection-timeouts" title="Permalink to this headline">¶</a></h3>
+<p>Connection timeouts apply to the entire HTTP connection and all streams the connection carries.</p>
+<ul class="simple">
+<li><p>The HTTP protocol <a class="reference internal" href="../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-httpprotocoloptions-idle-timeout"><span class="std std-ref">idle_timeout</span></a>
+is defined in a generic message used by both the HTTP connection manager as well as upstream
+cluster HTTP connections. The idle timeout is the time at which a downstream or upstream
+connection will be terminated if there are no active streams. The default idle timeout if not
+otherwise specified is <em>1 hour</em>. To modify the idle timeout for downstream connections use the
+<a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-common-http-protocol-options"><span class="std std-ref">common_http_protocol_options</span></a>
+field in the HTTP connection manager configuration. To modify the idle timeout for upstream
+connections use the
+<a class="reference internal" href="../../api-v3/extensions/upstreams/http/v3/http_protocol_options.proto.html#envoy-v3-api-field-extensions-upstreams-http-v3-httpprotocoloptions-common-http-protocol-options"><span class="std std-ref">common_http_protocol_options</span></a> field in the Cluster’s <a class="reference internal" href="../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-typed-extension-protocol-options"><span class="std std-ref">extension_protocol_options</span></a>, keyed by <cite>envoy.extensions.upstreams.http.v3.HttpProtocolOptions</cite></p></li>
+<li><p>The HTTP protocol <a class="reference internal" href="../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-httpprotocoloptions-max-connection-duration"><span class="std std-ref">max_connection_duration</span></a>
+is defined in a generic message used by both the HTTP connection manager as well as upstream cluster
+HTTP connections. The maximum connection duration is the time after which a downstream or upstream
+connection will be drained and/or closed, starting from when it was first established. If there are no
+active streams, the connection will be closed. If there are any active streams, the drain sequence will
+kick-in, and the connection will be force-closed after the drain period. The default value of max connection
+duration is <em>0</em> or unlimited, which means that the connections will never be closed due to aging. It could
+be helpful in scenarios when you are running a pool of Envoy edge-proxies and would want to close a
+downstream connection after some time to prevent stickiness. It could also help to better load balance the
+overall traffic among this pool, especially if the size of this pool is dynamically changing. Finally, it
+may help with upstream connections when using a DNS name whose resolved addresses may change even if the
+upstreams stay healthly. Forcing a maximum upstream lifetime in this scenario prevents holding onto healthy
+connections even after they would otherwise be undiscoverable. To modify the max connection duration for downstream connections use the
+<a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-common-http-protocol-options"><span class="std std-ref">common_http_protocol_options</span></a>
+field in the HTTP connection manager configuration. To modify the max connection duration for upstream connections use the
+<a class="reference internal" href="../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-common-http-protocol-options"><span class="std std-ref">common_http_protocol_options</span></a> field in the cluster configuration.</p></li>
+</ul>
+<p>See <a class="reference internal" href="#faq-configuration-timeouts-transport-socket"><span class="std std-ref">below</span></a> for other connection timeouts.</p>
+</div>
+<div class="section" id="stream-timeouts">
+<h3>Stream timeouts<a class="headerlink" href="#stream-timeouts" title="Permalink to this headline">¶</a></h3>
+<p>Stream timeouts apply to individual streams carried by an HTTP connection. Note that a stream is
+an HTTP/2 and HTTP/3 concept, however internally Envoy maps HTTP/1 requests to streams so in this
+context request/stream is interchangeable.</p>
+<ul>
+<li><p>The HTTP connection manager <a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-request-timeout"><span class="std std-ref">request_timeout</span></a>
+is the amount of time the connection manager will allow for the <em>entire request stream</em> to be
+received from the client.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>This timeout is not enforced by default as it is not compatible with streaming requests
+(requests that never end). See the stream idle timeout that follows. However, if using the
+<a class="reference internal" href="../../configuration/http/http_filters/buffer_filter.html#config-http-filters-buffer"><span class="std std-ref">buffer filter</span></a>, it is recommended to configure this timeout.</p>
+</div>
+</li>
+<li><p>The HTTP connection manager <a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-request-headers-timeout"><span class="std std-ref">request_headers_timeout</span></a>
+determines the amount of time the client has to send <em>only the headers</em> on the request stream
+before the stream is cancelled. This can be used to prevent clients from consuming too much
+memory by creating large numbers of mostly-idle streams waiting for headers. The request header
+timeout is disabled by default.</p></li>
+<li><p>The HTTP connection manager <a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-stream-idle-timeout"><span class="std std-ref">stream_idle_timeout</span></a>
+is the amount of time that the connection manager will allow a stream to exist with no upstream
+or downstream activity. The default stream idle timeout is <em>5 minutes</em>. This timeout is strongly
+recommended for all requests (not just streaming requests/responses) as it additionally defends
+against a peer that does not open the stream window once an entire response has been buffered
+to be sent to a downstream client.</p></li>
+<li><p>The HTTP protocol <a class="reference internal" href="../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-httpprotocoloptions-max-stream-duration"><span class="std std-ref">max_stream_duration</span></a>
+is defined in a generic message used by the HTTP connection manager. The max stream duration is the
+maximum time that a stream’s lifetime will span. You can use this functionality when you want to reset
+HTTP request/response streams periodically. You can’t use <a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-request-timeout"><span class="std std-ref">request_timeout</span></a>
+in this situation because this timer will be disarmed if a response header is received on the request/response streams.
+This timeout is available on both upstream and downstream connections.</p></li>
+</ul>
+</div>
+<div class="section" id="route-timeouts">
+<h3>Route timeouts<a class="headerlink" href="#route-timeouts" title="Permalink to this headline">¶</a></h3>
+<p>Envoy supports additional stream timeouts at the route level, as well as overriding some of the
+stream timeouts already introduced above.</p>
+<ul>
+<li><p>A route <a class="reference internal" href="../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-timeout"><span class="std std-ref">timeout</span></a> is the amount of time that
+Envoy will wait for the upstream to respond with a complete response. <em>This timeout does not
+start until the entire downstream request stream has been received</em>.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>This timeout defaults to <em>15 seconds</em>, however, it is not compatible with streaming responses
+(responses that never end), and will need to be disabled. Stream idle timeouts should be used
+in the case of streaming APIs as described elsewhere on this page.</p>
+</div>
+</li>
+<li><p>The route <a class="reference internal" href="../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-routeaction-idle-timeout"><span class="std std-ref">idle_timeout</span></a> allows overriding
+of the HTTP connection manager <a class="reference internal" href="../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-stream-idle-timeout"><span class="std std-ref">stream_idle_timeout</span></a>
+and does the same thing.</p></li>
+<li><p>The route <a class="reference internal" href="../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-retrypolicy-per-try-timeout"><span class="std std-ref">per_try_timeout</span></a> can be
+configured when using retries so that individual tries using a shorter timeout than the overall
+request timeout described above. This timeout only applies before any part of the response
+is sent to the downstream, which normally happens after the upstream has sent response headers.
+This timeout can be used with streaming endpoints to retry if the upstream fails to begin a
+response within the timeout.</p></li>
+<li><p>The route <a class="reference internal" href="../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-field-config-route-v3-retrypolicy-per-try-idle-timeout"><span class="std std-ref">per_try_idle_timeout</span></a>
+can be configured to ensure continued response progress of individual retry attempts (including
+the first attempt). This is useful in cases where the total upstream request time is bounded
+by the number of attempts multiplied by the per try timeout, but while the user wants to
+ensure that individual attempts are making progress.</p></li>
+<li><p>The route <a class="reference internal" href="../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-msg-config-route-v3-routeaction-maxstreamduration"><span class="std std-ref">MaxStreamDuration proto</span></a>
+can be used to override the HttpConnectionManager’s
+<a class="reference internal" href="../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-httpprotocoloptions-max-stream-duration"><span class="std std-ref">max_stream_duration</span></a>
+for individual routes as well as setting both limits and a fixed time offset on grpc-timeout headers.</p></li>
+</ul>
+</div>
+<div class="section" id="scaled-timeouts">
+<h3>Scaled timeouts<a class="headerlink" href="#scaled-timeouts" title="Permalink to this headline">¶</a></h3>
+<p>In situations where envoy is under high load, Envoy can dynamically configure timeouts using scaled timeouts.
+Envoy supports scaled timeouts through the <a class="reference internal" href="../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-msg-config-overload-v3-overloadmanager"><span class="std std-ref">Overload Manager</span></a>, configured
+in envoy <a class="reference internal" href="../../api-v3/config/bootstrap/v3/bootstrap.proto.html#envoy-v3-api-field-config-bootstrap-v3-bootstrap-overload-manager"><span class="std std-ref">bootstrap configuration</span></a>.
+Using a <a class="reference internal" href="../../configuration/operations/overload_manager/overload_manager.html#config-overload-manager-reducing-timeouts"><span class="std std-ref">reduce timeouts</span></a> overload action,
+the Overload Manager can be configured to monitor <a class="reference internal" href="../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-msg-config-overload-v3-resourcemonitor"><span class="std std-ref">resources</span></a>
+and scale timeouts accordingly. For example, a common use case may be to monitor the Envoy <a class="reference internal" href="../../api-v3/extensions/resource_monitors/fixed_heap/v3/fixed_heap.proto.html#envoy-v3-api-msg-extensions-resource-monitors-fixed-heap-v3-fixedheapconfig"><span class="std std-ref">heap size</span></a>
+and set the scaled TimerType to <a class="reference internal" href="../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-enum-value-config-overload-v3-scaletimersoverloadactionconfig-timertype-http-downstream-connection-idle"><span class="std std-ref">HTTP_DOWNSTREAM_CONNECTION_IDLE</span></a>.
+The overload manager will scale down the <a class="reference internal" href="../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-httpprotocoloptions-idle-timeout"><span class="std std-ref">idle timeout</span></a> once the <a class="reference internal" href="../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-field-config-overload-v3-scaledtrigger-scaling-threshold"><span class="std std-ref">scaling_threshold</span></a> has been met
+and will set the timeout to the <a class="reference internal" href="../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-field-config-overload-v3-scaletimersoverloadactionconfig-scaletimer-min-timeout"><span class="std std-ref">min timeout</span></a> once the <a class="reference internal" href="../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-field-config-overload-v3-scaledtrigger-scaling-threshold"><span class="std std-ref">scaling_threshold</span></a> is met.
+The full list of supported timers that can be scaled is available in the overload manager <a class="reference internal" href="../../api-v3/config/overload/v3/overload.proto.html#envoy-v3-api-enum-config-overload-v3-scaletimersoverloadactionconfig-timertype"><span class="std std-ref">docs</span></a>.</p>
+</div>
+</div>
+<div class="section" id="tcp">
+<h2>TCP<a class="headerlink" href="#tcp" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>The cluster <a class="reference internal" href="../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-connect-timeout"><span class="std std-ref">connect_timeout</span></a> specifies the amount
+of time Envoy will wait for an upstream TCP connection to be established. If this value is not set,
+a default value of 5 seconds will be used.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>For upstream TLS connections, the connect timeout includes the TLS handshake. For downstream
+connections, see <a class="reference internal" href="#faq-configuration-timeouts-transport-socket"><span class="std std-ref">below</span></a> for configuration options.</p>
+</div>
+</li>
+<li><p>The TCP proxy <a class="reference internal" href="../../api-v3/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto.html#envoy-v3-api-field-extensions-filters-network-tcp-proxy-v3-tcpproxy-idle-timeout"><span class="std std-ref">idle_timeout</span></a>
+is the amount of time that the TCP proxy will allow a connection to exist with no upstream
+or downstream activity. The default idle timeout if not otherwise specified is <em>1 hour</em>.</p></li>
+</ul>
+</div>
+<div class="section" id="transport-socket">
+<span id="faq-configuration-timeouts-transport-socket"></span><h2>Transport Socket<a class="headerlink" href="#transport-socket" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>The <a class="reference internal" href="../../api-v3/config/listener/v3/listener_components.proto.html#envoy-v3-api-field-config-listener-v3-filterchain-transport-socket-connect-timeout"><span class="std std-ref">transport_socket_connect_timeout</span></a>
+specifies the amount of time Envoy will wait for a downstream client to complete transport-level
+negotiations. When configured on a filter chain with a TLS or ALTS transport socket, this limits
+the amount of time allowed to finish the encrypted handshake after establishing a TCP connection.</p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="flow_control.html" class="btn btn-neutral float-left" title="How do I configure flow control?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="deprecation.html" class="btn btn-neutral float-right" title="How are configuration deprecations handled?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
