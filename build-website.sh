@@ -7,7 +7,7 @@ UPSTREAM="https://github.com/envoyproxy/envoy"
 TMP_CHECKOUT=/tmp/repository
 MAX_COMMITS=20
 DOCS_PUBLISH_PATH=docs/envoy-docs-rst.tar.gz
-VERSION_FILE_PATH=VERSION
+VERSION_FILE_PATH=VERSION.txt
 
 if [[ -e _site/docs ]]; then
     rm -rf _site/docs
