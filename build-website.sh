@@ -89,3 +89,6 @@ build_latest_docs
 # copy envoy docs to the main website
 # (we don't want jekyll to parse the docs)
 cp -a docs/* _site/docs/
+
+
+ps auxw || true
