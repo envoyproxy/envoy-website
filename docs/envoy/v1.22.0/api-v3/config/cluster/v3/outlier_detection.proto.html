@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Outlier detection &mdash; envoy tag-v1.22.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="Circuit breakers" href="circuit_breaker.proto.html" />
+    <link rel="prev" title="Cluster configuration" href="cluster.proto.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html">
+            <img src="../../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                tag-v1.22.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../api/api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/api_supported_versions.html">Supported API versions</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../../api.html">v3 API reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../bootstrap/bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../../clusters/clusters.html">Clusters</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="cluster.proto.html">Cluster configuration</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Outlier detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="circuit_breaker.proto.html">Circuit breakers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="filter.proto.html">Upstream filters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../endpoint/v3/endpoint.proto.html">Endpoint configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../endpoint/v3/endpoint_components.proto.html">Endpoints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../core/v3/health_check.proto.html">Health check</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../http_routes/http_routes.html">HTTP route management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config.html">Extensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../admin/admin.html">Admin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/data.html">Envoy data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../service/service.html">Services</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../common_messages/common_messages.html">Common messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../types/types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api-docs/xds_protocol.html">xDS REST and gRPC protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/client_features.html">Well Known Client Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../api/api.html">API</a> &raquo;</li>
+          <li><a href="../../../api.html">v3 API reference</a> &raquo;</li>
+          <li><a href="../../../clusters/clusters.html">Clusters</a> &raquo;</li>
+      <li>Outlier detection</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api-v3/config/cluster/v3/outlier_detection.proto.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="outlier-detection">
+<span id="envoy-v3-api-file-envoy-config-cluster-v3-outlier-detection-proto"></span><h1>Outlier detection<a class="headerlink" href="#outlier-detection" title="Permalink to this headline">¶</a></h1>
+<p>This documentation is for the Envoy v3 API.</p>
+<p>As of Envoy v1.18 the v2 API has been removed and is no longer supported.</p>
+<p>If you are upgrading from v2 API config you may wish to view the v2 API documentation:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://www.envoyproxy.io/docs/envoy/v1.17.4/api-v2/api/v2/cluster/outlier_detection.proto.html#envoy-api-file-envoy-api-v2-cluster-outlier-detection-proto" title="(in envoy vtag-v1.17.4)"><span class="xref std std-ref">api/v2/cluster/outlier_detection.proto</span></a></p>
+</div></blockquote>
+<div class="section" id="config-cluster-v3-outlierdetection">
+<span id="envoy-v3-api-msg-config-cluster-v3-outlierdetection"></span><h2>config.cluster.v3.OutlierDetection<a class="headerlink" href="#config-cluster-v3-outlierdetection" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.22.0/api/envoy/config/cluster/v3/outlier_detection.proto#L22">[config.cluster.v3.OutlierDetection proto]</a></p>
+<p>See the <a class="reference internal" href="../../../../intro/arch_overview/upstream/outlier.html#arch-overview-outlier-detection"><span class="std std-ref">architecture overview</span></a> for
+more information on outlier detection.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;consecutive_5xx&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{...}&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;interval&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{...}&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;base_ejection_time&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{...}&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;max_ejection_percent&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{...}&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;enforcing_consecutive_5xx&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{...}&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;enforcing_success_rate&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{...}&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;success_rate_minimum_hosts&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{...}&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;success_rate_request_volume&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{...}&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;success_rate_stdev_factor&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{...}&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;consecutive_gateway_failure&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{...}&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;enforcing_consecutive_gateway_failure&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{...}&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;split_external_local_origin_errors&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;consecutive_local_origin_failure&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{...}&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;enforcing_consecutive_local_origin_failure&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{...}&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;enforcing_local_origin_success_rate&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{...}&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;failure_percentage_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{...}&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;enforcing_failure_percentage&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{...}&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;enforcing_failure_percentage_local_origin&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{...}&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;failure_percentage_minimum_hosts&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{...}&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;failure_percentage_request_volume&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{...}&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;max_ejection_time&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{...}&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;max_ejection_time_jitter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{...}&quot;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-consecutive-5xx">
+<dt>consecutive_5xx</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The number of consecutive 5xx responses or local origin errors that are mapped
+to 5xx error codes before a consecutive 5xx ejection
+occurs. Defaults to 5.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-interval">
+<dt>interval</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The time interval between ejection analysis sweeps. This can result in
+both new ejections as well as hosts being returned to service. Defaults
+to 10000ms or 10s.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-base-ejection-time">
+<dt>base_ejection_time</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The base time that a host is ejected for. The real time is equal to the
+base time multiplied by the number of times the host has been ejected and is
+capped by <a class="reference internal" href="#envoy-v3-api-field-config-cluster-v3-outlierdetection-max-ejection-time"><span class="std std-ref">max_ejection_time</span></a>.
+Defaults to 30000ms or 30s.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-max-ejection-percent">
+<dt>max_ejection_percent</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The maximum % of an upstream cluster that can be ejected due to outlier
+detection. Defaults to 10% but will eject at least one host regardless of the value.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-enforcing-consecutive-5xx">
+<dt>enforcing_consecutive_5xx</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The % chance that a host will be actually ejected when an outlier status
+is detected through consecutive 5xx. This setting can be used to disable
+ejection or to ramp it up slowly. Defaults to 100.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-enforcing-success-rate">
+<dt>enforcing_success_rate</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The % chance that a host will be actually ejected when an outlier status
+is detected through success rate statistics. This setting can be used to
+disable ejection or to ramp it up slowly. Defaults to 100.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-success-rate-minimum-hosts">
+<dt>success_rate_minimum_hosts</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The number of hosts in a cluster that must have enough request volume to
+detect success rate outliers. If the number of hosts is less than this
+setting, outlier detection via success rate statistics is not performed
+for any host in the cluster. Defaults to 5.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-success-rate-request-volume">
+<dt>success_rate_request_volume</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The minimum number of total requests that must be collected in one
+interval (as defined by the interval duration above) to include this host
+in success rate based outlier detection. If the volume is lower than this
+setting, outlier detection via success rate statistics is not performed
+for that host. Defaults to 100.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-success-rate-stdev-factor">
+<dt>success_rate_stdev_factor</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) This factor is used to determine the ejection threshold for success rate
+outlier ejection. The ejection threshold is the difference between the
+mean success rate, and the product of this factor and the standard
+deviation of the mean success rate: mean - (stdev *
+success_rate_stdev_factor). This factor is divided by a thousand to get a
+double. That is, if the desired factor is 1.9, the runtime value should
+be 1900. Defaults to 1900.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-consecutive-gateway-failure">
+<dt>consecutive_gateway_failure</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The number of consecutive gateway failures (502, 503, 504 status codes)
+before a consecutive gateway failure ejection occurs. Defaults to 5.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-enforcing-consecutive-gateway-failure">
+<dt>enforcing_consecutive_gateway_failure</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The % chance that a host will be actually ejected when an outlier status
+is detected through consecutive gateway failures. This setting can be
+used to disable ejection or to ramp it up slowly. Defaults to 0.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-split-external-local-origin-errors">
+<dt>split_external_local_origin_errors</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Determines whether to distinguish local origin failures from external errors. If set to true
+the following configuration parameters are taken into account:
+<a class="reference internal" href="#envoy-v3-api-field-config-cluster-v3-outlierdetection-consecutive-local-origin-failure"><span class="std std-ref">consecutive_local_origin_failure</span></a>,
+<a class="reference internal" href="#envoy-v3-api-field-config-cluster-v3-outlierdetection-enforcing-consecutive-local-origin-failure"><span class="std std-ref">enforcing_consecutive_local_origin_failure</span></a>
+and
+<a class="reference internal" href="#envoy-v3-api-field-config-cluster-v3-outlierdetection-enforcing-local-origin-success-rate"><span class="std std-ref">enforcing_local_origin_success_rate</span></a>.
+Defaults to false.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-consecutive-local-origin-failure">
+<dt>consecutive_local_origin_failure</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The number of consecutive locally originated failures before ejection
+occurs. Defaults to 5. Parameter takes effect only when
+<a class="reference internal" href="#envoy-v3-api-field-config-cluster-v3-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">split_external_local_origin_errors</span></a>
+is set to true.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-enforcing-consecutive-local-origin-failure">
+<dt>enforcing_consecutive_local_origin_failure</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The % chance that a host will be actually ejected when an outlier status
+is detected through consecutive locally originated failures. This setting can be
+used to disable ejection or to ramp it up slowly. Defaults to 100.
+Parameter takes effect only when
+<a class="reference internal" href="#envoy-v3-api-field-config-cluster-v3-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">split_external_local_origin_errors</span></a>
+is set to true.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-enforcing-local-origin-success-rate">
+<dt>enforcing_local_origin_success_rate</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The % chance that a host will be actually ejected when an outlier status
+is detected through success rate statistics for locally originated errors.
+This setting can be used to disable ejection or to ramp it up slowly. Defaults to 100.
+Parameter takes effect only when
+<a class="reference internal" href="#envoy-v3-api-field-config-cluster-v3-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">split_external_local_origin_errors</span></a>
+is set to true.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-failure-percentage-threshold">
+<dt>failure_percentage_threshold</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The failure percentage to use when determining failure percentage-based outlier detection. If
+the failure percentage of a given host is greater than or equal to this value, it will be
+ejected. Defaults to 85.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-enforcing-failure-percentage">
+<dt>enforcing_failure_percentage</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The % chance that a host will be actually ejected when an outlier status is detected through
+failure percentage statistics. This setting can be used to disable ejection or to ramp it up
+slowly. Defaults to 0.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-enforcing-failure-percentage-local-origin">
+<dt>enforcing_failure_percentage_local_origin</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The % chance that a host will be actually ejected when an outlier status is detected through
+local-origin failure percentage statistics. This setting can be used to disable ejection or to
+ramp it up slowly. Defaults to 0.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-failure-percentage-minimum-hosts">
+<dt>failure_percentage_minimum_hosts</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The minimum number of hosts in a cluster in order to perform failure percentage-based ejection.
+If the total number of hosts in the cluster is less than this value, failure percentage-based
+ejection will not be performed. Defaults to 5.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-failure-percentage-request-volume">
+<dt>failure_percentage_request_volume</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The minimum number of total requests that must be collected in one interval (as defined by the
+interval duration above) to perform failure percentage-based ejection for this host. If the
+volume is lower than this setting, failure percentage-based ejection will not be performed for
+this host. Defaults to 50.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-max-ejection-time">
+<dt>max_ejection_time</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The maximum time that a host is ejected for. See <a class="reference internal" href="#envoy-v3-api-field-config-cluster-v3-outlierdetection-base-ejection-time"><span class="std std-ref">base_ejection_time</span></a>
+for more information. If not specified, the default value (300000ms or 300s) or
+<a class="reference internal" href="#envoy-v3-api-field-config-cluster-v3-outlierdetection-base-ejection-time"><span class="std std-ref">base_ejection_time</span></a> value is applied, whatever is larger.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-outlierdetection-max-ejection-time-jitter">
+<dt>max_ejection_time_jitter</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The maximum amount of jitter to add to the ejection time, in order to prevent
+a ‘thundering herd’ effect where all proxies try to reconnect to host at the same time.
+See <a class="reference internal" href="#envoy-v3-api-field-config-cluster-v3-outlierdetection-base-ejection-time"><span class="std std-ref">max_ejection_time_jitter</span></a>
+Defaults to 0s.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cluster.proto.html" class="btn btn-neutral float-left" title="Cluster configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="circuit_breaker.proto.html" class="btn btn-neutral float-right" title="Circuit breakers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
