@@ -13,7 +13,7 @@ module Jekyll
       root = File.dirname(File.readlink(src + "/_config.yml"))
 
       # Only monitor the jekyll assets, lest it burns out your CPU
-      dirs = [root + "/_includes", root + "/_data", root + "/_sass"]
+      dirs = [root + "/_includes", root + "/_data", root + "/_sass", root + "/_layouts", root + "/img", root + "/css"]
 
       # ignore the sass vendor files
       ignore_paths = listen_ignore_paths(options) + [/vendor/]

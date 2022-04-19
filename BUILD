@@ -18,8 +18,11 @@ filegroup(
         "img/**/*",
         "try/*",
         ]) + [
+        ":404.html",
+        ":CNAME",
         ":community.html",
         ":docs.md",
+        ":google7933de1bd04e097b.html",
         ":index.html",
         ":robots.txt",
         ":training.html",
