@@ -18,9 +18,10 @@ filegroup(
         "try/*",
         ]) + [
         ":community.html",
-        ":index.html",
-        ":training.html",
         ":docs.md",
+        ":index.html",
+        ":robots.txt",
+        ":training.html",
     ],
     visibility = ["//visibility:public"],
 )
