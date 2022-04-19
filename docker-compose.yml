@@ -1,7 +1,34 @@
-jekyll:
-    image: jekyll/jekyll
-    command: jekyll serve --watch --incremental
+version: "3.8"
+
+services:
+  live:
+    build:
+      context: docker
+      dockerfile: Dockerfile
     ports:
-        - 4000:4000
+    - 4000:4000
+    command: bazel run //site:live
     volumes:
-        - .:/srv/jekyll
+    - .:/src/workspace/envoyproxy.github.io
+    - ~/.cache/bazel:/$HOME/.cache/bazel
+    - ~/.cache/bazelisk:/$HOME/.cache/bazelisk
+    working_dir: /src/workspace/envoyproxy.github.io
+    environment:
+      LOCAL_UID: $UID
+      LOCAL_USER_NAME: $USERNAME
+      LOCAL_USER_HOME: $HOME
+
+  build:
+    build:
+      context: docker
+      dockerfile: Dockerfile
+    command: ./build-website.sh
+    volumes:
+    - .:/src/workspace/envoyproxy.github.io
+    - ~/.cache/bazel:/$HOME/.cache/bazel
+    - ~/.cache/bazelisk:/$HOME/.cache/bazelisk
+    working_dir: /src/workspace/envoyproxy.github.io
+    environment:
+      LOCAL_UID: $UID
+      LOCAL_USER_NAME: $USERNAME
+      LOCAL_USER_HOME: $HOME

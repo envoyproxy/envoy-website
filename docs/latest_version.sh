@@ -35,7 +35,9 @@ build_commit_sha () {
     fi
 
     # Last commit has no published docs, check through git logs for a commit that does
+    # NOTICE!: This requires git version >= 2.26
     git clone --bare --filter=blob:none --no-checkout --single-branch --branch main "$UPSTREAM" "$TMP_CHECKOUT"
+
     read -ra commits <<< "$(git -C "$TMP_CHECKOUT" log --pretty=%P "-${MAX_COMMITS}" | xargs)"
     for commit in "${commits[@]}"; do
         short_commit="$(echo "$commit" | head -c7)"
