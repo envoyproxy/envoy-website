@@ -13,7 +13,6 @@ filegroup(
 filegroup(
     name = "website_assets",
     srcs = glob([
-        "assets/**/*",
         "css/*",
         "img/**/*",
         "try/*",

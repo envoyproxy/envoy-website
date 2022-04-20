@@ -3,13 +3,18 @@ load("@rules_pkg//:pkg.bzl", "pkg_tar")
 genrule(
     name = "website",
     cmd = """
-    $(locations @jekyll_bundle//:bin/jekyll) build \
+    mkdir -p assets/js \
+    && tar xf $(location //_sass/vendor:bootstrap) -C . \
+    && mv $(location //assets/js:bootstrap.bundle.min.js) assets/js \
+    && $(locations @jekyll_bundle//:bin/jekyll) build \
     && tar cfh $@ --exclude=external -C _site .
     """,
     outs = ["site.tar"],
     tools = [
         "//:jekyll_assets",
         "//:website_assets",
+        "//assets/js:bootstrap.bundle.min.js",
+        "//_sass/vendor:bootstrap",
         "@jekyll_bundle//:bin/jekyll",
     ],
 )
@@ -26,6 +31,8 @@ py_binary(
         "//:jekyll_assets",
         "//:website_assets",
         "@jekyll_bundle//:bin/jekyll",
+        "//assets/js:bootstrap.bundle.min.js",
+        "//_sass/vendor:bootstrap",
         ":_plugins",
     ],
 )
