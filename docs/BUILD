@@ -10,6 +10,7 @@ exports_files([
 filegroup(
     name = "releases_html",
     srcs = ["envoy"],
+    visibility = ["//visibility:public"],
 )
 
 alias(
