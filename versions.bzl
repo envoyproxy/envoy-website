@@ -23,4 +23,8 @@ VERSIONS = {
         "url": "https://github.com/{repo}",
         "url_tpl": "{url}/releases/download/{version}/{name}-{version}.tar.gz",
     },
+    "bootstrap": {
+        "type": "assets",
+        "version": "5.1.3",
+    }
 }
