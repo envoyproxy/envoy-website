@@ -6,12 +6,12 @@ def load_github_archives():
     for k, v in VERSIONS.items():
         if type(v) == type("") or v.get("type") != "github_archive":
             continue
+        kwargs = dict(name = k, **v)
         http_archive(
-            name = k,
-            sha256 = v["sha"],
-            strip_prefix = v.get("strip_prefix", "").format(name=k, **v),
-            url = v["url_tpl"].format(name=k, **v),
-        )
+            **{k: v.format(**kwargs)
+               for k, v
+               in kwargs.items()
+               if k not in ["repo", "type", "version"]})
 
 def load_archives():
     git_repository(
