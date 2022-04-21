@@ -38,7 +38,7 @@ build_commit_sha () {
     # NOTICE!: This requires git version >= 2.26
     git clone --bare --filter=blob:none --no-checkout --single-branch --branch main "$UPSTREAM" "$TMP_CHECKOUT"
 
-    read -ra commits <<< "$(git -C "$TMP_CHECKOUT" log --pretty=%P "-${MAX_COMMITS}" | xargs)"
+    read -ra commits <<< "$(git -C "$TMP_CHECKOUT" log --pretty=%H "-${MAX_COMMITS}" | xargs)"
     for commit in "${commits[@]}"; do
         short_commit="$(echo "$commit" | head -c7)"
         if check_docs_build_availability "$short_commit"; then
