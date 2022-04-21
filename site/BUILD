@@ -37,6 +37,21 @@ py_binary(
     ],
 )
 
+py_binary(
+    name = "live_docs",
+    srcs = ["live_docs.py"],
+    data = [
+        "//:jekyll_assets",
+        "//:website_assets",
+        "@jekyll_bundle//:bin/jekyll",
+        "//assets/js:bootstrap.bundle.min.js",
+        "//_sass/vendor:bootstrap",
+        ":_plugins",
+        "//docs:latest",
+        "//docs:releases_html",
+    ],
+)
+
 pkg_tar(
     name = "html",
     extension = "tar.gz",

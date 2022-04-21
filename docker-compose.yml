@@ -18,6 +18,26 @@ services:
       LOCAL_USER_NAME: $USERNAME
       LOCAL_USER_HOME: $HOME
 
+  live_docs:
+    build:
+      context: docker
+      dockerfile: Dockerfile
+    ports:
+    - 4000:4000
+    command: |
+      bash -c '\
+          bazel run --action_env=ENVOY_COMMIT="$$(bazel run //docs:latest_version)" \
+              //site:live_docs'
+    volumes:
+    - .:/src/workspace/envoyproxy.github.io
+    - ~/.cache/bazel:/$HOME/.cache/bazel
+    - ~/.cache/bazelisk:/$HOME/.cache/bazelisk
+    working_dir: /src/workspace/envoyproxy.github.io
+    environment:
+      LOCAL_UID: $UID
+      LOCAL_USER_NAME: $USERNAME
+      LOCAL_USER_HOME: $HOME
+
   build:
     build:
       context: docker
