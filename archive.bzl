@@ -14,9 +14,4 @@ def load_github_archives():
                if k not in ["repo", "type", "version"]})
 
 def load_archives():
-    git_repository(
-        name = "bazelruby_rules_ruby",
-        remote = "https://github.com/bazelruby/rules_ruby.git",
-        branch = "master"
-    )
     load_github_archives()
