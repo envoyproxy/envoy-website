@@ -1,5 +1,5 @@
-load("@bazelruby_rules_ruby//ruby:deps.bzl", "rules_ruby_select_sdk")
 load("@rules_python//python:repositories.bzl", "python_register_toolchains")
+load("@bazelruby_rules_ruby//ruby:deps.bzl", "rules_ruby_select_sdk")
 load("//:versions.bzl", "VERSIONS")
 
 def load_toolchains():

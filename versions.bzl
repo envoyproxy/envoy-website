@@ -29,9 +29,13 @@ VERSIONS = {
         "version": "0.6.0",
         "sha256": "62eeb544ff1ef41d786e329e1536c1d541bb9bcad27ae984d57f18f314018e66",
         "url": "https://github.com/{repo}/releases/download/{version}/{name}-{version}.tar.gz",
-   },
-    "bootstrap": {
-        "type": "assets",
-        "version": "5.1.3",
-    }
+    },
+    "bazelruby_rules_ruby": {
+        "repo": "bazelruby/rules_ruby",
+        "type": "github_archive",
+        "version": "65d828b204ec32a49458c9b770f8db20774ac450",
+        "sha256": "a598fadf23c0d8376813ca4a1b4a45f778544d83bf650b24dcfc2210f6db7d5f",
+        "url": "https://github.com/{repo}/archive/{version}.tar.gz",
+        "strip_prefix": "rules_ruby-{version}",
+    },
 }
