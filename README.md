@@ -19,9 +19,9 @@ requirements can be seen for a Ubuntu-based system in the provided [Dockerfile](
 
 You can also run the necessary Bazel commands inside a Docker container.
 
-A [docker-compose](docker-compose.yml) file has been provided for your convenience, which uses a [Docker image](docker/Dockerfile) containing the system requirements expected by bazel.
+A [docker-compose](docker-compose.yml) file has been provided for your convenience, which uses a [Docker image](docker/Dockerfile) containing the system requirements expected by Bazel.
 
-The [composition](docker-compose.yml) is designed to make use of the bazel cache on your host system.
+The [composition](docker-compose.yml) is designed to make use of the Bazel cache on your host system.
 
 You may need to export the `UID` of your user to run the container.
 
@@ -29,9 +29,9 @@ You may need to export the `UID` of your user to run the container.
 $ export UID
 ```
 
-### The bazel Ruby toolchain
+### The Bazel Ruby toolchain
 
-As Ruby is required to build the website, a ruby toolchain is included in the bazel rules.
+As Ruby is required to build the website, a Ruby toolchain is included in the Bazel rules.
 
 This will look for any available Ruby binaries in its environment.
 
@@ -58,6 +58,8 @@ $ export ENVOY_COMMIT="$(bazel run //docs:latest_version)"
 $ bazel run --action_env=ENVOY_COMMIT //site:live_docs
 ```
 
+Changes made to content in the underscore-prefixed jekyll folders will trigger an immediate server reload.
+
 ### Running the site locally (Docker)
 
 You can run the website inside a Docker container with the provided [compose recipe](docker-compose.yml).
@@ -73,6 +75,8 @@ You can view the entire site, built with the latest documentation, with the foll
 ```console
 $ docker-compose up live_docs
 ```
+
+Changes made to content in the underscore-prefixed jekyll folders will trigger an immediate server reload.
 
 ### Building the site locally (Bazel)
 
@@ -107,7 +111,7 @@ To drop into a Docker container, with the port mappings configured in the [compo
 $ docker-compose run -p 4000:4000 live bash
 ```
 
-From there you can run bazel commands directly, for example:
+From there you can run Bazel commands directly, for example:
 
 ```console
 
