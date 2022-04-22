@@ -23,6 +23,11 @@ A [docker-compose](docker-compose.yml) file has been provided for your convenien
 
 The [composition](docker-compose.yml) is designed to make use of the bazel cache on your host system.
 
+You may need to export the `UID` of your user to run the container.
+
+```console
+$ export UID
+```
 
 ### The bazel Ruby toolchain
 
