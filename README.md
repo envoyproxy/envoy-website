@@ -106,7 +106,7 @@ From there you can run bazel commands directly, for example:
 
 ```console
 
-me@73deecbfaf55:/src/workspace/envoy-website$ bazel run //docs:latest_version
+username@73deecbfaf55:/src/workspace/envoy-website$ bazel run //docs:latest_version
 ...
 b200312ddcbc4d237cd197a42cdd8c66cc8c6af0
 
