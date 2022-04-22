@@ -1,52 +1,125 @@
 # Envoy Proxy Website
 
-This is the repo for the Envoy Proxy website. This website uses Jekyll to generate static html files, and then deploys
-the files on Github pages.
+This is the repo for the [Envoy Proxy](https://www.envoyproxy.io) website.
 
-### Running the site locally
+This website is built using Jekyll and Sphinx to generate static html files, which are then deployed
+with netlify.
 
-To run the website locally, first make sure you have Ruby 2.1.0 or higher installed.
+### Using Bazel on your host development system
 
-1. Install the [`bundler`](https://bundler.io/) gem if it's not already installed:
+If you have Bazel installed on your host system you can use that to manage and develop
+the site directly.
 
-```shell
-gem install bundler
+The expected version of Bazel can be seen in [.bazelversion](.bazelversion).
+
+If you use Bazel directly on your host, you will need some minimum system requirements. These
+requirements can be seen for a Ubuntu-based system in the provided [Dockerfile](docker/Dockerfile).
+
+### Using Bazel in a Docker container
+
+You can also run the necessary Bazel commands inside a Docker container.
+
+A [docker-compose](docker-compose.yml) file has been provided for your convenience, which uses a [Docker image](docker/Dockerfile) containing the system requirements expected by Bazel.
+
+The [composition](docker-compose.yml) is designed to make use of the Bazel cache on your host system.
+
+You may need to export the `UID` of your user to run the container.
+
+```console
+$ export UID
 ```
 
-2. Install Jekyll and other dependencies defined in the Gemfile:
+### The Bazel Ruby toolchain
 
-```shell
-bundle install --path vendor/bundle
+As Ruby is required to build the website, a Ruby toolchain is included in the Bazel rules.
+
+This will look for any available Ruby binaries in its environment.
+
+If it finds a version matching the one specified in [.ruby-version](.ruby-version) it will use that one.
+
+Otherwise, it will compile the required Ruby version, caching the binary for further use.
+
+If you run Bazel commands inside a Docker container it will need to compile Ruby unless it finds a previously compiled and cached version.
+
+### Running the live site locally (Bazel)
+
+```console
+$ bazel run //site:live
 ```
 
-3. Run your Jekyll site locally:
+The site should now be available by visiting http://localhost:4000.
 
-```shell
-bundle exec jekyll serve --livereload
+By default only the website and not the documentation is served by this environment.
+
+You can view the entire site, built with the latest documentation, with the following:
+
+```console
+$ export ENVOY_COMMIT="$(bazel run //docs:latest_version)"
+$ bazel run --action_env=ENVOY_COMMIT //site:live_docs
 ```
 
-4. Preview the site in your web browser at http://localhost:4000.
+Changes made to content in the underscore-prefixed jekyll folders will trigger an immediate server reload.
 
-### Running the site locally using Docker
+### Running the site locally (Docker)
 
-To run the website locally using Docker, run the command:
+You can run the website inside a Docker container with the provided [compose recipe](docker-compose.yml).
 
-```shell
-docker run -it -v $(pwd):/srv/jekyll -p 4000:4000 jekyll/jekyll jekyll serve --watch --incremental
+```console
+$ docker-compose up live
 ```
 
-Alternatively, use Docker Compose with:
+By default only the website and not the documentation is served by this environment.
 
-```shell
-docker-compose up
+You can view the entire site, built with the latest documentation, with the following:
+
+```console
+$ docker-compose up live_docs
 ```
 
-Preview the site in your web browser at http://localhost:4000.
+Changes made to content in the underscore-prefixed jekyll folders will trigger an immediate server reload.
 
-### Deploying to Github Pages
+### Building the site locally (Bazel)
 
-To deploy your changes all you have to do is push to `master` and Github pages will automatically run `jekyll build` and
-deploy the generated files.
+The Bazel target to build the entire website is:
+
+```console
+$ export ENVOY_COMMIT="$(bazel run //docs:latest_version)"
+$ bazel build --action_env=ENVOY_COMMIT //site:html
+```
+
+There is a convenience script (as used in CI) that will build into a `_site` folder in the current
+directory:
+
+```console
+$ ./build-website.sh
+```
+
+### Building the site locally (Docker)
+
+The following command will build the entire website, including all documentation, into a `_site` folder in the current
+directory:
+
+```console
+$ docker-compose run build
+```
+
+### Running Bazel commands inside a container.
+
+To drop into a Docker container, with the port mappings configured in the [composition](docker-compose.yml) file:
+
+```console
+$ docker-compose run -p 4000:4000 live bash
+```
+
+From there you can run Bazel commands directly, for example:
+
+```console
+
+username@73deecbfaf55:/src/workspace/envoy-website$ bazel run //docs:latest_version
+...
+b200312ddcbc4d237cd197a42cdd8c66cc8c6af0
+
+```
 
 ### Site content
 
@@ -54,6 +127,7 @@ Item | Path
 :----|:----
 Home page content | [`_data/home.yml`](./_data/home.yml)
 Nav links on the main page | [`_data/nav.yml`](./_data/nav.yml)
+Documentation versions | [`_data/versions.yaml`](./_data/versions.yml)
 Documentation (auto-generated) | [`docs`](./docs)
 
 ### Creating New Pages
