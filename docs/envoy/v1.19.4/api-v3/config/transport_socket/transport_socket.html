@@ -1,0 +1,345 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Transport sockets &mdash; envoy tag-v1.19.4 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="ALTS" href="../../extensions/transport_sockets/alts/v3/alts.proto.html" />
+    <link rel="prev" title="Redis" href="../../extensions/health_checkers/redis/v3/redis.proto.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                tag-v1.19.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../api/api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../api/api_supported_versions.html">Supported API versions</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../api.html">v3 API reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../bootstrap/bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../clusters/clusters.html">Clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../http_routes/http_routes.html">HTTP route management</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../config.html">Extensions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../filter/filter.html">Filters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../accesslog/accesslog.html">Access loggers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../rbac/rbac.html">RBAC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../health_checker/health_checker.html">Health checkers</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Transport sockets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../resource_monitor/resource_monitor.html">Resource monitors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../common/common.html">Common</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../compression/compression.html">Compression</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cluster/cluster.html">Cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../grpc_credential/grpc_credential.html">Grpc Credentials</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../retry/retry.html">Retry Predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../trace/trace.html">HTTP Tracers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../internal_redirect/internal_redirect.html">Internal Redirect Predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../endpoint/endpoint.html">Endpoint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../upstream/upstream.html">Upstream Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../wasm/wasm.html">WASM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../watchdog/watchdog.html">Watchdog</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../descriptors/descriptors.html">Rate limit descriptors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../request_id/request_id.html">Request ID</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../http/header_formatters.html">HTTP header formatters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../http/original_ip_detection.html">Original IP Detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stat_sinks/stat_sinks.html">Stat sinks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../quic/quic_extensions.html">Quic Extensions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../formatter/formatter.html">Access log formatters</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/admin.html">Admin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../data/data.html">Envoy data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../service/service.html">Services</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../common_messages/common_messages.html">Common messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../types/types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api-docs/xds_protocol.html">xDS REST and gRPC protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/client_features.html">Well Known Client Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../api/api.html">API</a> &raquo;</li>
+        
+          <li><a href="../../api.html">v3 API reference</a> &raquo;</li>
+        
+          <li><a href="../config.html">Extensions</a> &raquo;</li>
+        
+      <li>Transport sockets</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../../_sources/api-v3/config/transport_socket/transport_socket.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="transport-sockets">
+<h1>Transport sockets<a class="headerlink" href="#transport-sockets" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions/transport_sockets/alts/v3/alts.proto.html">ALTS</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/alts/v3/alts.proto.html#extensions-transport-sockets-alts-v3-alts">extensions.transport_sockets.alts.v3.Alts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions/transport_sockets/proxy_protocol/v3/upstream_proxy_protocol.proto.html">Upstream Proxy Protocol</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/proxy_protocol/v3/upstream_proxy_protocol.proto.html#extensions-transport-sockets-proxy-protocol-v3-proxyprotocolupstreamtransport">extensions.transport_sockets.proxy_protocol.v3.ProxyProtocolUpstreamTransport</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions/transport_sockets/quic/v3/quic_transport.proto.html">quic transport</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/quic/v3/quic_transport.proto.html#extensions-transport-sockets-quic-v3-quicdownstreamtransport">extensions.transport_sockets.quic.v3.QuicDownstreamTransport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/quic/v3/quic_transport.proto.html#extensions-transport-sockets-quic-v3-quicupstreamtransport">extensions.transport_sockets.quic.v3.QuicUpstreamTransport</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions/transport_sockets/raw_buffer/v3/raw_buffer.proto.html">Raw Buffer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/raw_buffer/v3/raw_buffer.proto.html#extensions-transport-sockets-raw-buffer-v3-rawbuffer">extensions.transport_sockets.raw_buffer.v3.RawBuffer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions/transport_sockets/starttls/v3/starttls.proto.html">StartTls</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/starttls/v3/starttls.proto.html#extensions-transport-sockets-starttls-v3-starttlsconfig">extensions.transport_sockets.starttls.v3.StartTlsConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/starttls/v3/starttls.proto.html#extensions-transport-sockets-starttls-v3-upstreamstarttlsconfig">extensions.transport_sockets.starttls.v3.UpstreamStartTlsConfig</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions/transport_sockets/tap/v3/tap.proto.html">Tap</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/tap/v3/tap.proto.html#extensions-transport-sockets-tap-v3-tap">extensions.transport_sockets.tap.v3.Tap</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/cert.proto.html">envoy/extensions/transport_sockets/tls/v3/cert.proto</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/common.proto.html">Common TLS configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/common.proto.html#extensions-transport-sockets-tls-v3-tlsparameters">extensions.transport_sockets.tls.v3.TlsParameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/common.proto.html#enum-extensions-transport-sockets-tls-v3-tlsparameters-tlsprotocol">Enum extensions.transport_sockets.tls.v3.TlsParameters.TlsProtocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/common.proto.html#extensions-transport-sockets-tls-v3-privatekeyprovider">extensions.transport_sockets.tls.v3.PrivateKeyProvider</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/common.proto.html#extensions-transport-sockets-tls-v3-tlscertificate">extensions.transport_sockets.tls.v3.TlsCertificate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/common.proto.html#extensions-transport-sockets-tls-v3-tlssessionticketkeys">extensions.transport_sockets.tls.v3.TlsSessionTicketKeys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/common.proto.html#extensions-transport-sockets-tls-v3-certificatevalidationcontext">extensions.transport_sockets.tls.v3.CertificateValidationContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/common.proto.html#enum-extensions-transport-sockets-tls-v3-certificatevalidationcontext-trustchainverification">Enum extensions.transport_sockets.tls.v3.CertificateValidationContext.TrustChainVerification</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/secret.proto.html">Secrets configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/secret.proto.html#extensions-transport-sockets-tls-v3-genericsecret">extensions.transport_sockets.tls.v3.GenericSecret</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/secret.proto.html#extensions-transport-sockets-tls-v3-sdssecretconfig">extensions.transport_sockets.tls.v3.SdsSecretConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/secret.proto.html#extensions-transport-sockets-tls-v3-secret">extensions.transport_sockets.tls.v3.Secret</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/tls.proto.html">TLS transport socket</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/tls.proto.html#extensions-transport-sockets-tls-v3-upstreamtlscontext">extensions.transport_sockets.tls.v3.UpstreamTlsContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/tls.proto.html#extensions-transport-sockets-tls-v3-downstreamtlscontext">extensions.transport_sockets.tls.v3.DownstreamTlsContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/tls.proto.html#enum-extensions-transport-sockets-tls-v3-downstreamtlscontext-ocspstaplepolicy">Enum extensions.transport_sockets.tls.v3.DownstreamTlsContext.OcspStaplePolicy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/tls.proto.html#extensions-transport-sockets-tls-v3-commontlscontext">extensions.transport_sockets.tls.v3.CommonTlsContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/tls.proto.html#extensions-transport-sockets-tls-v3-commontlscontext-certificateprovider">extensions.transport_sockets.tls.v3.CommonTlsContext.CertificateProvider</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/tls.proto.html#extensions-transport-sockets-tls-v3-commontlscontext-certificateproviderinstance">extensions.transport_sockets.tls.v3.CommonTlsContext.CertificateProviderInstance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/tls.proto.html#extensions-transport-sockets-tls-v3-commontlscontext-combinedcertificatevalidationcontext">extensions.transport_sockets.tls.v3.CommonTlsContext.CombinedCertificateValidationContext</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/tls_spiffe_validator_config.proto.html">SPIFFE Certificate Validator</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/tls_spiffe_validator_config.proto.html#extensions-transport-sockets-tls-v3-spiffecertvalidatorconfig">extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../extensions/transport_sockets/tls/v3/tls_spiffe_validator_config.proto.html#extensions-transport-sockets-tls-v3-spiffecertvalidatorconfig-trustdomain">extensions.transport_sockets.tls.v3.SPIFFECertValidatorConfig.TrustDomain</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="../../extensions/transport_sockets/alts/v3/alts.proto.html" class="btn btn-neutral float-right" title="ALTS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../../extensions/health_checkers/redis/v3/redis.proto.html" class="btn btn-neutral float-left" title="Redis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2016-2022, Envoy Project Authors.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
