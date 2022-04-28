@@ -3,7 +3,8 @@ load("@rules_pkg//:pkg.bzl", "pkg_tar")
 genrule(
     name = "website",
     cmd = """
-    mkdir -p assets/js \
+    cp -a $(location //_data:versions) _data/ \
+    && mkdir -p assets/js \
     && mkdir -p _sass/vendor \
     && mv $(location @com_github_twbs_bootstrap//:scss) _sass/vendor/bootstrap \
     && mv $(location @com_github_twbs_bootstrap//:dist/js/bootstrap.bundle.min.js) assets/js \
@@ -14,9 +15,10 @@ genrule(
     tools = [
         "@com_github_twbs_bootstrap//:scss",
         "@com_github_twbs_bootstrap//:dist/js/bootstrap.bundle.min.js",
+        "@jekyll_bundle//:bin/jekyll",
         "//:jekyll_assets",
         "//:website_assets",
-        "@jekyll_bundle//:bin/jekyll",
+        "//_data:versions",
     ],
 )
 
@@ -34,6 +36,7 @@ py_binary(
         "@jekyll_bundle//:bin/jekyll",
         "//:jekyll_assets",
         "//:website_assets",
+        "//_data:versions",
         ":_plugins",
     ],
 )
@@ -47,6 +50,7 @@ py_binary(
         "@jekyll_bundle//:bin/jekyll",
         "//:jekyll_assets",
         "//:website_assets",
+        "//_data:versions",
         "//docs:latest",
         "//docs:releases_html",
         ":_plugins",

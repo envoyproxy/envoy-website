@@ -127,7 +127,6 @@ Item | Path
 :----|:----
 Home page content | [`_data/home.yml`](./_data/home.yml)
 Nav links on the main page | [`_data/nav.yml`](./_data/nav.yml)
-Documentation versions | [`_data/versions.yaml`](./_data/versions.yml)
 Documentation (auto-generated) | [`docs`](./docs)
 
 ### Creating New Pages

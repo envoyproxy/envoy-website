@@ -2,11 +2,10 @@
 filegroup(
     name = "jekyll_assets",
     srcs = glob([
-        "_data/*",
         "_includes/*",
         "_layouts/**/*",
         "_sass/**/*",
-    ]) + [":_config.yml"],
+    ]) + [":_config.yml", "//_data:assets"],
     visibility = ["//visibility:public"],
 )
 
