@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Status Discovery Service (CSDS) &mdash; envoy tag-v1.20.4 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="Tap Sink Service" href="../../tap/v3/tap.proto.html" />
+    <link rel="prev" title="Runtime Discovery Service (RTDS)" href="../../runtime/v3/rtds.proto.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html">
+            <img src="../../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                tag-v1.20.4
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../api/api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/api_supported_versions.html">Supported API versions</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../../api.html">v3 API reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../bootstrap/bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../clusters/clusters.html">Clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../http_routes/http_routes.html">HTTP route management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../config/config.html">Extensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../admin/admin.html">Admin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/data.html">Envoy data</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../service.html">Services</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../accesslog/v3/als.proto.html">gRPC Access Log Service (ALS)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../load_stats/v3/lrs.proto.html">Load Reporting service (LRS)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auth/v3/attribute_context.proto.html">Attribute Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auth/v3/external_auth.proto.html">Authorization Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../health/v3/hds.proto.html">Health Discovery Service (HDS)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../metrics/v3/metrics_service.proto.html">Metrics service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../ratelimit/v3/rls.proto.html">Rate Limit Service (RLS)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../runtime/v3/rtds.proto.html">Runtime Discovery Service (RTDS)</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Client Status Discovery Service (CSDS)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../tap/v3/tap.proto.html">Tap Sink Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../config/tap/v3/common.proto.html">Common tap configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../trace/v3/trace_service.proto.html">Trace service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../extension/v3/config_discovery.proto.html">Extension Config Discovery Service (ECDS)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../ext_proc/v3/external_processor.proto.html">External Processing Service</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../common_messages/common_messages.html">Common messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../types/types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api-docs/xds_protocol.html">xDS REST and gRPC protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/client_features.html">Well Known Client Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../api/api.html">API</a> &raquo;</li>
+          <li><a href="../../../api.html">v3 API reference</a> &raquo;</li>
+          <li><a href="../../service.html">Services</a> &raquo;</li>
+      <li>Client Status Discovery Service (CSDS)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api-v3/service/status/v3/csds.proto.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="client-status-discovery-service-csds">
+<span id="envoy-v3-api-file-envoy-service-status-v3-csds-proto"></span><h1>Client Status Discovery Service (CSDS)<a class="headerlink" href="#client-status-discovery-service-csds" title="Permalink to this headline">¶</a></h1>
+<p>This documentation is for the Envoy v3 API.</p>
+<p>As of Envoy v1.18 the v2 API has been removed and is no longer supported.</p>
+<p>If you are upgrading from v2 API config you may wish to view the v2 API documentation:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://www.envoyproxy.io/docs/envoy/v1.17.2/api-v2/service/status/v2/csds.proto.html#envoy-api-file-envoy-service-status-v2-csds-proto" title="(in envoy vtag-v1.17.2)"><span class="xref std std-ref">service/status/v2/csds.proto</span></a></p>
+</div></blockquote>
+<div class="section" id="service-status-v3-clientstatusrequest">
+<span id="envoy-v3-api-msg-service-status-v3-clientstatusrequest"></span><h2>service.status.v3.ClientStatusRequest<a class="headerlink" href="#service-status-v3-clientstatusrequest" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.4/api/envoy/service/status/v3/csds.proto#L77">[service.status.v3.ClientStatusRequest proto]</a></p>
+<p>Request for client status of clients identified by a list of NodeMatchers.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;node_matchers&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;node&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-service-status-v3-clientstatusrequest-node-matchers">
+<dt>node_matchers</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="../../../type/matcher/v3/node.proto.html#envoy-v3-api-msg-type-matcher-v3-nodematcher"><span class="std std-ref">type.matcher.v3.NodeMatcher</span></a>) Management server can use these match criteria to identify clients.
+The match follows OR semantics.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-status-v3-clientstatusrequest-node">
+<dt>node</dt><dd><p>(<a class="reference internal" href="../../../config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-node"><span class="std std-ref">config.core.v3.Node</span></a>) The node making the csds request.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="service-status-v3-perxdsconfig">
+<span id="envoy-v3-api-msg-service-status-v3-perxdsconfig"></span><h2>service.status.v3.PerXdsConfig<a class="headerlink" href="#service-status-v3-perxdsconfig" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.4/api/envoy/service/status/v3/csds.proto#L91">[service.status.v3.PerXdsConfig proto]</a></p>
+<p>Detailed config (per xDS) with status.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;client_status&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;listener_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;cluster_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;route_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;scoped_route_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;endpoint_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-service-status-v3-perxdsconfig-status">
+<dt>status</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-enum-service-status-v3-configstatus"><span class="std std-ref">service.status.v3.ConfigStatus</span></a>) Config status generated by management servers. Will not be present if the
+CSDS server is an xDS client.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-service-status-v3-perxdsconfig-client-status">
+<dt>client_status</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-enum-service-status-v3-clientconfigstatus"><span class="std std-ref">service.status.v3.ClientConfigStatus</span></a>) Client config status is populated by xDS clients. Will not be present if
+the CSDS server is an xDS server. No matter what the client config status
+is, xDS clients should always dump the most recent accepted xDS config.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>This field is deprecated. Use <a class="reference internal" href="../../../admin/v3/config_dump.proto.html#envoy-v3-api-enum-admin-v3-clientresourcestatus"><span class="std std-ref">ClientResourceStatus</span></a> for per-resource
+config status instead.</p>
+</div>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-service-status-v3-perxdsconfig-listener-config">
+<dt>listener_config</dt><dd><p>(<a class="reference internal" href="../../../admin/v3/config_dump.proto.html#envoy-v3-api-msg-admin-v3-listenersconfigdump"><span class="std std-ref">admin.v3.ListenersConfigDump</span></a>)</p>
+<p>Only one of <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-listener-config"><span class="std std-ref">listener_config</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-cluster-config"><span class="std std-ref">cluster_config</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-route-config"><span class="std std-ref">route_config</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-scoped-route-config"><span class="std std-ref">scoped_route_config</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-endpoint-config"><span class="std std-ref">endpoint_config</span></a> may be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-service-status-v3-perxdsconfig-cluster-config">
+<dt>cluster_config</dt><dd><p>(<a class="reference internal" href="../../../admin/v3/config_dump.proto.html#envoy-v3-api-msg-admin-v3-clustersconfigdump"><span class="std std-ref">admin.v3.ClustersConfigDump</span></a>)</p>
+<p>Only one of <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-listener-config"><span class="std std-ref">listener_config</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-cluster-config"><span class="std std-ref">cluster_config</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-route-config"><span class="std std-ref">route_config</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-scoped-route-config"><span class="std std-ref">scoped_route_config</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-endpoint-config"><span class="std std-ref">endpoint_config</span></a> may be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-service-status-v3-perxdsconfig-route-config">
+<dt>route_config</dt><dd><p>(<a class="reference internal" href="../../../admin/v3/config_dump.proto.html#envoy-v3-api-msg-admin-v3-routesconfigdump"><span class="std std-ref">admin.v3.RoutesConfigDump</span></a>)</p>
+<p>Only one of <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-listener-config"><span class="std std-ref">listener_config</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-cluster-config"><span class="std std-ref">cluster_config</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-route-config"><span class="std std-ref">route_config</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-scoped-route-config"><span class="std std-ref">scoped_route_config</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-endpoint-config"><span class="std std-ref">endpoint_config</span></a> may be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-service-status-v3-perxdsconfig-scoped-route-config">
+<dt>scoped_route_config</dt><dd><p>(<a class="reference internal" href="../../../admin/v3/config_dump.proto.html#envoy-v3-api-msg-admin-v3-scopedroutesconfigdump"><span class="std std-ref">admin.v3.ScopedRoutesConfigDump</span></a>)</p>
+<p>Only one of <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-listener-config"><span class="std std-ref">listener_config</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-cluster-config"><span class="std std-ref">cluster_config</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-route-config"><span class="std std-ref">route_config</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-scoped-route-config"><span class="std std-ref">scoped_route_config</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-endpoint-config"><span class="std std-ref">endpoint_config</span></a> may be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-service-status-v3-perxdsconfig-endpoint-config">
+<dt>endpoint_config</dt><dd><p>(<a class="reference internal" href="../../../admin/v3/config_dump.proto.html#envoy-v3-api-msg-admin-v3-endpointsconfigdump"><span class="std std-ref">admin.v3.EndpointsConfigDump</span></a>)</p>
+<p>Only one of <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-listener-config"><span class="std std-ref">listener_config</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-cluster-config"><span class="std std-ref">cluster_config</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-route-config"><span class="std std-ref">route_config</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-scoped-route-config"><span class="std std-ref">scoped_route_config</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-status-v3-perxdsconfig-endpoint-config"><span class="std std-ref">endpoint_config</span></a> may be set.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="service-status-v3-clientconfig">
+<span id="envoy-v3-api-msg-service-status-v3-clientconfig"></span><h2>service.status.v3.ClientConfig<a class="headerlink" href="#service-status-v3-clientconfig" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.4/api/envoy/service/status/v3/csds.proto#L124">[service.status.v3.ClientConfig proto]</a></p>
+<p>All xds configs for a particular client.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;node&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;xds_config&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;generic_xds_configs&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-service-status-v3-clientconfig-node">
+<dt>node</dt><dd><p>(<a class="reference internal" href="../../../config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-node"><span class="std std-ref">config.core.v3.Node</span></a>) Node for a particular client.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-status-v3-clientconfig-xds-config">
+<dt>xds_config</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="#envoy-v3-api-msg-service-status-v3-perxdsconfig"><span class="std std-ref">service.status.v3.PerXdsConfig</span></a>) This field is deprecated in favor of generic_xds_configs which is
+much simpler and uniform in structure.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-status-v3-clientconfig-generic-xds-configs">
+<dt>generic_xds_configs</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="#envoy-v3-api-msg-service-status-v3-clientconfig-genericxdsconfig"><span class="std std-ref">service.status.v3.ClientConfig.GenericXdsConfig</span></a>) Represents generic xDS config and the exact config structure depends on
+the type URL (like Cluster if it is CDS)</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="service-status-v3-clientconfig-genericxdsconfig">
+<span id="envoy-v3-api-msg-service-status-v3-clientconfig-genericxdsconfig"></span><h2>service.status.v3.ClientConfig.GenericXdsConfig<a class="headerlink" href="#service-status-v3-clientconfig-genericxdsconfig" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.4/api/envoy/service/status/v3/csds.proto#L132">[service.status.v3.ClientConfig.GenericXdsConfig proto]</a></p>
+<p>GenericXdsConfig is used to specify the config status and the dump
+of any xDS resource identified by their type URL. It is the generalized
+version of the now deprecated ListenersConfigDump, ClustersConfigDump etc</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;type_url&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;version_info&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;xds_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;last_updated&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;config_status&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;client_status&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;is_static_resource&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-service-status-v3-clientconfig-genericxdsconfig-type-url">
+<dt>type_url</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Type_url represents the fully qualified name of xDS resource type
+like envoy.v3.Cluster, envoy.v3.ClusterLoadAssignment etc.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-status-v3-clientconfig-genericxdsconfig-name">
+<dt>name</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Name of the xDS resource</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-status-v3-clientconfig-genericxdsconfig-version-info">
+<dt>version_info</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) This is the <a class="reference internal" href="../../discovery/v3/discovery.proto.html#envoy-v3-api-field-service-discovery-v3-discoveryresponse-version-info"><span class="std std-ref">version_info</span></a>
+in the last processed xDS discovery response. If there are only
+static bootstrap listeners, this field will be “”</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-status-v3-clientconfig-genericxdsconfig-xds-config">
+<dt>xds_config</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any">Any</a>) The xDS resource config. Actual content depends on the type</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-status-v3-clientconfig-genericxdsconfig-last-updated">
+<dt>last_updated</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#timestamp">Timestamp</a>) Timestamp when the xDS resource was last updated</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-status-v3-clientconfig-genericxdsconfig-config-status">
+<dt>config_status</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-enum-service-status-v3-configstatus"><span class="std std-ref">service.status.v3.ConfigStatus</span></a>) Per xDS resource config status. It is generated by management servers.
+It will not be present if the CSDS server is an xDS client.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-status-v3-clientconfig-genericxdsconfig-client-status">
+<dt>client_status</dt><dd><p>(<a class="reference internal" href="../../../admin/v3/config_dump.proto.html#envoy-v3-api-enum-admin-v3-clientresourcestatus"><span class="std std-ref">admin.v3.ClientResourceStatus</span></a>) Per xDS resource status from the view of a xDS client</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-status-v3-clientconfig-genericxdsconfig-is-static-resource">
+<dt>is_static_resource</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Is static resource is true if it is specified in the config supplied
+through the file at the startup.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="service-status-v3-clientstatusresponse">
+<span id="envoy-v3-api-msg-service-status-v3-clientstatusresponse"></span><h2>service.status.v3.ClientStatusResponse<a class="headerlink" href="#service-status-v3-clientstatusresponse" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.4/api/envoy/service/status/v3/csds.proto#L184">[service.status.v3.ClientStatusResponse proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-service-status-v3-clientstatusresponse-config">
+<dt>config</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="#envoy-v3-api-msg-service-status-v3-clientconfig"><span class="std std-ref">service.status.v3.ClientConfig</span></a>) Client configs for the clients specified in the ClientStatusRequest.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="enum-service-status-v3-configstatus">
+<span id="envoy-v3-api-enum-service-status-v3-configstatus"></span><h2>Enum service.status.v3.ConfigStatus<a class="headerlink" href="#enum-service-status-v3-configstatus" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.4/api/envoy/service/status/v3/csds.proto#L38">[service.status.v3.ConfigStatus proto]</a></p>
+<p>Status of a config from a management server view.</p>
+<dl class="simple" id="envoy-v3-api-enum-value-service-status-v3-configstatus-unknown">
+<dt>UNKNOWN</dt><dd><p><em>(DEFAULT)</em> ⁣Status info is not available/unknown.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-enum-value-service-status-v3-configstatus-synced">
+<dt>SYNCED</dt><dd><p>⁣Management server has sent the config to client and received ACK.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-enum-value-service-status-v3-configstatus-not-sent">
+<dt>NOT_SENT</dt><dd><p>⁣Config is not sent.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-enum-value-service-status-v3-configstatus-stale">
+<dt>STALE</dt><dd><p>⁣Management server has sent the config to client but hasn’t received
+ACK/NACK.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-enum-value-service-status-v3-configstatus-error">
+<dt>ERROR</dt><dd><p>⁣Management server has sent the config to client but received NACK. The
+attached config dump will be the latest config (the rejected one), since
+it is the persisted version in the management server.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="enum-service-status-v3-clientconfigstatus">
+<span id="envoy-v3-api-enum-service-status-v3-clientconfigstatus"></span><h2>Enum service.status.v3.ClientConfigStatus<a class="headerlink" href="#enum-service-status-v3-clientconfigstatus" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.4/api/envoy/service/status/v3/csds.proto#L59">[service.status.v3.ClientConfigStatus proto]</a></p>
+<p>Config status from a client-side view.</p>
+<dl class="simple" id="envoy-v3-api-enum-value-service-status-v3-clientconfigstatus-client-unknown">
+<dt>CLIENT_UNKNOWN</dt><dd><p><em>(DEFAULT)</em> ⁣Config status is not available/unknown.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-enum-value-service-status-v3-clientconfigstatus-client-requested">
+<dt>CLIENT_REQUESTED</dt><dd><p>⁣Client requested the config but hasn’t received any config from management
+server yet.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-enum-value-service-status-v3-clientconfigstatus-client-acked">
+<dt>CLIENT_ACKED</dt><dd><p>⁣Client received the config and replied with ACK.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-enum-value-service-status-v3-clientconfigstatus-client-nacked">
+<dt>CLIENT_NACKED</dt><dd><p>⁣Client received the config and replied with NACK. Notably, the attached
+config dump is not the NACKed version, but the most recent accepted one. If
+no config is accepted yet, the attached config dump will be empty.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../../runtime/v3/rtds.proto.html" class="btn btn-neutral float-left" title="Runtime Discovery Service (RTDS)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../tap/v3/tap.proto.html" class="btn btn-neutral float-right" title="Tap Sink Service" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
