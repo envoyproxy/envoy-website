@@ -1,0 +1,119 @@
+.. _envoy_v3_api_file_envoy/config/listener/v3/quic_config.proto:
+
+QUIC listener config
+====================
+
+
+This documentation is for the Envoy v3 API.
+
+As of Envoy v1.18 the v2 API has been removed and is no longer supported.
+
+If you are upgrading from v2 API config you may wish to view the v2 API documentation:
+
+    :ref:`api/v2/listener/quic_config.proto <v1.17:envoy_api_file_envoy/api/v2/listener/quic_config.proto>`
+
+
+
+.. _envoy_v3_api_msg_config.listener.v3.QuicProtocolOptions:
+
+config.listener.v3.QuicProtocolOptions
+--------------------------------------
+
+:repo:`[config.listener.v3.QuicProtocolOptions proto] <api/envoy/config/listener/v3/quic_config.proto#L25>`
+
+Configuration specific to the UDP QUIC listener.
+
+.. code-block:: json
+
+  {
+    "quic_protocol_options": "{...}",
+    "idle_timeout": "{...}",
+    "crypto_handshake_timeout": "{...}",
+    "enabled": "{...}",
+    "packets_to_read_to_connection_count_ratio": "{...}",
+    "crypto_stream_config": "{...}",
+    "proof_source_config": "{...}"
+  }
+
+.. _envoy_v3_api_field_config.listener.v3.QuicProtocolOptions.quic_protocol_options:
+
+quic_protocol_options
+  (:ref:`config.core.v3.QuicProtocolOptions <envoy_v3_api_msg_config.core.v3.QuicProtocolOptions>`) 
+  
+.. _envoy_v3_api_field_config.listener.v3.QuicProtocolOptions.idle_timeout:
+
+idle_timeout
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) Maximum number of milliseconds that connection will be alive when there is
+  no network activity.
+  
+  If it is less than 1ms, Envoy will use 1ms. 300000ms if not specified.
+  
+  
+.. _envoy_v3_api_field_config.listener.v3.QuicProtocolOptions.crypto_handshake_timeout:
+
+crypto_handshake_timeout
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) Connection timeout in milliseconds before the crypto handshake is finished.
+  
+  If it is less than 5000ms, Envoy will use 5000ms. 20000ms if not specified.
+  
+  
+.. _envoy_v3_api_field_config.listener.v3.QuicProtocolOptions.enabled:
+
+enabled
+  (:ref:`config.core.v3.RuntimeFeatureFlag <envoy_v3_api_msg_config.core.v3.RuntimeFeatureFlag>`) Runtime flag that controls whether the listener is enabled or not. If not specified, defaults
+  to enabled.
+  
+  
+.. _envoy_v3_api_field_config.listener.v3.QuicProtocolOptions.packets_to_read_to_connection_count_ratio:
+
+packets_to_read_to_connection_count_ratio
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) A multiplier to number of connections which is used to determine how many packets to read per
+  event loop. A reasonable number should allow the listener to process enough payload but not
+  starve TCP and other UDP sockets and also prevent long event loop duration.
+  The default value is 32. This means if there are N QUIC connections, the total number of
+  packets to read in each read event will be 32 * N.
+  The actual number of packets to read in total by the UDP listener is also
+  bound by 6000, regardless of this field or how many connections there are.
+  
+  
+.. _envoy_v3_api_field_config.listener.v3.QuicProtocolOptions.crypto_stream_config:
+
+crypto_stream_config
+  (:ref:`config.core.v3.TypedExtensionConfig <envoy_v3_api_msg_config.core.v3.TypedExtensionConfig>`) Configure which implementation of `quic::QuicCryptoClientStreamBase` to be used for this listener.
+  If not specified the :ref:`QUICHE default one configured by <envoy_v3_api_msg_extensions.quic.crypto_stream.v3.CryptoServerStreamConfig>` will be used.
+  
+  
+  .. _extension_category_envoy.quic.server.crypto_stream:
+  
+  .. tip::
+  
+    This extension category has the following known extensions:
+  
+  
+    - :ref:`envoy.quic.crypto_stream.server.quiche <extension_envoy.quic.crypto_stream.server.quiche>`
+  
+  
+  
+  
+  
+.. _envoy_v3_api_field_config.listener.v3.QuicProtocolOptions.proof_source_config:
+
+proof_source_config
+  (:ref:`config.core.v3.TypedExtensionConfig <envoy_v3_api_msg_config.core.v3.TypedExtensionConfig>`) Configure which implementation of `quic::ProofSource` to be used for this listener.
+  If not specified the :ref:`default one configured by <envoy_v3_api_msg_extensions.quic.proof_source.v3.ProofSourceConfig>` will be used.
+  
+  
+  .. _extension_category_envoy.quic.proof_source:
+  
+  .. tip::
+  
+    This extension category has the following known extensions:
+  
+  
+    - :ref:`envoy.quic.proof_source.filter_chain <extension_envoy.quic.proof_source.filter_chain>`
+  
+  
+  
+  
+  
+

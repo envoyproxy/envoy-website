@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HTTP/1.1 Header Casing &mdash; envoy tag-v1.21.3 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="HTTP header manipulation" href="headers.html" />
+    <link rel="prev" title="Traffic Shifting/Splitting" href="traffic_splitting.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html">
+            <img src="../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                tag-v1.21.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../configuration.html">Configuration reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../overview/overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../http.html">HTTP</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="http_conn_man.html">HTTP connection manager</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="route_matching.html">Route matching</a></li>
+<li class="toctree-l4"><a class="reference internal" href="traffic_splitting.html">Traffic Shifting/Splitting</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">HTTP/1.1 Header Casing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="headers.html">HTTP header manipulation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="header_sanitizing.html">HTTP header sanitizing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="local_reply.html">Local reply modification</a></li>
+<li class="toctree-l4"><a class="reference internal" href="response_code_details.html">Response Code Details</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stats.html">Statistics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html">Runtime</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rds.html">Route discovery service (RDS)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vhds.html">Virtual Host Discovery Service (VHDS)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../http_filters/http_filters.html">HTTP filters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../upstream/upstream.html">Upstream clusters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../observability/observability.html">Observability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../security/security.html">Security</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../operations/operations.html">Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../other_features/other_features.html">Other features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/advanced.html">Advanced</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../best_practices/best_practices.html">Configuration best practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../configuration.html">Configuration reference</a> &raquo;</li>
+          <li><a href="../http.html">HTTP</a> &raquo;</li>
+          <li><a href="http_conn_man.html">HTTP connection manager</a> &raquo;</li>
+      <li>HTTP/1.1 Header Casing</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/configuration/http/http_conn_man/header_casing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="http-1-1-header-casing">
+<span id="config-http-conn-man-header-casing"></span><h1>HTTP/1.1 Header Casing<a class="headerlink" href="#http-1-1-header-casing" title="Permalink to this headline">¶</a></h1>
+<p>When handling HTTP/1.1, Envoy will normalize the header keys to be all lowercase. While this is
+compliant with the HTTP/1.1 spec, in practice this can result in issues when migrating
+existing systems that might rely on specific header casing.</p>
+<p>To support these use cases, Envoy allows <a class="reference internal" href="../../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-http1protocoloptions-header-key-format"><span class="std std-ref">configuring a formatting scheme for the headers</span></a>, which will have Envoy
+transform the header keys during serialization.</p>
+<p>To configure this formatting on response headers, specify the format in the
+<a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-http-protocol-options"><span class="std std-ref">http_protocol_options</span></a>.
+To configure this for upstream request headers, specify the formatting in
+<a class="reference internal" href="../../../api-v3/extensions/upstreams/http/v3/http_protocol_options.proto.html#envoy-v3-api-msg-extensions-upstreams-http-v3-httpprotocoloptions"><span class="std std-ref">http_protocol_options</span></a> in
+the cluster’s
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-typed-extension-protocol-options"><span class="std std-ref">extension_protocol_options</span></a>.</p>
+<p>Currently Envoy supports two mutually exclusive types of header key formatters:</p>
+<div class="section" id="stateless-formatters">
+<h2>Stateless formatters<a class="headerlink" href="#stateless-formatters" title="Permalink to this headline">¶</a></h2>
+<p>Stateless formatters are run on encoding and do not depend on any previous knowledge of the headers.
+An example of this type of formatter is the <a class="reference internal" href="../../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-http1protocoloptions-headerkeyformat-proper-case-words"><span class="std std-ref">proper case words</span></a>
+formatter. These formatters are useful when converting from non-HTTP/1 to HTTP/1 (within a single
+proxy or across multiple hops) or when stateful formatting is not desired due to increased memory
+requirements.</p>
+</div>
+<div class="section" id="stateful-formatters">
+<h2>Stateful formatters<a class="headerlink" href="#stateful-formatters" title="Permalink to this headline">¶</a></h2>
+<p>Stateful formatters are instantiated on decoding, called for every decoded header, attached to the
+header map, and are then available during encoding to format the headers prior to writing. Thus, they
+traverse the entire proxy stack. An example of this type of formatter is the <a class="reference internal" href="../../../api-v3/extensions/http/header_formatters/preserve_case/v3/preserve_case.proto.html#envoy-v3-api-msg-extensions-http-header-formatters-preserve-case-v3-preservecaseformatterconfig"><span class="std std-ref">preserve case
+formatter</span></a>
+configured via the <a class="reference internal" href="../../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-http1protocoloptions-headerkeyformat-stateful-formatter"><span class="std std-ref">stateful_formatter</span></a> field.
+The following is an example configuration which will preserve HTTP/1 header case across the proxy.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">static_resources</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">listeners</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">address</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">socket_address</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0.0.0</span><span class="w"></span>
+<span class="w">        </span><span class="nt">port_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">443</span><span class="w"></span>
+<span class="w">    </span><span class="nt">filter_chains</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">filters</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">envoy.filters.network.http_connection_manager</span><span class="w"></span>
+<span class="w">        </span><span class="nt">typed_config</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager</span><span class="w"></span>
+<span class="w">          </span><span class="nt">stat_prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingress_http</span><span class="w"></span>
+<span class="w">          </span><span class="nt">http_protocol_options</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">header_key_format</span><span class="p">:</span><span class="w"></span>
+<span class="w">              </span><span class="nt">stateful_formatter</span><span class="p">:</span><span class="w"></span>
+<span class="w">                </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">preserve_case</span><span class="w"></span>
+<span class="w">                </span><span class="nt">typed_config</span><span class="p">:</span><span class="w"></span>
+<span class="w">                  </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.http.header_formatters.preserve_case.v3.PreserveCaseFormatterConfig</span><span class="w"></span>
+<span class="w">          </span><span class="nt">http_filters</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.router</span><span class="w"></span>
+<span class="w">          </span><span class="nt">route_config</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">virtual_hosts</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span><span class="w"></span>
+<span class="w">              </span><span class="nt">domains</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;*&quot;</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w">              </span><span class="nt">routes</span><span class="p">:</span><span class="w"></span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">match</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/&quot;</span><span class="p p-Indicator">}</span><span class="w"></span>
+<span class="w">                </span><span class="nt">route</span><span class="p">:</span><span class="w"></span>
+<span class="w">                  </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service_foo</span><span class="w"></span>
+<span class="w">  </span><span class="nt">clusters</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service_foo</span><span class="w"></span>
+<span class="w">    </span><span class="nt">typed_extension_protocol_options</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">envoy.extensions.upstreams.http.v3.HttpProtocolOptions</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions</span><span class="w"></span>
+<span class="w">        </span><span class="nt">explicit_http_config</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">http_protocol_options</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">header_key_format</span><span class="p">:</span><span class="w"></span>
+<span class="w">              </span><span class="nt">stateful_formatter</span><span class="p">:</span><span class="w"></span>
+<span class="w">                </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">preserve_case</span><span class="w"></span>
+<span class="w">                </span><span class="nt">typed_config</span><span class="p">:</span><span class="w"></span>
+<span class="w">                  </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.http.header_formatters.preserve_case.v3.PreserveCaseFormatterConfig</span><span class="w"></span>
+<span class="w">    </span><span class="nt">load_assignment</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">cluster_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">some_service</span><span class="w"></span>
+<span class="w">      </span><span class="nt">endpoints</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">lb_endpoints</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">endpoint</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">address</span><span class="p">:</span><span class="w"></span>
+<span class="w">              </span><span class="nt">socket_address</span><span class="p">:</span><span class="w"></span>
+<span class="w">                </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span><span class="w"></span>
+<span class="w">                </span><span class="nt">port_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8080</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="traffic_splitting.html" class="btn btn-neutral float-left" title="Traffic Shifting/Splitting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="headers.html" class="btn btn-neutral float-right" title="HTTP header manipulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
