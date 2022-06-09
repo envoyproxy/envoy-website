@@ -1,0 +1,488 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Load Balancer Subsets &mdash; envoy tag-v1.19.5 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="Aggregate Cluster" href="../aggregate_cluster.html" />
+    <link rel="prev" title="Zone aware routing" href="zone_aware.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html">
+          
+
+          
+            
+            <img src="../../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                tag-v1.19.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../intro.html">Introduction</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../what_is_envoy.html">What is Envoy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../arch_overview.html">Architecture overview</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../listeners/listeners_toc.html">Listeners</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../http/http.html">HTTP</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../upstream.html">Upstream clusters</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../cluster_manager.html">Cluster manager</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../service_discovery.html">Service discovery</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../dns_resolution.html">DNS Resolution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../health_checking.html">Health checking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../connection_pooling.html">Connection pooling</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="load_balancing.html">Load Balancing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../aggregate_cluster.html">Aggregate Cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../outlier.html">Outlier detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../circuit_breaking.html">Circuit breaking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../upstream_filters.html">Upstream network filters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../load_reporting_service.html">Load Reporting Service (LRS)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../observability/observability.html">Observability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../security/security.html">Security</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../operations/operations.html">Operations &amp; configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../other_features/other_features.html">Other features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../advanced/advanced.html">Advanced</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../life_of_a_request.html">Life of a Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deployment_types/deployment_types.html">Deployment types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../getting_help.html">Getting help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../intro.html">Introduction</a> &raquo;</li>
+        
+          <li><a href="../../arch_overview.html">Architecture overview</a> &raquo;</li>
+        
+          <li><a href="../upstream.html">Upstream clusters</a> &raquo;</li>
+        
+          <li><a href="load_balancing.html">Load Balancing</a> &raquo;</li>
+        
+      <li>Load Balancer Subsets</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../../../_sources/intro/arch_overview/upstream/load_balancing/subsets.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="load-balancer-subsets">
+<span id="arch-overview-load-balancer-subsets"></span><h1>Load Balancer Subsets<a class="headerlink" href="#load-balancer-subsets" title="Permalink to this headline">¶</a></h1>
+<p>Envoy may be configured to divide hosts within an upstream cluster into subsets based on metadata
+attached to the hosts. Routes may then specify the metadata that a host must match in order to be
+selected by the load balancer, with the option of falling back to a predefined set of hosts,
+including any host.</p>
+<p>Subsets use the load balancer policy specified by the cluster. The original destination policy may
+not be used with subsets because the upstream hosts are not known in advance. Subsets are compatible
+with zone aware routing, but be aware that the use of subsets may easily violate the minimum hosts
+condition described above.</p>
+<p>If subsets are <a class="reference internal" href="../../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-lb-subset-config"><span class="std std-ref">configured</span></a> and a route
+specifies no metadata or no subset matching the metadata exists, the subset load balancer initiates
+its fallback policy. The default policy is <code class="docutils literal notranslate"><span class="pre">NO_FALLBACK</span></code>, in which case the request fails as if
+the cluster had no hosts. Conversely, the <code class="docutils literal notranslate"><span class="pre">ANY_ENDPOINT</span></code> fallback policy load balances across all
+hosts in the cluster, without regard to host metadata. Finally, the <code class="docutils literal notranslate"><span class="pre">DEFAULT_SUBSET</span></code> causes
+fallback to load balance among hosts that match a specific set of metadata. It is possible to
+override fallback policy for specific subset selector.</p>
+<p>Subsets must be predefined to allow the subset load balancer to efficiently select the correct
+subset of hosts. Each definition is a set of keys, which translates to zero or more
+subsets. Conceptually, each host that has a metadata value for all of the keys in a definition is
+added to a subset specific to its key-value pairs. If no host has all the keys, no subsets result
+from the definition. Multiple definitions may be provided, and a single host may appear in multiple
+subsets if it matches multiple definitions.</p>
+<p>During routing, the route’s metadata match configuration is used to find a specific subset. If there
+is a subset with the exact keys and values specified by the route, the subset is used for load
+balancing. Otherwise, the fallback policy is used. The cluster’s subset configuration must,
+therefore, contain a definition that has the same keys as a given route in order for subset load
+balancing to occur.</p>
+<p>Subsets can be configured with only a single host in each subset, which can be used in use cases
+similar to <a class="reference internal" href="load_balancers.html#arch-overview-load-balancing-types-maglev"><span class="std std-ref">Maglev</span></a> or
+<a class="reference internal" href="load_balancers.html#arch-overview-load-balancing-types-ring-hash"><span class="std std-ref">ring hash</span></a>, such as load balancing based on a cookie,
+but when it is important to select the same host even after new hosts are added to the cluster. Endpoint
+configuration changes may use less CPU if <a class="reference internal" href="../../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-lbsubsetconfig-lbsubsetselector-single-host-per-subset"><span class="std std-ref">single_host_per_subset</span></a>
+is enabled.</p>
+<p>Host metadata is only supported when hosts are defined using
+<a class="reference internal" href="../../../../api-v3/config/endpoint/v3/endpoint.proto.html#envoy-v3-api-msg-config-endpoint-v3-clusterloadassignment"><span class="std std-ref">ClusterLoadAssignments</span></a>. ClusterLoadAssignments are
+available via EDS or the Cluster <a class="reference internal" href="../../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-load-assignment"><span class="std std-ref">load_assignment</span></a>
+field. Host metadata for subset load balancing must be placed under the filter name <code class="docutils literal notranslate"><span class="pre">&quot;envoy.lb&quot;</span></code>.
+Similarly, route metadata match criteria use <code class="docutils literal notranslate"><span class="pre">&quot;envoy.lb&quot;</span></code> filter name. Host metadata may be
+hierarchical (e.g., the value for a top-level key may be a structured value or list), but the
+subset load balancer only compares top-level keys and values. Therefore when using structured
+values, a route’s match criteria will only match if an identical structured value appears in the
+host’s metadata.</p>
+<p>Finally, note that subset load balancing is not available for the
+<a class="reference internal" href="../../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-enum-value-config-cluster-v3-cluster-lbpolicy-cluster-provided"><span class="std std-ref">CLUSTER_PROVIDED</span></a> load balancer
+policies.</p>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>We’ll use simple metadata where all values are strings. Assume the following hosts are defined and
+associated with a cluster:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 79%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Host</p></th>
+<th class="head"><p>Metadata</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>host1</p></td>
+<td><p>v: 1.0, stage: prod</p></td>
+</tr>
+<tr class="row-odd"><td><p>host2</p></td>
+<td><p>v: 1.0, stage: prod</p></td>
+</tr>
+<tr class="row-even"><td><p>host3</p></td>
+<td><p>v: 1.1, stage: canary</p></td>
+</tr>
+<tr class="row-odd"><td><p>host4</p></td>
+<td><p>v: 1.2-pre, stage: dev</p></td>
+</tr>
+</tbody>
+</table>
+<p>The cluster may enable subset load balancing like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---</span>
+<span class="n">name</span><span class="p">:</span> <span class="n">cluster</span><span class="o">-</span><span class="n">name</span>
+<span class="nb">type</span><span class="p">:</span> <span class="n">EDS</span>
+<span class="n">eds_cluster_config</span><span class="p">:</span>
+  <span class="n">eds_config</span><span class="p">:</span>
+    <span class="n">path</span><span class="p">:</span> <span class="s1">&#39;.../eds.conf&#39;</span>
+<span class="n">connect_timeout</span><span class="p">:</span>
+  <span class="n">seconds</span><span class="p">:</span> <span class="mi">10</span>
+<span class="n">lb_policy</span><span class="p">:</span> <span class="n">LEAST_REQUEST</span>
+<span class="n">lb_subset_config</span><span class="p">:</span>
+  <span class="n">fallback_policy</span><span class="p">:</span> <span class="n">DEFAULT_SUBSET</span>
+  <span class="n">default_subset</span><span class="p">:</span>
+    <span class="n">stage</span><span class="p">:</span> <span class="n">prod</span>
+  <span class="n">subset_selectors</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">keys</span><span class="p">:</span>
+    <span class="o">-</span> <span class="n">v</span>
+    <span class="o">-</span> <span class="n">stage</span>
+  <span class="o">-</span> <span class="n">keys</span><span class="p">:</span>
+    <span class="o">-</span> <span class="n">stage</span>
+    <span class="n">fallback_policy</span><span class="p">:</span> <span class="n">NO_FALLBACK</span>
+</pre></div>
+</div>
+<p>The following table describes some routes and the result of their application to the
+cluster. Typically the match criteria would be used with routes matching specific aspects of the
+request, such as the path or header information.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 12%" />
+<col style="width: 67%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Match Criteria</p></th>
+<th class="head"><p>Balances Over</p></th>
+<th class="head"><p>Reason</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>stage: canary</p></td>
+<td><p>host3</p></td>
+<td><p>Subset of hosts selected</p></td>
+</tr>
+<tr class="row-odd"><td><p>v: 1.2-pre, stage: dev</p></td>
+<td><p>host4</p></td>
+<td><p>Subset of hosts selected</p></td>
+</tr>
+<tr class="row-even"><td><p>v: 1.0</p></td>
+<td><p>host1, host2</p></td>
+<td><p>Fallback: No subset selector for “v” alone</p></td>
+</tr>
+<tr class="row-odd"><td><p>other: x</p></td>
+<td><p>host1, host2</p></td>
+<td><p>Fallback: No subset selector for “other”</p></td>
+</tr>
+<tr class="row-even"><td><p>(none)</p></td>
+<td><p>host1, host2</p></td>
+<td><p>Fallback: No subset requested</p></td>
+</tr>
+<tr class="row-odd"><td><p>stage: test</p></td>
+<td><p>empty cluster</p></td>
+<td><p>As fallback policy is overridden per selector with “NO_FALLBACK” value</p></td>
+</tr>
+</tbody>
+</table>
+<p>Metadata match criteria may also be specified on a route’s weighted clusters. Metadata match
+criteria from the selected weighted cluster are merged with and override the criteria from the
+route:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 43%" />
+<col style="width: 29%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Route Match Criteria</p></th>
+<th class="head"><p>Weighted Cluster Match Criteria</p></th>
+<th class="head"><p>Final Match Criteria</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>stage: canary</p></td>
+<td><p>stage: prod</p></td>
+<td><p>stage: prod</p></td>
+</tr>
+<tr class="row-odd"><td><p>v: 1.0</p></td>
+<td><p>stage: prod</p></td>
+<td><p>v: 1.0, stage: prod</p></td>
+</tr>
+<tr class="row-even"><td><p>v: 1.0, stage: prod</p></td>
+<td><p>stage: canary</p></td>
+<td><p>v: 1.0, stage: canary</p></td>
+</tr>
+<tr class="row-odd"><td><p>v: 1.0, stage: prod</p></td>
+<td><p>v: 1.1, stage: canary</p></td>
+<td><p>v: 1.1, stage: canary</p></td>
+</tr>
+<tr class="row-even"><td><p>(none)</p></td>
+<td><p>v: 1.0</p></td>
+<td><p>v: 1.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>v: 1.0</p></td>
+<td><p>(none)</p></td>
+<td><p>v: 1.0</p></td>
+</tr>
+</tbody>
+</table>
+<section id="example-host-with-metadata">
+<h3>Example Host With Metadata<a class="headerlink" href="#example-host-with-metadata" title="Permalink to this headline">¶</a></h3>
+<p>An EDS <code class="docutils literal notranslate"><span class="pre">LbEndpoint</span></code> with host metadata:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---</span>
+<span class="n">endpoint</span><span class="p">:</span>
+  <span class="n">address</span><span class="p">:</span>
+    <span class="n">socket_address</span><span class="p">:</span>
+      <span class="n">protocol</span><span class="p">:</span> <span class="n">TCP</span>
+      <span class="n">address</span><span class="p">:</span> <span class="mf">127.0.0.1</span>
+      <span class="n">port_value</span><span class="p">:</span> <span class="mi">8888</span>
+<span class="n">metadata</span><span class="p">:</span>
+  <span class="n">filter_metadata</span><span class="p">:</span>
+    <span class="n">envoy</span><span class="o">.</span><span class="n">lb</span><span class="p">:</span>
+      <span class="n">version</span><span class="p">:</span> <span class="s1">&#39;1.0&#39;</span>
+      <span class="n">stage</span><span class="p">:</span> <span class="s1">&#39;prod&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="example-route-with-metadata-criteria">
+<h3>Example Route With Metadata Criteria<a class="headerlink" href="#example-route-with-metadata-criteria" title="Permalink to this headline">¶</a></h3>
+<p>An RDS <code class="docutils literal notranslate"><span class="pre">Route</span></code> with metadata match criteria:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---</span>
+<span class="n">match</span><span class="p">:</span>
+  <span class="n">prefix</span><span class="p">:</span> <span class="o">/</span>
+<span class="n">route</span><span class="p">:</span>
+  <span class="n">cluster</span><span class="p">:</span> <span class="n">cluster</span><span class="o">-</span><span class="n">name</span>
+  <span class="n">metadata_match</span><span class="p">:</span>
+    <span class="n">filter_metadata</span><span class="p">:</span>
+      <span class="n">envoy</span><span class="o">.</span><span class="n">lb</span><span class="p">:</span>
+        <span class="n">version</span><span class="p">:</span> <span class="s1">&#39;1.0&#39;</span>
+        <span class="n">stage</span><span class="p">:</span> <span class="s1">&#39;prod&#39;</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="../aggregate_cluster.html" class="btn btn-neutral float-right" title="Aggregate Cluster" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="zone_aware.html" class="btn btn-neutral float-left" title="Zone aware routing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2016-2022, Envoy Project Authors.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

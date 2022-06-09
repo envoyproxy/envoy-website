@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Role Based Access Control &mdash; envoy tag-v1.19.5 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Threat model" href="threat_model.html" />
+    <link rel="prev" title="Authorization Service" href="../../../api-v3/service/auth/v3/external_auth.proto.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                tag-v1.19.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../intro.html">Introduction</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../what_is_envoy.html">What is Envoy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../arch_overview.html">Architecture overview</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../intro/intro.html">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../listeners/listeners_toc.html">Listeners</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../http/http.html">HTTP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../upstream/upstream.html">Upstream clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../observability/observability.html">Observability</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="security.html">Security</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ssl.html">TLS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jwt_authn_filter.html">JSON Web Token (JWT) Authentication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ext_authz_filter.html">External Authorization</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Role Based Access Control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="threat_model.html">Threat model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="external_deps.html">External dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="google_vrp.html">Google Vulnerability Reward Program (VRP)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../operations/operations.html">Operations &amp; configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../other_features/other_features.html">Other features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../advanced/advanced.html">Advanced</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../life_of_a_request.html">Life of a Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../deployment_types/deployment_types.html">Deployment types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_help.html">Getting help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">envoy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../intro.html">Introduction</a> &raquo;</li>
+        
+          <li><a href="../arch_overview.html">Architecture overview</a> &raquo;</li>
+        
+          <li><a href="security.html">Security</a> &raquo;</li>
+        
+      <li>Role Based Access Control</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../../_sources/intro/arch_overview/security/rbac_filter.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="role-based-access-control">
+<span id="arch-overview-rbac"></span><h1>Role Based Access Control<a class="headerlink" href="#role-based-access-control" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../configuration/listeners/network_filters/rbac_filter.html#config-network-filters-rbac"><span class="std std-ref">Network filter configuration</span></a>.</p></li>
+<li><p><a class="reference internal" href="../../../configuration/http/http_filters/rbac_filter.html#config-http-filters-rbac"><span class="std std-ref">HTTP filter configuration</span></a>.</p></li>
+</ul>
+<p>The Role Based Access Control (RBAC) filter checks if the incoming request is authorized or not.
+Unlike external authorization, the check of RBAC filter happens in the Envoy process and is
+based on a list of policies from the filter config.</p>
+<p>The RBAC filter can be either configured as a <a class="reference internal" href="../../../configuration/listeners/network_filters/rbac_filter.html#config-network-filters-rbac"><span class="std std-ref">network filter</span></a>,
+or as a <a class="reference internal" href="../../../configuration/http/http_filters/rbac_filter.html#config-http-filters-rbac"><span class="std std-ref">HTTP filter</span></a> or both. If the request is deemed unauthorized
+by the network filter then the connection will be closed. If the request is deemed unauthorized by
+the HTTP filter the request will be denied with 403 (Forbidden) response.</p>
+<section id="policy">
+<h2>Policy<a class="headerlink" href="#policy" title="Permalink to this headline">¶</a></h2>
+<p>The RBAC filter checks the request based on a list of
+<a class="reference internal" href="../../../api-v3/config/rbac/v3/rbac.proto.html#envoy-v3-api-field-config-rbac-v3-rbac-policies"><span class="std std-ref">policies</span></a>. A policy consists of a list of
+<a class="reference internal" href="../../../api-v3/config/rbac/v3/rbac.proto.html#envoy-v3-api-msg-config-rbac-v3-permission"><span class="std std-ref">permissions</span></a> and
+<a class="reference internal" href="../../../api-v3/config/rbac/v3/rbac.proto.html#envoy-v3-api-msg-config-rbac-v3-principal"><span class="std std-ref">principals</span></a>. The permission specifies the actions of
+the request, for example, the method and path of a HTTP request. The principal specifies the
+downstream client identities of the request, for example, the URI SAN of the downstream client
+certificate. A policy is matched if its permissions and principals are matched at the same time.</p>
+</section>
+<section id="shadow-policy">
+<h2>Shadow Policy<a class="headerlink" href="#shadow-policy" title="Permalink to this headline">¶</a></h2>
+<p>The filter can be configured with a
+<a class="reference internal" href="../../../api-v3/extensions/filters/http/rbac/v3/rbac.proto.html#envoy-v3-api-field-extensions-filters-http-rbac-v3-rbac-shadow-rules"><span class="std std-ref">shadow policy</span></a> that doesn’t
+have any effect (i.e. not deny the request) but only emit stats and log the result. This is useful
+for testing a rule before applying in production.</p>
+</section>
+<section id="condition">
+<span id="arch-overview-condition"></span><h2>Condition<a class="headerlink" href="#condition" title="Permalink to this headline">¶</a></h2>
+<p>In addition to the pre-defined permissions and principals, a policy may optionally provide an
+authorization condition written in the <a class="reference external" href="https://github.com/google/cel-spec/blob/master/doc/intro.md">Common Expression Language</a>. The condition specifies an extra
+clause that must be satisfied for the policy to match. For example, the following condition checks
+whether the request path starts with <code class="docutils literal notranslate"><span class="pre">/v1/</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">call_expr</span><span class="p">:</span>
+  <span class="nt">function</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">startsWith</span>
+  <span class="nt">args</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">select_expr</span><span class="p">:</span>
+     <span class="nt">operand</span><span class="p">:</span>
+       <span class="nt">ident_expr</span><span class="p">:</span>
+         <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">request</span>
+     <span class="nt">field</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">path</span>
+  <span class="p p-Indicator">-</span> <span class="nt">const_expr</span><span class="p">:</span>
+     <span class="nt">string_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/v1/</span>
+</pre></div>
+</div>
+<p>Envoy provides a number of <a class="reference internal" href="../advanced/attributes.html#arch-overview-request-attributes"><span class="std std-ref">request attributes</span></a>
+for expressive policies. Most attributes are optional and provide the default
+value based on the type of the attribute. CEL supports presence checks for
+attributes and maps using <code class="docutils literal notranslate"><span class="pre">has()</span></code> syntax, e.g. <code class="docutils literal notranslate"><span class="pre">has(request.referer)</span></code>.</p>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="threat_model.html" class="btn btn-neutral float-right" title="Threat model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../../../api-v3/service/auth/v3/external_auth.proto.html" class="btn btn-neutral float-left" title="Authorization Service" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2016-2022, Envoy Project Authors.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
