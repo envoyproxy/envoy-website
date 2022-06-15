@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redis proxy &mdash; envoy tag-v1.21.4 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="RocketMQ proxy" href="rocketmq_proxy_filter.html" />
+    <link rel="prev" title="Role Based Access Control (RBAC) Network Filter" href="rbac_filter.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html">
+            <img src="../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                tag-v1.21.4
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../configuration.html">Configuration reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../overview/overview.html">Overview</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../listeners.html">Listeners</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stats.html">Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../runtime.html">Runtime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../listener_filters/listener_filters.html">Listener filters</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="network_filters.html">Network filters</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="dubbo_proxy_filter.html">Dubbo proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="client_ssl_auth_filter.html">Client TLS authentication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="connection_limit_filter.html">Connection Limit Filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="echo_filter.html">Echo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="direct_response_filter.html">Direct response</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ext_authz_filter.html">External Authorization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kafka_broker_filter.html">Kafka Broker filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kafka_mesh_filter.html">Kafka Mesh filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="local_rate_limit_filter.html">Local rate limit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mongo_proxy_filter.html">Mongo proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mysql_proxy_filter.html">MySQL proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="postgres_proxy_filter.html">Postgres proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rate_limit_filter.html">Rate limit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rbac_filter.html">Role Based Access Control (RBAC) Network Filter</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Redis proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rocketmq_proxy_filter.html">RocketMQ proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcp_proxy_filter.html">TCP proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="thrift_proxy_filter.html">Thrift proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sni_cluster_filter.html">Upstream Cluster from SNI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sni_dynamic_forward_proxy_filter.html">SNI dynamic forward proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="wasm_filter.html">Wasm Network Filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zookeeper_proxy_filter.html">ZooKeeper proxy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../udp_filters/udp_filters.html">UDP listener filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lds.html">Listener discovery service (LDS)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../http/http.html">HTTP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../upstream/upstream.html">Upstream clusters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../observability/observability.html">Observability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../security/security.html">Security</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../operations/operations.html">Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../other_features/other_features.html">Other features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/advanced.html">Advanced</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../best_practices/best_practices.html">Configuration best practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../configuration.html">Configuration reference</a> &raquo;</li>
+          <li><a href="../listeners.html">Listeners</a> &raquo;</li>
+          <li><a href="network_filters.html">Network filters</a> &raquo;</li>
+      <li>Redis proxy</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/configuration/listeners/network_filters/redis_proxy_filter.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="redis-proxy">
+<span id="config-network-filters-redis-proxy"></span><h1>Redis proxy<a class="headerlink" href="#redis-proxy" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>Redis <a class="reference internal" href="../../../intro/arch_overview/other_protocols/redis.html#arch-overview-redis"><span class="std std-ref">architecture overview</span></a></p></li>
+<li><p><a class="reference internal" href="../../../api-v3/extensions/filters/network/redis_proxy/v3/redis_proxy.proto.html#envoy-v3-api-msg-extensions-filters-network-redis-proxy-v3-redisproxy"><span class="std std-ref">v3 API reference</span></a></p></li>
+<li><p>This filter should be configured with the name <em>envoy.filters.network.redis_proxy</em>.</p></li>
+</ul>
+<div class="section" id="statistics">
+<span id="config-network-filters-redis-proxy-stats"></span><h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
+<p>Every configured Redis proxy filter has statistics rooted at <em>redis.&lt;stat_prefix&gt;.</em> with the
+following statistics:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>downstream_cx_active</p></td>
+<td><p>Gauge</p></td>
+<td><p>Total active connections</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_cx_protocol_error</p></td>
+<td><p>Counter</p></td>
+<td><p>Total protocol errors</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_cx_rx_bytes_buffered</p></td>
+<td><p>Gauge</p></td>
+<td><p>Total received bytes currently buffered</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_cx_rx_bytes_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total bytes received</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_cx_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_cx_tx_bytes_buffered</p></td>
+<td><p>Gauge</p></td>
+<td><p>Total sent bytes currently buffered</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_cx_tx_bytes_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total bytes sent</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_cx_drain_close</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of connections closed due to draining</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_rq_active</p></td>
+<td><p>Gauge</p></td>
+<td><p>Total active requests</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_rq_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="splitter-statistics">
+<h2>Splitter statistics<a class="headerlink" href="#splitter-statistics" title="Permalink to this headline">¶</a></h2>
+<p>The Redis filter will gather statistics for the command splitter in the
+<em>redis.&lt;stat_prefix&gt;.splitter.</em> with the following statistics:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>invalid_request</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of requests with an incorrect number of arguments</p></td>
+</tr>
+<tr class="row-odd"><td><p>unsupported_command</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of commands issued which are not recognized by the command splitter</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="per-command-statistics">
+<h2>Per command statistics<a class="headerlink" href="#per-command-statistics" title="Permalink to this headline">¶</a></h2>
+<p>The Redis filter will gather statistics for commands in the
+<em>redis.&lt;stat_prefix&gt;.command.&lt;command&gt;.</em> namespace. By default latency stats are in milliseconds and can be
+changed to microseconds by setting the configuration parameter <a class="reference internal" href="../../../api-v3/extensions/filters/network/redis_proxy/v3/redis_proxy.proto.html#envoy-v3-api-field-extensions-filters-network-redis-proxy-v3-redisproxy-latency-in-micros"><span class="std std-ref">latency_in_micros</span></a> to true.</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>total</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of commands</p></td>
+</tr>
+<tr class="row-odd"><td><p>success</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of commands that were successful</p></td>
+</tr>
+<tr class="row-even"><td><p>error</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of commands that returned a partial or complete error response</p></td>
+</tr>
+<tr class="row-odd"><td><p>latency</p></td>
+<td><p>Histogram</p></td>
+<td><p>Command execution time in milliseconds (including delay faults)</p></td>
+</tr>
+<tr class="row-even"><td><p>error_fault</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of commands that had an error fault injected</p></td>
+</tr>
+<tr class="row-odd"><td><p>delay_fault</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of commands that had a delay fault injected</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="runtime">
+<span id="config-network-filters-redis-proxy-per-command-stats"></span><h2>Runtime<a class="headerlink" href="#runtime" title="Permalink to this headline">¶</a></h2>
+<p>The Redis proxy filter supports the following runtime settings:</p>
+<dl class="simple">
+<dt>redis.drain_close_enabled</dt><dd><p>% of connections that will be drain closed if the server is draining and would otherwise
+attempt a drain close. Defaults to 100.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="fault-injection">
+<span id="config-network-filters-redis-proxy-fault-injection"></span><h2>Fault Injection<a class="headerlink" href="#fault-injection" title="Permalink to this headline">¶</a></h2>
+<p>The Redis filter can perform fault injection. Currently, Delay and Error faults are supported.
+Delay faults delay a request, and Error faults respond with an error. Moreover, errors can be delayed.</p>
+<p>Note that the Redis filter does not check for correctness in your configuration - it is the user’s
+responsibility to make sure both the default and runtime percentages are correct! This is because
+percentages can be changed during runtime, and validating correctness at request time is expensive.
+If multiple faults are specified, the fault injection percentage should not exceed 100% for a given
+fault and Redis command combination. For example, if two faults are specified; one applying to GET at 60
+%, and one applying to all commands at 50%, that is a bad configuration as GET now has 110% chance of
+applying a fault. This means that every request will have a fault.</p>
+<p>If a delay is injected, the delay is additive - if the request took 400ms and a delay of 100ms
+is injected, then the total request latency is 500ms. Also, due to implementation of the redis protocol,
+a delayed request will delay everything that comes in after it, due to the proxy’s need to respect the
+order of commands it receives.</p>
+<p>Note that faults must have a <code class="docutils literal notranslate"><span class="pre">fault_enabled</span></code> field, and are not enabled by default (if no default value
+or runtime key are set).</p>
+<p>Example configuration:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">faults</span><span class="p">:</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">fault_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ERROR</span><span class="w"></span>
+<span class="w">  </span><span class="nt">fault_enabled</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">default_value</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">numerator</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"></span>
+<span class="w">      </span><span class="nt">denominator</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HUNDRED</span><span class="w"></span>
+<span class="w">    </span><span class="nt">runtime_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bogus_key&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">commands</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GET</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">fault_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DELAY</span><span class="w"></span>
+<span class="w">    </span><span class="nt">fault_enabled</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">default_value</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">numerator</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"></span>
+<span class="w">        </span><span class="nt">denominator</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HUNDRED</span><span class="w"></span>
+<span class="w">      </span><span class="nt">runtime_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bogus_key&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">delay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2s</span><span class="w"></span>
+</pre></div>
+</div>
+<p>This creates two faults- an error, applying only to GET commands at 10%, and a delay, applying to all
+commands at 10%. This means that 20% of GET commands will have a fault applied, as discussed earlier.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="rbac_filter.html" class="btn btn-neutral float-left" title="Role Based Access Control (RBAC) Network Filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="rocketmq_proxy_filter.html" class="btn btn-neutral float-right" title="RocketMQ proxy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
