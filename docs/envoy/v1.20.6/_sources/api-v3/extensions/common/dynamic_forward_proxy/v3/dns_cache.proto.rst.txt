@@ -1,0 +1,182 @@
+.. _envoy_v3_api_file_envoy/extensions/common/dynamic_forward_proxy/v3/dns_cache.proto:
+
+Dynamic forward proxy common configuration
+==========================================
+
+
+This documentation is for the Envoy v3 API.
+
+As of Envoy v1.18 the v2 API has been removed and is no longer supported.
+
+If you are upgrading from v2 API config you may wish to view the v2 API documentation:
+
+    :ref:`config/common/dynamic_forward_proxy/v2alpha/dns_cache.proto <v1.17.2:envoy_api_file_envoy/config/common/dynamic_forward_proxy/v2alpha/dns_cache.proto>`
+
+
+
+.. _envoy_v3_api_msg_extensions.common.dynamic_forward_proxy.v3.DnsCacheCircuitBreakers:
+
+extensions.common.dynamic_forward_proxy.v3.DnsCacheCircuitBreakers
+------------------------------------------------------------------
+
+:repo:`[extensions.common.dynamic_forward_proxy.v3.DnsCacheCircuitBreakers proto] <api/envoy/extensions/common/dynamic_forward_proxy/v3/dns_cache.proto#L26>`
+
+Configuration of circuit breakers for resolver.
+
+.. code-block:: json
+
+  {
+    "max_pending_requests": "{...}"
+  }
+
+.. _envoy_v3_api_field_extensions.common.dynamic_forward_proxy.v3.DnsCacheCircuitBreakers.max_pending_requests:
+
+max_pending_requests
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The maximum number of pending requests that Envoy will allow to the
+  resolver. If not specified, the default is 1024.
+  
+  
+
+
+.. _envoy_v3_api_msg_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig:
+
+extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig
+---------------------------------------------------------
+
+:repo:`[extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig proto] <api/envoy/extensions/common/dynamic_forward_proxy/v3/dns_cache.proto#L35>`
+
+Configuration for the dynamic forward proxy DNS cache. See the :ref:`architecture overview
+<arch_overview_http_dynamic_forward_proxy>` for more information.
+
+.. code-block:: json
+
+  {
+    "name": "...",
+    "dns_lookup_family": "...",
+    "dns_refresh_rate": "{...}",
+    "host_ttl": "{...}",
+    "max_hosts": "{...}",
+    "dns_failure_refresh_rate": "{...}",
+    "dns_cache_circuit_breaker": "{...}",
+    "use_tcp_for_dns_lookups": "...",
+    "dns_resolution_config": "{...}",
+    "preresolve_hostnames": [],
+    "dns_query_timeout": "{...}"
+  }
+
+.. _envoy_v3_api_field_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig.name:
+
+name
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_, *REQUIRED*) The name of the cache. Multiple named caches allow independent dynamic forward proxy
+  configurations to operate within a single Envoy process using different configurations. All
+  configurations with the same name *must* otherwise have the same settings when referenced
+  from different configuration components. Configuration will fail to load if this is not
+  the case.
+  
+  
+.. _envoy_v3_api_field_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig.dns_lookup_family:
+
+dns_lookup_family
+  (:ref:`config.cluster.v3.Cluster.DnsLookupFamily <envoy_v3_api_enum_config.cluster.v3.Cluster.DnsLookupFamily>`) The DNS lookup family to use during resolution.
+  
+  
+  
+.. _envoy_v3_api_field_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig.dns_refresh_rate:
+
+dns_refresh_rate
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The DNS refresh rate for currently cached DNS hosts. If not specified defaults to 60s.
+  
+  .. note:
+  
+   The returned DNS TTL is not currently used to alter the refresh rate. This feature will be
+   added in a future change.
+  
+  .. note:
+  
+  The refresh rate is rounded to the closest millisecond, and must be at least 1ms.
+  
+  
+.. _envoy_v3_api_field_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig.host_ttl:
+
+host_ttl
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The TTL for hosts that are unused. Hosts that have not been used in the configured time
+  interval will be purged. If not specified defaults to 5m.
+  
+  .. note:
+  
+    The TTL is only checked at the time of DNS refresh, as specified by *dns_refresh_rate*. This
+    means that if the configured TTL is shorter than the refresh rate the host may not be removed
+    immediately.
+  
+   .. note:
+  
+    The TTL has no relation to DNS TTL and is only used to control Envoy's resource usage.
+  
+  
+.. _envoy_v3_api_field_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig.max_hosts:
+
+max_hosts
+  (`UInt32Value <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value>`_) The maximum number of hosts that the cache will hold. If not specified defaults to 1024.
+  
+  .. note:
+  
+    The implementation is approximate and enforced independently on each worker thread, thus
+    it is possible for the maximum hosts in the cache to go slightly above the configured
+    value depending on timing. This is similar to how other circuit breakers work.
+  
+  
+.. _envoy_v3_api_field_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig.dns_failure_refresh_rate:
+
+dns_failure_refresh_rate
+  (:ref:`config.cluster.v3.Cluster.RefreshRate <envoy_v3_api_msg_config.cluster.v3.Cluster.RefreshRate>`) If the DNS failure refresh rate is specified,
+  this is used as the cache's DNS refresh rate when DNS requests are failing. If this setting is
+  not specified, the failure refresh rate defaults to the dns_refresh_rate.
+  
+  
+.. _envoy_v3_api_field_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig.dns_cache_circuit_breaker:
+
+dns_cache_circuit_breaker
+  (:ref:`extensions.common.dynamic_forward_proxy.v3.DnsCacheCircuitBreakers <envoy_v3_api_msg_extensions.common.dynamic_forward_proxy.v3.DnsCacheCircuitBreakers>`) The config of circuit breakers for resolver. It provides a configurable threshold.
+  Envoy will use dns cache circuit breakers with default settings even if this value is not set.
+  
+  
+.. _envoy_v3_api_field_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig.use_tcp_for_dns_lookups:
+
+use_tcp_for_dns_lookups
+  (`bool <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Always use TCP queries instead of UDP queries for DNS lookups.
+  Setting this value causes failure if the
+  ``envoy.restart_features.use_apple_api_for_dns_lookups`` runtime value is true during
+  server startup. Apple' API only uses UDP for DNS resolution.
+  This field is deprecated in favor of *dns_resolution_config*
+  which aggregates all of the DNS resolver configuration in a single message.
+  
+  
+.. _envoy_v3_api_field_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig.dns_resolution_config:
+
+dns_resolution_config
+  (:ref:`config.core.v3.DnsResolutionConfig <envoy_v3_api_msg_config.core.v3.DnsResolutionConfig>`) DNS resolution configuration which includes the underlying dns resolver addresses and options.
+  *dns_resolution_config* will be deprecated once
+  :ref:'typed_dns_resolver_config <envoy_v3_api_field_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig.typed_dns_resolver_config>'
+  is fully supported.
+  
+  
+
+.. _envoy_v3_api_field_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig.preresolve_hostnames:
+
+preresolve_hostnames
+  (**repeated** :ref:`config.core.v3.SocketAddress <envoy_v3_api_msg_config.core.v3.SocketAddress>`) Hostnames that should be preresolved into the cache upon creation. This might provide a
+  performance improvement, in the form of cache hits, for hostnames that are going to be
+  resolved during steady state and are known at config load time.
+  
+  
+.. _envoy_v3_api_field_extensions.common.dynamic_forward_proxy.v3.DnsCacheConfig.dns_query_timeout:
+
+dns_query_timeout
+  (`Duration <https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration>`_) The timeout used for DNS queries. This timeout is independent of any timeout and retry policy
+  used by the underlying DNS implementation (e.g., c-areas and Apple DNS) which are opaque.
+  Setting this timeout will ensure that queries succeed or fail within the specified time frame
+  and are then retried using the standard refresh rates. Defaults to 5s if not set.
+  
+  
+
+

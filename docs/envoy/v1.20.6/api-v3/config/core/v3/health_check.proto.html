@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Health check &mdash; envoy tag-v1.20.6 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="HTTP route management" href="../../../http_routes/http_routes.html" />
+    <link rel="prev" title="Endpoints" href="../../endpoint/v3/endpoint_components.proto.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html">
+            <img src="../../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                tag-v1.20.6
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../api/api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/api_supported_versions.html">Supported API versions</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../../api.html">v3 API reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../bootstrap/bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../../clusters/clusters.html">Clusters</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../cluster/v3/cluster.proto.html">Cluster configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../cluster/v3/outlier_detection.proto.html">Outlier detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../cluster/v3/circuit_breaker.proto.html">Circuit breakers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../cluster/v3/filter.proto.html">Upstream filters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../endpoint/v3/endpoint.proto.html">Endpoint configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../endpoint/v3/endpoint_components.proto.html">Endpoints</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Health check</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../http_routes/http_routes.html">HTTP route management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config.html">Extensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../admin/admin.html">Admin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/data.html">Envoy data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../service/service.html">Services</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../common_messages/common_messages.html">Common messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../types/types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api-docs/xds_protocol.html">xDS REST and gRPC protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/client_features.html">Well Known Client Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../api/api.html">API</a> &raquo;</li>
+          <li><a href="../../../api.html">v3 API reference</a> &raquo;</li>
+          <li><a href="../../../clusters/clusters.html">Clusters</a> &raquo;</li>
+      <li>Health check</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api-v3/config/core/v3/health_check.proto.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="health-check">
+<span id="envoy-v3-api-file-envoy-config-core-v3-health-check-proto"></span><h1>Health check<a class="headerlink" href="#health-check" title="Permalink to this headline">¶</a></h1>
+<p>This documentation is for the Envoy v3 API.</p>
+<p>As of Envoy v1.18 the v2 API has been removed and is no longer supported.</p>
+<p>If you are upgrading from v2 API config you may wish to view the v2 API documentation:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://www.envoyproxy.io/docs/envoy/v1.17.2/api-v2/api/v2/core/health_check.proto.html#envoy-api-file-envoy-api-v2-core-health-check-proto" title="(in envoy vtag-v1.17.2)"><span class="xref std std-ref">api/v2/core/health_check.proto</span></a></p>
+</div></blockquote>
+<ul class="simple">
+<li><p>Health checking <a class="reference internal" href="../../../../intro/arch_overview/upstream/health_checking.html#arch-overview-health-checking"><span class="std std-ref">architecture overview</span></a>.</p></li>
+<li><p>If health checking is configured for a cluster, additional statistics are emitted. They are
+documented <a class="reference internal" href="../../../../configuration/upstream/cluster_manager/cluster_stats.html#config-cluster-manager-cluster-stats"><span class="std std-ref">here</span></a>.</p></li>
+</ul>
+<div class="section" id="config-core-v3-healthcheck">
+<span id="envoy-v3-api-msg-config-core-v3-healthcheck"></span><h2>config.core.v3.HealthCheck<a class="headerlink" href="#config-core-v3-healthcheck" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.6/api/envoy/config/core/v3/health_check.proto#L56">[config.core.v3.HealthCheck proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;timeout&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;interval&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;initial_jitter&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;interval_jitter&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;interval_jitter_percent&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;unhealthy_threshold&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;healthy_threshold&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;reuse_connection&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;http_health_check&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;tcp_health_check&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;grpc_health_check&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;custom_health_check&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;no_traffic_interval&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;no_traffic_healthy_interval&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;unhealthy_interval&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;unhealthy_edge_interval&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;healthy_edge_interval&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;event_log_path&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;always_log_health_check_failures&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;tls_options&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;transport_socket_match_criteria&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-timeout">
+<dt>timeout</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>, <em>REQUIRED</em>) The time to wait for a health check response. If the timeout is reached the
+health check attempt will be considered a failure.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-interval">
+<dt>interval</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>, <em>REQUIRED</em>) The interval between health checks.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-initial-jitter">
+<dt>initial_jitter</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) An optional jitter amount in milliseconds. If specified, Envoy will start health
+checking after for a random time in ms between 0 and initial_jitter. This only
+applies to the first health check.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-interval-jitter">
+<dt>interval_jitter</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) An optional jitter amount in milliseconds. If specified, during every
+interval Envoy will add interval_jitter to the wait time.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-core-v3-healthcheck-interval-jitter-percent">
+<dt>interval_jitter_percent</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">uint32</a>) An optional jitter amount as a percentage of interval_ms. If specified,
+during every interval Envoy will add interval_ms *
+interval_jitter_percent / 100 to the wait time.</p>
+<p>If interval_jitter_ms and interval_jitter_percent are both set, both of
+them will be used to increase the wait time.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-unhealthy-threshold">
+<dt>unhealthy_threshold</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>, <em>REQUIRED</em>) The number of unhealthy health checks required before a host is marked
+unhealthy. Note that for <em>http</em> health checking if a host responds with 503
+this threshold is ignored and the host is considered unhealthy immediately.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-healthy-threshold">
+<dt>healthy_threshold</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>, <em>REQUIRED</em>) The number of healthy health checks required before a host is marked
+healthy. Note that during startup, only a single successful health check is
+required to mark a host healthy.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-reuse-connection">
+<dt>reuse_connection</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#boolvalue">BoolValue</a>) Reuse health check connection between health checks. Default is true.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-core-v3-healthcheck-http-health-check">
+<dt>http_health_check</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-core-v3-healthcheck-httphealthcheck"><span class="std std-ref">config.core.v3.HealthCheck.HttpHealthCheck</span></a>) HTTP health check.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-core-v3-healthcheck-http-health-check"><span class="std std-ref">http_health_check</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-core-v3-healthcheck-tcp-health-check"><span class="std std-ref">tcp_health_check</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-core-v3-healthcheck-grpc-health-check"><span class="std std-ref">grpc_health_check</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-core-v3-healthcheck-custom-health-check"><span class="std std-ref">custom_health_check</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-core-v3-healthcheck-tcp-health-check">
+<dt>tcp_health_check</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-core-v3-healthcheck-tcphealthcheck"><span class="std std-ref">config.core.v3.HealthCheck.TcpHealthCheck</span></a>) TCP health check.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-core-v3-healthcheck-http-health-check"><span class="std std-ref">http_health_check</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-core-v3-healthcheck-tcp-health-check"><span class="std std-ref">tcp_health_check</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-core-v3-healthcheck-grpc-health-check"><span class="std std-ref">grpc_health_check</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-core-v3-healthcheck-custom-health-check"><span class="std std-ref">custom_health_check</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-core-v3-healthcheck-grpc-health-check">
+<dt>grpc_health_check</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-core-v3-healthcheck-grpchealthcheck"><span class="std std-ref">config.core.v3.HealthCheck.GrpcHealthCheck</span></a>) gRPC health check.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-core-v3-healthcheck-http-health-check"><span class="std std-ref">http_health_check</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-core-v3-healthcheck-tcp-health-check"><span class="std std-ref">tcp_health_check</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-core-v3-healthcheck-grpc-health-check"><span class="std std-ref">grpc_health_check</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-core-v3-healthcheck-custom-health-check"><span class="std std-ref">custom_health_check</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-core-v3-healthcheck-custom-health-check">
+<dt>custom_health_check</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-core-v3-healthcheck-customhealthcheck"><span class="std std-ref">config.core.v3.HealthCheck.CustomHealthCheck</span></a>) Custom health check.</p>
+<p>Precisely one of <a class="reference internal" href="#envoy-v3-api-field-config-core-v3-healthcheck-http-health-check"><span class="std std-ref">http_health_check</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-core-v3-healthcheck-tcp-health-check"><span class="std std-ref">tcp_health_check</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-core-v3-healthcheck-grpc-health-check"><span class="std std-ref">grpc_health_check</span></a>, <a class="reference internal" href="#envoy-v3-api-field-config-core-v3-healthcheck-custom-health-check"><span class="std std-ref">custom_health_check</span></a> must be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-core-v3-healthcheck-no-traffic-interval">
+<dt>no_traffic_interval</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The “no traffic interval” is a special health check interval that is used when a cluster has
+never had traffic routed to it. This lower interval allows cluster information to be kept up to
+date, without sending a potentially large amount of active health checking traffic for no
+reason. Once a cluster has been used for traffic routing, Envoy will shift back to using the
+standard health check interval that is defined. Note that this interval takes precedence over
+any other.</p>
+<p>The default value for “no traffic interval” is 60 seconds.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-core-v3-healthcheck-no-traffic-healthy-interval">
+<dt>no_traffic_healthy_interval</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The “no traffic healthy interval” is a special health check interval that
+is used for hosts that are currently passing active health checking
+(including new hosts) when the cluster has received no traffic.</p>
+<p>This is useful for when we want to send frequent health checks with
+<cite>no_traffic_interval</cite> but then revert to lower frequency <cite>no_traffic_healthy_interval</cite> once
+a host in the cluster is marked as healthy.</p>
+<p>Once a cluster has been used for traffic routing, Envoy will shift back to using the
+standard health check interval that is defined.</p>
+<p>If no_traffic_healthy_interval is not set, it will default to the
+no traffic interval and send that interval regardless of health state.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-core-v3-healthcheck-unhealthy-interval">
+<dt>unhealthy_interval</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The “unhealthy interval” is a health check interval that is used for hosts that are marked as
+unhealthy. As soon as the host is marked as healthy, Envoy will shift back to using the
+standard health check interval that is defined.</p>
+<p>The default value for “unhealthy interval” is the same as “interval”.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-core-v3-healthcheck-unhealthy-edge-interval">
+<dt>unhealthy_edge_interval</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The “unhealthy edge interval” is a special health check interval that is used for the first
+health check right after a host is marked as unhealthy. For subsequent health checks
+Envoy will shift back to using either “unhealthy interval” if present or the standard health
+check interval that is defined.</p>
+<p>The default value for “unhealthy edge interval” is the same as “unhealthy interval”.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-core-v3-healthcheck-healthy-edge-interval">
+<dt>healthy_edge_interval</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The “healthy edge interval” is a special health check interval that is used for the first
+health check right after a host is marked as healthy. For subsequent health checks
+Envoy will shift back to using the standard health check interval that is defined.</p>
+<p>The default value for “healthy edge interval” is the same as the default interval.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-event-log-path">
+<dt>event_log_path</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Specifies the path to the <a class="reference internal" href="../../../../intro/arch_overview/upstream/health_checking.html#arch-overview-health-check-logging"><span class="std std-ref">health check event log</span></a>.
+If empty, no event log will be written.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-always-log-health-check-failures">
+<dt>always_log_health_check_failures</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) If set to true, health check failure events will always be logged. If set to false, only the
+initial health check failure event will be logged.
+The default value is false.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-tls-options">
+<dt>tls_options</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-core-v3-healthcheck-tlsoptions"><span class="std std-ref">config.core.v3.HealthCheck.TlsOptions</span></a>) This allows overriding the cluster TLS settings, just for health check connections.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-core-v3-healthcheck-transport-socket-match-criteria">
+<dt>transport_socket_match_criteria</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct">Struct</a>) Optional key/value pairs that will be used to match a transport socket from those specified in the cluster’s
+<a class="reference internal" href="../../cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-transport-socket-matches"><span class="std std-ref">tranport socket matches</span></a>.
+For example, the following match criteria</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">transport_socket_match_criteria</span><span class="p">:</span>
+  <span class="nt">useMTLS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+<p>Will match the following <a class="reference internal" href="../../cluster/v3/cluster.proto.html#envoy-v3-api-msg-config-cluster-v3-cluster-transportsocketmatch"><span class="std std-ref">cluster socket match</span></a></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">transport_socket_matches</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;useMTLS&quot;</span>
+  <span class="nt">match</span><span class="p">:</span>
+    <span class="nt">useMTLS</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">transport_socket</span><span class="p">:</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.tls</span>
+    <span class="nt">config</span><span class="p">:</span> <span class="p p-Indicator">{</span> <span class="nv">...</span> <span class="p p-Indicator">}</span> <span class="c1"># tls socket configuration</span>
+</pre></div>
+</div>
+<p>If this field is set, then for health checks it will supersede an entry of <em>envoy.transport_socket</em> in the
+<a class="reference internal" href="../../endpoint/v3/endpoint_components.proto.html#envoy-v3-api-field-config-endpoint-v3-lbendpoint-metadata"><span class="std std-ref">LbEndpoint.Metadata</span></a>.
+This allows using different transport socket capabilities for health checking versus proxying to the
+endpoint.</p>
+<p>If the key/values pairs specified do not match any
+<a class="reference internal" href="../../cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-transport-socket-matches"><span class="std std-ref">transport socket matches</span></a>,
+the cluster’s <a class="reference internal" href="../../cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-transport-socket"><span class="std std-ref">transport socket</span></a>
+will be used for health check socket configuration.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-core-v3-healthcheck-payload">
+<span id="envoy-v3-api-msg-config-core-v3-healthcheck-payload"></span><h2>config.core.v3.HealthCheck.Payload<a class="headerlink" href="#config-core-v3-healthcheck-payload" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.6/api/envoy/config/core/v3/health_check.proto#L60">[config.core.v3.HealthCheck.Payload proto]</a></p>
+<p>Describes the encoding of the payload bytes in the payload.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-payload-text">
+<dt>text</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) Hex encoded payload. E.g., “000000FF”.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-core-v3-healthcheck-httphealthcheck">
+<span id="envoy-v3-api-msg-config-core-v3-healthcheck-httphealthcheck"></span><h2>config.core.v3.HealthCheck.HttpHealthCheck<a class="headerlink" href="#config-core-v3-healthcheck-httphealthcheck" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.6/api/envoy/config/core/v3/health_check.proto#L76">[config.core.v3.HealthCheck.HttpHealthCheck proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;request_headers_to_add&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;request_headers_to_remove&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;expected_statuses&quot;</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="nt">&quot;codec_client_type&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;service_name_matcher&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-httphealthcheck-host">
+<dt>host</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The value of the host header in the HTTP health check request. If
+left empty (default value), the name of the cluster this health check is associated
+with will be used. The host header can be customized for a specific endpoint by setting the
+<a class="reference internal" href="../../endpoint/v3/endpoint_components.proto.html#envoy-v3-api-field-config-endpoint-v3-endpoint-healthcheckconfig-hostname"><span class="std std-ref">hostname</span></a> field.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-httphealthcheck-path">
+<dt>path</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) Specifies the HTTP path that will be requested during health checking. For example
+<em>/healthcheck</em>.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-httphealthcheck-request-headers-to-add">
+<dt>request_headers_to_add</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="base.proto.html#envoy-v3-api-msg-config-core-v3-headervalueoption"><span class="std std-ref">config.core.v3.HeaderValueOption</span></a>) Specifies a list of HTTP headers that should be added to each request that is sent to the
+health checked cluster. For more information, including details on header value syntax, see
+the documentation on <a class="reference internal" href="../../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-custom-request-headers"><span class="std std-ref">custom request headers</span></a>.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-httphealthcheck-request-headers-to-remove">
+<dt>request_headers_to_remove</dt><dd><p>(<strong>repeated</strong> <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Specifies a list of HTTP headers that should be removed from each request that is sent to the
+health checked cluster.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-httphealthcheck-expected-statuses">
+<dt>expected_statuses</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="../../../type/v3/range.proto.html#envoy-v3-api-msg-type-v3-int64range"><span class="std std-ref">type.v3.Int64Range</span></a>) Specifies a list of HTTP response statuses considered healthy. If provided, replaces default
+200-only policy - 200 must be included explicitly as needed. Ranges follow half-open
+semantics of <a class="reference internal" href="../../../type/v3/range.proto.html#envoy-v3-api-msg-type-v3-int64range"><span class="std std-ref">Int64Range</span></a>. The start and end of each
+range are required. Only statuses in the range [100, 600) are allowed.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-httphealthcheck-codec-client-type">
+<dt>codec_client_type</dt><dd><p>(<a class="reference internal" href="../../../type/v3/http.proto.html#envoy-v3-api-enum-type-v3-codecclienttype"><span class="std std-ref">type.v3.CodecClientType</span></a>) Use specified application protocol for health checks.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-httphealthcheck-service-name-matcher">
+<dt>service_name_matcher</dt><dd><p>(<a class="reference internal" href="../../../type/matcher/v3/string.proto.html#envoy-v3-api-msg-type-matcher-v3-stringmatcher"><span class="std std-ref">type.matcher.v3.StringMatcher</span></a>) An optional service name parameter which is used to validate the identity of
+the health checked cluster using a <a class="reference internal" href="../../../type/matcher/v3/string.proto.html#envoy-v3-api-msg-type-matcher-v3-stringmatcher"><span class="std std-ref">StringMatcher</span></a>. See the <a class="reference internal" href="../../../../intro/arch_overview/upstream/health_checking.html#arch-overview-health-checking-identity"><span class="std std-ref">architecture overview</span></a> for more information.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-core-v3-healthcheck-tcphealthcheck">
+<span id="envoy-v3-api-msg-config-core-v3-healthcheck-tcphealthcheck"></span><h2>config.core.v3.HealthCheck.TcpHealthCheck<a class="headerlink" href="#config-core-v3-healthcheck-tcphealthcheck" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.6/api/envoy/config/core/v3/health_check.proto#L130">[config.core.v3.HealthCheck.TcpHealthCheck proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;send&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;receive&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-tcphealthcheck-send">
+<dt>send</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-core-v3-healthcheck-payload"><span class="std std-ref">config.core.v3.HealthCheck.Payload</span></a>) Empty payloads imply a connect-only health check.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-tcphealthcheck-receive">
+<dt>receive</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="#envoy-v3-api-msg-config-core-v3-healthcheck-payload"><span class="std std-ref">config.core.v3.HealthCheck.Payload</span></a>) When checking the response, “fuzzy” matching is performed such that each
+binary block must be found, and in the order specified, but not
+necessarily contiguous.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-core-v3-healthcheck-redishealthcheck">
+<span id="envoy-v3-api-msg-config-core-v3-healthcheck-redishealthcheck"></span><h2>config.core.v3.HealthCheck.RedisHealthCheck<a class="headerlink" href="#config-core-v3-healthcheck-redishealthcheck" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.6/api/envoy/config/core/v3/health_check.proto#L143">[config.core.v3.HealthCheck.RedisHealthCheck proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-redishealthcheck-key">
+<dt>key</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) If set, optionally perform <code class="docutils literal notranslate"><span class="pre">EXISTS</span> <span class="pre">&lt;key&gt;</span></code> instead of <code class="docutils literal notranslate"><span class="pre">PING</span></code>. A return value
+from Redis of 0 (does not exist) is considered a passing healthcheck. A return value other
+than 0 is considered a failure. This allows the user to mark a Redis instance for maintenance
+by setting the specified key to any value and waiting for traffic to drain.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-core-v3-healthcheck-grpchealthcheck">
+<span id="envoy-v3-api-msg-config-core-v3-healthcheck-grpchealthcheck"></span><h2>config.core.v3.HealthCheck.GrpcHealthCheck<a class="headerlink" href="#config-core-v3-healthcheck-grpchealthcheck" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.6/api/envoy/config/core/v3/health_check.proto#L158">[config.core.v3.HealthCheck.GrpcHealthCheck proto]</a></p>
+<p><a class="reference external" href="https://github.com/grpc/grpc/blob/master/src/proto/grpc/health/v1/health.proto">grpc.health.v1.Health</a>-based
+healthcheck. See <a class="reference external" href="https://github.com/grpc/grpc/blob/master/doc/health-checking.md">gRPC doc</a>
+for details.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;service_name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;authority&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-grpchealthcheck-service-name">
+<dt>service_name</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) An optional service name parameter which will be sent to gRPC service in
+<a class="reference external" href="https://github.com/grpc/grpc/blob/master/src/proto/grpc/health/v1/health.proto#L20">grpc.health.v1.HealthCheckRequest</a>.
+message. See <a class="reference external" href="https://github.com/grpc/grpc/blob/master/doc/health-checking.md">gRPC health-checking overview</a> for more information.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-grpchealthcheck-authority">
+<dt>authority</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The value of the :authority header in the gRPC health check request. If
+left empty (default value), the name of the cluster this health check is associated
+with will be used. The authority header can be customized for a specific endpoint by setting
+the <a class="reference internal" href="../../endpoint/v3/endpoint_components.proto.html#envoy-v3-api-field-config-endpoint-v3-endpoint-healthcheckconfig-hostname"><span class="std std-ref">hostname</span></a> field.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-core-v3-healthcheck-customhealthcheck">
+<span id="envoy-v3-api-msg-config-core-v3-healthcheck-customhealthcheck"></span><h2>config.core.v3.HealthCheck.CustomHealthCheck<a class="headerlink" href="#config-core-v3-healthcheck-customhealthcheck" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.6/api/envoy/config/core/v3/health_check.proto#L178">[config.core.v3.HealthCheck.CustomHealthCheck proto]</a></p>
+<p>Custom health check.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;typed_config&quot;</span><span class="p">:</span> <span class="s2">&quot;{...}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-customhealthcheck-name">
+<dt>name</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) The registered name of the custom health checker.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-core-v3-healthcheck-customhealthcheck-typed-config">
+<dt>typed_config</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any">Any</a>)
+A custom health checker specific configuration which depends on the custom health checker
+being instantiated. See <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.6/api/envoy/config/health_checker">envoy/config/health_checker</a> for reference.</p>
+<div class="admonition tip" id="extension-category-envoy-health-checkers">
+<p class="admonition-title">Tip</p>
+<p>This extension category has the following known extensions:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../extensions/health_checkers/redis/v3/redis.proto.html#extension-envoy-health-checkers-redis"><span class="std std-ref">envoy.health_checkers.redis</span></a></p></li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="section" id="config-core-v3-healthcheck-tlsoptions">
+<span id="envoy-v3-api-msg-config-core-v3-healthcheck-tlsoptions"></span><h2>config.core.v3.HealthCheck.TlsOptions<a class="headerlink" href="#config-core-v3-healthcheck-tlsoptions" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.6/api/envoy/config/core/v3/health_check.proto#L201">[config.core.v3.HealthCheck.TlsOptions proto]</a></p>
+<p>Health checks occur over the transport socket specified for the cluster. This implies that if a
+cluster is using a TLS-enabled transport socket, the health check will also occur over TLS.</p>
+<p>This allows overriding the cluster TLS settings, just for health check connections.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;alpn_protocols&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-core-v3-healthcheck-tlsoptions-alpn-protocols">
+<dt>alpn_protocols</dt><dd><p>(<strong>repeated</strong> <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Specifies the ALPN protocols for health check connections. This is useful if the
+corresponding upstream is using ALPN-based <a class="reference internal" href="../../listener/v3/listener_components.proto.html#envoy-v3-api-msg-config-listener-v3-filterchainmatch"><span class="std std-ref">FilterChainMatch</span></a> along with different protocols for health checks
+versus data connections. If empty, no ALPN protocols will be set on health check connections.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="enum-config-core-v3-healthstatus">
+<span id="envoy-v3-api-enum-config-core-v3-healthstatus"></span><h2>Enum config.core.v3.HealthStatus<a class="headerlink" href="#enum-config-core-v3-healthstatus" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.20.6/api/envoy/config/core/v3/health_check.proto#L30">[config.core.v3.HealthStatus proto]</a></p>
+<p>Endpoint health status.</p>
+<dl class="simple" id="envoy-v3-api-enum-value-config-core-v3-healthstatus-unknown">
+<dt>UNKNOWN</dt><dd><p><em>(DEFAULT)</em> ⁣The health status is not known. This is interpreted by Envoy as <em>HEALTHY</em>.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-enum-value-config-core-v3-healthstatus-healthy">
+<dt>HEALTHY</dt><dd><p>⁣Healthy.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-enum-value-config-core-v3-healthstatus-unhealthy">
+<dt>UNHEALTHY</dt><dd><p>⁣Unhealthy.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-enum-value-config-core-v3-healthstatus-draining">
+<dt>DRAINING</dt><dd><p>⁣Connection draining in progress. E.g.,
+<a class="reference external" href="https://aws.amazon.com/blogs/aws/elb-connection-draining-remove-instances-from-service-with-care/">https://aws.amazon.com/blogs/aws/elb-connection-draining-remove-instances-from-service-with-care/</a>
+or
+<a class="reference external" href="https://cloud.google.com/compute/docs/load-balancing/enabling-connection-draining">https://cloud.google.com/compute/docs/load-balancing/enabling-connection-draining</a>.
+This is interpreted by Envoy as <em>UNHEALTHY</em>.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-enum-value-config-core-v3-healthstatus-timeout">
+<dt>TIMEOUT</dt><dd><p>⁣Health check timed out. This is part of HDS and is interpreted by Envoy as
+<em>UNHEALTHY</em>.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-enum-value-config-core-v3-healthstatus-degraded">
+<dt>DEGRADED</dt><dd><p>⁣Degraded.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../../endpoint/v3/endpoint_components.proto.html" class="btn btn-neutral float-left" title="Endpoints" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../../http_routes/http_routes.html" class="btn btn-neutral float-right" title="HTTP route management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CORS filter &mdash; envoy tag-v1.20.6 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="CSRF filter" href="csrf.html" />
+    <link rel="prev" title="Cache filter" href="cache.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html">
+            <img src="../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                tag-v1.20.6
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../start.html">Getting Started</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../install.html">Installing Envoy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quick-start/index.html">Quick start</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Sandboxes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="setup.html">Setup the sandbox environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="brotli.html">Brotli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache filter</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">CORS filter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#step-1-start-all-of-our-containers">Step 1: Start all of our containers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-2-test-envoy-s-cors-capabilities">Step 2: Test Envoy’s CORS capabilities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-3-check-stats-of-backend-via-admin">Step 3: Check stats of backend via admin</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="double-proxy.html">Double proxy (with <code class="docutils literal notranslate"><span class="pre">mTLS</span></code> encryption)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-filesystem.html">Dynamic configuration (filesystem)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-control-plane.html">Dynamic configuration (control plane)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ext_authz.html">External authorization (<code class="docutils literal notranslate"><span class="pre">ext_authz</span></code>) filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault injection filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gzip.html">Gzip</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger native tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_tracing.html">Jaeger tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="load_reporting_service.html">Load reporting service (<code class="docutils literal notranslate"><span class="pre">LRS</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mysql.html">MySQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="postgres.html">PostgreSQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skywalking_tracing.html">SkyWalking tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls-inspector.html">TLS Inspector Listener Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls-sni.html">TLS Server name indication (<code class="docutils literal notranslate"><span class="pre">SNI</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls.html">Transport layer security (<code class="docutils literal notranslate"><span class="pre">TLS</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="udp.html">User Datagram Protocol (<code class="docutils literal notranslate"><span class="pre">UDP</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wasm-cc.html">Wasm C++ filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="websocket.html">WebSockets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="win32_front_proxy.html">Windows based Front proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">Zipkin tracing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docker.html">Using the Envoy Docker Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../building.html">Building</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../start.html">Getting Started</a> &raquo;</li>
+          <li><a href="index.html">Sandboxes</a> &raquo;</li>
+      <li>CORS filter</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/start/sandboxes/cors.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="cors-filter">
+<span id="install-sandboxes-cors"></span><h1>CORS filter<a class="headerlink" href="#cors-filter" title="Permalink to this headline">¶</a></h1>
+<div class="sidebar">
+<p class="sidebar-title">Requirements</p>
+<dl class="simple">
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup"><span class="std std-ref">Sandbox environment</span></a></dt><dd><p>Setup your sandbox environment with Docker and Docker Compose,
+and clone the Envoy repository with Git.</p>
+</dd>
+</dl>
+</div>
+<p>Cross-Origin Resource Sharing (CORS) is a method of enforcing client-side
+access controls on resources by specifying external domains that are able to
+access certain or all routes of your domain. Browsers use the presence of HTTP
+headers to determine if a response from a different origin is allowed.</p>
+<p>To help demonstrate how front-envoy can enforce CORS policies, we are
+releasing a set of <a class="reference external" href="https://docs.docker.com/compose/">docker compose</a> sandboxes
+that deploy a frontend and backend service on different origins, both behind
+front-envoy.</p>
+<p>The frontend service has a field to input the remote domain of your backend
+service along with radio buttons to select the remote domain’s CORS enforcement.
+The CORS enforcement choices are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Disabled: CORS is disabled on the route requested. This will result in a
+client-side CORS error since the required headers to be considered a
+valid CORS request are not present.</p></li>
+<li><p>Open: CORS is enabled on the route requested but the allowed origin is set
+to <code class="docutils literal notranslate"><span class="pre">*</span></code>. This is a very permissive policy and means that origin can request
+data from this endpoint.</p></li>
+<li><p>Restricted: CORS is enabled on the route requested and the only allowed
+origin is <code class="docutils literal notranslate"><span class="pre">envoyproxy.io</span></code>. This will result in a client-side CORS error.</p></li>
+</ul>
+</div></blockquote>
+<div class="section" id="step-1-start-all-of-our-containers">
+<h2>Step 1: Start all of our containers<a class="headerlink" href="#step-1-start-all-of-our-containers" title="Permalink to this headline">¶</a></h2>
+<p>Change to the <code class="docutils literal notranslate"><span class="pre">examples/cors/frontend</span></code> directory, and start the containers:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">pwd</span>
+<span class="go">envoy/examples/cors/frontend</span>
+<span class="gp">$ </span>docker-compose pull
+<span class="gp">$ </span>docker-compose up --build -d
+<span class="gp">$ </span>docker-compose ps
+
+<span class="go">          Name                          Command              State               Ports</span>
+<span class="go">------------------------------------------------------------------------------------------------------</span>
+<span class="go">frontend_front-envoy_1        /docker-entrypoint.sh /bin ... Up      10000/tcp, 0.0.0.0:8000-&gt;8000/tcp</span>
+<span class="go">frontend_frontend-service_1   /bin/sh -c /usr/local/bin/ ... Up      10000/tcp</span>
+</pre></div>
+</div>
+<p>Now, switch to the <code class="docutils literal notranslate"><span class="pre">backend</span></code> directory in the <code class="docutils literal notranslate"><span class="pre">cors</span></code> example, and start the containers:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">pwd</span>
+<span class="go">envoy/examples/cors/backend</span>
+<span class="gp">$ </span>docker-compose pull
+<span class="gp">$ </span>docker-compose up --build -d
+<span class="gp">$ </span>docker-compose ps
+
+<span class="go">          Name                         Command             State                            Ports</span>
+<span class="go">----------------------------------------------------------------------------------------------------------------------------</span>
+<span class="go">backend_backend-service_1   /bin/sh -c /usr/local/bin/ ... Up      10000/tcp</span>
+<span class="go">backend_front-envoy_1       /docker-entrypoint.sh /bin ... Up      10000/tcp, 0.0.0.0:8002-&gt;8000/tcp, 0.0.0.0:8003-&gt;8001/tcp</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-2-test-envoy-s-cors-capabilities">
+<h2>Step 2: Test Envoy’s CORS capabilities<a class="headerlink" href="#step-2-test-envoy-s-cors-capabilities" title="Permalink to this headline">¶</a></h2>
+<p>You can now open a browser to view your frontend service at <a class="reference external" href="http://localhost:8000">http://localhost:8000</a>.</p>
+<p>Results of the cross-origin request will be shown on the page under <em>Request Results</em>.</p>
+<p>Your browser’s <code class="docutils literal notranslate"><span class="pre">CORS</span></code> enforcement logs can be found in the browser console.</p>
+<p>For example:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Access to XMLHttpRequest at &#39;http://192.168.99.100:8002/cors/disabled&#39; from origin &#39;http://192.168.99.101:8000&#39;</span>
+<span class="go">has been blocked by CORS policy: No &#39;Access-Control-Allow-Origin&#39; header is present on the requested resource.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-3-check-stats-of-backend-via-admin">
+<h2>Step 3: Check stats of backend via admin<a class="headerlink" href="#step-3-check-stats-of-backend-via-admin" title="Permalink to this headline">¶</a></h2>
+<p>When Envoy runs, it can listen to <code class="docutils literal notranslate"><span class="pre">admin</span></code> requests if a port is configured.</p>
+<p>In the example configs, the backend admin is bound to port <code class="docutils literal notranslate"><span class="pre">8003</span></code>.</p>
+<p>If you browse to <a class="reference external" href="http://localhost:8003/stats">http://localhost:8003/stats</a> you will be able to view
+all of the Envoy stats for the backend. You should see the <code class="docutils literal notranslate"><span class="pre">CORS</span></code> stats for
+invalid and valid origins increment as you make requests from the frontend cluster.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>http.ingress_http.cors.origin_invalid: 2
+http.ingress_http.cors.origin_valid: 7
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="../quick-start/admin.html#start-quick-start-admin"><span class="std std-ref">Envoy admin quick start guide</span></a></dt><dd><p>Quick start guide to the Envoy admin interface.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cache.html" class="btn btn-neutral float-left" title="Cache filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="csrf.html" class="btn btn-neutral float-right" title="CSRF filter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
