@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Statistics &mdash; envoy tag-v1.23.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Runtime" href="runtime.html" />
+    <link rel="prev" title="Response Code Details" href="response_code_details.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html">
+            <img src="../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                tag-v1.23.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../configuration.html">Configuration reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../overview/overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../http.html">HTTP</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="http_conn_man.html">HTTP connection manager</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="route_matching.html">Route matching</a></li>
+<li class="toctree-l4"><a class="reference internal" href="traffic_splitting.html">Traffic Shifting/Splitting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="header_casing.html">HTTP/1.1 Header Casing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="headers.html">HTTP header manipulation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="header_sanitizing.html">HTTP header sanitizing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="local_reply.html">Local reply modification</a></li>
+<li class="toctree-l4"><a class="reference internal" href="response_code_details.html">Response Code Details</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Statistics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime.html">Runtime</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rds.html">Route discovery service (RDS)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vhds.html">Virtual Host Discovery Service (VHDS)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../http_filters/http_filters.html">HTTP filters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../upstream/upstream.html">Upstream clusters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../observability/observability.html">Observability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../security/security.html">Security</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../operations/operations.html">Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../other_features/other_features.html">Other features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/advanced.html">Advanced</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../best_practices/best_practices.html">Configuration best practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../configuration.html">Configuration reference</a> &raquo;</li>
+          <li><a href="../http.html">HTTP</a> &raquo;</li>
+          <li><a href="http_conn_man.html">HTTP connection manager</a> &raquo;</li>
+      <li>Statistics</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/configuration/http/http_conn_man/stats.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="statistics">
+<span id="config-http-conn-man-stats"></span><h1>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h1>
+<p>Every connection manager has a statistics tree rooted at <em>http.&lt;stat_prefix&gt;.</em> with the following
+statistics:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>downstream_cx_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_cx_ssl_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total TLS connections</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_cx_http1_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total HTTP/1.1 connections</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_cx_upgrades_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total successfully upgraded connections. These are also counted as total http1/http2 connections.</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_cx_http2_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total HTTP/2 connections</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_cx_http3_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total HTTP/3 connections</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_cx_destroy</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections destroyed</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_cx_destroy_remote</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections destroyed due to remote close</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_cx_destroy_local</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections destroyed due to local close</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_cx_destroy_active_rq</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections destroyed with 1+ active request</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_cx_destroy_local_active_rq</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections destroyed locally with 1+ active request</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_cx_destroy_remote_active_rq</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections destroyed remotely with 1+ active request</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_cx_active</p></td>
+<td><p>Gauge</p></td>
+<td><p>Total active connections</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_cx_ssl_active</p></td>
+<td><p>Gauge</p></td>
+<td><p>Total active TLS connections</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_cx_http1_active</p></td>
+<td><p>Gauge</p></td>
+<td><p>Total active HTTP/1.1 connections</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_cx_upgrades_active</p></td>
+<td><p>Gauge</p></td>
+<td><p>Total active upgraded connections. These are also counted as active http1/http2 connections.</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_cx_http2_active</p></td>
+<td><p>Gauge</p></td>
+<td><p>Total active HTTP/2 connections</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_cx_http3_active</p></td>
+<td><p>Gauge</p></td>
+<td><p>Total active HTTP/3 connections</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_cx_protocol_error</p></td>
+<td><p>Counter</p></td>
+<td><p>Total protocol errors</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_cx_length_ms</p></td>
+<td><p>Histogram</p></td>
+<td><p>Connection length milliseconds</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_cx_rx_bytes_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total bytes received</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_cx_rx_bytes_buffered</p></td>
+<td><p>Gauge</p></td>
+<td><p>Total received bytes currently buffered</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_cx_tx_bytes_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total bytes sent</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_cx_tx_bytes_buffered</p></td>
+<td><p>Gauge</p></td>
+<td><p>Total sent bytes currently buffered</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_cx_drain_close</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections closed due to draining</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_cx_idle_timeout</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections closed due to idle timeout</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_cx_max_duration_reached</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections closed due to max connection duration</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_cx_max_requests_reached</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections closed due to max requests per connection</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_cx_overload_disable_keepalive</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections for which HTTP 1.x keepalive has been disabled due to Envoy overload</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_flow_control_paused_reading_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of times reads were disabled due to flow control</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_flow_control_resumed_reading_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of times reads were enabled on the connection due to flow control</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_rq_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_rq_http1_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total HTTP/1.1 requests</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_rq_http2_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total HTTP/2 requests</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_rq_http3_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total HTTP/3 requests</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_rq_active</p></td>
+<td><p>Gauge</p></td>
+<td><p>Total active requests</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_rq_rejected_via_ip_detection</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests rejected because the original IP detection failed</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_rq_response_before_rq_complete</p></td>
+<td><p>Counter</p></td>
+<td><p>Total responses sent before the request was complete</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_rq_rx_reset</p></td>
+<td><p>Counter</p></td>
+<td><p>Total request resets received</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_rq_tx_reset</p></td>
+<td><p>Counter</p></td>
+<td><p>Total request resets sent</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_rq_non_relative_path</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests with a non-relative HTTP path</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_rq_too_large</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests resulting in a 413 due to buffering an overly large body</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_rq_completed</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests that resulted in a response (e.g. does not include aborted requests)</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_rq_failed_path_normalization</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests redirected due to different original and normalized URL paths or when path normalization failed. This action is configured by setting the <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-path-with-escaped-slashes-action"><span class="std std-ref">path_with_escaped_slashes_action</span></a> config option.</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_rq_1xx</p></td>
+<td><p>Counter</p></td>
+<td><p>Total 1xx responses</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_rq_2xx</p></td>
+<td><p>Counter</p></td>
+<td><p>Total 2xx responses</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_rq_3xx</p></td>
+<td><p>Counter</p></td>
+<td><p>Total 3xx responses</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_rq_4xx</p></td>
+<td><p>Counter</p></td>
+<td><p>Total 4xx responses</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_rq_5xx</p></td>
+<td><p>Counter</p></td>
+<td><p>Total 5xx responses</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_rq_ws_on_non_ws_route</p></td>
+<td><p>Counter</p></td>
+<td><p>Total upgrade requests rejected by non upgrade routes. This now applies both to WebSocket and non-WebSocket upgrades</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_rq_time</p></td>
+<td><p>Histogram</p></td>
+<td><p>Total time for request and response (milliseconds)</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_rq_idle_timeout</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests closed due to idle timeout</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_rq_max_duration_reached</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests closed due to max duration reached</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_rq_timeout</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests closed due to a timeout on the request path</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_rq_overload_close</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests closed due to Envoy overload</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_rq_redirected_with_normalized_path</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests redirected due to different original and normalized URL paths. This action is configured by setting the <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-path-with-escaped-slashes-action"><span class="std std-ref">path_with_escaped_slashes_action</span></a> config option.</p></td>
+</tr>
+<tr class="row-even"><td><p>rs_too_large</p></td>
+<td><p>Counter</p></td>
+<td><p>Total response errors due to buffering an overly large body</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="per-user-agent-statistics">
+<h2>Per user agent statistics<a class="headerlink" href="#per-user-agent-statistics" title="Permalink to this headline">¶</a></h2>
+<p>Additional per user agent statistics are rooted at <em>http.&lt;stat_prefix&gt;.user_agent.&lt;user_agent&gt;.</em>
+Currently Envoy matches user agent for both iOS (<em>ios</em>) and Android (<em>android</em>) and produces
+the following statistics:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>downstream_cx_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_cx_destroy_remote_active_rq</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections destroyed remotely with 1+ active requests</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_rq_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="per-listener-statistics">
+<span id="config-http-conn-man-stats-per-listener"></span><h2>Per listener statistics<a class="headerlink" href="#per-listener-statistics" title="Permalink to this headline">¶</a></h2>
+<p>Per listener statistics are rooted at <em>listener.&lt;address&gt;</em>.</p>
+<div class="section" id="http-per-listener-statistics">
+<h3>HTTP per listener statistics<a class="headerlink" href="#http-per-listener-statistics" title="Permalink to this headline">¶</a></h3>
+<p>Additional HTTP statistics are of the form <em>http.&lt;stat_prefix&gt;.</em> with the
+following statistics:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>downstream_rq_completed</p></td>
+<td><p>Counter</p></td>
+<td><p>Total responses</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_rq_1xx</p></td>
+<td><p>Counter</p></td>
+<td><p>Total 1xx responses</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_rq_2xx</p></td>
+<td><p>Counter</p></td>
+<td><p>Total 2xx responses</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_rq_3xx</p></td>
+<td><p>Counter</p></td>
+<td><p>Total 3xx responses</p></td>
+</tr>
+<tr class="row-even"><td><p>downstream_rq_4xx</p></td>
+<td><p>Counter</p></td>
+<td><p>Total 4xx responses</p></td>
+</tr>
+<tr class="row-odd"><td><p>downstream_rq_5xx</p></td>
+<td><p>Counter</p></td>
+<td><p>Total 5xx responses</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="http-3-per-listener-statistics">
+<h3>HTTP/3 per listener statistics<a class="headerlink" href="#http-3-per-listener-statistics" title="Permalink to this headline">¶</a></h3>
+<p>HTTP/3 statistics with the form of <em>http3.downstream.&lt;stat_prefix&gt;.</em>:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>&lt;tx/rx&gt;.quic_connection_close_error_code_&lt;error_code&gt;</p></td>
+<td><p>Counter</p></td>
+<td><p>A collection of counters that are lazily initialized to record each quic connection close error code that’s present.</p></td>
+</tr>
+<tr class="row-odd"><td><p>&lt;tx/rx&gt;.quic_reset_stream_error_code_&lt;error_code&gt;</p></td>
+<td><p>Counter</p></td>
+<td><p>A collection of counters that that lazily initialized to record quic stream reset error codes.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="per-codec-statistics">
+<span id="config-http-conn-man-stats-per-codec"></span><h2>Per codec statistics<a class="headerlink" href="#per-codec-statistics" title="Permalink to this headline">¶</a></h2>
+<p>Each codec has the option of adding per-codec statistics. http1, http2, and http3 all have codec stats.</p>
+<div class="section" id="http-1-codec-statistics">
+<h3>HTTP/1 codec statistics<a class="headerlink" href="#http-1-codec-statistics" title="Permalink to this headline">¶</a></h3>
+<p>On the downstream side all http1 statistics are rooted at <em>http1.</em></p>
+<p>On the upstream side all http1 statistics are rooted at <em>cluster.&lt;name&gt;.http1.</em></p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>dropped_headers_with_underscores</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of dropped headers with names containing underscores. This action is configured by setting the <a class="reference internal" href="../../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-httpprotocoloptions-headers-with-underscores-action"><span class="std std-ref">headers_with_underscores_action config setting</span></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>metadata_not_supported_error</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of metadata dropped during HTTP/1 encoding</p></td>
+</tr>
+<tr class="row-even"><td><p>response_flood</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of connections closed due to response flooding</p></td>
+</tr>
+<tr class="row-odd"><td><p>requests_rejected_with_underscores_in_headers</p></td>
+<td><p>Counter</p></td>
+<td><p>Total numbers of rejected requests due to header names containing underscores. This action is configured by setting the <a class="reference internal" href="../../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-httpprotocoloptions-headers-with-underscores-action"><span class="std std-ref">headers_with_underscores_action config setting</span></a>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="http-2-codec-statistics">
+<h3>HTTP/2 codec statistics<a class="headerlink" href="#http-2-codec-statistics" title="Permalink to this headline">¶</a></h3>
+<p>On the downstream side all http2 statistics are rooted at <em>http2.</em></p>
+<p>On the upstream side all http2 statistics are rooted at <em>cluster.&lt;name&gt;.http2.</em></p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>dropped_headers_with_underscores</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of dropped headers with names containing underscores. This action is configured by setting the <a class="reference internal" href="../../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-httpprotocoloptions-headers-with-underscores-action"><span class="std std-ref">headers_with_underscores_action config setting</span></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>header_overflow</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of connections reset due to the headers being larger than the <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-max-request-headers-kb"><span class="std std-ref">configured value</span></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p>headers_cb_no_stream</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of errors where a header callback is called without an associated stream. This tracks an unexpected occurrence due to an as yet undiagnosed bug</p></td>
+</tr>
+<tr class="row-odd"><td><p>inbound_empty_frames_flood</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of connections terminated for exceeding the limit on consecutive inbound frames with an empty payload and no end stream flag. The limit is configured by setting the <a class="reference internal" href="../../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-http2protocoloptions-max-consecutive-inbound-frames-with-empty-payload"><span class="std std-ref">max_consecutive_inbound_frames_with_empty_payload config setting</span></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p>inbound_priority_frames_flood</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of connections terminated for exceeding the limit on inbound frames of type PRIORITY. The limit is configured by setting the <a class="reference internal" href="../../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-http2protocoloptions-max-inbound-priority-frames-per-stream"><span class="std std-ref">max_inbound_priority_frames_per_stream config setting</span></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>inbound_window_update_frames_flood</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of connections terminated for exceeding the limit on inbound frames of type WINDOW_UPDATE. The limit is configured by setting the <a class="reference internal" href="../../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-http2protocoloptions-max-inbound-window-update-frames-per-data-frame-sent"><span class="std std-ref">max_inbound_window_updateframes_per_data_frame_sent config setting</span></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p>metadata_empty_frames</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of metadata frames that were received and contained empty maps.</p></td>
+</tr>
+<tr class="row-odd"><td><p>outbound_flood</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of connections terminated for exceeding the limit on outbound frames of all types. The limit is configured by setting the <a class="reference internal" href="../../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-http2protocoloptions-max-outbound-frames"><span class="std std-ref">max_outbound_frames config setting</span></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p>outbound_control_flood</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of connections terminated for exceeding the limit on outbound frames of types PING, SETTINGS and RST_STREAM. The limit is configured by setting the <a class="reference internal" href="../../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-http2protocoloptions-max-outbound-control-frames"><span class="std std-ref">max_outbound_control_frames config setting</span></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>requests_rejected_with_underscores_in_headers</p></td>
+<td><p>Counter</p></td>
+<td><p>Total numbers of rejected requests due to header names containing underscores. This action is configured by setting the <a class="reference internal" href="../../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-httpprotocoloptions-headers-with-underscores-action"><span class="std std-ref">headers_with_underscores_action config setting</span></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p>rx_messaging_error</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of invalid received frames that violated <a class="reference external" href="https://tools.ietf.org/html/rfc7540#section-8">section 8</a> of the HTTP/2 spec. This will result in a <em>tx_reset</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>rx_reset</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of reset stream frames received by Envoy</p></td>
+</tr>
+<tr class="row-even"><td><p>stream_refused_errors</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of invalid frames received by Envoy with a <cite>REFUSED_STREAM</cite> error code</p></td>
+</tr>
+<tr class="row-odd"><td><p>trailers</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of trailers seen on requests coming from downstream</p></td>
+</tr>
+<tr class="row-even"><td><p>tx_flush_timeout</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of <a class="reference internal" href="../../../api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto.html#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-stream-idle-timeout"><span class="std std-ref">stream idle timeouts</span></a> waiting for open stream window to flush the remainder of a stream</p></td>
+</tr>
+<tr class="row-odd"><td><p>tx_reset</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of reset stream frames transmitted by Envoy</p></td>
+</tr>
+<tr class="row-even"><td><p>keepalive_timeout</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of connections closed due to <a class="reference internal" href="../../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-keepalivesettings-timeout"><span class="std std-ref">keepalive timeout</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>streams_active</p></td>
+<td><p>Gauge</p></td>
+<td><p>Active streams as observed by the codec</p></td>
+</tr>
+<tr class="row-even"><td><p>pending_send_bytes</p></td>
+<td><p>Gauge</p></td>
+<td><p>Currently buffered body data in bytes waiting to be written when stream/connection window is opened.</p></td>
+</tr>
+<tr class="row-odd"><td><p>deferred_stream_close</p></td>
+<td><p>Gauge</p></td>
+<td><p>Number of HTTP/2 streams where the stream has been closed but processing of the stream close has been deferred due to network backup. This is expected to be incremented when a downstream stream is backed up and the corresponding upstream stream has received end stream but we defer processing of the upstream stream close due to downstream backup. This is decremented as we finally delete the stream when either the deferred close stream has its buffered data drained or receives a reset.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>The HTTP/2 <cite>streams_active</cite> gauge may be greater than the HTTP connection manager
+<cite>downstream_rq_active</cite> gauge due to differences in stream accounting between the codec and the
+HTTP connection manager.</p>
+</div>
+</div>
+<div class="section" id="http-3-codec-statistics">
+<h3>HTTP/3 codec statistics<a class="headerlink" href="#http-3-codec-statistics" title="Permalink to this headline">¶</a></h3>
+<p>On the downstream side all http3 statistics are rooted at <em>http3.</em></p>
+<p>On the upstream side all http3 statistics are rooted at <em>cluster.&lt;name&gt;.http3.</em></p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>dropped_headers_with_underscores</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of dropped headers with names containing underscores. This action is configured by setting the <a class="reference internal" href="../../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-httpprotocoloptions-headers-with-underscores-action"><span class="std std-ref">headers_with_underscores_action config setting</span></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>requests_rejected_with_underscores_in_headers</p></td>
+<td><p>Counter</p></td>
+<td><p>Total numbers of rejected requests due to header names containing underscores. This action is configured by setting the <a class="reference internal" href="../../../api-v3/config/core/v3/protocol.proto.html#envoy-v3-api-field-config-core-v3-httpprotocoloptions-headers-with-underscores-action"><span class="std std-ref">headers_with_underscores_action config setting</span></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p>rx_reset</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of reset stream frames received by Envoy</p></td>
+</tr>
+<tr class="row-odd"><td><p>tx_reset</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of reset stream frames transmitted by Envoy</p></td>
+</tr>
+<tr class="row-even"><td><p>metadata_not_supported_error</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of metadata dropped during HTTP/3 encoding</p></td>
+</tr>
+<tr class="row-odd"><td><p>quic_version_h3_29</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of quic connections that use transport version h3-29. QUIC h3-29 is unsupported by default and this counter will be removed when h3-29 support is completely removed.</p></td>
+</tr>
+<tr class="row-even"><td><p>quic_version_rfc_v1</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of quic connections that use transport version rfc-v1.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="tracing-statistics">
+<h2>Tracing statistics<a class="headerlink" href="#tracing-statistics" title="Permalink to this headline">¶</a></h2>
+<p>Tracing statistics are emitted when tracing decisions are made. All tracing statistics are rooted at <em>http.&lt;stat_prefix&gt;.tracing.</em> with the following statistics:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>random_sampling</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of traceable decisions by random sampling</p></td>
+</tr>
+<tr class="row-odd"><td><p>service_forced</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of traceable decisions by server runtime flag <em>tracing.global_enabled</em></p></td>
+</tr>
+<tr class="row-even"><td><p>client_enabled</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of traceable decisions by request header <em>x-envoy-force-trace</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>not_traceable</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of non-traceable decisions by request id</p></td>
+</tr>
+<tr class="row-even"><td><p>health_check</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of non-traceable decisions by health check</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="response_code_details.html" class="btn btn-neutral float-left" title="Response Code Details" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="runtime.html" class="btn btn-neutral float-right" title="Runtime" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
