@@ -1,5 +1,6 @@
 #!/bin/bash -e
 
+BAZEL="${BAZEL:-bazel}"
 OUTPUT_DIR="${1:-_site}"
 
 if  [[ -e "$OUTPUT_DIR" ]]; then
@@ -10,16 +11,19 @@ fi
 mkdir -p "${OUTPUT_DIR}"
 
 # Fetch the latest Envoy commit that has downloadable rst docs
-export ENVOY_COMMIT="$(bazel run //docs:latest_version)"
+export ENVOY_COMMIT="$($BAZEL run //docs:latest_version)"
 
 echo "Building website for Envoy commit: ${ENVOY_COMMIT}"
-bazel build --action_env=ENVOY_COMMIT //site:html
+$BAZEL build \
+    --action_env=ENVOY_COMMIT \
+    --action_env=JEKYLL_ENV \
+    //site:html
 
 echo "Extracting website -> ${OUTPUT_DIR}"
 tar zxf bazel-bin/site/html.tar.gz -C "${OUTPUT_DIR}"
 
 if [[ -n "$CI" ]]; then
-    bazel shutdown || :
+    $BAZEL shutdown || :
 fi
 
 echo "Website built (${ENVOY_COMMIT}) in ${OUTPUT_DIR}"
