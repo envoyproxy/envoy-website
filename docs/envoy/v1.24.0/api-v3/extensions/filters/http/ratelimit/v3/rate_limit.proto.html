@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rate limit (proto) &mdash; envoy tag-v1.24.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../../" id="documentation_options" src="../../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../../_static/jquery.js"></script>
+        <script src="../../../../../../_static/underscore.js"></script>
+        <script src="../../../../../../_static/doctools.js"></script>
+        <script src="../../../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../../../_static/copybutton.js"></script>
+    <script src="../../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" />
+    <link rel="next" title="RBAC (proto)" href="../../rbac/v3/rbac.proto.html" />
+    <link rel="prev" title="Original Src Filter (proto)" href="../../original_src/v3/original_src.proto.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../../index.html">
+            <img src="../../../../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                tag-v1.24.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../../../api/api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../api/api_supported_versions.html">Supported API versions</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../../../../api.html">v3 API reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../../../bootstrap/bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../clusters/clusters.html">Clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../http_routes/http_routes.html">HTTP route management</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../../../../config/config.html">Extensions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/accesslog/filters.html">Access log extension filters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/formatter/formatter.html">Access log formatters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/accesslog/accesslog.html">Access loggers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/cluster/cluster.html">Cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/common/common.html">Common</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/compression/compression.html">Compression</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/config_validators/config_validators.html">Config validators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/contrib/contrib.html">Contrib extensions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/dns_resolver/dns_resolver.html">DNS resolver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/endpoint/endpoint.html">Endpoint</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../../../../../config/filter/filter.html">Filters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/grpc_credential/grpc_credential.html">Grpc credentials</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/health_checker/health_checker.html">Health checkers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/http/header_formatters.html">HTTP header formatters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/http/header_validators.html">HTTP header validators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/http/original_ip_detection.html">HTTP original IP detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/http/stateful_session.html">HTTP stateful session</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/trace/trace.html">HTTP tracers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/internal_redirect/internal_redirect.html">Internal redirect predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/path/match/path_matcher.html">Path matcher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/path/rewrite/path_rewriter.html">Path rewriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/quic/quic_extensions.html">Quic extensions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/descriptors/descriptors.html">Rate limit descriptors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/rbac/rbac.html">RBAC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/rbac/matchers.html">RBAC matchers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/request_id/request_id.html">Request ID</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/resource_monitor/resource_monitor.html">Resource monitors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/retry/retry.html">Retry predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/stat_sinks/stat_sinks.html">Stat sinks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/transport_socket/transport_socket.html">Transport sockets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/upstream/upstream.html">Upstream configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/wasm/wasm.html">WASM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/watchdog/watchdog.html">Watchdog</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../admin/admin.html">Admin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../data/data.html">Envoy data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../service/service.html">Services</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../common_messages/common_messages.html">Common messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../common_messages/common_messages_xds.html">Common messages (XDS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../types/types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../api-docs/xds_protocol.html">xDS REST and gRPC protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../api/client_features.html">Well Known Client Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../../../api/api.html">API</a> &raquo;</li>
+          <li><a href="../../../../../api.html">v3 API reference</a> &raquo;</li>
+          <li><a href="../../../../../config/config.html">Extensions</a> &raquo;</li>
+          <li><a href="../../../../../config/filter/filter.html">Filters</a> &raquo;</li>
+          <li><a href="../../../../../config/filter/http/http.html">HTTP filters</a> &raquo;</li>
+      <li>Rate limit (proto)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../../_sources/api-v3/extensions/filters/http/ratelimit/v3/rate_limit.proto.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="rate-limit-proto">
+<span id="envoy-v3-api-file-envoy-extensions-filters-http-ratelimit-v3-rate-limit-proto"></span><h1>Rate limit (proto)<a class="headerlink" href="#rate-limit-proto" title="Permalink to this headline">¶</a></h1>
+<p id="extension-envoy-filters-http-ratelimit">This extension has the qualified name <code class="docutils literal notranslate"><span class="pre">envoy.filters.http.ratelimit</span></code></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This extension is intended to be robust against untrusted downstream traffic. It
+assumes that the upstream is trusted.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>This extension extends and can be used with the following extension category:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../network/http_connection_manager/v3/http_connection_manager.proto.html#extension-category-envoy-filters-http"><span class="std std-ref">envoy.filters.http</span></a></p></li>
+</ul>
+<p>This extension must be configured with one of the following type URLs:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#envoy-v3-api-msg-extensions-filters-http-ratelimit-v3-ratelimit"><span class="std std-ref">type.googleapis.com/envoy.extensions.filters.http.ratelimit.v3.RateLimit</span></a></p></li>
+<li><p><a class="reference internal" href="#envoy-v3-api-msg-extensions-filters-http-ratelimit-v3-ratelimitperroute"><span class="std std-ref">type.googleapis.com/envoy.extensions.filters.http.ratelimit.v3.RateLimitPerRoute</span></a></p></li>
+</ul>
+</div>
+<p>Rate limit <a class="reference internal" href="../../../../../../configuration/http/http_filters/rate_limit_filter.html#config-http-filters-rate-limit"><span class="std std-ref">configuration overview</span></a>.</p>
+<div class="section" id="extensions-filters-http-ratelimit-v3-ratelimit">
+<span id="envoy-v3-api-msg-extensions-filters-http-ratelimit-v3-ratelimit"></span><h2>extensions.filters.http.ratelimit.v3.RateLimit<a class="headerlink" href="#extensions-filters-http-ratelimit-v3-ratelimit" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.24.0/api/envoy/extensions/filters/http/ratelimit/v3/rate_limit.proto#L28">[extensions.filters.http.ratelimit.v3.RateLimit proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;domain&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;stage&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;request_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;timeout&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;failure_mode_deny&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;rate_limited_as_resource_exhausted&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;rate_limit_service&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;enable_x_ratelimit_headers&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;disable_x_envoy_ratelimited_header&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;rate_limited_status&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;response_headers_to_add&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-http-ratelimit-v3-ratelimit-domain">
+<dt>domain</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) The rate limit domain to use when calling the rate limit service.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-extensions-filters-http-ratelimit-v3-ratelimit-stage">
+<dt>stage</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">uint32</a>) Specifies the rate limit configurations to be applied with the same
+stage number. If not set, the default stage number is 0.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The filter supports a range of 0 - 10 inclusively for stage numbers.</p>
+</div>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-http-ratelimit-v3-ratelimit-request-type">
+<dt>request_type</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The type of requests the filter should apply to. The supported
+types are <code class="docutils literal notranslate"><span class="pre">internal</span></code>, <code class="docutils literal notranslate"><span class="pre">external</span></code> or <code class="docutils literal notranslate"><span class="pre">both</span></code>. A request is considered internal if
+<a class="reference internal" href="../../../../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-envoy-internal"><span class="std std-ref">x-envoy-internal</span></a> is set to true. If
+<a class="reference internal" href="../../../../../../configuration/http/http_conn_man/headers.html#config-http-conn-man-headers-x-envoy-internal"><span class="std std-ref">x-envoy-internal</span></a> is not set or false, a
+request is considered external. The filter defaults to <code class="docutils literal notranslate"><span class="pre">both</span></code>, and it will apply to all request
+types.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-http-ratelimit-v3-ratelimit-timeout">
+<dt>timeout</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) The timeout in milliseconds for the rate limit service RPC. If not
+set, this defaults to 20ms.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-http-ratelimit-v3-ratelimit-failure-mode-deny">
+<dt>failure_mode_deny</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) The filter’s behaviour in case the rate limiting service does
+not respond back. When it is set to true, Envoy will not allow traffic in case of
+communication failure between rate limiting service and the proxy.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-http-ratelimit-v3-ratelimit-rate-limited-as-resource-exhausted">
+<dt>rate_limited_as_resource_exhausted</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Specifies whether a <code class="docutils literal notranslate"><span class="pre">RESOURCE_EXHAUSTED</span></code> gRPC code must be returned instead
+of the default <code class="docutils literal notranslate"><span class="pre">UNAVAILABLE</span></code> gRPC code for a rate limited gRPC call. The
+HTTP code will be 200 for a gRPC response.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-http-ratelimit-v3-ratelimit-rate-limit-service">
+<dt>rate_limit_service</dt><dd><p>(<a class="reference internal" href="../../../../../config/ratelimit/v3/rls.proto.html#envoy-v3-api-msg-config-ratelimit-v3-ratelimitserviceconfig"><span class="std std-ref">config.ratelimit.v3.RateLimitServiceConfig</span></a>, <em>REQUIRED</em>) Configuration for an external rate limit service provider. If not
+specified, any calls to the rate limit service will immediately return
+success.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-extensions-filters-http-ratelimit-v3-ratelimit-enable-x-ratelimit-headers">
+<dt>enable_x_ratelimit_headers</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-enum-extensions-filters-http-ratelimit-v3-ratelimit-xratelimitheadersrfcversion"><span class="std std-ref">extensions.filters.http.ratelimit.v3.RateLimit.XRateLimitHeadersRFCVersion</span></a>) Defines the standard version to use for X-RateLimit headers emitted by the filter:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">X-RateLimit-Limit</span></code> - indicates the request-quota associated to the
+client in the current time-window followed by the description of the
+quota policy. The values are returned by the rate limiting service in
+<a class="reference internal" href="../../../../../service/ratelimit/v3/rls.proto.html#envoy-v3-api-field-service-ratelimit-v3-ratelimitresponse-descriptorstatus-current-limit"><span class="std std-ref">current_limit</span></a>
+field. Example: <code class="docutils literal notranslate"><span class="pre">10,</span> <span class="pre">10;w=1;name=&quot;per-ip&quot;,</span> <span class="pre">1000;w=3600</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">X-RateLimit-Remaining</span></code> - indicates the remaining requests in the
+current time-window. The values are returned by the rate limiting service
+in <a class="reference internal" href="../../../../../service/ratelimit/v3/rls.proto.html#envoy-v3-api-field-service-ratelimit-v3-ratelimitresponse-descriptorstatus-limit-remaining"><span class="std std-ref">limit_remaining</span></a>
+field.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">X-RateLimit-Reset</span></code> - indicates the number of seconds until reset of
+the current time-window. The values are returned by the rate limiting service
+in <a class="reference internal" href="../../../../../service/ratelimit/v3/rls.proto.html#envoy-v3-api-field-service-ratelimit-v3-ratelimitresponse-descriptorstatus-duration-until-reset"><span class="std std-ref">duration_until_reset</span></a>
+field.</p></li>
+</ul>
+<p>In case rate limiting policy specifies more then one time window, the values
+above represent the window that is closest to reaching its limit.</p>
+<p>For more information about the headers specification see selected version of
+the <a class="reference external" href="https://tools.ietf.org/id/draft-polli-ratelimit-headers-03.html">draft RFC</a>.</p>
+<p>Disabled by default.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-http-ratelimit-v3-ratelimit-disable-x-envoy-ratelimited-header">
+<dt>disable_x_envoy_ratelimited_header</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Disables emitting the <a class="reference internal" href="../../../../../../configuration/http/http_filters/router_filter.html#config-http-filters-router-x-envoy-ratelimited"><span class="std std-ref">x-envoy-ratelimited</span></a> header
+in case of rate limiting (i.e. 429 responses).
+Having this header not present potentially makes the request retriable.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-extensions-filters-http-ratelimit-v3-ratelimit-rate-limited-status">
+<dt>rate_limited_status</dt><dd><p>(<a class="reference internal" href="../../../../../type/v3/http_status.proto.html#envoy-v3-api-msg-type-v3-httpstatus"><span class="std std-ref">type.v3.HttpStatus</span></a>) This field allows for a custom HTTP response status code to the downstream client when
+the request has been rate limited.
+Defaults to 429 (TooManyRequests).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If this is set to &lt; 400, 429 will be used instead.</p>
+</div>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-http-ratelimit-v3-ratelimit-response-headers-to-add">
+<dt>response_headers_to_add</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="../../../../../config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-headervalueoption"><span class="std std-ref">config.core.v3.HeaderValueOption</span></a>) Specifies a list of HTTP headers that should be added to each response for requests that
+have been rate limited.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="enum-extensions-filters-http-ratelimit-v3-ratelimit-xratelimitheadersrfcversion">
+<span id="envoy-v3-api-enum-extensions-filters-http-ratelimit-v3-ratelimit-xratelimitheadersrfcversion"></span><h2>Enum extensions.filters.http.ratelimit.v3.RateLimit.XRateLimitHeadersRFCVersion<a class="headerlink" href="#enum-extensions-filters-http-ratelimit-v3-ratelimit-xratelimitheadersrfcversion" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.24.0/api/envoy/extensions/filters/http/ratelimit/v3/rate_limit.proto#L35">[extensions.filters.http.ratelimit.v3.RateLimit.XRateLimitHeadersRFCVersion proto]</a></p>
+<p>Defines the version of the standard to use for X-RateLimit headers.</p>
+<dl class="simple" id="envoy-v3-api-enum-value-extensions-filters-http-ratelimit-v3-ratelimit-xratelimitheadersrfcversion-off">
+<dt>OFF</dt><dd><p><em>(DEFAULT)</em> ⁣X-RateLimit headers disabled.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-enum-value-extensions-filters-http-ratelimit-v3-ratelimit-xratelimitheadersrfcversion-draft-version-03">
+<dt>DRAFT_VERSION_03</dt><dd><p>⁣Use <a class="reference external" href="https://tools.ietf.org/id/draft-polli-ratelimit-headers-03.html">draft RFC Version 03</a>.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="extensions-filters-http-ratelimit-v3-ratelimitperroute">
+<span id="envoy-v3-api-msg-extensions-filters-http-ratelimit-v3-ratelimitperroute"></span><h2>extensions.filters.http.ratelimit.v3.RateLimitPerRoute<a class="headerlink" href="#extensions-filters-http-ratelimit-v3-ratelimitperroute" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.24.0/api/envoy/extensions/filters/http/ratelimit/v3/rate_limit.proto#L338">[extensions.filters.http.ratelimit.v3.RateLimitPerRoute proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;vh_rate_limits&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-http-ratelimit-v3-ratelimitperroute-vh-rate-limits">
+<dt>vh_rate_limits</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-enum-extensions-filters-http-ratelimit-v3-ratelimitperroute-vhratelimitsoptions"><span class="std std-ref">extensions.filters.http.ratelimit.v3.RateLimitPerRoute.VhRateLimitsOptions</span></a>) Specifies if the rate limit filter should include the virtual host rate limits.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="enum-extensions-filters-http-ratelimit-v3-ratelimitperroute-vhratelimitsoptions">
+<span id="envoy-v3-api-enum-extensions-filters-http-ratelimit-v3-ratelimitperroute-vhratelimitsoptions"></span><h2>Enum extensions.filters.http.ratelimit.v3.RateLimitPerRoute.VhRateLimitsOptions<a class="headerlink" href="#enum-extensions-filters-http-ratelimit-v3-ratelimitperroute-vhratelimitsoptions" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/v1.24.0/api/envoy/extensions/filters/http/ratelimit/v3/rate_limit.proto#L340">[extensions.filters.http.ratelimit.v3.RateLimitPerRoute.VhRateLimitsOptions proto]</a></p>
+<dl class="simple" id="envoy-v3-api-enum-value-extensions-filters-http-ratelimit-v3-ratelimitperroute-vhratelimitsoptions-override">
+<dt>OVERRIDE</dt><dd><p><em>(DEFAULT)</em> ⁣Use the virtual host rate limits unless the route has a rate limit policy.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-enum-value-extensions-filters-http-ratelimit-v3-ratelimitperroute-vhratelimitsoptions-include">
+<dt>INCLUDE</dt><dd><p>⁣Use the virtual host rate limits even if the route has a rate limit policy.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-enum-value-extensions-filters-http-ratelimit-v3-ratelimitperroute-vhratelimitsoptions-ignore">
+<dt>IGNORE</dt><dd><p>⁣Ignore the virtual host rate limits even if the route does not have a rate limit policy.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../../original_src/v3/original_src.proto.html" class="btn btn-neutral float-left" title="Original Src Filter (proto)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../rbac/v3/rbac.proto.html" class="btn btn-neutral float-right" title="RBAC (proto)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
