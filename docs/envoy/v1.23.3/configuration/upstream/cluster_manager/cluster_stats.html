@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Statistics &mdash; envoy tag-v1.23.3 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Runtime" href="cluster_runtime.html" />
+    <link rel="prev" title="Overview" href="overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html">
+            <img src="../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                tag-v1.23.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../configuration.html">Configuration reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../overview/overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../http/http.html">HTTP</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../upstream.html">Upstream clusters</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../clusters.html">Clusters</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="cluster_manager.html">Cluster manager</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Statistics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cluster_runtime.html">Runtime</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cds.html">Cluster discovery service (CDS)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cluster_hc.html">Health checking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cluster_circuit_breakers.html">Circuit breaking</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../health_checkers/health_checkers.html">Health checkers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../observability/observability.html">Observability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../security/security.html">Security</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../operations/operations.html">Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../other_features/other_features.html">Other features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/advanced.html">Advanced</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../best_practices/best_practices.html">Configuration best practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../configuration.html">Configuration reference</a> &raquo;</li>
+          <li><a href="../upstream.html">Upstream clusters</a> &raquo;</li>
+          <li><a href="cluster_manager.html">Cluster manager</a> &raquo;</li>
+      <li>Statistics</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/configuration/upstream/cluster_manager/cluster_stats.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="statistics">
+<span id="config-cluster-manager-cluster-stats"></span><h1>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#general" id="id1">General</a></p></li>
+<li><p><a class="reference internal" href="#http-3-protocol-statistics" id="id2">HTTP/3 protocol statistics</a></p></li>
+<li><p><a class="reference internal" href="#health-check-statistics" id="id3">Health check statistics</a></p></li>
+<li><p><a class="reference internal" href="#outlier-detection-statistics" id="id4">Outlier detection statistics</a></p></li>
+<li><p><a class="reference internal" href="#circuit-breakers-statistics" id="id5">Circuit breakers statistics</a></p></li>
+<li><p><a class="reference internal" href="#timeout-budget-statistics" id="id6">Timeout budget statistics</a></p></li>
+<li><p><a class="reference internal" href="#dynamic-http-statistics" id="id7">Dynamic HTTP statistics</a></p></li>
+<li><p><a class="reference internal" href="#tls-statistics" id="id8">TLS statistics</a></p></li>
+<li><p><a class="reference internal" href="#tcp-statistics" id="id9">TCP statistics</a></p></li>
+<li><p><a class="reference internal" href="#alternate-tree-dynamic-http-statistics" id="id10">Alternate tree dynamic HTTP statistics</a></p></li>
+<li><p><a class="reference internal" href="#per-service-zone-dynamic-http-statistics" id="id11">Per service zone dynamic HTTP statistics</a></p></li>
+<li><p><a class="reference internal" href="#load-balancer-statistics" id="id12">Load balancer statistics</a></p></li>
+<li><p><a class="reference internal" href="#load-balancer-subset-statistics" id="id13">Load balancer subset statistics</a></p></li>
+<li><p><a class="reference internal" href="#ring-hash-load-balancer-statistics" id="id14">Ring hash load balancer statistics</a></p></li>
+<li><p><a class="reference internal" href="#maglev-load-balancer-statistics" id="id15">Maglev load balancer statistics</a></p></li>
+<li><p><a class="reference internal" href="#request-response-size-statistics" id="id16">Request Response Size statistics</a></p></li>
+</ul>
+</div>
+<div class="section" id="general">
+<h2><a class="toc-backref" href="#id1">General</a><a class="headerlink" href="#general" title="Permalink to this headline">¶</a></h2>
+<p>The cluster manager has a statistics tree rooted at <em>cluster_manager.</em> with the following
+statistics. Any <code class="docutils literal notranslate"><span class="pre">:</span></code> character in the stats name is replaced with <code class="docutils literal notranslate"><span class="pre">_</span></code>. Stats include
+all clusters managed by the cluster manager, including both clusters used for data plane
+upstreams and control plane xDS clusters.</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>cluster_added</p></td>
+<td><p>Counter</p></td>
+<td><p>Total clusters added (either via static config or CDS)</p></td>
+</tr>
+<tr class="row-odd"><td><p>cluster_modified</p></td>
+<td><p>Counter</p></td>
+<td><p>Total clusters modified (via CDS)</p></td>
+</tr>
+<tr class="row-even"><td><p>cluster_removed</p></td>
+<td><p>Counter</p></td>
+<td><p>Total clusters removed (via CDS)</p></td>
+</tr>
+<tr class="row-odd"><td><p>cluster_updated</p></td>
+<td><p>Counter</p></td>
+<td><p>Total cluster updates</p></td>
+</tr>
+<tr class="row-even"><td><p>cluster_updated_via_merge</p></td>
+<td><p>Counter</p></td>
+<td><p>Total cluster updates applied as merged updates</p></td>
+</tr>
+<tr class="row-odd"><td><p>update_merge_cancelled</p></td>
+<td><p>Counter</p></td>
+<td><p>Total merged updates that got cancelled and delivered early</p></td>
+</tr>
+<tr class="row-even"><td><p>update_out_of_merge_window</p></td>
+<td><p>Counter</p></td>
+<td><p>Total updates which arrived out of a merge window</p></td>
+</tr>
+<tr class="row-odd"><td><p>active_clusters</p></td>
+<td><p>Gauge</p></td>
+<td><p>Number of currently active (warmed) clusters</p></td>
+</tr>
+<tr class="row-even"><td><p>warming_clusters</p></td>
+<td><p>Gauge</p></td>
+<td><p>Number of currently warming (not active) clusters</p></td>
+</tr>
+</tbody>
+</table>
+<p>Every cluster has a statistics tree rooted at <em>cluster.&lt;name&gt;.</em> with the following statistics:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>upstream_cx_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_cx_active</p></td>
+<td><p>Gauge</p></td>
+<td><p>Total active connections</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_cx_http1_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total HTTP/1.1 connections</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_cx_http2_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total HTTP/2 connections</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_cx_http3_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total HTTP/3 connections</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_cx_connect_fail</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connection failures</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_cx_connect_timeout</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connection connect timeouts</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_cx_connect_with_0_rtt</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections able to send 0-rtt requests (early data).</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_cx_idle_timeout</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connection idle timeouts</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_cx_max_duration_reached</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections closed due to max duration reached</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_cx_connect_attempts_exceeded</p></td>
+<td><p>Counter</p></td>
+<td><p>Total consecutive connection failures exceeding configured connection attempts</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_cx_overflow</p></td>
+<td><p>Counter</p></td>
+<td><p>Total times that the cluster’s connection circuit breaker overflowed</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_cx_connect_ms</p></td>
+<td><p>Histogram</p></td>
+<td><p>Connection establishment milliseconds</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_cx_length_ms</p></td>
+<td><p>Histogram</p></td>
+<td><p>Connection length milliseconds</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_cx_destroy</p></td>
+<td><p>Counter</p></td>
+<td><p>Total destroyed connections</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_cx_destroy_local</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections destroyed locally</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_cx_destroy_remote</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections destroyed remotely</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_cx_destroy_with_active_rq</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections destroyed with 1+ active request</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_cx_destroy_local_with_active_rq</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections destroyed locally with 1+ active request</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_cx_destroy_remote_with_active_rq</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections destroyed remotely with 1+ active request</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_cx_close_notify</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections closed via HTTP/1.1 connection close header or HTTP/2 or HTTP/3 GOAWAY</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_cx_rx_bytes_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total received connection bytes</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_cx_rx_bytes_buffered</p></td>
+<td><p>Gauge</p></td>
+<td><p>Received connection bytes currently buffered</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_cx_tx_bytes_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total sent connection bytes</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_cx_tx_bytes_buffered</p></td>
+<td><p>Gauge</p></td>
+<td><p>Send connection bytes currently buffered</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_cx_pool_overflow</p></td>
+<td><p>Counter</p></td>
+<td><p>Total times that the cluster’s connection pool circuit breaker overflowed</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_cx_protocol_error</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connection protocol errors</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_cx_max_requests</p></td>
+<td><p>Counter</p></td>
+<td><p>Total connections closed due to maximum requests</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_cx_none_healthy</p></td>
+<td><p>Counter</p></td>
+<td><p>Total times connection not established due to no healthy hosts</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_rq_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_rq_active</p></td>
+<td><p>Gauge</p></td>
+<td><p>Total active requests</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_rq_pending_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests pending a connection pool connection</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_rq_pending_overflow</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests that overflowed connection pool or requests (mainly for HTTP/2 and above) circuit breaking and were failed</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_rq_pending_failure_eject</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests that were failed due to a connection pool connection failure or remote connection termination</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_rq_pending_active</p></td>
+<td><p>Gauge</p></td>
+<td><p>Total active requests pending a connection pool connection</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_rq_cancelled</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests cancelled before obtaining a connection pool connection</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_rq_maintenance_mode</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests that resulted in an immediate 503 due to <a class="reference internal" href="../../http/http_filters/router_filter.html#config-http-filters-router-runtime-maintenance-mode"><span class="std std-ref">maintenance mode</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_rq_timeout</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests that timed out waiting for a response</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_rq_max_duration_reached</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests closed due to max duration reached</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_rq_per_try_timeout</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests that hit the per try timeout (except when request hedging is enabled)</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_rq_rx_reset</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests that were reset remotely</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_rq_tx_reset</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests that were reset locally</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_rq_retry</p></td>
+<td><p>Counter</p></td>
+<td><p>Total request retries</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_rq_retry_backoff_exponential</p></td>
+<td><p>Counter</p></td>
+<td><p>Total retries using the exponential backoff strategy</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_rq_retry_backoff_ratelimited</p></td>
+<td><p>Counter</p></td>
+<td><p>Total retries using the ratelimited backoff strategy</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_rq_retry_limit_exceeded</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests not retried due to exceeding <a class="reference internal" href="../../http/http_filters/router_filter.html#config-http-filters-router-x-envoy-max-retries"><span class="std std-ref">the configured number of maximum retries</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_rq_retry_success</p></td>
+<td><p>Counter</p></td>
+<td><p>Total request retry successes</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_rq_retry_overflow</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests not retried due to circuit breaking or exceeding the <a class="reference internal" href="../../../api-v3/config/cluster/v3/circuit_breaker.proto.html#envoy-v3-api-field-config-cluster-v3-circuitbreakers-thresholds-retry-budget"><span class="std std-ref">retry budget</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_flow_control_paused_reading_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of times flow control paused reading from upstream</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_flow_control_resumed_reading_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of times flow control resumed reading from upstream</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_flow_control_backed_up_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of times the upstream connection backed up and paused reads from downstream</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_flow_control_drained_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of times the upstream connection drained and resumed reads from downstream</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_internal_redirect_failed_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of times failed internal redirects resulted in redirects being passed downstream.</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_internal_redirect_succeeded_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of times internal redirects resulted in a second upstream request.</p></td>
+</tr>
+<tr class="row-even"><td><p>membership_change</p></td>
+<td><p>Counter</p></td>
+<td><p>Total cluster membership changes</p></td>
+</tr>
+<tr class="row-odd"><td><p>membership_healthy</p></td>
+<td><p>Gauge</p></td>
+<td><p>Current cluster healthy total (inclusive of both health checking and outlier detection)</p></td>
+</tr>
+<tr class="row-even"><td><p>membership_degraded</p></td>
+<td><p>Gauge</p></td>
+<td><p>Current cluster <a class="reference internal" href="../../../intro/arch_overview/upstream/load_balancing/degraded.html#arch-overview-load-balancing-degraded"><span class="std std-ref">degraded</span></a> total</p></td>
+</tr>
+<tr class="row-odd"><td><p>membership_excluded</p></td>
+<td><p>Gauge</p></td>
+<td><p>Current cluster <a class="reference internal" href="../../../intro/arch_overview/upstream/load_balancing/excluded.html#arch-overview-load-balancing-excluded"><span class="std std-ref">excluded</span></a> total</p></td>
+</tr>
+<tr class="row-even"><td><p>membership_total</p></td>
+<td><p>Gauge</p></td>
+<td><p>Current cluster membership total</p></td>
+</tr>
+<tr class="row-odd"><td><p>retry_or_shadow_abandoned</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of times shadowing or retry buffering was canceled due to buffer limits</p></td>
+</tr>
+<tr class="row-even"><td><p>config_reload</p></td>
+<td><p>Counter</p></td>
+<td><p>Total API fetches that resulted in a config reload due to a different config</p></td>
+</tr>
+<tr class="row-odd"><td><p>update_attempt</p></td>
+<td><p>Counter</p></td>
+<td><p>Total attempted cluster membership updates by service discovery</p></td>
+</tr>
+<tr class="row-even"><td><p>update_success</p></td>
+<td><p>Counter</p></td>
+<td><p>Total successful cluster membership updates by service discovery</p></td>
+</tr>
+<tr class="row-odd"><td><p>update_failure</p></td>
+<td><p>Counter</p></td>
+<td><p>Total failed cluster membership updates by service discovery</p></td>
+</tr>
+<tr class="row-even"><td><p>update_duration</p></td>
+<td><p>Histogram</p></td>
+<td><p>Amount of time spent updating configs</p></td>
+</tr>
+<tr class="row-odd"><td><p>update_empty</p></td>
+<td><p>Counter</p></td>
+<td><p>Total cluster membership updates ending with empty cluster load assignment and continuing with previous config</p></td>
+</tr>
+<tr class="row-even"><td><p>update_no_rebuild</p></td>
+<td><p>Counter</p></td>
+<td><p>Total successful cluster membership updates that didn’t result in any cluster load balancing structure rebuilds</p></td>
+</tr>
+<tr class="row-odd"><td><p>version</p></td>
+<td><p>Gauge</p></td>
+<td><p>Hash of the contents from the last successful API fetch</p></td>
+</tr>
+<tr class="row-even"><td><p>max_host_weight</p></td>
+<td><p>Gauge</p></td>
+<td><p>Maximum weight of any host in the cluster</p></td>
+</tr>
+<tr class="row-odd"><td><p>bind_errors</p></td>
+<td><p>Counter</p></td>
+<td><p>Total errors binding the socket to the configured source address</p></td>
+</tr>
+<tr class="row-even"><td><p>assignment_timeout_received</p></td>
+<td><p>Counter</p></td>
+<td><p>Total assignments received with endpoint lease information.</p></td>
+</tr>
+<tr class="row-odd"><td><p>assignment_stale</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of times the received assignments went stale before new assignments arrived.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="http-3-protocol-statistics">
+<h2><a class="toc-backref" href="#id2">HTTP/3 protocol statistics</a><a class="headerlink" href="#http-3-protocol-statistics" title="Permalink to this headline">¶</a></h2>
+<p>HTTP/3 protocol stats are global with the following statistics:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>upstream.&lt;tx/rx&gt;.quic_connection_close_error_code_&lt;error_code&gt;</p></td>
+<td><p>Counter</p></td>
+<td><p>A collection of counters that are lazily initialized to record each QUIC connection close’s error code.</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream.&lt;tx/rx&gt;.quic_reset_stream_error_code_&lt;error_code&gt;</p></td>
+<td><p>Counter</p></td>
+<td><p>A collection of counters that are lazily initialized to record each QUIC stream reset error code.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="health-check-statistics">
+<h2><a class="toc-backref" href="#id3">Health check statistics</a><a class="headerlink" href="#health-check-statistics" title="Permalink to this headline">¶</a></h2>
+<p>If health check is configured, the cluster has an additional statistics tree rooted at
+<em>cluster.&lt;name&gt;.health_check.</em> with the following statistics:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>attempt</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of health checks</p></td>
+</tr>
+<tr class="row-odd"><td><p>success</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of successful health checks</p></td>
+</tr>
+<tr class="row-even"><td><p>failure</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of immediately failed health checks (e.g. HTTP 503) as well as network failures</p></td>
+</tr>
+<tr class="row-odd"><td><p>passive_failure</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of health check failures due to passive events (e.g. x-envoy-immediate-health-check-fail)</p></td>
+</tr>
+<tr class="row-even"><td><p>network_failure</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of health check failures due to network error</p></td>
+</tr>
+<tr class="row-odd"><td><p>verify_cluster</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of health checks that attempted cluster name verification</p></td>
+</tr>
+<tr class="row-even"><td><p>healthy</p></td>
+<td><p>Gauge</p></td>
+<td><p>Number of healthy members</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="outlier-detection-statistics">
+<span id="config-cluster-manager-cluster-stats-outlier-detection"></span><h2><a class="toc-backref" href="#id4">Outlier detection statistics</a><a class="headerlink" href="#outlier-detection-statistics" title="Permalink to this headline">¶</a></h2>
+<p>If <a class="reference internal" href="../../../intro/arch_overview/upstream/outlier.html#arch-overview-outlier-detection"><span class="std std-ref">outlier detection</span></a> is configured for a cluster,
+statistics will be rooted at <em>cluster.&lt;name&gt;.outlier_detection.</em> and contain the following:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ejections_enforced_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of enforced ejections due to any outlier type</p></td>
+</tr>
+<tr class="row-odd"><td><p>ejections_active</p></td>
+<td><p>Gauge</p></td>
+<td><p>Number of currently ejected hosts</p></td>
+</tr>
+<tr class="row-even"><td><p>ejections_overflow</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of ejections aborted due to the max ejection %</p></td>
+</tr>
+<tr class="row-odd"><td><p>ejections_enforced_consecutive_5xx</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of enforced consecutive 5xx ejections</p></td>
+</tr>
+<tr class="row-even"><td><p>ejections_detected_consecutive_5xx</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of detected consecutive 5xx ejections (even if unenforced)</p></td>
+</tr>
+<tr class="row-odd"><td><p>ejections_enforced_success_rate</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of enforced success rate outlier ejections. Exact meaning of this counter depends on <a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">outlier_detection.split_external_local_origin_errors</span></a> config item. Refer to <a class="reference internal" href="../../../intro/arch_overview/upstream/outlier.html#arch-overview-outlier-detection"><span class="std std-ref">Outlier Detection documentation</span></a> for details.</p></td>
+</tr>
+<tr class="row-even"><td><p>ejections_detected_success_rate</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of detected success rate outlier ejections (even if unenforced). Exact meaning of this counter depends on <a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">outlier_detection.split_external_local_origin_errors</span></a> config item. Refer to <a class="reference internal" href="../../../intro/arch_overview/upstream/outlier.html#arch-overview-outlier-detection"><span class="std std-ref">Outlier Detection documentation</span></a> for details.</p></td>
+</tr>
+<tr class="row-odd"><td><p>ejections_enforced_consecutive_gateway_failure</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of enforced consecutive gateway failure ejections</p></td>
+</tr>
+<tr class="row-even"><td><p>ejections_detected_consecutive_gateway_failure</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of detected consecutive gateway failure ejections (even if unenforced)</p></td>
+</tr>
+<tr class="row-odd"><td><p>ejections_enforced_consecutive_local_origin_failure</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of enforced consecutive local origin failure ejections</p></td>
+</tr>
+<tr class="row-even"><td><p>ejections_detected_consecutive_local_origin_failure</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of detected consecutive local origin failure ejections (even if unenforced)</p></td>
+</tr>
+<tr class="row-odd"><td><p>ejections_enforced_local_origin_success_rate</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of enforced success rate outlier ejections for locally originated failures</p></td>
+</tr>
+<tr class="row-even"><td><p>ejections_detected_local_origin_success_rate</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of detected success rate outlier ejections for locally originated failures (even if unenforced)</p></td>
+</tr>
+<tr class="row-odd"><td><p>ejections_enforced_failure_percentage</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of enforced failure percentage outlier ejections. Exact meaning of this counter depends on <a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">outlier_detection.split_external_local_origin_errors</span></a> config item. Refer to <a class="reference internal" href="../../../intro/arch_overview/upstream/outlier.html#arch-overview-outlier-detection"><span class="std std-ref">Outlier Detection documentation</span></a> for details.</p></td>
+</tr>
+<tr class="row-even"><td><p>ejections_detected_failure_percentage</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of detected failure percentage outlier ejections (even if unenforced). Exact meaning of this counter depends on <a class="reference internal" href="../../../api-v3/config/cluster/v3/outlier_detection.proto.html#envoy-v3-api-field-config-cluster-v3-outlierdetection-split-external-local-origin-errors"><span class="std std-ref">outlier_detection.split_external_local_origin_errors</span></a> config item. Refer to <a class="reference internal" href="../../../intro/arch_overview/upstream/outlier.html#arch-overview-outlier-detection"><span class="std std-ref">Outlier Detection documentation</span></a> for details.</p></td>
+</tr>
+<tr class="row-odd"><td><p>ejections_enforced_failure_percentage_local_origin</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of enforced failure percentage outlier ejections for locally originated failures</p></td>
+</tr>
+<tr class="row-even"><td><p>ejections_detected_failure_percentage_local_origin</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of detected failure percentage outlier ejections for locally originated failures (even if unenforced)</p></td>
+</tr>
+<tr class="row-odd"><td><p>ejections_total</p></td>
+<td><p>Counter</p></td>
+<td><p>Deprecated. Number of ejections due to any outlier type (even if unenforced)</p></td>
+</tr>
+<tr class="row-even"><td><p>ejections_consecutive_5xx</p></td>
+<td><p>Counter</p></td>
+<td><p>Deprecated. Number of consecutive 5xx ejections (even if unenforced)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="circuit-breakers-statistics">
+<span id="config-cluster-manager-cluster-stats-circuit-breakers"></span><h2><a class="toc-backref" href="#id5">Circuit breakers statistics</a><a class="headerlink" href="#circuit-breakers-statistics" title="Permalink to this headline">¶</a></h2>
+<p>Circuit breakers statistics will be rooted at <em>cluster.&lt;name&gt;.circuit_breakers.&lt;priority&gt;.</em> and contain the following:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>cx_open</p></td>
+<td><p>Gauge</p></td>
+<td><p>Whether the connection circuit breaker is under its concurrency limit (0) or is at capacity and no longer admitting (1)</p></td>
+</tr>
+<tr class="row-odd"><td><p>cx_pool_open</p></td>
+<td><p>Gauge</p></td>
+<td><p>Whether the connection pool circuit breaker is under its concurrency limit (0) or is at capacity and no longer admitting (1)</p></td>
+</tr>
+<tr class="row-even"><td><p>rq_pending_open</p></td>
+<td><p>Gauge</p></td>
+<td><p>Whether the pending requests circuit breaker is under its concurrency limit (0) or is at capacity and no longer admitting (1)</p></td>
+</tr>
+<tr class="row-odd"><td><p>rq_open</p></td>
+<td><p>Gauge</p></td>
+<td><p>Whether the requests circuit breaker is under its concurrency limit (0) or is at capacity and no longer admitting (1)</p></td>
+</tr>
+<tr class="row-even"><td><p>rq_retry_open</p></td>
+<td><p>Gauge</p></td>
+<td><p>Whether the retry circuit breaker is under its concurrency limit (0) or is at capacity and no longer admitting (1)</p></td>
+</tr>
+<tr class="row-odd"><td><p>remaining_cx</p></td>
+<td><p>Gauge</p></td>
+<td><p>Number of remaining connections until the circuit breaker reaches its concurrency limit</p></td>
+</tr>
+<tr class="row-even"><td><p>remaining_pending</p></td>
+<td><p>Gauge</p></td>
+<td><p>Number of remaining pending requests until the circuit breaker reaches its concurrency limit</p></td>
+</tr>
+<tr class="row-odd"><td><p>remaining_rq</p></td>
+<td><p>Gauge</p></td>
+<td><p>Number of remaining requests until the circuit breaker reaches its concurrency limit</p></td>
+</tr>
+<tr class="row-even"><td><p>remaining_retries</p></td>
+<td><p>Gauge</p></td>
+<td><p>Number of remaining retries until the circuit breaker reaches its concurrency limit</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Metrics starting with prefix <code class="docutils literal notranslate"><span class="pre">remaining_</span></code> are not generated by default.
+To track the number of resources remaining until a circuit breaker opens, set the parameter
+<a class="reference internal" href="../../../api-v3/config/cluster/v3/circuit_breaker.proto.html#envoy-v3-api-field-config-cluster-v3-circuitbreakers-thresholds-track-remaining"><span class="std std-ref">track_remaining</span></a>
+to true in circuit breaker configuration.</p>
+</div>
+</div>
+<div class="section" id="timeout-budget-statistics">
+<span id="config-cluster-manager-cluster-stats-timeout-budgets"></span><h2><a class="toc-backref" href="#id6">Timeout budget statistics</a><a class="headerlink" href="#timeout-budget-statistics" title="Permalink to this headline">¶</a></h2>
+<p>If <a class="reference internal" href="../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-track-timeout-budgets"><span class="std std-ref">timeout budget statistic tracking</span></a> is
+turned on, statistics will be added to <em>cluster.&lt;name&gt;</em> and contain the following:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>upstream_rq_timeout_budget_percent_used</p></td>
+<td><p>Histogram</p></td>
+<td><p>What percentage of the global timeout was used waiting for a response</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_rq_timeout_budget_per_try_percent_used</p></td>
+<td><p>Histogram</p></td>
+<td><p>What percentage of the per try timeout was used waiting for a response</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="dynamic-http-statistics">
+<span id="config-cluster-manager-cluster-stats-dynamic-http"></span><h2><a class="toc-backref" href="#id7">Dynamic HTTP statistics</a><a class="headerlink" href="#dynamic-http-statistics" title="Permalink to this headline">¶</a></h2>
+<p>If HTTP is used, dynamic HTTP response code statistics are also available. These are emitted by
+various internal systems as well as some filters such as the <a class="reference internal" href="../../http/http_filters/router_filter.html#config-http-filters-router"><span class="std std-ref">router filter</span></a> and <a class="reference internal" href="../../http/http_filters/rate_limit_filter.html#config-http-filters-rate-limit"><span class="std std-ref">rate limit filter</span></a>. They
+are rooted at <em>cluster.&lt;name&gt;.</em> and contain the following statistics:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>upstream_rq_completed</p></td>
+<td><p>Counter</p></td>
+<td><p>Total upstream requests completed</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_rq_&lt;*xx&gt;</p></td>
+<td><p>Counter</p></td>
+<td><p>Aggregate HTTP response codes (e.g., 2xx, 3xx, etc.)</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_rq_&lt;*&gt;</p></td>
+<td><p>Counter</p></td>
+<td><p>Specific HTTP response codes (e.g., 201, 302, etc.)</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_rq_time</p></td>
+<td><p>Histogram</p></td>
+<td><p>Request time milliseconds</p></td>
+</tr>
+<tr class="row-even"><td><p>canary.upstream_rq_completed</p></td>
+<td><p>Counter</p></td>
+<td><p>Total upstream canary requests completed</p></td>
+</tr>
+<tr class="row-odd"><td><p>canary.upstream_rq_&lt;*xx&gt;</p></td>
+<td><p>Counter</p></td>
+<td><p>Upstream canary aggregate HTTP response codes</p></td>
+</tr>
+<tr class="row-even"><td><p>canary.upstream_rq_&lt;*&gt;</p></td>
+<td><p>Counter</p></td>
+<td><p>Upstream canary specific HTTP response codes</p></td>
+</tr>
+<tr class="row-odd"><td><p>canary.upstream_rq_time</p></td>
+<td><p>Histogram</p></td>
+<td><p>Upstream canary request time milliseconds</p></td>
+</tr>
+<tr class="row-even"><td><p>internal.upstream_rq_completed</p></td>
+<td><p>Counter</p></td>
+<td><p>Total internal origin requests completed</p></td>
+</tr>
+<tr class="row-odd"><td><p>internal.upstream_rq_&lt;*xx&gt;</p></td>
+<td><p>Counter</p></td>
+<td><p>Internal origin aggregate HTTP response codes</p></td>
+</tr>
+<tr class="row-even"><td><p>internal.upstream_rq_&lt;*&gt;</p></td>
+<td><p>Counter</p></td>
+<td><p>Internal origin specific HTTP response codes</p></td>
+</tr>
+<tr class="row-odd"><td><p>internal.upstream_rq_time</p></td>
+<td><p>Histogram</p></td>
+<td><p>Internal origin request time milliseconds</p></td>
+</tr>
+<tr class="row-even"><td><p>external.upstream_rq_completed</p></td>
+<td><p>Counter</p></td>
+<td><p>Total external origin requests completed</p></td>
+</tr>
+<tr class="row-odd"><td><p>external.upstream_rq_&lt;*xx&gt;</p></td>
+<td><p>Counter</p></td>
+<td><p>External origin aggregate HTTP response codes</p></td>
+</tr>
+<tr class="row-even"><td><p>external.upstream_rq_&lt;*&gt;</p></td>
+<td><p>Counter</p></td>
+<td><p>External origin specific HTTP response codes</p></td>
+</tr>
+<tr class="row-odd"><td><p>external.upstream_rq_time</p></td>
+<td><p>Histogram</p></td>
+<td><p>External origin request time milliseconds</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="tls-statistics">
+<span id="config-cluster-manager-cluster-stats-tls"></span><h2><a class="toc-backref" href="#id8">TLS statistics</a><a class="headerlink" href="#tls-statistics" title="Permalink to this headline">¶</a></h2>
+<p>If TLS is used by the cluster the following statistics are rooted at <em>cluster.&lt;name&gt;.ssl.</em>:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>connection_error</p></td>
+<td><p>Counter</p></td>
+<td><p>Total TLS connection errors not including failed certificate verifications</p></td>
+</tr>
+<tr class="row-odd"><td><p>handshake</p></td>
+<td><p>Counter</p></td>
+<td><p>Total successful TLS connection handshakes</p></td>
+</tr>
+<tr class="row-even"><td><p>session_reused</p></td>
+<td><p>Counter</p></td>
+<td><p>Total successful TLS session resumptions</p></td>
+</tr>
+<tr class="row-odd"><td><p>no_certificate</p></td>
+<td><p>Counter</p></td>
+<td><p>Total successful TLS connections with no client certificate</p></td>
+</tr>
+<tr class="row-even"><td><p>fail_verify_no_cert</p></td>
+<td><p>Counter</p></td>
+<td><p>Total TLS connections that failed because of missing client certificate</p></td>
+</tr>
+<tr class="row-odd"><td><p>fail_verify_error</p></td>
+<td><p>Counter</p></td>
+<td><p>Total TLS connections that failed CA verification</p></td>
+</tr>
+<tr class="row-even"><td><p>fail_verify_san</p></td>
+<td><p>Counter</p></td>
+<td><p>Total TLS connections that failed SAN verification</p></td>
+</tr>
+<tr class="row-odd"><td><p>fail_verify_cert_hash</p></td>
+<td><p>Counter</p></td>
+<td><p>Total TLS connections that failed certificate pinning verification</p></td>
+</tr>
+<tr class="row-even"><td><p>ocsp_staple_failed</p></td>
+<td><p>Counter</p></td>
+<td><p>Total TLS connections that failed compliance with the OCSP policy</p></td>
+</tr>
+<tr class="row-odd"><td><p>ocsp_staple_omitted</p></td>
+<td><p>Counter</p></td>
+<td><p>Total TLS connections that succeeded without stapling an OCSP response</p></td>
+</tr>
+<tr class="row-even"><td><p>ocsp_staple_responses</p></td>
+<td><p>Counter</p></td>
+<td><p>Total TLS connections where a valid OCSP response was available (irrespective of whether the client requested stapling)</p></td>
+</tr>
+<tr class="row-odd"><td><p>ocsp_staple_requests</p></td>
+<td><p>Counter</p></td>
+<td><p>Total TLS connections where the client requested an OCSP staple</p></td>
+</tr>
+<tr class="row-even"><td><p>ciphers.&lt;cipher&gt;</p></td>
+<td><p>Counter</p></td>
+<td><p>Total successful TLS connections that used cipher &lt;cipher&gt;</p></td>
+</tr>
+<tr class="row-odd"><td><p>curves.&lt;curve&gt;</p></td>
+<td><p>Counter</p></td>
+<td><p>Total successful TLS connections that used ECDHE curve &lt;curve&gt;</p></td>
+</tr>
+<tr class="row-even"><td><p>sigalgs.&lt;sigalg&gt;</p></td>
+<td><p>Counter</p></td>
+<td><p>Total successful TLS connections that used signature algorithm &lt;sigalg&gt;</p></td>
+</tr>
+<tr class="row-odd"><td><p>versions.&lt;version&gt;</p></td>
+<td><p>Counter</p></td>
+<td><p>Total successful TLS connections that used protocol version &lt;version&gt;</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="tcp-statistics">
+<span id="config-cluster-manager-cluster-stats-tcp"></span><h2><a class="toc-backref" href="#id9">TCP statistics</a><a class="headerlink" href="#tcp-statistics" title="Permalink to this headline">¶</a></h2>
+<p>The following TCP statistics, which are available when using the <a class="reference internal" href="../../../api-v3/extensions/transport_sockets/tcp_stats/v3/tcp_stats.proto.html#envoy-v3-api-msg-extensions-transport-sockets-tcp-stats-v3-config"><span class="std std-ref">TCP stats transport socket</span></a>,
+are rooted at <em>cluster.&lt;name&gt;.tcp_stats.</em>:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>These metrics are provided by the operating system. Due to differences in operating system metrics available and the methodology
+used to take measurements, the values may not be consistent across different operating systems or versions of the same operating
+system.</p>
+</div>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>cx_tx_segments</p></td>
+<td><p>Counter</p></td>
+<td><p>Total TCP segments transmitted</p></td>
+</tr>
+<tr class="row-odd"><td><p>cx_rx_segments</p></td>
+<td><p>Counter</p></td>
+<td><p>Total TCP segments received</p></td>
+</tr>
+<tr class="row-even"><td><p>cx_tx_data_segments</p></td>
+<td><p>Counter</p></td>
+<td><p>Total TCP segments with a non-zero data length transmitted</p></td>
+</tr>
+<tr class="row-odd"><td><p>cx_rx_data_segments</p></td>
+<td><p>Counter</p></td>
+<td><p>Total TCP segments with a non-zero data length received</p></td>
+</tr>
+<tr class="row-even"><td><p>cx_tx_retransmitted_segments</p></td>
+<td><p>Counter</p></td>
+<td><p>Total TCP segments retransmitted</p></td>
+</tr>
+<tr class="row-odd"><td><p>cx_tx_unsent_bytes</p></td>
+<td><p>Gauge</p></td>
+<td><p>Bytes which Envoy has sent to the operating system which have not yet been sent</p></td>
+</tr>
+<tr class="row-even"><td><p>cx_tx_unacked_segments</p></td>
+<td><p>Gauge</p></td>
+<td><p>Segments which have been transmitted that have not yet been acknowledged</p></td>
+</tr>
+<tr class="row-odd"><td><p>cx_tx_percent_retransmitted_segments</p></td>
+<td><p>Histogram</p></td>
+<td><p>Percent of segments on a connection which were retransmistted</p></td>
+</tr>
+<tr class="row-even"><td><p>cx_rtt_us</p></td>
+<td><p>Histogram</p></td>
+<td><p>Smoothed round trip time estimate in microseconds</p></td>
+</tr>
+<tr class="row-odd"><td><p>cx_rtt_variance_us</p></td>
+<td><p>Histogram</p></td>
+<td><p>Estimated variance in microseconds of the round trip time. Higher values indicated more variability.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="alternate-tree-dynamic-http-statistics">
+<span id="config-cluster-manager-cluster-stats-alt-tree"></span><h2><a class="toc-backref" href="#id10">Alternate tree dynamic HTTP statistics</a><a class="headerlink" href="#alternate-tree-dynamic-http-statistics" title="Permalink to this headline">¶</a></h2>
+<p>If alternate tree statistics are configured, they will be present in the
+<em>cluster.&lt;name&gt;.&lt;alt name&gt;.</em> namespace. The statistics produced are the same as documented in
+the dynamic HTTP statistics section <a class="reference internal" href="#config-cluster-manager-cluster-stats-dynamic-http"><span class="std std-ref">above</span></a>.</p>
+</div>
+<div class="section" id="per-service-zone-dynamic-http-statistics">
+<span id="config-cluster-manager-cluster-per-az-stats"></span><h2><a class="toc-backref" href="#id11">Per service zone dynamic HTTP statistics</a><a class="headerlink" href="#per-service-zone-dynamic-http-statistics" title="Permalink to this headline">¶</a></h2>
+<p>If the service zone is available for the local service (via <a class="reference internal" href="../../../operations/cli.html#cmdoption-service-zone"><code class="xref std std-option docutils literal notranslate"><span class="pre">--service-zone</span></code></a>)
+and the <a class="reference internal" href="../../../intro/arch_overview/upstream/service_discovery.html#arch-overview-service-discovery-types-eds"><span class="std std-ref">upstream cluster</span></a>,
+Envoy will track the following statistics in <em>cluster.&lt;name&gt;.zone.&lt;from_zone&gt;.&lt;to_zone&gt;.</em> namespace.</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>upstream_rq_&lt;*xx&gt;</p></td>
+<td><p>Counter</p></td>
+<td><p>Aggregate HTTP response codes (e.g., 2xx, 3xx, etc.)</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_rq_&lt;*&gt;</p></td>
+<td><p>Counter</p></td>
+<td><p>Specific HTTP response codes (e.g., 201, 302, etc.)</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_rq_time</p></td>
+<td><p>Histogram</p></td>
+<td><p>Request time milliseconds</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="load-balancer-statistics">
+<h2><a class="toc-backref" href="#id12">Load balancer statistics</a><a class="headerlink" href="#load-balancer-statistics" title="Permalink to this headline">¶</a></h2>
+<p>Statistics for monitoring load balancer decisions. Stats are rooted at <em>cluster.&lt;name&gt;.</em> and contain
+the following statistics:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>lb_recalculate_zone_structures</p></td>
+<td><p>Counter</p></td>
+<td><p>The number of times locality aware routing structures are regenerated for fast decisions on upstream locality selection</p></td>
+</tr>
+<tr class="row-odd"><td><p>lb_healthy_panic</p></td>
+<td><p>Counter</p></td>
+<td><p>Total requests load balanced with the load balancer in panic mode</p></td>
+</tr>
+<tr class="row-even"><td><p>lb_zone_cluster_too_small</p></td>
+<td><p>Counter</p></td>
+<td><p>No zone aware routing because of small upstream cluster size</p></td>
+</tr>
+<tr class="row-odd"><td><p>lb_zone_routing_all_directly</p></td>
+<td><p>Counter</p></td>
+<td><p>Sending all requests directly to the same zone</p></td>
+</tr>
+<tr class="row-even"><td><p>lb_zone_routing_sampled</p></td>
+<td><p>Counter</p></td>
+<td><p>Sending some requests to the same zone</p></td>
+</tr>
+<tr class="row-odd"><td><p>lb_zone_routing_cross_zone</p></td>
+<td><p>Counter</p></td>
+<td><p>Zone aware routing mode but have to send cross zone</p></td>
+</tr>
+<tr class="row-even"><td><p>lb_local_cluster_not_ok</p></td>
+<td><p>Counter</p></td>
+<td><p>Local host set is not set or it is panic mode for local cluster</p></td>
+</tr>
+<tr class="row-odd"><td><p>lb_zone_number_differs</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of zones in local and upstream cluster different</p></td>
+</tr>
+<tr class="row-even"><td><p>lb_zone_no_capacity_left</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of times ended with random zone selection due to rounding error</p></td>
+</tr>
+<tr class="row-odd"><td><p>original_dst_host_invalid</p></td>
+<td><p>Counter</p></td>
+<td><p>Total number of invalid hosts passed to original destination load balancer</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="load-balancer-subset-statistics">
+<span id="config-cluster-manager-cluster-stats-subset-lb"></span><h2><a class="toc-backref" href="#id13">Load balancer subset statistics</a><a class="headerlink" href="#load-balancer-subset-statistics" title="Permalink to this headline">¶</a></h2>
+<p>Statistics for monitoring <a class="reference internal" href="../../../intro/arch_overview/upstream/load_balancing/subsets.html#arch-overview-load-balancer-subsets"><span class="std std-ref">load balancer subset</span></a>
+decisions. Stats are rooted at <em>cluster.&lt;name&gt;.</em> and contain the following statistics:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>lb_subsets_active</p></td>
+<td><p>Gauge</p></td>
+<td><p>Number of currently available subsets</p></td>
+</tr>
+<tr class="row-odd"><td><p>lb_subsets_created</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of subsets created</p></td>
+</tr>
+<tr class="row-even"><td><p>lb_subsets_removed</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of subsets removed due to no hosts</p></td>
+</tr>
+<tr class="row-odd"><td><p>lb_subsets_selected</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of times any subset was selected for load balancing</p></td>
+</tr>
+<tr class="row-even"><td><p>lb_subsets_fallback</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of times the fallback policy was invoked</p></td>
+</tr>
+<tr class="row-odd"><td><p>lb_subsets_fallback_panic</p></td>
+<td><p>Counter</p></td>
+<td><p>Number of times the subset panic mode triggered</p></td>
+</tr>
+<tr class="row-even"><td><p>lb_subsets_single_host_per_subset_duplicate</p></td>
+<td><p>Gauge</p></td>
+<td><p>Number of duplicate (unused) hosts when using <a class="reference internal" href="../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-lbsubsetconfig-lbsubsetselector-single-host-per-subset"><span class="std std-ref">single_host_per_subset</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="ring-hash-load-balancer-statistics">
+<span id="config-cluster-manager-cluster-stats-ring-hash-lb"></span><h2><a class="toc-backref" href="#id14">Ring hash load balancer statistics</a><a class="headerlink" href="#ring-hash-load-balancer-statistics" title="Permalink to this headline">¶</a></h2>
+<p>Statistics for monitoring the size and effective distribution of hashes when using the
+<a class="reference internal" href="../../../intro/arch_overview/upstream/load_balancing/load_balancers.html#arch-overview-load-balancing-types-ring-hash"><span class="std std-ref">ring hash load balancer</span></a>. Stats are rooted at
+<em>cluster.&lt;name&gt;.ring_hash_lb.</em> and contain the following statistics:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>size</p></td>
+<td><p>Gauge</p></td>
+<td><p>Total number of host hashes on the ring</p></td>
+</tr>
+<tr class="row-odd"><td><p>min_hashes_per_host</p></td>
+<td><p>Gauge</p></td>
+<td><p>Minimum number of hashes for a single host</p></td>
+</tr>
+<tr class="row-even"><td><p>max_hashes_per_host</p></td>
+<td><p>Gauge</p></td>
+<td><p>Maximum number of hashes for a single host</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="maglev-load-balancer-statistics">
+<span id="config-cluster-manager-cluster-stats-maglev-lb"></span><h2><a class="toc-backref" href="#id15">Maglev load balancer statistics</a><a class="headerlink" href="#maglev-load-balancer-statistics" title="Permalink to this headline">¶</a></h2>
+<p>Statistics for monitoring effective host weights when using the
+<a class="reference internal" href="../../../intro/arch_overview/upstream/load_balancing/load_balancers.html#arch-overview-load-balancing-types-maglev"><span class="std std-ref">Maglev load balancer</span></a>. Stats are rooted at
+<em>cluster.&lt;name&gt;.maglev_lb.</em> and contain the following statistics:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>min_entries_per_host</p></td>
+<td><p>Gauge</p></td>
+<td><p>Minimum number of entries for a single host</p></td>
+</tr>
+<tr class="row-odd"><td><p>max_entries_per_host</p></td>
+<td><p>Gauge</p></td>
+<td><p>Maximum number of entries for a single host</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="request-response-size-statistics">
+<span id="config-cluster-manager-cluster-stats-request-response-sizes"></span><h2><a class="toc-backref" href="#id16">Request Response Size statistics</a><a class="headerlink" href="#request-response-size-statistics" title="Permalink to this headline">¶</a></h2>
+<p>If <a class="reference internal" href="../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-track-cluster-stats"><span class="std std-ref">request response size statistics</span></a> are tracked,
+statistics will be added to <em>cluster.&lt;name&gt;</em> and contain the following:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>upstream_rq_headers_size</p></td>
+<td><p>Histogram</p></td>
+<td><p>Request headers size in bytes per upstream</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_rq_body_size</p></td>
+<td><p>Histogram</p></td>
+<td><p>Request body size in bytes per upstream</p></td>
+</tr>
+<tr class="row-even"><td><p>upstream_rs_headers_size</p></td>
+<td><p>Histogram</p></td>
+<td><p>Response headers size in bytes per upstream</p></td>
+</tr>
+<tr class="row-odd"><td><p>upstream_rs_body_size</p></td>
+<td><p>Histogram</p></td>
+<td><p>Response body size in bytes per upstream</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="overview.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cluster_runtime.html" class="btn btn-neutral float-right" title="Runtime" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
