@@ -4,6 +4,7 @@ filegroup(
     srcs = glob([
         "_includes/*",
         "_layouts/**/*",
+        "_posts/**/*",
         "_sass/**/*",
     ]) + [":_config.yml", "//_data:assets"],
     visibility = ["//visibility:public"],
@@ -19,6 +20,7 @@ filegroup(
         ":404.html",
         ":community.html",
         ":docs.md",
+        ":blog.html",
         ":google7933de1bd04e097b.html",
         ":index.html",
         ":robots.txt",
