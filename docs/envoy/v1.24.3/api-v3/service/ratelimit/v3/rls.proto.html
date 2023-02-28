@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rate limit service (RLS) (proto) &mdash; envoy 1.24.3-de8a30 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="Runtime discovery service (RTDS) (proto)" href="../../runtime/v3/rtds.proto.html" />
+    <link rel="prev" title="Metrics service (proto)" href="../../metrics/v3/metrics_service.proto.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html">
+            
+              <img src="../../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.24.3-de8a30
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../api/api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/api_supported_versions.html">Supported API versions</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../../api.html">v3 API reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../bootstrap/bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../clusters/clusters.html">Clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../http_routes/http_routes.html">HTTP route management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../config/config.html">Extensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../admin/admin.html">Admin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/data.html">Envoy data</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../service.html">Services</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../auth/v3/attribute_context.proto.html">Attribute context (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auth/v3/external_auth.proto.html">Authorization service (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../status/v3/csds.proto.html">Client status discovery service (CSDS) (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../extension/v3/config_discovery.proto.html">Extension config discovery service (ECDS) (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../ext_proc/v3/external_processor.proto.html">External processing service (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../accesslog/v3/als.proto.html">gRPC access log service (ALS) (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../health/v3/hds.proto.html">Health discovery service (HDS) (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../load_stats/v3/lrs.proto.html">Load reporting service (LRS) (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../metrics/v3/metrics_service.proto.html">Metrics service (proto)</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Rate limit service (RLS) (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../runtime/v3/rtds.proto.html">Runtime discovery service (RTDS) (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../config/tap/v3/common.proto.html">Tap common configuration (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../tap/v3/tap.proto.html">Tap sink service (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../trace/v3/trace_service.proto.html">Trace service (proto)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../common_messages/common_messages.html">Common messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../common_messages/common_messages_xds.html">Common messages (XDS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../types/types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api-docs/xds_protocol.html">xDS REST and gRPC protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/client_features.html">Well Known Client Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../api/api.html">API</a></li>
+          <li class="breadcrumb-item"><a href="../../../api.html">v3 API reference</a></li>
+          <li class="breadcrumb-item"><a href="../../service.html">Services</a></li>
+      <li class="breadcrumb-item active">Rate limit service (RLS) (proto)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api-v3/service/ratelimit/v3/rls.proto.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rate-limit-service-rls-proto">
+<span id="envoy-v3-api-file-envoy-service-ratelimit-v3-rls-proto"></span><h1>Rate limit service (RLS) (proto)<a class="headerlink" href="#rate-limit-service-rls-proto" title="Permalink to this heading"></a></h1>
+<section id="service-ratelimit-v3-ratelimitrequest">
+<span id="envoy-v3-api-msg-service-ratelimit-v3-ratelimitrequest"></span><h2>service.ratelimit.v3.RateLimitRequest<a class="headerlink" href="#service-ratelimit-v3-ratelimitrequest" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/de8a30557c4a3b8bafba32b010aada485a3b9dd5/api/envoy/service/ratelimit/v3/rls.proto#L37">[service.ratelimit.v3.RateLimitRequest proto]</a></p>
+<p>Main message for a rate limit request. The rate limit service is designed to be fully generic
+in the sense that it can operate on arbitrary hierarchical key/value pairs. The loaded
+configuration will parse the request and find the most specific limit to apply. In addition,
+a RateLimitRequest can contain multiple “descriptors” to limit on. When multiple descriptors
+are provided, the server will limit on <em>ALL</em> of them and return an OVER_LIMIT response if any
+of them are over limit. This enables more complex application level rate limiting scenarios
+if desired.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;domain&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;descriptors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">&quot;hits_addend&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-service-ratelimit-v3-ratelimitrequest-domain">
+<dt>domain</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) All rate limit requests must specify a domain. This enables the configuration to be per
+application without fear of overlap. E.g., “envoy”.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-ratelimit-v3-ratelimitrequest-descriptors">
+<dt>descriptors</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="../../../extensions/common/ratelimit/v3/ratelimit.proto.html#envoy-v3-api-msg-extensions-common-ratelimit-v3-ratelimitdescriptor"><span class="std std-ref">extensions.common.ratelimit.v3.RateLimitDescriptor</span></a>) All rate limit requests must specify at least one RateLimitDescriptor. Each descriptor is
+processed by the service (see below). If any of the descriptors are over limit, the entire
+request is considered to be over limit.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-ratelimit-v3-ratelimitrequest-hits-addend">
+<dt>hits_addend</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">uint32</a>) Rate limit requests can optionally specify the number of hits a request adds to the matched
+limit. If the value is not set in the message, a request increases the matched limit by 1.</p>
+</dd>
+</dl>
+</section>
+<section id="service-ratelimit-v3-ratelimitresponse">
+<span id="envoy-v3-api-msg-service-ratelimit-v3-ratelimitresponse"></span><h2>service.ratelimit.v3.RateLimitResponse<a class="headerlink" href="#service-ratelimit-v3-ratelimitresponse" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/de8a30557c4a3b8bafba32b010aada485a3b9dd5/api/envoy/service/ratelimit/v3/rls.proto#L57">[service.ratelimit.v3.RateLimitResponse proto]</a></p>
+<p>A response from a ShouldRateLimit call.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;overall_code&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;statuses&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">&quot;response_headers_to_add&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">&quot;request_headers_to_add&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">&quot;raw_body&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;dynamic_metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-service-ratelimit-v3-ratelimitresponse-overall-code">
+<dt>overall_code</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-enum-service-ratelimit-v3-ratelimitresponse-code"><span class="std std-ref">service.ratelimit.v3.RateLimitResponse.Code</span></a>) The overall response code which takes into account all of the descriptors that were passed
+in the RateLimitRequest message.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-ratelimit-v3-ratelimitresponse-statuses">
+<dt>statuses</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="#envoy-v3-api-msg-service-ratelimit-v3-ratelimitresponse-descriptorstatus"><span class="std std-ref">service.ratelimit.v3.RateLimitResponse.DescriptorStatus</span></a>) A list of DescriptorStatus messages which matches the length of the descriptor list passed
+in the RateLimitRequest. This can be used by the caller to determine which individual
+descriptors failed and/or what the currently configured limits are for all of them.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-ratelimit-v3-ratelimitresponse-response-headers-to-add">
+<dt>response_headers_to_add</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="../../../config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-headervalue"><span class="std std-ref">config.core.v3.HeaderValue</span></a>) A list of headers to add to the response</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-ratelimit-v3-ratelimitresponse-request-headers-to-add">
+<dt>request_headers_to_add</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="../../../config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-headervalue"><span class="std std-ref">config.core.v3.HeaderValue</span></a>) A list of headers to add to the request when forwarded</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-ratelimit-v3-ratelimitresponse-raw-body">
+<dt>raw_body</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bytes</a>) A response body to send to the downstream client when the response code is not OK.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-ratelimit-v3-ratelimitresponse-dynamic-metadata">
+<dt>dynamic_metadata</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct">Struct</a>) Optional response metadata that will be emitted as dynamic metadata to be consumed by the next
+filter. This metadata lives in a namespace specified by the canonical name of extension filter
+that requires it:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../../configuration/http/http_filters/rate_limit_filter.html#config-http-filters-ratelimit-dynamic-metadata"><span class="std std-ref">envoy.filters.http.ratelimit</span></a> for HTTP filter.</p></li>
+<li><p><a class="reference internal" href="../../../../configuration/listeners/network_filters/rate_limit_filter.html#config-network-filters-ratelimit-dynamic-metadata"><span class="std std-ref">envoy.filters.network.ratelimit</span></a> for network filter.</p></li>
+<li><p><a class="reference internal" href="../../../../configuration/other_protocols/thrift_filters/rate_limit_filter.html#config-thrift-filters-rate-limit-dynamic-metadata"><span class="std std-ref">envoy.filters.thrift.rate_limit</span></a> for Thrift filter.</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="service-ratelimit-v3-ratelimitresponse-ratelimit">
+<span id="envoy-v3-api-msg-service-ratelimit-v3-ratelimitresponse-ratelimit"></span><h2>service.ratelimit.v3.RateLimitResponse.RateLimit<a class="headerlink" href="#service-ratelimit-v3-ratelimitresponse-ratelimit" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/de8a30557c4a3b8bafba32b010aada485a3b9dd5/api/envoy/service/ratelimit/v3/rls.proto#L73">[service.ratelimit.v3.RateLimitResponse.RateLimit proto]</a></p>
+<p>Defines an actual rate limit in terms of requests per unit of time and the unit itself.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;requests_per_unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-service-ratelimit-v3-ratelimitresponse-ratelimit-name">
+<dt>name</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) A name or description of this limit.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-ratelimit-v3-ratelimitresponse-ratelimit-requests-per-unit">
+<dt>requests_per_unit</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">uint32</a>) The number of requests per unit of time.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-ratelimit-v3-ratelimitresponse-ratelimit-unit">
+<dt>unit</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-enum-service-ratelimit-v3-ratelimitresponse-ratelimit-unit"><span class="std std-ref">service.ratelimit.v3.RateLimitResponse.RateLimit.Unit</span></a>) The unit of time.</p>
+</dd>
+</dl>
+</section>
+<section id="enum-service-ratelimit-v3-ratelimitresponse-ratelimit-unit">
+<span id="envoy-v3-api-enum-service-ratelimit-v3-ratelimitresponse-ratelimit-unit"></span><h2>Enum service.ratelimit.v3.RateLimitResponse.RateLimit.Unit<a class="headerlink" href="#enum-service-ratelimit-v3-ratelimitresponse-ratelimit-unit" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/de8a30557c4a3b8bafba32b010aada485a3b9dd5/api/envoy/service/ratelimit/v3/rls.proto#L79">[service.ratelimit.v3.RateLimitResponse.RateLimit.Unit proto]</a></p>
+<p>Identifies the unit of of time for rate limit.</p>
+<dl class="simple" id="envoy-v3-api-enum-value-service-ratelimit-v3-ratelimitresponse-ratelimit-unit-unknown">
+<dt>UNKNOWN</dt><dd><p><em>(DEFAULT)</em> ⁣The time unit is not known.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-enum-value-service-ratelimit-v3-ratelimitresponse-ratelimit-unit-second">
+<dt>SECOND</dt><dd><p>⁣The time unit representing a second.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-enum-value-service-ratelimit-v3-ratelimitresponse-ratelimit-unit-minute">
+<dt>MINUTE</dt><dd><p>⁣The time unit representing a minute.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-enum-value-service-ratelimit-v3-ratelimitresponse-ratelimit-unit-hour">
+<dt>HOUR</dt><dd><p>⁣The time unit representing an hour.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-enum-value-service-ratelimit-v3-ratelimitresponse-ratelimit-unit-day">
+<dt>DAY</dt><dd><p>⁣The time unit representing a day.</p>
+</dd>
+</dl>
+</section>
+<section id="service-ratelimit-v3-ratelimitresponse-descriptorstatus">
+<span id="envoy-v3-api-msg-service-ratelimit-v3-ratelimitresponse-descriptorstatus"></span><h2>service.ratelimit.v3.RateLimitResponse.DescriptorStatus<a class="headerlink" href="#service-ratelimit-v3-ratelimitresponse-descriptorstatus" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/de8a30557c4a3b8bafba32b010aada485a3b9dd5/api/envoy/service/ratelimit/v3/rls.proto#L136">[service.ratelimit.v3.RateLimitResponse.DescriptorStatus proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;code&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;current_limit&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;limit_remaining&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;duration_until_reset&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-service-ratelimit-v3-ratelimitresponse-descriptorstatus-code">
+<dt>code</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-enum-service-ratelimit-v3-ratelimitresponse-code"><span class="std std-ref">service.ratelimit.v3.RateLimitResponse.Code</span></a>) The response code for an individual descriptor.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-ratelimit-v3-ratelimitresponse-descriptorstatus-current-limit">
+<dt>current_limit</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-service-ratelimit-v3-ratelimitresponse-ratelimit"><span class="std std-ref">service.ratelimit.v3.RateLimitResponse.RateLimit</span></a>) The current limit as configured by the server. Useful for debugging, etc.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-ratelimit-v3-ratelimitresponse-descriptorstatus-limit-remaining">
+<dt>limit_remaining</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">uint32</a>) The limit remaining in the current time unit.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-ratelimit-v3-ratelimitresponse-descriptorstatus-duration-until-reset">
+<dt>duration_until_reset</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) Duration until reset of the current limit window.</p>
+</dd>
+</dl>
+</section>
+<section id="enum-service-ratelimit-v3-ratelimitresponse-code">
+<span id="envoy-v3-api-enum-service-ratelimit-v3-ratelimitresponse-code"></span><h2>Enum service.ratelimit.v3.RateLimitResponse.Code<a class="headerlink" href="#enum-service-ratelimit-v3-ratelimitresponse-code" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/de8a30557c4a3b8bafba32b010aada485a3b9dd5/api/envoy/service/ratelimit/v3/rls.proto#L61">[service.ratelimit.v3.RateLimitResponse.Code proto]</a></p>
+<dl class="simple" id="envoy-v3-api-enum-value-service-ratelimit-v3-ratelimitresponse-code-unknown">
+<dt>UNKNOWN</dt><dd><p><em>(DEFAULT)</em> ⁣The response code is not known.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-enum-value-service-ratelimit-v3-ratelimitresponse-code-ok">
+<dt>OK</dt><dd><p>⁣The response code to notify that the number of requests are under limit.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-enum-value-service-ratelimit-v3-ratelimitresponse-code-over-limit">
+<dt>OVER_LIMIT</dt><dd><p>⁣The response code to notify that the number of requests are over limit.</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../../metrics/v3/metrics_service.proto.html" class="btn btn-neutral float-left" title="Metrics service (proto)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../runtime/v3/rtds.proto.html" class="btn btn-neutral float-right" title="Runtime discovery service (RTDS) (proto)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2023, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
