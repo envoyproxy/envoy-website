@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Internal Listener &mdash; envoy 1.23.5-937ae1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Rate limit service" href="rate_limit.html" />
+    <link rel="prev" title="Dlb Connection Balancer" href="dlb.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.23.5-937ae1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../configuration.html">Configuration reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../overview/overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../http/http.html">HTTP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../upstream/upstream.html">Upstream clusters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../observability/observability.html">Observability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../security/security.html">Security</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../operations/operations.html">Operations</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="other_features.html">Other features</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="dlb.html">Dlb Connection Balancer</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Internal Listener</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#how-it-works">How it works</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#internal-upstream-transport">Internal upstream transport</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-config">Example config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#real-world-use-cases">Real world use cases</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="rate_limit.html">Rate limit service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcl.html">VCL Socket Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wasm.html">Wasm runtime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wasm_service.html">Wasm service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced/advanced.html">Advanced</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../best_practices/best_practices.html">Configuration best practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../configuration.html">Configuration reference</a></li>
+          <li class="breadcrumb-item"><a href="other_features.html">Other features</a></li>
+      <li class="breadcrumb-item active">Internal Listener</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/configuration/other_features/internal_listener.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="internal-listener">
+<span id="config-internal-listener"></span><h1>Internal Listener<a class="headerlink" href="#internal-listener" title="Permalink to this heading"></a></h1>
+<section id="how-it-works">
+<h2>How it works<a class="headerlink" href="#how-it-works" title="Permalink to this heading"></a></h2>
+<p>This extension contains 2 major components to add a listener with
+an <a class="reference internal" href="../../api-v3/config/core/v3/address.proto.html#envoy-v3-api-msg-config-core-v3-envoyinternaladdress"><span class="std std-ref">Envoy internal address</span></a>
+and to create a client connection to that <a class="reference internal" href="../../api-v3/config/listener/v3/listener.proto.html#envoy-v3-api-msg-config-listener-v3-listener"><span class="std std-ref">listener</span></a></p>
+<section id="envoy-bootstrap-internal-listener">
+<h3>envoy.bootstrap.internal_listener<a class="headerlink" href="#envoy-bootstrap-internal-listener" title="Permalink to this heading"></a></h3>
+<p>This bootstrap extension is required to support looking up the target listener via an
+<a class="reference internal" href="../../api-v3/config/core/v3/address.proto.html#envoy-v3-api-msg-config-core-v3-envoyinternaladdress"><span class="std std-ref">envoy internal address</span></a> on each worker threads.</p>
+</section>
+<section id="network-connection-client-envoy-internal">
+<h3>network.connection.client.envoy_internal<a class="headerlink" href="#network-connection-client-envoy-internal" title="Permalink to this heading"></a></h3>
+<p>It is a client connection factory. The factory is implicitly instantiated by the dispatcher to establish a client connection to an
+internal listener address.  This client connection factory is installed automatically when <code class="docutils literal notranslate"><span class="pre">envoy.bootstrap.internal_listener</span></code> is specified.</p>
+</section>
+</section>
+<section id="internal-upstream-transport">
+<h2>Internal upstream transport<a class="headerlink" href="#internal-upstream-transport" title="Permalink to this heading"></a></h2>
+<p><a class="reference internal" href="../../api-v3/extensions/transport_sockets/internal_upstream/v3/internal_upstream.proto.html#envoy-v3-api-msg-extensions-transport-sockets-internal-upstream-v3-internalupstreamtransport"><span class="std std-ref">Internal upstream transport</span></a>
+extension enables exchange of the filter state from the downstream listener to
+the internal listener through a user space socket. This additional state can be
+in the form of the resource metadata obtained from the upstream host or
+<a class="reference internal" href="../../intro/arch_overview/advanced/data_sharing_between_filters.html#arch-overview-data-sharing-between-filters"><span class="std std-ref">the filter state objects</span></a>.</p>
+<p>This extension emits the following statistics:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>no_metadata</p></td>
+<td><p>Counter</p></td>
+<td><p>Metadata key is absent from the import location.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="example-config">
+<h2>Example config<a class="headerlink" href="#example-config" title="Permalink to this heading"></a></h2>
+<p>Below is a smallest static config that redirect TCP proxy on port 19000 to the TCP proxy binding to the internal address.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">static_resources</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">listeners</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">outbound_tcp_svc_19000</span>
+<span class="w">    </span><span class="nt">address</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">socket_address</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0.0.0</span>
+<span class="w">        </span><span class="nt">port_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">19000</span>
+<span class="w">    </span><span class="nt">filter_chains</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">filters</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tcp_proxy</span>
+<span class="w">        </span><span class="nt">typed_config</span><span class="p">:</span>
+<span class="w">          </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.tcp_proxy.v3.TcpProxy</span>
+<span class="w">          </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bridge_internal_listener</span>
+<span class="w">          </span><span class="nt">stat_prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">svc_tcp_proxy</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">singleton_internal_encap</span>
+<span class="w">    </span><span class="nt">address</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">envoy_internal_address</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">server_listener_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">singleton_internal_encap</span>
+<span class="w">    </span><span class="nt">filter_chains</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">filters</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tcp_proxy</span>
+<span class="w">        </span><span class="nt">typed_config</span><span class="p">:</span>
+<span class="w">          </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.tcp_proxy.v3.TcpProxy</span>
+<span class="w">          </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">singleton_internal_encap</span>
+<span class="w">          </span><span class="nt">stat_prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">encap_tcp_proxy</span>
+<span class="w">  </span><span class="nt">clusters</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bridge_internal_listener</span>
+<span class="w">    </span><span class="nt">connect_timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3600s</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">STATIC</span>
+<span class="w">    </span><span class="nt">load_assignment</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">cluster_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bridge_internal_listener&quot;</span>
+<span class="w">      </span><span class="nt">endpoints</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">lb_endpoints</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">endpoint</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">address</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">envoy_internal_address</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">server_listener_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">singleton_internal_encap</span>
+<span class="w">    </span><span class="nt">transport_socket</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">envoy.transport_sockets.raw_buffer</span>
+<span class="w">      </span><span class="nt">typed_config</span><span class="p">:</span>
+<span class="w">        </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.transport_sockets.raw_buffer.v3.RawBuffer</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">singleton_internal_encap</span>
+<span class="w">    </span><span class="nt">connect_timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3600s</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">STATIC</span>
+<span class="w">    </span><span class="nt">load_assignment</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">cluster_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;singleton_internal_encap&quot;</span>
+<span class="w">      </span><span class="nt">endpoints</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">lb_endpoints</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">endpoint</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">address</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">socket_address</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0.0.0</span>
+<span class="w">                </span><span class="nt">port_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">19001</span>
+<span class="nt">bootstrap_extensions</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">envoy.bootstrap.internal_listener</span>
+<span class="w">  </span><span class="nt">typed_config</span><span class="p">:</span>
+<span class="w">    </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;type.googleapis.com/envoy.extensions.bootstrap.internal_listener.v3.InternalListener&quot;</span>
+<span class="nt">layered_runtime</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">layers</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">enable_internal_address</span>
+<span class="w">    </span><span class="nt">static_layer</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">envoy.reloadable_features.internal_address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+</section>
+<section id="real-world-use-cases">
+<h2>Real world use cases<a class="headerlink" href="#real-world-use-cases" title="Permalink to this heading"></a></h2>
+<section id="encap-http-get-requests-in-a-http-connect-request">
+<h3>Encap HTTP GET requests in a HTTP CONNECT request<a class="headerlink" href="#encap-http-get-requests-in-a-http-connect-request" title="Permalink to this heading"></a></h3>
+<p>Currently Envoy <a class="reference internal" href="../http/http_conn_man/http_conn_man.html#config-http-conn-man"><span class="std std-ref">HTTP connection manager</span></a>
+cannot proxy a GET request in an upstream HTTP CONNECT request. This requirement
+can be accomplished by setting up the upstream endpoint of HTTP connection manager to the internal listener address.
+Meanwhile, another internal listener binding to the above listener address includes a TCP proxy with <a class="reference internal" href="../../api-v3/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto.html#envoy-v3-api-field-extensions-filters-network-tcp-proxy-v3-tcpproxy-tunneling-config"><span class="std std-ref">tunneling config</span></a>.</p>
+</section>
+<section id="decap-the-connect-requests">
+<h3>Decap the CONNECT requests<a class="headerlink" href="#decap-the-connect-requests" title="Permalink to this heading"></a></h3>
+<p>There are some complicated GET-in-CONNECT requests across services or edges.
+In order to proxy the GET request within Envoy, two layer of <a class="reference internal" href="../http/http_conn_man/http_conn_man.html#config-http-conn-man"><span class="std std-ref">HTTP connection manager</span></a>
+is demanded. The first HHTTP connection manager layer extract the TCP stream from a CONNECT request and redirect the TCP stream to the second
+HTTP connection manager layer to parse the common GET requests.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="dlb.html" class="btn btn-neutral float-left" title="Dlb Connection Balancer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="rate_limit.html" class="btn btn-neutral float-right" title="Rate limit service" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2023, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
