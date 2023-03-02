@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sip Proxy (proto) &mdash; envoy 1.25.2-afa988 documentation</title>
+      <link rel="stylesheet" href="../../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../../../../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../../../../" id="documentation_options" src="../../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../../_static/doctools.js"></script>
+        <script src="../../../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../../../_static/copybutton.js"></script>
+    <script src="../../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" />
+    <link rel="next" title="CryptoMb private key provider" href="../../../../../config/contrib/cryptomb/cryptomb.html" />
+    <link rel="prev" title="Sip Proxy Route Configuration (proto)" href="route.proto.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../../index.html">
+            
+              <img src="../../../../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.25.2-afa988
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../../../api/api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../api/api_supported_versions.html">Supported API versions</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../../../../api.html">v3 API reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../../../bootstrap/bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../clusters/clusters.html">Clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../http_routes/http_routes.html">HTTP route management</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../../../../config/config.html">Extensions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/accesslog/filters.html">Access log extension filters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/formatter/formatter.html">Access log formatters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/accesslog/accesslog.html">Access loggers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/cluster/cluster.html">Cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/common/common.html">Common</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/compression/compression.html">Compression</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/config_validators/config_validators.html">Config validators</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../../../../../config/contrib/contrib.html">Contrib extensions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/dns_resolver/dns_resolver.html">DNS resolver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/endpoint/endpoint.html">Endpoint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/filter/filter.html">Filters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/grpc_credential/grpc_credential.html">Grpc credentials</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/health_checker/health_checker.html">Health checkers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/http/early_header_mutation.html">HTTP early header mutation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/http/custom_response.html">Custom response policies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/http/header_formatters.html">HTTP header formatters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/http/header_validators.html">HTTP header validators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/http/original_ip_detection.html">HTTP original IP detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/http/stateful_session.html">HTTP stateful session</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/trace/trace.html">HTTP tracers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/internal_redirect/internal_redirect.html">Internal redirect predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/path/match/path_matcher.html">Path matcher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/path/rewrite/path_rewriter.html">Path rewriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/quic/quic_extensions.html">Quic extensions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/descriptors/descriptors.html">Rate limit descriptors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/rbac/rbac.html">RBAC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/rbac/matchers.html">RBAC matchers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/request_id/request_id.html">Request ID</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/resource_monitor/resource_monitor.html">Resource monitors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/retry/retry.html">Retry predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/stat_sinks/stat_sinks.html">Stat sinks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/transport_socket/transport_socket.html">Transport sockets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/upstream/upstream.html">Upstream configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/wasm/wasm.html">WASM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/watchdog/watchdog.html">Watchdog</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/load_balancing_policies/load_balancing_policies.html">Load balancing policies</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../admin/admin.html">Admin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../data/data.html">Envoy data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../service/service.html">Services</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../common_messages/common_messages.html">Common messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../common_messages/common_messages_xds.html">Common messages (XDS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../types/types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../api-docs/xds_protocol.html">xDS REST and gRPC protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../api/client_features.html">Well Known Client Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../../../api/api.html">API</a></li>
+          <li class="breadcrumb-item"><a href="../../../../../api.html">v3 API reference</a></li>
+          <li class="breadcrumb-item"><a href="../../../../../config/config.html">Extensions</a></li>
+          <li class="breadcrumb-item"><a href="../../../../../config/contrib/contrib.html">Contrib extensions</a></li>
+          <li class="breadcrumb-item"><a href="../../../../../config/contrib/sip/sip.html">SIP proxy</a></li>
+      <li class="breadcrumb-item active">Sip Proxy (proto)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../../_sources/api-v3/extensions/filters/network/sip_proxy/v3alpha/sip_proxy.proto.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sip-proxy-proto">
+<span id="envoy-v3-api-file-contrib-envoy-extensions-filters-network-sip-proxy-v3alpha-sip-proxy-proto"></span><h1>Sip Proxy (proto)<a class="headerlink" href="#sip-proxy-proto" title="Permalink to this heading"></a></h1>
+<p id="extension-envoy-filters-network-sip-proxy">This extension has the qualified name <code class="docutils literal notranslate"><span class="pre">envoy.filters.network.sip_proxy</span></code></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This extension is only available in <a class="reference internal" href="../../../../../../start/install.html#install-contrib"><span class="std std-ref">contrib</span></a> images.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This extension is functional but has not had substantial production burn time,
+use only with this caveat.</p>
+<p>This extension is not hardened and should only be used in deployments
+where both the downstream and upstream are trusted.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>This extension extends and can be used with the following extension category:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../../health_checkers/thrift/v3/thrift.proto.html#extension-category-envoy-filters-network"><span class="std std-ref">envoy.filters.network</span></a></p></li>
+</ul>
+</div>
+<section id="extensions-filters-network-sip-proxy-v3alpha-sipproxy">
+<span id="envoy-v3-api-msg-extensions-filters-network-sip-proxy-v3alpha-sipproxy"></span><h2>extensions.filters.network.sip_proxy.v3alpha.SipProxy<a class="headerlink" href="#extensions-filters-network-sip-proxy-v3alpha-sipproxy" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/afa98867c807dee0d833da701ba3ab0c9ace9ada/api/contrib/envoy/extensions/filters/network/sip_proxy/v3alpha/sip_proxy.proto#L22">[extensions.filters.network.sip_proxy.v3alpha.SipProxy proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;stat_prefix&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;route_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;sip_filters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">&quot;settings&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-sipproxy-stat-prefix">
+<dt>stat_prefix</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) The human readable prefix to use when emitting statistics.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-sipproxy-route-config">
+<dt>route_config</dt><dd><p>(<a class="reference internal" href="route.proto.html#envoy-v3-api-msg-extensions-filters-network-sip-proxy-v3alpha-routeconfiguration"><span class="std std-ref">extensions.filters.network.sip_proxy.v3alpha.RouteConfiguration</span></a>) The route table for the connection manager is static and is specified in this property.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-sipproxy-sip-filters">
+<dt>sip_filters</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="#envoy-v3-api-msg-extensions-filters-network-sip-proxy-v3alpha-sipfilter"><span class="std std-ref">extensions.filters.network.sip_proxy.v3alpha.SipFilter</span></a>) A list of individual Sip filters that make up the filter chain for requests made to the
+Sip proxy. Order matters as the filters are processed sequentially. For backwards
+compatibility, if no sip_filters are specified, a default Sip router filter
+(<code class="docutils literal notranslate"><span class="pre">envoy.filters.sip.router</span></code>) is used.</p>
+<div class="admonition tip" id="extension-category-envoy-sip-proxy-filters">
+<p class="admonition-title">Tip</p>
+<p>The following extensions are available in <a class="reference internal" href="../../../../../../start/install.html#install-contrib"><span class="std std-ref">contrib</span></a> images only:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../router/v3alpha/router.proto.html#extension-envoy-filters-sip-router"><span class="std std-ref">envoy.filters.sip.router</span></a></p></li>
+</ul>
+</div>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-sipproxy-settings">
+<dt>settings</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-extensions-filters-network-sip-proxy-v3alpha-sipproxy-sipsettings"><span class="std std-ref">extensions.filters.network.sip_proxy.v3alpha.SipProxy.SipSettings</span></a>)</p>
+</dd>
+</dl>
+</section>
+<section id="extensions-filters-network-sip-proxy-v3alpha-sipproxy-sipsettings">
+<span id="envoy-v3-api-msg-extensions-filters-network-sip-proxy-v3alpha-sipproxy-sipsettings"></span><h2>extensions.filters.network.sip_proxy.v3alpha.SipProxy.SipSettings<a class="headerlink" href="#extensions-filters-network-sip-proxy-v3alpha-sipproxy-sipsettings" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/afa98867c807dee0d833da701ba3ab0c9ace9ada/api/contrib/envoy/extensions/filters/network/sip_proxy/v3alpha/sip_proxy.proto#L23">[extensions.filters.network.sip_proxy.v3alpha.SipProxy.SipSettings proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;transaction_timeout&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;local_services&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">&quot;tra_service_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;operate_via&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-sipproxy-sipsettings-transaction-timeout">
+<dt>transaction_timeout</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) transaction timeout timer [Timer B] unit is milliseconds, default value 64*T1.</p>
+<p>Session Initiation Protocol (SIP) timer summary</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Timer</p></th>
+<th class="head"><p>Default value</p></th>
+<th class="head"><p>Section</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>T1</p></td>
+<td><p>500 ms</p></td>
+<td><p>17.1.1.1</p></td>
+<td><p>Round-trip time (RTT) estimate</p></td>
+</tr>
+<tr class="row-odd"><td><p>T2</p></td>
+<td><p>4 sec</p></td>
+<td><p>17.1.2.2</p></td>
+<td><p>Maximum re-transmission interval for non-INVITE requests and INVITE responses</p></td>
+</tr>
+<tr class="row-even"><td><p>T4</p></td>
+<td><p>5 sec</p></td>
+<td><p>17.1.2.2</p></td>
+<td><p>Maximum duration that a message can remain in the network</p></td>
+</tr>
+<tr class="row-odd"><td><p>Timer A</p></td>
+<td><p>initially T1</p></td>
+<td><p>17.1.1.2</p></td>
+<td><p>INVITE request re-transmission interval, for UDP only</p></td>
+</tr>
+<tr class="row-even"><td><p>Timer B</p></td>
+<td><p>64*T1</p></td>
+<td><p>17.1.1.2</p></td>
+<td><p>INVITE transaction timeout timer</p></td>
+</tr>
+<tr class="row-odd"><td><p>Timer D</p></td>
+<td><p>&gt; 32 sec. for UDP
+0 sec. for TCP and SCTP</p></td>
+<td><p>17.1.1.2</p></td>
+<td><p>Wait time for response re-transmissions</p></td>
+</tr>
+<tr class="row-even"><td><p>Timer E</p></td>
+<td><p>initially T1</p></td>
+<td><p>17.1.2.2</p></td>
+<td><p>Non-INVITE request re-transmission interval, UDP only</p></td>
+</tr>
+<tr class="row-odd"><td><p>Timer F</p></td>
+<td><p>64*T1</p></td>
+<td><p>17.1.2.2</p></td>
+<td><p>Non-INVITE transaction timeout timer</p></td>
+</tr>
+<tr class="row-even"><td><p>Timer G</p></td>
+<td><p>initially T1</p></td>
+<td><p>17.2.1</p></td>
+<td><p>INVITE response re-transmission interval</p></td>
+</tr>
+<tr class="row-odd"><td><p>Timer H</p></td>
+<td><p>64*T1</p></td>
+<td><p>17.2.1</p></td>
+<td><p>Wait time for ACK receipt</p></td>
+</tr>
+<tr class="row-even"><td><p>Timer I</p></td>
+<td><p>T4 for UDP
+0 sec. for TCP and SCTP</p></td>
+<td><p>17.2.1</p></td>
+<td><p>Wait time for ACK re-transmissions</p></td>
+</tr>
+<tr class="row-odd"><td><p>Timer J</p></td>
+<td><p>64*T1 for UDP
+0 sec. for TCP and SCTP</p></td>
+<td><p>17.2.2</p></td>
+<td><p>Wait time for re-transmissions of non-INVITE requests</p></td>
+</tr>
+<tr class="row-even"><td><p>Timer K</p></td>
+<td><p>T4 for UDP
+0 sec. for TCP and SCTP</p></td>
+<td><p>17.1.2.2</p></td>
+<td><p>Wait time for response re-transmissions</p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-sipproxy-sipsettings-local-services">
+<dt>local_services</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="#envoy-v3-api-msg-extensions-filters-network-sip-proxy-v3alpha-localservice"><span class="std std-ref">extensions.filters.network.sip_proxy.v3alpha.LocalService</span></a>) The service to match for ep insert</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-sipproxy-sipsettings-tra-service-config">
+<dt>tra_service_config</dt><dd><p>(<a class="reference internal" href="../tra/v3alpha/tra.proto.html#envoy-v3-api-msg-extensions-filters-network-sip-proxy-tra-v3alpha-traserviceconfig"><span class="std std-ref">extensions.filters.network.sip_proxy.tra.v3alpha.TraServiceConfig</span></a>)</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-sipproxy-sipsettings-operate-via">
+<dt>operate_via</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Whether via header is operated, including add via for request and pop via for response
+False: sip service proxy
+True:  sip load balancer</p>
+</dd>
+</dl>
+</section>
+<section id="extensions-filters-network-sip-proxy-v3alpha-sipfilter">
+<span id="envoy-v3-api-msg-extensions-filters-network-sip-proxy-v3alpha-sipfilter"></span><h2>extensions.filters.network.sip_proxy.v3alpha.SipFilter<a class="headerlink" href="#extensions-filters-network-sip-proxy-v3alpha-sipfilter" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/afa98867c807dee0d833da701ba3ab0c9ace9ada/api/contrib/envoy/extensions/filters/network/sip_proxy/v3alpha/sip_proxy.proto#L91">[extensions.filters.network.sip_proxy.v3alpha.SipFilter proto]</a></p>
+<p>SipFilter configures a Sip filter.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;typed_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-sipfilter-name">
+<dt>name</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <em>REQUIRED</em>) The name of the filter to instantiate. The name must match a supported
+filter. The built-in filters are:</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-sipfilter-typed-config">
+<dt>typed_config</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#any">Any</a>)
+Filter specific configuration which depends on the filter being instantiated. See the supported
+filters for further documentation.</p>
+</dd>
+</dl>
+</section>
+<section id="extensions-filters-network-sip-proxy-v3alpha-sipprotocoloptions">
+<span id="envoy-v3-api-msg-extensions-filters-network-sip-proxy-v3alpha-sipprotocoloptions"></span><h2>extensions.filters.network.sip_proxy.v3alpha.SipProtocolOptions<a class="headerlink" href="#extensions-filters-network-sip-proxy-v3alpha-sipprotocoloptions" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/afa98867c807dee0d833da701ba3ab0c9ace9ada/api/contrib/envoy/extensions/filters/network/sip_proxy/v3alpha/sip_proxy.proto#L107">[extensions.filters.network.sip_proxy.v3alpha.SipProtocolOptions proto]</a></p>
+<p>SipProtocolOptions specifies Sip upstream protocol options. This object is used in
+<a class="reference internal" href="../../../../../config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-typed-extension-protocol-options"><span class="std std-ref">typed_extension_protocol_options</span></a>,
+keyed by the name <code class="docutils literal notranslate"><span class="pre">envoy.filters.network.sip_proxy</span></code>.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;session_affinity&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;registration_affinity&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;customized_affinity&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-sipprotocoloptions-session-affinity">
+<dt>session_affinity</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) All sip messages in one dialog should go to the same endpoint.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-sipprotocoloptions-registration-affinity">
+<dt>registration_affinity</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) The Register with Authorization header should go to the same endpoint which send out the 401 Unauthorized.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-sipprotocoloptions-customized-affinity">
+<dt>customized_affinity</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-extensions-filters-network-sip-proxy-v3alpha-customizedaffinity"><span class="std std-ref">extensions.filters.network.sip_proxy.v3alpha.CustomizedAffinity</span></a>) Customized affinity</p>
+</dd>
+</dl>
+</section>
+<section id="extensions-filters-network-sip-proxy-v3alpha-customizedaffinity">
+<span id="envoy-v3-api-msg-extensions-filters-network-sip-proxy-v3alpha-customizedaffinity"></span><h2>extensions.filters.network.sip_proxy.v3alpha.CustomizedAffinity<a class="headerlink" href="#extensions-filters-network-sip-proxy-v3alpha-customizedaffinity" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/afa98867c807dee0d833da701ba3ab0c9ace9ada/api/contrib/envoy/extensions/filters/network/sip_proxy/v3alpha/sip_proxy.proto#L119">[extensions.filters.network.sip_proxy.v3alpha.CustomizedAffinity proto]</a></p>
+<p>For affinity</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;entries&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">&quot;stop_load_balance&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-customizedaffinity-entries">
+<dt>entries</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="#envoy-v3-api-msg-extensions-filters-network-sip-proxy-v3alpha-customizedaffinityentry"><span class="std std-ref">extensions.filters.network.sip_proxy.v3alpha.CustomizedAffinityEntry</span></a>) Affinity rules to conclude the upstream endpoint</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-customizedaffinity-stop-load-balance">
+<dt>stop_load_balance</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Configures whether load balance should be stopped or continued after affinity handling.</p>
+</dd>
+</dl>
+</section>
+<section id="extensions-filters-network-sip-proxy-v3alpha-customizedaffinityentry">
+<span id="envoy-v3-api-msg-extensions-filters-network-sip-proxy-v3alpha-customizedaffinityentry"></span><h2>extensions.filters.network.sip_proxy.v3alpha.CustomizedAffinityEntry<a class="headerlink" href="#extensions-filters-network-sip-proxy-v3alpha-customizedaffinityentry" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/afa98867c807dee0d833da701ba3ab0c9ace9ada/api/contrib/envoy/extensions/filters/network/sip_proxy/v3alpha/sip_proxy.proto#L128">[extensions.filters.network.sip_proxy.v3alpha.CustomizedAffinityEntry proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;header&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;key_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;subscribe&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;query&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;cache&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-customizedaffinityentry-header">
+<dt>header</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The header name to match, e.g. “From”, if not specified, default is “Route”</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-customizedaffinityentry-key-name">
+<dt>key_name</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) Affinity key for TRA query/subscribe, e.g. “lskpmc”, if key_name is “text” means use the header content as key.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-customizedaffinityentry-subscribe">
+<dt>subscribe</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Whether subscribe to TRA is required</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-customizedaffinityentry-query">
+<dt>query</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Whether query to TRA is required</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-customizedaffinityentry-cache">
+<dt>cache</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-extensions-filters-network-sip-proxy-v3alpha-cache"><span class="std std-ref">extensions.filters.network.sip_proxy.v3alpha.Cache</span></a>) Local cache</p>
+</dd>
+</dl>
+</section>
+<section id="extensions-filters-network-sip-proxy-v3alpha-cache">
+<span id="envoy-v3-api-msg-extensions-filters-network-sip-proxy-v3alpha-cache"></span><h2>extensions.filters.network.sip_proxy.v3alpha.Cache<a class="headerlink" href="#extensions-filters-network-sip-proxy-v3alpha-cache" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/afa98867c807dee0d833da701ba3ab0c9ace9ada/api/contrib/envoy/extensions/filters/network/sip_proxy/v3alpha/sip_proxy.proto#L145">[extensions.filters.network.sip_proxy.v3alpha.Cache proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;max_cache_item&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;add_query_to_cache&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-cache-max-cache-item">
+<dt>max_cache_item</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">int32</a>) Affinity local cache item max number</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-cache-add-query-to-cache">
+<dt>add_query_to_cache</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) Whether query result can be added to local cache</p>
+</dd>
+</dl>
+</section>
+<section id="extensions-filters-network-sip-proxy-v3alpha-localservice">
+<span id="envoy-v3-api-msg-extensions-filters-network-sip-proxy-v3alpha-localservice"></span><h2>extensions.filters.network.sip_proxy.v3alpha.LocalService<a class="headerlink" href="#extensions-filters-network-sip-proxy-v3alpha-localservice" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/afa98867c807dee0d833da701ba3ab0c9ace9ada/api/contrib/envoy/extensions/filters/network/sip_proxy/v3alpha/sip_proxy.proto#L154">[extensions.filters.network.sip_proxy.v3alpha.LocalService proto]</a></p>
+<p>Local Service</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;domain&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;parameter&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-localservice-domain">
+<dt>domain</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The domain need to matched</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-extensions-filters-network-sip-proxy-v3alpha-localservice-parameter">
+<dt>parameter</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The parameter to get domain</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="route.proto.html" class="btn btn-neutral float-left" title="Sip Proxy Route Configuration (proto)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../../../../config/contrib/cryptomb/cryptomb.html" class="btn btn-neutral float-right" title="CryptoMb private key provider" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2023, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
