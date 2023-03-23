@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Circuit breakers (proto) &mdash; envoy 1.23.6-b2064e documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="Upstream filters (proto)" href="filter.proto.html" />
+    <link rel="prev" title="Outlier detection (proto)" href="outlier_detection.proto.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html">
+            
+              <img src="../../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.23.6-b2064e
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../api/api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/api_supported_versions.html">Supported API versions</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../../api.html">v3 API reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../bootstrap/bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../../clusters/clusters.html">Clusters</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="cluster.proto.html">Cluster configuration (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="outlier_detection.proto.html">Outlier detection (proto)</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Circuit breakers (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="filter.proto.html">Upstream filters (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../endpoint/v3/endpoint.proto.html">Endpoint configuration (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../endpoint/v3/endpoint_components.proto.html">Endpoints (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../core/v3/health_check.proto.html">Health check (proto)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../http_routes/http_routes.html">HTTP route management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config.html">Extensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../admin/admin.html">Admin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/data.html">Envoy data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../service/service.html">Services</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../common_messages/common_messages.html">Common messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../types/types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api-docs/xds_protocol.html">xDS REST and gRPC protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/client_features.html">Well Known Client Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../api/api.html">API</a></li>
+          <li class="breadcrumb-item"><a href="../../../api.html">v3 API reference</a></li>
+          <li class="breadcrumb-item"><a href="../../../clusters/clusters.html">Clusters</a></li>
+      <li class="breadcrumb-item active">Circuit breakers (proto)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api-v3/config/cluster/v3/circuit_breaker.proto.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="circuit-breakers-proto">
+<span id="envoy-v3-api-file-envoy-config-cluster-v3-circuit-breaker-proto"></span><h1>Circuit breakers (proto)<a class="headerlink" href="#circuit-breakers-proto" title="Permalink to this heading"></a></h1>
+<section id="config-cluster-v3-circuitbreakers">
+<span id="envoy-v3-api-msg-config-cluster-v3-circuitbreakers"></span><h2>config.cluster.v3.CircuitBreakers<a class="headerlink" href="#config-cluster-v3-circuitbreakers" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/b2064ed660934383cece8c8d60393d5b0720ae4d/api/envoy/config/cluster/v3/circuit_breaker.proto#L23">[config.cluster.v3.CircuitBreakers proto]</a></p>
+<p><a class="reference internal" href="../../../../intro/arch_overview/upstream/circuit_breaking.html#arch-overview-circuit-break"><span class="std std-ref">Circuit breaking</span></a> settings can be
+specified individually for each defined priority.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;thresholds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">&quot;per_host_thresholds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-circuitbreakers-thresholds">
+<dt>thresholds</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="#envoy-v3-api-msg-config-cluster-v3-circuitbreakers-thresholds"><span class="std std-ref">config.cluster.v3.CircuitBreakers.Thresholds</span></a>) If multiple <a class="reference internal" href="#envoy-v3-api-msg-config-cluster-v3-circuitbreakers-thresholds"><span class="std std-ref">Thresholds</span></a>
+are defined with the same <a class="reference internal" href="../../core/v3/base.proto.html#envoy-v3-api-enum-config-core-v3-routingpriority"><span class="std std-ref">RoutingPriority</span></a>,
+the first one in the list is used. If no Thresholds is defined for a given
+<a class="reference internal" href="../../core/v3/base.proto.html#envoy-v3-api-enum-config-core-v3-routingpriority"><span class="std std-ref">RoutingPriority</span></a>, the default values
+are used.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-cluster-v3-circuitbreakers-per-host-thresholds">
+<dt>per_host_thresholds</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="#envoy-v3-api-msg-config-cluster-v3-circuitbreakers-thresholds"><span class="std std-ref">config.cluster.v3.CircuitBreakers.Thresholds</span></a>) Optional per-host limits which apply to each individual host in a cluster.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>currently only the <a class="reference internal" href="#envoy-v3-api-field-config-cluster-v3-circuitbreakers-thresholds-max-connections"><span class="std std-ref">max_connections</span></a> field is supported for per-host limits.</p>
+</div>
+<p>If multiple per-host <a class="reference internal" href="#envoy-v3-api-msg-config-cluster-v3-circuitbreakers-thresholds"><span class="std std-ref">Thresholds</span></a>
+are defined with the same <a class="reference internal" href="../../core/v3/base.proto.html#envoy-v3-api-enum-config-core-v3-routingpriority"><span class="std std-ref">RoutingPriority</span></a>,
+the first one in the list is used. If no per-host Thresholds are defined for a given
+<a class="reference internal" href="../../core/v3/base.proto.html#envoy-v3-api-enum-config-core-v3-routingpriority"><span class="std std-ref">RoutingPriority</span></a>,
+the cluster will not have per-host limits.</p>
+</dd>
+</dl>
+</section>
+<section id="config-cluster-v3-circuitbreakers-thresholds">
+<span id="envoy-v3-api-msg-config-cluster-v3-circuitbreakers-thresholds"></span><h2>config.cluster.v3.CircuitBreakers.Thresholds<a class="headerlink" href="#config-cluster-v3-circuitbreakers-thresholds" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/b2064ed660934383cece8c8d60393d5b0720ae4d/api/envoy/config/cluster/v3/circuit_breaker.proto#L30">[config.cluster.v3.CircuitBreakers.Thresholds proto]</a></p>
+<p>A Thresholds defines CircuitBreaker settings for a
+<a class="reference internal" href="../../core/v3/base.proto.html#envoy-v3-api-enum-config-core-v3-routingpriority"><span class="std std-ref">RoutingPriority</span></a>.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;priority&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;max_connections&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;max_pending_requests&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;max_requests&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;max_retries&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;retry_budget&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;track_remaining&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;max_connection_pools&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-circuitbreakers-thresholds-priority">
+<dt>priority</dt><dd><p>(<a class="reference internal" href="../../core/v3/base.proto.html#envoy-v3-api-enum-config-core-v3-routingpriority"><span class="std std-ref">config.core.v3.RoutingPriority</span></a>) The <a class="reference internal" href="../../core/v3/base.proto.html#envoy-v3-api-enum-config-core-v3-routingpriority"><span class="std std-ref">RoutingPriority</span></a>
+the specified CircuitBreaker settings apply to.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-circuitbreakers-thresholds-max-connections">
+<dt>max_connections</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The maximum number of connections that Envoy will make to the upstream
+cluster. If not specified, the default is 1024.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-circuitbreakers-thresholds-max-pending-requests">
+<dt>max_pending_requests</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The maximum number of pending requests that Envoy will allow to the
+upstream cluster. If not specified, the default is 1024.
+This limit is applied as a connection limit for non-HTTP traffic.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-circuitbreakers-thresholds-max-requests">
+<dt>max_requests</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The maximum number of parallel requests that Envoy will make to the
+upstream cluster. If not specified, the default is 1024.
+This limit does not apply to non-HTTP traffic.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-circuitbreakers-thresholds-max-retries">
+<dt>max_retries</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The maximum number of parallel retries that Envoy will allow to the
+upstream cluster. If not specified, the default is 3.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-cluster-v3-circuitbreakers-thresholds-retry-budget">
+<dt>retry_budget</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-config-cluster-v3-circuitbreakers-thresholds-retrybudget"><span class="std std-ref">config.cluster.v3.CircuitBreakers.Thresholds.RetryBudget</span></a>) Specifies a limit on concurrent retries in relation to the number of active requests. This
+parameter is optional.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If this field is set, the retry budget will override any configured retry circuit
+breaker.</p>
+</div>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-cluster-v3-circuitbreakers-thresholds-track-remaining">
+<dt>track_remaining</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">bool</a>) If track_remaining is true, then stats will be published that expose
+the number of resources remaining until the circuit breakers open. If
+not specified, the default is false.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If a retry budget is used in lieu of the max_retries circuit breaker,
+the remaining retry resources remaining will not be tracked.</p>
+</div>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-cluster-v3-circuitbreakers-thresholds-max-connection-pools">
+<dt>max_connection_pools</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) The maximum number of connection pools per cluster that Envoy will concurrently support at
+once. If not specified, the default is unlimited. Set this for clusters which create a
+large number of connection pools. See
+<a class="reference internal" href="../../../../intro/arch_overview/upstream/circuit_breaking.html#arch-overview-circuit-break-cluster-maximum-connection-pools"><span class="std std-ref">Circuit Breaking</span></a> for
+more details.</p>
+</dd>
+</dl>
+</section>
+<section id="config-cluster-v3-circuitbreakers-thresholds-retrybudget">
+<span id="envoy-v3-api-msg-config-cluster-v3-circuitbreakers-thresholds-retrybudget"></span><h2>config.cluster.v3.CircuitBreakers.Thresholds.RetryBudget<a class="headerlink" href="#config-cluster-v3-circuitbreakers-thresholds-retrybudget" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/b2064ed660934383cece8c8d60393d5b0720ae4d/api/envoy/config/cluster/v3/circuit_breaker.proto#L34">[config.cluster.v3.CircuitBreakers.Thresholds.RetryBudget proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;budget_percent&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;min_retry_concurrency&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl id="envoy-v3-api-field-config-cluster-v3-circuitbreakers-thresholds-retrybudget-budget-percent">
+<dt>budget_percent</dt><dd><p>(<a class="reference internal" href="../../../type/v3/percent.proto.html#envoy-v3-api-msg-type-v3-percent"><span class="std std-ref">type.v3.Percent</span></a>) Specifies the limit on concurrent retries as a percentage of the sum of active requests and
+active pending requests. For example, if there are 100 active requests and the
+budget_percent is set to 25, there may be 25 active retries.</p>
+<p>This parameter is optional. Defaults to 20%.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-cluster-v3-circuitbreakers-thresholds-retrybudget-min-retry-concurrency">
+<dt>min_retry_concurrency</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) Specifies the minimum retry concurrency allowed for the retry budget. The limit on the
+number of active retries may never go below this number.</p>
+<p>This parameter is optional. Defaults to 3.</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="outlier_detection.proto.html" class="btn btn-neutral float-left" title="Outlier detection (proto)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="filter.proto.html" class="btn btn-neutral float-right" title="Upstream filters (proto)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2023, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
