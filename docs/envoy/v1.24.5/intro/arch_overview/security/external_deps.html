@@ -1,0 +1,2545 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>External dependencies &mdash; envoy 1.24.5-a29f06 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Google Vulnerability Reward Program (VRP)" href="google_vrp.html" />
+    <link rel="prev" title="Threat model" href="threat_model.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.24.5-a29f06
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../intro.html">Introduction</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../what_is_envoy.html">What is Envoy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../arch_overview.html">Architecture overview</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../intro/intro.html">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../listeners/listeners_toc.html">Listeners</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../http/http.html">HTTP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../upstream/upstream.html">Upstream clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../observability/observability.html">Observability</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="security.html">Security</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ssl.html">TLS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jwt_authn_filter.html">JSON Web Token (JWT) Authentication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ext_authz_filter.html">External Authorization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rbac_filter.html">Role Based Access Control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="threat_model.html">Threat model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="threat_model.html#extension-security-robust-to-untrusted-downstream-and-upstream">Extension security: <code class="docutils literal notranslate"><span class="pre">robust_to_untrusted_downstream_and_upstream</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="threat_model.html#extension-security-data-plane-agnostic">Extension security: <code class="docutils literal notranslate"><span class="pre">data_plane_agnostic</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="threat_model.html#extension-security-robust-to-untrusted-downstream">Extension security: <code class="docutils literal notranslate"><span class="pre">robust_to_untrusted_downstream</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="threat_model.html#extension-security-requires-trusted-downstream-and-upstream">Extension security: <code class="docutils literal notranslate"><span class="pre">requires_trusted_downstream_and_upstream</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="threat_model.html#extension-security-unknown">Extension security: <code class="docutils literal notranslate"><span class="pre">unknown</span></code></a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">External dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#external-dependencies-dataplane-core">External dependencies: <code class="docutils literal notranslate"><span class="pre">dataplane_core</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#external-dependencies-dataplane-ext">External dependencies: <code class="docutils literal notranslate"><span class="pre">dataplane_ext</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#external-dependencies-controlplane">External dependencies: <code class="docutils literal notranslate"><span class="pre">controlplane</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#external-dependencies-api">External dependencies: <code class="docutils literal notranslate"><span class="pre">api</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#external-dependencies-observability-core">External dependencies: <code class="docutils literal notranslate"><span class="pre">observability_core</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#external-dependencies-observability-ext">External dependencies: <code class="docutils literal notranslate"><span class="pre">observability_ext</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#external-dependencies-build">External dependencies: <code class="docutils literal notranslate"><span class="pre">build</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#external-dependencies-other">External dependencies: <code class="docutils literal notranslate"><span class="pre">other</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#external-dependencies-test-only">External dependencies: <code class="docutils literal notranslate"><span class="pre">test_only</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="google_vrp.html">Google Vulnerability Reward Program (VRP)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../operations/operations.html">Operations &amp; configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../other_features/other_features.html">Other features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../advanced/advanced.html">Advanced</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../life_of_a_request.html">Life of a Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../deployment_types/deployment_types.html">Deployment types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_help.html">Getting help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../intro.html">Introduction</a></li>
+          <li class="breadcrumb-item"><a href="../arch_overview.html">Architecture overview</a></li>
+          <li class="breadcrumb-item"><a href="security.html">Security</a></li>
+      <li class="breadcrumb-item active">External dependencies</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/intro/arch_overview/security/external_deps.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="external-dependencies">
+<span id="arch-overview-external-deps"></span><h1>External dependencies<a class="headerlink" href="#external-dependencies" title="Permalink to this heading"></a></h1>
+<p>Below we enumerate the external dependencies that may be linked into the Envoy binary. We exclude
+dependencies that only are used in CI or developer tooling above.</p>
+<section id="data-plane-core">
+<h2>Data plane (core)<a class="headerlink" href="#data-plane-core" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+<section id="external-dependencies-dataplane-core">
+<h1>External dependencies: <code class="docutils literal notranslate"><span class="pre">dataplane_core</span></code><a class="headerlink" href="#external-dependencies-dataplane-core" title="Permalink to this heading"></a></h1>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://abseil.io/">Abseil</a></p></td>
+<td><p><a class="reference external" href="https://github.com/abseil/abseil-cpp/tree/8317b9a01cbc32594ad4bf971709c97cb13ec921">8317b9a</a></p></td>
+<td><p>2022-10-06</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/abseil/abseil-cpp/blob/8317b9a01cbc32594ad4bf971709c97cb13ec921/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/google/boringssl">BoringSSL</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/boringssl/tree/098695591f3a2665fccef83a3732ecfc99acdcdd">0986955</a></p></td>
+<td><p>2022-07-19</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agoogle%3Aboringssl%3A%2A&amp;search_type=all">cpe:2.3:a:google:boringssl:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/boringssl/blob/098695591f3a2665fccef83a3732ecfc99acdcdd/LICENSE">Mixed</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://boringssl.googlesource.com/boringssl/+/master/crypto/fipsmodule/FIPS.md">BoringSSL (FIPS)</a></p></td>
+<td><p><a class="reference external" href="https://commondatastorage.googleapis.com/chromium-boringssl-fips/boringssl-ae223d6138807a13006342edfeef32e813246b39.tar.xz">fips-20190808</a></p></td>
+<td><p>2019-08-08</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agoogle%3Aboringssl%3A%2A&amp;search_type=all">cpe:2.3:a:google:boringssl:*</a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://c-ares.haxx.se/">c-ares</a></p></td>
+<td><p><a class="reference external" href="https://github.com/c-ares/c-ares/releases/tag/cares-1_18_1">1.18.1</a></p></td>
+<td><p>2021-10-27</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Ac-ares_project%3Ac-ares%3A%2A&amp;search_type=all">cpe:2.3:a:c-ares_project:c-ares:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/c-ares/c-ares/blob/cares-1_18_1/LICENSE.md">c-ares</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://fmt.dev">fmt</a></p></td>
+<td><p><a class="reference external" href="https://github.com/fmtlib/fmt/releases/tag/9.1.0">9.1.0</a></p></td>
+<td><p>2022-08-27</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Afmt%3Afmt%3A%2A&amp;search_type=all">cpe:2.3:a:fmt:fmt:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/fmtlib/fmt/blob/9.1.0/LICENSE.rst">fmt</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/gperftools/gperftools">gperftools</a></p></td>
+<td><p><a class="reference external" href="https://github.com/gperftools/gperftools/releases/tag/gperftools-2.10">2.10</a></p></td>
+<td><p>2022-05-31</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agperftools_project%3Agperftools%3A%2A&amp;search_type=all">cpe:2.3:a:gperftools_project:gperftools:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/gperftools/gperftools/blob/gperftools-2.10/COPYING">BSD-3-Clause</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://grpc.io">gRPC</a></p></td>
+<td><p><a class="reference external" href="https://github.com/grpc/grpc/releases/tag/v1.49.0">1.49.0</a></p></td>
+<td><p>2022-09-14</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agrpc%3Agrpc%3A%2A&amp;search_type=all">cpe:2.3:a:grpc:grpc:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/grpc/grpc/blob/v1.49.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/circonus-labs/libcircllhist">libcircllhist</a></p></td>
+<td><p><a class="reference external" href="https://github.com/circonus-labs/libcircllhist/tree/63a16dd6f2fc7bc841bb17ff92be8318df60e2e1">63a16dd</a></p></td>
+<td><p>2019-02-11</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/circonus-labs/libcircllhist/blob/63a16dd6f2fc7bc841bb17ff92be8318df60e2e1/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://libevent.org">libevent</a></p></td>
+<td><p><a class="reference external" href="https://github.com/libevent/libevent/tree/62c152d9a7cd264b993dad730c4163c6ede2e0a3">62c152d</a></p></td>
+<td><p>2020-07-28</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Alibevent_project%3Alibevent%3A%2A&amp;search_type=all">cpe:2.3:a:libevent_project:libevent:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/libevent/libevent/blob/62c152d9a7cd264b993dad730c4163c6ede2e0a3/LICENSE">BSD-3-Clause</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/axboe/liburing">liburing</a></p></td>
+<td><p><a class="reference external" href="https://github.com/axboe/liburing/releases/tag/liburing-2.1">2.1</a></p></td>
+<td><p>2021-09-09</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://nghttp2.org">Nghttp2</a></p></td>
+<td><p><a class="reference external" href="https://github.com/nghttp2/nghttp2/releases/tag/v1.50.0">1.50.0</a></p></td>
+<td><p>2022-09-21</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Anghttp2%3Anghttp2%3A%2A&amp;search_type=all">cpe:2.3:a:nghttp2:nghttp2:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/nghttp2/nghttp2/blob/v1.50.0/LICENSE">MIT</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://nlohmann.github.io/json">nlohmann JSON</a></p></td>
+<td><p><a class="reference external" href="https://github.com/nlohmann/json/releases/tag/v3.11.2">3.11.2</a></p></td>
+<td><p>2022-08-12</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Ajson-for-modern-cpp_project%3Ajson-for-modern-cpp%3A%2A&amp;search_type=all">cpe:2.3:a:json-for-modern-cpp_project:json-for-modern-cpp:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/nlohmann/json/blob/v3.11.2/LICENSE.MIT">MIT</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://perfetto.dev/">Perfetto</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/perfetto/releases/tag/v28.0">28.0</a></p></td>
+<td><p>2022-08-02</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/google/perfetto/blob/v28.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://developers.google.com/protocol-buffers">Protocol Buffers</a></p></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/releases/tag/v21.7">21.7</a></p></td>
+<td><p>2022-09-29</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agoogle%3Aprotobuf%3A%2A&amp;search_type=all">cpe:2.3:a:google:protobuf:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/blob/v21.7/LICENSE">Protocol Buffers</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://developers.google.com/protocol-buffers">Protocol Buffers (protoc) linux_aarch_64</a></p></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/releases/tag/v21.7">21.7</a></p></td>
+<td><p>2022-09-29</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/blob/v21.7/LICENSE">Protocol Buffers</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://developers.google.com/protocol-buffers">Protocol Buffers (protoc) linux_x86_64</a></p></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/releases/tag/v21.7">21.7</a></p></td>
+<td><p>2022-09-29</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/blob/v21.7/LICENSE">Protocol Buffers</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://developers.google.com/protocol-buffers">Protocol Buffers (protoc) osx_aarch_64</a></p></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/releases/tag/v21.7">21.7</a></p></td>
+<td><p>2022-09-29</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/blob/v21.7/LICENSE">Protocol Buffers</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://developers.google.com/protocol-buffers">Protocol Buffers (protoc) osx_x86_64</a></p></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/releases/tag/v21.7">21.7</a></p></td>
+<td><p>2022-09-29</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/blob/v21.7/LICENSE">Protocol Buffers</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://developers.google.com/protocol-buffers">Protocol Buffers (protoc) win64</a></p></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/releases/tag/v21.7">21.7</a></p></td>
+<td><p>2022-09-29</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/blob/v21.7/LICENSE">Protocol Buffers</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/google/quiche">QUICHE</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/quiche/tree/44da7b642b96fabf8af3eeda44210ae92290cc00">44da7b6</a></p></td>
+<td><p>2022-10-13</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/google/quiche/blob/44da7b642b96fabf8af3eeda44210ae92290cc00/LICENSE">BSD-3-Clause</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/google/re2">RE2</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/re2/releases/tag/2022-06-01">2022-06-01</a></p></td>
+<td><p>2022-05-31</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/google/re2/blob/2022-06-01/LICENSE">BSD-3-Clause</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/bazelbuild/rules_foreign_cc">Rules for using foreign build systems in Bazel</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_foreign_cc/releases/tag/0.8.0">0.8.0</a></p></td>
+<td><p>2022-04-18</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_foreign_cc/blob/0.8.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/bazelbuild/rules_license">rules_license</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_license/releases/tag/0.0.3">0.0.3</a></p></td>
+<td><p>2022-05-28</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_license/blob/0.0.3/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/gabime/spdlog">spdlog</a></p></td>
+<td><p><a class="reference external" href="https://github.com/gabime/spdlog/releases/tag/v1.9.2">1.9.2</a></p></td>
+<td><p>2021-08-12</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/gabime/spdlog/blob/v1.9.2/LICENSE">MIT</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/google/tcmalloc">tcmalloc</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/tcmalloc/tree/59400332b9cff9920b6a1da203ac1575272a9f44">5940033</a></p></td>
+<td><p>2022-08-06</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/google/tcmalloc/blob/59400332b9cff9920b6a1da203ac1575272a9f44/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/Cyan4973/xxHash">xxHash</a></p></td>
+<td><p><a class="reference external" href="https://github.com/Cyan4973/xxHash/releases/tag/v0.8.1">0.8.1</a></p></td>
+<td><p>2021-11-29</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/Cyan4973/xxHash/blob/v0.8.1/LICENSE">BSD-2-Clause</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/jbeder/yaml-cpp">yaml-cpp</a></p></td>
+<td><p><a class="reference external" href="https://github.com/jbeder/yaml-cpp/tree/420c98231094b1cd2e5de3a714c4e3ee9b4f1118">420c982</a></p></td>
+<td><p>2022-04-27</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Ayaml-cpp_project%3Ayaml-cpp%3A%2A&amp;search_type=all">cpe:2.3:a:yaml-cpp_project:yaml-cpp:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/jbeder/yaml-cpp/blob/420c98231094b1cd2e5de3a714c4e3ee9b4f1118/LICENSE">MIT</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://zlib.net">zlib</a></p></td>
+<td><p><a class="reference external" href="https://github.com/madler/zlib/releases/tag/v1.2.12">1.2.12</a></p></td>
+<td><p>2022-03-27</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agnu%3Azlib%3A%2A&amp;search_type=all">cpe:2.3:a:gnu:zlib:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/madler/zlib/blob/v1.2.12/zlib.h">zlib</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/zlib-ng/zlib-ng">zlib-ng</a></p></td>
+<td><p><a class="reference external" href="https://github.com/zlib-ng/zlib-ng/releases/tag/2.0.6">2.0.6</a></p></td>
+<td><p>2021-12-24</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/zlib-ng/zlib-ng/blob/2.0.6/LICENSE.md">zlib</a></p></td>
+</tr>
+</tbody>
+</table>
+<section id="data-plane-extensions">
+<h2>Data plane (extensions)<a class="headerlink" href="#data-plane-extensions" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+<section id="external-dependencies-dataplane-ext">
+<h1>External dependencies: <code class="docutils literal notranslate"><span class="pre">dataplane_ext</span></code><a class="headerlink" href="#external-dependencies-dataplane-ext" title="Permalink to this heading"></a></h1>
+<section id="envoy-access-loggers-extension-filters-cel">
+<h2>envoy.access_loggers.extension_filters.cel<a class="headerlink" href="#envoy-access-loggers-extension-filters-cel" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://opensource.google/projects/cel">Common Expression Language (CEL) C++ library</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/cel-cpp/tree/11f9d662e71f73b28f4104ef2cf0550d96e677ae">11f9d66</a></p></td>
+<td><p>2022-09-01</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/google/flatbuffers">FlatBuffers</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/flatbuffers/releases/tag/v22.9.29">22.9.29</a></p></td>
+<td><p>2022-09-30</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agoogle%3Aflatbuffers%3A%2A&amp;search_type=all">cpe:2.3:a:google:flatbuffers:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/flatbuffers/blob/v22.9.29/LICENSE.txt">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-access-loggers-wasm">
+<h2>envoy.access_loggers.wasm<a class="headerlink" href="#envoy-access-loggers-wasm" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://opensource.google/projects/cel">Common Expression Language (CEL) C++ library</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/cel-cpp/tree/11f9d662e71f73b28f4104ef2cf0550d96e677ae">11f9d66</a></p></td>
+<td><p>2022-09-01</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/google/flatbuffers">FlatBuffers</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/flatbuffers/releases/tag/v22.9.29">22.9.29</a></p></td>
+<td><p>2022-09-30</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agoogle%3Aflatbuffers%3A%2A&amp;search_type=all">cpe:2.3:a:google:flatbuffers:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/flatbuffers/blob/v22.9.29/LICENSE.txt">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host">WebAssembly for Proxies (C++ host implementation)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host/tree/8aa8053609d893e25287551295bd9cd7dd4c3dcc">8aa8053</a></p></td>
+<td><p>2023-03-20</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host/blob/8aa8053609d893e25287551295bd9cd7dd4c3dcc/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk">WebAssembly for Proxies (C++ SDK)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk/tree/e30535b7c0cd3126e6401bc3769063a74bbb37be">e30535b</a></p></td>
+<td><p>2022-03-15</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk/blob/e30535b7c0cd3126e6401bc3769063a74bbb37be/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-bootstrap-wasm">
+<h2>envoy.bootstrap.wasm<a class="headerlink" href="#envoy-bootstrap-wasm" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://opensource.google/projects/cel">Common Expression Language (CEL) C++ library</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/cel-cpp/tree/11f9d662e71f73b28f4104ef2cf0550d96e677ae">11f9d66</a></p></td>
+<td><p>2022-09-01</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/google/flatbuffers">FlatBuffers</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/flatbuffers/releases/tag/v22.9.29">22.9.29</a></p></td>
+<td><p>2022-09-30</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agoogle%3Aflatbuffers%3A%2A&amp;search_type=all">cpe:2.3:a:google:flatbuffers:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/flatbuffers/blob/v22.9.29/LICENSE.txt">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host">WebAssembly for Proxies (C++ host implementation)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host/tree/8aa8053609d893e25287551295bd9cd7dd4c3dcc">8aa8053</a></p></td>
+<td><p>2023-03-20</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host/blob/8aa8053609d893e25287551295bd9cd7dd4c3dcc/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk">WebAssembly for Proxies (C++ SDK)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk/tree/e30535b7c0cd3126e6401bc3769063a74bbb37be">e30535b</a></p></td>
+<td><p>2022-03-15</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk/blob/e30535b7c0cd3126e6401bc3769063a74bbb37be/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-compression-brotli-compressor">
+<h2>envoy.compression.brotli.compressor<a class="headerlink" href="#envoy-compression-brotli-compressor" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://brotli.org">brotli</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/brotli/tree/0cd2e3926e95e7e2930f57ae3f4885508d462a25">0cd2e39</a></p></td>
+<td><p>2020-09-08</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agoogle%3Abrotli%3A%2A&amp;search_type=all">cpe:2.3:a:google:brotli:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/brotli/blob/0cd2e3926e95e7e2930f57ae3f4885508d462a25/LICENSE">MIT</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-compression-brotli-decompressor">
+<h2>envoy.compression.brotli.decompressor<a class="headerlink" href="#envoy-compression-brotli-decompressor" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://brotli.org">brotli</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/brotli/tree/0cd2e3926e95e7e2930f57ae3f4885508d462a25">0cd2e39</a></p></td>
+<td><p>2020-09-08</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agoogle%3Abrotli%3A%2A&amp;search_type=all">cpe:2.3:a:google:brotli:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/brotli/blob/0cd2e3926e95e7e2930f57ae3f4885508d462a25/LICENSE">MIT</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-compression-zstd-compressor">
+<h2>envoy.compression.zstd.compressor<a class="headerlink" href="#envoy-compression-zstd-compressor" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://facebook.github.io/zstd">zstd</a></p></td>
+<td><p><a class="reference external" href="https://github.com/facebook/zstd/releases/tag/v1.5.2">1.5.2</a></p></td>
+<td><p>2022-01-20</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Afacebook%3Azstandard%3A%2A&amp;search_type=all">cpe:2.3:a:facebook:zstandard:*</a></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-compression-zstd-decompressor">
+<h2>envoy.compression.zstd.decompressor<a class="headerlink" href="#envoy-compression-zstd-decompressor" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://facebook.github.io/zstd">zstd</a></p></td>
+<td><p><a class="reference external" href="https://github.com/facebook/zstd/releases/tag/v1.5.2">1.5.2</a></p></td>
+<td><p>2022-01-20</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Afacebook%3Azstandard%3A%2A&amp;search_type=all">cpe:2.3:a:facebook:zstandard:*</a></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-filters-http-aws-lambda">
+<h2>envoy.filters.http.aws_lambda<a class="headerlink" href="#envoy-filters-http-aws-lambda" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://curl.haxx.se">curl</a></p></td>
+<td><p><a class="reference external" href="https://github.com/curl/curl/releases/tag/curl-7_86_0">7.86.0</a></p></td>
+<td><p>2022-10-26</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Ahaxx%3Alibcurl%3A%2A&amp;search_type=all">cpe:2.3:a:haxx:libcurl:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/curl/curl/blob/curl-7_86_0/COPYING">curl</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-filters-http-aws-request-signing">
+<h2>envoy.filters.http.aws_request_signing<a class="headerlink" href="#envoy-filters-http-aws-request-signing" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://curl.haxx.se">curl</a></p></td>
+<td><p><a class="reference external" href="https://github.com/curl/curl/releases/tag/curl-7_86_0">7.86.0</a></p></td>
+<td><p>2022-10-26</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Ahaxx%3Alibcurl%3A%2A&amp;search_type=all">cpe:2.3:a:haxx:libcurl:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/curl/curl/blob/curl-7_86_0/COPYING">curl</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-filters-http-gcp-authn">
+<h2>envoy.filters.http.gcp_authn<a class="headerlink" href="#envoy-filters-http-gcp-authn" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/google/jwt_verify_lib">jwt_verify_lib</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/jwt_verify_lib/tree/26c22c0ce1bc607eec8fa5dd26b707378adc7a88">26c22c0</a></p></td>
+<td><p>2022-09-22</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/google/jwt_verify_lib/blob/26c22c0ce1bc607eec8fa5dd26b707378adc7a88/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-filters-http-grpc-json-transcoder">
+<h2>envoy.filters.http.grpc_json_transcoder<a class="headerlink" href="#envoy-filters-http-grpc-json-transcoder" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/grpc-ecosystem/grpc-httpjson-transcoding">grpc-httpjson-transcoding</a></p></td>
+<td><p><a class="reference external" href="https://github.com/grpc-ecosystem/grpc-httpjson-transcoding/tree/387cce028806226ef0976ad276a3842a9219df99">387cce0</a></p></td>
+<td><p>2022-10-07</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/grpc-ecosystem/grpc-httpjson-transcoding/blob/387cce028806226ef0976ad276a3842a9219df99/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-filters-http-jwt-authn">
+<h2>envoy.filters.http.jwt_authn<a class="headerlink" href="#envoy-filters-http-jwt-authn" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/google/jwt_verify_lib">jwt_verify_lib</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/jwt_verify_lib/tree/26c22c0ce1bc607eec8fa5dd26b707378adc7a88">26c22c0</a></p></td>
+<td><p>2022-09-22</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/google/jwt_verify_lib/blob/26c22c0ce1bc607eec8fa5dd26b707378adc7a88/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-filters-http-language">
+<h2>envoy.filters.http.language<a class="headerlink" href="#envoy-filters-http-language" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/unicode-org/icu">ICU Library</a></p></td>
+<td><p><a class="reference external" href="https://github.com/unicode-org/icu/releases/tag/release-71-1">71-1</a></p></td>
+<td><p>2022-04-06</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/unicode-org/icu/blob/release-71-1/icu4c/LICENSE">ICU</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-filters-http-lua">
+<h2>envoy.filters.http.lua<a class="headerlink" href="#envoy-filters-http-lua" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://luajit.org">LuaJIT</a></p></td>
+<td><p><a class="reference external" href="https://github.com/LuaJIT/LuaJIT/tree/1d8b747c161db457e032a023ebbff511f5de5ec2">1d8b747</a></p></td>
+<td><p>2020-10-12</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Aluajit%3Aluajit%3A%2A&amp;search_type=all">cpe:2.3:a:luajit:luajit:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/LuaJIT/LuaJIT/blob/1d8b747c161db457e032a023ebbff511f5de5ec2/COPYRIGHT">MIT</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/moonjit/moonjit">Moonjit</a></p></td>
+<td><p><a class="reference external" href="https://github.com/moonjit/moonjit/releases/tag/2.2.0">2.2.0</a></p></td>
+<td><p>2020-01-14</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Amoonjit_project%3Amoonjit%3A%2A&amp;search_type=all">cpe:2.3:a:moonjit_project:moonjit:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/moonjit/moonjit/blob/2.2.0/COPYRIGHT">moonjit</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-filters-http-rbac">
+<h2>envoy.filters.http.rbac<a class="headerlink" href="#envoy-filters-http-rbac" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://opensource.google/projects/cel">Common Expression Language (CEL) C++ library</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/cel-cpp/tree/11f9d662e71f73b28f4104ef2cf0550d96e677ae">11f9d66</a></p></td>
+<td><p>2022-09-01</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/google/flatbuffers">FlatBuffers</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/flatbuffers/releases/tag/v22.9.29">22.9.29</a></p></td>
+<td><p>2022-09-30</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agoogle%3Aflatbuffers%3A%2A&amp;search_type=all">cpe:2.3:a:google:flatbuffers:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/flatbuffers/blob/v22.9.29/LICENSE.txt">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-filters-http-wasm">
+<h2>envoy.filters.http.wasm<a class="headerlink" href="#envoy-filters-http-wasm" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://opensource.google/projects/cel">Common Expression Language (CEL) C++ library</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/cel-cpp/tree/11f9d662e71f73b28f4104ef2cf0550d96e677ae">11f9d66</a></p></td>
+<td><p>2022-09-01</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/google/flatbuffers">FlatBuffers</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/flatbuffers/releases/tag/v22.9.29">22.9.29</a></p></td>
+<td><p>2022-09-30</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agoogle%3Aflatbuffers%3A%2A&amp;search_type=all">cpe:2.3:a:google:flatbuffers:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/flatbuffers/blob/v22.9.29/LICENSE.txt">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host">WebAssembly for Proxies (C++ host implementation)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host/tree/8aa8053609d893e25287551295bd9cd7dd4c3dcc">8aa8053</a></p></td>
+<td><p>2023-03-20</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host/blob/8aa8053609d893e25287551295bd9cd7dd4c3dcc/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk">WebAssembly for Proxies (C++ SDK)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk/tree/e30535b7c0cd3126e6401bc3769063a74bbb37be">e30535b</a></p></td>
+<td><p>2022-03-15</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk/blob/e30535b7c0cd3126e6401bc3769063a74bbb37be/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-filters-network-dubbo-proxy">
+<h2>envoy.filters.network.dubbo_proxy<a class="headerlink" href="#envoy-filters-network-dubbo-proxy" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/alibaba/hessian2-codec.git">hessian2-codec</a></p></td>
+<td><p><a class="reference external" href="https://github.com/alibaba/hessian2-codec/tree/e9bb36e206f2c5054b50d11f88bb1b95c77766f8">e9bb36e</a></p></td>
+<td><p>2022-10-10</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/alibaba/hessian2-codec/blob/e9bb36e206f2c5054b50d11f88bb1b95c77766f8/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-filters-network-kafka-broker">
+<h2>envoy.filters.network.kafka_broker<a class="headerlink" href="#envoy-filters-network-kafka-broker" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://kafka.apache.org">Kafka (source)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/apache/kafka/releases/tag/3.4.0">3.4.0</a></p></td>
+<td><p>2023-01-31</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Aapache%3Akafka%3A%2A&amp;search_type=all">cpe:2.3:a:apache:kafka:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/apache/kafka/blob/3.4.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-filters-network-kafka-mesh">
+<h2>envoy.filters.network.kafka_mesh<a class="headerlink" href="#envoy-filters-network-kafka-mesh" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/edenhill/librdkafka">Kafka (C/C++ client)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/edenhill/librdkafka/releases/tag/v1.8.2">1.8.2</a></p></td>
+<td><p>2021-10-18</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/edenhill/librdkafka/blob/v1.8.2/LICENSE">librdkafka</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://kafka.apache.org">Kafka (source)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/apache/kafka/releases/tag/3.4.0">3.4.0</a></p></td>
+<td><p>2023-01-31</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Aapache%3Akafka%3A%2A&amp;search_type=all">cpe:2.3:a:apache:kafka:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/apache/kafka/blob/3.4.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-filters-network-mysql-proxy">
+<h2>envoy.filters.network.mysql_proxy<a class="headerlink" href="#envoy-filters-network-mysql-proxy" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/envoyproxy/sql-parser">C++ SQL Parser Library</a></p></td>
+<td><p><a class="reference external" href="https://github.com/envoyproxy/sql-parser/tree/3b40ba2d106587bdf053a292f7e3bb17e818a57f">3b40ba2</a></p></td>
+<td><p>2020-06-10</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/envoyproxy/sql-parser/blob/3b40ba2d106587bdf053a292f7e3bb17e818a57f/LICENSE">MIT</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-filters-network-postgres-proxy">
+<h2>envoy.filters.network.postgres_proxy<a class="headerlink" href="#envoy-filters-network-postgres-proxy" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/envoyproxy/sql-parser">C++ SQL Parser Library</a></p></td>
+<td><p><a class="reference external" href="https://github.com/envoyproxy/sql-parser/tree/3b40ba2d106587bdf053a292f7e3bb17e818a57f">3b40ba2</a></p></td>
+<td><p>2020-06-10</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/envoyproxy/sql-parser/blob/3b40ba2d106587bdf053a292f7e3bb17e818a57f/LICENSE">MIT</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-filters-network-rbac">
+<h2>envoy.filters.network.rbac<a class="headerlink" href="#envoy-filters-network-rbac" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://opensource.google/projects/cel">Common Expression Language (CEL) C++ library</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/cel-cpp/tree/11f9d662e71f73b28f4104ef2cf0550d96e677ae">11f9d66</a></p></td>
+<td><p>2022-09-01</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/google/flatbuffers">FlatBuffers</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/flatbuffers/releases/tag/v22.9.29">22.9.29</a></p></td>
+<td><p>2022-09-30</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agoogle%3Aflatbuffers%3A%2A&amp;search_type=all">cpe:2.3:a:google:flatbuffers:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/flatbuffers/blob/v22.9.29/LICENSE.txt">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-filters-network-wasm">
+<h2>envoy.filters.network.wasm<a class="headerlink" href="#envoy-filters-network-wasm" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://opensource.google/projects/cel">Common Expression Language (CEL) C++ library</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/cel-cpp/tree/11f9d662e71f73b28f4104ef2cf0550d96e677ae">11f9d66</a></p></td>
+<td><p>2022-09-01</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/google/flatbuffers">FlatBuffers</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/flatbuffers/releases/tag/v22.9.29">22.9.29</a></p></td>
+<td><p>2022-09-30</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agoogle%3Aflatbuffers%3A%2A&amp;search_type=all">cpe:2.3:a:google:flatbuffers:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/flatbuffers/blob/v22.9.29/LICENSE.txt">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host">WebAssembly for Proxies (C++ host implementation)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host/tree/8aa8053609d893e25287551295bd9cd7dd4c3dcc">8aa8053</a></p></td>
+<td><p>2023-03-20</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host/blob/8aa8053609d893e25287551295bd9cd7dd4c3dcc/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk">WebAssembly for Proxies (C++ SDK)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk/tree/e30535b7c0cd3126e6401bc3769063a74bbb37be">e30535b</a></p></td>
+<td><p>2022-03-15</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk/blob/e30535b7c0cd3126e6401bc3769063a74bbb37be/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-grpc-credentials-aws-iam">
+<h2>envoy.grpc_credentials.aws_iam<a class="headerlink" href="#envoy-grpc-credentials-aws-iam" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://curl.haxx.se">curl</a></p></td>
+<td><p><a class="reference external" href="https://github.com/curl/curl/releases/tag/curl-7_86_0">7.86.0</a></p></td>
+<td><p>2022-10-26</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Ahaxx%3Alibcurl%3A%2A&amp;search_type=all">cpe:2.3:a:haxx:libcurl:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/curl/curl/blob/curl-7_86_0/COPYING">curl</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-matching-input-matchers-hyperscan">
+<h2>envoy.matching.input_matchers.hyperscan<a class="headerlink" href="#envoy-matching-input-matchers-hyperscan" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://www.boost.org/">Boost</a></p></td>
+<td><p><a class="reference external" href="https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.tar.gz">1.78.0</a></p></td>
+<td><p>2021-12-08</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Aboost%3Aboost%3A%2A&amp;search_type=all">cpe:2.3:a:boost:boost:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/boostorg/boost/blob/boost-1.78.0/LICENSE_1_0.txt">Boost</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://www.colm.net/open-source/colm/">Colm</a></p></td>
+<td><p><a class="reference external" href="https://github.com/adrian-thurston/colm/tree/2d8ba76ddaf6634f285d0a81ee42d5ee77d084cf">2d8ba76</a></p></td>
+<td><p>2021-12-28</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/adrian-thurston/colm/blob/2d8ba76ddaf6634f285d0a81ee42d5ee77d084cf/COPYING">MIT</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://hyperscan.io">Hyperscan</a></p></td>
+<td><p><a class="reference external" href="https://github.com/intel/hyperscan/releases/tag/v5.4.0">5.4.0</a></p></td>
+<td><p>2021-01-13</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/intel/hyperscan/blob/v5.4.0/LICENSE">BSD-3-Clause</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://www.colm.net/open-source/ragel/">Ragel</a></p></td>
+<td><p><a class="reference external" href="https://github.com/adrian-thurston/ragel/tree/d4577c924451b331c73c8ed0af04f6efd35ac0b4">d4577c9</a></p></td>
+<td><p>2021-12-28</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/adrian-thurston/ragel/blob/d4577c924451b331c73c8ed0af04f6efd35ac0b4/COPYING">MIT</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-network-connection-balance-dlb">
+<h2>envoy.network.connection_balance.dlb<a class="headerlink" href="#envoy-network-connection-balance-dlb" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://networkbuilders.intel.com/solutionslibrary/queue-management-and-load-balancing-on-intel-architecture">Intel Dlb</a></p></td>
+<td><p><a class="reference external" href="https://downloadmirror.intel.com/744007/dlb_linux_src_release_7.8.0_2022_09_20.txz">7.8.0</a></p></td>
+<td><p>2022-03-30</p></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-rate-limit-descriptors-expr">
+<h2>envoy.rate_limit_descriptors.expr<a class="headerlink" href="#envoy-rate-limit-descriptors-expr" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://opensource.google/projects/cel">Common Expression Language (CEL) C++ library</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/cel-cpp/tree/11f9d662e71f73b28f4104ef2cf0550d96e677ae">11f9d66</a></p></td>
+<td><p>2022-09-01</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/google/flatbuffers">FlatBuffers</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/flatbuffers/releases/tag/v22.9.29">22.9.29</a></p></td>
+<td><p>2022-09-30</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agoogle%3Aflatbuffers%3A%2A&amp;search_type=all">cpe:2.3:a:google:flatbuffers:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/flatbuffers/blob/v22.9.29/LICENSE.txt">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-rbac-matchers-upstream-ip-port">
+<h2>envoy.rbac.matchers.upstream_ip_port<a class="headerlink" href="#envoy-rbac-matchers-upstream-ip-port" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://opensource.google/projects/cel">Common Expression Language (CEL) C++ library</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/cel-cpp/tree/11f9d662e71f73b28f4104ef2cf0550d96e677ae">11f9d66</a></p></td>
+<td><p>2022-09-01</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/google/flatbuffers">FlatBuffers</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/flatbuffers/releases/tag/v22.9.29">22.9.29</a></p></td>
+<td><p>2022-09-30</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agoogle%3Aflatbuffers%3A%2A&amp;search_type=all">cpe:2.3:a:google:flatbuffers:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/flatbuffers/blob/v22.9.29/LICENSE.txt">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-regex-engines-hyperscan">
+<h2>envoy.regex_engines.hyperscan<a class="headerlink" href="#envoy-regex-engines-hyperscan" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://www.boost.org/">Boost</a></p></td>
+<td><p><a class="reference external" href="https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.tar.gz">1.78.0</a></p></td>
+<td><p>2021-12-08</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Aboost%3Aboost%3A%2A&amp;search_type=all">cpe:2.3:a:boost:boost:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/boostorg/boost/blob/boost-1.78.0/LICENSE_1_0.txt">Boost</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://www.colm.net/open-source/colm/">Colm</a></p></td>
+<td><p><a class="reference external" href="https://github.com/adrian-thurston/colm/tree/2d8ba76ddaf6634f285d0a81ee42d5ee77d084cf">2d8ba76</a></p></td>
+<td><p>2021-12-28</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/adrian-thurston/colm/blob/2d8ba76ddaf6634f285d0a81ee42d5ee77d084cf/COPYING">MIT</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://hyperscan.io">Hyperscan</a></p></td>
+<td><p><a class="reference external" href="https://github.com/intel/hyperscan/releases/tag/v5.4.0">5.4.0</a></p></td>
+<td><p>2021-01-13</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/intel/hyperscan/blob/v5.4.0/LICENSE">BSD-3-Clause</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://www.colm.net/open-source/ragel/">Ragel</a></p></td>
+<td><p><a class="reference external" href="https://github.com/adrian-thurston/ragel/tree/d4577c924451b331c73c8ed0af04f6efd35ac0b4">d4577c9</a></p></td>
+<td><p>2021-12-28</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/adrian-thurston/ragel/blob/d4577c924451b331c73c8ed0af04f6efd35ac0b4/COPYING">MIT</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-stat-sinks-wasm">
+<h2>envoy.stat_sinks.wasm<a class="headerlink" href="#envoy-stat-sinks-wasm" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://opensource.google/projects/cel">Common Expression Language (CEL) C++ library</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/cel-cpp/tree/11f9d662e71f73b28f4104ef2cf0550d96e677ae">11f9d66</a></p></td>
+<td><p>2022-09-01</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/google/flatbuffers">FlatBuffers</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/flatbuffers/releases/tag/v22.9.29">22.9.29</a></p></td>
+<td><p>2022-09-30</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agoogle%3Aflatbuffers%3A%2A&amp;search_type=all">cpe:2.3:a:google:flatbuffers:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/flatbuffers/blob/v22.9.29/LICENSE.txt">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host">WebAssembly for Proxies (C++ host implementation)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host/tree/8aa8053609d893e25287551295bd9cd7dd4c3dcc">8aa8053</a></p></td>
+<td><p>2023-03-20</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host/blob/8aa8053609d893e25287551295bd9cd7dd4c3dcc/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk">WebAssembly for Proxies (C++ SDK)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk/tree/e30535b7c0cd3126e6401bc3769063a74bbb37be">e30535b</a></p></td>
+<td><p>2022-03-15</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk/blob/e30535b7c0cd3126e6401bc3769063a74bbb37be/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-tls-key-providers-cryptomb">
+<h2>envoy.tls.key_providers.cryptomb<a class="headerlink" href="#envoy-tls-key-providers-cryptomb" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/intel/ipp-crypto">libipp-crypto</a></p></td>
+<td><p><a class="reference external" href="https://github.com/intel/ipp-crypto/releases/tag/ippcp_2021.5">2021.5</a></p></td>
+<td><p>2021-12-21</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Aintel%3Acryptography_for_intel_integrated_performance_primitives%3A%2A&amp;search_type=all">cpe:2.3:a:intel:cryptography_for_intel_integrated_performance_primitives:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/intel/ipp-crypto/blob/ippcp_2021.5/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-tls-key-providers-qat">
+<h2>envoy.tls.key_providers.qat<a class="headerlink" href="#envoy-tls-key-providers-qat" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/intel/qatlib">qatlib</a></p></td>
+<td><p><a class="reference external" href="https://github.com/intel/qatlib/releases/tag/21.11.0">21.11.0</a></p></td>
+<td><p>2021-11-10</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/intel/qatlib/blob/21.11.0/LICENSE">BSD-3-Clause</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-tracers-opencensus">
+<h2>envoy.tracers.opencensus<a class="headerlink" href="#envoy-tracers-opencensus" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://curl.haxx.se">curl</a></p></td>
+<td><p><a class="reference external" href="https://github.com/curl/curl/releases/tag/curl-7_86_0">7.86.0</a></p></td>
+<td><p>2022-10-26</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Ahaxx%3Alibcurl%3A%2A&amp;search_type=all">cpe:2.3:a:haxx:libcurl:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/curl/curl/blob/curl-7_86_0/COPYING">curl</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-wasm-runtime-null">
+<h2>envoy.wasm.runtime.null<a class="headerlink" href="#envoy-wasm-runtime-null" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host">WebAssembly for Proxies (C++ host implementation)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host/tree/8aa8053609d893e25287551295bd9cd7dd4c3dcc">8aa8053</a></p></td>
+<td><p>2023-03-20</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host/blob/8aa8053609d893e25287551295bd9cd7dd4c3dcc/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk">WebAssembly for Proxies (C++ SDK)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk/tree/e30535b7c0cd3126e6401bc3769063a74bbb37be">e30535b</a></p></td>
+<td><p>2022-03-15</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk/blob/e30535b7c0cd3126e6401bc3769063a74bbb37be/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-wasm-runtime-v8">
+<h2>envoy.wasm.runtime.v8<a class="headerlink" href="#envoy-wasm-runtime-v8" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://chromium.googlesource.com/chromium/src/base/trace_event/common/">Chromium’s trace event headers</a></p></td>
+<td><p><a class="reference external" href="https://storage.googleapis.com/envoyproxy-wee8/chromium-base_trace_event_common-521ac34ebd795939c7e16b37d9d3ddb40e8ed556.tar.gz">521ac34</a></p></td>
+<td><p>2022-10-12</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://v8.dev">V8</a></p></td>
+<td><p><a class="reference external" href="https://storage.googleapis.com/envoyproxy-wee8/v8-10.7.193.13.tar.gz">10.7.193.13</a></p></td>
+<td><p>2022-10-12</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agoogle%3Av8%3A%2A&amp;search_type=all">cpe:2.3:a:google:v8:*</a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host">WebAssembly for Proxies (C++ host implementation)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host/tree/8aa8053609d893e25287551295bd9cd7dd4c3dcc">8aa8053</a></p></td>
+<td><p>2023-03-20</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host/blob/8aa8053609d893e25287551295bd9cd7dd4c3dcc/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk">WebAssembly for Proxies (C++ SDK)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk/tree/e30535b7c0cd3126e6401bc3769063a74bbb37be">e30535b</a></p></td>
+<td><p>2022-03-15</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk/blob/e30535b7c0cd3126e6401bc3769063a74bbb37be/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-wasm-runtime-wamr">
+<h2>envoy.wasm.runtime.wamr<a class="headerlink" href="#envoy-wasm-runtime-wamr" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://llvm.org">LLVM</a></p></td>
+<td><p><a class="reference external" href="https://github.com/llvm/llvm-project/releases/tag/llvmorg-12.0.1">12.0.1</a></p></td>
+<td><p>2021-07-09</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Allvm%3A%2A%3A%2A&amp;search_type=all">cpe:2.3:a:llvm:*:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/llvm/llvm-project/blob/llvmorg-12.0.1/llvm/LICENSE.TXT">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host">WebAssembly for Proxies (C++ host implementation)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host/tree/8aa8053609d893e25287551295bd9cd7dd4c3dcc">8aa8053</a></p></td>
+<td><p>2023-03-20</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host/blob/8aa8053609d893e25287551295bd9cd7dd4c3dcc/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk">WebAssembly for Proxies (C++ SDK)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk/tree/e30535b7c0cd3126e6401bc3769063a74bbb37be">e30535b</a></p></td>
+<td><p>2022-03-15</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk/blob/e30535b7c0cd3126e6401bc3769063a74bbb37be/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/bytecodealliance/wasm-micro-runtime">Webassembly Micro Runtime</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bytecodealliance/wasm-micro-runtime/releases/tag/WAMR-1.1.2">WAMR-1.1.2</a></p></td>
+<td><p>2022-12-16</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/bytecodealliance/wasm-micro-runtime/blob/WAMR-1.1.2/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-wasm-runtime-wasmtime">
+<h2>envoy.wasm.runtime.wasmtime<a class="headerlink" href="#envoy-wasm-runtime-wasmtime" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/bazelbuild/rules_rust">Bazel rust rules</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_rust/releases/tag/0.18.0">0.18.0</a></p></td>
+<td><p>2023-02-09</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_rust/blob/0.18.0/LICENSE.txt">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/WebAssembly/wasm-c-api">wasm-c-api</a></p></td>
+<td><p><a class="reference external" href="https://github.com/WebAssembly/wasm-c-api/tree/c9d31284651b975f05ac27cee0bab1377560b87e">c9d3128</a></p></td>
+<td><p>2021-01-11</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/WebAssembly/wasm-c-api/blob/c9d31284651b975f05ac27cee0bab1377560b87e/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/bytecodealliance/wasmtime">wasmtime</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bytecodealliance/wasmtime/releases/tag/v6.0.1">6.0.1</a></p></td>
+<td><p>2023-03-08</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Abytecodealliance%3Awasmtime%3A%2A&amp;search_type=all">cpe:2.3:a:bytecodealliance:wasmtime:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bytecodealliance/wasmtime/blob/v6.0.1/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host">WebAssembly for Proxies (C++ host implementation)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host/tree/8aa8053609d893e25287551295bd9cd7dd4c3dcc">8aa8053</a></p></td>
+<td><p>2023-03-20</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host/blob/8aa8053609d893e25287551295bd9cd7dd4c3dcc/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk">WebAssembly for Proxies (C++ SDK)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk/tree/e30535b7c0cd3126e6401bc3769063a74bbb37be">e30535b</a></p></td>
+<td><p>2022-03-15</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk/blob/e30535b7c0cd3126e6401bc3769063a74bbb37be/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-wasm-runtime-wavm">
+<h2>envoy.wasm.runtime.wavm<a class="headerlink" href="#envoy-wasm-runtime-wavm" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://llvm.org">LLVM</a></p></td>
+<td><p><a class="reference external" href="https://github.com/llvm/llvm-project/releases/tag/llvmorg-12.0.1">12.0.1</a></p></td>
+<td><p>2021-07-09</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Allvm%3A%2A%3A%2A&amp;search_type=all">cpe:2.3:a:llvm:*:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/llvm/llvm-project/blob/llvmorg-12.0.1/llvm/LICENSE.TXT">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://wavm.github.io">WAVM</a></p></td>
+<td><p><a class="reference external" href="https://github.com/WAVM/WAVM/tree/3f9a150cac7faf28eab357a2c5b83d2ec740c7d9">3f9a150</a></p></td>
+<td><p>2022-05-14</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Awebassembly_virtual_machine_project%3Awebassembly_virtual_machine%3A%2A&amp;search_type=all">cpe:2.3:a:webassembly_virtual_machine_project:webassembly_virtual_machine:*</a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host">WebAssembly for Proxies (C++ host implementation)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host/tree/8aa8053609d893e25287551295bd9cd7dd4c3dcc">8aa8053</a></p></td>
+<td><p>2023-03-20</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-host/blob/8aa8053609d893e25287551295bd9cd7dd4c3dcc/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk">WebAssembly for Proxies (C++ SDK)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk/tree/e30535b7c0cd3126e6401bc3769063a74bbb37be">e30535b</a></p></td>
+<td><p>2022-03-15</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-cpp-sdk/blob/e30535b7c0cd3126e6401bc3769063a74bbb37be/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="control-plane">
+<h2>Control plane<a class="headerlink" href="#control-plane" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+<section id="external-dependencies-controlplane">
+<h1>External dependencies: <code class="docutils literal notranslate"><span class="pre">controlplane</span></code><a class="headerlink" href="#external-dependencies-controlplane" title="Permalink to this heading"></a></h1>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://abseil.io/">Abseil</a></p></td>
+<td><p><a class="reference external" href="https://github.com/abseil/abseil-cpp/tree/8317b9a01cbc32594ad4bf971709c97cb13ec921">8317b9a</a></p></td>
+<td><p>2022-10-06</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/abseil/abseil-cpp/blob/8317b9a01cbc32594ad4bf971709c97cb13ec921/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/google/boringssl">BoringSSL</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/boringssl/tree/098695591f3a2665fccef83a3732ecfc99acdcdd">0986955</a></p></td>
+<td><p>2022-07-19</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agoogle%3Aboringssl%3A%2A&amp;search_type=all">cpe:2.3:a:google:boringssl:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/boringssl/blob/098695591f3a2665fccef83a3732ecfc99acdcdd/LICENSE">Mixed</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://boringssl.googlesource.com/boringssl/+/master/crypto/fipsmodule/FIPS.md">BoringSSL (FIPS)</a></p></td>
+<td><p><a class="reference external" href="https://commondatastorage.googleapis.com/chromium-boringssl-fips/boringssl-ae223d6138807a13006342edfeef32e813246b39.tar.xz">fips-20190808</a></p></td>
+<td><p>2019-08-08</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agoogle%3Aboringssl%3A%2A&amp;search_type=all">cpe:2.3:a:google:boringssl:*</a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://c-ares.haxx.se/">c-ares</a></p></td>
+<td><p><a class="reference external" href="https://github.com/c-ares/c-ares/releases/tag/cares-1_18_1">1.18.1</a></p></td>
+<td><p>2021-10-27</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Ac-ares_project%3Ac-ares%3A%2A&amp;search_type=all">cpe:2.3:a:c-ares_project:c-ares:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/c-ares/c-ares/blob/cares-1_18_1/LICENSE.md">c-ares</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://fmt.dev">fmt</a></p></td>
+<td><p><a class="reference external" href="https://github.com/fmtlib/fmt/releases/tag/9.1.0">9.1.0</a></p></td>
+<td><p>2022-08-27</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Afmt%3Afmt%3A%2A&amp;search_type=all">cpe:2.3:a:fmt:fmt:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/fmtlib/fmt/blob/9.1.0/LICENSE.rst">fmt</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/gperftools/gperftools">gperftools</a></p></td>
+<td><p><a class="reference external" href="https://github.com/gperftools/gperftools/releases/tag/gperftools-2.10">2.10</a></p></td>
+<td><p>2022-05-31</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agperftools_project%3Agperftools%3A%2A&amp;search_type=all">cpe:2.3:a:gperftools_project:gperftools:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/gperftools/gperftools/blob/gperftools-2.10/COPYING">BSD-3-Clause</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://grpc.io">gRPC</a></p></td>
+<td><p><a class="reference external" href="https://github.com/grpc/grpc/releases/tag/v1.49.0">1.49.0</a></p></td>
+<td><p>2022-09-14</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agrpc%3Agrpc%3A%2A&amp;search_type=all">cpe:2.3:a:grpc:grpc:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/grpc/grpc/blob/v1.49.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/circonus-labs/libcircllhist">libcircllhist</a></p></td>
+<td><p><a class="reference external" href="https://github.com/circonus-labs/libcircllhist/tree/63a16dd6f2fc7bc841bb17ff92be8318df60e2e1">63a16dd</a></p></td>
+<td><p>2019-02-11</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/circonus-labs/libcircllhist/blob/63a16dd6f2fc7bc841bb17ff92be8318df60e2e1/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://libevent.org">libevent</a></p></td>
+<td><p><a class="reference external" href="https://github.com/libevent/libevent/tree/62c152d9a7cd264b993dad730c4163c6ede2e0a3">62c152d</a></p></td>
+<td><p>2020-07-28</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Alibevent_project%3Alibevent%3A%2A&amp;search_type=all">cpe:2.3:a:libevent_project:libevent:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/libevent/libevent/blob/62c152d9a7cd264b993dad730c4163c6ede2e0a3/LICENSE">BSD-3-Clause</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/axboe/liburing">liburing</a></p></td>
+<td><p><a class="reference external" href="https://github.com/axboe/liburing/releases/tag/liburing-2.1">2.1</a></p></td>
+<td><p>2021-09-09</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://nghttp2.org">Nghttp2</a></p></td>
+<td><p><a class="reference external" href="https://github.com/nghttp2/nghttp2/releases/tag/v1.50.0">1.50.0</a></p></td>
+<td><p>2022-09-21</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Anghttp2%3Anghttp2%3A%2A&amp;search_type=all">cpe:2.3:a:nghttp2:nghttp2:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/nghttp2/nghttp2/blob/v1.50.0/LICENSE">MIT</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://nlohmann.github.io/json">nlohmann JSON</a></p></td>
+<td><p><a class="reference external" href="https://github.com/nlohmann/json/releases/tag/v3.11.2">3.11.2</a></p></td>
+<td><p>2022-08-12</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Ajson-for-modern-cpp_project%3Ajson-for-modern-cpp%3A%2A&amp;search_type=all">cpe:2.3:a:json-for-modern-cpp_project:json-for-modern-cpp:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/nlohmann/json/blob/v3.11.2/LICENSE.MIT">MIT</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://perfetto.dev/">Perfetto</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/perfetto/releases/tag/v28.0">28.0</a></p></td>
+<td><p>2022-08-02</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/google/perfetto/blob/v28.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://developers.google.com/protocol-buffers">Protocol Buffers</a></p></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/releases/tag/v21.7">21.7</a></p></td>
+<td><p>2022-09-29</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agoogle%3Aprotobuf%3A%2A&amp;search_type=all">cpe:2.3:a:google:protobuf:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/blob/v21.7/LICENSE">Protocol Buffers</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://developers.google.com/protocol-buffers">Protocol Buffers (protoc) linux_aarch_64</a></p></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/releases/tag/v21.7">21.7</a></p></td>
+<td><p>2022-09-29</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/blob/v21.7/LICENSE">Protocol Buffers</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://developers.google.com/protocol-buffers">Protocol Buffers (protoc) linux_x86_64</a></p></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/releases/tag/v21.7">21.7</a></p></td>
+<td><p>2022-09-29</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/blob/v21.7/LICENSE">Protocol Buffers</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://developers.google.com/protocol-buffers">Protocol Buffers (protoc) osx_aarch_64</a></p></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/releases/tag/v21.7">21.7</a></p></td>
+<td><p>2022-09-29</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/blob/v21.7/LICENSE">Protocol Buffers</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://developers.google.com/protocol-buffers">Protocol Buffers (protoc) osx_x86_64</a></p></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/releases/tag/v21.7">21.7</a></p></td>
+<td><p>2022-09-29</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/blob/v21.7/LICENSE">Protocol Buffers</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://developers.google.com/protocol-buffers">Protocol Buffers (protoc) win64</a></p></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/releases/tag/v21.7">21.7</a></p></td>
+<td><p>2022-09-29</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/protobuf/blob/v21.7/LICENSE">Protocol Buffers</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/google/re2">RE2</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/re2/releases/tag/2022-06-01">2022-06-01</a></p></td>
+<td><p>2022-05-31</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/google/re2/blob/2022-06-01/LICENSE">BSD-3-Clause</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/bazelbuild/rules_foreign_cc">Rules for using foreign build systems in Bazel</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_foreign_cc/releases/tag/0.8.0">0.8.0</a></p></td>
+<td><p>2022-04-18</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_foreign_cc/blob/0.8.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/bazelbuild/rules_license">rules_license</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_license/releases/tag/0.0.3">0.0.3</a></p></td>
+<td><p>2022-05-28</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_license/blob/0.0.3/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/gabime/spdlog">spdlog</a></p></td>
+<td><p><a class="reference external" href="https://github.com/gabime/spdlog/releases/tag/v1.9.2">1.9.2</a></p></td>
+<td><p>2021-08-12</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/gabime/spdlog/blob/v1.9.2/LICENSE">MIT</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/google/tcmalloc">tcmalloc</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/tcmalloc/tree/59400332b9cff9920b6a1da203ac1575272a9f44">5940033</a></p></td>
+<td><p>2022-08-06</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/google/tcmalloc/blob/59400332b9cff9920b6a1da203ac1575272a9f44/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/protocolbuffers/upb">upb</a></p></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/upb/tree/e4635f223e7d36dfbea3b722a4ca4807a7e882e2">e4635f2</a></p></td>
+<td><p>2022-06-21</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/protocolbuffers/upb/blob/e4635f223e7d36dfbea3b722a4ca4807a7e882e2/LICENSE">upb</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/Cyan4973/xxHash">xxHash</a></p></td>
+<td><p><a class="reference external" href="https://github.com/Cyan4973/xxHash/releases/tag/v0.8.1">0.8.1</a></p></td>
+<td><p>2021-11-29</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/Cyan4973/xxHash/blob/v0.8.1/LICENSE">BSD-2-Clause</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/jbeder/yaml-cpp">yaml-cpp</a></p></td>
+<td><p><a class="reference external" href="https://github.com/jbeder/yaml-cpp/tree/420c98231094b1cd2e5de3a714c4e3ee9b4f1118">420c982</a></p></td>
+<td><p>2022-04-27</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Ayaml-cpp_project%3Ayaml-cpp%3A%2A&amp;search_type=all">cpe:2.3:a:yaml-cpp_project:yaml-cpp:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/jbeder/yaml-cpp/blob/420c98231094b1cd2e5de3a714c4e3ee9b4f1118/LICENSE">MIT</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://zlib.net">zlib</a></p></td>
+<td><p><a class="reference external" href="https://github.com/madler/zlib/releases/tag/v1.2.12">1.2.12</a></p></td>
+<td><p>2022-03-27</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agnu%3Azlib%3A%2A&amp;search_type=all">cpe:2.3:a:gnu:zlib:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/madler/zlib/blob/v1.2.12/zlib.h">zlib</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/zlib-ng/zlib-ng">zlib-ng</a></p></td>
+<td><p><a class="reference external" href="https://github.com/zlib-ng/zlib-ng/releases/tag/2.0.6">2.0.6</a></p></td>
+<td><p>2021-12-24</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/zlib-ng/zlib-ng/blob/2.0.6/LICENSE.md">zlib</a></p></td>
+</tr>
+</tbody>
+</table>
+<section id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+<section id="external-dependencies-api">
+<h1>External dependencies: <code class="docutils literal notranslate"><span class="pre">api</span></code><a class="headerlink" href="#external-dependencies-api" title="Permalink to this heading"></a></h1>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/bazelbuild/bazel-skylib">bazel-skylib</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/bazel-skylib/releases/tag/1.3.0">1.3.0</a></p></td>
+<td><p>2022-09-01</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/bazel-skylib/blob/1.3.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://buf.build">buf</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bufbuild/buf/releases/tag/v1.7.0">1.7.0</a></p></td>
+<td><p>2022-07-27</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/bufbuild/buf/blob/v1.7.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/bazelbuild/rules_go">Go rules for Bazel</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_go/releases/tag/v0.35.0">0.35.0</a></p></td>
+<td><p>2022-09-11</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_go/blob/v0.35.0/LICENSE.txt">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/googleapis/googleapis">Google APIs</a></p></td>
+<td><p><a class="reference external" href="https://github.com/googleapis/googleapis/tree/82944da21578a53b74e547774cf62ed31a05b841">82944da</a></p></td>
+<td><p>2019-12-02</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/googleapis/googleapis/blob/82944da21578a53b74e547774cf62ed31a05b841/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/census-instrumentation/opencensus-proto">OpenCensus Proto</a></p></td>
+<td><p><a class="reference external" href="https://github.com/census-instrumentation/opencensus-proto/releases/tag/v0.3.0">0.3.0</a></p></td>
+<td><p>2022-09-22</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/census-instrumentation/opencensus-proto/blob/v0.3.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/open-telemetry/opentelemetry-proto">OpenTelemetry Proto</a></p></td>
+<td><p><a class="reference external" href="https://github.com/open-telemetry/opentelemetry-proto/releases/tag/v0.19.0">0.19.0</a></p></td>
+<td><p>2022-08-03</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/open-telemetry/opentelemetry-proto/blob/v0.19.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/prometheus/client_model">Prometheus client model</a></p></td>
+<td><p><a class="reference external" href="https://github.com/prometheus/client_model/tree/147c58e9608a4f9628b53b6cc863325ca746f63a">147c58e</a></p></td>
+<td><p>2021-06-07</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/prometheus/client_model/blob/147c58e9608a4f9628b53b6cc863325ca746f63a/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/bazelbuild/rules_proto">Protobuf Rules for Bazel</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_proto/releases/tag/4.0.0">4.0.0</a></p></td>
+<td><p>2021-09-15</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_proto/blob/4.0.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/bufbuild/protoc-gen-validate">protoc-gen-validate (PGV)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bufbuild/protoc-gen-validate/releases/tag/v0.6.7">0.6.7</a></p></td>
+<td><p>2022-03-04</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/bufbuild/protoc-gen-validate/blob/v0.6.7/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/cncf/xds">xDS API</a></p></td>
+<td><p><a class="reference external" href="https://github.com/cncf/xds/tree/1e77728a1eaa11d6c931ec2ccd6e95f516a7ef94">1e77728</a></p></td>
+<td><p>2022-05-20</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/cncf/xds/blob/1e77728a1eaa11d6c931ec2ccd6e95f516a7ef94/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/openzipkin/zipkin-api">Zipkin API</a></p></td>
+<td><p><a class="reference external" href="https://github.com/openzipkin/zipkin-api/releases/tag/1.0.0">1.0.0</a></p></td>
+<td><p>2020-11-22</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/openzipkin/zipkin-api/blob/1.0.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+<section id="observability-core">
+<h2>Observability (core)<a class="headerlink" href="#observability-core" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+<section id="external-dependencies-observability-core">
+<h1>External dependencies: <code class="docutils literal notranslate"><span class="pre">observability_core</span></code><a class="headerlink" href="#external-dependencies-observability-core" title="Permalink to this heading"></a></h1>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/circonus-labs/libcircllhist">libcircllhist</a></p></td>
+<td><p><a class="reference external" href="https://github.com/circonus-labs/libcircllhist/tree/63a16dd6f2fc7bc841bb17ff92be8318df60e2e1">63a16dd</a></p></td>
+<td><p>2019-02-11</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/circonus-labs/libcircllhist/blob/63a16dd6f2fc7bc841bb17ff92be8318df60e2e1/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+<section id="observability-extensions">
+<h2>Observability (extensions)<a class="headerlink" href="#observability-extensions" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+<section id="external-dependencies-observability-ext">
+<h1>External dependencies: <code class="docutils literal notranslate"><span class="pre">observability_ext</span></code><a class="headerlink" href="#external-dependencies-observability-ext" title="Permalink to this heading"></a></h1>
+<section id="id1">
+<h2>envoy.filters.http.aws_lambda<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://curl.haxx.se">curl</a></p></td>
+<td><p><a class="reference external" href="https://github.com/curl/curl/releases/tag/curl-7_86_0">7.86.0</a></p></td>
+<td><p>2022-10-26</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Ahaxx%3Alibcurl%3A%2A&amp;search_type=all">cpe:2.3:a:haxx:libcurl:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/curl/curl/blob/curl-7_86_0/COPYING">curl</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id2">
+<h2>envoy.filters.http.aws_request_signing<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://curl.haxx.se">curl</a></p></td>
+<td><p><a class="reference external" href="https://github.com/curl/curl/releases/tag/curl-7_86_0">7.86.0</a></p></td>
+<td><p>2022-10-26</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Ahaxx%3Alibcurl%3A%2A&amp;search_type=all">cpe:2.3:a:haxx:libcurl:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/curl/curl/blob/curl-7_86_0/COPYING">curl</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id3">
+<h2>envoy.grpc_credentials.aws_iam<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://curl.haxx.se">curl</a></p></td>
+<td><p><a class="reference external" href="https://github.com/curl/curl/releases/tag/curl-7_86_0">7.86.0</a></p></td>
+<td><p>2022-10-26</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Ahaxx%3Alibcurl%3A%2A&amp;search_type=all">cpe:2.3:a:haxx:libcurl:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/curl/curl/blob/curl-7_86_0/COPYING">curl</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-tracers-datadog">
+<h2>envoy.tracers.datadog<a class="headerlink" href="#envoy-tracers-datadog" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/DataDog/dd-opentracing-cpp">Datadog OpenTracing C++ Client</a></p></td>
+<td><p><a class="reference external" href="https://github.com/DataDog/dd-opentracing-cpp/releases/tag/v1.2.1">1.2.1</a></p></td>
+<td><p>2021-01-27</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/DataDog/dd-opentracing-cpp/blob/v1.2.1/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/msgpack/msgpack-c">msgpack for C/C++</a></p></td>
+<td><p><a class="reference external" href="https://github.com/msgpack/msgpack-c/releases/tag/cpp-3.3.0">3.3.0</a></p></td>
+<td><p>2020-06-05</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/msgpack/msgpack-c/blob/cpp-3.3.0/LICENSE_1_0.txt">Boost</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://opentracing.io">OpenTracing</a></p></td>
+<td><p><a class="reference external" href="https://github.com/opentracing/opentracing-cpp/releases/tag/v1.5.1">1.5.1</a></p></td>
+<td><p>2019-01-16</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/opentracing/opentracing-cpp/blob/v1.5.1/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-tracers-dynamic-ot">
+<h2>envoy.tracers.dynamic_ot<a class="headerlink" href="#envoy-tracers-dynamic-ot" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://opentracing.io">OpenTracing</a></p></td>
+<td><p><a class="reference external" href="https://github.com/opentracing/opentracing-cpp/releases/tag/v1.5.1">1.5.1</a></p></td>
+<td><p>2019-01-16</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/opentracing/opentracing-cpp/blob/v1.5.1/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id4">
+<h2>envoy.tracers.opencensus<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://curl.haxx.se">curl</a></p></td>
+<td><p><a class="reference external" href="https://github.com/curl/curl/releases/tag/curl-7_86_0">7.86.0</a></p></td>
+<td><p>2022-10-26</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Ahaxx%3Alibcurl%3A%2A&amp;search_type=all">cpe:2.3:a:haxx:libcurl:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/curl/curl/blob/curl-7_86_0/COPYING">curl</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/census-instrumentation/opencensus-cpp">OpenCensus C++</a></p></td>
+<td><p><a class="reference external" href="https://github.com/census-instrumentation/opencensus-cpp/tree/ba631066779a534267fdb1321b19850eb2b0c000">ba63106</a></p></td>
+<td><p>2020-10-08</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/census-instrumentation/opencensus-cpp/blob/ba631066779a534267fdb1321b19850eb2b0c000/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://rapidjson.org">RapidJSON</a></p></td>
+<td><p><a class="reference external" href="https://github.com/Tencent/rapidjson/tree/dfbe1db9da455552f7a9ad5d2aea17dd9d832ac1">dfbe1db</a></p></td>
+<td><p>2019-12-03</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Atencent%3Arapidjson%3A%2A&amp;search_type=all">cpe:2.3:a:tencent:rapidjson:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/Tencent/rapidjson/blob/dfbe1db9da455552f7a9ad5d2aea17dd9d832ac1/license.txt">RapidJSON</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-tracers-skywalking">
+<h2>envoy.tracers.skywalking<a class="headerlink" href="#envoy-tracers-skywalking" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/SkyAPM/cpp2sky">cpp2sky</a></p></td>
+<td><p><a class="reference external" href="https://github.com/SkyAPM/cpp2sky/releases/tag/v0.4.0">0.4.0</a></p></td>
+<td><p>2022-03-28</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/SkyAPM/cpp2sky/blob/v0.4.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/apache/skywalking-data-collect-protocol">skywalking-data-collect-protocol</a></p></td>
+<td><p><a class="reference external" href="https://github.com/apache/skywalking-data-collect-protocol/releases/tag/v8.9.1">8.9.1</a></p></td>
+<td><p>2021-12-11</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Aapache%3Askywalking%3A%2A&amp;search_type=all">cpe:2.3:a:apache:skywalking:*</a></p></td>
+<td><p>Apache-2.0</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-tracers-zipkin">
+<h2>envoy.tracers.zipkin<a class="headerlink" href="#envoy-tracers-zipkin" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://rapidjson.org">RapidJSON</a></p></td>
+<td><p><a class="reference external" href="https://github.com/Tencent/rapidjson/tree/dfbe1db9da455552f7a9ad5d2aea17dd9d832ac1">dfbe1db</a></p></td>
+<td><p>2019-12-03</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Atencent%3Arapidjson%3A%2A&amp;search_type=all">cpe:2.3:a:tencent:rapidjson:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/Tencent/rapidjson/blob/dfbe1db9da455552f7a9ad5d2aea17dd9d832ac1/license.txt">RapidJSON</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="build">
+<h2>Build<a class="headerlink" href="#build" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+<section id="external-dependencies-build">
+<h1>External dependencies: <code class="docutils literal notranslate"><span class="pre">build</span></code><a class="headerlink" href="#external-dependencies-build" title="Permalink to this heading"></a></h1>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/bazelbuild/rules_apple">Apple Rules for Bazel</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_apple/releases/tag/1.1.2">1.1.2</a></p></td>
+<td><p>2022-09-16</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_apple/blob/1.1.2/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/aspect-build/bazel-lib">Aspect Bazel helpers</a></p></td>
+<td><p><a class="reference external" href="https://github.com/aspect-build/bazel-lib/releases/tag/v1.12.0">1.12.0</a></p></td>
+<td><p>2022-09-16</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/aspect-build/bazel-lib/blob/v1.12.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/grailbio/bazel-compilation-database">bazel-compilation-database</a></p></td>
+<td><p><a class="reference external" href="https://github.com/grailbio/bazel-compilation-database/releases/tag/0.5.2">0.5.2</a></p></td>
+<td><p>2021-09-10</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/grailbio/bazel-compilation-database/blob/0.5.2/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/bazelbuild/bazel-toolchains">bazel-toolchains</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/bazel-toolchains/releases/tag/v5.1.1">5.1.1</a></p></td>
+<td><p>2021-11-30</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/bazel-toolchains/blob/v5.1.1/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/envoyproxy/envoy-build-tools">envoy-build-tools</a></p></td>
+<td><p><a class="reference external" href="https://github.com/envoyproxy/envoy-build-tools/tree/c9eabcc8dde026715b35f262e30ba628bab5976c">c9eabcc</a></p></td>
+<td><p>2023-01-21</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/envoyproxy/envoy-build-tools/blob/c9eabcc8dde026715b35f262e30ba628bab5976c/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/bazelbuild/bazel-gazelle">Gazelle</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/bazel-gazelle/releases/tag/v0.26.0">0.26.0</a></p></td>
+<td><p>2022-06-26</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/bazel-gazelle/blob/v0.26.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/bazelbuild/rules_go">Go rules for Bazel</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_go/releases/tag/v0.35.0">0.35.0</a></p></td>
+<td><p>2022-09-11</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_go/blob/v0.35.0/LICENSE.txt">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/bazelbuild/rules_pkg">Packaging rules for Bazel</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_pkg/releases/tag/0.7.0">0.7.0</a></p></td>
+<td><p>2022-04-07</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_pkg/blob/0.7.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/bazelbuild/rules_python">Python rules for Bazel</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_python/releases/tag/0.12.0">0.12.0</a></p></td>
+<td><p>2022-08-29</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_python/blob/0.12.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/bazelbuild/rules_foreign_cc">Rules for using foreign build systems in Bazel</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_foreign_cc/releases/tag/0.8.0">0.8.0</a></p></td>
+<td><p>2022-04-18</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_foreign_cc/blob/0.8.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/bazelbuild/rules_license">rules_license</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_license/releases/tag/0.0.3">0.0.3</a></p></td>
+<td><p>2022-05-28</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_license/blob/0.0.3/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/aignas/rules_shellcheck">Shellcheck rules for bazel</a></p></td>
+<td><p><a class="reference external" href="https://github.com/aignas/rules_shellcheck/releases/tag/v0.1.1">0.1.1</a></p></td>
+<td><p>2022-05-30</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/aignas/rules_shellcheck/blob/v0.1.1/LICENSE">MIT</a></p></td>
+</tr>
+</tbody>
+</table>
+<section id="miscellaneous">
+<h2>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+<section id="external-dependencies-other">
+<h1>External dependencies: <code class="docutils literal notranslate"><span class="pre">other</span></code><a class="headerlink" href="#external-dependencies-other" title="Permalink to this heading"></a></h1>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/ncopa/su-exec">su-exec</a></p></td>
+<td><p><a class="reference external" href="https://github.com/ncopa/su-exec/tree/212b75144bbc06722fbd7661f651390dc47a43d1">212b751</a></p></td>
+<td><p>2019-09-18</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/ncopa/su-exec/blob/212b75144bbc06722fbd7661f651390dc47a43d1/LICENSE">MIT</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="http://tclap.sourceforge.net">tclap</a></p></td>
+<td><p><a class="reference external" href="https://github.com/mirror/tclap/releases/tag/v1.2.5">1.2.5</a></p></td>
+<td><p>2021-11-01</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Atclap_project%3Atclap%3A%2A&amp;search_type=all">cpe:2.3:a:tclap_project:tclap:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/mirror/tclap/blob/v1.2.5/COPYING">MIT</a></p></td>
+</tr>
+</tbody>
+</table>
+<section id="envoy-bootstrap-vcl">
+<h2>envoy.bootstrap.vcl<a class="headerlink" href="#envoy-bootstrap-vcl" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://fd.io/">VPP Comms Library</a></p></td>
+<td><p><a class="reference external" href="https://github.com/FDio/vpp/tree/fe6d8a37062a28f28ee63c3e9177d18c10ed96e1">fe6d8a3</a></p></td>
+<td><p>2022-03-02</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/FDio/vpp/blob/fe6d8a37062a28f28ee63c3e9177d18c10ed96e1/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="envoy-filters-http-sxg">
+<h2>envoy.filters.http.sxg<a class="headerlink" href="#envoy-filters-http-sxg" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/google/libsxg">libsxg</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/libsxg/tree/beaa3939b76f8644f6833267e9f2462760838f18">beaa393</a></p></td>
+<td><p>2021-07-08</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/google/libsxg/blob/beaa3939b76f8644f6833267e9f2462760838f18/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="test-only">
+<h2>Test only<a class="headerlink" href="#test-only" title="Permalink to this heading"></a></h2>
+<p>Below we provide the status of the C/C++ dependencies that are only used in tests. Tests also
+include additional Java, Rust and Python dependencies that are not tracked below.</p>
+</section>
+</section>
+<section id="external-dependencies-test-only">
+<h1>External dependencies: <code class="docutils literal notranslate"><span class="pre">test_only</span></code><a class="headerlink" href="#external-dependencies-test-only" title="Permalink to this heading"></a></h1>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Release date</p></th>
+<th class="head"><p>CPE</p></th>
+<th class="head"><p>License</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/google/benchmark">Benchmark</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/benchmark/releases/tag/v1.7.0">1.7.0</a></p></td>
+<td><p>2022-07-25</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/google/benchmark/blob/v1.7.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://compiler-rt.llvm.org">compiler-rt</a></p></td>
+<td><p><a class="reference external" href="https://github.com/llvm/llvm-project/releases/tag/llvmorg-14.0.0">14.0.0</a></p></td>
+<td><p>2022-03-23</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Allvm%3Acompiler-rt%3A%2A&amp;search_type=all">cpe:2.3:a:llvm:compiler-rt:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/llvm/llvm-project/blob/llvmorg-14.0.0/compiler-rt/LICENSE.TXT">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/emscripten-core/emsdk">Emscripten SDK</a></p></td>
+<td><p><a class="reference external" href="https://github.com/emscripten-core/emsdk/tree/0ea8f8a8707070e9a7c83fbb4a3065683bcf1799">0ea8f8a</a></p></td>
+<td><p>2022-03-09</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/emscripten-core/emsdk/blob/0ea8f8a8707070e9a7c83fbb4a3065683bcf1799/LICENSE">Emscripten SDK</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/bazelbuild/rules_fuzzing">Fuzzing Rules for Bazel</a></p></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_fuzzing/releases/tag/v0.3.1">0.3.1</a></p></td>
+<td><p>2022-01-24</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/bazelbuild/rules_fuzzing/blob/v0.3.1/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/google/googletest">Google Test</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/googletest/tree/a4ab0abb93620ce26efad9de9296b73b16e88588">a4ab0ab</a></p></td>
+<td><p>2020-09-10</p></td>
+<td><p><a class="reference external" href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;results_type=overview&amp;query=cpe%3A2.3%3Aa%3Agoogle%3Agoogle_test%3A%2A&amp;search_type=all">cpe:2.3:a:google:google_test:*</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/googletest/blob/a4ab0abb93620ce26efad9de9296b73b16e88588/LICENSE">BSD-3-Clause</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://kafka.apache.org">Kafka (Python client)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/dpkp/kafka-python/releases/tag/2.0.2">2.0.2</a></p></td>
+<td><p>2020-09-30</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/dpkp/kafka-python/blob/2.0.2/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://kafka.apache.org">Kafka (server binary)</a></p></td>
+<td><p><a class="reference external" href="https://archive.apache.org/dist/kafka/3.4.0/kafka_2.13-3.4.0.tgz">3.4.0</a></p></td>
+<td><p>2023-01-31</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/google/libprotobuf-mutator">libprotobuf-mutator</a></p></td>
+<td><p><a class="reference external" href="https://github.com/google/libprotobuf-mutator/releases/tag/v1.0">1.0</a></p></td>
+<td><p>2020-11-13</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/google/libprotobuf-mutator/blob/v1.0/LICENSE">Apache-2.0</a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-rust-sdk">WebAssembly for Proxies (Rust SDK)</a></p></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-rust-sdk/releases/tag/v0.2.1">0.2.1</a></p></td>
+<td><p>2022-11-22</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/proxy-wasm/proxy-wasm-rust-sdk/blob/v0.2.1/LICENSE">Apache-2.0</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="threat_model.html" class="btn btn-neutral float-left" title="Threat model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="google_vrp.html" class="btn btn-neutral float-right" title="Google Vulnerability Reward Program (VRP)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2023, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
