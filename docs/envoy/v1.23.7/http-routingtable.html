@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HTTP Routing Table &mdash; envoy 1.23.7-0865d3 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+        <script src="_static/tabs.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+ 
+
+    <script>
+      DOCUMENTATION_OPTIONS.COLLAPSE_INDEX = true;
+    </script>
+
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.23.7-0865d3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">HTTP Routing Table</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+
+   <h1>HTTP Routing Table</h1>
+
+   <div class="modindex-jumpbox">
+   <a href="#cap-/"><strong>/</strong></a> | 
+   <a href="#cap-/certs"><strong>/certs</strong></a> | 
+   <a href="#cap-/clusters"><strong>/clusters</strong></a> | 
+   <a href="#cap-/clusters?format=json"><strong>/clusters?format=json</strong></a> | 
+   <a href="#cap-/config_dump"><strong>/config_dump</strong></a> | 
+   <a href="#cap-/config_dump?include_eds"><strong>/config_dump?include_eds</strong></a> | 
+   <a href="#cap-/config_dump?mask={}"><strong>/config_dump?mask={}</strong></a> | 
+   <a href="#cap-/config_dump?name_regex={}"><strong>/config_dump?name_regex={}</strong></a> | 
+   <a href="#cap-/config_dump?resource={}"><strong>/config_dump?resource={}</strong></a> | 
+   <a href="#cap-/config_dump?resource={}&mask={}"><strong>/config_dump?resource={}&mask={}</strong></a> | 
+   <a href="#cap-/contention"><strong>/contention</strong></a> | 
+   <a href="#cap-/cpuprofiler"><strong>/cpuprofiler</strong></a> | 
+   <a href="#cap-/drain_listeners"><strong>/drain_listeners</strong></a> | 
+   <a href="#cap-/drain_listeners?graceful"><strong>/drain_listeners?graceful</strong></a> | 
+   <a href="#cap-/drain_listeners?inboundonly"><strong>/drain_listeners?inboundonly</strong></a> | 
+   <a href="#cap-/envoy.service.cluster.v3.ClusterDiscoveryService"><strong>/envoy.service.cluster.v3.ClusterDiscoveryService</strong></a> | 
+   <a href="#cap-/envoy.service.discovery.v3.AggregatedDiscoveryService"><strong>/envoy.service.discovery.v3.AggregatedDiscoveryService</strong></a> | 
+   <a href="#cap-/envoy.service.endpoint.v3.EndpointDiscoveryService"><strong>/envoy.service.endpoint.v3.EndpointDiscoveryService</strong></a> | 
+   <a href="#cap-/envoy.service.listener.v3.ListenerDiscoveryService"><strong>/envoy.service.listener.v3.ListenerDiscoveryService</strong></a> | 
+   <a href="#cap-/envoy.service.route.v3.RouteDiscoveryService"><strong>/envoy.service.route.v3.RouteDiscoveryService</strong></a> | 
+   <a href="#cap-/envoy.service.route.v3.ScopedRoutesDiscoveryService"><strong>/envoy.service.route.v3.ScopedRoutesDiscoveryService</strong></a> | 
+   <a href="#cap-/envoy.service.runtime.v3.RuntimeDiscoveryService"><strong>/envoy.service.runtime.v3.RuntimeDiscoveryService</strong></a> | 
+   <a href="#cap-/envoy.service.secret.v3.SecretDiscoveryService"><strong>/envoy.service.secret.v3.SecretDiscoveryService</strong></a> | 
+   <a href="#cap-/healthcheck"><strong>/healthcheck</strong></a> | 
+   <a href="#cap-/heapprofiler"><strong>/heapprofiler</strong></a> | 
+   <a href="#cap-/help"><strong>/help</strong></a> | 
+   <a href="#cap-/hot_restart_version"><strong>/hot_restart_version</strong></a> | 
+   <a href="#cap-/hystrix_event_stream"><strong>/hystrix_event_stream</strong></a> | 
+   <a href="#cap-/init_dump"><strong>/init_dump</strong></a> | 
+   <a href="#cap-/init_dump?mask={}"><strong>/init_dump?mask={}</strong></a> | 
+   <a href="#cap-/listeners"><strong>/listeners</strong></a> | 
+   <a href="#cap-/listeners?format=json"><strong>/listeners?format=json</strong></a> | 
+   <a href="#cap-/logging"><strong>/logging</strong></a> | 
+   <a href="#cap-/memory"><strong>/memory</strong></a> | 
+   <a href="#cap-/quitquitquit"><strong>/quitquitquit</strong></a> | 
+   <a href="#cap-/ready"><strong>/ready</strong></a> | 
+   <a href="#cap-/reopen_logs"><strong>/reopen_logs</strong></a> | 
+   <a href="#cap-/reset_counters"><strong>/reset_counters</strong></a> | 
+   <a href="#cap-/runtime"><strong>/runtime</strong></a> | 
+   <a href="#cap-/runtime_modify?key1=value1&key2=value2&keyN=valueN"><strong>/runtime_modify?key1=value1&key2=value2&keyN=valueN</strong></a> | 
+   <a href="#cap-/server_info"><strong>/server_info</strong></a> | 
+   <a href="#cap-/stats"><strong>/stats</strong></a> | 
+   <a href="#cap-/stats?filter=regex"><strong>/stats?filter=regex</strong></a> | 
+   <a href="#cap-/stats?format=json"><strong>/stats?format=json</strong></a> | 
+   <a href="#cap-/stats?format=json&histogram_buckets=cumulative"><strong>/stats?format=json&histogram_buckets=cumulative</strong></a> | 
+   <a href="#cap-/stats?format=json&histogram_buckets=disjoint"><strong>/stats?format=json&histogram_buckets=disjoint</strong></a> | 
+   <a href="#cap-/stats?format=json&usedonly"><strong>/stats?format=json&usedonly</strong></a> | 
+   <a href="#cap-/stats?format=prometheus"><strong>/stats?format=prometheus</strong></a> | 
+   <a href="#cap-/stats?format=prometheus&text_readouts"><strong>/stats?format=prometheus&text_readouts</strong></a> | 
+   <a href="#cap-/stats?format=prometheus&usedonly"><strong>/stats?format=prometheus&usedonly</strong></a> | 
+   <a href="#cap-/stats?histogram_buckets=cumulative"><strong>/stats?histogram_buckets=cumulative</strong></a> | 
+   <a href="#cap-/stats?histogram_buckets=disjoint"><strong>/stats?histogram_buckets=disjoint</strong></a> | 
+   <a href="#cap-/stats?usedonly"><strong>/stats?usedonly</strong></a> | 
+   <a href="#cap-/tap"><strong>/tap</strong></a> | 
+   <a href="#cap-/v1"><strong>/v1</strong></a> | 
+   <a href="#cap-/v3"><strong>/v3</strong></a>
+   </div>
+
+   <table class="indextable modindextable">
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/"><td></td><td>
+       <strong>/</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--"><code class="xref">GET /</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/certs"><td></td><td>
+       <strong>/certs</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--certs"><code class="xref">GET /certs</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/clusters"><td></td><td>
+       <strong>/clusters</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--clusters"><code class="xref">GET /clusters</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/clusters?format=json"><td></td><td>
+       <strong>/clusters?format=json</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--clusters?format=json"><code class="xref">GET /clusters?format=json</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/config_dump"><td></td><td>
+       <strong>/config_dump</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--config_dump"><code class="xref">GET /config_dump</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/config_dump?include_eds"><td></td><td>
+       <strong>/config_dump?include_eds</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--config_dump?include_eds"><code class="xref">GET /config_dump?include_eds</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/config_dump?mask={}"><td></td><td>
+       <strong>/config_dump?mask={}</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--config_dump?mask="><code class="xref">GET /config_dump?mask={}</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/config_dump?name_regex={}"><td></td><td>
+       <strong>/config_dump?name_regex={}</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--config_dump?name_regex="><code class="xref">GET /config_dump?name_regex={}</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/config_dump?resource={}"><td></td><td>
+       <strong>/config_dump?resource={}</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--config_dump?resource="><code class="xref">GET /config_dump?resource={}</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/config_dump?resource={}&mask={}"><td></td><td>
+       <strong>/config_dump?resource={}&mask={}</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--config_dump?resource=&mask="><code class="xref">GET /config_dump?resource={}&amp;mask={}</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/contention"><td></td><td>
+       <strong>/contention</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--contention"><code class="xref">GET /contention</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/cpuprofiler"><td></td><td>
+       <strong>/cpuprofiler</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#post--cpuprofiler"><code class="xref">POST /cpuprofiler</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/drain_listeners"><td></td><td>
+       <strong>/drain_listeners</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#post--drain_listeners"><code class="xref">POST /drain_listeners</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/drain_listeners?graceful"><td></td><td>
+       <strong>/drain_listeners?graceful</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#post--drain_listeners?graceful"><code class="xref">POST /drain_listeners?graceful</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/drain_listeners?inboundonly"><td></td><td>
+       <strong>/drain_listeners?inboundonly</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#post--drain_listeners?inboundonly"><code class="xref">POST /drain_listeners?inboundonly</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/envoy.service.cluster.v3.ClusterDiscoveryService"><td></td><td>
+       <strong>/envoy.service.cluster.v3.ClusterDiscoveryService</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="configuration/overview/xds_api.html#post--envoy.service.cluster.v3.ClusterDiscoveryService-StreamClusters"><code class="xref">POST /envoy.service.cluster.v3.ClusterDiscoveryService/StreamClusters</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/envoy.service.discovery.v3.AggregatedDiscoveryService"><td></td><td>
+       <strong>/envoy.service.discovery.v3.AggregatedDiscoveryService</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="configuration/overview/xds_api.html#post--envoy.service.discovery.v3.AggregatedDiscoveryService-StreamAggregatedResources"><code class="xref">POST /envoy.service.discovery.v3.AggregatedDiscoveryService/StreamAggregatedResources</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/envoy.service.endpoint.v3.EndpointDiscoveryService"><td></td><td>
+       <strong>/envoy.service.endpoint.v3.EndpointDiscoveryService</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="configuration/overview/xds_api.html#post--envoy.service.endpoint.v3.EndpointDiscoveryService-StreamEndpoints"><code class="xref">POST /envoy.service.endpoint.v3.EndpointDiscoveryService/StreamEndpoints</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/envoy.service.listener.v3.ListenerDiscoveryService"><td></td><td>
+       <strong>/envoy.service.listener.v3.ListenerDiscoveryService</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="configuration/overview/xds_api.html#post--envoy.service.listener.v3.ListenerDiscoveryService-StreamListeners"><code class="xref">POST /envoy.service.listener.v3.ListenerDiscoveryService/StreamListeners</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/envoy.service.route.v3.RouteDiscoveryService"><td></td><td>
+       <strong>/envoy.service.route.v3.RouteDiscoveryService</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="configuration/overview/xds_api.html#post--envoy.service.route.v3.RouteDiscoveryService-StreamRoutes"><code class="xref">POST /envoy.service.route.v3.RouteDiscoveryService/StreamRoutes</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/envoy.service.route.v3.ScopedRoutesDiscoveryService"><td></td><td>
+       <strong>/envoy.service.route.v3.ScopedRoutesDiscoveryService</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="configuration/overview/xds_api.html#post--envoy.service.route.v3.ScopedRoutesDiscoveryService-StreamScopedRoutes"><code class="xref">POST /envoy.service.route.v3.ScopedRoutesDiscoveryService/StreamScopedRoutes</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/envoy.service.runtime.v3.RuntimeDiscoveryService"><td></td><td>
+       <strong>/envoy.service.runtime.v3.RuntimeDiscoveryService</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="configuration/overview/xds_api.html#post--envoy.service.runtime.v3.RuntimeDiscoveryService-StreamRuntime"><code class="xref">POST /envoy.service.runtime.v3.RuntimeDiscoveryService/StreamRuntime</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/envoy.service.secret.v3.SecretDiscoveryService"><td></td><td>
+       <strong>/envoy.service.secret.v3.SecretDiscoveryService</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="configuration/overview/xds_api.html#post--envoy.service.secret.v3.SecretDiscoveryService-StreamSecrets"><code class="xref">POST /envoy.service.secret.v3.SecretDiscoveryService/StreamSecrets</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/healthcheck"><td></td><td>
+       <strong>/healthcheck</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#post--healthcheck-fail"><code class="xref">POST /healthcheck/fail</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#post--healthcheck-ok"><code class="xref">POST /healthcheck/ok</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/heapprofiler"><td></td><td>
+       <strong>/heapprofiler</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#post--heapprofiler"><code class="xref">POST /heapprofiler</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/help"><td></td><td>
+       <strong>/help</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--help"><code class="xref">GET /help</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/hot_restart_version"><td></td><td>
+       <strong>/hot_restart_version</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--hot_restart_version"><code class="xref">GET /hot_restart_version</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/hystrix_event_stream"><td></td><td>
+       <strong>/hystrix_event_stream</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--hystrix_event_stream"><code class="xref">GET /hystrix_event_stream</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/init_dump"><td></td><td>
+       <strong>/init_dump</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--init_dump"><code class="xref">GET /init_dump</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/init_dump?mask={}"><td></td><td>
+       <strong>/init_dump?mask={}</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--init_dump?mask="><code class="xref">GET /init_dump?mask={}</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/listeners"><td></td><td>
+       <strong>/listeners</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--listeners"><code class="xref">GET /listeners</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/listeners?format=json"><td></td><td>
+       <strong>/listeners?format=json</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--listeners?format=json"><code class="xref">GET /listeners?format=json</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/logging"><td></td><td>
+       <strong>/logging</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#post--logging"><code class="xref">POST /logging</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/memory"><td></td><td>
+       <strong>/memory</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--memory"><code class="xref">GET /memory</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/quitquitquit"><td></td><td>
+       <strong>/quitquitquit</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#post--quitquitquit"><code class="xref">POST /quitquitquit</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/ready"><td></td><td>
+       <strong>/ready</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--ready"><code class="xref">GET /ready</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/reopen_logs"><td></td><td>
+       <strong>/reopen_logs</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#post--reopen_logs"><code class="xref">POST /reopen_logs</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/reset_counters"><td></td><td>
+       <strong>/reset_counters</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#post--reset_counters"><code class="xref">POST /reset_counters</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/runtime"><td></td><td>
+       <strong>/runtime</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--runtime"><code class="xref">GET /runtime</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/runtime_modify?key1=value1&key2=value2&keyN=valueN"><td></td><td>
+       <strong>/runtime_modify?key1=value1&key2=value2&keyN=valueN</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#post--runtime_modify?key1=value1&key2=value2&keyN=valueN"><code class="xref">POST /runtime_modify?key1=value1&amp;key2=value2&amp;keyN=valueN</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/server_info"><td></td><td>
+       <strong>/server_info</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--server_info"><code class="xref">GET /server_info</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/stats"><td></td><td>
+       <strong>/stats</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--stats"><code class="xref">GET /stats</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--stats-prometheus"><code class="xref">GET /stats/prometheus</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--stats-recentlookups"><code class="xref">GET /stats/recentlookups</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#post--stats-recentlookups-clear"><code class="xref">POST /stats/recentlookups/clear</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#post--stats-recentlookups-disable"><code class="xref">POST /stats/recentlookups/disable</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#post--stats-recentlookups-enable"><code class="xref">POST /stats/recentlookups/enable</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/stats?filter=regex"><td></td><td>
+       <strong>/stats?filter=regex</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--stats?filter=regex"><code class="xref">GET /stats?filter=regex</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/stats?format=json"><td></td><td>
+       <strong>/stats?format=json</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--stats?format=json"><code class="xref">GET /stats?format=json</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/stats?format=json&histogram_buckets=cumulative"><td></td><td>
+       <strong>/stats?format=json&histogram_buckets=cumulative</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--stats?format=json&histogram_buckets=cumulative"><code class="xref">GET /stats?format=json&amp;histogram_buckets=cumulative</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/stats?format=json&histogram_buckets=disjoint"><td></td><td>
+       <strong>/stats?format=json&histogram_buckets=disjoint</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--stats?format=json&histogram_buckets=disjoint"><code class="xref">GET /stats?format=json&amp;histogram_buckets=disjoint</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/stats?format=json&usedonly"><td></td><td>
+       <strong>/stats?format=json&usedonly</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--stats?format=json&usedonly"><code class="xref">GET /stats?format=json&amp;usedonly</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/stats?format=prometheus"><td></td><td>
+       <strong>/stats?format=prometheus</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--stats?format=prometheus"><code class="xref">GET /stats?format=prometheus</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/stats?format=prometheus&text_readouts"><td></td><td>
+       <strong>/stats?format=prometheus&text_readouts</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--stats?format=prometheus&text_readouts"><code class="xref">GET /stats?format=prometheus&amp;text_readouts</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/stats?format=prometheus&usedonly"><td></td><td>
+       <strong>/stats?format=prometheus&usedonly</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--stats?format=prometheus&usedonly"><code class="xref">GET /stats?format=prometheus&amp;usedonly</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/stats?histogram_buckets=cumulative"><td></td><td>
+       <strong>/stats?histogram_buckets=cumulative</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--stats?histogram_buckets=cumulative"><code class="xref">GET /stats?histogram_buckets=cumulative</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/stats?histogram_buckets=disjoint"><td></td><td>
+       <strong>/stats?histogram_buckets=disjoint</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--stats?histogram_buckets=disjoint"><code class="xref">GET /stats?histogram_buckets=disjoint</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/stats?usedonly"><td></td><td>
+       <strong>/stats?usedonly</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#get--stats?usedonly"><code class="xref">GET /stats?usedonly</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/tap"><td></td><td>
+       <strong>/tap</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="operations/admin.html#post--tap"><code class="xref">POST /tap</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/v1"><td></td><td>
+       <strong>/v1</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="configuration/listeners/network_filters/client_ssl_auth_filter.html#get--v1-certs-list-approved"><code class="xref">GET /v1/certs/list/approved</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/v3"><td></td><td>
+       <strong>/v3</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="configuration/overview/xds_api.html#post--v3-discovery-clusters"><code class="xref">POST /v3/discovery:clusters</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="configuration/overview/xds_api.html#post--v3-discovery-endpoints"><code class="xref">POST /v3/discovery:endpoints</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="configuration/overview/xds_api.html#post--v3-discovery-listeners"><code class="xref">POST /v3/discovery:listeners</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="configuration/overview/xds_api.html#post--v3-discovery-routes"><code class="xref">POST /v3/discovery:routes</code></a></td><td>
+       <em></em></td></tr>
+   </table>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2023, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

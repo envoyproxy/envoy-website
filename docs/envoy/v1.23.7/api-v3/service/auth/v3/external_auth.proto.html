@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Authorization Service (proto) &mdash; envoy 1.23.7-0865d3 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="Role Based Access Control" href="../../../../intro/arch_overview/security/rbac_filter.html" />
+    <link rel="prev" title="Attribute Context (proto)" href="attribute_context.proto.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html">
+            
+              <img src="../../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.23.7-0865d3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../api/api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/api_supported_versions.html">Supported API versions</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../../api.html">v3 API reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../bootstrap/bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../clusters/clusters.html">Clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../http_routes/http_routes.html">HTTP route management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../config/config.html">Extensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../admin/admin.html">Admin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/data.html">Envoy data</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../service.html">Services</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../accesslog/v3/als.proto.html">gRPC Access Log Service (ALS) (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../load_stats/v3/lrs.proto.html">Load Reporting service (LRS) (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="attribute_context.proto.html">Attribute Context  (proto)</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Authorization Service  (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../health/v3/hds.proto.html">Health Discovery Service (HDS) (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../metrics/v3/metrics_service.proto.html">Metrics service (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../ratelimit/v3/rls.proto.html">Rate Limit Service (RLS) (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../runtime/v3/rtds.proto.html">Runtime Discovery Service (RTDS) (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../status/v3/csds.proto.html">Client Status Discovery Service (CSDS) (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../tap/v3/tap.proto.html">Tap Sink Service (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../config/tap/v3/common.proto.html">Common tap configuration (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../trace/v3/trace_service.proto.html">Trace service (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../extension/v3/config_discovery.proto.html">Extension Config Discovery Service (ECDS) (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../ext_proc/v3/external_processor.proto.html">External Processing Service (proto)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../common_messages/common_messages.html">Common messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../types/types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api-docs/xds_protocol.html">xDS REST and gRPC protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/client_features.html">Well Known Client Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../intro/intro.html">Introduction</a></li>
+          <li class="breadcrumb-item"><a href="../../../../intro/arch_overview/arch_overview.html">Architecture overview</a></li>
+          <li class="breadcrumb-item"><a href="../../../../intro/arch_overview/security/security.html">Security</a></li>
+          <li class="breadcrumb-item"><a href="../../../../intro/arch_overview/security/ext_authz_filter.html">External Authorization</a></li>
+      <li class="breadcrumb-item active">Authorization Service  (proto)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api-v3/service/auth/v3/external_auth.proto.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="authorization-service-proto">
+<span id="envoy-v3-api-file-envoy-service-auth-v3-external-auth-proto"></span><h1>Authorization Service  (proto)<a class="headerlink" href="#authorization-service-proto" title="Permalink to this heading"></a></h1>
+<p>The authorization service request messages used by external authorization <a class="reference internal" href="../../../../configuration/listeners/network_filters/ext_authz_filter.html#config-network-filters-ext-authz"><span class="std std-ref">network filter</span></a> and <a class="reference internal" href="../../../../configuration/http/http_filters/ext_authz_filter.html#config-http-filters-ext-authz"><span class="std std-ref">HTTP filter</span></a>.</p>
+<section id="service-auth-v3-checkrequest">
+<span id="envoy-v3-api-msg-service-auth-v3-checkrequest"></span><h2>service.auth.v3.CheckRequest<a class="headerlink" href="#service-auth-v3-checkrequest" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/0865d3a1ec82b7f55de60f02a668ab2b2b3e3427/api/envoy/service/auth/v3/external_auth.proto#L36">[service.auth.v3.CheckRequest proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;attributes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-service-auth-v3-checkrequest-attributes">
+<dt>attributes</dt><dd><p>(<a class="reference internal" href="attribute_context.proto.html#envoy-v3-api-msg-service-auth-v3-attributecontext"><span class="std std-ref">service.auth.v3.AttributeContext</span></a>) The request attributes.</p>
+</dd>
+</dl>
+</section>
+<section id="service-auth-v3-deniedhttpresponse">
+<span id="envoy-v3-api-msg-service-auth-v3-deniedhttpresponse"></span><h2>service.auth.v3.DeniedHttpResponse<a class="headerlink" href="#service-auth-v3-deniedhttpresponse" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/0865d3a1ec82b7f55de60f02a668ab2b2b3e3427/api/envoy/service/auth/v3/external_auth.proto#L44">[service.auth.v3.DeniedHttpResponse proto]</a></p>
+<p>HTTP attributes for a denied response.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;headers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">&quot;body&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-service-auth-v3-deniedhttpresponse-status">
+<dt>status</dt><dd><p>(<a class="reference internal" href="../../../type/v3/http_status.proto.html#envoy-v3-api-msg-type-v3-httpstatus"><span class="std std-ref">type.v3.HttpStatus</span></a>) This field allows the authorization service to send an HTTP response status code to the
+downstream client. If not set, Envoy sends <code class="docutils literal notranslate"><span class="pre">403</span> <span class="pre">Forbidden</span></code> HTTP status code by default.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-auth-v3-deniedhttpresponse-headers">
+<dt>headers</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="../../../config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-headervalueoption"><span class="std std-ref">config.core.v3.HeaderValueOption</span></a>) This field allows the authorization service to send HTTP response headers
+to the downstream client. Note that the <a class="reference internal" href="../../../config/core/v3/base.proto.html#envoy-v3-api-field-config-core-v3-headervalueoption-append"><span class="std std-ref">append field in HeaderValueOption</span></a> defaults to
+false when used in this message.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-auth-v3-deniedhttpresponse-body">
+<dt>body</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) This field allows the authorization service to send a response body data
+to the downstream client.</p>
+</dd>
+</dl>
+</section>
+<section id="service-auth-v3-okhttpresponse">
+<span id="envoy-v3-api-msg-service-auth-v3-okhttpresponse"></span><h2>service.auth.v3.OkHttpResponse<a class="headerlink" href="#service-auth-v3-okhttpresponse" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/0865d3a1ec82b7f55de60f02a668ab2b2b3e3427/api/envoy/service/auth/v3/external_auth.proto#L64">[service.auth.v3.OkHttpResponse proto]</a></p>
+<p>HTTP attributes for an OK response.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;headers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">&quot;headers_to_remove&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">&quot;dynamic_metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;response_headers_to_add&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">&quot;query_parameters_to_set&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">&quot;query_parameters_to_remove&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-service-auth-v3-okhttpresponse-headers">
+<dt>headers</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="../../../config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-headervalueoption"><span class="std std-ref">config.core.v3.HeaderValueOption</span></a>) HTTP entity headers in addition to the original request headers. This allows the authorization
+service to append, to add or to override headers from the original request before
+dispatching it to the upstream. Note that the <a class="reference internal" href="../../../config/core/v3/base.proto.html#envoy-v3-api-field-config-core-v3-headervalueoption-append"><span class="std std-ref">append field in HeaderValueOption</span></a> defaults to
+false when used in this message. By setting the <code class="docutils literal notranslate"><span class="pre">append</span></code> field to <code class="docutils literal notranslate"><span class="pre">true</span></code>,
+the filter will append the correspondent header value to the matched request header.
+By leaving <code class="docutils literal notranslate"><span class="pre">append</span></code> as false, the filter will either add a new header, or override an existing
+one if there is a match.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-service-auth-v3-okhttpresponse-headers-to-remove">
+<dt>headers_to_remove</dt><dd><p>(<strong>repeated</strong> <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) HTTP entity headers to remove from the original request before dispatching
+it to the upstream. This allows the authorization service to act on auth
+related headers (like <code class="docutils literal notranslate"><span class="pre">Authorization</span></code>), process them, and consume them.
+Under this model, the upstream will either receive the request (if it’s
+authorized) or not receive it (if it’s not), but will not see headers
+containing authorization credentials.</p>
+<p>Pseudo headers (such as <code class="docutils literal notranslate"><span class="pre">:authority</span></code>, <code class="docutils literal notranslate"><span class="pre">:method</span></code>, <code class="docutils literal notranslate"><span class="pre">:path</span></code> etc), as well as
+the header <code class="docutils literal notranslate"><span class="pre">Host</span></code>, may not be removed as that would make the request
+malformed. If mentioned in <code class="docutils literal notranslate"><span class="pre">headers_to_remove</span></code> these special headers will
+be ignored.</p>
+<p>When using the HTTP service this must instead be set by the HTTP
+authorization service as a comma separated list like so:
+<code class="docutils literal notranslate"><span class="pre">x-envoy-auth-headers-to-remove:</span> <span class="pre">one-auth-header,</span> <span class="pre">another-auth-header</span></code>.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-auth-v3-okhttpresponse-dynamic-metadata">
+<dt>dynamic_metadata</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct">Struct</a>) This field has been deprecated in favor of <a class="reference internal" href="#envoy-v3-api-field-service-auth-v3-checkresponse-dynamic-metadata"><span class="std std-ref">CheckResponse.dynamic_metadata</span></a>. Until it is removed,
+setting this field overrides <a class="reference internal" href="#envoy-v3-api-field-service-auth-v3-checkresponse-dynamic-metadata"><span class="std std-ref">CheckResponse.dynamic_metadata</span></a>.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-auth-v3-okhttpresponse-response-headers-to-add">
+<dt>response_headers_to_add</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="../../../config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-headervalueoption"><span class="std std-ref">config.core.v3.HeaderValueOption</span></a>) This field allows the authorization service to send HTTP response headers
+to the downstream client on success. Note that the <a class="reference internal" href="../../../config/core/v3/base.proto.html#envoy-v3-api-field-config-core-v3-headervalueoption-append"><span class="std std-ref">append field in HeaderValueOption</span></a>
+defaults to false when used in this message.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-auth-v3-okhttpresponse-query-parameters-to-set">
+<dt>query_parameters_to_set</dt><dd><p>(<strong>repeated</strong> <a class="reference internal" href="../../../config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-queryparameter"><span class="std std-ref">config.core.v3.QueryParameter</span></a>) This field allows the authorization service to set (and overwrite) query
+string parameters on the original request before it is sent upstream.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-auth-v3-okhttpresponse-query-parameters-to-remove">
+<dt>query_parameters_to_remove</dt><dd><p>(<strong>repeated</strong> <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) This field allows the authorization service to specify which query parameters
+should be removed from the original request before it is sent upstream. Each
+element in this list is a case-sensitive query parameter name to be removed.</p>
+</dd>
+</dl>
+</section>
+<section id="service-auth-v3-checkresponse">
+<span id="envoy-v3-api-msg-service-auth-v3-checkresponse"></span><h2>service.auth.v3.CheckResponse<a class="headerlink" href="#service-auth-v3-checkresponse" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/0865d3a1ec82b7f55de60f02a668ab2b2b3e3427/api/envoy/service/auth/v3/external_auth.proto#L117">[service.auth.v3.CheckResponse proto]</a></p>
+<p>Intended for gRPC and Network Authorization servers <code class="docutils literal notranslate"><span class="pre">only</span></code>.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;denied_response&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;ok_response&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;dynamic_metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-service-auth-v3-checkresponse-status">
+<dt>status</dt><dd><p>(<a class="reference external" href="https://cloud.google.com/natural-language/docs/reference/rpc/google.rpc#status">Status</a>) Status <code class="docutils literal notranslate"><span class="pre">OK</span></code> allows the request. Any other status indicates the request should be denied, and
+for HTTP filter, if not overridden by <a class="reference internal" href="#envoy-v3-api-field-service-auth-v3-deniedhttpresponse-status"><span class="std std-ref">denied HTTP response status</span></a>
+Envoy sends <code class="docutils literal notranslate"><span class="pre">403</span> <span class="pre">Forbidden</span></code> HTTP status code by default.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-service-auth-v3-checkresponse-denied-response">
+<dt>denied_response</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-service-auth-v3-deniedhttpresponse"><span class="std std-ref">service.auth.v3.DeniedHttpResponse</span></a>) Supplies http attributes for a denied response.</p>
+<p>An message that contains HTTP response attributes. This message is
+used when the authorization service needs to send custom responses to the
+downstream client or, to modify/add request headers being dispatched to the upstream.</p>
+<p>Only one of <a class="reference internal" href="#envoy-v3-api-field-service-auth-v3-checkresponse-denied-response"><span class="std std-ref">denied_response</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-auth-v3-checkresponse-ok-response"><span class="std std-ref">ok_response</span></a> may be set.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-service-auth-v3-checkresponse-ok-response">
+<dt>ok_response</dt><dd><p>(<a class="reference internal" href="#envoy-v3-api-msg-service-auth-v3-okhttpresponse"><span class="std std-ref">service.auth.v3.OkHttpResponse</span></a>) Supplies http attributes for an ok response.</p>
+<p>An message that contains HTTP response attributes. This message is
+used when the authorization service needs to send custom responses to the
+downstream client or, to modify/add request headers being dispatched to the upstream.</p>
+<p>Only one of <a class="reference internal" href="#envoy-v3-api-field-service-auth-v3-checkresponse-denied-response"><span class="std std-ref">denied_response</span></a>, <a class="reference internal" href="#envoy-v3-api-field-service-auth-v3-checkresponse-ok-response"><span class="std std-ref">ok_response</span></a> may be set.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-service-auth-v3-checkresponse-dynamic-metadata">
+<dt>dynamic_metadata</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct">Struct</a>) Optional response metadata that will be emitted as dynamic metadata to be consumed by the next
+filter. This metadata lives in a namespace specified by the canonical name of extension filter
+that requires it:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../../configuration/http/http_filters/ext_authz_filter.html#config-http-filters-ext-authz-dynamic-metadata"><span class="std std-ref">envoy.filters.http.ext_authz</span></a> for HTTP filter.</p></li>
+<li><p><a class="reference internal" href="../../../../configuration/listeners/network_filters/ext_authz_filter.html#config-network-filters-ext-authz-dynamic-metadata"><span class="std std-ref">envoy.filters.network.ext_authz</span></a> for network filter.</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="attribute_context.proto.html" class="btn btn-neutral float-left" title="Attribute Context (proto)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../../../intro/arch_overview/security/rbac_filter.html" class="btn btn-neutral float-right" title="Role Based Access Control" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2023, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
