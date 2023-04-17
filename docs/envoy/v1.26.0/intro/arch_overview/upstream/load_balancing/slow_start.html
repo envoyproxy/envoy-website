@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slow start mode &mdash; envoy 1.26.0-e7543a documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="Override host" href="override_host.html" />
+    <link rel="prev" title="Load Balancer Subsets" href="subsets.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html">
+            
+              <img src="../../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.26.0-e7543a
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../intro.html">Introduction</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../what_is_envoy.html">What is Envoy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../arch_overview.html">Architecture overview</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../listeners/listeners_toc.html">Listeners</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../http/http.html">HTTP</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../upstream.html">Upstream clusters</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../cluster_manager.html">Cluster manager</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../service_discovery.html">Service discovery</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../dns_resolution.html">DNS Resolution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../health_checking.html">Health checking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../connection_pooling.html">Connection pooling</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="load_balancing.html">Load Balancing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../aggregate_cluster.html">Aggregate Cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../outlier.html">Outlier detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../circuit_breaking.html">Circuit breaking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../upstream_filters.html">Upstream network filters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../load_reporting_service.html">Load Reporting Service (LRS)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../load_balancing_policies.html">Load balancing policies</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../observability/observability.html">Observability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../security/security.html">Security</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../operations/operations.html">Operations &amp; configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../other_features/other_features.html">Other features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../advanced/advanced.html">Advanced</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../life_of_a_request.html">Life of a Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deployment_types/deployment_types.html">Deployment types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../getting_help.html">Getting help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../intro.html">Introduction</a></li>
+          <li class="breadcrumb-item"><a href="../../arch_overview.html">Architecture overview</a></li>
+          <li class="breadcrumb-item"><a href="../upstream.html">Upstream clusters</a></li>
+          <li class="breadcrumb-item"><a href="load_balancing.html">Load Balancing</a></li>
+      <li class="breadcrumb-item active">Slow start mode</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/intro/arch_overview/upstream/load_balancing/slow_start.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="slow-start-mode">
+<span id="arch-overview-load-balancing-slow-start"></span><h1>Slow start mode<a class="headerlink" href="#slow-start-mode" title="Permalink to this heading"></a></h1>
+<p>Slow start mode is a configuration setting in Envoy to progressively increase amount of traffic for newly added upstream endpoints.
+With no slow start enabled Envoy would send a proportional amount of traffic to new upstream endpoints.
+This could be undesirable for services that require warm up time to serve full production load and could result in request timeouts, loss of data and deteriorated user experience.</p>
+<p>Slow start mode is a mechanism that affects load balancing weight of upstream endpoints and can be configured per upstream cluster.
+Currently, slow start is supported in <a class="reference internal" href="../../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-roundrobinlbconfig-slow-start-config"><span class="std std-ref">Round Robin</span></a> and <a class="reference internal" href="../../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-leastrequestlbconfig-slow-start-config"><span class="std std-ref">Least Request</span></a> load balancer types.</p>
+<p>Slow start mode is most effective for cases where few new endpoints come up e.g. scale event in Kubernetes. When all the endpoints are relatively new e.g. new deployment in Kubernetes, slow start is not very effective as all endpoints end up getting same amount of requests.</p>
+<p>Users can specify a <a class="reference internal" href="../../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-slowstartconfig-slow-start-window"><span class="std std-ref">slow start window parameter</span></a> (in seconds), which is the duration of slow start mode per endpoint.
+During slow start window, load balancing weight of a particular endpoint will be scaled with time factor, e.g.:</p>
+<div class="math notranslate nohighlight">
+\[NewWeight = {Weight}*{max(MinWeightPercent,{TimeFactor}^\frac{1}{Aggression})}\]</div>
+<p>where,</p>
+<div class="math notranslate nohighlight">
+\[TimeFactor = \frac{max(TimeSinceStartInSeconds,1)}{SlowStartWindowInSeconds}\]</div>
+<p>As time progresses, more and more traffic would be sent to endpoint within slow start window.</p>
+<p><a class="reference internal" href="../../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-slowstartconfig-min-weight-percent"><span class="std std-ref">MinWeightPercent parameter</span></a> specifies the minimum percent of origin weight to make sure the EDF scheduler has a reasonable deadline, default is 10%.</p>
+<p><a class="reference internal" href="../../../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-field-config-cluster-v3-cluster-slowstartconfig-aggression"><span class="std std-ref">Aggression parameter</span></a> non-linearly affects endpoint weight and represents the speed of ramp-up.
+By tuning aggression parameter, one could achieve polynomial or exponential speed for traffic increase.
+Below simulation demonstrates how various values for aggression affect traffic ramp-up:</p>
+<a class="reference internal image-reference" href="../../../../_images/slow_start_aggression.svg"><img alt="../../../../_images/slow_start_aggression.svg" class="align-center" src="../../../../_images/slow_start_aggression.svg" width="60%" /></a>
+<p>Whenever a slow start window duration elapses, upstream endpoint exits slow start mode and gets regular amount of traffic according to load balancing algorithm.
+Its load balancing weight will no longer be scaled with runtime bias and aggression. Endpoint could also exit slow start mode in case it leaves the cluster.
+Endpoint could further re-enter slow start mode, in case it has transitioned from unhealthy to healthy state via an active healchecking.</p>
+<dl class="simple">
+<dt>To reiterate, endpoint enters slow start mode:</dt><dd><ul class="simple">
+<li><p>If no active healthcheck is configured per cluster, immediately upon joining the cluster.</p></li>
+<li><p>In case an active healthcheck is configured per cluster, when the endpoint has transitioned from unhealthy to healthy state via an active healcheck.</p></li>
+</ul>
+</dd>
+<dt>Endpoint exits slow start mode when:</dt><dd><ul class="simple">
+<li><p>It leaves the cluster.</p></li>
+<li><p>It does not pass an active healthcheck configured per cluster.
+Endpoint could re-enter slow start, if it passes an active healthcheck.</p></li>
+</ul>
+</dd>
+<dt>It is not recommended enabling slow start mode in low traffic or high number of endpoints scenarios, potential drawbacks would be:</dt><dd><ul class="simple">
+<li><p>Endpoint starvation, where endpoint has low probability to receive a request either due to low traffic or high number of total endpoints.</p></li>
+<li><p>Spurious (non-gradual) increase of traffic per endpoint, whenever a starving endpoint receives a request and sufficient time has passed within slow start window,
+its load balancing weight will increase non linearly due to time factor.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Below is an example of how result load balancing weight would look like for endpoints in same priority with Round Robin Loadbalancer type, slow start window of 60 seconds, no active healthcheck and 1.0 aggression.
+Once endpoints E1 and E2 exit slow start mode, their load balancing weight remains constant:</p>
+<a class="reference internal image-reference" href="../../../../_images/slow_start_example.svg"><img alt="../../../../_images/slow_start_example.svg" class="align-center" src="../../../../_images/slow_start_example.svg" width="60%" /></a>
+<p><em>Note</em> in case when multiple priorities are used with slow start and lower priority has just one endpoint A, during cross-priority spillover there will be no progressive increase of traffic to endpoint A, all traffic will shift at once.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="subsets.html" class="btn btn-neutral float-left" title="Load Balancer Subsets" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="override_host.html" class="btn btn-neutral float-right" title="Override host" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2023, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stateful session &mdash; envoy 1.26.0-e7543a documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="SXG" href="sxg_filter.html" />
+    <link rel="prev" title="Squash" href="squash_filter.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.26.0-e7543a
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../configuration.html">Configuration reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../overview/overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../http.html">HTTP</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../http_conn_man/http_conn_man.html">HTTP connection manager</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="http_filters.html">HTTP filters</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="adaptive_concurrency_filter.html">Adaptive Concurrency</a></li>
+<li class="toctree-l4"><a class="reference internal" href="admission_control_filter.html">Admission Control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="aws_lambda_filter.html">AWS Lambda</a></li>
+<li class="toctree-l4"><a class="reference internal" href="aws_request_signing_filter.html">AWS Request Signing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bandwidth_limit_filter.html">Bandwidth limit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="buffer_filter.html">Buffer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cache_filter.html">Cache filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cdn_loop_filter.html">CDN-Loop header</a></li>
+<li class="toctree-l4"><a class="reference internal" href="compressor_filter.html">Compressor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="composite_filter.html">Composite Filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="connect_grpc_bridge_filter.html">Connect-gRPC Bridge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cors_filter.html">CORS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="csrf_filter.html">CSRF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="custom_response_filter.html">Custom Response Filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="decompressor_filter.html">Decompressor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dynamic_forward_proxy_filter.html">Dynamic forward proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dynamodb_filter.html">DynamoDB</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ext_authz_filter.html">External Authorization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ext_proc_filter.html">External Processing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fault_filter.html">Fault Injection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_system_buffer_filter.html">File System Buffer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gcp_authn_filter.html">GCP Authentication Filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="golang_filter.html">Golang</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grpc_http1_bridge_filter.html">gRPC HTTP/1.1 bridge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grpc_http1_reverse_bridge_filter.html">gRPC HTTP/1.1 reverse bridge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grpc_json_transcoder_filter.html">gRPC-JSON transcoder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grpc_stats_filter.html">gRPC Statistics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="grpc_web_filter.html">gRPC-Web</a></li>
+<li class="toctree-l4"><a class="reference internal" href="header_mutation_filter.html">Header Mutation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="health_check_filter.html">Health check</a></li>
+<li class="toctree-l4"><a class="reference internal" href="header_to_metadata_filter.html">Envoy Header-To-Metadata Filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ip_tagging_filter.html">IP Tagging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jwt_authn_filter.html">JWT Authentication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kill_request_filter.html">Kill Request</a></li>
+<li class="toctree-l4"><a class="reference internal" href="language_filter.html">Language</a></li>
+<li class="toctree-l4"><a class="reference internal" href="local_rate_limit_filter.html">Local rate limit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lua_filter.html">Lua</a></li>
+<li class="toctree-l4"><a class="reference internal" href="oauth2_filter.html">OAuth2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="on_demand_updates_filter.html">On-demand VHDS, S/RDS and CDS Updates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="original_src_filter.html">Original Source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rate_limit_filter.html">Rate limit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rate_limit_quota_filter.html">Rate Limit Quota (Work-In-Progress)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rbac_filter.html">Role Based Access Control (RBAC) Filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="router_filter.html">Router</a></li>
+<li class="toctree-l4"><a class="reference internal" href="set_metadata_filter.html">Set Metadata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="squash_filter.html">Squash</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Stateful session</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sxg_filter.html">SXG</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tap_filter.html">Tap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="upstream_codec_filter.html">Upstream Codec</a></li>
+<li class="toctree-l4"><a class="reference internal" href="wasm_filter.html">Wasm</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../caches/caches.html">HTTP caches</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cluster_specifier/cluster_specifier.html">HTTP cluster specifier</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../upstream/upstream.html">Upstream clusters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../observability/observability.html">Observability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../security/security.html">Security</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../operations/operations.html">Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../other_features/other_features.html">Other features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/advanced.html">Advanced</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../best_practices/best_practices.html">Configuration best practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../configuration.html">Configuration reference</a></li>
+          <li class="breadcrumb-item"><a href="../http.html">HTTP</a></li>
+          <li class="breadcrumb-item"><a href="http_filters.html">HTTP filters</a></li>
+      <li class="breadcrumb-item active">Stateful session</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/configuration/http/http_filters/stateful_session_filter.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="stateful-session">
+<span id="config-http-filters-stateful-session"></span><h1>Stateful session<a class="headerlink" href="#stateful-session" title="Permalink to this heading"></a></h1>
+<p>Stateful session is an HTTP filter which overrides the upstream host based on extensible session state
+and updates the session state based on the final selected upstream host. The override host will
+eventually overwrites the load balancing result. This filter implements session stickiness without using
+a hash-based load balancer.</p>
+<p>And by extending the session state, this filter also allows more flexible control over the results of
+the load balancing.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Stateful sessions can result in imbalanced load across upstreams and allow external actors to direct
+requests to specific upstream hosts. Operators should carefully consider the security and reliability
+implications of stateful sessions before enabling this feature.</p>
+</div>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
+<p>Session stickiness allows requests belonging to the same session to be consistently routed to a specific
+upstream host.</p>
+<p>HTTP session stickiness in Envoy is generally achieved through hash-based load balancing.
+The stickiness of hash-based sessions can be regarded as ‘weak’ since the upstream host may change when the
+host set changes. This filter implements ‘strong’ stickiness. It is intended to handle the following cases:</p>
+<ul class="simple">
+<li><p>The case where more stable session stickiness is required. For example, when a host is marked as degraded
+but it is desirable to continue routing requests for existing sessions to that host.</p></li>
+<li><p>The case where a non hash-based load balancer (Random, Round Robin, etc.) is used and session stickiness
+is still required. If stateful sessions are enabled in this case, requests for new sessions will be routed
+to the corresponding upstream host based on the result of load balancing. Requests belonging to existing
+sessions will be routed to the session’s upstream host.</p></li>
+</ul>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>This filter should be configured with the type URL <code class="docutils literal notranslate"><span class="pre">type.googleapis.com/envoy.extensions.filters.http.stateful_session.v3.StatefulSession</span></code>.</p></li>
+<li><p><a class="reference internal" href="../../../api-v3/extensions/filters/http/stateful_session/v3/stateful_session.proto.html#envoy-v3-api-msg-extensions-filters-http-stateful-session-v3-statefulsession"><span class="std std-ref">v3 API reference</span></a></p></li>
+</ul>
+</section>
+<section id="how-it-works">
+<h2>How it works<a class="headerlink" href="#how-it-works" title="Permalink to this heading"></a></h2>
+<p>The most important configuration for this filter is an <a class="reference internal" href="../../../api-v3/extensions/filters/http/stateful_session/v3/stateful_session.proto.html#envoy-v3-api-field-extensions-filters-http-stateful-session-v3-statefulsession-session-state"><span class="std std-ref">extensible session state</span></a>.</p>
+<p>While processing the request, the stateful session filter will search for the corresponding session and
+host based on the request. The results of the search will be used to influence the final load balancing
+results.</p>
+<p>If no existing session is found, the filter will create a session to store the selected upstream host.
+Please note that the session here is an abstract concept. The details of the storage are based on the
+session state implementation.</p>
+<section id="one-example">
+<h3>One example<a class="headerlink" href="#one-example" title="Permalink to this heading"></a></h3>
+<p>Currently, <a class="reference internal" href="../../../api-v3/extensions/http/stateful_session/cookie/v3/cookie.proto.html#envoy-v3-api-msg-extensions-http-stateful-session-cookie-v3-cookiebasedsessionstate"><span class="std std-ref">cookie-based session state</span></a> and <a class="reference internal" href="../../../api-v3/extensions/http/stateful_session/header/v3/header.proto.html#envoy-v3-api-msg-extensions-http-stateful-session-header-v3-headerbasedsessionstate"><span class="std std-ref">header-based session state</span></a> are supported.
+So let’s take this as an example for cookie based implementation.</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text"><a class="reference download internal" download="" href="../../../_downloads/7430a72de6cf7b720c42f5f71b27c433/stateful-cookie-session.yaml"><code class="xref download docutils literal notranslate"><span class="pre">stateful-cookie-session.yaml</span></code></a></span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="linenos">28</span><span class="w">                  </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service1</span>
+<span class="linenos">29</span>
+<span class="linenos">30</span><span class="w">         </span><span class="w w-Error"> </span><span class="nt">http_filters</span><span class="p">:</span>
+<span class="hll"><span class="linenos">31</span><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.stateful_session</span>
+</span><span class="hll"><span class="linenos">32</span><span class="w">            </span><span class="nt">typed_config</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">33</span><span class="w">              </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.stateful_session.v3.StatefulSession</span>
+</span><span class="hll"><span class="linenos">34</span><span class="w">              </span><span class="nt">session_state</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">35</span><span class="w">                </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">envoy.http.stateful_session.cookie</span>
+</span><span class="hll"><span class="linenos">36</span><span class="w">                </span><span class="nt">typed_config</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">37</span><span class="w">                  </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.http.stateful_session.cookie.v3.CookieBasedSessionState</span>
+</span><span class="hll"><span class="linenos">38</span><span class="w">                  </span><span class="nt">cookie</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">39</span><span class="w">                    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global-session-cookie</span>
+</span><span class="hll"><span class="linenos">40</span><span class="w">                    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path</span>
+</span><span class="hll"><span class="linenos">41</span><span class="w">                    </span><span class="nt">ttl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">120s</span>
+</span><span class="linenos">42</span><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.router</span>
+<span class="linenos">43</span><span class="w">            </span><span class="nt">typed_config</span><span class="p">:</span>
+<span class="linenos">44</span><span class="w">              </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.router.v3.Router</span>
+</pre></div>
+</div>
+</div>
+<p>In the above configuration, the cookie-based session state obtains the overridden host of the current session
+from the cookie named <code class="docutils literal notranslate"><span class="pre">global-session-cookie</span></code> and if the corresponding host exists in the upstream cluster, the
+request will be routed to that host.</p>
+<p>If there is no valid cookie, the load balancer will choose a new upstream host. When responding, the address
+of the selected upstream host will be stored in the cookie named <code class="docutils literal notranslate"><span class="pre">global-session-cookie</span></code>.</p>
+<p>Similar example for header based configuration would be:</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text"><a class="reference download internal" download="" href="../../../_downloads/34145d2a4f97811dee171830a9fb330f/stateful-header-session.yaml"><code class="xref download docutils literal notranslate"><span class="pre">stateful-header-session.yaml</span></code></a></span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="linenos">28</span><span class="w">                  </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service1</span>
+<span class="linenos">29</span>
+<span class="linenos">30</span><span class="w">         </span><span class="w w-Error"> </span><span class="nt">http_filters</span><span class="p">:</span>
+<span class="hll"><span class="linenos">31</span><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.stateful_session</span>
+</span><span class="hll"><span class="linenos">32</span><span class="w">            </span><span class="nt">typed_config</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">33</span><span class="w">              </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.stateful_session.v3.StatefulSession</span>
+</span><span class="hll"><span class="linenos">34</span><span class="w">              </span><span class="nt">session_state</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">35</span><span class="w">                </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">envoy.http.stateful_session.header</span>
+</span><span class="hll"><span class="linenos">36</span><span class="w">                </span><span class="nt">typed_config</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">37</span><span class="w">                  </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.http.stateful_session.header.v3.HeaderBasedSessionState</span>
+</span><span class="hll"><span class="linenos">38</span><span class="w">                  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">session-header</span>
+</span><span class="linenos">39</span><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">envoy.filters.http.router</span>
+<span class="linenos">40</span><span class="w">            </span><span class="nt">typed_config</span><span class="p">:</span>
+<span class="linenos">41</span><span class="w">              </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.http.router.v3.Router</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="note">
+<h3>Note<a class="headerlink" href="#note" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>The header based implementation assumes that a client will use the last supplied value for the session
+header and will pass it with every subsequent request.</p></li>
+<li><p>StatefulSessionPerRoute should be used if path match is required.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="squash_filter.html" class="btn btn-neutral float-left" title="Squash" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sxg_filter.html" class="btn btn-neutral float-right" title="SXG" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2023, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

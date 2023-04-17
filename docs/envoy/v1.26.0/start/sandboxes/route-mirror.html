@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Route mirroring policies &mdash; envoy 1.26.0-e7543a documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Skywalking tracing" href="skywalking.html" />
+    <link rel="prev" title="Redis filter" href="redis.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.26.0-e7543a
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../start.html">Getting Started</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../install.html">Installing Envoy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quick-start/index.html">Quick start</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Sandboxes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="setup.html">Setup the sandbox environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="brotli.html">Brotli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cors.html">CORS filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="double-proxy.html">Double proxy (with <code class="docutils literal notranslate"><span class="pre">mTLS</span></code> encryption)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-filesystem.html">Dynamic configuration (filesystem)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-control-plane.html">Dynamic configuration (control plane)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ext_authz.html">External authorization (<code class="docutils literal notranslate"><span class="pre">ext_authz</span></code>) filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault injection filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="golang.html">Golang filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gzip.html">Gzip</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger native tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_tracing.html">Jaeger tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kafka.html">Kafka broker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="load_reporting_service.html">Load reporting service (<code class="docutils literal notranslate"><span class="pre">LRS</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="locality_load_balancing.html">Locality Weighted Load Balancing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="local_ratelimit.html">Local Ratelimit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mysql.html">MySQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="opentelemetry.html">OpenTelemetry tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="postgres.html">PostgreSQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbac.html">Role Based Access Control (RBAC) - HTTP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis filter</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Route mirroring policies</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#step-1-build-the-sandbox">Step 1: Build the sandbox</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-2-make-a-request-to-the-statically-mirrored-route">Step 2: Make a request to the statically mirrored route</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-3-view-logs-for-the-statically-mirrored-request">Step 3: View logs for the statically mirrored request</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-4-make-a-request-to-the-route-mirrored-by-request-header">Step 4: Make a request to the route mirrored by request header</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-5-view-logs-for-the-request-mirrored-by-request-header">Step 5: View logs for the request mirrored by request header</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-6-missing-or-invalid-cluster-name-in-request-header">Step 6: Missing or invalid cluster name in request header</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="skywalking.html">Skywalking tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls-inspector.html">TLS Inspector Listener Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls-sni.html">TLS Server name indication (<code class="docutils literal notranslate"><span class="pre">SNI</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls.html">Transport layer security (<code class="docutils literal notranslate"><span class="pre">TLS</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="udp.html">User Datagram Protocol (<code class="docutils literal notranslate"><span class="pre">UDP</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wasm-cc.html">Wasm C++ filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="websocket.html">WebSockets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="win32_front_proxy.html">Windows based Front proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zipkin.html">Zipkin tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zstd.html">Zstd</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docker.html">Using the Envoy Docker Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../building.html">Building</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../start.html">Getting Started</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Sandboxes</a></li>
+      <li class="breadcrumb-item active">Route mirroring policies</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/start/sandboxes/route-mirror.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="route-mirroring-policies">
+<span id="install-sandboxes-route-mirror"></span><h1>Route mirroring policies<a class="headerlink" href="#route-mirroring-policies" title="Permalink to this heading"></a></h1>
+<aside class="sidebar">
+<p class="sidebar-title">Requirements</p>
+<dl class="simple">
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup"><span class="std std-ref">Sandbox environment</span></a></dt><dd><p>Setup your sandbox environment with Docker and Docker Compose,
+and clone the Envoy repository with Git.</p>
+</dd>
+</dl>
+</aside>
+<p>This simple example demonstrates Envoy’s request mirroring capability using
+<a class="reference external" href="https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/route/v3/route_components.proto#envoy-v3-api-msg-config-route-v3-routeaction-requestmirrorpolicy">request mirror policies</a>.</p>
+<p>Incoming requests are received by <code class="docutils literal notranslate"><span class="pre">envoy-front-proxy</span></code> service.</p>
+<p>Requests for the path <code class="docutils literal notranslate"><span class="pre">/service/1</span></code> are statically mirrored.</p>
+<p>Each request is handled by the <code class="docutils literal notranslate"><span class="pre">service1</span></code> cluster, and in addition, forwarded to
+the <code class="docutils literal notranslate"><span class="pre">service1-mirror</span></code> cluster:</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Envoy configuration with static route mirror policy <a class="reference download internal" download="" href="../../_downloads/f638ddcd685797bf0eef840c98909df0/envoy.yaml"><code class="xref download docutils literal notranslate"><span class="pre">envoy.yaml</span></code></a></span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="w">            </span><span class="nt">virtual_hosts</span><span class="p">:</span>
+<span class="linenos"> 2</span><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">backend</span>
+<span class="linenos"> 3</span><span class="w">              </span><span class="nt">domains</span><span class="p">:</span>
+<span class="linenos"> 4</span><span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span>
+<span class="linenos"> 5</span><span class="w">              </span><span class="nt">routes</span><span class="p">:</span>
+<span class="hll"><span class="linenos"> 6</span><span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">match</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos"> 7</span><span class="w">                  </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/service/1&quot;</span>
+</span><span class="hll"><span class="linenos"> 8</span><span class="w">                </span><span class="nt">route</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos"> 9</span><span class="w">                  </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service1</span>
+</span><span class="hll"><span class="linenos">10</span><span class="w">                  </span><span class="nt">request_mirror_policies</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">11</span><span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;service1-mirror&quot;</span>
+</span><span class="linenos">12</span><span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">match</span><span class="p">:</span>
+<span class="linenos">13</span><span class="w">                  </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/service/2&quot;</span>
+<span class="linenos">14</span><span class="w">                </span><span class="nt">route</span><span class="p">:</span>
+<span class="linenos">15</span><span class="w">                  </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service2</span>
+<span class="linenos">16</span><span class="w">                  </span><span class="nt">request_mirror_policies</span><span class="p">:</span>
+<span class="linenos">17</span><span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cluster_header</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;x-mirror-cluster&quot;</span>
+<span class="linenos">18</span>
+<span class="linenos">19</span><span class="w">         </span><span class="w w-Error"> </span><span class="nt">http_filters</span><span class="p">:</span>
+</pre></div>
+</div>
+</div>
+<p>Requests for the path <code class="docutils literal notranslate"><span class="pre">/service/2</span></code> are dynamically mirrored according to the presence and value of
+the <code class="docutils literal notranslate"><span class="pre">x-mirror-cluster</span></code> header.</p>
+<p>All reqests for this path are forwarded to the <code class="docutils literal notranslate"><span class="pre">service2</span></code> cluster, and are also mirrored
+to the cluster named in the header.</p>
+<p>For example, if we send a request with the header <code class="docutils literal notranslate"><span class="pre">x-mirror-cluster:</span> <span class="pre">service2-mirror</span></code>,
+the request will be forwarded to the <code class="docutils literal notranslate"><span class="pre">service2-mirror</span></code> cluster.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Envoy configuration with header based route mirror policy <a class="reference download internal" download="" href="../../_downloads/f638ddcd685797bf0eef840c98909df0/envoy.yaml"><code class="xref download docutils literal notranslate"><span class="pre">envoy.yaml</span></code></a></span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="w">            </span><span class="nt">virtual_hosts</span><span class="p">:</span>
+<span class="linenos"> 2</span><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">backend</span>
+<span class="linenos"> 3</span><span class="w">              </span><span class="nt">domains</span><span class="p">:</span>
+<span class="linenos"> 4</span><span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*&quot;</span>
+<span class="linenos"> 5</span><span class="w">              </span><span class="nt">routes</span><span class="p">:</span>
+<span class="linenos"> 6</span><span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">match</span><span class="p">:</span>
+<span class="linenos"> 7</span><span class="w">                  </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/service/1&quot;</span>
+<span class="linenos"> 8</span><span class="w">                </span><span class="nt">route</span><span class="p">:</span>
+<span class="linenos"> 9</span><span class="w">                  </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service1</span>
+<span class="linenos">10</span><span class="w">                  </span><span class="nt">request_mirror_policies</span><span class="p">:</span>
+<span class="linenos">11</span><span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;service1-mirror&quot;</span>
+<span class="hll"><span class="linenos">12</span><span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">match</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">13</span><span class="w">                  </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/service/2&quot;</span>
+</span><span class="hll"><span class="linenos">14</span><span class="w">                </span><span class="nt">route</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">15</span><span class="w">                  </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service2</span>
+</span><span class="hll"><span class="linenos">16</span><span class="w">                  </span><span class="nt">request_mirror_policies</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">17</span><span class="w">                    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cluster_header</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;x-mirror-cluster&quot;</span>
+</span><span class="linenos">18</span>
+<span class="linenos">19</span><span class="w">         </span><span class="w w-Error"> </span><span class="nt">http_filters</span><span class="p">:</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Allowing a request header to determine the cluster that the request is mirrored to is most useful in
+a trusted environment.</p>
+<p>For example, a downstream Envoy instance (or other application acting as a proxy) might
+automatically add this header to requests for processing by an upstream Envoy instance
+configured with request mirror policies.</p>
+<p>If you allow dynamic mirroring according to request header, you may wish to restrict which requests
+can set or proxy the header.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Envoy will only return the response it receives from the primary cluster to the client.</p>
+<p>For this example, responses from <code class="docutils literal notranslate"><span class="pre">service1</span></code> and <code class="docutils literal notranslate"><span class="pre">service2</span></code> clusters will be sent
+to the client. A response returned by the <code class="docutils literal notranslate"><span class="pre">service1-mirror</span></code> or the <code class="docutils literal notranslate"><span class="pre">service2-mirror</span></code>
+cluster is not sent back to the client.</p>
+<p>This also means that any problems or latency in request processing in the mirror cluster
+don’t affect the response received by the client.</p>
+</div>
+<section id="step-1-build-the-sandbox">
+<h2>Step 1: Build the sandbox<a class="headerlink" href="#step-1-build-the-sandbox" title="Permalink to this heading"></a></h2>
+<p>Change to the <code class="docutils literal notranslate"><span class="pre">examples/route-mirror</span></code> directory.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">pwd</span>
+<span class="go">envoy/examples/route-mirror</span>
+<span class="gp">$ </span>docker<span class="w"> </span>compose<span class="w"> </span>build
+<span class="gp">$ </span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+<span class="gp">$ </span>docker<span class="w"> </span>compose<span class="w"> </span>ps
+<span class="go">NAME                               COMMAND                  SERVICE             STATUS              PORTS</span>
+<span class="go">route-mirror-envoy-front-proxy-1   &quot;/docker-entrypoint.…&quot;   envoy-front-proxy   running             0.0.0.0:10000-&gt;10000/tcp, :::10000-&gt;10000/tcp</span>
+<span class="go">route-mirror-service1-1            &quot;python3 /code/servi…&quot;   service1            running (healthy)</span>
+<span class="go">route-mirror-service1-mirror-1     &quot;python3 /code/servi…&quot;   service1-mirror     running (healthy)</span>
+<span class="go">route-mirror-service2-1            &quot;python3 /code/servi…&quot;   service2            running (healthy)</span>
+<span class="go">route-mirror-service2-mirror-1     &quot;python3 /code/servi…&quot;   service2-mirror     running (healthy)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-make-a-request-to-the-statically-mirrored-route">
+<h2>Step 2: Make a request to the statically mirrored route<a class="headerlink" href="#step-2-make-a-request-to-the-statically-mirrored-route" title="Permalink to this heading"></a></h2>
+<p>Let’s send a request to the <code class="docutils literal notranslate"><span class="pre">envoy-front-proxy</span></code> service which forwards the request to
+<code class="docutils literal notranslate"><span class="pre">service1</span></code> and also sends the request to the service 1 mirror, <code class="docutils literal notranslate"><span class="pre">service1-mirror</span></code>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl<span class="w"> </span>localhost:10000/service/1
+<span class="go">Hello from behind Envoy (service 1)!</span>
+</pre></div>
+</div>
+</section>
+<section id="step-3-view-logs-for-the-statically-mirrored-request">
+<h2>Step 3: View logs for the statically mirrored request<a class="headerlink" href="#step-3-view-logs-for-the-statically-mirrored-request" title="Permalink to this heading"></a></h2>
+<p>The logs from the <code class="docutils literal notranslate"><span class="pre">service1</span></code> and <code class="docutils literal notranslate"><span class="pre">service1-mirror</span></code> services show that
+both the <code class="docutils literal notranslate"><span class="pre">service1</span></code> and <code class="docutils literal notranslate"><span class="pre">service1-mirror</span></code> services received the request made
+in Step 2.</p>
+<p>You can also see that for the request to the <code class="docutils literal notranslate"><span class="pre">service1-mirror</span></code>
+service, the <code class="docutils literal notranslate"><span class="pre">Host</span></code> header was modified by Envoy to have a <code class="docutils literal notranslate"><span class="pre">-shadow</span></code> suffix
+in the hostname.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>service1
+<span class="go">...</span>
+<span class="go">Host: localhost:10000</span>
+<span class="go">192.168.80.6 - - [06/Oct/2022 03:56:22] &quot;GET /service/1 HTTP/1.1&quot; 200 -</span>
+
+<span class="gp">$ </span>docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>service1-mirror
+<span class="go">...</span>
+<span class="go">Host: localhost-shadow:10000</span>
+<span class="go">192.168.80.6 - - [06/Oct/2022 03:56:22] &quot;GET /service/1 HTTP/1.1&quot; 200 -</span>
+</pre></div>
+</div>
+</section>
+<section id="step-4-make-a-request-to-the-route-mirrored-by-request-header">
+<h2>Step 4: Make a request to the route mirrored by request header<a class="headerlink" href="#step-4-make-a-request-to-the-route-mirrored-by-request-header" title="Permalink to this heading"></a></h2>
+<p>In this step, we will see a demonstration where the request specifies via a header, <code class="docutils literal notranslate"><span class="pre">x-mirror-cluster</span></code>,
+the cluster that envoy will mirror the request to.</p>
+<p>Let’s send a request to the <code class="docutils literal notranslate"><span class="pre">envoy-front-proxy</span></code> service which forwards the request to
+<code class="docutils literal notranslate"><span class="pre">service2</span></code> and also mirrors the request to the cluster named, <code class="docutils literal notranslate"><span class="pre">service2-mirror</span></code>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl<span class="w"> </span>--header<span class="w"> </span><span class="s2">&quot;x-mirror-cluster: service2-mirror&quot;</span><span class="w"> </span>localhost:10000/service/2
+<span class="go">Hello from behind Envoy (service 2)!</span>
+</pre></div>
+</div>
+</section>
+<section id="step-5-view-logs-for-the-request-mirrored-by-request-header">
+<h2>Step 5: View logs for the request mirrored by request header<a class="headerlink" href="#step-5-view-logs-for-the-request-mirrored-by-request-header" title="Permalink to this heading"></a></h2>
+<p>The logs show that both the <code class="docutils literal notranslate"><span class="pre">service2</span></code> and <code class="docutils literal notranslate"><span class="pre">service2-mirror</span></code> services
+got the request.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>service2
+<span class="go">...</span>
+<span class="go">Host: localhost:10000</span>
+<span class="go">192.168.80.6 - - [06/Oct/2022 03:56:22] &quot;GET /service/2 HTTP/1.1&quot; 200 -</span>
+
+<span class="gp">$ </span>docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>service2-mirror
+<span class="go">...</span>
+<span class="go">Host: localhost-shadow:10000</span>
+<span class="go">192.168.80.6 - - [06/Oct/2022 03:56:22] &quot;GET /service/2 HTTP/1.1&quot; 200 -</span>
+</pre></div>
+</div>
+<p>You can also see that for the request to the <code class="docutils literal notranslate"><span class="pre">service2-mirror</span></code> service, the
+<code class="docutils literal notranslate"><span class="pre">Host</span></code> header was modified by Envoy to have a <code class="docutils literal notranslate"><span class="pre">-shadow</span></code> suffix in the
+hostname.</p>
+</section>
+<section id="step-6-missing-or-invalid-cluster-name-in-request-header">
+<h2>Step 6: Missing or invalid cluster name in request header<a class="headerlink" href="#step-6-missing-or-invalid-cluster-name-in-request-header" title="Permalink to this heading"></a></h2>
+<p>If you do not specify the <code class="docutils literal notranslate"><span class="pre">x-mirror-cluster</span></code> in the request to <code class="docutils literal notranslate"><span class="pre">service2</span></code>,
+or specify an unknown cluster, the request will not be mirrored but will be
+handled in the normal way.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl<span class="w"> </span>localhost:10000/service/2
+<span class="go">Hello from behind Envoy (service 2)!</span>
+
+<span class="gp">$ </span>curl<span class="w"> </span>--header<span class="w"> </span><span class="s2">&quot;x-mirror-cluster: service2-mirror-non-existent&quot;</span><span class="w"> </span>localhost:10000/service/2
+<span class="go">Hello from behind Envoy (service 2)!</span>
+</pre></div>
+</div>
+<p>View the logs for <code class="docutils literal notranslate"><span class="pre">service2</span></code> and <code class="docutils literal notranslate"><span class="pre">service2-mirror</span></code> services.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>service2
+<span class="go">...</span>
+<span class="go">Host: localhost:10000</span>
+<span class="go">192.168.80.6 - - [06/Oct/2022 03:56:22] &quot;GET /service/2 HTTP/1.1&quot; 200 -</span>
+
+<span class="gp">$ </span>docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>service2-mirror
+<span class="gp"># </span>No<span class="w"> </span>new<span class="w"> </span>logs
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="../../api-v3/config/route/v3/route_components.proto.html#envoy-v3-api-msg-config-route-v3-routeaction-requestmirrorpolicy"><span class="std std-ref">Envoy request mirror policy</span></a></dt><dd><p>Learn more Envoy’s request mirroring policy.</p>
+</dd>
+</dl>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="redis.html" class="btn btn-neutral float-left" title="Redis filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="skywalking.html" class="btn btn-neutral float-right" title="Skywalking tracing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2023, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
