@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Using the Envoy Docker Image &mdash; envoy 1.25.7-ddb94b documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Building" href="building.html" />
+    <link rel="prev" title="Zstd" href="sandboxes/zstd.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.25.7-ddb94b
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="start.html">Getting Started</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="install.html">Installing Envoy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick-start/index.html">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sandboxes/index.html">Sandboxes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Using the Envoy Docker Image</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#running-envoy-with-docker-compose">Running Envoy with docker-compose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#build-and-run-a-docker-image">Build and run a Docker image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#permissions-for-running-docker-envoy-containers-as-a-non-root-user">Permissions for running Docker Envoy containers as a non-root user</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#changing-the-uid-and-or-gid-of-the-envoy-user-inside-the-container">Changing the <code class="docutils literal notranslate"><span class="pre">uid</span></code> and/or <code class="docutils literal notranslate"><span class="pre">gid</span></code> of the <code class="docutils literal notranslate"><span class="pre">envoy</span></code> user inside the container</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#logging-permissions-inside-the-envoy-container">Logging permissions inside the Envoy container</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configuration-and-binary-file-permissions-inside-the-envoy-container">Configuration and binary file permissions inside the Envoy container</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#listen-only-on-ports-1024-inside-the-docker-envoy-container">Listen only on ports &gt; 1024 inside the Docker Envoy container</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="building.html">Building</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="start.html">Getting Started</a></li>
+      <li class="breadcrumb-item active">Using the Envoy Docker Image</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/start/docker.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="using-the-envoy-docker-image">
+<span id="start-docker"></span><h1>Using the Envoy Docker Image<a class="headerlink" href="#using-the-envoy-docker-image" title="Permalink to this heading"></a></h1>
+<p>The following examples use the <a class="reference internal" href="install.html#start-install-docker"><span class="std std-ref">official Envoy Docker image</span></a>.</p>
+<p>These instructions are known to work for the <code class="docutils literal notranslate"><span class="pre">x86_64</span></code> and <code class="docutils literal notranslate"><span class="pre">arm64</span></code> architectures.</p>
+<section id="running-envoy-with-docker-compose">
+<h2>Running Envoy with docker-compose<a class="headerlink" href="#running-envoy-with-docker-compose" title="Permalink to this heading"></a></h2>
+<p>If you would like to use Envoy with docker-compose you can overwrite the provided configuration file
+by using a volume.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3&#39;</span>
+<span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">envoy</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">envoyproxy/envoy-dev:ddb94b9d031790282f87e51f7e59a9cd61e8e55b</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;10000:10000&quot;</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./envoy.yaml:/etc/envoy/envoy.yaml</span>
+</pre></div>
+</div>
+<p>If you use this method, you will have to ensure that the <code class="docutils literal notranslate"><span class="pre">envoy</span></code> user can read the mounted file
+either by ensuring the correct permissions on the file, or making it world-readable, as described
+below.</p>
+</section>
+<section id="build-and-run-a-docker-image">
+<h2>Build and run a Docker image<a class="headerlink" href="#build-and-run-a-docker-image" title="Permalink to this heading"></a></h2>
+<p>Create a simple Dockerfile to execute Envoy.</p>
+<p>If you create a custom <code class="docutils literal notranslate"><span class="pre">envoy.yaml</span></code> you can create your own Docker image with it using the following
+Dockerfile recipe:</p>
+<div class="highlight-dockerfile notranslate"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="w"> </span><span class="s">envoyproxy/envoy-dev:ddb94b9d031790282f87e51f7e59a9cd61e8e55b</span>
+<span class="k">COPY</span><span class="w"> </span>envoy.yaml<span class="w"> </span>/etc/envoy/envoy.yaml
+<span class="k">RUN</span><span class="w"> </span>chmod<span class="w"> </span>go+r<span class="w"> </span>/etc/envoy/envoy.yaml
+</pre></div>
+</div>
+<p>Build the Docker image using:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>envoy:v1<span class="w"> </span>.
+</pre></div>
+</div>
+<p>Assuming Envoy is configured to listen on ports <code class="docutils literal notranslate"><span class="pre">9901</span></code> and <code class="docutils literal notranslate"><span class="pre">10000</span></code>, you can now start it
+with:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span>envoy<span class="w"> </span>-p<span class="w"> </span><span class="m">9901</span>:9901<span class="w"> </span>-p<span class="w"> </span><span class="m">10000</span>:10000<span class="w"> </span>envoy:v1
+</pre></div>
+</div>
+</section>
+<section id="permissions-for-running-docker-envoy-containers-as-a-non-root-user">
+<h2>Permissions for running Docker Envoy containers as a non-root user<a class="headerlink" href="#permissions-for-running-docker-envoy-containers-as-a-non-root-user" title="Permalink to this heading"></a></h2>
+<p>By default, the Envoy Docker image will start as the root user but will switch to the <code class="docutils literal notranslate"><span class="pre">envoy</span></code>
+user created at build time, in the Docker <code class="docutils literal notranslate"><span class="pre">ENTRYPOINT</span></code>.</p>
+<p>Alternatively, you can start the container specifying the Docker <code class="docutils literal notranslate"><span class="pre">user</span></code>.</p>
+<p>In this case the container will not attempt to drop privileges, but you will still need to ensure
+that the user running inside the container has any required permissions, as described below.</p>
+<section id="changing-the-uid-and-or-gid-of-the-envoy-user-inside-the-container">
+<h3>Changing the <code class="docutils literal notranslate"><span class="pre">uid</span></code> and/or <code class="docutils literal notranslate"><span class="pre">gid</span></code> of the <code class="docutils literal notranslate"><span class="pre">envoy</span></code> user inside the container<a class="headerlink" href="#changing-the-uid-and-or-gid-of-the-envoy-user-inside-the-container" title="Permalink to this heading"></a></h3>
+<p>The default <code class="docutils literal notranslate"><span class="pre">uid</span></code> and <code class="docutils literal notranslate"><span class="pre">gid</span></code> for the <code class="docutils literal notranslate"><span class="pre">envoy</span></code> user are <code class="docutils literal notranslate"><span class="pre">101</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">uid</span></code> and <code class="docutils literal notranslate"><span class="pre">gid</span></code> of this user can be set at runtime using the <code class="docutils literal notranslate"><span class="pre">ENVOY_UID</span></code> and <code class="docutils literal notranslate"><span class="pre">ENVOY_GID</span></code>
+environment variables.</p>
+<p>This can be done, for example, on the Docker command line:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span>envoy<span class="w"> </span>-e<span class="w"> </span><span class="nv">ENVOY_UID</span><span class="o">=</span><span class="m">777</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">ENVOY_GID</span><span class="o">=</span><span class="m">777</span><span class="w"> </span>envoyproxy/envoy-dev:ddb94b9d031790282f87e51f7e59a9cd61e8e55b
+</pre></div>
+</div>
+<p>This can be useful if you wish to restrict or provide access to <code class="docutils literal notranslate"><span class="pre">unix</span></code> sockets inside the container, or
+for controlling access to an Envoy socket from outside of the container.</p>
+<p>To run the process inside  the container as the <code class="docutils literal notranslate"><span class="pre">root</span></code> user you can set <code class="docutils literal notranslate"><span class="pre">ENVOY_UID</span></code> to <code class="docutils literal notranslate"><span class="pre">0</span></code>,
+but doing so has the potential to weaken the security of your running container.</p>
+</section>
+<section id="logging-permissions-inside-the-envoy-container">
+<h3>Logging permissions inside the Envoy container<a class="headerlink" href="#logging-permissions-inside-the-envoy-container" title="Permalink to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">envoy</span></code> image sends application logs to <code class="docutils literal notranslate"><span class="pre">/dev/stdout</span></code> and <code class="docutils literal notranslate"><span class="pre">/dev/stderr</span></code> by default, and these
+can be viewed in the container log.</p>
+<p>If you send application, admin or access logs to a file output, the <code class="docutils literal notranslate"><span class="pre">envoy</span></code> user will require the
+necessary permissions to write to this file. This can be achieved by setting the <code class="docutils literal notranslate"><span class="pre">ENVOY_UID</span></code> and/or
+by making the file writeable by the envoy user.</p>
+<p>For example, to mount a log folder from the host and make it writable, you can:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>mkdir<span class="w"> </span>logs
+<span class="gp">$ </span>chown<span class="w"> </span><span class="m">777</span><span class="w"> </span>logs
+<span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span>envoy<span class="w"> </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/logs:/var/log<span class="w"> </span>-e<span class="w"> </span><span class="nv">ENVOY_UID</span><span class="o">=</span><span class="m">777</span><span class="w"> </span>envoyproxy/envoy-dev:ddb94b9d031790282f87e51f7e59a9cd61e8e55b
+</pre></div>
+</div>
+<p>You can then configure <code class="docutils literal notranslate"><span class="pre">envoy</span></code> to log to files in <code class="docutils literal notranslate"><span class="pre">/var/log</span></code></p>
+</section>
+<section id="configuration-and-binary-file-permissions-inside-the-envoy-container">
+<h3>Configuration and binary file permissions inside the Envoy container<a class="headerlink" href="#configuration-and-binary-file-permissions-inside-the-envoy-container" title="Permalink to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">envoy</span></code> user also needs to have permission to access any required configuration files mounted
+into the container.</p>
+<p>Any binary files specified in the configuration should also be executable by the <code class="docutils literal notranslate"><span class="pre">envoy</span></code> user.</p>
+<p>If you are running in an environment with a strict <code class="docutils literal notranslate"><span class="pre">umask</span></code> setting, you may need to provide <code class="docutils literal notranslate"><span class="pre">envoy</span></code>
+with access by setting the ownership and/or permissions of the file.</p>
+<p>One method of doing this without changing any file permissions is to start the container with the
+host user’s <code class="docutils literal notranslate"><span class="pre">uid</span></code>, for example:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span>envoy<span class="w"> </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/envoy.yaml:/etc/envoy/envoy.yaml<span class="w"> </span>-e<span class="w"> </span><span class="nv">ENVOY_UID</span><span class="o">=</span><span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span><span class="w"> </span>envoyproxy/envoy-dev:ddb94b9d031790282f87e51f7e59a9cd61e8e55b
+</pre></div>
+</div>
+</section>
+<section id="listen-only-on-ports-1024-inside-the-docker-envoy-container">
+<h3>Listen only on ports &gt; 1024 inside the Docker Envoy container<a class="headerlink" href="#listen-only-on-ports-1024-inside-the-docker-envoy-container" title="Permalink to this heading"></a></h3>
+<p>Unix-based systems restrict opening <code class="docutils literal notranslate"><span class="pre">well-known</span></code> ports (ie. with a port number &lt; <code class="docutils literal notranslate"><span class="pre">1024</span></code>) to the <code class="docutils literal notranslate"><span class="pre">root</span></code> user.</p>
+<p>If you need to listen on a <code class="docutils literal notranslate"><span class="pre">well-known</span></code> port you can use Docker to do so.</p>
+<p>For example, to create an Envoy server listening on port <code class="docutils literal notranslate"><span class="pre">8000</span></code>, with forwarding from port <code class="docutils literal notranslate"><span class="pre">80</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span>envoy<span class="w"> </span>-p<span class="w"> </span><span class="m">80</span>:8000<span class="w"> </span>envoyproxy/envoy-dev:ddb94b9d031790282f87e51f7e59a9cd61e8e55b
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sandboxes/zstd.html" class="btn btn-neutral float-left" title="Zstd" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="building.html" class="btn btn-neutral float-right" title="Building" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2023, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
