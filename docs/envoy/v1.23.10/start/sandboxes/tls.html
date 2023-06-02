@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transport layer security (TLS) &mdash; envoy 1.23.10-2241af documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="User Datagram Protocol (UDP)" href="udp.html" />
+    <link rel="prev" title="TLS Server name indication (SNI)" href="tls-sni.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.23.10-2241af
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../start.html">Getting Started</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../install.html">Installing Envoy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quick-start/index.html">Quick start</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Sandboxes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="setup.html">Setup the sandbox environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="brotli.html">Brotli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cors.html">CORS filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="double-proxy.html">Double proxy (with <code class="docutils literal notranslate"><span class="pre">mTLS</span></code> encryption)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-filesystem.html">Dynamic configuration (filesystem)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-control-plane.html">Dynamic configuration (control plane)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ext_authz.html">External authorization (<code class="docutils literal notranslate"><span class="pre">ext_authz</span></code>) filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault injection filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gzip.html">Gzip</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger native tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_tracing.html">Jaeger tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="load_reporting_service.html">Load reporting service (<code class="docutils literal notranslate"><span class="pre">LRS</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="locality_load_balancing.html">Locality Weighted Load Balancing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="local_ratelimit.html">Local Ratelimit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mysql.html">MySQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="postgres.html">PostgreSQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skywalking_tracing.html">SkyWalking tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls-inspector.html">TLS Inspector Listener Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls-sni.html">TLS Server name indication (<code class="docutils literal notranslate"><span class="pre">SNI</span></code>)</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Transport layer security (<code class="docutils literal notranslate"><span class="pre">TLS</span></code>)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#step-1-build-the-sandbox">Step 1: Build the sandbox</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-2-test-proxying-https-http">Step 2: Test proxying <code class="docutils literal notranslate"><span class="pre">https</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">http</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-3-test-proxying-https-https">Step 3: Test proxying <code class="docutils literal notranslate"><span class="pre">https</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">https</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-4-test-proxying-http-https">Step 4: Test proxying <code class="docutils literal notranslate"><span class="pre">http</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">https</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-5-test-proxying-https-passthrough">Step 5: Test proxying <code class="docutils literal notranslate"><span class="pre">https</span></code> passthrough</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="udp.html">User Datagram Protocol (<code class="docutils literal notranslate"><span class="pre">UDP</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wasm-cc.html">Wasm C++ filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="websocket.html">WebSockets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="win32_front_proxy.html">Windows based Front proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zipkin_tracing.html">Zipkin tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zstd.html">Zstd</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docker.html">Using the Envoy Docker Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../building.html">Building</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../start.html">Getting Started</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Sandboxes</a></li>
+      <li class="breadcrumb-item active">Transport layer security (<code class="docutils literal notranslate"><span class="pre">TLS</span></code>)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/start/sandboxes/tls.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="transport-layer-security-tls">
+<span id="install-sandboxes-tls"></span><h1>Transport layer security (<code class="docutils literal notranslate"><span class="pre">TLS</span></code>)<a class="headerlink" href="#transport-layer-security-tls" title="Permalink to this heading"></a></h1>
+<aside class="sidebar">
+<p class="sidebar-title">Requirements</p>
+<dl class="simple">
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup"><span class="std std-ref">Sandbox environment</span></a></dt><dd><p>Setup your sandbox environment with Docker and Docker Compose,
+and clone the Envoy repository with Git.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup-curl"><span class="std std-ref">curl</span></a></dt><dd><p>Used to make <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> requests.</p>
+</dd>
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup-jq"><span class="std std-ref">jq</span></a></dt><dd><p>Parse <code class="docutils literal notranslate"><span class="pre">json</span></code> output from the upstream echo servers.</p>
+</dd>
+</dl>
+</aside>
+<p>This example walks through some of the ways that Envoy can be configured to make
+use of encrypted connections using <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> over <code class="docutils literal notranslate"><span class="pre">TLS</span></code>.</p>
+<p>It demonstrates a number of commonly used proxying and <code class="docutils literal notranslate"><span class="pre">TLS</span></code> termination patterns:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">https</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">http</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">https</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">https</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">http</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">https</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">https</span></code> passthrough</p></li>
+</ul>
+<p>To better understand the provided examples, and for a description of how <code class="docutils literal notranslate"><span class="pre">TLS</span></code> is
+configured with Envoy, please see the <a class="reference internal" href="../quick-start/securing.html#start-quick-start-securing"><span class="std std-ref">securing Envoy quick start guide</span></a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>For the sake of simplicity, the examples provided here do not authenticate any client certificates,
+or validate any of the provided certificates.</p>
+<p>When using <code class="docutils literal notranslate"><span class="pre">TLS</span></code>, you are strongly encouraged to <a class="reference internal" href="../quick-start/securing.html#start-quick-start-securing-validation"><span class="std std-ref">validate</span></a>
+all certificates wherever possible.</p>
+<p>You should also <a class="reference internal" href="../quick-start/securing.html#start-quick-start-securing-mtls"><span class="std std-ref">authenticate clients</span></a>
+where you control both sides of the connection, or relevant protocols are available.</p>
+</div>
+<section id="step-1-build-the-sandbox">
+<h2>Step 1: Build the sandbox<a class="headerlink" href="#step-1-build-the-sandbox" title="Permalink to this heading"></a></h2>
+<p>Change directory to <code class="docutils literal notranslate"><span class="pre">examples/tls</span></code> in the Envoy repository.</p>
+<p>This starts four proxies listening on <code class="docutils literal notranslate"><span class="pre">localhost</span></code> ports <code class="docutils literal notranslate"><span class="pre">10000-10003</span></code>.</p>
+<p>It also starts two upstream services, one <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> and one <code class="docutils literal notranslate"><span class="pre">HTTPS</span></code>, which echo back received headers
+in <code class="docutils literal notranslate"><span class="pre">json</span></code> format.</p>
+<p>The upstream services listen on the internal Docker network on ports <code class="docutils literal notranslate"><span class="pre">80</span></code> and <code class="docutils literal notranslate"><span class="pre">443</span></code> respectively.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">pwd</span>
+<span class="go">envoy/examples/tls</span>
+<span class="gp">$ </span>docker-compose<span class="w"> </span>pull
+<span class="gp">$ </span>docker-compose<span class="w"> </span>up<span class="w"> </span>--build<span class="w"> </span>-d
+<span class="gp">$ </span>docker-compose<span class="w"> </span>ps
+
+<span class="go">       Name                            Command                 State          Ports</span>
+<span class="go">-----------------------------------------------------------------------------------------------</span>
+<span class="go">tls_proxy-https-to-http_1       /docker-entrypoint.sh /usr ... Up      0.0.0.0:10000-&gt;10000/tcp</span>
+<span class="go">tls_proxy-https-to-https_1      /docker-entrypoint.sh /usr ... Up      0.0.0.0:10001-&gt;10000/tcp</span>
+<span class="go">tls_proxy-http-to-https_1       /docker-entrypoint.sh /usr ... Up      0.0.0.0:10002-&gt;10000/tcp</span>
+<span class="go">tls_proxy-https-passthrough_1   /docker-entrypoint.sh /usr ... Up      0.0.0.0:10003-&gt;10000/tcp</span>
+<span class="go">tls_service-http_1              node ./index.js                Up</span>
+<span class="go">tls_service-https_1             node ./index.js                Up</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-test-proxying-https-http">
+<h2>Step 2: Test proxying <code class="docutils literal notranslate"><span class="pre">https</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">http</span></code><a class="headerlink" href="#step-2-test-proxying-https-http" title="Permalink to this heading"></a></h2>
+<p>The Envoy proxy listening on <a class="reference external" href="https://localhost:10000">https://localhost:10000</a> terminates <code class="docutils literal notranslate"><span class="pre">HTTPS</span></code> and proxies to the upstream <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> service.</p>
+<p>The <a class="reference download internal" download="" href="../../_downloads/7c7353ae35444af5d12010aa319eb129/envoy-https-http.yaml"><code class="xref download docutils literal notranslate"><span class="pre">https</span> <span class="pre">-&gt;</span> <span class="pre">http</span> <span class="pre">configuration</span></code></a> adds a <code class="docutils literal notranslate"><span class="pre">TLS</span></code>
+<a class="reference internal" href="../../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#extension-envoy-transport-sockets-tls"><span class="std std-ref">transport_socket</span></a> to the
+<a class="reference internal" href="../../api-v3/config/listener/v3/listener.proto.html#envoy-v3-api-msg-config-listener-v3-listener"><span class="std std-ref">listener</span></a>.</p>
+<p>Querying the service at port <code class="docutils literal notranslate"><span class="pre">10000</span></code> you should see an <code class="docutils literal notranslate"><span class="pre">x-forwarded-proto</span></code> header of <code class="docutils literal notranslate"><span class="pre">https</span></code> has
+been added:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl<span class="w"> </span>-sk<span class="w"> </span>https://localhost:10000<span class="w">  </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.headers[&quot;x-forwarded-proto&quot;]&#39;</span>
+<span class="go">https</span>
+</pre></div>
+</div>
+<p>The upstream <code class="docutils literal notranslate"><span class="pre">service-http</span></code> handles the request.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl<span class="w"> </span>-sk<span class="w"> </span>https://localhost:10000<span class="w">  </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.os.hostname&#39;</span>
+<span class="go">service-http</span>
+</pre></div>
+</div>
+</section>
+<section id="step-3-test-proxying-https-https">
+<h2>Step 3: Test proxying <code class="docutils literal notranslate"><span class="pre">https</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">https</span></code><a class="headerlink" href="#step-3-test-proxying-https-https" title="Permalink to this heading"></a></h2>
+<p>The Envoy proxy listening on <a class="reference external" href="https://localhost:10001">https://localhost:10001</a> terminates <code class="docutils literal notranslate"><span class="pre">HTTPS</span></code> and proxies to the upstream <code class="docutils literal notranslate"><span class="pre">HTTPS</span></code> service.</p>
+<p>The <a class="reference download internal" download="" href="../../_downloads/b46c33b8dc187b46151a1ef8f818cb0d/envoy-https-https.yaml"><code class="xref download docutils literal notranslate"><span class="pre">https</span> <span class="pre">-&gt;</span> <span class="pre">https</span> <span class="pre">configuration</span></code></a> adds a <code class="docutils literal notranslate"><span class="pre">TLS</span></code>
+<a class="reference internal" href="../../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#extension-envoy-transport-sockets-tls"><span class="std std-ref">transport_socket</span></a> to both the
+<a class="reference internal" href="../../api-v3/config/listener/v3/listener.proto.html#envoy-v3-api-msg-config-listener-v3-listener"><span class="std std-ref">listener</span></a> and the
+<a class="reference internal" href="../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-msg-config-cluster-v3-cluster"><span class="std std-ref">cluster</span></a>.</p>
+<p>Querying the service at port <code class="docutils literal notranslate"><span class="pre">10001</span></code> you should see an <code class="docutils literal notranslate"><span class="pre">x-forwarded-proto</span></code> header of <code class="docutils literal notranslate"><span class="pre">https</span></code> has
+been added:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl<span class="w"> </span>-sk<span class="w"> </span>https://localhost:10001<span class="w">  </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.headers[&quot;x-forwarded-proto&quot;]&#39;</span>
+<span class="go">https</span>
+</pre></div>
+</div>
+<p>The upstream <code class="docutils literal notranslate"><span class="pre">service-https</span></code> handles the request.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl<span class="w"> </span>-sk<span class="w"> </span>https://localhost:10001<span class="w">  </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.os.hostname&#39;</span>
+<span class="go">service-https</span>
+</pre></div>
+</div>
+</section>
+<section id="step-4-test-proxying-http-https">
+<h2>Step 4: Test proxying <code class="docutils literal notranslate"><span class="pre">http</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">https</span></code><a class="headerlink" href="#step-4-test-proxying-http-https" title="Permalink to this heading"></a></h2>
+<p>The Envoy proxy listening on <a class="reference external" href="http://localhost:10002">http://localhost:10002</a> terminates <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> and proxies to the upstream <code class="docutils literal notranslate"><span class="pre">HTTPS</span></code> service.</p>
+<p>The <a class="reference download internal" download="" href="../../_downloads/ce488fde09d8f640b3489b87fa081eb7/envoy-http-https.yaml"><code class="xref download docutils literal notranslate"><span class="pre">http</span> <span class="pre">-&gt;</span> <span class="pre">https</span> <span class="pre">configuration</span></code></a> adds a <code class="docutils literal notranslate"><span class="pre">TLS</span></code>
+<a class="reference internal" href="../../api-v3/extensions/transport_sockets/tls/v3/tls.proto.html#extension-envoy-transport-sockets-tls"><span class="std std-ref">transport_socket</span></a> to the
+<a class="reference internal" href="../../api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-msg-config-cluster-v3-cluster"><span class="std std-ref">cluster</span></a>.</p>
+<p>Querying the service at port <code class="docutils literal notranslate"><span class="pre">10002</span></code> you should see an <code class="docutils literal notranslate"><span class="pre">x-forwarded-proto</span></code> header of <code class="docutils literal notranslate"><span class="pre">http</span></code> has
+been added:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:10002<span class="w">  </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.headers[&quot;x-forwarded-proto&quot;]&#39;</span>
+<span class="go">http</span>
+</pre></div>
+</div>
+<p>The upstream <code class="docutils literal notranslate"><span class="pre">service-https</span></code> handles the request.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:10002<span class="w">  </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.os.hostname&#39;</span>
+<span class="go">service-https</span>
+</pre></div>
+</div>
+</section>
+<section id="step-5-test-proxying-https-passthrough">
+<h2>Step 5: Test proxying <code class="docutils literal notranslate"><span class="pre">https</span></code> passthrough<a class="headerlink" href="#step-5-test-proxying-https-passthrough" title="Permalink to this heading"></a></h2>
+<p>The Envoy proxy listening on <a class="reference external" href="https://localhost:10003">https://localhost:10003</a> proxies directly to the upstream <code class="docutils literal notranslate"><span class="pre">HTTPS</span></code> service which
+does the <code class="docutils literal notranslate"><span class="pre">TLS</span></code> termination.</p>
+<p>The <a class="reference download internal" download="" href="../../_downloads/f7aa60d3e4e7c885c9121f02864324e1/envoy-https-passthrough.yaml"><code class="xref download docutils literal notranslate"><span class="pre">https</span> <span class="pre">passthrough</span> <span class="pre">configuration</span></code></a> requires no <code class="docutils literal notranslate"><span class="pre">TLS</span></code>
+or <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> setup, and instead uses a simple
+<a class="reference internal" href="../../api-v3/extensions/filters/network/tcp_proxy/v3/tcp_proxy.proto.html#envoy-v3-api-msg-extensions-filters-network-tcp-proxy-v3-tcpproxy"><span class="std std-ref">tcp_proxy</span></a>.</p>
+<p>Querying the service at port <code class="docutils literal notranslate"><span class="pre">10003</span></code> you should see that no <code class="docutils literal notranslate"><span class="pre">x-forwarded-proto</span></code> header has been
+added:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl<span class="w"> </span>-sk<span class="w"> </span>https://localhost:10003<span class="w">  </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.headers[&quot;x-forwarded-proto&quot;]&#39;</span>
+<span class="go">null</span>
+</pre></div>
+</div>
+<p>The upstream <code class="docutils literal notranslate"><span class="pre">service-https</span></code> handles the request.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl<span class="w"> </span>-sk<span class="w"> </span>https://localhost:10003<span class="w">  </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.os.hostname&#39;</span>
+<span class="go">service-https</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="../quick-start/securing.html#start-quick-start-securing"><span class="std std-ref">Securing Envoy quick start guide</span></a></dt><dd><p>Outline of key concepts for securing Envoy.</p>
+</dd>
+<dt><a class="reference internal" href="tls-sni.html#install-sandboxes-tls-sni"><span class="std std-ref">TLS SNI sandbox</span></a></dt><dd><p>Example of using Envoy to serve multiple domains protected by TLS and
+served from the same <code class="docutils literal notranslate"><span class="pre">IP</span></code> address.</p>
+</dd>
+<dt><a class="reference internal" href="double-proxy.html#install-sandboxes-double-proxy"><span class="std std-ref">Double proxy sandbox</span></a></dt><dd><p>An example of securing traffic between proxies with validation and
+mutual authentication using <code class="docutils literal notranslate"><span class="pre">mTLS</span></code> with non-<code class="docutils literal notranslate"><span class="pre">HTTP</span></code> traffic.</p>
+</dd>
+</dl>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tls-sni.html" class="btn btn-neutral float-left" title="TLS Server name indication (SNI)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="udp.html" class="btn btn-neutral float-right" title="User Datagram Protocol (UDP)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2023, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
