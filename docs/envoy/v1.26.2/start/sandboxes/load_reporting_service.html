@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Load reporting service (LRS) &mdash; envoy 1.26.2-4aa28d documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Locality Weighted Load Balancing" href="locality_load_balancing.html" />
+    <link rel="prev" title="Kafka broker" href="kafka.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.26.2-4aa28d
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../start.html">Getting Started</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../install.html">Installing Envoy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quick-start/index.html">Quick start</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Sandboxes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="setup.html">Setup the sandbox environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="brotli.html">Brotli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cache.html">Cache filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cors.html">CORS filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="csrf.html">CSRF filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="double-proxy.html">Double proxy (with <code class="docutils literal notranslate"><span class="pre">mTLS</span></code> encryption)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-filesystem.html">Dynamic configuration (filesystem)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamic-configuration-control-plane.html">Dynamic configuration (control plane)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ext_authz.html">External authorization (<code class="docutils literal notranslate"><span class="pre">ext_authz</span></code>) filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fault_injection.html">Fault injection filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="front_proxy.html">Front proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="golang.html">Golang filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="grpc_bridge.html">gRPC bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gzip.html">Gzip</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_native_tracing.html">Jaeger native tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jaeger_tracing.html">Jaeger tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kafka.html">Kafka broker</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Load reporting service (<code class="docutils literal notranslate"><span class="pre">LRS</span></code>)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#step-1-build-the-sandbox">Step 1: Build the sandbox</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-2-start-sending-stream-of-http-requests">Step 2: Start sending stream of HTTP requests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-3-see-envoy-stats">Step 3: See Envoy Stats</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="locality_load_balancing.html">Locality Weighted Load Balancing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="local_ratelimit.html">Local Ratelimit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lua.html">Lua filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mysql.html">MySQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="opentelemetry.html">OpenTelemetry tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="postgres.html">PostgreSQL filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rbac.html">Role Based Access Control (RBAC) - HTTP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="redis.html">Redis filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="route-mirror.html">Route mirroring policies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="skywalking.html">Skywalking tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls-inspector.html">TLS Inspector Listener Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls-sni.html">TLS Server name indication (<code class="docutils literal notranslate"><span class="pre">SNI</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tls.html">Transport layer security (<code class="docutils literal notranslate"><span class="pre">TLS</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="udp.html">User Datagram Protocol (<code class="docutils literal notranslate"><span class="pre">UDP</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wasm-cc.html">Wasm C++ filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="websocket.html">WebSockets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="win32_front_proxy.html">Windows based Front proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zipkin.html">Zipkin tracing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zstd.html">Zstd</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docker.html">Using the Envoy Docker Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../building.html">Building</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../start.html">Getting Started</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Sandboxes</a></li>
+      <li class="breadcrumb-item active">Load reporting service (<code class="docutils literal notranslate"><span class="pre">LRS</span></code>)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/start/sandboxes/load_reporting_service.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="load-reporting-service-lrs">
+<span id="install-sandboxes-load-reporting-service"></span><h1>Load reporting service (<code class="docutils literal notranslate"><span class="pre">LRS</span></code>)<a class="headerlink" href="#load-reporting-service-lrs" title="Permalink to this heading"></a></h1>
+<aside class="sidebar">
+<p class="sidebar-title">Requirements</p>
+<dl class="simple">
+<dt><a class="reference internal" href="setup.html#start-sandboxes-setup"><span class="std std-ref">Sandbox environment</span></a></dt><dd><p>Setup your sandbox environment with Docker and Docker Compose,
+and clone the Envoy repository with Git.</p>
+</dd>
+</dl>
+</aside>
+<p>This simple example demonstrates Envoy’s <a class="reference internal" href="../../intro/arch_overview/upstream/load_reporting_service.html#arch-overview-load-reporting-service"><span class="std std-ref">Load reporting service (LRS)</span></a>
+capability and how to use it.</p>
+<p>Lets say Cluster A (downstream) talks to Cluster B (Upstream) and Cluster C (Upstream). When enabling Load Report for
+Cluster A, LRS server should be sending LoadStatsResponse to Cluster A with LoadStatsResponse.Clusters to be B and C.
+LRS server will then receive LoadStatsRequests (with total requests, successful requests etc) from Cluster A to Cluster B and
+from Cluster A to Cluster C.</p>
+<p>In this example, all incoming requests are routed via Envoy to a simple goLang web server aka http_server.
+We scale up two containers and randomly send requests to each. Envoy is configured to initiate the connection with LRS Server.
+LRS Server enables the stats by sending LoadStatsResponse. Sending requests to http_server will be counted towards successful
+requests and will be visible in LRS Server logs.</p>
+<section id="step-1-build-the-sandbox">
+<h2>Step 1: Build the sandbox<a class="headerlink" href="#step-1-build-the-sandbox" title="Permalink to this heading"></a></h2>
+<p>Change to the <code class="docutils literal notranslate"><span class="pre">examples/load-reporting-service</span></code> directory.</p>
+<p>Terminal 1</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pwd
+envoy/examples/load-reporting-service
+$ docker compose pull
+$ docker compose up --scale http_service=2
+</pre></div>
+</div>
+<p>Terminal 2</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pwd
+envoy/examples/load_reporting_service
+$ docker compose ps
+
+              Name                               Command               State                Ports
+-----------------------------------------------------------------------------------------------------------------
+load-reporting-service_http_service_1   /docker-entrypoint.sh /usr ... Up           10000/tcp, 0.0.0.0:81-&gt;80/tcp
+load-reporting-service_http_service_2   python3 /code/service.py   ... Up (healthy)
+load-reporting-service_lrs_server_1     go run main.go                 Up
+</pre></div>
+</div>
+</section>
+<section id="step-2-start-sending-stream-of-http-requests">
+<h2>Step 2: Start sending stream of HTTP requests<a class="headerlink" href="#step-2-start-sending-stream-of-http-requests" title="Permalink to this heading"></a></h2>
+<p>Terminal 2</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pwd
+envoy/examples/load_reporting_service
+$ bash send_requests.sh
+</pre></div>
+</div>
+<p>The script above (<a class="reference download internal" download="" href="../../_downloads/d30e5009491bb54b2c5abc3b00cd29e0/send_requests.sh"><code class="xref download docutils literal notranslate"><span class="pre">send_requests.sh</span></code></a>) sends requests
+randomly to each Envoy, which in turn forwards the requests to the backend service.</p>
+</section>
+<section id="step-3-see-envoy-stats">
+<h2>Step 3: See Envoy Stats<a class="headerlink" href="#step-3-see-envoy-stats" title="Permalink to this heading"></a></h2>
+<p>You should see</p>
+<p>Terminal 1</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>............................
+lrs_server_1    | 2020/02/12 17:08:20 LRS Server is up and running on :18000
+lrs_server_1    | 2020/02/12 17:08:23 Adding new cluster to cache `http_service` with node `0022a319e1e2`
+lrs_server_1    | 2020/02/12 17:08:24 Adding new node `2417806c9d9a` to existing cluster `http_service`
+lrs_server_1    | 2020/02/12 17:08:25 Creating LRS response for cluster http_service, node 2417806c9d9a with frequency 2 secs
+lrs_server_1    | 2020/02/12 17:08:25 Creating LRS response for cluster http_service, node 0022a319e1e2 with frequency 2 secs
+http_service_2  | 127.0.0.1 - - [12/Feb/2020 17:09:06] &quot;GET /service HTTP/1.1&quot; 200 -
+http_service_1  | 127.0.0.1 - - [12/Feb/2020 17:09:06] &quot;GET /service HTTP/1.1&quot; 200 -
+............................
+lrs_server_1    | 2020/02/12 17:09:07 Got stats from cluster `http_service` node `0022a319e1e2` - cluster_name:&quot;local_service&quot; upstream_locality_stats:&lt;locality:&lt;&gt; total_successful_requests:21 total_issued_requests:21 &gt; load_report_interval:&lt;seconds:1 nanos:998411000 &gt;
+lrs_server_1    | 2020/02/12 17:09:07 Got stats from cluster `http_service` node `2417806c9d9a` - cluster_name:&quot;local_service&quot; upstream_locality_stats:&lt;locality:&lt;&gt; total_successful_requests:17 total_issued_requests:17 &gt; load_report_interval:&lt;seconds:1 nanos:994529000 &gt;
+http_service_2  | 127.0.0.1 - - [12/Feb/2020 17:09:07] &quot;GET /service HTTP/1.1&quot; 200 -
+http_service_1  | 127.0.0.1 - - [12/Feb/2020 17:09:07] &quot;GET /service HTTP/1.1&quot; 200 -
+............................
+lrs_server_1    | 2020/02/12 17:09:09 Got stats from cluster `http_service` node `0022a319e1e2` - cluster_name:&quot;local_service&quot; upstream_locality_stats:&lt;locality:&lt;&gt; total_successful_requests:3 total_issued_requests:3 &gt; load_report_interval:&lt;seconds:2 nanos:2458000 &gt;
+lrs_server_1    | 2020/02/12 17:09:09 Got stats from cluster `http_service` node `2417806c9d9a` - cluster_name:&quot;local_service&quot; upstream_locality_stats:&lt;locality:&lt;&gt; total_successful_requests:9 total_issued_requests:9 &gt; load_report_interval:&lt;seconds:2 nanos:6487000 &gt;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="../../intro/arch_overview/upstream/load_reporting_service.html#arch-overview-load-reporting-service"><span class="std std-ref">Load reporting service</span></a></dt><dd><p>Overview of Envoy’s Load reporting service.</p>
+</dd>
+<dt><a class="reference internal" href="../../api-v3/service/load_stats/v3/lrs.proto.html#envoy-v3-api-file-envoy-service-load-stats-v3-lrs-proto"><span class="std std-ref">Load reporting service API(V3)</span></a></dt><dd><p>The Load reporting service API.</p>
+</dd>
+</dl>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="kafka.html" class="btn btn-neutral float-left" title="Kafka broker" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="locality_load_balancing.html" class="btn btn-neutral float-right" title="Locality Weighted Load Balancing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2023, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
