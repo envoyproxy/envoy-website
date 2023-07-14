@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QUIC listener config (proto) &mdash; envoy 1.26.3-ea9d25 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="UDP GSO batch packet writer config (proto)" href="../../../extensions/udp_packet_writer/v3/udp_gso_batch_writer_factory.proto.html" />
+    <link rel="prev" title="Listener configuration (proto)" href="listener.proto.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html">
+            
+              <img src="../../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.26.3-ea9d25
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../api/api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/api_supported_versions.html">Supported API versions</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../../api.html">v3 API reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../bootstrap/bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../../listeners/listeners.html">Listeners</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="api_listener.proto.html">API listener (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../extensions/network/connection_balance/dlb/v3alpha/dlb.proto.html">Dlb connection balancer configuration (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="listener_components.proto.html">Listener components (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="listener.proto.html">Listener configuration (proto)</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">QUIC listener config (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../extensions/udp_packet_writer/v3/udp_gso_batch_writer_factory.proto.html">UDP GSO batch packet writer config (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="udp_listener_config.proto.html">UDP listener config (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../extensions/udp_packet_writer/v3/udp_default_writer_factory.proto.html">UDP packet writer config (proto)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../clusters/clusters.html">Clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../http_routes/http_routes.html">HTTP route management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config.html">Extensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../admin/admin.html">Admin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/data.html">Envoy data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../service/service.html">Services</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../common_messages/common_messages.html">Common messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../common_messages/common_messages_xds.html">Common messages (XDS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../types/types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api-docs/xds_protocol.html">xDS REST and gRPC protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/client_features.html">Well Known Client Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../api/api.html">API</a></li>
+          <li class="breadcrumb-item"><a href="../../../api.html">v3 API reference</a></li>
+          <li class="breadcrumb-item"><a href="../../../listeners/listeners.html">Listeners</a></li>
+      <li class="breadcrumb-item active">QUIC listener config (proto)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api-v3/config/listener/v3/quic_config.proto.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="quic-listener-config-proto">
+<span id="envoy-v3-api-file-envoy-config-listener-v3-quic-config-proto"></span><h1>QUIC listener config (proto)<a class="headerlink" href="#quic-listener-config-proto" title="Permalink to this heading"></a></h1>
+<section id="config-listener-v3-quicprotocoloptions">
+<span id="envoy-v3-api-msg-config-listener-v3-quicprotocoloptions"></span><h2>config.listener.v3.QuicProtocolOptions<a class="headerlink" href="#config-listener-v3-quicprotocoloptions" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/ea9d25e93cef74b023c95ca1a3f79449cdf7fa9a/api/envoy/config/listener/v3/quic_config.proto#L27">[config.listener.v3.QuicProtocolOptions proto]</a></p>
+<p>Configuration specific to the UDP QUIC listener.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;quic_protocol_options&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;idle_timeout&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;crypto_handshake_timeout&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;packets_to_read_to_connection_count_ratio&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;crypto_stream_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;proof_source_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;connection_id_generator_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;server_preferred_address_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple" id="envoy-v3-api-field-config-listener-v3-quicprotocoloptions-quic-protocol-options">
+<dt>quic_protocol_options</dt><dd><p>(<a class="reference internal" href="../../core/v3/protocol.proto.html#envoy-v3-api-msg-config-core-v3-quicprotocoloptions"><span class="std std-ref">config.core.v3.QuicProtocolOptions</span></a>)</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-listener-v3-quicprotocoloptions-idle-timeout">
+<dt>idle_timeout</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) Maximum number of milliseconds that connection will be alive when there is
+no network activity.</p>
+<p>If it is less than 1ms, Envoy will use 1ms. 300000ms if not specified.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-listener-v3-quicprotocoloptions-crypto-handshake-timeout">
+<dt>crypto_handshake_timeout</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#duration">Duration</a>) Connection timeout in milliseconds before the crypto handshake is finished.</p>
+<p>If it is less than 5000ms, Envoy will use 5000ms. 20000ms if not specified.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-listener-v3-quicprotocoloptions-enabled">
+<dt>enabled</dt><dd><p>(<a class="reference internal" href="../../core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-runtimefeatureflag"><span class="std std-ref">config.core.v3.RuntimeFeatureFlag</span></a>) Runtime flag that controls whether the listener is enabled or not. If not specified, defaults
+to enabled.</p>
+</dd>
+</dl>
+<dl class="simple" id="envoy-v3-api-field-config-listener-v3-quicprotocoloptions-packets-to-read-to-connection-count-ratio">
+<dt>packets_to_read_to_connection_count_ratio</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#uint32value">UInt32Value</a>) A multiplier to number of connections which is used to determine how many packets to read per
+event loop. A reasonable number should allow the listener to process enough payload but not
+starve TCP and other UDP sockets and also prevent long event loop duration.
+The default value is 32. This means if there are N QUIC connections, the total number of
+packets to read in each read event will be 32 * N.
+The actual number of packets to read in total by the UDP listener is also
+bound by 6000, regardless of this field or how many connections there are.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-listener-v3-quicprotocoloptions-crypto-stream-config">
+<dt>crypto_stream_config</dt><dd><p>(<a class="reference internal" href="../../core/v3/extension.proto.html#envoy-v3-api-msg-config-core-v3-typedextensionconfig"><span class="std std-ref">config.core.v3.TypedExtensionConfig</span></a>) Configure which implementation of <code class="docutils literal notranslate"><span class="pre">quic::QuicCryptoClientStreamBase</span></code> to be used for this listener.
+If not specified the <a class="reference internal" href="../../../extensions/quic/crypto_stream/v3/crypto_stream.proto.html#envoy-v3-api-msg-extensions-quic-crypto-stream-v3-cryptoserverstreamconfig"><span class="std std-ref">QUICHE default one configured by</span></a> will be used.</p>
+<div class="admonition tip" id="extension-category-envoy-quic-server-crypto-stream">
+<p class="admonition-title">Tip</p>
+<p>This extension category has the following known extensions:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../extensions/quic/crypto_stream/v3/crypto_stream.proto.html#extension-envoy-quic-crypto-stream-server-quiche"><span class="std std-ref">envoy.quic.crypto_stream.server.quiche</span></a></p></li>
+</ul>
+</div>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-listener-v3-quicprotocoloptions-proof-source-config">
+<dt>proof_source_config</dt><dd><p>(<a class="reference internal" href="../../core/v3/extension.proto.html#envoy-v3-api-msg-config-core-v3-typedextensionconfig"><span class="std std-ref">config.core.v3.TypedExtensionConfig</span></a>) Configure which implementation of <code class="docutils literal notranslate"><span class="pre">quic::ProofSource</span></code> to be used for this listener.
+If not specified the <a class="reference internal" href="../../../extensions/quic/proof_source/v3/proof_source.proto.html#envoy-v3-api-msg-extensions-quic-proof-source-v3-proofsourceconfig"><span class="std std-ref">default one configured by</span></a> will be used.</p>
+<div class="admonition tip" id="extension-category-envoy-quic-proof-source">
+<p class="admonition-title">Tip</p>
+<p>This extension category has the following known extensions:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../extensions/quic/proof_source/v3/proof_source.proto.html#extension-envoy-quic-proof-source-filter-chain"><span class="std std-ref">envoy.quic.proof_source.filter_chain</span></a></p></li>
+</ul>
+</div>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-listener-v3-quicprotocoloptions-connection-id-generator-config">
+<dt>connection_id_generator_config</dt><dd><p>(<a class="reference internal" href="../../core/v3/extension.proto.html#envoy-v3-api-msg-config-core-v3-typedextensionconfig"><span class="std std-ref">config.core.v3.TypedExtensionConfig</span></a>) Config which implementation of <code class="docutils literal notranslate"><span class="pre">quic::ConnectionIdGeneratorInterface</span></code> to be used for this listener.
+If not specified the <a class="reference internal" href="../../../extensions/quic/connection_id_generator/v3/envoy_deterministic_connection_id_generator.proto.html#envoy-v3-api-msg-extensions-quic-connection-id-generator-v3-deterministicconnectionidgeneratorconfig"><span class="std std-ref">default one configured by</span></a> will be used.</p>
+<div class="admonition tip" id="extension-category-envoy-quic-connection-id-generator">
+<p class="admonition-title">Tip</p>
+<p>This extension category has the following known extensions:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../extensions/quic/connection_id_generator/v3/envoy_deterministic_connection_id_generator.proto.html#extension-envoy-quic-deterministic-connection-id-generator"><span class="std std-ref">envoy.quic.deterministic_connection_id_generator</span></a></p></li>
+</ul>
+</div>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-config-listener-v3-quicprotocoloptions-server-preferred-address-config">
+<dt>server_preferred_address_config</dt><dd><p>(<a class="reference internal" href="../../core/v3/extension.proto.html#envoy-v3-api-msg-config-core-v3-typedextensionconfig"><span class="std std-ref">config.core.v3.TypedExtensionConfig</span></a>) Configure the server’s preferred address to advertise so that client can migrate to it. See <a class="reference internal" href="../../../extensions/quic/server_preferred_address/v3/fixed_server_preferred_address_config.proto.html#envoy-v3-api-msg-extensions-quic-server-preferred-address-v3-fixedserverpreferredaddressconfig"><span class="std std-ref">example</span></a> which configures a pair of v4 and v6 preferred addresses.
+The current QUICHE implementation will advertise only one of the preferred IPv4 and IPv6 addresses based on the address family the client initially connects with, and only if the client is also QUICHE-based.
+If not specified, Envoy will not advertise any server’s preferred address.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This API feature is currently work-in-progress. API features marked as work-in-progress are not considered stable, are not covered by the <a class="reference internal" href="../../../../intro/arch_overview/security/threat_model.html#arch-overview-threat-model"><span class="std std-ref">threat model</span></a>, are not supported by the security team, and are subject to breaking changes. Do not use this feature without understanding each of the previous points.</p>
+</div>
+<div class="admonition tip" id="extension-category-envoy-quic-server-preferred-address">
+<p class="admonition-title">Tip</p>
+<p>This extension category has the following known extensions:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../extensions/quic/server_preferred_address/v3/fixed_server_preferred_address_config.proto.html#extension-envoy-quic-server-preferred-address-fixed"><span class="std std-ref">envoy.quic.server_preferred_address.fixed</span></a></p></li>
+</ul>
+</div>
+</dd>
+</dl>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="listener.proto.html" class="btn btn-neutral float-left" title="Listener configuration (proto)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../../extensions/udp_packet_writer/v3/udp_gso_batch_writer_factory.proto.html" class="btn btn-neutral float-right" title="UDP GSO batch packet writer config (proto)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2023, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
