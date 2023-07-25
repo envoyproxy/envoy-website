@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What is the status of incremental xDS support? &mdash; envoy 1.23.12-9689bc documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../_static/jquery.js"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Why is Envoy sending internal responses?" href="../debugging/why_is_envoy_sending_internal_responses.html" />
+    <link rel="prev" title="Why are the Envoy xDS APIs versioned? What is the benefit?" href="why_versioning.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.23.12-9689bc
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/api.html">API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../overview.html">FAQ</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#build">Build</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../overview.html#api">API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="envoy_v3.html">How do I configure Envoy to use the v3 API?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions.html">How does API versioning interact with a new extension?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="package_naming.html">What do the v2, v3, vN etc. mean in API package names?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="why_versioning.html">Why are the Envoy xDS APIs versioned? What is the benefit?</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">What is the status of incremental xDS support?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#debugging">Debugging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#performance">Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#load-balancing">Load balancing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#extensions">Extensions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#windows">Windows</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../overview.html">FAQ</a></li>
+      <li class="breadcrumb-item active">What is the status of incremental xDS support?</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/faq/api/incremental.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="what-is-the-status-of-incremental-xds-support">
+<h1>What is the status of incremental xDS support?<a class="headerlink" href="#what-is-the-status-of-incremental-xds-support" title="Permalink to this heading"></a></h1>
+<p>The <a class="reference internal" href="../../api-docs/xds_protocol.html#xds-protocol-delta"><span class="std std-ref">incremental xDS</span></a> protocol is designed to improve efficiency,
+scalability and functional use of xDS updates via two mechanisms:</p>
+<ul class="simple">
+<li><p>Delta xDS. Resource deltas are delivered rather than state-of-the-world.</p></li>
+<li><p>On-demand xDS. Resource can be lazy loaded depending on request contents.</p></li>
+</ul>
+<p>Currently, all xDS protocols (including ADS) support delta xDS. On-demand xDS is supported for
+<a class="reference internal" href="../../configuration/http/http_conn_man/vhds.html#config-http-conn-man-vhds"><span class="std std-ref">VHDS</span></a> only.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="why_versioning.html" class="btn btn-neutral float-left" title="Why are the Envoy xDS APIs versioned? What is the benefit?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../debugging/why_is_envoy_sending_internal_responses.html" class="btn btn-neutral float-right" title="Why is Envoy sending internal responses?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2023, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
