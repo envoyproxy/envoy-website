@@ -1,0 +1,68 @@
+.. _envoy_v3_api_file_envoy/extensions/formatter/cel/v3/cel.proto:
+
+Formatter extension for printing CEL expressions (proto)
+========================================================
+
+.. _extension_envoy.formatter.cel:
+
+This extension has the qualified name ``envoy.formatter.cel``
+
+
+.. note::
+  This extension is functional but has not had substantial production burn time,
+  use only with this caveat.
+
+  This extension is intended to be robust against both untrusted downstream and
+  upstream traffic.
+
+.. tip::
+  This extension extends and can be used with the following extension category:
+
+
+  - :ref:`envoy.formatter <extension_category_envoy.formatter>`
+
+
+
+  This extension must be configured with one of the following type URLs:
+
+
+
+  - :ref:`type.googleapis.com/envoy.extensions.formatter.cel.v3.Cel <envoy_v3_api_msg_extensions.formatter.cel.v3.Cel>`
+
+
+
+
+
+CEL formatter extension implements CEL command operator that evaluates configured
+symbolic Common Expression Language expressions to generate an access log.
+
+See :ref:`here <config_access_log>` for more information on access log configuration.
+
+
+%CEL(EXPRESSION):Z%
+Expressions are based on the set of Envoy :ref:`attributes <arch_overview_attributes>`.
+Expression errors are considered `-`. Z is an optional parameter denoting string
+truncation up to Z characters long.
+
+Examples:
+- ``%CEL(response.code)%``
+- ``%CEL(connection.mtls)%``
+- ``%CEL(request.headers['x-envoy-original-path']):10%``
+- ``%CEL(request.headers['x-log-mtls'] || request.url_path.contains('v1beta3'))%``
+
+
+
+
+.. _envoy_v3_api_msg_extensions.formatter.cel.v3.Cel:
+
+extensions.formatter.cel.v3.Cel
+-------------------------------
+
+
+:repo:`[extensions.formatter.cel.v3.Cel proto] <api/envoy/extensions/formatter/cel/v3/cel.proto#L32>`
+
+Configuration for the CEL formatter.
+
+
+
+
