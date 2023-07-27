@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gRPC Field Extraction (proto) &mdash; envoy 1.27.0-7bba38 documentation</title>
+      <link rel="stylesheet" href="../../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../../../../" id="documentation_options" src="../../../../../../_static/documentation_options.js?v=d0ee8f1e"></script>
+        <script src="../../../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../../../../_static/copybutton.js?v=db7b0edf"></script>
+    <script src="../../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" />
+    <link rel="next" title="gRPC HTTP/1.1 Bridge (proto)" href="../../grpc_http1_bridge/v3/config.proto.html" />
+    <link rel="prev" title="Golang HTTP filter (proto)" href="../../golang/v3alpha/golang.proto.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../../index.html">
+            
+              <img src="../../../../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.27.0-7bba38
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../../../api/api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../api/api_supported_versions.html">Supported API versions</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../../../../api.html">v3 API reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../../../bootstrap/bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../clusters/clusters.html">Clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../http_routes/http_routes.html">HTTP route management</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../../../../config/config.html">Extensions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/accesslog/filters.html">Access log extension filters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/formatter/formatter.html">Access log formatters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/accesslog/accesslog.html">Access loggers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/cluster/cluster.html">Cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/common/common.html">Common</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/compression/compression.html">Compression</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/config_validators/config_validators.html">Config validators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/contrib/contrib.html">Contrib extensions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/dns_resolver/dns_resolver.html">DNS resolver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/endpoint/endpoint.html">Endpoint</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../../../../../config/filter/filter.html">Filters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/grpc_credential/grpc_credential.html">Grpc credentials</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/health_check_event_sinks/health_check_event_sinks.html">Health check event sinks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/health_checker/health_checker.html">Health checkers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/http/early_header_mutation.html">HTTP early header mutation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/http/custom_response.html">Custom response policies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/http/header_formatters.html">HTTP header formatters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/http/header_validators.html">HTTP header validators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/http/original_ip_detection.html">HTTP original IP detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/http/stateful_session.html">HTTP stateful session</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/trace/trace.html">HTTP tracers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/internal_redirect/internal_redirect.html">Internal redirect predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/path/match/path_matcher.html">Path matcher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/path/rewrite/path_rewriter.html">Path rewriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/quic/quic_extensions.html">Quic extensions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/descriptors/descriptors.html">Rate limit descriptors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/rbac/rbac.html">RBAC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/rbac/matchers.html">RBAC matchers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/request_id/request_id.html">Request ID</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/resource_monitor/resource_monitor.html">Resource monitors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/retry/retry.html">Retry predicates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/stat_sinks/stat_sinks.html">Stat sinks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/transport_socket/transport_socket.html">Transport sockets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/upstream/upstream.html">Upstream configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/wasm/wasm.html">WASM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/watchdog/watchdog.html">Watchdog</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../config/load_balancing_policies/load_balancing_policies.html">Load balancing policies</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../admin/admin.html">Admin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../data/data.html">Envoy data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../service/service.html">Services</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../common_messages/common_messages.html">Common messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../common_messages/common_messages_xds.html">Common messages (XDS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../types/types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../api-docs/xds_protocol.html">xDS REST and gRPC protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../api/client_features.html">Well Known Client Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../../../api/api.html">API</a></li>
+          <li class="breadcrumb-item"><a href="../../../../../api.html">v3 API reference</a></li>
+          <li class="breadcrumb-item"><a href="../../../../../config/config.html">Extensions</a></li>
+          <li class="breadcrumb-item"><a href="../../../../../config/filter/filter.html">Filters</a></li>
+          <li class="breadcrumb-item"><a href="../../../../../config/filter/http/http.html">HTTP filters</a></li>
+      <li class="breadcrumb-item active">gRPC Field Extraction (proto)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../../_sources/api-v3/extensions/filters/http/grpc_field_extraction/v3/config.proto.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="grpc-field-extraction-proto">
+<span id="envoy-v3-api-file-envoy-extensions-filters-http-grpc-field-extraction-v3-config-proto"></span><h1>gRPC Field Extraction (proto)<a class="headerlink" href="#grpc-field-extraction-proto" title="Permalink to this heading"></a></h1>
+<p id="extension-envoy-filters-http-grpc-field-extraction">This extension has the qualified name <code class="docutils literal notranslate"><span class="pre">envoy.filters.http.grpc_field_extraction</span></code></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This extension is functional but has not had substantial production burn time,
+use only with this caveat.</p>
+<p>This extension has an unknown security posture and should only be
+used in deployments where both the downstream and upstream are
+trusted.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>This extension extends and can be used with the following extension category:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../network/http_connection_manager/v3/http_connection_manager.proto.html#extension-category-envoy-filters-http"><span class="std std-ref">envoy.filters.http</span></a></p></li>
+</ul>
+<p>This extension must be configured with one of the following type URLs:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#envoy-v3-api-msg-extensions-filters-http-grpc-field-extraction-v3-grpcfieldextractionconfig"><span class="std std-ref">type.googleapis.com/envoy.extensions.filters.http.grpc_field_extraction.v3.GrpcFieldExtractionConfig</span></a></p></li>
+</ul>
+</div>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
+<p>This filter supports extracting the fields from the first gRPC
+request message no matter if it is unary or streaming and writing the result
+to the destination, for which currently only the static Envoy dynamic metadata <cite>envoy.filters.http.grpc_field_extraction</cite> is supported.</p>
+</section>
+<section id="assumptions">
+<h2>Assumptions<a class="headerlink" href="#assumptions" title="Permalink to this heading"></a></h2>
+<p>This filter assumes</p>
+<ol class="arabic simple">
+<li><p>this filter is only applicable for gRPC with Protobuf as payload.</p></li>
+<li><p>for bi-directional and client-side gRPC streaming, the initial message from the client should not depend on receiving the server initial metadata.</p></li>
+</ol>
+</section>
+<section id="process-flow">
+<h2>Process Flow<a class="headerlink" href="#process-flow" title="Permalink to this heading"></a></h2>
+<p>When a request reaches the filter, it will check</p>
+<ol class="arabic simple">
+<li><p>if the request is the gRPC request configured for extraction, the filter tries to:</p></li>
+</ol>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>block the incoming data before decoding the first complete gRPC message</p></li>
+<li><p>look up the target field from the buffered gRPC message</p></li>
+<li><p>write the extraction result into the dynamic metadata and resume the request propagation.</p></li>
+</ol>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>otherwise, pass through the request.</p></li>
+</ol>
+<p>If the request is a malformed one found during 1.a or 1.b, the filter will reject the request.</p>
+</section>
+<section id="config-requirements">
+<h2>Config Requirements<a class="headerlink" href="#config-requirements" title="Permalink to this heading"></a></h2>
+<p>Here are config requirements</p>
+<ol class="arabic simple">
+<li><p>the target field should be among the following primitive types: <cite>string</cite>, <cite>uint32</cite>, <cite>uint64</cite>, <cite>int32</cite>, <cite>int64</cite>, <cite>sint32</cite>, <cite>sint64</cite>, <cite>fixed32</cite>, <cite>fixed64</cite>, <cite>sfixed32</cite>, <cite>sfixed64</cite>, <cite>float</cite>, <cite>double</cite>.</p></li>
+<li><p>the target field could be repeated.</p></li>
+<li><p>the intermediate type could also be repeated.</p></li>
+</ol>
+</section>
+<section id="output-format">
+<h2>Output Format<a class="headerlink" href="#output-format" title="Permalink to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>the extracted field names/values will be wrapped in be <code class="docutils literal notranslate"><span class="pre">field&lt;StringValue&gt;</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">values&lt;ListValue</span> <span class="pre">of</span> <span class="pre">StringValue&gt;</span></code>, which will be added in the dynamic <code class="docutils literal notranslate"><span class="pre">metadata&lt;google.protobuf.Struct&gt;</span></code>.</p></li>
+<li><p>if the field value is empty, a empty <code class="docutils literal notranslate"><span class="pre">&lt;ListValue&gt;</span></code> will be set.</p></li>
+</ol>
+</section>
+<section id="performance">
+<h2>Performance<a class="headerlink" href="#performance" title="Permalink to this heading"></a></h2>
+<p>This filter should be performant as it</p>
+<ol class="arabic simple">
+<li><p>converts between the gRPC message from EnvoyBuffer without data copy.</p></li>
+<li><p>parse the gRPC message binary directly without deserialization.</p></li>
+</ol>
+<p>though buffering the first message introduces some latency.</p>
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this heading"></a></h2>
+<p>We have the following request definition for the gRPC method <cite>pkg.svc.Method</cite>.</p>
+<div class="highlight-proto notranslate"><div class="highlight"><pre><span></span><span class="kd">message</span><span class="w"> </span><span class="nc">MethodRequest</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">  </span><span class="n">Nested</span><span class="w"> </span><span class="na">nested</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">uint32</span><span class="w"> </span><span class="na">baz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+<span class="w">  </span><span class="o">...</span>
+<span class="p">}</span>
+
+<span class="kd">message</span><span class="w"> </span><span class="nc">Nested</span><span class="w"> </span><span class="p">{</span>
+<span class="w"> </span><span class="k">repeated</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="na">bar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This is the filter config in JSON.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;descriptor_set&quot;</span><span class="p">:{},</span>
+<span class="w">  </span><span class="nt">&quot;extractions_by_method&quot;</span><span class="p">:{</span>
+<span class="w">     </span><span class="nt">&quot;pkg.svc.Method&quot;</span><span class="p">:{</span>
+<span class="w">        </span><span class="nt">&quot;request_field_extractions&quot;</span><span class="p">:{</span>
+<span class="w">           </span><span class="nt">&quot;foo&quot;</span><span class="p">:{</span>
+<span class="w">           </span><span class="p">},</span>
+<span class="w">           </span><span class="nt">&quot;nested.bar&quot;</span><span class="p">:{</span>
+<span class="w">           </span><span class="p">}</span>
+<span class="w">           </span><span class="nt">&quot;baz&quot;</span><span class="p">:{</span>
+<span class="w">           </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">     </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>During runtime, the filter receives the following <cite>MethodRequest</cite> message in JSON.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;foo&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;val_foo&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;nested&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;bar&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;val_bar1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;val_bar2&quot;</span><span class="p">]}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The filter will write the following dynamic metadata(<cite>envoy.filters.http.grpc_field_extraction</cite>) in JSON.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;foo&quot;</span><span class="p">:[</span>
+<span class="w">     </span><span class="s2">&quot;val_foo&quot;</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;nested.bar&quot;</span><span class="p">:[</span>
+<span class="w">     </span><span class="s2">&quot;val_bar1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;val_bar2&quot;</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="w">  </span><span class="nt">&quot;baz&quot;</span><span class="p">:[</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="extensions-filters-http-grpc-field-extraction-v3-grpcfieldextractionconfig">
+<span id="envoy-v3-api-msg-extensions-filters-http-grpc-field-extraction-v3-grpcfieldextractionconfig"></span><h2>extensions.filters.http.grpc_field_extraction.v3.GrpcFieldExtractionConfig<a class="headerlink" href="#extensions-filters-http-grpc-field-extraction-v3-grpcfieldextractionconfig" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7bba38b743bb3bca22dffb4a21c38ccc155fbef8/api/envoy/extensions/filters/http/grpc_field_extraction/v3/config.proto#L139">[extensions.filters.http.grpc_field_extraction.v3.GrpcFieldExtractionConfig proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;descriptor_set&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;extractions_by_method&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl id="envoy-v3-api-field-extensions-filters-http-grpc-field-extraction-v3-grpcfieldextractionconfig-descriptor-set">
+<dt>descriptor_set</dt><dd><p>(<a class="reference internal" href="../../../../../config/core/v3/base.proto.html#envoy-v3-api-msg-config-core-v3-datasource"><span class="std std-ref">config.core.v3.DataSource</span></a>, <em>REQUIRED</em>) The proto descriptor set binary for the gRPC services.</p>
+<p>It could be passed by a local file through <cite>Datasource.filename</cite> or embedded in the
+<cite>Datasource.inline_bytes</cite>.</p>
+</dd>
+</dl>
+<dl id="envoy-v3-api-field-extensions-filters-http-grpc-field-extraction-v3-grpcfieldextractionconfig-extractions-by-method">
+<dt>extractions_by_method</dt><dd><p>(<strong>repeated</strong> map&lt;<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <a class="reference internal" href="#envoy-v3-api-msg-extensions-filters-http-grpc-field-extraction-v3-fieldextractions"><span class="std std-ref">extensions.filters.http.grpc_field_extraction.v3.FieldExtractions</span></a>&gt;) Specify the extraction info.
+The key is the fully qualified gRPC method name.
+<cite>${package}.${Service}.${Method}</cite>, like
+<cite>endpoints.examples.bookstore.BookStore.GetShelf</cite></p>
+<p>The value is the field extractions for individual gRPC method.</p>
+</dd>
+</dl>
+</section>
+<section id="extensions-filters-http-grpc-field-extraction-v3-fieldextractions">
+<span id="envoy-v3-api-msg-extensions-filters-http-grpc-field-extraction-v3-fieldextractions"></span><h2>extensions.filters.http.grpc_field_extraction.v3.FieldExtractions<a class="headerlink" href="#extensions-filters-http-grpc-field-extraction-v3-fieldextractions" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7bba38b743bb3bca22dffb4a21c38ccc155fbef8/api/envoy/extensions/filters/http/grpc_field_extraction/v3/config.proto#L157">[extensions.filters.http.grpc_field_extraction.v3.FieldExtractions proto]</a></p>
+<p>This message can be used to support per route config approach later even
+though the Istio doesn’t support that so far.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;request_field_extractions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl id="envoy-v3-api-field-extensions-filters-http-grpc-field-extraction-v3-fieldextractions-request-field-extractions">
+<dt>request_field_extractions</dt><dd><p>(<strong>repeated</strong> map&lt;<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>, <a class="reference internal" href="#envoy-v3-api-msg-extensions-filters-http-grpc-field-extraction-v3-requestfieldvaluedisposition"><span class="std std-ref">extensions.filters.http.grpc_field_extraction.v3.RequestFieldValueDisposition</span></a>&gt;) The field extractions for requests.
+The key is the field path within the grpc request.
+For example, we can define <cite>foo.bar.name</cite> if we want to extract
+Request.foo.bar.name.</p>
+<div class="highlight-proto notranslate"><div class="highlight"><pre><span></span><span class="kd">message</span><span class="w"> </span><span class="nc">Request</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Foo</span><span class="w"> </span><span class="na">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">message</span><span class="w"> </span><span class="nc">Foo</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Bar</span><span class="w"> </span><span class="na">bar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">message</span><span class="w"> </span><span class="nc">Bar</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="extensions-filters-http-grpc-field-extraction-v3-requestfieldvaluedisposition">
+<span id="envoy-v3-api-msg-extensions-filters-http-grpc-field-extraction-v3-requestfieldvaluedisposition"></span><h2>extensions.filters.http.grpc_field_extraction.v3.RequestFieldValueDisposition<a class="headerlink" href="#extensions-filters-http-grpc-field-extraction-v3-requestfieldvaluedisposition" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7bba38b743bb3bca22dffb4a21c38ccc155fbef8/api/envoy/extensions/filters/http/grpc_field_extraction/v3/config.proto#L179">[extensions.filters.http.grpc_field_extraction.v3.RequestFieldValueDisposition proto]</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;dynamic_metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl id="envoy-v3-api-field-extensions-filters-http-grpc-field-extraction-v3-requestfieldvaluedisposition-dynamic-metadata">
+<dt>dynamic_metadata</dt><dd><p>(<a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto#scalar">string</a>) The dynamic metadata namespace. If empty, “envoy.filters.http.grpc_field_extraction” will be used by default.</p>
+<p>Unimplemented. Uses “envoy.filters.http.grpc_field_extraction” for now.</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../../golang/v3alpha/golang.proto.html" class="btn btn-neutral float-left" title="Golang HTTP filter (proto)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../grpc_http1_bridge/v3/config.proto.html" class="btn btn-neutral float-right" title="gRPC HTTP/1.1 Bridge (proto)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2023, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

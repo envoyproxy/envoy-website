@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generic proxy &mdash; envoy 1.27.0-7bba38 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=d0ee8f1e"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../_static/copybutton.js?v=db7b0edf"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Golang" href="golang_filter.html" />
+    <link rel="prev" title="External Authorization" href="ext_authz_filter.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.27.0-7bba38
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../configuration.html">Configuration reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../overview/overview.html">Overview</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../listeners.html">Listeners</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stats.html">Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../runtime.html">Runtime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../listener_filters/listener_filters.html">Listener filters</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="network_filters.html">Network filters</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="client_ssl_auth_filter.html">Client TLS authentication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="connection_limit_filter.html">Connection Limit Filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="direct_response_filter.html">Direct response</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dubbo_proxy_filter.html">Dubbo proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="echo_filter.html">Echo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ext_authz_filter.html">External Authorization</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Generic proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="golang_filter.html">Golang</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kafka_broker_filter.html">Kafka Broker filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kafka_mesh_filter.html">Kafka Mesh filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="local_rate_limit_filter.html">Local rate limit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mongo_proxy_filter.html">Mongo proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mysql_proxy_filter.html">MySQL proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="postgres_proxy_filter.html">Postgres proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rate_limit_filter.html">Rate limit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rbac_filter.html">Role Based Access Control (RBAC) Network Filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="redis_proxy_filter.html">Redis proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rocketmq_proxy_filter.html">RocketMQ proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sni_cluster_filter.html">Upstream Cluster from SNI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sni_dynamic_forward_proxy_filter.html">SNI dynamic forward proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcp_proxy_filter.html">TCP proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="thrift_proxy_filter.html">Thrift proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="wasm_filter.html">Wasm Network Filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="zookeeper_proxy_filter.html">ZooKeeper proxy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../udp_filters/udp_filters.html">UDP listener filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lds.html">Listener discovery service (LDS)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../http/http.html">HTTP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../upstream/upstream.html">Upstream clusters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../observability/observability.html">Observability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../security/security.html">Security</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../operations/operations.html">Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../other_features/other_features.html">Other features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/advanced.html">Advanced</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../best_practices/best_practices.html">Configuration best practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../configuration.html">Configuration reference</a></li>
+          <li class="breadcrumb-item"><a href="../listeners.html">Listeners</a></li>
+          <li class="breadcrumb-item"><a href="network_filters.html">Network filters</a></li>
+      <li class="breadcrumb-item active">Generic proxy</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/configuration/listeners/network_filters/generic_proxy_filter.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="generic-proxy">
+<span id="config-network-filters-generic-proxy"></span><h1>Generic proxy<a class="headerlink" href="#generic-proxy" title="Permalink to this heading"></a></h1>
+<p>The network filter could be used to add multiple protocols support to Envoy. The community has implemented lots of this kind of
+network filter, such as <a class="reference internal" href="dubbo_proxy_filter.html#config-network-filters-dubbo-proxy"><span class="std std-ref">Dubbo proxy</span></a>, <a class="reference internal" href="thrift_proxy_filter.html#config-network-filters-thrift-proxy"><span class="std std-ref">Thrift proxy</span></a>, etc.
+Developers may also implement their own protocol proxying by creating a new network filter.</p>
+<p>Adding a new network filter to support a new protocol is not easy. Developers need to implement the codec to parse the binary, to implement the
+stream management to handle request/response, to implement the connection management to handle connection lifecycle, etc.
+There are many common features like route, L7 filter chain, tracing, metrics, logging, etc. that need to be implemented again and again in each
+new network filter.</p>
+<p>Many RPC protocols has a similar request/response based architecture. The request could be routed to different upstreams
+based on the request properties. For these similar protocols, their network filters also are similar and could be abstracted to following modules:</p>
+<ul class="simple">
+<li><p>Codec: parse the binary to request/response object.</p></li>
+<li><p>Stream management: handle the request/response stream.</p></li>
+<li><p>Route: route the request to different upstream based on the request properties.</p></li>
+<li><p>L7 filter chain: filter the request/response.</p></li>
+<li><p>Observability: tracing, metrics, logging, etc.</p></li>
+</ul>
+<p>With the exception of the codec, all other modules are common and could be shared by different protocols. This is the motivation of generic proxy.</p>
+<p>Generic proxy is a network filter that could be used to implement new protocol proxying. An extension point is provided to let the users
+configure specific codec. The developers only need to implement the codec to parse the binary and let users configure the codec in the
+generic proxy. The generic proxy will handle the rest of work.</p>
+<section id="abstract-request-response">
+<h2>Abstract request/response<a class="headerlink" href="#abstract-request-response" title="Permalink to this heading"></a></h2>
+<p>Abstraction of the request/response is the core of generic proxy. Different L7 protocols may have a different request/response data structure.
+In the generic proxy, the codec is extended and could be configured by users, but other modules are common and can be shared by different
+protocols. These different request/response data structures of different protocols need to be abstracted and managed in a common abstraction.</p>
+<p>An abstract <code class="docutils literal notranslate"><span class="pre">Request</span></code> class is defined to represent the request. The <code class="docutils literal notranslate"><span class="pre">Request</span></code> provides some virtual methods to get/set the request properties.
+Different protocols can extend the <code class="docutils literal notranslate"><span class="pre">Request</span></code> and implement the virtual methods to get/set the request properties in their own data structure.
+An abstract class <code class="docutils literal notranslate"><span class="pre">Response</span></code> is defined to represent the response. It is similar to <code class="docutils literal notranslate"><span class="pre">Request</span></code>.</p>
+<p>Based on the abstraction of the request/response, the generic proxy can handle the request/response stream, route the request to different upstreams,
+filter the request/response, etc. without needing to know the L7 application and specific data structure of the request/response.</p>
+<p>If the developers want to implement a new protocol proxying, they only need to implement the codec to parse the binary data to specific request/response
+and ensure they implement <code class="docutils literal notranslate"><span class="pre">Request</span></code> or <code class="docutils literal notranslate"><span class="pre">Response</span></code>. It is much easier than implement a new network filter.</p>
+</section>
+<section id="extendable-matcher-and-route">
+<h2>Extendable matcher and route<a class="headerlink" href="#extendable-matcher-and-route" title="Permalink to this heading"></a></h2>
+<p><a class="reference internal" href="../../../intro/arch_overview/advanced/matching/matching_api.html#arch-overview-matching-api"><span class="std std-ref">Generic matcher API</span></a> is used to construct the route table of the generic proxy. The developers could extend
+input and matcher to support new matching logic.</p>
+<p>By default, the generic proxy supports following input and matcher:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../api-v3/extensions/filters/network/generic_proxy/matcher/v3/matcher.proto.html#envoy-v3-api-msg-extensions-filters-network-generic-proxy-matcher-v3-hostmatchinput"><span class="std std-ref">host</span></a>: match the host of the request. The host should
+represents set of instances that can be used for load balancing. It could be DNS name or VIP of the target service.</p></li>
+<li><p><a class="reference internal" href="../../../api-v3/extensions/filters/network/generic_proxy/matcher/v3/matcher.proto.html#envoy-v3-api-msg-extensions-filters-network-generic-proxy-matcher-v3-pathmatchinput"><span class="std std-ref">path</span></a>: match the path of the request. The path should
+represents RPC service name that used to represents set of method or functionality provided by target service.</p></li>
+<li><p><a class="reference internal" href="../../../api-v3/extensions/filters/network/generic_proxy/matcher/v3/matcher.proto.html#envoy-v3-api-msg-extensions-filters-network-generic-proxy-matcher-v3-methodmatchinput"><span class="std std-ref">method</span></a>: match the method of the request.</p></li>
+<li><p><a class="reference internal" href="../../../api-v3/extensions/filters/network/generic_proxy/matcher/v3/matcher.proto.html#envoy-v3-api-msg-extensions-filters-network-generic-proxy-matcher-v3-propertymatchinput"><span class="std std-ref">property</span></a>: match the property of the request.
+The property could be any property of the request that indexed by string key.</p></li>
+<li><p><a class="reference internal" href="../../../api-v3/extensions/filters/network/generic_proxy/matcher/v3/matcher.proto.html#envoy-v3-api-msg-extensions-filters-network-generic-proxy-matcher-v3-requestmatchinput"><span class="std std-ref">request input</span></a> and
+<a class="reference internal" href="../../../api-v3/extensions/filters/network/generic_proxy/matcher/v3/matcher.proto.html#envoy-v3-api-msg-extensions-filters-network-generic-proxy-matcher-v3-requestmatcher"><span class="std std-ref">request matcher</span></a>: match the whole request by combining
+host, path, method and properties in AND semantics. This is used to match multiple fields of the downstream request and avoid complex combinations of
+host, path, method and properties in the generic matching tree.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Virtual methods are used to get the request properties in <code class="docutils literal notranslate"><span class="pre">Request</span></code> like <code class="docutils literal notranslate"><span class="pre">host()</span></code>, <code class="docutils literal notranslate"><span class="pre">path()</span></code>, <code class="docutils literal notranslate"><span class="pre">method()</span></code>, etc. The developers need to
+implement these virtual methods and determine what these fields are in their own protocol. It is possible that a protocol does not have some of
+these fields. For example, the protocol does not have <code class="docutils literal notranslate"><span class="pre">host</span></code> field. In this case, the developers could return empty string in the virtual method
+to indicate the field does not exist in the protocol. The only drawback is that the generic proxy could not match the request by this field.</p>
+</div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="linenos">21</span><span class="w">              </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.generic_proxy.codecs.dubbo.v3.DubboCodecConfig</span>
+<span class="linenos">22</span><span class="w">         </span><span class="w w-Error"> </span><span class="nt">route_config</span><span class="p">:</span>
+<span class="linenos">23</span><span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">route_config</span>
+<span class="linenos">24</span><span class="w">            </span><span class="nt">virtual_hosts</span><span class="p">:</span>
+<span class="linenos">25</span><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">route_config_default_virtual_host</span>
+<span class="linenos">26</span><span class="w">              </span><span class="nt">hosts</span><span class="p">:</span>
+<span class="linenos">27</span><span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;org.apache.dubbo.UserProvider&quot;</span>
+<span class="linenos">28</span><span class="w">              </span><span class="nt">routes</span><span class="p">:</span>
+<span class="linenos">29</span><span class="w">                </span><span class="nt">matcher_list</span><span class="p">:</span>
+<span class="linenos">30</span><span class="w">                  </span><span class="nt">matchers</span><span class="p">:</span>
+<span class="linenos">31</span><span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">predicate</span><span class="p">:</span>
+<span class="linenos">32</span><span class="w">                      </span><span class="nt">single_predicate</span><span class="p">:</span>
+<span class="linenos">33</span><span class="w">                        </span><span class="nt">input</span><span class="p">:</span>
+<span class="linenos">34</span><span class="w">                          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">request</span>
+<span class="linenos">35</span><span class="w">                          </span><span class="nt">typed_config</span><span class="p">:</span>
+<span class="linenos">36</span><span class="w">                            </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.generic_proxy.matcher.v3.RequestMatchInput</span>
+<span class="linenos">37</span><span class="w">                        </span><span class="nt">custom_match</span><span class="p">:</span>
+<span class="linenos">38</span><span class="w">                          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">request</span>
+<span class="linenos">39</span><span class="w">                          </span><span class="nt">typed_config</span><span class="p">:</span>
+<span class="linenos">40</span><span class="w">                            </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.generic_proxy.matcher.v3.RequestMatcher</span>
+<span class="linenos">41</span><span class="w">                            </span><span class="nt">host</span><span class="p">:</span>
+<span class="linenos">42</span><span class="w">                              </span><span class="nt">exact</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;org.apache.dubbo.UserProvider&quot;</span>
+<span class="linenos">43</span><span class="w">                            </span><span class="nt">method</span><span class="p">:</span>
+<span class="linenos">44</span><span class="w">                              </span><span class="nt">exact</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;getUser&quot;</span>
+<span class="linenos">45</span><span class="w">                            </span><span class="nt">properties</span><span class="p">:</span>
+<span class="linenos">46</span><span class="w">                            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;id&quot;</span>
+<span class="linenos">47</span><span class="w">                              </span><span class="nt">string_match</span><span class="p">:</span>
+<span class="linenos">48</span><span class="w">                                </span><span class="nt">exact</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1&quot;</span>
+<span class="linenos">49</span><span class="w">                    </span><span class="nt">on_match</span><span class="p">:</span>
+<span class="linenos">50</span><span class="w">                      </span><span class="nt">action</span><span class="p">:</span>
+<span class="linenos">51</span><span class="w">                        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">route</span>
+<span class="linenos">52</span><span class="w">                        </span><span class="nt">typed_config</span><span class="p">:</span>
+<span class="linenos">53</span><span class="w">                          </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.generic_proxy.action.v3.RouteAction</span>
+</pre></div>
+</div>
+</section>
+<section id="asynchronous-codec-api">
+<h2>Asynchronous codec API<a class="headerlink" href="#asynchronous-codec-api" title="Permalink to this heading"></a></h2>
+<p>The generic proxy provides an extension point to let the developers implement a codec specific to their own protocol. The codec API is designed to be
+asynchronous to avoid blocking the worker thread. And the asynchronous codec API makes it possible to accelerate the codec by offloading the parsing
+work to specific hardware.</p>
+</section>
+<section id="configurable-connection">
+<h2>Configurable connection<a class="headerlink" href="#configurable-connection" title="Permalink to this heading"></a></h2>
+<p>Different protocols may have different connection lifecycles or connection management. The generic proxy provides additional options to let codec developers configure the connection lifecycle and connection management.</p>
+<p>For example, developers can configure whether the upstream connection is bound to the downstream connection or not. If the upstream connection is bound to
+the downstream connection, the upstream connection will have same lifetime as the downstream connection. The bound upstream connection will be
+used only by requests that come from the related downstream connection. This is useful for the protocols that need to keep the connection state.</p>
+<p>Developers can also operate the downstream connection and upstream connection in the codec directly. This gives developers more control
+over the connection.</p>
+</section>
+<section id="example-codec-implementation">
+<h2>Example codec implementation<a class="headerlink" href="#example-codec-implementation" title="Permalink to this heading"></a></h2>
+<p>The community has implemented a <a class="reference internal" href="../../../api-v3/extensions/filters/network/generic_proxy/codecs/dubbo/v3/dubbo.proto.html#envoy-v3-api-msg-extensions-filters-network-generic-proxy-codecs-dubbo-v3-dubbocodecconfig"><span class="std std-ref">dubbo codec</span></a> based on
+generic proxy. The dubbo codec is a good example showing how to implement a new codec for new protocol because of its moderate complexity.</p>
+<p>You could find the dubbo codec implementation in <a class="reference external" href="https://github.com/envoyproxy/envoy/blob/7bba38b743bb3bca22dffb4a21c38ccc155fbef8/contrib/generic_proxy/filters/network/source/codecs/dubbo">contrib/generic_proxy/filters/network/source/codecs/dubbo</a> directory. You can also configure the
+dubbo codec in the generic proxy with the following configuration:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="nt">static_resources</span><span class="p">:</span>
+<span class="linenos"> 2</span><span class="w">  </span><span class="nt">listeners</span><span class="p">:</span>
+<span class="linenos"> 3</span><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">main</span>
+<span class="linenos"> 4</span><span class="w">    </span><span class="nt">address</span><span class="p">:</span>
+<span class="linenos"> 5</span><span class="w">      </span><span class="nt">socket_address</span><span class="p">:</span>
+<span class="linenos"> 6</span><span class="w">        </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0.0.0</span>
+<span class="linenos"> 7</span><span class="w">        </span><span class="nt">port_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">9090</span>
+<span class="linenos"> 8</span><span class="w">    </span><span class="nt">filter_chains</span><span class="p">:</span>
+<span class="linenos"> 9</span><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">filters</span><span class="p">:</span>
+<span class="linenos">10</span><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">generic_proxy</span>
+<span class="linenos">11</span><span class="w">        </span><span class="nt">typed_config</span><span class="p">:</span>
+<span class="linenos">12</span><span class="w">          </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.generic_proxy.v3.GenericProxy</span>
+<span class="linenos">13</span><span class="w">          </span><span class="nt">stat_prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stats_prefix</span>
+<span class="linenos">14</span><span class="w">          </span><span class="nt">filters</span><span class="p">:</span>
+<span class="linenos">15</span><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">envoy.filters.generic.router</span>
+<span class="linenos">16</span><span class="w">            </span><span class="nt">typed_config</span><span class="p">:</span>
+<span class="linenos">17</span><span class="w">              </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.generic_proxy.router.v3.Router</span>
+<span class="linenos">18</span><span class="w">          </span><span class="nt">codec_config</span><span class="p">:</span>
+<span class="linenos">19</span><span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span>
+<span class="linenos">20</span><span class="w">            </span><span class="nt">typed_config</span><span class="p">:</span>
+<span class="linenos">21</span><span class="w">              </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.generic_proxy.codecs.dubbo.v3.DubboCodecConfig</span>
+<span class="linenos">22</span><span class="w">          </span><span class="nt">route_config</span><span class="p">:</span>
+<span class="linenos">23</span><span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">route_config</span>
+<span class="linenos">24</span><span class="w">            </span><span class="nt">virtual_hosts</span><span class="p">:</span>
+<span class="linenos">25</span><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">route_config_default_virtual_host</span>
+<span class="linenos">26</span><span class="w">              </span><span class="nt">hosts</span><span class="p">:</span>
+<span class="linenos">27</span><span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;org.apache.dubbo.UserProvider&quot;</span>
+<span class="linenos">28</span><span class="w">              </span><span class="nt">routes</span><span class="p">:</span>
+<span class="linenos">29</span><span class="w">                </span><span class="nt">matcher_list</span><span class="p">:</span>
+<span class="linenos">30</span><span class="w">                  </span><span class="nt">matchers</span><span class="p">:</span>
+<span class="linenos">31</span><span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">predicate</span><span class="p">:</span>
+<span class="linenos">32</span><span class="w">                      </span><span class="nt">single_predicate</span><span class="p">:</span>
+<span class="linenos">33</span><span class="w">                        </span><span class="nt">input</span><span class="p">:</span>
+<span class="linenos">34</span><span class="w">                          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">request</span>
+<span class="linenos">35</span><span class="w">                          </span><span class="nt">typed_config</span><span class="p">:</span>
+<span class="linenos">36</span><span class="w">                            </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.generic_proxy.matcher.v3.RequestMatchInput</span>
+<span class="linenos">37</span><span class="w">                        </span><span class="nt">custom_match</span><span class="p">:</span>
+<span class="linenos">38</span><span class="w">                          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">request</span>
+<span class="linenos">39</span><span class="w">                          </span><span class="nt">typed_config</span><span class="p">:</span>
+<span class="linenos">40</span><span class="w">                            </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.generic_proxy.matcher.v3.RequestMatcher</span>
+<span class="linenos">41</span><span class="w">                            </span><span class="nt">host</span><span class="p">:</span>
+<span class="linenos">42</span><span class="w">                              </span><span class="nt">exact</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;org.apache.dubbo.UserProvider&quot;</span>
+<span class="linenos">43</span><span class="w">                            </span><span class="nt">method</span><span class="p">:</span>
+<span class="linenos">44</span><span class="w">                              </span><span class="nt">exact</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;getUser&quot;</span>
+<span class="linenos">45</span><span class="w">                            </span><span class="nt">properties</span><span class="p">:</span>
+<span class="linenos">46</span><span class="w">                            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;id&quot;</span>
+<span class="linenos">47</span><span class="w">                              </span><span class="nt">string_match</span><span class="p">:</span>
+<span class="linenos">48</span><span class="w">                                </span><span class="nt">exact</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1&quot;</span>
+<span class="linenos">49</span><span class="w">                    </span><span class="nt">on_match</span><span class="p">:</span>
+<span class="linenos">50</span><span class="w">                      </span><span class="nt">action</span><span class="p">:</span>
+<span class="linenos">51</span><span class="w">                        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">route</span>
+<span class="linenos">52</span><span class="w">                        </span><span class="nt">typed_config</span><span class="p">:</span>
+<span class="linenos">53</span><span class="w">                          </span><span class="s">&quot;@type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type.googleapis.com/envoy.extensions.filters.network.generic_proxy.action.v3.RouteAction</span>
+<span class="linenos">54</span><span class="w">                          </span><span class="nt">cluster</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dubbo</span>
+<span class="linenos">55</span><span class="w">  </span><span class="nt">clusters</span><span class="p">:</span>
+<span class="linenos">56</span><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dubbo</span>
+<span class="linenos">57</span><span class="w">    </span><span class="nt">connect_timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5s</span>
+<span class="linenos">58</span><span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">STRICT_DNS</span>
+<span class="linenos">59</span><span class="w">    </span><span class="nt">load_assignment</span><span class="p">:</span>
+<span class="linenos">60</span><span class="w">      </span><span class="nt">cluster_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dubbo</span>
+<span class="linenos">61</span><span class="w">      </span><span class="nt">endpoints</span><span class="p">:</span>
+<span class="linenos">62</span><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">lb_endpoints</span><span class="p">:</span>
+<span class="linenos">63</span><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">endpoint</span><span class="p">:</span>
+<span class="linenos">64</span><span class="w">            </span><span class="nt">address</span><span class="p">:</span>
+<span class="linenos">65</span><span class="w">              </span><span class="nt">socket_address</span><span class="p">:</span>
+<span class="linenos">66</span><span class="w">                </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+<span class="linenos">67</span><span class="w">                </span><span class="nt">port_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8080</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ext_authz_filter.html" class="btn btn-neutral float-left" title="External Authorization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="golang_filter.html" class="btn btn-neutral float-right" title="Golang" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2023, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

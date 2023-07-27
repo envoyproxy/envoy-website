@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HTTP route management &mdash; envoy 1.27.0-7bba38 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=d0ee8f1e"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../_static/copybutton.js?v=db7b0edf"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="HTTP route components (proto)" href="../config/route/v3/route_components.proto.html" />
+    <link rel="prev" title="Upstream filters (proto)" href="../config/cluster/v3/filter.proto.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.27.0-7bba38
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../api/api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../api/api_supported_versions.html">Supported API versions</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html">v3 API reference</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../bootstrap/bootstrap.html">Bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../listeners/listeners.html">Listeners</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../clusters/clusters.html">Clusters</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">HTTP route management</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../config/route/v3/route_components.proto.html">HTTP route components (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../config/route/v3/route.proto.html">HTTP route configuration (proto)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../config/route/v3/scoped_route.proto.html">HTTP scoped routing configuration (proto)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../config/config.html">Extensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/admin.html">Admin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../data/data.html">Envoy data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../service/service.html">Services</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common_messages/common_messages.html">Common messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common_messages/common_messages_xds.html">Common messages (XDS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../types/types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api-docs/xds_protocol.html">xDS REST and gRPC protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/client_features.html">Well Known Client Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../api/api.html">API</a></li>
+          <li class="breadcrumb-item"><a href="../api.html">v3 API reference</a></li>
+      <li class="breadcrumb-item active">HTTP route management</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api-v3/http_routes/http_routes.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="http-route-management">
+<h1>HTTP route management<a class="headerlink" href="#http-route-management" title="Permalink to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../config/route/v3/route_components.proto.html">HTTP route components (proto)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-virtualhost">config.route.v3.VirtualHost</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#enum-config-route-v3-virtualhost-tlsrequirementtype">Enum config.route.v3.VirtualHost.TlsRequirementType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-filteraction">config.route.v3.FilterAction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-routelist">config.route.v3.RouteList</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-route">config.route.v3.Route</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-weightedcluster">config.route.v3.WeightedCluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-weightedcluster-clusterweight">config.route.v3.WeightedCluster.ClusterWeight</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-clusterspecifierplugin">config.route.v3.ClusterSpecifierPlugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-routematch">config.route.v3.RouteMatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-routematch-grpcroutematchoptions">config.route.v3.RouteMatch.GrpcRouteMatchOptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-routematch-tlscontextmatchoptions">config.route.v3.RouteMatch.TlsContextMatchOptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-routematch-connectmatcher">config.route.v3.RouteMatch.ConnectMatcher</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-corspolicy">config.route.v3.CorsPolicy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-routeaction">config.route.v3.RouteAction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-routeaction-requestmirrorpolicy">config.route.v3.RouteAction.RequestMirrorPolicy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-routeaction-hashpolicy">config.route.v3.RouteAction.HashPolicy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-routeaction-hashpolicy-header">config.route.v3.RouteAction.HashPolicy.Header</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-routeaction-hashpolicy-cookieattribute">config.route.v3.RouteAction.HashPolicy.CookieAttribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-routeaction-hashpolicy-cookie">config.route.v3.RouteAction.HashPolicy.Cookie</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-routeaction-hashpolicy-connectionproperties">config.route.v3.RouteAction.HashPolicy.ConnectionProperties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-routeaction-hashpolicy-queryparameter">config.route.v3.RouteAction.HashPolicy.QueryParameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-routeaction-hashpolicy-filterstate">config.route.v3.RouteAction.HashPolicy.FilterState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-routeaction-upgradeconfig">config.route.v3.RouteAction.UpgradeConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-routeaction-upgradeconfig-connectconfig">config.route.v3.RouteAction.UpgradeConfig.ConnectConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-routeaction-maxstreamduration">config.route.v3.RouteAction.MaxStreamDuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#enum-config-route-v3-routeaction-clusternotfoundresponsecode">Enum config.route.v3.RouteAction.ClusterNotFoundResponseCode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#enum-config-route-v3-routeaction-internalredirectaction">Enum config.route.v3.RouteAction.InternalRedirectAction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-retrypolicy">config.route.v3.RetryPolicy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-retrypolicy-retrypriority">config.route.v3.RetryPolicy.RetryPriority</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-retrypolicy-retryhostpredicate">config.route.v3.RetryPolicy.RetryHostPredicate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-retrypolicy-retrybackoff">config.route.v3.RetryPolicy.RetryBackOff</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-retrypolicy-resetheader">config.route.v3.RetryPolicy.ResetHeader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-retrypolicy-ratelimitedretrybackoff">config.route.v3.RetryPolicy.RateLimitedRetryBackOff</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#enum-config-route-v3-retrypolicy-resetheaderformat">Enum config.route.v3.RetryPolicy.ResetHeaderFormat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-hedgepolicy">config.route.v3.HedgePolicy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-redirectaction">config.route.v3.RedirectAction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#enum-config-route-v3-redirectaction-redirectresponsecode">Enum config.route.v3.RedirectAction.RedirectResponseCode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-directresponseaction">config.route.v3.DirectResponseAction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-decorator">config.route.v3.Decorator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-tracing">config.route.v3.Tracing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-virtualcluster">config.route.v3.VirtualCluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-ratelimit">config.route.v3.RateLimit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-ratelimit-action">config.route.v3.RateLimit.Action</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-ratelimit-action-sourcecluster">config.route.v3.RateLimit.Action.SourceCluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-ratelimit-action-destinationcluster">config.route.v3.RateLimit.Action.DestinationCluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-ratelimit-action-requestheaders">config.route.v3.RateLimit.Action.RequestHeaders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-ratelimit-action-remoteaddress">config.route.v3.RateLimit.Action.RemoteAddress</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-ratelimit-action-maskedremoteaddress">config.route.v3.RateLimit.Action.MaskedRemoteAddress</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-ratelimit-action-generickey">config.route.v3.RateLimit.Action.GenericKey</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-ratelimit-action-headervaluematch">config.route.v3.RateLimit.Action.HeaderValueMatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-ratelimit-action-dynamicmetadata">config.route.v3.RateLimit.Action.DynamicMetaData</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-ratelimit-action-metadata">config.route.v3.RateLimit.Action.MetaData</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#enum-config-route-v3-ratelimit-action-metadata-source">Enum config.route.v3.RateLimit.Action.MetaData.Source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-ratelimit-action-queryparametervaluematch">config.route.v3.RateLimit.Action.QueryParameterValueMatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-ratelimit-override">config.route.v3.RateLimit.Override</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-ratelimit-override-dynamicmetadata">config.route.v3.RateLimit.Override.DynamicMetadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-headermatcher">config.route.v3.HeaderMatcher</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-queryparametermatcher">config.route.v3.QueryParameterMatcher</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-internalredirectpolicy">config.route.v3.InternalRedirectPolicy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route_components.proto.html#config-route-v3-filterconfig">config.route.v3.FilterConfig</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../config/route/v3/route.proto.html">HTTP route configuration (proto)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route.proto.html#config-route-v3-routeconfiguration">config.route.v3.RouteConfiguration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/route.proto.html#config-route-v3-vhds">config.route.v3.Vhds</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../config/route/v3/scoped_route.proto.html">HTTP scoped routing configuration (proto)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/scoped_route.proto.html#config-route-v3-scopedrouteconfiguration">config.route.v3.ScopedRouteConfiguration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/scoped_route.proto.html#config-route-v3-scopedrouteconfiguration-key">config.route.v3.ScopedRouteConfiguration.Key</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/route/v3/scoped_route.proto.html#config-route-v3-scopedrouteconfiguration-key-fragment">config.route.v3.ScopedRouteConfiguration.Key.Fragment</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../config/cluster/v3/filter.proto.html" class="btn btn-neutral float-left" title="Upstream filters (proto)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../config/route/v3/route_components.proto.html" class="btn btn-neutral float-right" title="HTTP route components (proto)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2023, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

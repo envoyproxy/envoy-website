@@ -1,0 +1,213 @@
+.. _envoy_v3_api_file_envoy/extensions/filters/http/geoip/v3/geoip.proto:
+
+Geoip (proto)
+=============
+
+.. _extension_envoy.filters.http.geoip:
+
+This extension has the qualified name ``envoy.filters.http.geoip``
+
+
+.. note::
+  This extension is work-in-progress. Functionality is incomplete and it is not intended for production use.
+
+  This extension has an unknown security posture and should only be
+  used in deployments where both the downstream and upstream are
+  trusted.
+
+.. tip::
+  This extension extends and can be used with the following extension category:
+
+
+  - :ref:`envoy.filters.http <extension_category_envoy.filters.http>`
+
+
+
+  This extension must be configured with one of the following type URLs:
+
+
+
+  - :ref:`type.googleapis.com/envoy.extensions.filters.http.geoip.v3.Geoip <envoy_v3_api_msg_extensions.filters.http.geoip.v3.Geoip>`
+
+
+
+.. warning::
+   This API feature is currently work-in-progress. API features marked as work-in-progress are not considered stable, are not covered by the :ref:`threat model <arch_overview_threat_model>`, are not supported by the security team, and are subject to breaking changes. Do not use this feature without understanding each of the previous points.
+
+
+
+Geoip :ref:`configuration overview <config_http_filters_geoip>`.
+
+
+
+
+.. _envoy_v3_api_msg_extensions.filters.http.geoip.v3.Geoip:
+
+extensions.filters.http.geoip.v3.Geoip
+--------------------------------------
+
+
+:repo:`[extensions.filters.http.geoip.v3.Geoip proto] <api/envoy/extensions/filters/http/geoip/v3/geoip.proto#L22>`
+
+
+
+
+.. code-block:: json
+  :force:
+
+  {
+    "xff_config": {...},
+    "geo_headers_to_add": {...},
+    "provider": {...}
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.geoip.v3.Geoip.xff_config:
+
+
+xff_config
+  (:ref:`extensions.filters.http.geoip.v3.Geoip.XffConfig <envoy_v3_api_msg_extensions.filters.http.geoip.v3.Geoip.XffConfig>`) If set, the :ref:`xff_num_trusted_hops <envoy_v3_api_field_extensions.filters.http.geoip.v3.Geoip.XffConfig.xff_num_trusted_hops>` field will be used to determine
+  trusted client address from `x-forwarded-for` header.
+  Otherwise, the immediate downstream connection source address will be used.
+
+
+.. _envoy_v3_api_field_extensions.filters.http.geoip.v3.Geoip.geo_headers_to_add:
+
+
+geo_headers_to_add
+  (:ref:`extensions.filters.http.geoip.v3.Geoip.GeolocationHeadersToAdd <envoy_v3_api_msg_extensions.filters.http.geoip.v3.Geoip.GeolocationHeadersToAdd>`, *REQUIRED*) Configuration for geolocation headers to add to request.
+
+
+.. _envoy_v3_api_field_extensions.filters.http.geoip.v3.Geoip.provider:
+
+
+provider
+  (:ref:`config.core.v3.TypedExtensionConfig <envoy_v3_api_msg_config.core.v3.TypedExtensionConfig>`, *REQUIRED*) Geolocation provider specific configuration.
+
+
+.. _envoy_v3_api_msg_extensions.filters.http.geoip.v3.Geoip.GeolocationHeadersToAdd:
+
+extensions.filters.http.geoip.v3.Geoip.GeolocationHeadersToAdd
+--------------------------------------------------------------
+
+
+:repo:`[extensions.filters.http.geoip.v3.Geoip.GeolocationHeadersToAdd proto] <api/envoy/extensions/filters/http/geoip/v3/geoip.proto#L26>`
+
+The set of geolocation headers to add to request. If any of the configured headers is present
+in the incoming request, it will be overridden by Geoip filter.
+
+
+
+.. code-block:: json
+  :force:
+
+  {
+    "country": ...,
+    "city": ...,
+    "region": ...,
+    "asn": ...,
+    "is_anon": ...,
+    "anon_vpn": ...,
+    "anon_hosting": ...,
+    "anon_tor": ...,
+    "anon_proxy": ...
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.geoip.v3.Geoip.GeolocationHeadersToAdd.country:
+
+
+country
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If set, the header will be used to populate the country ISO code associated with the IP address.
+
+
+.. _envoy_v3_api_field_extensions.filters.http.geoip.v3.Geoip.GeolocationHeadersToAdd.city:
+
+
+city
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If set, the header will be used to populate the city associated with the IP address.
+
+
+.. _envoy_v3_api_field_extensions.filters.http.geoip.v3.Geoip.GeolocationHeadersToAdd.region:
+
+
+region
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If set, the header will be used to populate the region ISO code associated with the IP address.
+
+
+.. _envoy_v3_api_field_extensions.filters.http.geoip.v3.Geoip.GeolocationHeadersToAdd.asn:
+
+
+asn
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If set, the header will be used to populate the ASN associated with the IP address.
+
+
+.. _envoy_v3_api_field_extensions.filters.http.geoip.v3.Geoip.GeolocationHeadersToAdd.is_anon:
+
+
+is_anon
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If set, the IP address will be checked if it belongs to any type of anonymization network (e.g. VPN, public proxy etc)
+  and header will be populated with the check result. Header value will be set to either "true" or "false" depending on the check result.
+
+
+.. _envoy_v3_api_field_extensions.filters.http.geoip.v3.Geoip.GeolocationHeadersToAdd.anon_vpn:
+
+
+anon_vpn
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If set, the IP address will be checked if it belongs to a VPN and header will be populated with the check result.
+  Header value will be set to either "true" or "false" depending on the check result.
+
+
+.. _envoy_v3_api_field_extensions.filters.http.geoip.v3.Geoip.GeolocationHeadersToAdd.anon_hosting:
+
+
+anon_hosting
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If set, the IP address will be checked if it belongs to a hosting provider and header will be populated with the check result.
+  Header value will be set to either "true" or "false" depending on the check result.
+
+
+.. _envoy_v3_api_field_extensions.filters.http.geoip.v3.Geoip.GeolocationHeadersToAdd.anon_tor:
+
+
+anon_tor
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If set, the IP address will be checked if it belongs to a TOR exit node and header will be populated with the check result.
+  Header value will be set to either "true" or "false" depending on the check result.
+
+
+.. _envoy_v3_api_field_extensions.filters.http.geoip.v3.Geoip.GeolocationHeadersToAdd.anon_proxy:
+
+
+anon_proxy
+  (`string <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) If set, the IP address will be checked if it belongs to a public proxy and header will be populated with the check result.
+  Header value will be set to either "true" or "false" depending on the check result.
+
+
+
+.. _envoy_v3_api_msg_extensions.filters.http.geoip.v3.Geoip.XffConfig:
+
+extensions.filters.http.geoip.v3.Geoip.XffConfig
+------------------------------------------------
+
+
+:repo:`[extensions.filters.http.geoip.v3.Geoip.XffConfig proto] <api/envoy/extensions/filters/http/geoip/v3/geoip.proto#L69>`
+
+
+
+
+.. code-block:: json
+  :force:
+
+  {
+    "xff_num_trusted_hops": ...
+  }
+
+.. _envoy_v3_api_field_extensions.filters.http.geoip.v3.Geoip.XffConfig.xff_num_trusted_hops:
+
+
+xff_num_trusted_hops
+  (`uint32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The number of additional ingress proxy hops from the right side of the
+  :ref:`config_http_conn_man_headers_x-forwarded-for` HTTP header to trust when
+  determining the origin client's IP address. The default is zero if this option
+  is not specified. See the documentation for
+  :ref:`config_http_conn_man_headers_x-forwarded-for` for more information.
+
+
+

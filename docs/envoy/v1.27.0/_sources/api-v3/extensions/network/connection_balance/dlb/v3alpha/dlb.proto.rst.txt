@@ -1,0 +1,124 @@
+.. _envoy_v3_api_file_contrib/envoy/extensions/network/connection_balance/dlb/v3alpha/dlb.proto:
+
+Dlb connection balancer configuration (proto)
+=============================================
+
+.. _extension_envoy.network.connection_balance.dlb:
+
+This extension has the qualified name ``envoy.network.connection_balance.dlb``
+
+.. note::
+
+  This extension is only available in :ref:`contrib <install_contrib>` images.
+
+.. note::
+  This extension is functional but has not had substantial production burn time,
+  use only with this caveat.
+
+  This extension is not hardened and should only be used in deployments
+  where both the downstream and upstream are trusted.
+
+.. tip::
+  This extension extends and can be used with the following extension category:
+
+
+  - :ref:`envoy.network.connection_balance <extension_category_envoy.network.connection_balance>`
+
+
+
+
+
+DLB :ref:`configuration overview <config_connection_balance_dlb>`.
+
+
+
+
+.. _envoy_v3_api_msg_extensions.network.connection_balance.dlb.v3alpha.Dlb:
+
+extensions.network.connection_balance.dlb.v3alpha.Dlb
+-----------------------------------------------------
+
+
+:repo:`[extensions.network.connection_balance.dlb.v3alpha.Dlb proto] <api/contrib/envoy/extensions/network/connection_balance/dlb/v3alpha/dlb.proto#L28>`
+
+The Dlb is a hardware managed system of queues and arbiters connecting producers and consumers. It is a PCIE device
+in the CPU package. It interacts with software running on cores and potentially other devices. The Dlb implements the
+following balancing features:
+
+-  Lock-free multi-producer/multi-consumer operation.
+-  Multiple priorities for varying traffic types.
+-  Various distribution schemes.
+
+Dlb connection balancer uses Dlb hardware to balance connections, and can significantly reduce latency.
+
+As the Dlb connection balancer provides assistance from dedicated Dlb hardware, it can be used for a proxy with a large number of connections
+(e.g., a gateway).
+
+
+
+.. code-block:: json
+  :force:
+
+  {
+    "id": ...,
+    "max_retries": ...,
+    "fallback_policy": ...
+  }
+
+.. _envoy_v3_api_field_extensions.network.connection_balance.dlb.v3alpha.Dlb.id:
+
+
+id
+  (`uint32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) The ID of the Dlb hardware, start from 0.
+  If not specified, use the first available device as default.
+
+
+.. _envoy_v3_api_field_extensions.network.connection_balance.dlb.v3alpha.Dlb.max_retries:
+
+
+max_retries
+  (`uint32 <https://developers.google.com/protocol-buffers/docs/proto#scalar>`_) Maximum number of retries when sending to DLB device fails.
+  No retry as default.
+
+
+.. _envoy_v3_api_field_extensions.network.connection_balance.dlb.v3alpha.Dlb.fallback_policy:
+
+
+fallback_policy
+  (:ref:`extensions.network.connection_balance.dlb.v3alpha.Dlb.FallbackPolicy <envoy_v3_api_enum_extensions.network.connection_balance.dlb.v3alpha.Dlb.FallbackPolicy>`) 
+
+.. _envoy_v3_api_enum_extensions.network.connection_balance.dlb.v3alpha.Dlb.FallbackPolicy:
+
+Enum extensions.network.connection_balance.dlb.v3alpha.Dlb.FallbackPolicy
+-------------------------------------------------------------------------
+
+
+:repo:`[extensions.network.connection_balance.dlb.v3alpha.Dlb.FallbackPolicy proto] <api/contrib/envoy/extensions/network/connection_balance/dlb/v3alpha/dlb.proto#L31>`
+
+The fallback policy if any error occurs.
+The default policy is None.
+
+
+
+.. _envoy_v3_api_enum_value_extensions.network.connection_balance.dlb.v3alpha.Dlb.FallbackPolicy.None:
+
+
+None
+  *(DEFAULT)* ⁣No fallback policy.
+
+
+.. _envoy_v3_api_enum_value_extensions.network.connection_balance.dlb.v3alpha.Dlb.FallbackPolicy.NopConnectionBalance:
+
+
+NopConnectionBalance
+  ⁣Fall back to Nop Connection Balance.
+
+
+.. _envoy_v3_api_enum_value_extensions.network.connection_balance.dlb.v3alpha.Dlb.FallbackPolicy.ExactConnectionBalance:
+
+
+ExactConnectionBalance
+  ⁣Fall back to Exact Connection Balance.
+
+
+

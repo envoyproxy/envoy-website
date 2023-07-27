@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Role Based Access Control &mdash; envoy 1.27.0-7bba38 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/envoy.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script integrity="sha384-lSZeSIVKp9myfKbDQ3GkN/KHjUc+mzg17VKDN4Y2kUeBSJioB9QSM639vM9fuY//" src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=d0ee8f1e"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../_static/copybutton.js?v=db7b0edf"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Threat model" href="threat_model.html" />
+    <link rel="prev" title="Authorization service (proto)" href="../../../api-v3/service/auth/v3/external_auth.proto.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/envoy-logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.27.0-7bba38
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../about_docs.html">About the documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../intro.html">Introduction</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../what_is_envoy.html">What is Envoy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../arch_overview.html">Architecture overview</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../intro/intro.html">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../listeners/listeners_toc.html">Listeners</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../http/http.html">HTTP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../upstream/upstream.html">Upstream clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../observability/observability.html">Observability</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="security.html">Security</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ssl.html">TLS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jwt_authn_filter.html">JSON Web Token (JWT) Authentication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ext_authz_filter.html">External Authorization</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Role Based Access Control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="threat_model.html">Threat model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="threat_model.html#extension-security-robust-to-untrusted-downstream-and-upstream">Extension security: <code class="docutils literal notranslate"><span class="pre">robust_to_untrusted_downstream_and_upstream</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="threat_model.html#extension-security-data-plane-agnostic">Extension security: <code class="docutils literal notranslate"><span class="pre">data_plane_agnostic</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="threat_model.html#extension-security-robust-to-untrusted-downstream">Extension security: <code class="docutils literal notranslate"><span class="pre">robust_to_untrusted_downstream</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="threat_model.html#extension-security-requires-trusted-downstream-and-upstream">Extension security: <code class="docutils literal notranslate"><span class="pre">requires_trusted_downstream_and_upstream</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="threat_model.html#extension-security-unknown">Extension security: <code class="docutils literal notranslate"><span class="pre">unknown</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="external_deps.html">External dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="external_deps.html#external-dependencies-dataplane-core">External dependencies: <code class="docutils literal notranslate"><span class="pre">dataplane_core</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="external_deps.html#external-dependencies-dataplane-ext">External dependencies: <code class="docutils literal notranslate"><span class="pre">dataplane_ext</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="external_deps.html#external-dependencies-controlplane">External dependencies: <code class="docutils literal notranslate"><span class="pre">controlplane</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="external_deps.html#external-dependencies-api">External dependencies: <code class="docutils literal notranslate"><span class="pre">api</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="external_deps.html#external-dependencies-observability-core">External dependencies: <code class="docutils literal notranslate"><span class="pre">observability_core</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="external_deps.html#external-dependencies-observability-ext">External dependencies: <code class="docutils literal notranslate"><span class="pre">observability_ext</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="external_deps.html#external-dependencies-build">External dependencies: <code class="docutils literal notranslate"><span class="pre">build</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="external_deps.html#external-dependencies-other">External dependencies: <code class="docutils literal notranslate"><span class="pre">other</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="external_deps.html#external-dependencies-test-only">External dependencies: <code class="docutils literal notranslate"><span class="pre">test_only</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="google_vrp.html">Google Vulnerability Reward Program (VRP)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../operations/operations.html">Operations &amp; configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../other_features/other_features.html">Other features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../other_protocols/other_protocols.html">Other protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../advanced/advanced.html">Advanced</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../life_of_a_request.html">Life of a Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../deployment_types/deployment_types.html">Deployment types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_help.html">Getting help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/start.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../configuration/configuration.html">Configuration reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../operations/operations.html">Operations and administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extending/extending.html">Extending Envoy for custom use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq/overview.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../version_history/version_history.html">Version history</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">envoy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../intro.html">Introduction</a></li>
+          <li class="breadcrumb-item"><a href="../arch_overview.html">Architecture overview</a></li>
+          <li class="breadcrumb-item"><a href="security.html">Security</a></li>
+      <li class="breadcrumb-item active">Role Based Access Control</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/intro/arch_overview/security/rbac_filter.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="role-based-access-control">
+<span id="arch-overview-rbac"></span><h1>Role Based Access Control<a class="headerlink" href="#role-based-access-control" title="Permalink to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../configuration/listeners/network_filters/rbac_filter.html#config-network-filters-rbac"><span class="std std-ref">Network filter configuration</span></a>.</p></li>
+<li><p><a class="reference internal" href="../../../configuration/http/http_filters/rbac_filter.html#config-http-filters-rbac"><span class="std std-ref">HTTP filter configuration</span></a>.</p></li>
+</ul>
+<p>The Role Based Access Control (RBAC) filter checks if the incoming request is authorized or not.
+Unlike external authorization, the check of RBAC filter happens in the Envoy process and is
+based on a list of policies from the filter config.</p>
+<p>The RBAC filter can be either configured as a <a class="reference internal" href="../../../configuration/listeners/network_filters/rbac_filter.html#config-network-filters-rbac"><span class="std std-ref">network filter</span></a>,
+or as a <a class="reference internal" href="../../../configuration/http/http_filters/rbac_filter.html#config-http-filters-rbac"><span class="std std-ref">HTTP filter</span></a> or both. If the request is deemed unauthorized
+by the network filter then the connection will be closed. If the request is deemed unauthorized by
+the HTTP filter the request will be denied with 403 (Forbidden) response.</p>
+<p>The RBAC filter’s rules can be either configured with a list of
+<a class="reference internal" href="../../../api-v3/config/rbac/v3/rbac.proto.html#envoy-v3-api-field-config-rbac-v3-rbac-policies"><span class="std std-ref">policies</span></a> or the
+<a class="reference internal" href="../../../xds/type/matcher/v3/matcher.proto.html#envoy-v3-api-msg-xds-type-matcher-v3-matcher"><span class="std std-ref">matching API</span></a>.</p>
+<section id="policy">
+<h2>Policy<a class="headerlink" href="#policy" title="Permalink to this heading"></a></h2>
+<p>The RBAC filter checks the request based on a list of
+<a class="reference internal" href="../../../api-v3/config/rbac/v3/rbac.proto.html#envoy-v3-api-field-config-rbac-v3-rbac-policies"><span class="std std-ref">policies</span></a>. A policy consists of a list of
+<a class="reference internal" href="../../../api-v3/config/rbac/v3/rbac.proto.html#envoy-v3-api-msg-config-rbac-v3-permission"><span class="std std-ref">permissions</span></a> and
+<a class="reference internal" href="../../../api-v3/config/rbac/v3/rbac.proto.html#envoy-v3-api-msg-config-rbac-v3-principal"><span class="std std-ref">principals</span></a>. The permission specifies the actions of
+the request, for example, the method and path of a HTTP request. The principal specifies the
+downstream client identities of the request, for example, the URI SAN of the downstream client
+certificate. A policy is matched if its permissions and principals are matched at the same time.</p>
+</section>
+<section id="matcher">
+<span id="arch-overview-rbac-matcher"></span><h2>Matcher<a class="headerlink" href="#matcher" title="Permalink to this heading"></a></h2>
+<p>Instead of specifying <a class="reference internal" href="../../../api-v3/config/rbac/v3/rbac.proto.html#envoy-v3-api-field-config-rbac-v3-rbac-policies"><span class="std std-ref">policies</span></a>, the RBAC
+filter can also be configured with the <a class="reference internal" href="../../../xds/type/matcher/v3/matcher.proto.html#envoy-v3-api-msg-xds-type-matcher-v3-matcher"><span class="std std-ref">matching API</span></a>.
+<a class="reference internal" href="../advanced/matching/matching_api.html#extension-category-envoy-matching-network-input"><span class="std std-ref">Network inputs</span></a> are available for both RBAC
+network filter and HTTP filter, and <a class="reference internal" href="../advanced/matching/matching_api.html#extension-category-envoy-matching-http-input"><span class="std std-ref">HTTP inputs</span></a>
+are only available in HTTP filter.</p>
+<p><a class="reference internal" href="../../../api-v3/config/rbac/matchers.html#api-v3-config-rbac-matchers"><span class="std std-ref">RBAC matcher extensions</span></a> are not compatible with the
+<a class="reference internal" href="../../../xds/type/matcher/v3/matcher.proto.html#envoy-v3-api-msg-xds-type-matcher-v3-matcher"><span class="std std-ref">matching API</span></a>.</p>
+</section>
+<section id="shadow-policy-and-shadow-matcher">
+<h2>Shadow Policy and Shadow Matcher<a class="headerlink" href="#shadow-policy-and-shadow-matcher" title="Permalink to this heading"></a></h2>
+<p>The filter can be configured with a
+<a class="reference internal" href="../../../api-v3/extensions/filters/http/rbac/v3/rbac.proto.html#envoy-v3-api-field-extensions-filters-http-rbac-v3-rbac-shadow-rules"><span class="std std-ref">shadow policy</span></a> or a
+<a class="reference internal" href="../../../api-v3/extensions/filters/http/rbac/v3/rbac.proto.html#envoy-v3-api-field-extensions-filters-http-rbac-v3-rbac-shadow-matcher"><span class="std std-ref">shadow matcher</span></a> that
+doesn’t have any effect (i.e. not deny the request) but only emit stats and log the result. This is
+useful for testing a rule before applying in production.</p>
+</section>
+<section id="condition">
+<span id="arch-overview-condition"></span><h2>Condition<a class="headerlink" href="#condition" title="Permalink to this heading"></a></h2>
+<p>In addition to the pre-defined permissions and principals, a policy may optionally provide an
+authorization condition written in the <a class="reference external" href="https://github.com/google/cel-spec/blob/master/doc/intro.md">Common Expression Language</a>. The condition specifies an extra
+clause that must be satisfied for the policy to match. For example, the following condition checks
+whether the request path starts with <code class="docutils literal notranslate"><span class="pre">/v1/</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">call_expr</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">function</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">startsWith</span>
+<span class="w">  </span><span class="nt">args</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">select_expr</span><span class="p">:</span>
+<span class="w">     </span><span class="nt">operand</span><span class="p">:</span>
+<span class="w">       </span><span class="nt">ident_expr</span><span class="p">:</span>
+<span class="w">         </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">request</span>
+<span class="w">     </span><span class="nt">field</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">const_expr</span><span class="p">:</span>
+<span class="w">     </span><span class="nt">string_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/v1/</span>
+</pre></div>
+</div>
+<p>Envoy provides a number of <a class="reference internal" href="../advanced/attributes.html#arch-overview-request-attributes"><span class="std std-ref">request attributes</span></a>
+for expressive policies. Most attributes are optional and provide the default
+value based on the type of the attribute. CEL supports presence checks for
+attributes and maps using <code class="docutils literal notranslate"><span class="pre">has()</span></code> syntax, e.g. <code class="docutils literal notranslate"><span class="pre">has(request.referer)</span></code>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../../../api-v3/service/auth/v3/external_auth.proto.html" class="btn btn-neutral float-left" title="Authorization service (proto)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="threat_model.html" class="btn btn-neutral float-right" title="Threat model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2023, Envoy Project Authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
