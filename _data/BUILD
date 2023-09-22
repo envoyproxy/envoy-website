@@ -12,13 +12,13 @@ genrule(
     name = "versions",
     cmd = """
     $(location //tools/versions:release_versions) \
-        $(location //docs:releases_html) "" \
+        $(locations //docs:releases_inventories) "" \
         > $@
     """,
     outs = ["versions.yml"],
     tools = [
         "//tools/versions:release_versions",
-        "//docs:releases_html",
+        "//docs:releases_inventories",
     ],
     visibility = ["//visibility:public"],
 )
