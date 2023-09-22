@@ -7,7 +7,7 @@ from packaging import version
 import yaml
 
 
-def main(path):
+def main(paths):
     """Release versions derived from directory names in `envoy/docs`.
 
     Currently this determines stable <> archived based on the last
@@ -16,9 +16,10 @@ def main(path):
 
     # Read the versions from the directory names
     versions = [
-        version.Version(x.name)
-        for x
-        in pathlib.Path(path).glob("v*")]
+        version.Version(pathlib.Path(p).parent.name)
+        for p
+        in paths
+        if p]
 
     # Group versions into minor versions
     minor_versions = {}
@@ -56,4 +57,4 @@ def main(path):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(sys.argv[1:])

@@ -12,11 +12,3 @@ def load_packages():
         gemfile_lock = "//site:Gemfile.lock",
         vendor_cache = True,
     )
-
-    # Python pipsets
-    pip_parse(
-        name = "docs_pip3",
-        requirements_lock = "@envoy-website//docs:requirements.txt",
-        extra_pip_args = ["--require-hashes"],
-        python_interpreter_target = interpreter,
-    )
