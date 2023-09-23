@@ -5,7 +5,10 @@ load("@rules_python//python:defs.bzl", "py_binary")
 
 filegroup(
     name = "releases_html",
-    srcs = glob(["envoy/v*/*"]),
+    srcs = glob([
+        "envoy/v*/*",
+        "envoy/v*/**/*",
+    ]),
     visibility = ["//visibility:public"],
 )
 
@@ -41,8 +44,10 @@ genrule(
     cmd = """
     TMPDIR=$$(mktemp -d) \
     && $(location :fetch_rst) $$ENVOY_COMMIT $${TMPDIR}/rst.tar.gz \
+    && SPHINX_JOBS=$${SPHINX_JOBS:-auto} \
     && VERSION=$$($(location :version_for_commit) $$ENVOY_COMMIT) \
     && $(location :sphinx_runner) \
+         -j $${SPHINX_JOBS} \
          --build_sha="$${ENVOY_COMMIT}" \
          --version="$${VERSION}" \
          --overwrite \
