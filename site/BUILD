@@ -59,7 +59,9 @@ py_binary(
 
 pkg_tar(
     name = "html",
-    extension = "tar.gz",
+    compressor = "@envoy//tools/zstd",
+    compressor_args = "-T0",
+    extension = "tar.zst",
     deps = [":website", "//docs:latest"],
     srcs = ["//docs:releases"],
 )
