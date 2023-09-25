@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+set -o pipefail
+
 BAZEL="${BAZEL:-bazel}"
 OUTPUT_DIR="${1:-_site}"
 
@@ -20,7 +22,12 @@ $BAZEL build \
     //site:html
 
 echo "Extracting website -> ${OUTPUT_DIR}"
-tar zxf bazel-bin/site/html.tar.gz -C "${OUTPUT_DIR}"
+
+$BAZEL run \
+    @envoy//tools/zstd -- \
+        --stdout \
+        -d "${PWD}/bazel-bin/site/html.tar.zst" \
+    | tar -xf - -C "${OUTPUT_DIR}"
 
 if [[ -n "$CI" ]]; then
     $BAZEL shutdown || :
