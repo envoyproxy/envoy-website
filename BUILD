@@ -21,7 +21,6 @@ filegroup(
     srcs = glob([
         "css/*",
         "img/**/*",
-        "try/*",
         ]) + [
         ":404.html",
         ":community.html",
