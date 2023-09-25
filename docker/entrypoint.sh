@@ -12,7 +12,7 @@ echo "Starting (${*}) with user: $USER_UID $USER_NAME $USER_HOME"
 
 usermod -l "$USER_NAME" -u "$USER_UID" -md "$USER_HOME"  "$DEFAULT_USER_NAME" || :
 
-chown $USER_NAME $USER_HOME $USER_HOME/.cache
+chown $USER_NAME $USER_HOME $USER_HOME/.cache/bazel $USER_HOME/.cache/bazelisk
 
 export HOME="${USER_HOME}"
 
