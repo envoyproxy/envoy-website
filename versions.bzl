@@ -3,8 +3,6 @@ VERSIONS = {
     # This should match the version in `.ruby-version`
     # It must also be availble, and preferably the default here:
     #  https://github.com/netlify/build-image/blob/focal/included_software.md
-    "ruby": "2.7.2",
-    "ruby_bundler": "2.3.11",
     "python": "3.10",
     "aspect_bazel_lib": {
         "type": "github_archive",
@@ -38,13 +36,5 @@ VERSIONS = {
         "sha256": "7047db983e49290ac14b2733459d439a8a521ff49e95fbd0b185a692bd6a6d86",
         "url": "https://github.com/{repo}/archive/{version}.tar.gz",
         "strip_prefix": "toolshed-{version}/bazel",
-    },
-    "bazelruby_rules_ruby": {
-        "repo": "bazelruby/rules_ruby",
-        "type": "github_archive",
-        "version": "e60d0cd0f2100287a93557334c48117839fe4762",
-        "sha256": "e1886a644d68ad4936cc7ae0a31aab1b5028cb1f80a365a184b9a24a92bf355b",
-        "url": "https://github.com/{repo}/archive/{version}.tar.gz",
-        "strip_prefix": "rules_ruby-{version}",
     },
 }

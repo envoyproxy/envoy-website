@@ -6,8 +6,8 @@ BAZEL="${BAZEL:-bazel}"
 OUTPUT_DIR="${1:-_site}"
 
 if  [[ -e "$OUTPUT_DIR" ]]; then
-    echo "Path to build the website (${OUTPUT_DIR}) exists, removing"
-    rm -rf "${OUTPUT_DIR}"
+    echo "Path to build the website (${OUTPUT_DIR}) exists, removing contents"
+    rm -rf "${OUTPUT_DIR}"/*
 fi
 
 mkdir -p "${OUTPUT_DIR}"
@@ -18,8 +18,7 @@ export ENVOY_COMMIT="$($BAZEL run //docs:latest_version)"
 echo "Building website for Envoy commit: ${ENVOY_COMMIT}"
 $BAZEL build \
     --action_env=ENVOY_COMMIT \
-    --action_env=JEKYLL_ENV \
-    //site:html
+    //site
 
 echo "Extracting website -> ${OUTPUT_DIR}"
 

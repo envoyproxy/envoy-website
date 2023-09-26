@@ -27,11 +27,11 @@ load("@envoy//bazel:dependency_imports.bzl", "envoy_dependency_imports")
 
 envoy_dependency_imports()
 
-load(":deps.bzl", "load_dependencies")
-load_dependencies()
-
 load(":toolchains.bzl", "load_toolchains")
 load_toolchains()
 
 load(":packages.bzl", "load_packages")
 load_packages()
+
+load("@site_pip3//:requirements.bzl", "install_deps")
+install_deps()

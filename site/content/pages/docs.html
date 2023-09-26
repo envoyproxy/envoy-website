@@ -1,0 +1,83 @@
+{% extends "content.html" %}
+{% set active_page = "documentation" %}
+
+{% block content %}
+<h2 class="text-uppercase">Documentation is available for the following versions of Envoy:</h2>
+<div class="versions">
+  {% for version_group in VERSIONS %}
+  <h3 class="text-large">{{ version_group.title }}</h3>
+  <dl class="versions-info">
+    {% for version in version_group.versions %}
+    <dt>
+      <img src="{{ SITEURL }}/theme/images/envoy-icon.svg"
+           alt="Envoy"
+           class="logo">
+      {% if version.releases | length > 0 %}
+      <a href="/docs/envoy/v{{ version.releases[0] }}/">
+        v{{ version.version }} ({{ version.releases[0] }})
+      </a>
+      {% else %}
+      <a href="/docs/envoy/{{ version.version | lower }}/">
+        {{ version.version }}
+      </a>
+      {% endif %}
+    </dt>
+    {% if version.releases | length > 0 %}
+    <dd>
+      <ul>
+        <li>
+          <img src="{{ SITEURL }}/theme/images/docs.svg"
+               alt="Envoy"
+               class="icon">
+          <a href="/docs/envoy/v{{ version.releases[0] }}/">
+            Docs
+          </a>
+        </li>
+        <li>
+          <img src="{{ SITEURL }}/theme/images/github.svg"
+               alt="Envoy"
+               class="icon">
+          <a href="https://github.com/envoyproxy/envoy/releases/tag/v{{ version.releases[0] }}">
+            Release
+          </a>
+        </li>
+
+        {% if version.releases | length > 1 %}
+        <li>
+          <a href="#releases_{{ version.version | replace('.', '_') }}"
+             data-bs-toggle="collapse"
+             aria-expanded="false"
+             data-bs-target="#releases-{{ version.version | replace('.', '_') }}">Previous releases</a>
+          <ul id="releases-{{ version.version | replace('.', '_') }}"
+              class="collapse">
+            {% for release in version.releases[1:] %}
+            <li>
+              <span>
+                <img src="{{ SITEURL }}/theme/images/docs.svg"
+                     alt="Envoy"
+                     class="icon">
+                <a href="/docs/envoy/v{{ release }}/">
+                  {{ release }}
+                </a>
+              </span>
+              <span>
+                <img src="{{ SITEURL }}/theme/images/github.svg"
+                     alt="Envoy"
+                     class="icon">
+                <a href="https://github.com/envoyproxy/envoy/releases/tag/v{{ release }}">
+                  Release
+                </a>
+              </span>
+            </li>
+            {% endfor %}
+          </ul>
+         </li>
+        {% endif %}
+      </ul>
+    </dd>
+    {% endif %}
+    {% endfor %}
+  </dl>
+  {% endfor %}
+</div>
+{% endblock content %}
