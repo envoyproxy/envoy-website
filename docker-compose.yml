@@ -53,6 +53,25 @@ services:
       LOCAL_USER_NAME: $USERNAME
       LOCAL_USER_HOME: $HOME
 
+  update:
+    build:
+      context: docker
+      dockerfile: Dockerfile
+    command: ./sync_envoy.sh
+    volumes:
+    - .:/src/workspace/envoy-website
+    - ${ENVOY_SRC_DIR:-../envoy}:/src/workspace/envoy
+    - ~/.cache/bazel:/$HOME/.cache/bazel
+    - ~/.cache/bazelisk:/$HOME/.cache/bazelisk
+    working_dir: /src/workspace/envoy-website
+    environment:
+      LOCAL_UID: ${UID:?"`UID` must be set, try `export UID`"}
+      LOCAL_USER_NAME: $USERNAME
+      LOCAL_USER_HOME: $HOME
+      ENVOY_SRC_DIR: ../envoy
+      COMMITTER_NAME: ${COMMITTER_NAME}
+      COMMITTER_EMAIL: ${COMMITTER_EMAIL}
+
   static:
     image: nginx
     volumes:
