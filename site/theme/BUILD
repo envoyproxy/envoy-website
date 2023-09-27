@@ -1,20 +1,12 @@
-load("@rules_pkg//pkg:mappings.bzl", "pkg_filegroup", "pkg_files")
-load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
+load("@envoy_toolshed//website:macros.bzl", "website_theme")
 
-pkg_files(
-    name = "templates",
-    srcs = glob(["templates/*html"]),
-    strip_prefix = "",
-    prefix = "theme",
-)
+exports_files(["index.html"])
 
-pkg_filegroup(
+website_theme(
     name = "theme",
-    srcs = [
-        "//site/theme/static/css",
-        "//site/theme/static/images",
-        "//site/theme/static/js",
-        ":templates",
-    ],
-    visibility = ["//visibility:public"],
+    home = ":index.html",
+    css = "//site/theme/css",
+    js =  "//site/theme/js",
+    images_extra = "//site/theme/images",
+    templates_extra = "//site/theme/templates",
 )
