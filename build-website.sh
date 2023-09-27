@@ -25,8 +25,8 @@ echo "Extracting website -> ${OUTPUT_DIR}"
 $BAZEL run \
     @envoy//tools/zstd -- \
         --stdout \
-        -d "${PWD}/bazel-bin/site/html.tar.zst" \
-    | tar -xf - -C "${OUTPUT_DIR}"
+        -d "${PWD}/bazel-bin/site/site_html.tar.zst" \
+    | tar -x -C "${OUTPUT_DIR}"
 
 if [[ -n "$CI" ]]; then
     $BAZEL shutdown || :
