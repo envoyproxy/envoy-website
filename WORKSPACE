@@ -33,5 +33,5 @@ load_toolchains()
 load(":packages.bzl", "load_packages")
 load_packages()
 
-load("@site_pip3//:requirements.bzl", "install_deps")
+load("@website_pip3//:requirements.bzl", "install_deps")
 install_deps()
