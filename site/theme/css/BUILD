@@ -5,7 +5,7 @@ pkg_files(
     name = "scss",
     srcs = ["@com_github_twbs_bootstrap//:scss"],
     strip_prefix = "scss",
-    prefix = "theme/static/css/_sass/vendor/bootstrap",
+    prefix = "theme/css/_sass/vendor/bootstrap",
     visibility = ["//visibility:public"],
 )
 
@@ -13,7 +13,7 @@ pkg_files(
     name = "css_files",
     srcs = glob(["**/*css"]),
     strip_prefix = "",
-    prefix = "theme/static/css",
+    prefix = "theme/css",
     visibility = ["//visibility:public"],
 )
 
