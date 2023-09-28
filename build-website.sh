@@ -12,13 +12,19 @@ fi
 
 mkdir -p "${OUTPUT_DIR}"
 
-# Fetch the latest Envoy commit that has downloadable rst docs
-export ENVOY_COMMIT="$($BAZEL run //docs:latest_version)"
+# TODO(phlax): think of a cleaner way to do this
 
-echo "Building website for Envoy commit: ${ENVOY_COMMIT}"
-$BAZEL build \
-    --action_env=ENVOY_COMMIT \
-    //site
+bazel build //:dependency_versions
+BUILD_DOCS_SHA="$(jq -r '.envoy.version' bazel-bin/dependency_shas.json)"
+export BUILD_DOCS_SHA
+
+BAZEL_BUILD_ARGS=()
+
+if [[ -n "$CI" ]]; then
+    BAZEL_BUILD_ARGS=(--config=ci)
+fi
+
+$BAZEL build "${BAZEL_BUILD_ARGS[@]}" //site
 
 echo "Extracting website -> ${OUTPUT_DIR}"
 
@@ -31,5 +37,3 @@ $BAZEL run \
 if [[ -n "$CI" ]]; then
     $BAZEL shutdown || :
 fi
-
-echo "Website built (${ENVOY_COMMIT}) in ${OUTPUT_DIR}"

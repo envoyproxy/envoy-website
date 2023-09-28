@@ -1,0 +1,302 @@
+diff --git a/bazel/repository_locations.bzl b/bazel/repository_locations.bzl
+index af10692c44..101b5ccefb 100644
+--- a/bazel/repository_locations.bzl
++++ b/bazel/repository_locations.bzl
+@@ -148,10 +148,10 @@ REPOSITORY_LOCATIONS_SPEC = dict(
+         project_name = "Aspect Bazel helpers",
+         project_desc = "Base Starlark libraries and basic Bazel rules which are useful for constructing rulesets and BUILD files",
+         project_url = "https://github.com/aspect-build/bazel-lib",
+-        version = "1.34.1",
+-        sha256 = "271d5f38c218a0c2fe2e94f94dfc0b497e931cbb335348bf1695015191be5367",
++        version = "8d3c941c6499626376d2a1e3e01e05f3e1ec6856",
++        sha256 = "1b1da9d7d58b83ae47e7f15f1dd6c5033f84bc2b5ad65226fa745861b2204d91",
+         strip_prefix = "bazel-lib-{version}",
+-        urls = ["https://github.com/aspect-build/bazel-lib/archive/v{version}.tar.gz"],
++        urls = ["https://github.com/aspect-build/bazel-lib/archive/{version}.tar.gz"],
+         use_category = ["build"],
+         release_date = "2023-08-30",
+         cpe = "N/A",
+diff --git a/docs/BUILD b/docs/BUILD
+index 555ce065e1..e082203878 100644
+--- a/docs/BUILD
++++ b/docs/BUILD
+@@ -121,7 +121,7 @@ genrule(
+     srcs = [":empty_extensions.json"],
+     outs = ["empty_protos_rst.tar.gz"],
+     cmd = """
+-    $(location //tools/protodoc:generate_empty) \\
++    $(location //tools/protodoc:generate_empty) \
+         $(location empty_extensions.json) $@
+     """,
+     tools = ["//tools/protodoc:generate_empty"],
+@@ -178,7 +178,7 @@ genrule(
+     name = "version_histories",
+     outs = ["version_histories.tar.gz"],
+     cmd = """
+-    $(location //tools/docs:generate_version_histories) $@
++    $(location //tools/docs:generate_version_histories) --path=$$(dirname $(location //:VERSION.txt)) $@
+     """,
+     tools = [
+         ":versions.yaml",
+@@ -250,10 +250,11 @@ genrule(
+     . $(location //bazel:volatile_env) \
+     && $(location //tools/docs:sphinx_runner) \
+          $${SPHINX_RUNNER_ARGS:-} \
++         -j $${SPHINX_JOBS} \
+          --build_sha="$${BUILD_DOCS_SHA:-$${BUILD_SCM_REVISION}}" \
+          --docs_tag="$${BUILD_DOCS_TAG:-}" \
+          --version_file=$(location //:VERSION.txt) \
+-         --descriptor_path=$(location @envoy_api//:v3_proto_set) \\
++         --descriptor_path=$(location @envoy_api//:v3_proto_set) \
+          $(location rst) \
+          $@
+     """,
+@@ -274,6 +275,7 @@ genrule(
+     cmd = """
+     $(location //tools/docs:sphinx_runner) \
+          $${SPHINX_RUNNER_ARGS:-} \
++         --build_sha="$${BUILD_DOCS_SHA:-$${BUILD_SCM_REVISION}}" \
+          --version_file=$(location //:VERSION.txt) \
+          --descriptor_path=$(location @envoy_api//:v3_proto_set) \
+          $(location :rst) \
+@@ -286,3 +288,8 @@ genrule(
+         "@envoy_api//:v3_proto_set",
+     ],
+ )
++
++alias(
++    name = "docs",
++    actual = ":html",
++)
+diff --git a/docs/build.sh b/docs/build.sh
+index 110aa22ebe..70e1998e6b 100755
+--- a/docs/build.sh
++++ b/docs/build.sh
+@@ -45,7 +45,7 @@ fi
+ # Building html/rst is determined by then needs of CI but can be overridden in dev.
+ if [[ "${BUILD_TYPE}" == "html" ]] || [[ -n "${DOCS_BUILD_HTML}" ]]; then
+     BUILD_HTML=1
+-    BUILD_HTML_TARGET="//docs:html"
++    BUILD_HTML_TARGET="//docs"
+     BUILD_HTML_TARBALL="bazel-bin/docs/html.tar.gz"
+     if [[ -n "${CI_BRANCH}" ]] || [[ -n "${DOCS_BUILD_RELEASE}" ]]; then
+         # CI build - use git sha
+diff --git a/tools/base/entry_point.py b/tools/base/entry_point.py
+index cdd1cf421d..97b566ae41 100644
+--- a/tools/base/entry_point.py
++++ b/tools/base/entry_point.py
+@@ -26,6 +26,24 @@ def main(*args) -> int:
+         return 1
+ 
+     try:
++        import importlib
++        import os
++        import pathlib
++        for path in sys.path:
++            path = pathlib.Path(path)
++
++            if "utils" in path.name:
++                sys.path += [str(path.joinpath("site-packages"))]
++
++            if path.name == "envoy":
++                if "tools" not in os.listdir(path):
++                    continue
++                init_file = path.joinpath("__init__.py")
++                # if not init_file.read_text():
++                init_file.write_text(
++                    "__path__ = __import__('pkgutil').extend_path(__path__, __name__)")
++                path.joinpath("tools", "__init__.py").write_text(
++                    "__path__ = __import__('pkgutil').extend_path(__path__, __name__)")
+         return subprocess.run([tool_path, *args]).returncode
+     except KeyboardInterrupt:
+         return 1
+diff --git a/tools/docs/BUILD b/tools/docs/BUILD
+index ee4f75c5c5..f7ee76bfa4 100644
+--- a/tools/docs/BUILD
++++ b/tools/docs/BUILD
+@@ -42,6 +42,7 @@ py_binary(
+ envoy_entry_point(
+     name = "sphinx_runner",
+     pkg = "envoy.docs.sphinx_runner",
++    visibility = ["//visibility:public"],
+ )
+ 
+ py_binary(
+diff --git a/tools/docs/generate_extensions_security_rst.py b/tools/docs/generate_extensions_security_rst.py
+index f28ee0347f..eb234184a1 100644
+--- a/tools/docs/generate_extensions_security_rst.py
++++ b/tools/docs/generate_extensions_security_rst.py
+@@ -8,6 +8,26 @@ import pathlib
+ import sys
+ import tarfile
+ 
++# PATHHACK
++import importlib
++import os
++import pathlib
++
++for path in sys.path:
++    path = pathlib.Path(path)
++
++    if "utils" in path.name:
++        sys.path += [str(path.joinpath("site-packages"))]
++
++    if path.name == "envoy":
++        if "tools" not in os.listdir(path):
++            continue
++        init_file = path.joinpath("__init__.py")
++        #if not init_file.read_text():
++        init_file.write_text("__path__ = __import__('pkgutil').extend_path(__path__, __name__)")
++        path.joinpath("tools", "__init__.py").write_text(
++            "__path__ = __import__('pkgutil').extend_path(__path__, __name__)")
++
+ from envoy.base import utils
+ 
+ 
+diff --git a/tools/docs/generate_version_histories.py b/tools/docs/generate_version_histories.py
+index dd09075a50..088dd50f42 100644
+--- a/tools/docs/generate_version_histories.py
++++ b/tools/docs/generate_version_histories.py
+@@ -6,10 +6,30 @@ from functools import cached_property
+ 
+ from frozendict import frozendict
+ import jinja2
+-from packaging import version
++from packaging import version as _version
+ 
+ from aio.run import runner
+ 
++# PATHHACK
++import importlib
++import os
++import pathlib
++
++for path in sys.path:
++    path = pathlib.Path(path)
++
++    if "utils" in path.name:
++        sys.path += [str(path.joinpath("site-packages"))]
++
++    if path.name == "envoy":
++        if "tools" not in os.listdir(path):
++            continue
++        init_file = path.joinpath("__init__.py")
++        #if not init_file.read_text():
++        init_file.write_text("__path__ = __import__('pkgutil').extend_path(__path__, __name__)")
++        path.joinpath("tools", "__init__.py").write_text(
++            "__path__ = __import__('pkgutil').extend_path(__path__, __name__)")
++
+ from envoy.base import utils
+ from envoy.base.utils import IProject, Project
+ 
+@@ -147,7 +167,7 @@ class VersionHistories(runner.Runner):
+ 
+     @cached_property
+     def project(self) -> IProject:
+-        return Project()
++        return Project(path=self.args.path)
+ 
+     @cached_property
+     def sections(self) -> frozendict:
+@@ -171,6 +191,8 @@ class VersionHistories(runner.Runner):
+ 
+     def add_arguments(self, parser) -> None:
+         super().add_arguments(parser)
++        parser.add_argument("--path")
++        parser.add_argument("--version_file")
+         parser.add_argument("output_file")
+ 
+     def minor_index_path(self, minor_version) -> pathlib.Path:
+@@ -192,7 +214,7 @@ class VersionHistories(runner.Runner):
+         for changelog_version in self.project.changelogs:
+             await self.write_version_history(changelog_version)
+ 
+-    async def write_version_history(self, changelog_version: version.Version) -> None:
++    async def write_version_history(self, changelog_version: _version.Version) -> None:
+         minor_version = utils.minor_version_for(changelog_version)
+         root_path = self.tpath.joinpath(f"v{minor_version.base_version}")
+         root_path.mkdir(parents=True, exist_ok=True)
+@@ -258,7 +280,7 @@ class VersionHistories(runner.Runner):
+             await self.write_version_history_minor_index(minor_version, patches)
+ 
+     async def write_version_history_minor_index(
+-            self, minor_version: version.Version, patch_versions) -> None:
++            self, minor_version: _version.Version, patch_versions) -> None:
+         skip_first = (self.project.is_dev and self.project.is_current(patch_versions[0]))
+         if skip_first:
+             patch_versions = patch_versions[1:]
+diff --git a/tools/protodoc/manifest_to_json.py b/tools/protodoc/manifest_to_json.py
+index 21defb0d0a..39da6e1567 100644
+--- a/tools/protodoc/manifest_to_json.py
++++ b/tools/protodoc/manifest_to_json.py
+@@ -4,6 +4,26 @@ import sys
+ 
+ from google.protobuf import json_format
+ 
++# PATHHACK
++import importlib
++import os
++import pathlib
++
++for path in sys.path:
++    path = pathlib.Path(path)
++
++    if "utils" in path.name:
++        sys.path += [str(path.joinpath("site-packages"))]
++
++    if path.name == "envoy":
++        if "tools" not in os.listdir(path):
++            continue
++        init_file = path.joinpath("__init__.py")
++        #if not init_file.read_text():
++        init_file.write_text("__path__ = __import__('pkgutil').extend_path(__path__, __name__)")
++        path.joinpath("tools", "__init__.py").write_text(
++            "__path__ = __import__('pkgutil').extend_path(__path__, __name__)")
++
+ from envoy.base.utils import ProtobufValidator
+ 
+ from tools.protodoc import manifest_pb2
+diff --git a/tools/protodoc/protodoc.bzl b/tools/protodoc/protodoc.bzl
+index 6ad1db8d97..96f22e850c 100644
+--- a/tools/protodoc/protodoc.bzl
++++ b/tools/protodoc/protodoc.bzl
+@@ -12,7 +12,7 @@ def _protodoc_impl(target, ctx):
+ #
+ # The aspect builds the transitive docs, so any .proto in the dependency graph
+ # get docs created.
+-protodoc_aspect = api_proto_plugin_aspect("//tools/protodoc", _protodoc_impl)
++protodoc_aspect = api_proto_plugin_aspect("@envoy//tools/protodoc", _protodoc_impl)
+ 
+ def _protodoc_rule_impl(ctx):
+     deps = []
+diff --git a/tools/protodoc/protodoc.py b/tools/protodoc/protodoc.py
+index 651d9b78e7..9f5ac5f109 100755
+--- a/tools/protodoc/protodoc.py
++++ b/tools/protodoc/protodoc.py
+@@ -17,6 +17,26 @@ from udpa.annotations import status_pb2 as udpa_status_pb2
+ from validate import validate_pb2
+ from xds.annotations.v3 import status_pb2 as xds_status_pb2
+ 
++# PATHHACK
++import importlib
++import os
++import pathlib
++
++for path in sys.path:
++    path = pathlib.Path(path)
++
++    if "utils" in path.name:
++        sys.path += [str(path.joinpath("site-packages"))]
++
++    if path.name == "envoy":
++        if "tools" not in os.listdir(path):
++            continue
++        init_file = path.joinpath("__init__.py")
++        #if not init_file.read_text():
++        init_file.write_text("__path__ = __import__('pkgutil').extend_path(__path__, __name__)")
++        path.joinpath("tools", "__init__.py").write_text(
++            "__path__ = __import__('pkgutil').extend_path(__path__, __name__)")
++
+ from envoy.code.check.checker import BackticksCheck
+ 
+ from tools.api_proto_plugin import annotations, constants, plugin, visitor

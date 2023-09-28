@@ -30,7 +30,7 @@ static_website(
     compressor = "@envoy//tools/zstd",
     compressor_args = "-T0",
     decompressor_args = "-fcd",
-    deps = ["//docs:latest"],
-    srcs = ["//docs:releases"],
+    deps = ["@envoy//docs"],
+    srcs = ["//docs"],
     extension = "tar.zst",
 )
