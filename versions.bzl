@@ -27,6 +27,8 @@ VERSIONS = {
         "version": "079a1ce5fab5d073b0be0f5753643e6d97d91d10",
         "sha256": "0e66513fb786462f07c4bc47f8a11858cf1aa5d90629e34294b8cc37b300de4a",
         "url": "https://github.com/{repo}/archive/{version}.tar.gz",
+        "patches": ["@envoy-website//bazel:envoy.patch"],
+        "patch_args": ["-p1"],
         "strip_prefix": "envoy-{version}",
     },
     "envoy_toolshed": {
