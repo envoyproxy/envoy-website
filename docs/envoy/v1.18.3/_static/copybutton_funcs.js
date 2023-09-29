@@ -1,1 +1,0 @@
-function escapeRegExp(e){return e.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}export function formatCopyText(e,n,p=!1,t=!0,o=!0){var r,s;r=p?new RegExp("^("+n+")(.*)"):new RegExp("^("+escapeRegExp(n)+")(.*)");const c=[];var a=!1;for(const n of e.split("\n"))(s=n.match(r))?(a=!0,o?c.push(s[2]):c.push(n)):t||c.push(n);return a&&(e=c.join("\n")),e.endsWith("\n")&&(e=e.slice(0,-1)),e}
