@@ -31,6 +31,15 @@ VERSIONS = {
         "patch_args": ["-p1"],
         "strip_prefix": "envoy-{version}",
     },
+    "envoy_archive": {
+        "type": "github_archive",
+        "repo": "envoyproxy/archive",
+        "version": "1742e6ea7664df2652b1f29cd1b13c7fd98d11e3",
+        "sha256": "f7ee415475fa458c63a401b1f2e992c6c230b4194f677997d6dcc13233726997",
+        "url": "https://github.com/{repo}/archive/{version}.tar.gz",
+        "patch_args": ["-p1"],
+        "strip_prefix": "archive-{version}",
+    },
     "envoy_toolshed": {
         "type": "github_archive",
         "repo": "envoyproxy/toolshed",
