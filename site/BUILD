@@ -38,6 +38,6 @@ static_website(
     compressor_args = "-T0",
     decompressor_args = "-fcd",
     deps = [":docs_latest"],
-    srcs = ["//docs"],
+    srcs = ["@envoy_archive//docs"],
     extension = "tar.zst",
 )
