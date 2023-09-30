@@ -4,24 +4,24 @@ load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
 pkg_files(
     name = "scss",
     srcs = ["@com_github_twbs_bootstrap//:scss"],
-    strip_prefix = "scss",
     prefix = "theme/css/_sass/vendor/bootstrap",
+    strip_prefix = "scss",
     visibility = ["//visibility:public"],
 )
 
 pkg_files(
     name = "css_files",
     srcs = glob(["**/*css"]),
-    strip_prefix = "",
     prefix = "theme/css",
+    strip_prefix = "",
     visibility = ["//visibility:public"],
 )
 
 pkg_filegroup(
     name = "css",
     srcs = [
-        ":scss",
         ":css_files",
+        ":scss",
     ],
     visibility = ["//visibility:public"],
 )

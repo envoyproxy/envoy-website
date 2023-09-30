@@ -7,8 +7,8 @@ pkg_files(
         "**/*.ico",
         "**/*.svg",
     ]),
-    strip_prefix = "",
     prefix = "theme/images",
+    strip_prefix = "",
     visibility = ["//visibility:public"],
 )
 

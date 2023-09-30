@@ -1,4 +1,3 @@
-
 VERSIONS = {
     # This should match the version in `.ruby-version`
     # It must also be availble, and preferably the default here:

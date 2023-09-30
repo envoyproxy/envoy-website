@@ -8,13 +8,14 @@ def load_github_archives():
             continue
         kwargs = dict(name = k, **v)
         http_archive(
-            **{k: (
-                v.format(**kwargs)
-                if not k.startswith("patch")
-                else v)
-               for k, v
-               in kwargs.items()
-               if k not in ["repo", "type", "version"]})
+            **{
+                k: (
+                    v.format(**kwargs) if not k.startswith("patch") else v
+                )
+                for k, v in kwargs.items()
+                if k not in ["repo", "type", "version"]
+            }
+        )
 
 def load_archives():
     load_github_archives()
