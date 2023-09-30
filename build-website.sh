@@ -7,7 +7,7 @@ OUTPUT_DIR="${1:-_site}"
 
 if  [[ -e "$OUTPUT_DIR" ]]; then
     echo "Path to build the website (${OUTPUT_DIR}) exists, removing contents"
-    rm -rf "${OUTPUT_DIR}"/*
+    rm -rf "${OUTPUT_DIR:?}"/*
 fi
 
 mkdir -p "${OUTPUT_DIR}"

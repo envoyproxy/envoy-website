@@ -4,8 +4,8 @@ load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
 pkg_files(
     name = "yaml_files",
     srcs = glob(["*.yaml"]) + ["@envoy_archive//:versions.yaml"],
-    strip_prefix = "",
     prefix = "data",
+    strip_prefix = "",
 )
 
 pkg_filegroup(

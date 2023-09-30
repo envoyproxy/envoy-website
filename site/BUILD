@@ -11,21 +11,6 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
-alias(
-    name = "content",
-    actual = "//site/content",
-)
-
-alias(
-    name = "data",
-    actual = "//site/data",
-)
-
-alias(
-    name = "theme",
-    actual = "//site/theme",
-)
-
 pkg_tar(
     name = "docs_latest",
     package_dir = "docs/envoy/latest",
@@ -34,10 +19,13 @@ pkg_tar(
 
 static_website(
     name = "site",
+    srcs = ["@envoy_archive//docs"],
     compressor = "@envoy//tools/zstd",
     compressor_args = "-T0",
+    content = "//site/content",
+    data = "//site/data",
     decompressor_args = "-fcd",
-    deps = [":docs_latest"],
-    srcs = ["@envoy_archive//docs"],
     extension = "tar.zst",
+    theme = "//site/theme",
+    deps = [":docs_latest"],
 )
