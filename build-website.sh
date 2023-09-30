@@ -12,12 +12,6 @@ fi
 
 mkdir -p "${OUTPUT_DIR}"
 
-# TODO(phlax): think of a cleaner way to do this
-
-bazel build //:dependency_versions
-BUILD_DOCS_SHA="$(jq -r '.envoy.version' bazel-bin/dependency_shas.json)"
-export BUILD_DOCS_SHA
-
 BAZEL_BUILD_ARGS=()
 
 if [[ -n "$CI" ]]; then
