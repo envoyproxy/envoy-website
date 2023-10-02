@@ -1,90 +1,29 @@
-diff --git a/BUILD b/BUILD
-index bdb4bddc5a..d29dd34497 100644
---- a/BUILD
-+++ b/BUILD
-@@ -1,5 +1,12 @@
-+load("//bazel:envoy_build_system.bzl", "envoy_package")
-+load("//tools/base:envoy_python.bzl", "envoy_py_namespace")
-+
- licenses(["notice"])  # Apache 2
+diff --git a/bazel/get_workspace_status b/bazel/get_workspace_status
+index ca5159e6de..bc43475f01 100755
+--- a/bazel/get_workspace_status
++++ b/bazel/get_workspace_status
+@@ -23,6 +23,7 @@
+ if [ -f SOURCE_VERSION ]
+ then
+     echo "BUILD_SCM_REVISION $(cat SOURCE_VERSION)"
++    echo "ENVOY_BUILD_SCM_REVISION $(cat SOURCE_VERSION)"
+     echo "STABLE_BUILD_SCM_REVISION $(cat SOURCE_VERSION)"
+     echo "BUILD_SCM_STATUS Distribution"
+     exit 0
+@@ -30,11 +31,13 @@ fi
  
-+envoy_package()
-+
-+envoy_py_namespace()
-+
- exports_files([
-     "VERSION.txt",
-     "API_VERSION.txt",
-diff --git a/bazel/repositories.bzl b/bazel/repositories.bzl
-index 51aa94af39..a50a42376a 100644
---- a/bazel/repositories.bzl
-+++ b/bazel/repositories.bzl
-@@ -115,6 +115,7 @@ envoy_entry_point(
-     name = "get_project_json",
-     pkg = "envoy.base.utils",
-     script = "envoy.project_data",
-+    init_data = [":__init__.py"],
- )
+ if [[ -n "$BAZEL_FAKE_SCM_REVISION" ]]; then
+     echo "BUILD_SCM_REVISION $BAZEL_FAKE_SCM_REVISION"
++    echo "ENVOY_BUILD_SCM_REVISION $BAZEL_FAKE_SCM_REVISION"
+     echo "STABLE_BUILD_SCM_REVISION $BAZEL_FAKE_SCM_REVISION"
+ else
+     # The code below presents an implementation that works for git repository
+     git_rev=$(git rev-parse HEAD) || exit 1
+     echo "BUILD_SCM_REVISION ${git_rev}"
++    echo "ENVOY_BUILD_SCM_REVISION ${git_rev}"
+     echo "STABLE_BUILD_SCM_REVISION ${git_rev}"
+ fi
  
- genrule(
-@@ -139,6 +140,7 @@ envoy_entry_point(
-     ],
-     pkg = "envoy.base.utils",
-     script = "envoy.project",
-+    init_data = [":__init__.py"],
- )
- 
- envoy_entry_point(
-@@ -149,6 +151,7 @@ envoy_entry_point(
-     ],
-     pkg = "envoy.base.utils",
-     script = "envoy.project",
-+    init_data = [":__init__.py"],
- )
- 
- envoy_entry_point(
-@@ -159,6 +162,7 @@ envoy_entry_point(
-     ],
-     pkg = "envoy.base.utils",
-     script = "envoy.project",
-+    init_data = [":__init__.py"],
- )
- 
- envoy_entry_point(
-@@ -169,6 +173,7 @@ envoy_entry_point(
-     ],
-     pkg = "envoy.base.utils",
-     script = "envoy.project",
-+    init_data = [":__init__.py"],
- )
- 
- envoy_entry_point(
-@@ -179,6 +184,7 @@ envoy_entry_point(
-     ],
-     pkg = "envoy.base.utils",
-     script = "envoy.project",
-+    init_data = [":__init__.py"],
- )
- 
- ''')
-diff --git a/distribution/dockerhub/BUILD b/distribution/dockerhub/BUILD
-index cb48d42a20..cd6321175e 100644
---- a/distribution/dockerhub/BUILD
-+++ b/distribution/dockerhub/BUILD
-@@ -1,10 +1,12 @@
- load("//bazel:envoy_build_system.bzl", "envoy_package")
--load("//tools/base:envoy_python.bzl", "envoy_gencontent")
-+load("//tools/base:envoy_python.bzl", "envoy_gencontent", "envoy_py_namespace")
- 
- licenses(["notice"])  # Apache 2
- 
- envoy_package()
- 
-+envoy_py_namespace()
-+
- envoy_gencontent(
-     name = "readme",
-     srcs = ["@envoy_repo//:project"],
 diff --git a/docs/BUILD b/docs/BUILD
 index 274f8db006..001203f9c1 100644
 --- a/docs/BUILD
@@ -114,52 +53,23 @@ index 274f8db006..001203f9c1 100644
 +    actual = ":html_release",
  )
 diff --git a/mobile/BUILD b/mobile/BUILD
-index e9f3f96752..5797eabff4 100644
+index 5797eabff4..f7621d1d51 100644
 --- a/mobile/BUILD
 +++ b/mobile/BUILD
-@@ -7,11 +7,14 @@ load(
-     "xcode_schemes",
-     "xcodeproj",
- )
-+load("@envoy//tools/base:envoy_python.bzl", "envoy_py_namespace")
- load("@io_bazel_rules_kotlin//kotlin/internal:toolchains.bzl", "define_kt_toolchain")
- load("//bazel:framework_imports_extractor.bzl", "framework_imports_extractor")
+@@ -15,6 +15,8 @@ licenses(["notice"])  # Apache 2
  
- licenses(["notice"])  # Apache 2
+ envoy_py_namespace()
  
-+envoy_py_namespace()
++exports_files(["VERSION"])
 +
  alias(
      name = "ios_xcframework",
      actual = "//library/swift:Envoy",
 diff --git a/mobile/docs/BUILD b/mobile/docs/BUILD
-index fcddec5075..49e78020c2 100644
+index 18aa51e276..161ceef592 100644
 --- a/mobile/docs/BUILD
 +++ b/mobile/docs/BUILD
-@@ -1,6 +1,6 @@
- load("@base_pip3//:requirements.bzl", "requirement")
- load("@envoy//bazel:envoy_build_system.bzl", "envoy_package")
--load("@envoy//tools/base:envoy_python.bzl", "envoy_entry_point")
-+load("@envoy//tools/base:envoy_python.bzl", "envoy_entry_point", "envoy_py_namespace")
- load("@rules_pkg//pkg:mappings.bzl", "pkg_filegroup", "pkg_files")
- load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
- 
-@@ -8,8 +8,14 @@ licenses(["notice"])  # Apache 2
- 
- envoy_package()
- 
-+envoy_py_namespace()
-+
- envoy_entry_point(
-     name = "sphinx",
-+    init_data = [
-+        "//:py-init",
-+        ":py-init",
-+    ],
-     pkg = "sphinx",
-     script = "sphinx-build",
-     deps = [
-@@ -58,8 +64,31 @@ pkg_tar(
+@@ -64,10 +64,42 @@ pkg_tar(
  )
  
  genrule(
@@ -169,7 +79,10 @@ index fcddec5075..49e78020c2 100644
 +    outs = ["html_release.tar.gz"],
 +    cmd = """
 +    . $(location @envoy//bazel:volatile_env) \
-+    && export ENVOY_DOCS_RELEASE_LEVEL=tagged \
++    && VERSION_NUMBER="$$(cat $(location //:VERSION))" \
++    && BUILD_SHA="$${BUILD_SHA:-$${ENVOY_BUILD_SCM_REVISION}}" \
++    && export ENVOY_DOCS_VERSION_STRING="$${VERSION_NUMBER}"-"$${BUILD_SHA:0:6}" \
++    && export ENVOY_DOCS_RELEASE_LEVEL=pre-release \
 +    && mkdir -p build \
 +    && tar xf $(location :rst) -C build \
 +    && $(location :sphinx) \
@@ -183,8 +96,10 @@ index fcddec5075..49e78020c2 100644
 +    tools = [
 +        ":rst",
 +        ":sphinx",
++        "//:VERSION",
 +        "@envoy//bazel:volatile_env",
 +    ],
++    stamp = 1,
 +)
 +
 +genrule(
@@ -192,9 +107,18 @@ index fcddec5075..49e78020c2 100644
 +    outs = ["html.tar.gz"],
      cmd = """
      mkdir -p build \
++    && VERSION_NUMBER="$$(cat $(location //:VERSION))" \
++    && BUILD_SHA="$${BUILD_SHA:-UNKNOWN}" \
++    && export ENVOY_DOCS_VERSION_STRING="$${VERSION_NUMBER}"-"$${BUILD_SHA:0:6}" \
++    && export ENVOY_DOCS_RELEASE_LEVEL=pre-release \
      && tar xf $(location :rst) -C build \
-@@ -76,3 +105,8 @@ genrule(
+     && $(location :sphinx) \
+          -W \
+@@ -80,5 +112,11 @@ genrule(
+     tools = [
+         ":rst",
          ":sphinx",
++        "//:VERSION",
      ],
  )
 +
@@ -202,8 +126,43 @@ index fcddec5075..49e78020c2 100644
 +    name = "docs",
 +    actual = ":html_release",
 +)
+diff --git a/mobile/docs/build.sh b/mobile/docs/build.sh
+index a45286c397..65a9fe8b0f 100755
+--- a/mobile/docs/build.sh
++++ b/mobile/docs/build.sh
+@@ -19,16 +19,9 @@ then
+   # Check the version_history.rst contains current release version.
+   grep --fixed-strings "$VERSION_NUMBER" docs/root/intro/version_history.rst \
+     || (echo "Git tag not found in version_history.rst" && exit 1)
+-
+-  # Now that we now there is a match, we can use the tag.
+-  export ENVOY_DOCS_VERSION_STRING="tag-$GITHUB_REF_NAME"
+-  export ENVOY_DOCS_RELEASE_LEVEL=tagged
+-  export ENVOY_BLOB_SHA="$GITHUB_REF_NAME"
++  DOCS_TARGET=//docs
+ else
+-  BUILD_SHA=$(git rev-parse HEAD)
+-  export ENVOY_DOCS_VERSION_STRING="${VERSION_NUMBER}"-"${BUILD_SHA:0:6}"
+-  export ENVOY_DOCS_RELEASE_LEVEL=pre-release
+-  export ENVOY_BLOB_SHA="$BUILD_SHA"
++  DOCS_TARGET=//docs:html
+ fi
+ 
+ [[ -z "${DOCS_OUTPUT_DIR}" ]] && DOCS_OUTPUT_DIR=generated/docs
+@@ -37,10 +30,6 @@ rm -rf "${DOCS_OUTPUT_DIR}"
+ mkdir -p "${DOCS_OUTPUT_DIR}"
+ DOCS_OUTPUT_DIR="$(realpath "$DOCS_OUTPUT_DIR")"
+ 
+-./bazelw build \
+-      --action_env=ENVOY_BLOB_SHA \
+-      --action_env=ENVOY_DOCS_RELEASE_LEVEL \
+-      --action_env=ENVOY_DOCS_VERSION_STRING \
+-      //docs
++./bazelw build "$DOCS_TARGET"
+ 
+ tar xf bazel-bin/docs/docs.tar.gz -C "$DOCS_OUTPUT_DIR" .
 diff --git a/mobile/docs/conf.py b/mobile/docs/conf.py
-index d1b09cf5a7..f7a625479e 100644
+index d1b09cf5a7..be3faeb68b 100644
 --- a/mobile/docs/conf.py
 +++ b/mobile/docs/conf.py
 @@ -52,7 +52,11 @@ if not os.environ.get('ENVOY_DOCS_RELEASE_LEVEL'):
@@ -219,436 +178,13 @@ index d1b09cf5a7..f7a625479e 100644
  
  # If extensions (or modules to document with autodoc) are in another directory,
  # add these directories to sys.path here. If the directory is relative to the
-diff --git a/tools/BUILD b/tools/BUILD
-index 5e578a3c82..ec8b6d14f8 100644
---- a/tools/BUILD
-+++ b/tools/BUILD
-@@ -5,11 +5,14 @@ load(
-     "envoy_package",
-     "envoy_py_test_binary",
- )
-+load("//tools/base:envoy_python.bzl", "envoy_py_namespace")
+@@ -103,8 +107,7 @@ copyright = u'{} {}'.format(datetime.now().year, author)
+ # |version| and |release|, also used in various other places throughout the
+ # built documents.
  
- licenses(["notice"])  # Apache 2
- 
- envoy_package()
- 
-+envoy_py_namespace()
+-if not os.environ.get('ENVOY_DOCS_VERSION_STRING'):
+-    raise Exception("ENVOY_DOCS_VERSION_STRING env var must be defined")
 +
- exports_files([
-     "gen_git_sha.sh",
-     "check_repositories.sh",
-diff --git a/tools/base/envoy_python.bzl b/tools/base/envoy_python.bzl
-index 495a0e019a..7578d54f19 100644
---- a/tools/base/envoy_python.bzl
-+++ b/tools/base/envoy_python.bzl
-@@ -4,6 +4,56 @@ load("@base_pip3//:requirements.bzl", "requirement", base_entry_point = "entry_p
- load("@envoy_toolshed//py:macros.bzl", "entry_point")
- load("@rules_python//python:defs.bzl", "py_binary", "py_library")
  
-+ENVOY_PYTOOL_NAMESPACE = [
-+    ":py-init",
-+    "//:py-init",
-+    "//tools:py-init",
-+]
-+
-+def envoy_py_namespace():
-+    """Adding this to a build, injects a namespaced __init__.py, this allows namespaced
-+    packages - eg envoy.base.utils to co-exist with packages created from the repo."""
-+    native.genrule(
-+        name = "py-init-file",
-+        outs = ["__init__.py"],
-+        cmd = """
-+        echo "__path__ = __import__('pkgutil').extend_path(__path__, __name__)" > $@
-+        """,
-+    )
-+    py_library(
-+        name = "py-init",
-+        srcs = [":py-init-file"],
-+        visibility = ["//visibility:public"],
-+    )
-+
-+def envoy_pytool_binary(
-+        name,
-+        data = None,
-+        init_data = ENVOY_PYTOOL_NAMESPACE,
-+        **kwargs):
-+    """Wraps py_binary with envoy namespaced __init__.py files.
-+
-+    If used outside of tools/${toolname}/BUILD you must specify the init_data."""
-+    py_binary(
-+        name = name,
-+        data = init_data + (data or []),
-+        **kwargs
-+    )
-+
-+def envoy_pytool_library(
-+        name,
-+        data = None,
-+        init_data = ENVOY_PYTOOL_NAMESPACE,
-+        **kwargs):
-+    """Wraps py_library with envoy namespaced __init__.py files.
-+
-+    If used outside of tools/${toolname}/BUILD you must specify the init_data."""
-+    py_library(
-+        name = name,
-+        data = init_data + (data or []),
-+        **kwargs
-+    )
-+
- def envoy_entry_point(
-         name,
-         pkg,
-@@ -11,6 +61,7 @@ def envoy_entry_point(
-         entry_point_alias = base_entry_point,
-         script = None,
-         data = None,
-+        init_data = ENVOY_PYTOOL_NAMESPACE,
-         deps = None,
-         args = None,
-         visibility = ["//visibility:public"]):
-@@ -20,7 +71,7 @@ def envoy_entry_point(
-         script = script,
-         entry_point_script = entry_point_script,
-         entry_point_alias = entry_point_alias,
--        data = data,
-+        data = (data or []) + init_data,
-         deps = deps,
-         args = args,
-         visibility = visibility,
-@@ -31,6 +82,8 @@ def envoy_jinja_env(
-         templates,
-         filters = {},
-         env_kwargs = {},
-+        init_data = ENVOY_PYTOOL_NAMESPACE,
-+        data = [],
-         deps = [],
-         entry_point_alias = base_entry_point):
-     """This provides a prebuilt jinja environment that can be imported as a module.
-@@ -152,9 +205,10 @@ def envoy_jinja_env(
-         tools = [name_templates],
-     )
- 
--    py_library(
-+    envoy_pytool_library(
-         name = name,
-         srcs = [name_env_py],
-+        init_data = init_data,
-         data = [name_templates],
-         deps = [name_entry_point],
-     )
-@@ -212,7 +266,12 @@ def envoy_genjson(name, srcs = [], yaml_srcs = [], filter = None, args = None):
-         filter = filter,
-     )
- 
--def envoy_py_data(name, src, format = None, entry_point_alias = base_entry_point):
-+def envoy_py_data(
-+        name,
-+        src,
-+        init_data = ENVOY_PYTOOL_NAMESPACE,
-+        format = None,
-+        entry_point_alias = base_entry_point):
-     """Preload JSON/YAML data as a python lib.
- 
-     Data is loaded to python and then dumped to a pickle file.
-@@ -293,9 +352,10 @@ def envoy_py_data(name, src, format = None, entry_point_alias = base_entry_point
-         tools = [name_pickle],
-     )
- 
--    py_library(
-+    envoy_pytool_library(
-         name = name,
-         srcs = [name_env_py],
-+        init_data = init_data,
-         data = [name_pickle],
-         deps = [name_entry_point, requirement("envoy.base.utils")],
-     )
-@@ -306,6 +366,7 @@ def envoy_gencontent(
-         output,
-         srcs = [],
-         yaml_srcs = [],
-+        init_data = ENVOY_PYTOOL_NAMESPACE,
-         json_kwargs = {},
-         template_name = None,
-         template_filters = {},
-@@ -353,10 +414,12 @@ def envoy_gencontent(
-     envoy_py_data(
-         name = "%s_data" % name,
-         src = ":%s_json" % name,
-+        init_data = init_data,
-         entry_point_alias = entry_point_alias,
-     )
-     envoy_jinja_env(
-         name = name_tpl,
-+        init_data = init_data,
-         env_kwargs = template_kwargs,
-         templates = [template],
-         filters = template_filters,
-@@ -377,10 +440,11 @@ def envoy_gencontent(
-         outs = ["%s_generate_content.py" % name],
-         tools = [":%s" % name_data, name_tpl, template],
-     )
--    py_binary(
-+    envoy_pytool_binary(
-         name = "%s_generate_content" % name,
-         main = ":%s_generate_content.py" % name,
-         srcs = [":%s_generate_content.py" % name],
-+        init_data = init_data,
-         deps = [
-             ":%s" % name_data,
-             name_tpl,
-diff --git a/tools/code/BUILD b/tools/code/BUILD
-index 77466a7b49..4de0a77a4b 100644
---- a/tools/code/BUILD
-+++ b/tools/code/BUILD
-@@ -6,12 +6,14 @@ load(
-     "READFILTER_FUZZ_FILTERS",
-     "READFILTER_NOFUZZ_FILTERS",
- )
--load("//tools/base:envoy_python.bzl", "envoy_entry_point")
-+load("//tools/base:envoy_python.bzl", "envoy_entry_point", "envoy_py_namespace")
- 
- licenses(["notice"])  # Apache 2
- 
- envoy_package()
- 
-+envoy_py_namespace()
-+
- FUZZ_FILTER_COUNT = (
-     len(READFILTER_FUZZ_FILTERS) +
-     len(READFILTER_NOFUZZ_FILTERS)
-diff --git a/tools/dependency/BUILD b/tools/dependency/BUILD
-index e972f02450..5d5a388502 100644
---- a/tools/dependency/BUILD
-+++ b/tools/dependency/BUILD
-@@ -1,13 +1,14 @@
- load("@base_pip3//:requirements.bzl", "requirement")
- load("@envoy_repo//:path.bzl", "PATH")
--load("@rules_python//python:defs.bzl", "py_binary")
- load("//bazel:envoy_build_system.bzl", "envoy_package")
--load("//tools/base:envoy_python.bzl", "envoy_entry_point")
-+load("//tools/base:envoy_python.bzl", "envoy_entry_point", "envoy_py_namespace", "envoy_pytool_binary")
- 
- licenses(["notice"])  # Apache 2
- 
- envoy_package()
- 
-+envoy_py_namespace()
-+
- envoy_entry_point(
-     name = "check",
-     args = [
-@@ -30,7 +31,7 @@ envoy_entry_point(
-     pkg = "dependatool",
- )
- 
--py_binary(
-+envoy_pytool_binary(
-     name = "validate",
-     srcs = ["validate.py"],
-     args = [
-diff --git a/tools/distribution/BUILD b/tools/distribution/BUILD
-index 44e4006cdd..f809f3637d 100644
---- a/tools/distribution/BUILD
-+++ b/tools/distribution/BUILD
-@@ -1,11 +1,13 @@
- load("@base_pip3//:requirements.bzl", "requirement")
- load("//bazel:envoy_build_system.bzl", "envoy_package")
--load("//tools/base:envoy_python.bzl", "envoy_entry_point")
-+load("//tools/base:envoy_python.bzl", "envoy_entry_point", "envoy_py_namespace", "envoy_pytool_binary")
- 
- licenses(["notice"])  # Apache 2
- 
- envoy_package()
- 
-+envoy_py_namespace()
-+
- envoy_entry_point(
-     name = "release",
-     pkg = "envoy.distribution.release",
-@@ -21,7 +23,7 @@ envoy_entry_point(
-     pkg = "envoy.distribution.verify",
- )
- 
--py_binary(
-+envoy_pytool_binary(
-     name = "update_dockerhub_repository",
-     srcs = ["update_dockerhub_repository.py"],
-     data = ["//distribution/dockerhub:readme.md"],
-diff --git a/tools/docs/BUILD b/tools/docs/BUILD
-index f7ee76bfa4..94a1aa925b 100644
---- a/tools/docs/BUILD
-+++ b/tools/docs/BUILD
-@@ -1,13 +1,14 @@
- load("@base_pip3//:requirements.bzl", "requirement")
--load("@rules_python//python:defs.bzl", "py_binary")
- load("//bazel:envoy_build_system.bzl", "envoy_package")
--load("//tools/base:envoy_python.bzl", "envoy_entry_point")
-+load("//tools/base:envoy_python.bzl", "envoy_entry_point", "envoy_py_namespace", "envoy_pytool_binary")
- 
- licenses(["notice"])  # Apache 2
- 
- envoy_package()
- 
--py_binary(
-+envoy_py_namespace()
-+
-+envoy_pytool_binary(
-     name = "generate_extensions_security_rst",
-     srcs = ["generate_extensions_security_rst.py"],
-     deps = [
-@@ -15,20 +16,16 @@ py_binary(
-     ],
- )
- 
--py_binary(
-+envoy_pytool_binary(
-     name = "generate_external_deps_rst",
--    srcs = [
--        "generate_external_deps_rst.py",
--    ],
-+    srcs = ["generate_external_deps_rst.py"],
-     args = ["$(location //bazel:all_repository_locations)"],
-     data = ["//bazel:all_repository_locations"],
- )
- 
--py_binary(
-+envoy_pytool_binary(
-     name = "generate_api_rst",
--    srcs = [
--        "generate_api_rst.py",
--    ],
-+    srcs = ["generate_api_rst.py"],
- )
- 
- # The upstream lib is maintained here:
-@@ -45,11 +42,9 @@ envoy_entry_point(
-     visibility = ["//visibility:public"],
- )
- 
--py_binary(
-+envoy_pytool_binary(
-     name = "generate_version_histories",
--    srcs = [
--        "generate_version_histories.py",
--    ],
-+    srcs = ["generate_version_histories.py"],
-     deps = [
-         requirement("aio.run.runner"),
-         requirement("envoy.base.utils"),
-diff --git a/tools/proto_format/BUILD b/tools/proto_format/BUILD
-index 2b025ebfaf..8ce574c9e6 100644
---- a/tools/proto_format/BUILD
-+++ b/tools/proto_format/BUILD
-@@ -2,14 +2,15 @@ load("@aspect_bazel_lib//lib:jq.bzl", "jq")
- load("@envoy_repo//:path.bzl", "PATH")
- load("@rules_pkg//pkg:mappings.bzl", "pkg_files", "strip_prefix")
- load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
--load("@rules_python//python:defs.bzl", "py_binary")
- load("//bazel:envoy_build_system.bzl", "envoy_package")
--load("//tools/base:envoy_python.bzl", "envoy_genjson", "envoy_py_data")
-+load("//tools/base:envoy_python.bzl", "envoy_genjson", "envoy_py_data", "envoy_py_namespace", "envoy_pytool_binary")
- 
- licenses(["notice"])  # Apache 2
- 
- envoy_package()
- 
-+envoy_py_namespace()
-+
- # Files to include when building or comparing the normalized API
- API_FILES = [
-     "BUILD",
-@@ -130,7 +131,7 @@ genrule(
-     tools = [":formatted_api"],
- )
- 
--py_binary(
-+envoy_pytool_binary(
-     name = "fetch_normalized_changes",
-     srcs = ["fetch_normalized_changes.py"],
-     args = [
-@@ -165,7 +166,7 @@ genrule(
-     ],
- )
- 
--py_binary(
-+envoy_pytool_binary(
-     name = "proto_sync",
-     srcs = ["proto_sync.py"],
-     args = [
-diff --git a/tools/protodoc/BUILD b/tools/protodoc/BUILD
-index 01ce510978..f562c431ed 100644
---- a/tools/protodoc/BUILD
-+++ b/tools/protodoc/BUILD
-@@ -1,15 +1,16 @@
- load("@base_pip3//:requirements.bzl", "requirement")
- load("@com_google_protobuf//:protobuf.bzl", "py_proto_library")
--load("@rules_python//python:defs.bzl", "py_binary", "py_library")
- load("//bazel:envoy_build_system.bzl", "envoy_package")
--load("//tools/base:envoy_python.bzl", "envoy_genjson", "envoy_jinja_env", "envoy_py_data")
-+load("//tools/base:envoy_python.bzl", "envoy_genjson", "envoy_jinja_env", "envoy_py_data", "envoy_py_namespace", "envoy_pytool_binary", "envoy_pytool_library")
- load("//tools/protodoc:protodoc.bzl", "protodoc_rule")
- 
- licenses(["notice"])  # Apache 2
- 
- envoy_package()
- 
--py_binary(
-+envoy_py_namespace()
-+
-+envoy_pytool_binary(
-     name = "generate_empty",
-     srcs = ["generate_empty.py"],
-     visibility = ["//visibility:public"],
-@@ -30,7 +31,7 @@ envoy_py_data(
-     src = "//docs:protodoc_manifest.yaml",
- )
- 
--py_binary(
-+envoy_pytool_binary(
-     name = "manifest_to_json",
-     srcs = ["manifest_to_json.py"],
-     args = ["$(location @envoy_api//:v3_proto_set)"],
-@@ -101,7 +102,7 @@ envoy_py_data(
-     src = ":data_srcs",
- )
- 
--py_binary(
-+envoy_pytool_binary(
-     name = "protodoc",
-     srcs = ["protodoc.py"],
-     visibility = ["//visibility:public"],
-@@ -124,7 +125,7 @@ protodoc_rule(
-     ],
- )
- 
--py_library(
-+envoy_pytool_library(
-     name = "rst_filters",
-     srcs = ["rst_filters.py"],
- )
-diff --git a/tools/protoprint/BUILD b/tools/protoprint/BUILD
-index 4a8cac10d7..720e41c1a7 100644
---- a/tools/protoprint/BUILD
-+++ b/tools/protoprint/BUILD
-@@ -1,16 +1,17 @@
- load("@base_pip3//:requirements.bzl", "requirement")
- load("@rules_pkg//pkg:mappings.bzl", "pkg_files", "strip_prefix")
- load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
--load("@rules_python//python:defs.bzl", "py_binary")
- load("//bazel:envoy_build_system.bzl", "envoy_package")
--load("//tools/base:envoy_python.bzl", "envoy_py_data")
-+load("//tools/base:envoy_python.bzl", "envoy_py_data", "envoy_py_namespace", "envoy_pytool_binary")
- load("//tools/protoprint:protoprint.bzl", "protoprint_rule")
- 
- licenses(["notice"])  # Apache 2
- 
- envoy_package()
- 
--py_binary(
-+envoy_py_namespace()
-+
-+envoy_pytool_binary(
-     name = "protoprint",
-     srcs = ["protoprint.py"],
-     data = [
+ # The short X.Y version.
+ version = os.environ['ENVOY_DOCS_VERSION_STRING']
