@@ -23,11 +23,9 @@ VERSIONS = {
     "envoy": {
         "type": "github_archive",
         "repo": "envoyproxy/envoy",
-        "version": "d3a226ca21a15f53f15702a50dba733354da025f",
-        "sha256": "831e2a1c543c89ef0b68b063197df9f398ed2c96f4a07bcc988c6fd202def6c7",
+        "version": "2a0f2657d2af838956daa4e7cd589eb5e925edfd",
+        "sha256": "3f14c1410be6ba8a1b09313b938ac239ebc05e9bdaa88f0886afc4fa1d295b02",
         "url": "https://github.com/{repo}/archive/{version}.tar.gz",
-        "patches": ["@envoy-website//bazel:envoy.patch"],
-        "patch_args": ["-p1"],
         "strip_prefix": "envoy-{version}",
     },
     "envoy_archive": {
@@ -42,8 +40,8 @@ VERSIONS = {
     "envoy_toolshed": {
         "type": "github_archive",
         "repo": "envoyproxy/toolshed",
-        "version": "0.0.8",
-        "sha256": "f54fa767efe9271b6839d0baac80dea723299bba4e4e5fa0bea7b689aa2179de",
+        "version": "0.0.11",
+        "sha256": "89364302f38864370d7a380a15974b44b646e616ecf7b80f04aa0e44cb4f8a2f",
         "url": "https://github.com/{repo}/archive/bazel-v{version}.tar.gz",
         "strip_prefix": "toolshed-bazel-v{version}/bazel",
     },
