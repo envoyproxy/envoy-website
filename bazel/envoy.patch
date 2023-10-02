@@ -1,3 +1,56 @@
+diff --git a/api/CONTRIBUTING.md b/api/CONTRIBUTING.md
+index a1e61a7072..0ff2446239 100644
+--- a/api/CONTRIBUTING.md
++++ b/api/CONTRIBUTING.md
+@@ -23,19 +23,19 @@ documentation.
+ The documentation can be built locally in the root of https://github.com/envoyproxy/envoy via:
+ 
+ ```
+-docs/build.sh
++ci/do_ci.sh docs
+ ```
+ 
+ To skip configuration examples validation:
+ 
+ ```
+-SPHINX_SKIP_CONFIG_VALIDATION=true docs/build.sh
++SPHINX_SKIP_CONFIG_VALIDATION=true ci/do_ci.sh docs
+ ```
+ 
+ Or to use a hermetic Docker container:
+ 
+ ```
+-./ci/run_envoy_docker.sh './ci/do_ci.sh docs'
++./ci/run_envoy_docker.sh 'ci/do_ci.sh docs'
+ ```
+ 
+ This process builds RST documentation directly from the proto files, merges it with the static RST
+diff --git a/bazel/BUILD b/bazel/BUILD
+index 14fb55bf4c..9ee65b7b77 100644
+--- a/bazel/BUILD
++++ b/bazel/BUILD
+@@ -41,8 +41,8 @@ genrule(
+     outs = ["gnu_build_id.ldscript"],
+     cmd = """
+       echo --build-id=0x$$(
+-          grep BUILD_SCM_REVISION bazel-out/volatile-status.txt \\
+-        | sed 's/^BUILD_SCM_REVISION //') \\
++          grep -E "^BUILD_SCM_REVISION" bazel-out/volatile-status.txt \
++        | sed 's/^BUILD_SCM_REVISION //') \
+         > $@
+     """,
+     # Undocumented attr to depend on workspace status files.
+@@ -55,8 +55,8 @@ genrule(
+     name = "raw_build_id",
+     outs = ["raw_build_id.ldscript"],
+     cmd = """
+-      grep BUILD_SCM_REVISION bazel-out/volatile-status.txt \\
+-    | sed 's/^BUILD_SCM_REVISION //' \\
++      grep -E "^BUILD_SCM_REVISION" bazel-out/volatile-status.txt \
++    | sed 's/^BUILD_SCM_REVISION //' \
+     | tr -d '\\n' \\
+     > $@
+     """,
 diff --git a/bazel/get_workspace_status b/bazel/get_workspace_status
 index ca5159e6de..bc43475f01 100755
 --- a/bazel/get_workspace_status
@@ -24,8 +77,35 @@ index ca5159e6de..bc43475f01 100755
      echo "STABLE_BUILD_SCM_REVISION ${git_rev}"
  fi
  
+diff --git a/ci/do_ci.sh b/ci/do_ci.sh
+index 261254e9f0..e63cc80be0 100755
+--- a/ci/do_ci.sh
++++ b/ci/do_ci.sh
+@@ -648,7 +648,21 @@ case $CI_TARGET in
+         setup_clang_toolchain
+         echo "generating docs..."
+         # Build docs.
+-        "${ENVOY_SRCDIR}/docs/build.sh"
++        # We want the binary at the end
++        BAZEL_BUILD_OPTIONS+=(--remote_download_toplevel)
++        [[ -z "${DOCS_OUTPUT_DIR}" ]] && DOCS_OUTPUT_DIR=generated/docs
++        rm -rf "${DOCS_OUTPUT_DIR}"
++        mkdir -p "${DOCS_OUTPUT_DIR}"
++        if [[ -n "${CI_TARGET_BRANCH}" ]] || [[ -n "${SPHINX_QUIET}" ]]; then
++            export SPHINX_RUNNER_ARGS="-v warn"
++            BAZEL_BUILD_OPTIONS+=("--action_env=SPHINX_RUNNER_ARGS")
++        fi
++        if [[ -n "${DOCS_BUILD_RST}" ]]; then
++            bazel "${BAZEL_STARTUP_OPTIONS[@]}" build "${BAZEL_BUILD_OPTIONS[@]}" //docs:rst
++            cp bazel-bin/docs/rst.tar.gz "$DOCS_OUTPUT_DIR"/envoy-docs-rst.tar.gz
++        fi
++        bazel "${BAZEL_STARTUP_OPTIONS[@]}" build "${BAZEL_BUILD_OPTIONS[@]}" //docs:html
++        tar -xzf bazel-bin/docs/html.tar.gz -C "$DOCS_OUTPUT_DIR"
+         ;;
+ 
+     docs-upload)
 diff --git a/docs/BUILD b/docs/BUILD
-index 274f8db006..001203f9c1 100644
+index 274f8db006..74736c3f30 100644
 --- a/docs/BUILD
 +++ b/docs/BUILD
 @@ -246,11 +246,15 @@ pkg_tar(
@@ -34,7 +114,7 @@ index 274f8db006..001203f9c1 100644
      outs = ["html_release.tar.gz"],
 +    # BUILD_SHA must be set in release builds
 +    # The Envoy workspace will provide this on stamped builds. For external builds
-+    # you must either pass an env var or pass it through the workspaces' status.
++    # you must either pass an env var or pass it through the workspace's status.
      cmd = """
      . $(location //bazel:volatile_env) \
 +    && _BUILD_SHA=$${BUILD_DOCS_SHA:-$${ENVOY_BUILD_SCM_REVISION:-$${{BUILD_SCM_REVISION}}} \
@@ -52,6 +132,122 @@ index 274f8db006..001203f9c1 100644
 -    actual = ":html",
 +    actual = ":html_release",
  )
+diff --git a/docs/README.md b/docs/README.md
+index 923ae33a4b..32f9301eaf 100644
+--- a/docs/README.md
++++ b/docs/README.md
+@@ -9,14 +9,14 @@ In both cases, the generated output can be found in `generated/docs`.
+ If you have an [existing Envoy development environment](https://github.com/envoyproxy/envoy/tree/main/bazel#quick-start-bazel-build-for-developers), you should have the necessary dependencies and requirements and be able to build the documentation directly.
+ 
+ ```bash
+-./docs/build.sh
++./ci/do_ci.sh docs
+ ```
+ 
+ By default configuration examples are going to be validated during build. To disable validation,
+ set `SPHINX_SKIP_CONFIG_VALIDATION` environment variable to `true`:
+ 
+ ```bash
+-SPHINX_SKIP_CONFIG_VALIDATION=true docs/build.sh
++SPHINX_SKIP_CONFIG_VALIDATION=true ./ci/do_ci.sh docs
+ ```
+ 
+ ## Using the Docker build container to build the documentation
+@@ -27,7 +27,7 @@ image that is used in continuous integration.
+ This can be done as follows:
+ 
+ ```
+-./ci/run_envoy_docker.sh 'docs/build.sh'
++./ci/run_envoy_docker.sh './ci/do_ci.sh docs'
+ ```
+ 
+ To use this method you will need a minimum of 4-5GB of disk space available to accommodate the build image.
+diff --git a/docs/build.sh b/docs/build.sh
+index 70e1998e6b..20089b3a2b 100755
+--- a/docs/build.sh
++++ b/docs/build.sh
+@@ -1,78 +1,5 @@
+ #!/usr/bin/env bash
+ 
+-# set SPHINX_SKIP_CONFIG_VALIDATION environment variable to true to skip
+-# validation of configuration examples
+-
+-set -e
+-
+-
+-if [[ ! $(command -v bazel) ]]; then
+-    # shellcheck disable=SC2016
+-    echo 'ERROR: bazel must be installed and available in "$PATH" to build docs' >&2
+-    exit 1
+-fi
+-
+-VERSION="$(cat VERSION.txt)"
+-MAIN_BRANCH="refs/heads/main"
+-DEV_VERSION_REGEX="-dev$"
+-
+-# default is to build html only
+-BUILD_TYPE=html
+-
+-if [[ "$VERSION" =~ $DEV_VERSION_REGEX ]]; then
+-   if [[ "$CI_BRANCH" == "$MAIN_BRANCH" ]]; then
+-       # no need to build html, just rst
+-       BUILD_TYPE=rst
+-   fi
+-else
+-    export BUILD_DOCS_TAG="v${VERSION}"
+-    echo "BUILD AZP RELEASE BRANCH ${BUILD_DOCS_TAG}"
+-    BAZEL_BUILD_OPTIONS+=("--action_env=BUILD_DOCS_TAG")
+-fi
+-
+-# This is for local RBE setup, should be no-op for builds without RBE setting in bazelrc files.
+-IFS=" " read -ra BAZEL_BUILD_OPTIONS <<< "${BAZEL_BUILD_OPTION_LIST:-}"
+-IFS=" " read -ra BAZEL_STARTUP_OPTIONS <<< "${BAZEL_STARTUP_OPTION_LIST:-}"
+-
+-# We want the binary at the end
+-BAZEL_BUILD_OPTIONS+=(--remote_download_toplevel)
+-
+-if [[ -n "${CI_TARGET_BRANCH}" ]] || [[ -n "${SPHINX_QUIET}" ]]; then
+-    export SPHINX_RUNNER_ARGS="-v warn"
+-    BAZEL_BUILD_OPTIONS+=("--action_env=SPHINX_RUNNER_ARGS")
+-fi
+-
+-# Building html/rst is determined by then needs of CI but can be overridden in dev.
+-if [[ "${BUILD_TYPE}" == "html" ]] || [[ -n "${DOCS_BUILD_HTML}" ]]; then
+-    BUILD_HTML=1
+-    BUILD_HTML_TARGET="//docs"
+-    BUILD_HTML_TARBALL="bazel-bin/docs/html.tar.gz"
+-    if [[ -n "${CI_BRANCH}" ]] || [[ -n "${DOCS_BUILD_RELEASE}" ]]; then
+-        # CI build - use git sha
+-        BUILD_HTML_TARGET="//docs:html_release"
+-        BUILD_HTML_TARBALL="bazel-bin/docs/html_release.tar.gz"
+-    fi
+-fi
+-if [[ "${BUILD_TYPE}" == "rst" ]] || [[ -n "${DOCS_BUILD_RST}" ]]; then
+-    BUILD_RST=1
+-fi
+-
+-# Build html/rst
+-if [[ -n "${BUILD_RST}" ]]; then
+-    bazel "${BAZEL_STARTUP_OPTIONS[@]}" build "${BAZEL_BUILD_OPTIONS[@]}" //docs:rst
+-fi
+-if [[ -n "${BUILD_HTML}" ]]; then
+-    bazel "${BAZEL_STARTUP_OPTIONS[@]}" build "${BAZEL_BUILD_OPTIONS[@]}" "$BUILD_HTML_TARGET"
+-fi
+-
+-[[ -z "${DOCS_OUTPUT_DIR}" ]] && DOCS_OUTPUT_DIR=generated/docs
+-rm -rf "${DOCS_OUTPUT_DIR}"
+-mkdir -p "${DOCS_OUTPUT_DIR}"
+-
+-# Save html/rst to output directory
+-if [[ -n "${BUILD_HTML}" ]]; then
+-    tar -xzf "$BUILD_HTML_TARBALL" -C "$DOCS_OUTPUT_DIR"
+-fi
+-if [[ -n "${BUILD_RST}" ]]; then
+-    cp bazel-bin/docs/rst.tar.gz "$DOCS_OUTPUT_DIR"/envoy-docs-rst.tar.gz
+-fi
++# shellcheck disable=SC2016
++echo 'This script has been removed. Please use `ci/do_ci.sh docs` instead' >&2
++exit 1
 diff --git a/mobile/BUILD b/mobile/BUILD
 index 5797eabff4..f7621d1d51 100644
 --- a/mobile/BUILD
@@ -66,7 +262,7 @@ index 5797eabff4..f7621d1d51 100644
      name = "ios_xcframework",
      actual = "//library/swift:Envoy",
 diff --git a/mobile/docs/BUILD b/mobile/docs/BUILD
-index 18aa51e276..161ceef592 100644
+index 18aa51e276..9c8b5f80f6 100644
 --- a/mobile/docs/BUILD
 +++ b/mobile/docs/BUILD
 @@ -64,10 +64,42 @@ pkg_tar(
@@ -80,8 +276,8 @@ index 18aa51e276..161ceef592 100644
 +    cmd = """
 +    . $(location @envoy//bazel:volatile_env) \
 +    && VERSION_NUMBER="$$(cat $(location //:VERSION))" \
-+    && BUILD_SHA="$${BUILD_SHA:-$${ENVOY_BUILD_SCM_REVISION}}" \
-+    && export ENVOY_DOCS_VERSION_STRING="$${VERSION_NUMBER}"-"$${BUILD_SHA:0:6}" \
++    && export ENVOY_BLOB_SHA=$${BUILD_SHA:-$${ENVOY_BUILD_SCM_REVISION:-$${{BUILD_SCM_REVISION}}} \
++    && export ENVOY_DOCS_VERSION_STRING="$${VERSION_NUMBER}"-"$${ENVOY_BLOB_SHA:0:6}" \
 +    && export ENVOY_DOCS_RELEASE_LEVEL=pre-release \
 +    && mkdir -p build \
 +    && tar xf $(location :rst) -C build \
@@ -93,13 +289,13 @@ index 18aa51e276..161ceef592 100644
 +         output \
 +    && tar czf $@ -C output .
 +    """,
++    stamp = 1,
 +    tools = [
 +        ":rst",
 +        ":sphinx",
 +        "//:VERSION",
 +        "@envoy//bazel:volatile_env",
 +    ],
-+    stamp = 1,
 +)
 +
 +genrule(
@@ -108,8 +304,8 @@ index 18aa51e276..161ceef592 100644
      cmd = """
      mkdir -p build \
 +    && VERSION_NUMBER="$$(cat $(location //:VERSION))" \
-+    && BUILD_SHA="$${BUILD_SHA:-UNKNOWN}" \
-+    && export ENVOY_DOCS_VERSION_STRING="$${VERSION_NUMBER}"-"$${BUILD_SHA:0:6}" \
++    && export ENVOY_BLOB_SHA="$${BUILD_SHA:-UNKNOWN}" \
++    && export ENVOY_DOCS_VERSION_STRING="$${VERSION_NUMBER}"-"$${ENVOY_BLOB_SHA:0:6}" \
 +    && export ENVOY_DOCS_RELEASE_LEVEL=pre-release \
      && tar xf $(location :rst) -C build \
      && $(location :sphinx) \
@@ -127,7 +323,7 @@ index 18aa51e276..161ceef592 100644
 +    actual = ":html_release",
 +)
 diff --git a/mobile/docs/build.sh b/mobile/docs/build.sh
-index a45286c397..65a9fe8b0f 100755
+index a45286c397..5e86fd5471 100755
 --- a/mobile/docs/build.sh
 +++ b/mobile/docs/build.sh
 @@ -19,16 +19,9 @@ then
@@ -160,31 +356,71 @@ index a45286c397..65a9fe8b0f 100755
 -      //docs
 +./bazelw build "$DOCS_TARGET"
  
- tar xf bazel-bin/docs/docs.tar.gz -C "$DOCS_OUTPUT_DIR" .
+-tar xf bazel-bin/docs/docs.tar.gz -C "$DOCS_OUTPUT_DIR" .
++tar xf bazel-bin/docs/html.tar.gz -C "$DOCS_OUTPUT_DIR" .
 diff --git a/mobile/docs/conf.py b/mobile/docs/conf.py
-index d1b09cf5a7..be3faeb68b 100644
+index d1b09cf5a7..9dbeba35fc 100644
 --- a/mobile/docs/conf.py
 +++ b/mobile/docs/conf.py
-@@ -52,7 +52,11 @@ if not os.environ.get('ENVOY_DOCS_RELEASE_LEVEL'):
+@@ -48,11 +48,11 @@ def setup(app):
+     app.add_directive('substitution-code-block', SubstitutionCodeBlock)
+ 
+ 
+-if not os.environ.get('ENVOY_DOCS_RELEASE_LEVEL'):
++if not (release_level := os.environ.get('ENVOY_DOCS_RELEASE_LEVEL')):
      raise Exception("ENVOY_DOCS_RELEASE_LEVEL env var must be defined")
  
- release_level = os.environ['ENVOY_DOCS_RELEASE_LEVEL']
+-release_level = os.environ['ENVOY_DOCS_RELEASE_LEVEL']
 -blob_sha = os.environ['ENVOY_BLOB_SHA']
-+blob_sha = os.environ.get(
-+    "ENVOY_BLOB_SHA",
-+    os.environ.get(
-+        "ENVOY_MOBILE_BUILD_SCM_REVISION",
-+        os.environ["BUILD_SCM_REVISION"]))
++if not (blob_sha := os.environ.get("ENVOY_BLOB_SHA")):
++    raise Exception("ENVOY_BLOB_SHA env var must be defined")
  
  # If extensions (or modules to document with autodoc) are in another directory,
  # add these directories to sys.path here. If the directory is relative to the
-@@ -103,8 +107,7 @@ copyright = u'{} {}'.format(datetime.now().year, author)
+@@ -103,13 +103,12 @@ copyright = u'{} {}'.format(datetime.now().year, author)
  # |version| and |release|, also used in various other places throughout the
  # built documents.
  
 -if not os.environ.get('ENVOY_DOCS_VERSION_STRING'):
--    raise Exception("ENVOY_DOCS_VERSION_STRING env var must be defined")
-+
++# The short X.Y version.
++if not (version := os.environ.get("ENVOY_DOCS_VERSION_STRING")):
+     raise Exception("ENVOY_DOCS_VERSION_STRING env var must be defined")
  
- # The short X.Y version.
- version = os.environ['ENVOY_DOCS_VERSION_STRING']
+-# The short X.Y version.
+-version = os.environ['ENVOY_DOCS_VERSION_STRING']
+ # The full version, including alpha/beta/rc tags.
+-release = os.environ['ENVOY_DOCS_VERSION_STRING']
++release = version
+ 
+ # The language for content autogenerated by Sphinx. Refer to documentation
+ # for a list of supported languages.
+diff --git a/tools/base/requirements.in b/tools/base/requirements.in
+index cdb4450384..97bd81920e 100644
+--- a/tools/base/requirements.in
++++ b/tools/base/requirements.in
+@@ -15,7 +15,7 @@ envoy.dependency.check>=0.1.7
+ envoy.distribution.release>=0.0.9
+ envoy.distribution.repo>=0.0.8
+ envoy.distribution.verify>=0.0.11
+-envoy.docs.sphinx_runner>=0.2.7
++envoy.docs.sphinx_runner>=0.2.9
+ envoy.gpg.identity>=0.1.1
+ envoy.gpg.sign>=0.2.0
+ flake8>=6
+diff --git a/tools/base/requirements.txt b/tools/base/requirements.txt
+index f40613bc7f..14dcde6ef3 100644
+--- a/tools/base/requirements.txt
++++ b/tools/base/requirements.txt
+@@ -477,9 +477,9 @@ envoy-distribution-verify==0.0.11 \
+ envoy-docker-utils==0.0.2 \
+     --hash=sha256:a12cb57f0b6e204d646cbf94f927b3a8f5a27ed15f60d0576176584ec16a4b76
+     # via envoy-distribution-distrotest
+-envoy-docs-sphinx-runner==0.2.8 \
+-    --hash=sha256:129db23430fd3fae3cf62fda74b9479c6880698fef46f895058c98f1f3cf8e20 \
+-    --hash=sha256:736cc88874bdf42778cec02648fcbd82971154d38618b3699e17c049bdec74c9
++envoy-docs-sphinx-runner==0.2.9 \
++    --hash=sha256:1fa789b1d29ea929df67b07e5ca910d62e2057cd229719725030889da53b1a09 \
++    --hash=sha256:4bfa1946104e263471d522b47d683e127124a5ad47334d69de4aea0eac282576
+     # via -r requirements.in
+ envoy-github-abstract==0.0.22 \
+     --hash=sha256:2dd65e2f247a4947d0198b295c82716c13162e30c433b7625c27d59eee7bcf78 \
