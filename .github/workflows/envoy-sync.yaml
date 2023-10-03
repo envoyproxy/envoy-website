@@ -5,6 +5,10 @@ permissions:
 
 on:
   workflow_dispatch:
+    inputs:
+      commit_sha:
+        type: string
+        required: true
 
 concurrency:
   group: ${{ github.workflow }}
@@ -26,24 +30,8 @@ jobs:
         key: ${{ secrets.ENVOY_CI_UPDATE_BOT_KEY }}
         app_id: ${{ secrets.ENVOY_CI_UPDATE_APP_ID }}
 
-    # Checkout the Envoy repo
-    - name: 'Checkout Repository'
-      uses: actions/checkout@v4
-      with:
-        repository: envoyproxy/envoy
-        ref: main
-        path: envoy
-
-    # Checkout the Archive repo
-    - name: 'Checkout Repository'
-      uses: actions/checkout@v4
-      with:
-        repository: envoyproxy/archive
-        ref: main
-        path: archive
-
     # Checkout the repo
-    - name: 'Checkout Repository'
+    - name: 'Checkout Repository (envoy-website)'
       uses: actions/checkout@v4
       with:
         ref: main
@@ -51,8 +39,45 @@ jobs:
         path: envoy-website
 
     - run: |
+        envoy_version="$(awk '/"envoy"/ { in_block=1 } in_block && /"version"/ { gsub(/[",]/, "", $2); print $2; in_block=0 }' envoy-website/versions.bzl)"
+        echo "envoy_version=${envoy_version}" >> "$GITHUB_OUTPUT"
+      id: current
+
+    # Checkout the Envoy repo
+    - name: 'Checkout Repository (envoy)'
+      uses: actions/checkout@v4
+      with:
+        repository: envoyproxy/envoy
+        ref: main
+        path: envoy
+
+    - run: |
+        if ! git -C envoy merge-base --is-ancestor "${{ inputs.commit_sha }}"; then
+            echo "Provided Envoy sha (${{ inputs.commit_sha }}) is not main or an " \
+                 "ancestor of main" >&2
+            exit 1
+        fi
+        git -C envoy checkout "${{ inputs.commit_sha }}"
+        if ! git -C envoy merge-base --is-ancestor "${{ steps.current.values.envoy_version }}"; then
+            echo "Provided Envoy sha (${{ inputs.commit_sha }}) is not newer than " \
+                 "the current sha (${{ steps.current.values.envoy_version }})" >&2
+        fi
+        echo "should_update=true" >> "$GITHUB_OUTPUT"
+      id: state
+
+    # Checkout the Archive repo
+    - name: 'Checkout Repository (archive)'
+      uses: actions/checkout@v4
+      if: ${{ steps.state.values.should_update }} == 'true' }}
+      with:
+        repository: envoyproxy/archive
+        ref: main
+        path: archive
+
+    - run: |
         cd envoy-website
         ./sync_envoy.sh
+      if: ${{ steps.state.values.should_update }} == 'true' }}
       env:
         ENVOY_SRC_DIR: ../envoy
         ENVOY_ARCHIVE_DIR: ../archive
