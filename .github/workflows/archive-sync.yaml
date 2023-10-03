@@ -1,0 +1,48 @@
+name: Sync Envoy archive
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: SYNC
+
+jobs:
+  sync:
+    runs-on: ubuntu-22.04
+    if: |
+      ${{
+          !contains(github.actor, '[bot]')
+          || github.actor == 'sync-envoy[bot]'
+      }}
+    steps:
+    - id: appauth
+      uses: envoyproxy/toolshed/gh-actions/appauth@actions-v0.0.18
+      with:
+        key: ${{ secrets.ENVOY_CI_UPDATE_BOT_KEY }}
+        app_id: ${{ secrets.ENVOY_CI_UPDATE_APP_ID }}
+
+    # Checkout the Archive repo
+    - name: 'Checkout Repository (archive)'
+      uses: actions/checkout@v4
+      with:
+        repository: envoyproxy/archive
+        ref: main
+        path: archive
+
+    # Checkout the repo
+    - name: 'Checkout Repository (envoy-website)'
+      uses: actions/checkout@v4
+      with:
+        ref: main
+        token: ${{ steps.appauth.outputs.token  }}
+        path: envoy-website
+
+    - run: ./sync_archive.sh
+      working-directory: envoy-website
+      env:
+        ENVOY_ARCHIVE_DIR: ../archive
+        COMMITTER_NAME: "update-envoy[bot]"
+        COMMITTER_EMAIL: "135279899+update-envoy[bot]@users.noreply.github.com"
