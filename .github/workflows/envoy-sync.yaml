@@ -11,13 +11,11 @@ on:
         required: true
 
 concurrency:
-  group: ${{ github.workflow }}
+  group: SYNC
 
 jobs:
   sync:
     runs-on: ubuntu-22.04
-    permissions:
-      contents: write
     if: |
       ${{
           !contains(github.actor, '[bot]')
@@ -42,6 +40,7 @@ jobs:
         envoy_version="$(awk '/"envoy"/ { in_block=1 } in_block && /"version"/ { gsub(/[",]/, "", $2); print $2; in_block=0 }' envoy-website/versions.bzl)"
         echo "envoy_version=${envoy_version}" >> "$GITHUB_OUTPUT"
       id: current
+      name: Get current Envoy version
 
     # Checkout the Envoy repo
     - name: 'Checkout Repository (envoy)'
@@ -50,36 +49,32 @@ jobs:
         repository: envoyproxy/envoy
         ref: main
         path: envoy
+        fetch-depth: 0
 
     - run: |
-        if ! git -C envoy merge-base --is-ancestor "${{ inputs.commit_sha }}"; then
-            echo "Provided Envoy sha (${{ inputs.commit_sha }}) is not main or an " \
-                 "ancestor of main" >&2
+        if [[ "${{ inputs.commit_sha }}" == "$(git rev-parse HEAD)" ]]; then
+            echo "Envoy is already up-to-date (${{ inputs.commit_sha }})" >&2
+            exit 0
+        fi
+        if ! git merge-base --is-ancestor "${{ inputs.commit_sha }}" HEAD; then
+            echo "Provided Envoy sha (${{ inputs.commit_sha }}) is not an ancestor of main" >&2
             exit 1
         fi
-        git -C envoy checkout "${{ inputs.commit_sha }}"
-        if ! git -C envoy merge-base --is-ancestor "${{ steps.current.values.envoy_version }}"; then
+        git checkout "${{ inputs.commit_sha }}"
+        if ! git merge-base --is-ancestor "${{ steps.current.outputs.envoy_version }}" HEAD; then
             echo "Provided Envoy sha (${{ inputs.commit_sha }}) is not newer than " \
-                 "the current sha (${{ steps.current.values.envoy_version }})" >&2
+                 "the current sha (${{ steps.current.outputs.envoy_version }})" >&2
+            exit 0
         fi
         echo "should_update=true" >> "$GITHUB_OUTPUT"
       id: state
+      working-directory: envoy
+      name: Check provided Envoy version
 
-    # Checkout the Archive repo
-    - name: 'Checkout Repository (archive)'
-      uses: actions/checkout@v4
-      if: ${{ steps.state.values.should_update }} == 'true' }}
-      with:
-        repository: envoyproxy/archive
-        ref: main
-        path: archive
-
-    - run: |
-        cd envoy-website
-        ./sync_envoy.sh
-      if: ${{ steps.state.values.should_update }} == 'true' }}
+    - run: ./sync_envoy.sh
+      if: ${{ steps.state.outputs.should_update == 'true' }}
+      working-directory: envoy-website
       env:
         ENVOY_SRC_DIR: ../envoy
-        ENVOY_ARCHIVE_DIR: ../archive
         COMMITTER_NAME: "update-envoy[bot]"
         COMMITTER_EMAIL: "135279899+update-envoy[bot]@users.noreply.github.com"
