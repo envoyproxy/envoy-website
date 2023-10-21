@@ -10,7 +10,12 @@ def load_github_archives():
         http_archive(
             **{
                 k: (
-                    v.format(**kwargs) if not k.startswith("patch") else v
+                    (v.format(**kwargs) if not k.startswith("patch") else v)
+                    if type(v) == "string"
+                    else [
+                            _v.format(**kwargs) if not k.startswith("patch") else _v
+                            for _v in v
+                    ]
                 )
                 for k, v in kwargs.items()
                 if k not in ["repo", "type", "version"]
