@@ -3,14 +3,6 @@ VERSIONS = {
     # It must also be availble, and preferably the default here:
     #  https://github.com/netlify/build-image/blob/focal/included_software.md
     "python": "3.10",
-    "aspect_bazel_lib": {
-        "type": "github_archive",
-        "repo": "aspect-build/bazel-lib",
-        "version": "fcf1db5cd5acabae98009a26589dd097c6baa95d",
-        "sha256": "3d8c76cff1486f0fc07fdb6969e01b865cdbd9379ea7feac1b223e73589409f1",
-        "urls": ["https://github.com/{repo}/archive/{version}.tar.gz"],
-        "strip_prefix": "bazel-lib-{version}",
-    },
     "com_github_twbs_bootstrap": {
         "type": "github_archive",
         "repo": "twbs/bootstrap",
