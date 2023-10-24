@@ -6,8 +6,8 @@ VERSIONS = {
     "aspect_bazel_lib": {
         "type": "github_archive",
         "repo": "aspect-build/bazel-lib",
-        "version": "8d3c941c6499626376d2a1e3e01e05f3e1ec6856",
-        "sha256": "1b1da9d7d58b83ae47e7f15f1dd6c5033f84bc2b5ad65226fa745861b2204d91",
+        "version": "fcf1db5cd5acabae98009a26589dd097c6baa95d",
+        "sha256": "3d8c76cff1486f0fc07fdb6969e01b865cdbd9379ea7feac1b223e73589409f1",
         "urls": ["https://github.com/{repo}/archive/{version}.tar.gz"],
         "strip_prefix": "bazel-lib-{version}",
     },
@@ -40,8 +40,8 @@ VERSIONS = {
     "envoy_toolshed": {
         "type": "github_archive",
         "repo": "envoyproxy/toolshed",
-        "version": "0.1.0",
-        "sha256": "3ec38dd743e99be24b07eec0a60496960eb3d581f0391dffb93fb7a4c258d1f5",
+        "version": "0.1.1",
+        "sha256": "ee759b57270a2747f3f2a3d6ecaad63b834dd9887505a9f1c919d72429dbeffd",
         "urls": ["https://github.com/{repo}/archive/bazel-v{version}.tar.gz"],
         "strip_prefix": "toolshed-bazel-v{version}/bazel",
     },
