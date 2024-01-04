@@ -1,5 +1,8 @@
 name: "CodeQL"
 
+permissions:
+  contents: read
+
 on:
   push:
     branches:
@@ -10,15 +13,11 @@ on:
   schedule:
   - cron: '16 11 * * 5'
 
-permissions:
-  contents: read
-
-
 jobs:
   analyze:
     name: Analyze
-    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-22.04' }}
-    timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 360
     permissions:
       actions: read
       contents: read
