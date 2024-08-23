@@ -22,7 +22,7 @@ NOW = datetime.now()
 PATH = "content"
 PLUGINS = ["pelican.plugins.webassets"]
 SITENAME = "Envoy proxy"
-# SITEURL = "www.envoyproxy.io"
+SITEURL = "https://www.envoyproxy.io"
 STATIC_PATHS = [
     "images",
     "assets",
