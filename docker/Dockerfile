@@ -7,26 +7,11 @@ ARG APT_PKGS="\
     language-pack-en-base \
     software-properties-common"
 ARG APT_BUILD_PKGS="\
-    autoconf \
-    automake \
-    bison \
     build-essential \
-    gawk \
     git \
-    gnupg2 \
     gosu \
-    libffi-dev \
-    libgdbm-dev \
-    libgmp-dev \
-    libncurses5-dev \
-    libreadline-dev \
-    libsqlite3-dev \
-    libssl-dev \
-    libtool \
-    libyaml-dev \
-    pkg-config \
-    sqlite3 \
-    zlib1g-dev"
+    jq"
+
 ARG BAZELISK_VERSION=1.10.1
 
 ENV LANGUAGE en_US:en
