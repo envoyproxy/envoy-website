@@ -14,15 +14,18 @@ jobs:
     steps:
     - name: Install Docker
       run: |
-        brew install --cask --no-quarantine docker
+        brew cask install docker
+        # allow the app to run without confirmation
+        xattr -d -r com.apple.quarantine /Applications/Docker.app
 
-        xattr -r -d com.apple.quarantine /Applications/Docker.app
-        # /Applications/Docker.app/Contents/MacOS/install --accept-license --user=`whoami`
-        # sudo /Applications/Docker.app/Contents/MacOS/Docker --unattended --install-privileged-components
-        open /Applications/Docker.app --args --accept-license
+        # preemptively do docker.app's setup to avoid any gui prompts
+        sudo /bin/cp /Applications/Docker.app/Contents/Library/LaunchServices/com.docker.vmnetd /Library/PrivilegedHelperTools
+        sudo /bin/cp /Applications/Docker.app/Contents/Resources/com.docker.vmnetd.plist /Library/LaunchDaemons/
+        sudo /bin/chmod 544 /Library/PrivilegedHelperTools/com.docker.vmnetd
+        sudo /bin/chmod 644 /Library/LaunchDaemons/com.docker.vmnetd.plist
+        sudo /bin/launchctl load /Library/LaunchDaemons/com.docker.vmnetd.plist
 
-        sleep 10
-        # docker --version
+        open -g -a Docker.app || exit
 
         echo "Checking Docker service..."
 
@@ -32,7 +35,6 @@ jobs:
 
         # ps aux | grep -i docker
         # pgrep Docker
-
 
         TIMEOUT=20
         SECONDS=0
