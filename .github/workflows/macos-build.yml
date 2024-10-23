@@ -1,0 +1,48 @@
+name: macOS build
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+  push:
+
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+    - name: Install Docker
+      run: |
+        brew install --cask docker
+        open /Applications/Docker.app
+
+        sleep 10
+        # docker --version
+
+        echo "Checking Docker service..."
+
+        ls -l /var/run/docker.sock || echo "Socket not found"
+
+        cat ~/Library/Containers/com.docker.docker/Data/log/host/docker.log || echo "Log not found"
+
+        # ps aux | grep -i docker
+        # pgrep Docker
+
+
+        TIMEOUT=20
+        SECONDS=0
+        while ! docker system info > /dev/null 2>&1; do
+            if [ $SECONDS -ge $TIMEOUT ]; then
+                echo "Docker failed to start within $TIMEOUT seconds."
+                docker system info
+
+                exit 1
+            fi
+            echo "Waiting for Docker to be available... ($SECONDS seconds elapsed)"
+            sleep 1
+        done
+        echo "Docker is now available."
+
+    - run: |
+        docker --version
