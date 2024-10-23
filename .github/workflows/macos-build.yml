@@ -24,6 +24,16 @@ jobs:
         echo "Trying to start ..."
         open -g -a Docker.app || exit
 
+        sleep 10
+
+        ps aux | grep -i docker
+        pgrep Docker
+
+        ls -l /var/run/docker.sock || echo "Socket not found"
+
+        cat ~/Library/Containers/com.docker.docker/Data/log/host/docker.log || echo "Log not found"
+
+
         TIMEOUT=120
         SECONDS=0
         while ! docker system info > /dev/null 2>&1; do
