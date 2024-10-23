@@ -14,18 +14,14 @@ jobs:
     steps:
     - name: Install Docker
       run: |
-        brew install --cask docker
-        # allow the app to run without confirmation
-        xattr -d -r com.apple.quarantine /Applications/Docker.app
 
-        # preemptively do docker.app's setup to avoid any gui prompts
-        sudo /bin/cp /Applications/Docker.app/Contents/Library/LaunchServices/com.docker.vmnetd /Library/PrivilegedHelperTools
-        sudo /bin/cp /Applications/Docker.app/Contents/Resources/com.docker.vmnetd.plist /Library/LaunchDaemons/
-        sudo /bin/chmod 544 /Library/PrivilegedHelperTools/com.docker.vmnetd
-        sudo /bin/chmod 644 /Library/LaunchDaemons/com.docker.vmnetd.plist
-        sudo /bin/launchctl load /Library/LaunchDaemons/com.docker.vmnetd.plist
+        curl -sL https://desktop.docker.com/mac/main/amd64/Docker.dmg > Docker.dmg
 
-        open -g -a Docker.app || exit
+        sudo hdiutil attach Docker.dmg
+        sudo /Volumes/Docker/Docker.app/Contents/MacOS/install --accept-license --user=`whoami`
+        sudo hdiutil detach /Volumes/Docker
+
+        sleep 10
 
         echo "Checking Docker service..."
 
