@@ -4,8 +4,29 @@ set -o pipefail
 
 BAZEL="${BAZEL:-bazel}"
 OUTPUT_DIR="${1:-_site}"
-OUTPUT_DIR="$(realpath "${OUTPUT_DIR}")"
 OUTPUT_BASE="$($BAZEL info output_base 2>/dev/null)"
+
+
+# X-platform implementaion of working `realpath`
+get_realpath() {
+    if command -v realpath >/dev/null 2>&1; then
+        realpath "$1" 2>/dev/null || echo "$(pwd)/$1"
+    else
+        echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
+    fi
+}
+
+
+OUTPUT_DIR="$(get_realpath "${OUTPUT_DIR}")"
+
+
+num_procs () {
+    if command -v nproc >/dev/null 2>&1; then
+        nproc
+    else
+        sysctl -n hw.ncpu
+    fi
+}
 
 
 debug_jvm_fail () {
@@ -22,9 +43,10 @@ debug_jvm_fail () {
     return "$RETURN_CODE"
 }
 
+
 inject_ci_bazelrc () {
     {
-        PROC_COUNT="$(nproc)"
+        PROC_COUNT="$(num_procs)"
         PROCS=$((PROC_COUNT - 1))
         SPHINX_ARGS="-j 12 -v warn"
         echo "build:ci --action_env=SPHINX_RUNNER_ARGS=\"${SPHINX_ARGS}\""
