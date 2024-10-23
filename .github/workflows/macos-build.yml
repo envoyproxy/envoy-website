@@ -15,7 +15,11 @@ jobs:
     - name: Install Docker
       run: |
         brew install --cask docker
-        open /Applications/Docker.app
+
+        xattr -r -d com.apple.quarantine /Applications/Docker.app
+        /Applications/Docker.app/Contents/MacOS/install --accept-license --user=`whoami`
+        sudo /Applications/Docker.app/Contents/MacOS/Docker --unattended --install-privileged-components
+        open -a /Applications/Docker.app
 
         sleep 10
         # docker --version
