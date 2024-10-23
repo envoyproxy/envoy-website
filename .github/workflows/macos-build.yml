@@ -21,18 +21,10 @@ jobs:
         sudo /Volumes/Docker/Docker.app/Contents/MacOS/install --accept-license --user=`whoami`
         sudo hdiutil detach /Volumes/Docker
 
-        sleep 10
-
-        echo "Checking Docker service..."
-
-        ls -l /var/run/docker.sock || echo "Socket not found"
-
-        cat ~/Library/Containers/com.docker.docker/Data/log/host/docker.log || echo "Log not found"
-
         # ps aux | grep -i docker
         # pgrep Docker
 
-        TIMEOUT=20
+        TIMEOUT=120
         SECONDS=0
         while ! docker system info > /dev/null 2>&1; do
             if [ $SECONDS -ge $TIMEOUT ]; then
