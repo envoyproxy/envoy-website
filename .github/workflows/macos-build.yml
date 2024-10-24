@@ -1,0 +1,71 @@
+name: macOS build
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+  push:
+
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+    - name: Install Docker
+      run: |
+        brew install colima
+        brew install --cask docker
+        brew services start colima --runtime docker
+
+        sleep 10
+
+        ls -lh /var/run/docker.sock || echo "Socket not found"
+
+        docker run --rm hello-world
+
+
+        curl -sL https://desktop.docker.com/mac/main/amd64/Docker.dmg > Docker.dmg
+
+        sudo hdiutil attach Docker.dmg
+        sudo /Volumes/Docker/Docker.app/Contents/MacOS/install --accept-license --user=`whoami`
+        sudo hdiutil detach /Volumes/Docker
+
+        echo "Trying to start ..."
+
+        # open -g -a Docker.app --args --help
+
+        open -g -a Docker.app || exit
+
+        sleep 10
+
+        ls -lh /var/run/docker.sock || echo "Socket not found"
+
+        sudo chown runner /Users/runner/.docker/run/docker.sock
+
+        ls -lh /var/run/docker.sock || echo "Socket not found"
+        ls -lh /Users/runner/.docker/run/docker.sock || echo "Socket not found"
+
+
+        # sudo chmod 666 /var/run/docker.sock
+
+
+        docker run --rm hello-world
+
+
+        TIMEOUT=120
+        SECONDS=0
+        while ! docker system info > /dev/null 2>&1; do
+            if [ $SECONDS -ge $TIMEOUT ]; then
+                echo "Docker failed to start within $TIMEOUT seconds."
+                docker system info
+
+                exit 1
+            fi
+            echo "Waiting for Docker to be available... ($SECONDS seconds elapsed)"
+            sleep 1
+        done
+        echo "Docker is now available."
+
+    - run: |
+        docker --version
