@@ -25,5 +25,5 @@ $BAZEL run \
          "$OUTPUT_DIR"
 
 if [[ -n "$CI" ]]; then
-    $BAZEL shutdown || :
+    $BAZEL --timeout=5 shutdown > /dev/null 2>&1 || :
 fi
