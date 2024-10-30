@@ -8,9 +8,11 @@ common:ci --test_output=errors
 
 build --color=yes
 build --action_env=SPHINX_RUNNER_ARGS
-build --jobs=HOST_CPUS-1
 build --workspace_status_command="bash bazel/get_workspace_status"
 build --cxxopt=-std=c++17 --host_cxxopt=-std=c++17
 build --action_env=BUILD_DOCS_SHA
+build --jobs=HOST_CPUS*.8
+build --verbose_failures
 
-build:ci --action_env=SPHINX_RUNNER_ARGS="-j 16 -v warn"
+try-import %workspace%/repo.bazelrc
+try-import %workspace%/user.bazelrc
