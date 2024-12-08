@@ -1,6 +1,8 @@
 load("@rules_pkg//pkg:mappings.bzl", "pkg_filegroup", "pkg_files")
 load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
 
+exports_files(["nav.yaml"])
+
 pkg_files(
     name = "yaml_files",
     srcs = glob(["*.yaml"]) + ["@envoy_archive//:versions.yaml"],
