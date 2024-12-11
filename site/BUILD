@@ -1,3 +1,4 @@
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
 load("@envoy_toolshed//website:macros.bzl", "static_website")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
 
@@ -36,20 +37,46 @@ label_flag(
     visibility = ["//visibility:public"],
 )
 
+bool_flag(
+    name = "no_docs_archive",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "disable_docs_archive",
+    flag_values = {":no_docs_archive": "True"},
+)
+
 label_flag(
     name = "docs_latest",
     build_setting_default = ":docs",
     visibility = ["//visibility:public"],
 )
 
+bool_flag(
+    name = "no_docs_latest",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "disable_docs_latest",
+    flag_values = {":no_docs_latest": "True"},
+)
+
 static_website(
     name = "site",
-    srcs = [":docs_archive"],
+    srcs = select({
+        ":disable_docs_archive": [],
+        "//conditions:default": [":docs_archive"],
+    }),
     compressor = "@envoy//tools/zstd",
     compressor_args = "-T0",
     content = "//site/content",
     data = "//site/data",
     extension = "tar.zst",
     theme = "//site/theme",
-    deps = [":docs_latest"],
+    deps = select({
+        ":disable_docs_latest": [],
+        "//conditions:default": [":docs_latest"],
+    }),
 )

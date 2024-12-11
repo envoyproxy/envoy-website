@@ -24,16 +24,12 @@ debug_jvm_fail () {
 
 inject_ci_bazelrc () {
     {
-
         PROC_COUNT="$(nproc)"
         PROCS=$((PROC_COUNT - 1))
         SPHINX_ARGS="-j 12 -v warn"
         echo "build:ci --action_env=SPHINX_RUNNER_ARGS=\"${SPHINX_ARGS}\""
         # echo "build:ci --local_ram_resources=20480"
-
     } > repo.bazelrc
-
-    cat repo.bazelrc
 }
 
 
@@ -43,15 +39,20 @@ if  [[ -e "$OUTPUT_DIR" ]]; then
 fi
 
 mkdir -p "${OUTPUT_DIR}"
-BAZEL_BUILD_ARGS=()
+
+if [[ -n "$BAZEL_BUILD_OPTIONS" ]]; then
+    read -ra BAZEL_BUILD_OPTIONS <<< $BAZEL_BUILD_OPTIONS
+else
+    BAZEL_BUILD_OPTIONS=()
+fi
 
 if [[ -n "$CI" ]]; then
-    BAZEL_BUILD_ARGS=(--config=ci)
+    BAZEL_BUILD_OPTIONS+=(--config=ci)
     inject_ci_bazelrc
 fi
 
 $BAZEL run \
-         "${BAZEL_BUILD_ARGS[@]}" \
+         "${BAZEL_BUILD_OPTIONS[@]}" \
          --@envoy//tools/tarball:target=//site \
          @envoy//tools/tarball:unpack \
          "$OUTPUT_DIR" || debug_jvm_fail
