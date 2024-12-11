@@ -10,7 +10,7 @@ TARGET_BRANCH=main
 readarray -t CHANGED_FILES < <(git diff --name-only "$TARGET_BRANCH")
 
 for FILE in "${CHANGED_FILES[@]}"; do
-    if ! [[ " ${WATCH_PATHS[@]} " =~ " ${FILE%%/*} " ]] && ! [[ " ${WATCH_PATHS[@]} " =~ " ${FILE} " ]]; then
+    if ! [[ " ${IGNORED_PATHS[@]} " =~ " ${FILE%%/*} " ]] && ! [[ " ${IGNORED_PATHS[@]} " =~ " ${FILE} " ]]; then
         exit 1
     fi
 done
