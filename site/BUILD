@@ -26,27 +26,6 @@ pkg_tar(
     deps = ["@envoy//docs"],
 )
 
-filegroup(
-    name = "nodocs",
-    srcs = [],
-)
-
-label_flag(
-    name = "docs_archive",
-    build_setting_default = "@envoy_archive//docs",
-    visibility = ["//visibility:public"],
-)
-
-bool_flag(
-    name = "no_docs_archive",
-    build_setting_default = False,
-)
-
-config_setting(
-    name = "disable_docs_archive",
-    flag_values = {":no_docs_archive": "True"},
-)
-
 label_flag(
     name = "docs_latest",
     build_setting_default = ":docs",
@@ -65,10 +44,6 @@ config_setting(
 
 static_website(
     name = "site",
-    srcs = select({
-        ":disable_docs_archive": [],
-        "//conditions:default": [":docs_archive"],
-    }),
     compressor = "@envoy//tools/zstd",
     compressor_args = "-T0",
     content = "//site/content",
