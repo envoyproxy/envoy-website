@@ -20,6 +20,8 @@ EXTRA_PATH_METADATA = {
 FILENAME_METADATA = r"(?P<title>.*)"
 NOW = datetime.now()
 PATH = "content"
+PAGE_PATHS = ["pages"]
+PAGE_SAVE_AS = "{slug}/index.html"
 PLUGINS = ["pelican.plugins.webassets"]
 SITENAME = "Envoy proxy"
 SITEURL = "https://www.envoyproxy.io"
@@ -28,14 +30,26 @@ STATIC_PATHS = [
     "assets",
 ]
 TEMPLATE_PAGES = {
-    "pages/community.html": "community.html",
-    "pages/docs.html": "docs.html",
-    "pages/training.html": "training.html"}
+    "pages/docs.html": "docs.html"}
 THEME = "theme"
 TIMEZONE = "Europe/London"
 
-for yaml_file in pathlib.Path("data").glob("*.yaml"):
-    locals()[yaml_file.stem.upper()] = yaml.safe_load(yaml_file.read_text())
+PROJECTS = {}
+SITE = {}
+
+
+def nested_dict(d, keys):
+    for key in keys:
+        d = d.setdefault(key, {})
+    return d
+
+
+for yaml_file in pathlib.Path("data").glob("**/*.yaml"):
+    *dirs, filename = yaml_file.parts[1:]
+    if not dirs:
+        SITE[yaml_file.stem] = yaml.safe_load(yaml_file.read_text())
+        continue
+    nested_dict(PROJECTS, dirs)[yaml_file.stem] = yaml.safe_load(yaml_file.read_text())
 
 LATEST_VERSION = max(
     chain.from_iterable(
@@ -52,3 +66,18 @@ TRANSLATION_FEED_ATOM = None
 AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 DEFAULT_PAGINATION = False
+
+# JINJA2CONTENT_TEMPLATES = "theme/templates"
+
+WEBASSETS_BUNDLES = (
+    ('envoy_css', ['css/main.scss'],
+     {'filters': 'libsass',
+      'output': 'css/main.css',
+      'debug': True}),
+)
+
+WEBASSETS_CONFIG = [
+    ("auto_build", True),
+    ("clean_output", True),
+    ("url_expire", False),
+]

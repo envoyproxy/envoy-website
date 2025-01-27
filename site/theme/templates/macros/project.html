@@ -1,0 +1,292 @@
+{% import 'macros/general.html' as general %}
+
+
+<!-- QUOTE MACROS -->
+{% macro render_quote(quote) %}
+<div class="quote">
+  <div class="quote-container">
+    <div class="quote-content">
+      {{ quote.content | safe }}
+    </div>
+    <div class="quote-author">
+      {% if quote.author_image %}
+      <div class="author-image">
+        <img src="{{ quote.author_image }}" alt="{{ quote.author_name }}">
+      </div>
+      {% endif %}
+      <div class="author-info">
+        <p class="name">{{ quote.author_name }}</p>
+        {% if quote.author_title %}
+        <p class="title">{{ quote.author_title }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+
+{% macro quotes_section(section_class, heading, quotes) %}
+<section class="flex-center {{ section_class }}">
+  {% if heading %}
+  <header>
+    <h1>{{ heading }}</h1>
+  </header>
+  {% endif %}
+  <div class="content">
+    {% if quotes is sequence and quotes|length > 1 %}
+    <div class="grid quotes-grid">
+      {% for quote in quotes %}
+      {{ render_quote(quote) }}
+      {% endfor %}
+    </div>
+    {% else %}
+    {{ render_quote(quotes[0] if quotes is sequence else quotes) }}
+    {% endif %}
+  </div>
+</div>
+{% endmacro %}
+
+
+<!-- FEATURE SECTION ON HOME PAGE -->
+{% macro feature(project, order_mod_2) %}
+<div class="project-container {% if order_mod_2 == 1 %}row-reverse{% else %}row{% endif %}">
+  <div class="project-graphic">
+    <div class="project-image">
+      <img src="{{ project.image }}" alt="{{ project.name }}">
+    </div>
+  </div>
+  <div class="project-info">
+    <div class="project-content">
+      <h3 class="project-name">{{ project.name }}</h3>
+      <div class="project-links">
+        {{ github(project) }}
+        <a href="{{ project.docs }}" target="_blank">
+          <span class="link-icon material-symbols-outlined">docs</span>
+          <span>View docs</span>
+        </a>
+      </div>
+      <div class="project-description">
+        {{ project.description | safe }}
+      </div>
+      <a href="{{ project.link }}" class="btn">
+        Learn more
+      </a>
+    </div>
+  </div>
+</div>
+{%- endmacro %}
+
+
+<!-- LINK FEATURE MACRO -->
+
+{% macro project_links(project) %}
+<div class="project-links">
+  {{ github(project) }}
+  <a href="{{ project.docs }}" target="_blank">
+    <span class="link-icon material-symbols-outlined">docs</span>
+    <span>View Docs</span>
+  </a>
+</div>
+{% endmacro %}
+
+
+{% macro project_link_buttons(project) %}
+{{ general.button("View on GitHub", "https://github.com/envoyproxy/" + project["github"] + project.get("github_path", "")) }}
+{{ general.button("Documentation", project.docs ) }}
+{% endmacro %}
+
+
+{% macro github(project, class="") %}
+<a href="https://github.com/envoyproxy/{{ project.github }}{{ project.github_path }}" target="_blank" class="{{ class }}">
+  {{ general.github_icon() }}
+  {% if project.show_stars %}
+  {{ general.star_icon() }}
+  <span id="github-stars-{{ project.github }}">Loading...</span>
+  {% else %}
+  View on GitHub
+  {% endif %}
+</a>
+{% endmacro %}
+
+
+<!-- HEADER MACRO -->
+
+{% macro render_project_header(project) %}
+<header id="page-header" class="header-content" role="banner">
+  <div class="container">
+    <hgroup class="text">
+      <h1>{{ project.name }}</h1>
+      {% for line in project.description.strip("\n").split("\n") %}
+      {% if line.strip() %}
+      {% if loop.index0 == 0 %}
+      <p class="subheading">
+        {{ line | safe }}
+      </p>
+      {% if project.show_stars %}
+      {{ github(project, "github-stats") }}
+      {% endif %}
+      {% else %}
+      <p>
+        {{ line | safe }}
+      </p>
+      {% endif %}
+      {% endif %}
+      {% endfor %}
+      <nav class="header-actions">
+        {{ project_link_buttons(project) }}
+      </nav>
+    </hgroup>
+    <hgroup class="logo">
+      <img src="{{ project.image }}" alt="{{ project.name }}">
+    </hgroup>
+  </div>
+</header>
+{% endmacro %}
+
+
+<!-- CAPABILITIES FEATURE SECTION -->
+{% macro capabilities_section(section_class, heading, capabilities) %}
+<section class="flex-center {{ section_class }}">
+  <header>
+    <h2>{{ heading }}</h2>
+  </header>
+  <div class="content dark-text">
+    <div class="grid capabilities-grid">
+      {% for capability in capabilities %}
+      <div class="capability-card">
+        <h3>
+          <span class="capability-icon material-symbols-outlined">{{ capability.icon }}</span>
+          {{ capability.title }}
+        </h3>
+        <p>{{ capability.description }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endmacro %}
+
+
+<!-- RELEASE GRID MACROS -->
+
+{% macro adopters(companies) -%}
+<div class="content flex-center adopters">
+  <header>
+    <h2>Used By</h2>
+  </header>
+  <div class="content">
+    <div class="adopters-grid">
+      {% for company in companies %}
+      <div class="adopter-card">
+        <header class="adopter-name">
+          <span>{{ company.name }}</span>
+        </header>
+        <div class="adopter-logo">
+          <a href="{{ company.url }}" target="_blank">
+            <img src="{{ company.logo }}" alt="{{ company.name }}">
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{%- endmacro %}
+
+
+{% macro docs_release_links(name, github_url, docs_url) %}
+<p class="release-link">
+  <a href="{{ github_url }}">
+    {{ general.github_icon() }}
+    {{ name }}
+  </a>
+  <a href="{{ docs_url }}" target="_blank">
+    <span class="link-icon material-symbols-outlined">
+      docs
+    </span>
+    <span>View Docs</span>
+  </a>
+</p>
+{% endmacro %}
+
+
+{% macro docs_version(version, release, docs_base_url, latest=False) %}
+{% if latest %}
+<!-- For Latest Release in Version Group -->
+{% set docs_url %}
+{{ docs_base_url }}{% if version != "Latest" %}v{% endif %}{{ release }}/
+{% endset %}
+<li class="latest-release">
+  <header>
+    <strong>v{{ version }}</strong>
+    <span class="pill release-number">{{ release }}</span>
+    {% if stable %}<span class="pill stable">Stable</span>{% endif %}
+  </header>
+  <div class="release-item">
+    {{ docs_release_links(release, "https://github.com/envoyproxy/envoy/releases/tag/v" + release, docs_url) }}
+  </div>
+</li>
+{% else %}
+<li class="release-item hidden-release previous" style="display: none;">
+  {{ docs_release_links(release, "https://github.com/envoyproxy/envoy/releases/tag/v" + release, docs_url) }}
+</li>
+{% endif %}
+{% endmacro %}
+
+
+{% macro docs_version_expand(releases) %}
+{% if releases | length > 1 %}
+<li class="toggle-wrapper" onclick="toggleReleases(this)">
+  <div class="toggle-releases" aria-label="Toggle previous releases"></div>
+  <span class="toggle-text">Previous releases</span>
+</li>
+{% else %}
+<li>No previous releases</li>
+{% endif %}
+{% endmacro %}
+
+
+{% macro docs_grid(project, versions, docs_base_url, stable) %}
+<ul class="content dark-text grid">
+  {% for version_group in versions %}
+  <li class="version-group">
+    <ul class="release-list">
+      {% for release in version_group.releases %}
+      {% if loop.first %}
+      {{ docs_version(version_group.version, release, docs_base_url, True) }}
+      {{ docs_version_expand(version_group.releases) }}
+      {% else %}
+      {{ docs_version(version_group.version, release, docs_base_url) }}
+      {% endif %}
+      {% endfor %}
+    </ul>
+  </li>
+  {% endfor %}
+</ul>
+{% endmacro %}
+
+
+{% macro docs_version_section(project, page, id, section, versions, stable) -%}
+<section class="flex-center release-grid">
+  <header>
+    <a name="{{ id }}"></a>
+    <h2>{{ section.title }}</h2>
+    <p class="subheading">{{ section.description }}</p>
+  </header>
+  {{ docs_grid(project, versions, page.docs_base_url, stable) }}
+</section>
+{% endmacro %}
+
+
+{% macro docs(versions, page, project) -%}
+{% for id, section in page.sections.items() %}
+{% if id == "latest" %}
+{{ docs_version_section(project, page, id, section, (versions | selectattr("title", "equalto", "Stable versions") | first).versions[:1], true) }}
+{% elif id == "stable" %}
+{{ docs_version_section(project, page, id, section, (versions | selectattr("title", "equalto", section.title) | first).versions[1:], true) }}
+{% else %}
+{{ docs_version_section(project, page, id, section, (versions | selectattr("title", "equalto", section.title) | first).versions, false) }}
+{% endif %}
+{% endfor %}
+{% endmacro %}
