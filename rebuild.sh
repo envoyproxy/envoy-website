@@ -20,6 +20,11 @@ CURRENT_DIR="$(get_realpath $(dirname "${BASH_SOURCE[0]}"))"
 BUILD_SCRIPT="${CURRENT_DIR}/build-website.sh"
 
 
+if [[ -n "$DEBUG" ]]; then
+    BAZEL_BUILD_OPTIONS+=" --config=debug"
+fi
+
+
 download_script () {
     if [[ -e "$REBUILD" ]]; then
         echo "Using cached watch.sh ($REBUILD)"
