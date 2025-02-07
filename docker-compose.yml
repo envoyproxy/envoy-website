@@ -1,62 +1,99 @@
+# NOTE: you must `export UID` before building
+
 services:
-  live:
-    build:
-      context: docker
-      dockerfile: Dockerfile
-    ports:
-    - 4000:4000
-    command: bazel run //site:live
-    volumes:
-    - .:/src/workspace/envoy-website
-    - ~/.cache/bazel:/$HOME/.cache/bazel
-    - ~/.cache/bazelisk:/$HOME/.cache/bazelisk
-    working_dir: /src/workspace/envoy-website
-    environment:
-      LOCAL_UID: ${UID:?"`UID` must be set, try `export UID`"}
-      LOCAL_USER_NAME: $USERNAME
-      LOCAL_USER_HOME: $HOME
-
-  live_docs:
-    build:
-      context: docker
-      dockerfile: Dockerfile
-    ports:
-    - 4000:4000
-    command: |
-      bash -c '\
-          bazel run --action_env=ENVOY_COMMIT="$$(bazel run //docs:latest_version)" \
-              //site:live_docs'
-    volumes:
-    - .:/src/workspace/envoy-website
-    - ~/.cache/bazel:/$HOME/.cache/bazel
-    - ~/.cache/bazelisk:/$HOME/.cache/bazelisk
-    working_dir: /src/workspace/envoy-website
-    environment:
-      LOCAL_UID: ${UID:?"`UID` must be set, try `export UID`"}
-      LOCAL_USER_NAME: $USERNAME
-      LOCAL_USER_HOME: $HOME
-
   build:
     build:
-      context: docker
-      dockerfile: Dockerfile
+      context: &context https://github.com/envoyproxy/toolshed.git#f89fb5df8defa4b7daf9a19a899dbdfbbf3b8d62:docker/bazel
+      args:
+        USER_NAME: "${USER}"
+        USER_ID: &uid "${UID}"
+        GROUP_ID: &gid "${GID:-}"
+        APT_PKGS: &apt_pkgs >-
+          autoconf
+          automake
+          bison
+          build-essential
+          gawk
+          git
+          gnupg2
+          libffi-dev
+          libgdbm-dev
+          libgmp-dev
+          libncurses5-dev
+          libreadline-dev
+          libsqlite3-dev
+          libssl-dev
+          libtool
+          libyaml-dev
+          pkg-config
+          sqlite3
+          zlib1g-dev
     command: ./build-website.sh
-    volumes:
+    user: ${UID:-1000}:${GID:-}
+    volumes: &volumes
     - .:/src/workspace/envoy-website
-    - ~/.cache/bazel:/$HOME/.cache/bazel
-    - ~/.cache/bazelisk:/$HOME/.cache/bazelisk
+    - ~/.cache/bazel:$HOME/.cache/bazel
+    - ~/.cache/bazelisk:$HOME/.cache/bazelisk
     working_dir: /src/workspace/envoy-website
     environment:
-      BAZEL_BUILD_OPTIONS: $BAZEL_BUILD_OPTIONS
-      LOCAL_UID: ${UID:?"`UID` must be set, try `export UID`"}
-      LOCAL_USER_NAME: $USERNAME
-      LOCAL_USER_HOME: $HOME
+      BAZEL_BUILD_OPTIONS: &bazel_options ${BAZEL_BUILD_OPTIONS:-}
+
+  live:
+    build:
+      context: *context
+      target: extra
+      args:
+        USER_NAME: ${USER}
+        USER_ID: *uid
+        GROUP_ID: *gid
+        APT_PKGS: *apt_pkgs
+        EXTRA_APT_PKGS: >-
+          inotify-tools
+    command: ./rebuild.sh
+    user: ${UID:?"`UID` must be set, try `export UID`"}:${GID:-}
+    volumes: *volumes
+    working_dir: /src/workspace/envoy-website
+    environment:
+      BAZEL_BUILD_OPTIONS: *bazel_options
+      DEBUG: ${DEBUG:-}
+      RUN_ON_START: ${RUN_ON_START:-1}
+      WATCH_COMMAND: inotify
+
+  website:
+    image: nginx
+    depends_on:
+    - ${BUILDER:-build}
+    command:
+    - /bin/sh
+    - -c
+    - |
+      cat <<EOF > /etc/nginx/conf.d/default.conf
+      server {
+          listen       8000;
+          listen  [::]:8000;
+          server_name  localhost;
+          location / {
+              root   /usr/share/nginx/html;
+              index  index.html index.htm;
+          }
+      }
+      EOF
+      nginx -g 'daemon off;'
+    volumes:
+    - ./_site:/usr/share/nginx/html:z
+    ports:
+    - 8000:8000
 
   update:
     build:
       context: docker
       dockerfile: Dockerfile
+      args:
+        USER_NAME: "${USERNAME}"
+        USER_ID: "${UID}"
+        GROUP_ID: "${GID:-}"
     command: ./sync_envoy.sh
+    user: "${UID:-1000}:${GID:-1000}"
     volumes:
     - .:/src/workspace/envoy-website
     - ${ENVOY_SRC_DIR:-../envoy}:/src/workspace/envoy
@@ -64,16 +101,6 @@ services:
     - ~/.cache/bazelisk:/$HOME/.cache/bazelisk
     working_dir: /src/workspace/envoy-website
     environment:
-      LOCAL_UID: ${UID:?"`UID` must be set, try `export UID`"}
-      LOCAL_USER_NAME: $USERNAME
-      LOCAL_USER_HOME: $HOME
       ENVOY_SRC_DIR: ../envoy
-      COMMITTER_NAME: ${COMMITTER_NAME}
-      COMMITTER_EMAIL: ${COMMITTER_EMAIL}
-
-  static:
-    image: nginx
-    volumes:
-    - ./_site:/usr/share/nginx/html:z
-    ports:
-    - 7000:80
+      COMMITTER_NAME: ${COMMITTER_NAME:-}
+      COMMITTER_EMAIL: ${COMMITTER_EMAIL:-}

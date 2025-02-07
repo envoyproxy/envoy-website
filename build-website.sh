@@ -1,9 +1,15 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
 
-set -o pipefail
+set -e -o pipefail
 
 BAZEL="${BAZEL:-bazel}"
 OUTPUT_DIR="${1:-_site}"
+
+if ! command -v "$BAZEL" &> /dev/null; then
+    echo "bazel not found, exiting" >&2
+    exit 1
+fi
+
 OUTPUT_BASE="$($BAZEL info output_base 2>/dev/null)"
 
 
