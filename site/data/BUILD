@@ -5,7 +5,7 @@ exports_files(["nav.yaml"])
 
 pkg_files(
     name = "yaml_files",
-    srcs = glob(["*.yaml"]) + ["@envoy_archive//:versions.yaml"],
+    srcs = glob(["**/*.yaml"]) + ["@envoy_archive//:versions.yaml"],
     prefix = "data",
     strip_prefix = "",
 )

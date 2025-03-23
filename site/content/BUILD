@@ -12,6 +12,7 @@ pkg_files(
         "images/**/*.png",
         "images/**/*.svg",
         "pages/*.html",
+        "pages/*.md",
     ]),
     prefix = "content",
     strip_prefix = "",
