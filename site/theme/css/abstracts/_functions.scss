@@ -1,0 +1,108 @@
+@import "variables";
+
+// Color functions
+@function tint($color, $percentage) {
+  @return mix(#fff, $color, $percentage);
+}
+
+@function shade($color, $percentage) {
+  @return mix(#000, $color, $percentage);
+}
+
+// Map deep get
+@function map-deep-get($map, $keys...) {
+  @each $key in $keys {
+    $map: map-get($map, $key);
+  }
+  @return $map;
+}
+
+// Z-index management
+$z-indexes: (
+  modal: 1000,
+  overlay: 900,
+  dropdown: 800,
+  header: 700,
+  footer: 600
+);
+
+@function z($key) {
+  @return map-get($z-indexes, $key);
+}
+
+// Unit conversion
+@function strip-unit($number) {
+  @if type-of($number) == 'number' and not unitless($number) {
+    @return ($number / 1);
+  }
+  @return $number;
+}
+
+// Convert pixels to rem
+@function rem($pixels) {
+  @return ($pixels / 16) * 1rem;
+}
+
+@function em($pixels, $context: 16) {
+  $em: strip-unit($pixels) / strip-unit($context);
+  @return #{$em}em;
+}
+
+// String replacement
+@function str-replace($string, $search, $replace: '') {
+  $index: str-index($string, $search);
+
+  @if $index {
+    @return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+  }
+
+  @return $string;
+}
+
+// Math functions
+@function pow($number, $exponent) {
+  $value: 1;
+
+  @if $exponent > 0 {
+    @for $i from 1 through $exponent {
+      $value: $value * $number;
+    }
+  } @else if $exponent < 0 {
+    @for $i from 1 through -$exponent {
+      $value: $value / $number;
+    }
+  }
+
+  @return $value;
+}
+
+// Color contrast
+@function color-contrast($color) {
+  $r: red($color);
+  $g: green($color);
+  $b: blue($color);
+
+  $yiq: ($r * 299) + ($g * 587) + ($b * 114) / 1000;
+
+  @return if($yiq >= 128, #000, #fff);
+}
+
+// Get value from breakpoints
+@function breakpoint($key) {
+  @return map-get($breakpoints, $key);
+}
+
+// Get spacing value
+@function spacing($key) {
+  @return map-get($spacing, $key);
+}
+
+// Get color value
+@function color($key) {
+  @return map-get($colors, $key);
+}
+
+// Get font-size value
+@function font-size($key) {
+  @return map-get($font-sizes, $key);
+}
