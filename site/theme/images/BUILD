@@ -5,6 +5,7 @@ pkg_files(
     name = "image_files",
     srcs = glob([
         "**/*.ico",
+        "**/*.png",
         "**/*.svg",
     ]),
     prefix = "theme/images",

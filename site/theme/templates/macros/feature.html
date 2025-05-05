@@ -1,0 +1,61 @@
+{% macro group(grouped) %}
+<div class="content cards">
+  {% for member in grouped %}
+  <article class="information card">
+    <div>
+      <div class="logo">
+        <img src="{{ member.logo }}" alt="{{ member.name }}"/>
+      </div>
+      {% if member.type %}
+      <span class="tag {{ member.type }}">{{ member.type | upper }}</span>
+      {% endif %}
+      <h3 class="title">{{ member.name }}</h3>
+      <span class="info">
+        {{ member.description }}
+      </span>
+    </div>
+    <div>
+      {% if member.learn_more %}
+      <a class="button" href="{{ member.learn_more }}" target="_blank">
+        {% if member.cta %}
+        <span>{{ member.cta }}</span>
+        {% else %}
+        <span>Learn more</span>
+        {% endif %}
+      </a>
+      {% endif %}
+    </div>
+  </article>
+  {% endfor %}
+</div>
+{% endmacro %}
+
+{% macro section(id, title, grouped) %}
+<section>
+  <header>
+    <a name="{{ id }}"></a>
+    <h2>{{ title }}</h2>
+  </header>
+  {{ group(grouped) }}
+</section>
+{% endmacro %}
+
+{% macro heading(title, page) %}
+<header>
+  <h1>{{ title }}</h1>
+  <nav>
+    {% for id, section_title in page.sections.items() %}
+    <a class="btn"
+       href="#{{ id }}">
+      {{ section_title }}
+    </a>
+    {% endfor %}
+  </nav>
+</header>
+{% endmacro %}
+
+{% macro content(page, data) %}
+{% for id, title in page.sections.items() %}
+{{ section(id, title, data | selectattr(page.match_on, "equalto", id)) }}
+{% endfor %}
+{% endmacro %}
