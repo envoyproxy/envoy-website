@@ -15,8 +15,8 @@ VERSIONS = {
     "envoy": {
         "type": "github_archive",
         "repo": "envoyproxy/envoy",
-        "version": "1188a69c33b96fe817407225e4d231b8073cc7dc",
-        "sha256": "79a140a40380f0e7bce07edcb641b86e7df436352954b2255aad65bb2ff030b3",
+        "version": "f334a6cc614c5bf9f68e0c26220ae5e81f2bbcb8",
+        "sha256": "1edb2b0e60ca4a929a90f779046fb55f542cf799d869533635ab37ff3789a05b",
         "urls": ["https://github.com/{repo}/archive/{version}.tar.gz"],
         "strip_prefix": "envoy-{version}",
     },
