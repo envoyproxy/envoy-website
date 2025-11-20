@@ -32,9 +32,9 @@ VERSIONS = {
     "envoy_toolshed": {
         "type": "github_archive",
         "repo": "envoyproxy/toolshed",
-        "version": "0.3.3",
-        "sha256": "1ac69d5b1cbc138f779fc3858f06a6777455136260e1144010f0b51880f69814",
-        "urls": ["https://github.com/{repo}/archive/bazel-v{version}.tar.gz"],
+        "version": "0.3.7",
+        "sha256": "2c6b82d0e326a037f6823042d18b248db9c1d77e7457c4445a35ff4b2a5a52e0",
+        "urls": ["https://github.com/{repo}/archive/refs/tags/bazel-v{version}.tar.gz"],
         "patch_args": ["-p1"],
         "strip_prefix": "toolshed-bazel-v{version}/bazel",
     },

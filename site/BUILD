@@ -44,7 +44,7 @@ config_setting(
 
 static_website(
     name = "site",
-    compressor = "@envoy//tools/zstd",
+    compressor = "@zstd//:zstd_cli",
     compressor_args = "-T0",
     content = "//site/content",
     data = "//site/data",
