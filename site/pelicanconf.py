@@ -13,7 +13,7 @@ DEFAULT_LANG = "en"
 EXTRA_PATH_METADATA = {
     "assets/robots.txt": {"path": "robots.txt"},
     "assets/favicon.ico": {"path": "favicon.ico"},
-    "assets/404": {"path": "404.html"},
+    # "assets/404": {"path": "404.html"},
     "assets/google7933de1bd04e097b": {"path": "google7933de1bd04e097b.html"},
     "assets/google95e577d28834e13d": {"path": "google95e577d28834e13d.html"},
 }
@@ -30,7 +30,8 @@ STATIC_PATHS = [
 TEMPLATE_PAGES = {
     "pages/community.html": "community.html",
     "pages/docs.html": "docs.html",
-    "pages/training.html": "training.html"}
+    "pages/training.html": "training.html",
+    "templates/404.html": "404.html"}
 THEME = "theme"
 TIMEZONE = "Europe/London"
 
