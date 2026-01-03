@@ -1,8 +1,5 @@
 VERSIONS = {
-    # This should match the version in `.ruby-version`
-    # It must also be availble, and preferably the default here:
-    #  https://github.com/netlify/build-image/blob/focal/included_software.md
-    "python": "3.10",
+    "python": "3.12",
     "com_github_twbs_bootstrap": {
         "type": "github_archive",
         "repo": "twbs/bootstrap",
