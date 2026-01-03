@@ -1,11 +1,13 @@
 """Non-module dependencies for envoy-website."""
 
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("//:versions.bzl", "VERSIONS")
 
-def _non_module_dependencies_impl(_ctx):
+def _non_module_dependencies_impl(ctx):
     """Load dependencies that cannot be handled by bzlmod."""
+    
+    # Get http_archive and git_repository from bazel_tools
+    http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+    git_repository = use_repo_rule("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
     
     # Bootstrap CSS framework - needs custom BUILD file
     bootstrap = VERSIONS["com_github_twbs_bootstrap"]
@@ -18,13 +20,14 @@ def _non_module_dependencies_impl(_ctx):
     )
     
     # envoy - for documentation building
-    # Using git_repository because MODULE.bazel has local_path_overrides that won't work
-    # when used as an external dependency
+    # Note: envoy is loaded with its WORKSPACE, which will load all its dependencies
+    # including zstd. We use http_archive instead of git_repository for better caching.
     envoy = VERSIONS["envoy"]
-    git_repository(
+    http_archive(
         name = "envoy",
-        remote = "https://github.com/{repo}".format(repo = envoy["repo"]),
-        commit = envoy["version"],
+        urls = envoy["urls"],
+        sha256 = envoy["sha256"],
+        strip_prefix = envoy["strip_prefix"].format(version = envoy["version"]),
     )
     
     # envoy_archive - contains versioned documentation
