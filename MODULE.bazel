@@ -20,13 +20,8 @@ archive_override(
     integrity = "sha256-kx4r36cRfb/2at8z85cSzRbQ6y27VIc5tb8sb/AtMlo=",
 )
 
-# Non-module dependencies (envoy, envoy_archive, bootstrap)
-# These cannot be handled via standard bzlmod because:
-# - envoy has local_path_overrides in MODULE.bazel that don't work as external deps
-# - envoy_archive has no MODULE.bazel
-# - bootstrap needs a custom BUILD file
-non_module_deps = use_extension("//:deps.bzl", "non_module_dependencies")
-use_repo(non_module_deps, "com_github_twbs_bootstrap", "envoy", "envoy_archive")
+# Note: envoy, envoy_archive, and bootstrap are loaded via WORKSPACE.bzlmod
+# because envoy's WORKSPACE needs to run to load its dependencies (like zstd)
 
 # Setup jq toolchain from aspect_bazel_lib
 bazel_lib_toolchains = use_extension("@aspect_bazel_lib//lib:extensions.bzl", "toolchains")
