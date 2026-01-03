@@ -1,0 +1,88 @@
+# Bzlmod Migration
+
+This repository has been migrated from WORKSPACE-based Bazel to use Bzlmod (MODULE.bazel).
+
+## Overview
+
+Bzlmod is Bazel's modern dependency management system that provides better version resolution,
+dependency isolation, and reproducibility compared to the legacy WORKSPACE approach.
+
+## What Changed
+
+### Files Added
+- **MODULE.bazel**: Main bzlmod configuration file that declares dependencies and their versions
+- **deps.bzl**: Module extension for dependencies that cannot be handled by standard bzlmod
+
+### Files Removed
+- **WORKSPACE**: Legacy dependency configuration (removed entirely as nothing depends on this repo)
+- **archive.bzl**: Moved to deps.bzl module extension
+- **toolchains.bzl**: Toolchain setup now in MODULE.bazel
+- **packages.bzl**: Package setup now in MODULE.bazel
+
+### Files Modified
+- **.bazelrc**: Changed `--noenable_bzlmod` to `--enable_bzlmod`
+- **versions.bzl**: Still used for version tracking but now consumed by deps.bzl
+
+## Dependencies
+
+### Standard Bzlmod Dependencies
+
+These are declared with `bazel_dep()` in MODULE.bazel:
+- `aspect_bazel_lib` - Bazel library with utilities
+- `bazel_skylib` - Bazel standard library
+- `rules_pkg` - Package rules for creating archives
+- `rules_python` - Python rules and toolchain
+
+### Archive Override
+
+- `envoy_toolshed` - Uses `archive_override` since it's not in BCR yet but has a MODULE.bazel
+
+### Non-Module Dependencies
+
+These use a custom module extension in deps.bzl because they cannot be handled by standard bzlmod:
+
+- **envoy**: Has local_path_overrides in its MODULE.bazel that don't work when used as an external dependency
+- **envoy_archive**: Has no MODULE.bazel
+- **com_github_twbs_bootstrap**: Needs a custom BUILD file
+
+## Python Setup
+
+Python toolchain and pip dependencies are configured using bzlmod extensions:
+
+```python
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+python.toolchain(python_version = "3.10", is_default = True)
+
+pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
+pip.parse(hub_name = "website_pip3", python_version = "3.10", requirements_lock = "//site:requirements.txt")
+```
+
+## Version Management
+
+The `versions.bzl` file continues to be the source of truth for dependency versions. The `deps.bzl`
+module extension reads from this file to load dependencies. This maintains compatibility with
+existing version update scripts.
+
+## Transitive Dependencies
+
+With bzlmod, transitive dependencies are automatically discovered and resolved. For example:
+- `zstd` comes transitively from `envoy`
+- Other common dependencies come from `envoy_toolshed`
+
+## Benefits
+
+1. **Simpler dependency management**: No need for complex WORKSPACE macros
+2. **Better version resolution**: Bazel handles version conflicts automatically
+3. **Faster builds**: Improved caching and dependency resolution
+4. **Future-proof**: WORKSPACE is being deprecated in favor of bzlmod
+5. **End-of-line repo**: Since nothing builds from this repo, we can use bzlmod without worrying about downstream consumers
+
+## Building
+
+The build process remains the same:
+
+```bash
+bazel build //site
+```
+
+The only difference is that `--enable_bzlmod` is now set in .bazelrc by default.
