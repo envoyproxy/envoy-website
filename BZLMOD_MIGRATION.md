@@ -11,13 +11,14 @@ dependency isolation, and reproducibility compared to the legacy WORKSPACE appro
 
 ### Files Added
 - **MODULE.bazel**: Main bzlmod configuration file that declares dependencies and their versions
-- **deps.bzl**: Module extension for dependencies that cannot be handled by standard bzlmod
+- **WORKSPACE.bzlmod**: Supplements MODULE.bazel for dependencies that need WORKSPACE mode (envoy, envoy_archive, bootstrap)
 
 ### Files Removed
 - **WORKSPACE**: Legacy dependency configuration (removed entirely as nothing depends on this repo)
-- **archive.bzl**: Moved to deps.bzl module extension
+- **archive.bzl**: Moved to WORKSPACE.bzlmod
 - **toolchains.bzl**: Toolchain setup now in MODULE.bazel
 - **packages.bzl**: Package setup now in MODULE.bazel
+- **deps.bzl**: Replaced by WORKSPACE.bzlmod approach
 
 ### Files Modified
 - **.bazelrc**: Changed `--noenable_bzlmod` to `--enable_bzlmod`
@@ -37,13 +38,25 @@ These are declared with `bazel_dep()` in MODULE.bazel:
 
 - `envoy_toolshed` - Uses `archive_override` since it's not in BCR yet but has a MODULE.bazel
 
-### Non-Module Dependencies
+### WORKSPACE.bzlmod Dependencies
 
-These use a custom module extension in deps.bzl because they cannot be handled by standard bzlmod:
+These use WORKSPACE.bzlmod because they need to operate in WORKSPACE mode:
 
-- **envoy**: Has local_path_overrides in its MODULE.bazel that don't work when used as an external dependency
+- **envoy**: Needs its WORKSPACE to run to load dependencies like zstd. Has MODULE.bazel with local_path_overrides that don't work as external dependency.
 - **envoy_archive**: Has no MODULE.bazel
 - **com_github_twbs_bootstrap**: Needs a custom BUILD file
+
+## Hybrid Approach: MODULE.bazel + WORKSPACE.bzlmod
+
+This migration uses a hybrid approach that's recommended for bzlmod adoption when some dependencies haven't fully migrated:
+
+- **MODULE.bazel**: Handles pure bzlmod dependencies (rules, toolchains, toolshed)
+- **WORKSPACE.bzlmod**: Handles dependencies that need WORKSPACE mode (envoy and related repos)
+
+When bzlmod is enabled (`--enable_bzlmod`), Bazel processes both MODULE.bazel and WORKSPACE.bzlmod. This allows:
+1. Modern dependency management via bzlmod for compatible dependencies
+2. Backward compatibility for dependencies that still require WORKSPACE mode
+3. envoy's WORKSPACE can properly load its dependencies (like zstd) without visibility issues
 
 ## Python Setup
 
