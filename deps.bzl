@@ -11,7 +11,7 @@ def _non_module_dependencies_impl(ctx):
     bootstrap = VERSIONS["com_github_twbs_bootstrap"]
     http_archive(
         name = "com_github_twbs_bootstrap",
-        urls = bootstrap["urls"],
+        urls = [url.format(repo = bootstrap["repo"], version = bootstrap["version"]) for url in bootstrap["urls"]],
         sha256 = bootstrap["sha256"],
         strip_prefix = bootstrap["strip_prefix"].format(version = bootstrap["version"]),
         build_file = "@envoy-website//bazel:bootstrap.BUILD",
@@ -23,7 +23,7 @@ def _non_module_dependencies_impl(ctx):
     envoy = VERSIONS["envoy"]
     http_archive(
         name = "envoy",
-        urls = envoy["urls"],
+        urls = [url.format(repo = envoy["repo"], version = envoy["version"]) for url in envoy["urls"]],
         sha256 = envoy["sha256"],
         strip_prefix = envoy["strip_prefix"].format(version = envoy["version"]),
     )
