@@ -1,0 +1,52 @@
+module(
+    name = "envoy-website",
+    version = "0.0.0",
+)
+
+# Core Bazel rule sets - these come transitively from envoy_toolshed but we declare
+# them explicitly for clarity
+bazel_dep(name = "aspect_bazel_lib", version = "2.22.0")
+bazel_dep(name = "bazel_skylib", version = "1.8.1")
+bazel_dep(name = "rules_pkg", version = "1.0.1")
+bazel_dep(name = "rules_python", version = "1.6.0")
+
+# envoy_toolshed provides website building macros and utilities
+# Not in BCR yet, so we use git_override
+bazel_dep(name = "envoy_toolshed", version = "0.3.15")
+git_override(
+    module_name = "envoy_toolshed",
+    remote = "https://github.com/envoyproxy/toolshed",
+    commit = "41d58fc4c8e2c82e5bd0ea6e538b00e38b9da243",  # bazel-v0.3.15
+    strip_prefix = "bazel",
+)
+
+# Non-module dependencies (envoy, envoy_archive, bootstrap)
+# These cannot be handled via standard bzlmod because:
+# - envoy has local_path_overrides in MODULE.bazel that don't work as external deps
+# - envoy_archive has no MODULE.bazel
+# - bootstrap needs a custom BUILD file
+non_module_deps = use_extension("//:deps.bzl", "non_module_dependencies")
+use_repo(non_module_deps, "com_github_twbs_bootstrap", "envoy", "envoy_archive")
+
+# Setup jq toolchain from aspect_bazel_lib
+bazel_lib_toolchains = use_extension("@aspect_bazel_lib//lib:extensions.bzl", "toolchains")
+bazel_lib_toolchains.jq(version = "1.7")
+use_repo(bazel_lib_toolchains, "jq", "jq_toolchains")
+
+# Python toolchain setup
+PYTHON_VERSION = "3.10"
+
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+python.toolchain(
+    python_version = PYTHON_VERSION,
+    is_default = True,
+)
+
+# Pip dependencies for website building
+pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
+pip.parse(
+    hub_name = "website_pip3",
+    python_version = PYTHON_VERSION,
+    requirements_lock = "//site:requirements.txt",
+)
+use_repo(pip, "website_pip3")
