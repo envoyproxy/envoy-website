@@ -17,12 +17,15 @@ http_archive(
 )
 
 # envoy - for documentation building
+# Patch: Disable MODULE.bazel to force WORKSPACE mode
 envoy = VERSIONS["envoy"]
 http_archive(
     name = "envoy",
     urls = [url.format(repo = envoy["repo"], version = envoy["version"]) for url in envoy["urls"]],
     sha256 = envoy["sha256"],
     strip_prefix = envoy["strip_prefix"].format(version = envoy["version"]),
+    patches = ["//bazel/patches:envoy_remove_module_bazel.patch"],
+    patch_args = ["-p1"],
 )
 
 # envoy_archive - contains versioned documentation
