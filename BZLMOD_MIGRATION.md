@@ -42,7 +42,7 @@ These are declared with `bazel_dep()` in MODULE.bazel:
 
 These use WORKSPACE.bzlmod because they need to operate in WORKSPACE mode:
 
-- **envoy**: Needs its WORKSPACE to run to load dependencies like zstd. Has MODULE.bazel with local_path_overrides that don't work as external dependency.
+- **envoy**: Needs its WORKSPACE to run to load dependencies like zstd. We apply a patch to disable its MODULE.bazel (which has local_path_overrides that don't work as external dependency), forcing it to use WORKSPACE mode.
 - **envoy_archive**: Has no MODULE.bazel
 - **com_github_twbs_bootstrap**: Needs a custom BUILD file
 
@@ -57,6 +57,10 @@ When bzlmod is enabled (`--enable_bzlmod`), Bazel processes both MODULE.bazel an
 1. Modern dependency management via bzlmod for compatible dependencies
 2. Backward compatibility for dependencies that still require WORKSPACE mode
 3. envoy's WORKSPACE can properly load its dependencies (like zstd) without visibility issues
+
+### Patching envoy's MODULE.bazel
+
+When a repository has both WORKSPACE and MODULE.bazel, Bazel in bzlmod mode prefers MODULE.bazel. Since envoy's MODULE.bazel contains `local_path_override` directives that don't work when envoy is used as an external dependency, we apply a patch to disable MODULE.bazel (rename it to MODULE.bazel.disabled). This forces envoy to use its WORKSPACE file, which properly loads all dependencies.
 
 ## Python Setup
 
