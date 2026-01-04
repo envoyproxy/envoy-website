@@ -21,13 +21,13 @@ archive_override(
 )
 
 # envoy - for documentation building
-# Not in BCR yet, so we use archive_override with patch to fix MODULE.bazel
+# Not in BCR yet, so we use git_override
+# Note: We can't use archive_override with patches, so using git_override instead
 bazel_dep(name = "envoy", version = "1.37.0-dev")
-archive_override(
+git_override(
     module_name = "envoy",
-    urls = ["https://github.com/envoyproxy/envoy/archive/41b468c9b193c88ded4d94789c4793f02be5f758.tar.gz"],
-    strip_prefix = "envoy-41b468c9b193c88ded4d94789c4793f02be5f758",
-    integrity = "sha256-CxE0XcdpfLIgzvLM7M8Ckw5czbf5k46Ij15HhBkN0DQ=",
+    remote = "https://github.com/envoyproxy/envoy",
+    commit = "41b468c9b193c88ded4d94789c4793f02be5f758",
     patches = ["//bazel/patches:envoy_fix_module_bazel.patch"],
     patch_args = ["-p1"],
 )
