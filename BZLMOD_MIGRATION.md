@@ -50,19 +50,25 @@ These use WORKSPACE.bzlmod because they need to operate in WORKSPACE mode:
 
 This migration uses a hybrid approach that's recommended for bzlmod adoption when some dependencies haven't fully migrated:
 
-- **MODULE.bazel**: Handles pure bzlmod dependencies (rules, toolchains, toolshed)
-- **WORKSPACE.bzlmod**: Handles dependencies that need WORKSPACE mode (envoy and related repos)
+- **MODULE.bazel**: Handles pure bzlmod dependencies (rules, toolchains, toolshed, and dependencies required by WORKSPACE.bzlmod repositories like zstd)
+- **WORKSPACE.bzlmod**: Handles repositories that need WORKSPACE mode loading (envoy and related repos)
 
 When bzlmod is enabled (`--enable_bzlmod`), Bazel processes both MODULE.bazel and WORKSPACE.bzlmod. This allows:
 1. Modern dependency management via bzlmod for compatible dependencies
 2. Backward compatibility for dependencies that still require WORKSPACE mode
-3. envoy's WORKSPACE can properly load its dependencies (like zstd) without visibility issues
+3. Dependencies declared in MODULE.bazel are visible to repositories loaded via WORKSPACE.bzlmod
+
+### Important: WORKSPACE.bzlmod repositories ignore MODULE.bazel
+
+When a repository is loaded via `http_archive` in WORKSPACE.bzlmod, Bazel treats it as a WORKSPACE-mode repository. Even if that repository has a MODULE.bazel file (like envoy does), the MODULE.bazel is **ignored** and only the WORKSPACE file is processed.
+
+However, in bzlmod mode, WORKSPACE files cannot load dependencies using traditional repository rules - those dependencies must be declared in the main MODULE.bazel. This is why we declare zstd in our MODULE.bazel even though envoy's MODULE.bazel also declares it.
 
 ### Patching envoy's MODULE.bazel
 
 Envoy's MODULE.bazel contains `local_path_override` directives for envoy_api, envoy_build_config, and envoy_mobile. These directives reference local paths within the envoy repository (like `path = "api"`) which don't work when envoy is used as an external dependency.
 
-We apply a patch that removes these `local_path_override` directives while keeping the rest of MODULE.bazel intact. This allows envoy to work properly in bzlmod mode with its dependencies (like zstd, zlib) declared in MODULE.bazel being properly resolved from the Bazel Central Registry.
+We apply a patch that removes these `local_path_override` directives while keeping the rest of MODULE.bazel intact. Although envoy's MODULE.bazel is currently ignored (because envoy is loaded via WORKSPACE.bzlmod), having a clean MODULE.bazel is good practice and may be useful in the future if envoy can be loaded in pure bzlmod mode.
 
 ## Python Setup
 
