@@ -16,18 +16,6 @@ http_archive(
     build_file = "@envoy-website//bazel:bootstrap.BUILD",
 )
 
-# envoy - for documentation building
-# Patch: Remove local_path_override directives that don't work as external dependency
-envoy = VERSIONS["envoy"]
-http_archive(
-    name = "envoy",
-    urls = [url.format(repo = envoy["repo"], version = envoy["version"]) for url in envoy["urls"]],
-    sha256 = envoy["sha256"],
-    strip_prefix = envoy["strip_prefix"].format(version = envoy["version"]),
-    patches = ["//bazel/patches:envoy_fix_module_bazel.patch"],
-    patch_args = ["-p1"],
-)
-
 # envoy_archive - contains versioned documentation
 envoy_archive = VERSIONS["envoy_archive"]
 git_repository(
