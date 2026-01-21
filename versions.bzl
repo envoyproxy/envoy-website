@@ -1,5 +1,23 @@
 VERSIONS = {
     "python": "3.12",
+    "aspect_bazel_lib": {
+        "type": "github_archive",
+        "repo": "aspect-build/bazel-lib",
+        "version": "2.21.2",
+        "sha256": "079e47b2fd357396a376dec6ad7907a51028cb2b98233b45e5269cd5ce2fea51",
+        "urls": ["https://github.com/{repo}/archive/v{version}.tar.gz"],
+        "strip_prefix": "bazel-lib-{version}",
+    },
+    "yq.bzl": {
+        "type": "github_archive",
+        "repo": "bazel-contrib/yq.bzl",
+        "version": "0.1.1",
+        "sha256": "b51d82b561a78ab21d265107b0edbf98d68a390b4103992d0b03258bb3819601",
+        "urls": ["https://github.com/{repo}/releases/download/v{version}/yq.bzl-v{version}.tar.gz"],
+        "strip_prefix": "yq.bzl-{version}",
+        "patch_args": ["-p1"],
+        "patches": ["@envoy-website//bazel:yq.patch"],
+    },
     "com_github_twbs_bootstrap": {
         "type": "github_archive",
         "repo": "twbs/bootstrap",
@@ -29,10 +47,11 @@ VERSIONS = {
     "envoy_toolshed": {
         "type": "github_archive",
         "repo": "envoyproxy/toolshed",
-        "version": "0.3.15",
-        "sha256": "931e2bdfa7117dbff66adf33f39712cd16d0eb2dbb548739b5bf2c6ff02d325a",
+        "version": "0.3.26",
+        "sha256": "96e27e0f9f9c259f3f623b7c79f30e4adbfc817a2513cbb14b13d57f90689481",
         "urls": ["https://github.com/{repo}/archive/refs/tags/bazel-v{version}.tar.gz"],
         "patch_args": ["-p1"],
+        "patches": ["@envoy-website//bazel:envoy_toolshed.patch"],
         "strip_prefix": "toolshed-bazel-v{version}/bazel",
     },
 }
