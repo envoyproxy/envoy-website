@@ -2,6 +2,17 @@
 
 set -e -o pipefail
 
+# Install libtinfo5 for Ubuntu Noble (24.04) compatibility
+# LLVM requires libtinfo5 which is only available in Ubuntu 20.04 (Focal)
+if [[ -n "$CI" ]] && [[ ! -f "$HOME/.local/lib/x86_64-linux-gnu/libtinfo.so.5" ]]; then
+    echo "Installing libtinfo5 from Ubuntu Focal archive..."
+    mkdir -p "$HOME/.local"
+    wget -q http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.2-0ubuntu2_amd64.deb
+    dpkg -x libtinfo5_6.2-0ubuntu2_amd64.deb "$HOME/.local"
+    rm -f libtinfo5_6.2-0ubuntu2_amd64.deb
+    export LD_LIBRARY_PATH="$HOME/.local/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH"
+fi
+
 BAZEL="${BAZEL:-bazel}"
 OUTPUT_DIR="${1:-_site}"
 
