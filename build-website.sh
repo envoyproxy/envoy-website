@@ -4,10 +4,14 @@ set -e -o pipefail
 
 # Install libtinfo5 for Ubuntu Noble (24.04) compatibility
 # LLVM requires libtinfo5 which is only available in Ubuntu 20.04 (Focal)
+# Note: This is hardcoded for x86_64 architecture as that's what Netlify uses
 if [[ -n "$CI" ]] && [[ ! -f "$HOME/.local/lib/x86_64-linux-gnu/libtinfo.so.5" ]]; then
     echo "Installing libtinfo5 from Ubuntu Focal archive..."
     mkdir -p "$HOME/.local"
-    wget -q http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.2-0ubuntu2_amd64.deb
+    # Download from HTTPS for security
+    wget -q https://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.2-0ubuntu2_amd64.deb
+    # Verify SHA256 checksum
+    echo "941b9b1a9007cf224a4dc0a14034d033cd8cd0b8d25b38181396eb45429c583b  libtinfo5_6.2-0ubuntu2_amd64.deb" | sha256sum -c -
     dpkg -x libtinfo5_6.2-0ubuntu2_amd64.deb "$HOME/.local"
     rm -f libtinfo5_6.2-0ubuntu2_amd64.deb
     export LD_LIBRARY_PATH="$HOME/.local/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH"
