@@ -23,7 +23,7 @@ genrule(
 pkg_tar(
     name = "docs",
     package_dir = "docs/envoy/latest",
-    deps = ["@envoy//docs"],
+    deps = ["@envoy-docs"],
 )
 
 label_flag(

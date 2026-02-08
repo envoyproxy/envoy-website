@@ -51,3 +51,15 @@ load_packages()
 
 load("@website_pip3//:requirements.bzl", "install_deps")
 install_deps()
+
+load("@envoy-docs//bazel:repositories.bzl", "envoy_docs_repositories")
+
+envoy_docs_repositories()
+
+load("@envoy-docs//bazel:repositories_extra.bzl", "envoy_docs_repositories_extra")
+
+envoy_docs_repositories_extra()
+
+load("@envoy-docs//bazel:dependencies.bzl", "envoy_docs_dependencies")
+
+envoy_docs_dependencies()
