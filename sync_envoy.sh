@@ -18,6 +18,7 @@ fi
 sync_envoy () {
     echo "Syncing Envoy -> ${ENVOY_VERSION}"
     bazel run //bazel:update envoy "${ENVOY_VERSION}"
+    bazel run //bazel:update envoy-docs "${ENVOY_VERSION}"
     if git diff --quiet --exit-code; then
         echo "No Envoy changes"
     else
