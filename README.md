@@ -100,7 +100,7 @@ If you have Yarn installed you can install Bazelisk with that.
 From inside your local copy of the envoy-website repository, run:
 
 ```console
-$ yarn install .
+$ yarn
 ```
 
 #### Host: install a compiler
