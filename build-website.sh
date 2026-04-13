@@ -10,6 +10,12 @@ if ! command -v "$BAZEL" &> /dev/null; then
     exit 1
 fi
 
+if [[ ! -e /dev/shm ]]; then
+    # this is a crappy workaround for https://answers.netlify.com/t/noble-new-builds-are-missing-dev-shm/161402/1
+    echo "Mounting /dev/shm" >&2
+    mkdir /dev/shm
+fi
+
 OUTPUT_BASE="$($BAZEL info output_base 2>/dev/null)"
 
 
