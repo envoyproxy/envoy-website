@@ -30,8 +30,8 @@ VERSIONS = {
     "envoy": {
         "type": "github_archive",
         "repo": "envoyproxy/envoy",
-        "version": "aeabfee33f9c957afa91d9d0ac7be7ad5ac9f3d8",
-        "sha256": "ceaad2f2f36cb9cd6e4345c98163b74655e3f26bc46cc84b35e216e1b446e1c9",
+        "version": "23f08d4e2a50ed822e113fc065043a4f2c9c2d0c",
+        "sha256": "fafed2fef24bfc9b3a53b7233a7e2bbb8a230851b5d44f7a6f6321f6687b2be6",
         "urls": ["https://github.com/{repo}/archive/{version}.tar.gz"],
         "strip_prefix": "envoy-{version}",
     },
@@ -47,8 +47,8 @@ VERSIONS = {
     "envoy-docs": {
         "type": "github_archive",
         "repo": "envoyproxy/envoy",
-        "version": "aeabfee33f9c957afa91d9d0ac7be7ad5ac9f3d8",
-        "sha256": "ceaad2f2f36cb9cd6e4345c98163b74655e3f26bc46cc84b35e216e1b446e1c9",
+        "version": "23f08d4e2a50ed822e113fc065043a4f2c9c2d0c",
+        "sha256": "fafed2fef24bfc9b3a53b7233a7e2bbb8a230851b5d44f7a6f6321f6687b2be6",
         "urls": ["https://github.com/{repo}/archive/{version}.tar.gz"],
         "strip_prefix": "envoy-{version}/docs",
     },
