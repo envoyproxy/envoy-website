@@ -1,5 +1,4 @@
 VERSIONS = {
-    "python": "3.12",
     "com_github_twbs_bootstrap": {
         "type": "github_archive",
         "repo": "twbs/bootstrap",

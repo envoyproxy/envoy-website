@@ -9,7 +9,6 @@ and is updated by `//bazel:update`.
 import ast
 import base64
 import pathlib
-import re
 import sys
 
 BEGIN = "# BEGIN: generated from //:versions.bzl"
@@ -33,10 +32,13 @@ ROOT = pathlib.Path(__file__).parents[1]
 
 
 def versions(path: pathlib.Path) -> dict:
-    source = path.read_text()
-    if "VERSIONS =" not in source:
-        raise SystemExit(f"Unable to find `VERSIONS` in {path}")
-    return ast.literal_eval(source.split("VERSIONS =", 1)[1])
+    for node in ast.parse(path.read_text()).body:
+        if not isinstance(node, ast.Assign):
+            continue
+        if any(getattr(target, "id", None) == "VERSIONS"
+               for target in node.targets):
+            return ast.literal_eval(node.value)
+    raise SystemExit(f"Unable to find `VERSIONS` in {path}")
 
 
 def overrides(envoy: dict) -> str:
@@ -59,13 +61,10 @@ def main() -> int:
     module = module_path.read_text()
     if BEGIN not in module or END not in module:
         raise SystemExit(f"Unable to find generated section in {module_path}")
-    generated = f"{BEGIN}\n\n{overrides(envoy)}\n\n{END}"
-    updated = re.sub(
-        f"{re.escape(BEGIN)}.*{re.escape(END)}",
-        lambda m: generated,
-        module,
-        flags=re.DOTALL)
-    module_path.write_text(updated)
+    head = module.split(BEGIN)[0]
+    tail = module.split(END)[-1]
+    module_path.write_text(
+        f"{head}{BEGIN}\n\n{overrides(envoy)}\n\n{END}{tail}")
     return 0
 
 
