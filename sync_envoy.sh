@@ -20,12 +20,13 @@ sync_envoy () {
     bazel run //bazel:update envoy "${ENVOY_VERSION}"
     bazel run //bazel:update envoy-docs "${ENVOY_VERSION}"
     # MODULE.bazel cannot load //:versions.bzl, so the module overrides are
-    # regenerated from it.
+    # regenerated from it, and the lockfile refreshed for the new pin.
     python3 bazel/module_overrides.py
+    bazel mod deps > /dev/null
     if git diff --quiet --exit-code; then
         echo "No Envoy changes"
     else
-        git commit versions.bzl MODULE.bazel -m "Sync Envoy @${ENVOY_VERSION}"
+        git commit versions.bzl MODULE.bazel MODULE.bazel.lock -m "Sync Envoy @${ENVOY_VERSION}"
         git show
         UPDATED=1
     fi

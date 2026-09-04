@@ -1,13 +1,11 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("//:versions.bzl", "VERSIONS")
 
-# Repositories that are not (yet) available as Bazel modules.
-#
-# `versions.bzl` remains the single source of truth for their versions/shas, and
-# is updated by `//bazel:update`.
-ARCHIVES = [
-    "com_github_twbs_bootstrap",
-    "envoy_archive",
+# Archives that are pinned as Bazel modules (with `archive_override`) rather
+# than fetched as repositories here.
+MODULES = [
+    "envoy",
+    "envoy-docs",
 ]
 
 def _archive_kwargs(name):
@@ -30,7 +28,14 @@ def _archive_kwargs(name):
     }
 
 def _website_archives_impl(module_ctx):
-    for name in ARCHIVES:
+    # Repositories that are not (yet) available as Bazel modules. `versions.bzl`
+    # remains the single source of truth for their versions/shas, and is updated
+    # by `//bazel:update`.
+    for name, version in VERSIONS.items():
+        if name in MODULES:
+            continue
+        if type(version) == type("") or version.get("type") != "github_archive":
+            continue
         http_archive(**_archive_kwargs(name))
     return module_ctx.extension_metadata(reproducible = True)
 
