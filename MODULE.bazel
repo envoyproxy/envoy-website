@@ -1,0 +1,63 @@
+module(name = "envoy-website")
+
+bazel_dep(name = "envoy")
+bazel_dep(name = "envoy_api", version = "1.40.0-dev")
+bazel_dep(name = "envoy-docs", version = "1.40.0-dev")
+bazel_dep(name = "envoy_toolshed", version = "0.4.13.envoy")
+bazel_dep(name = "protobuf", version = "35.1.bcr.envoy")
+bazel_dep(name = "rules_python", version = "2.2.0")
+bazel_dep(name = "toolchains_llvm", version = "1.9.0.envoy", dev_dependency = True)
+
+bazel_dep(name = "aspect_bazel_lib", version = "2.22.0")
+bazel_dep(name = "bazel_skylib", version = "1.9.0")
+bazel_dep(name = "rules_pkg", version = "1.1.0")
+bazel_dep(name = "zstd", version = "1.5.7")
+
+archive_override(
+    module_name = "envoy",
+    urls = ["https://github.com/envoyproxy/envoy/archive/69bc1cf5355798df3a041eafffda0a954b3b89d7.tar.gz"],
+    sha256 = "3e5f419c78ff7ae8d754c1ffe3f7820879dcb3262ad8b0c1a2a1f79ed1bf833e",
+    strip_prefix = "envoy-69bc1cf5355798df3a041eafffda0a954b3b89d7",
+)
+archive_override(
+    module_name = "envoy_api",
+    urls = ["https://github.com/envoyproxy/envoy/archive/69bc1cf5355798df3a041eafffda0a954b3b89d7.tar.gz"],
+    sha256 = "3e5f419c78ff7ae8d754c1ffe3f7820879dcb3262ad8b0c1a2a1f79ed1bf833e",
+    strip_prefix = "envoy-69bc1cf5355798df3a041eafffda0a954b3b89d7/api",
+)
+archive_override(
+    module_name = "envoy-docs",
+    urls = ["https://github.com/envoyproxy/envoy/archive/69bc1cf5355798df3a041eafffda0a954b3b89d7.tar.gz"],
+    sha256 = "3e5f419c78ff7ae8d754c1ffe3f7820879dcb3262ad8b0c1a2a1f79ed1bf833e",
+    strip_prefix = "envoy-69bc1cf5355798df3a041eafffda0a954b3b89d7/docs",
+)
+
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+python.toolchain(is_default = True, python_version = "3.12")
+use_repo(python, "python_3_12", python = "python_versions")
+
+envoy_toolchains_ext = use_extension("@envoy//bazel:extensions.bzl", "envoy_toolchains_extension")
+use_repo(envoy_toolchains_ext, "clang_platform")
+
+pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
+pip.parse(
+    hub_name = "website_pip3",
+    python_version = "3.12",
+    requirements_lock = "@envoy_toolshed//website:requirements.txt",
+)
+use_repo(pip, "website_pip3")
+
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+http_archive(
+    name = "envoy_archive",
+    sha256 = "cd3b6958067d8ed1768abf3f75a14d0d03efdf306151505d53329830efd7dbd3",
+    strip_prefix = "archive-4f6bbc609e09e2e79d14d4f719a972f8337664f6",
+    urls = ["https://github.com/envoyproxy/archive/archive/4f6bbc609e09e2e79d14d4f719a972f8337664f6.tar.gz"],
+)
+http_archive(
+    name = "com_github_twbs_bootstrap",
+    build_file = "@envoy-website//bazel:bootstrap.BUILD",
+    sha256 = "e48d2bb45df830b6f70e2fb5a592f07f8f892dcbd3eb33245a48593cc59aa6dd",
+    strip_prefix = "bootstrap-5.3.8",
+    urls = ["https://github.com/twbs/bootstrap/archive/refs/tags/v5.3.8.tar.gz"],
+)
