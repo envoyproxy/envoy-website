@@ -59,9 +59,10 @@ def main() -> int:
     module = module_path.read_text()
     if BEGIN not in module or END not in module:
         raise SystemExit(f"Unable to find generated section in {module_path}")
+    generated = f"{BEGIN}\n\n{overrides(envoy)}\n\n{END}"
     updated = re.sub(
         f"{re.escape(BEGIN)}.*{re.escape(END)}",
-        f"{BEGIN}\n\n{overrides(envoy)}\n\n{END}",
+        lambda m: generated,
         module,
         flags=re.DOTALL)
     module_path.write_text(updated)
