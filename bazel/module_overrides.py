@@ -34,7 +34,9 @@ ROOT = pathlib.Path(__file__).parents[1]
 
 def versions(path: pathlib.Path) -> dict:
     source = path.read_text()
-    return ast.literal_eval(source[source.index("{"):])
+    if "VERSIONS =" not in source:
+        raise SystemExit(f"Unable to find `VERSIONS` in {path}")
+    return ast.literal_eval(source.split("VERSIONS =", 1)[1])
 
 
 def overrides(envoy: dict) -> str:
@@ -62,8 +64,6 @@ def main() -> int:
         f"{BEGIN}\n\n{overrides(envoy)}\n\n{END}",
         module,
         flags=re.DOTALL)
-    if updated == module:
-        return 0
     module_path.write_text(updated)
     return 0
 

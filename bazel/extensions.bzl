@@ -11,6 +11,9 @@ ARCHIVES = [
 ]
 
 def _archive_kwargs(name):
+    # Values are `.format`ed with the archive's own settings (eg `{repo}`,
+    # `{version}`) - `patch*` values are labels/args and are used verbatim, and
+    # `repo`/`type`/`version` are settings for `versions.bzl`, not http_archive.
     version = VERSIONS[name]
     kwargs = dict(name = name, **version)
     return {
