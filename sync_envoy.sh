@@ -19,10 +19,13 @@ sync_envoy () {
     echo "Syncing Envoy -> ${ENVOY_VERSION}"
     bazel run //bazel:update envoy "${ENVOY_VERSION}"
     bazel run //bazel:update envoy-docs "${ENVOY_VERSION}"
+    # MODULE.bazel cannot load //:versions.bzl, so the module overrides are
+    # regenerated from it.
+    python3 bazel/module_overrides.py
     if git diff --quiet --exit-code; then
         echo "No Envoy changes"
     else
-        git commit versions.bzl -m "Sync Envoy @${ENVOY_VERSION}"
+        git commit versions.bzl MODULE.bazel -m "Sync Envoy @${ENVOY_VERSION}"
         git show
         UPDATED=1
     fi
