@@ -9,7 +9,8 @@ if ! command -v "$BAZEL" &> /dev/null; then
     echo "bazel not found, exiting" >&2
     exit 1
 fi
-
+echo "Building website ..."
+$BAZEL --version
 OUTPUT_BASE="$($BAZEL info output_base 2>/dev/null)"
 
 

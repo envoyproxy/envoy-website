@@ -1,32 +1,38 @@
-startup --host_jvm_args=-Xmx3g
-
-common --noenable_bzlmod
-common --enable_workspace
-common --incompatible_default_to_explicit_init_py
-common --noincompatible_disallow_empty_glob
-run --color=yes
-
-common:ci --noshow_progress
-common:ci --noshow_loading_progress
-common:ci --test_output=errors
+startup --host_jvm_args=-Xmx4g
 
 build --color=yes
-build --action_env=SPHINX_RUNNER_ARGS
+fetch --color=yes
+run --color=yes
+
+common --registry=https://bcr.bazel.build/
+common --registry=https://raw.githubusercontent.com/envoyproxy/bazel-registry/7b38d27d192670d0ec16ef9309d875387c781de9
+common --noincompatible_disallow_empty_glob
+common --enable_platform_specific_config
+
 build --workspace_status_command="bash bazel/get_workspace_status"
-build --cxxopt=-std=c++17 --host_cxxopt=-std=c++17
+build --incompatible_strict_action_env
+build --action_env=SPHINX_RUNNER_ARGS
+build --copt=-Wno-deprecated-declarations
+build --cxxopt=-std=c++20 --host_cxxopt=-std=c++20
 build --action_env=BUILD_DOCS_SHA
 build --jobs=HOST_CPUS*.8
 build --verbose_failures
 
-build --legacy_external_runfiles
-run --legacy_external_runfiles
+common --@rules_python//python/config_settings:bootstrap_impl=script
+build --incompatible_default_to_explicit_init_py
+common --@protobuf//bazel/flags:prefer_prebuilt_protoc=true
+common --incompatible_enable_proto_toolchain_resolution
 
+common --@proxy-wasm-cpp-host//bazel:engine=disabled
+build --@rules_rust//rust/settings:extra_exec_rustc_flags=-Clink-self-contained=no
+
+common:ci --noshow_progress
+common:ci --noshow_loading_progress
+common:ci --test_output=errors
 build:nodocs --//site:no_docs_latest
 
-common:debug --announce_rc
-common:debug -s
-common:debug --verbose_failures
-common:debug --sandbox_debug
+build:macos --action_env=PATH=/opt/homebrew/bin:/opt/local/bin:/usr/local/bin:/usr/bin:/bin
+build:macos --host_action_env=PATH=/opt/homebrew/bin:/opt/local/bin:/usr/local/bin:/usr/bin:/bin
 
 try-import %workspace%/repo.bazelrc
 try-import %workspace%/user.bazelrc

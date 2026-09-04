@@ -30,6 +30,7 @@ services:
     environment:
       <<: *envoy-build-env
       DOCKER_COMMAND: ./build-website.sh
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
 
   live:
     <<: *envoy-build
@@ -76,8 +77,10 @@ services:
       context: docker
       target: update
     volumes:
-    - *envoy-build-volumes
+    - .:/src/workspace/envoy-website
     - ${ENVOY_SRC_DIR:-../envoy}:/src/workspace/envoy
+    - ~/.cache/bazel:/home/envoybuild/.cache/bazel
+    - ~/.cache/bazelisk:/home/envoybuild/.cache/bazelisk
     environment:
       <<: *envoy-build-env
       DOCKER_COMMAND: ./sync_envoy.sh
