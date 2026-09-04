@@ -1,0 +1,105 @@
+module(
+    name = "envoy-website",
+    version = "0.0.0",
+)
+
+####################################################################################
+# deps: Module
+#
+# Versions here should match the versions used by Envoy - see
+# https://github.com/envoyproxy/envoy/blob/main/bazel/tests/external/MODULE.bazel
+####################################################################################
+
+bazel_dep(name = "aspect_bazel_lib", version = "2.22.0")
+bazel_dep(name = "bazel_skylib", version = "1.9.0")
+bazel_dep(name = "envoy")
+bazel_dep(name = "envoy-docs", version = "1.40.0-dev")
+bazel_dep(name = "envoy_api", version = "1.40.0-dev")
+bazel_dep(name = "envoy_toolshed", version = "0.4.13.envoy")
+bazel_dep(name = "protobuf", version = "35.1.bcr.envoy")
+bazel_dep(name = "rules_pkg", version = "1.1.0")
+bazel_dep(name = "rules_python", version = "2.2.0")
+bazel_dep(name = "yq.bzl", version = "0.1.1.envoy")
+bazel_dep(name = "zstd", version = "1.5.7")
+
+bazel_dep(name = "toolchains_llvm", version = "1.9.0.envoy", dev_dependency = True)
+
+####################################################################################
+# deps: Overrides
+#
+# Envoy, its API and its docs are all pinned to the same Envoy commit.
+#
+# This section is generated from `//:versions.bzl` - to update it run:
+#
+#   bazel run //bazel:update envoy "$COMMIT"
+#   bazel run //bazel:update envoy-docs "$COMMIT"
+#   python3 bazel/module_overrides.py
+#
+####################################################################################
+
+# BEGIN: generated from //:versions.bzl
+
+archive_override(
+    module_name = "envoy",
+    integrity = "sha256-Pl9BnHj/eujXVMH/4/eCCHncsyYq2LDBoqH3ntG/gz4=",
+    strip_prefix = "envoy-69bc1cf5355798df3a041eafffda0a954b3b89d7",
+    urls = ["https://github.com/envoyproxy/envoy/archive/69bc1cf5355798df3a041eafffda0a954b3b89d7.tar.gz"],
+)
+
+archive_override(
+    module_name = "envoy_api",
+    integrity = "sha256-Pl9BnHj/eujXVMH/4/eCCHncsyYq2LDBoqH3ntG/gz4=",
+    strip_prefix = "envoy-69bc1cf5355798df3a041eafffda0a954b3b89d7/api",
+    urls = ["https://github.com/envoyproxy/envoy/archive/69bc1cf5355798df3a041eafffda0a954b3b89d7.tar.gz"],
+)
+
+archive_override(
+    module_name = "envoy-docs",
+    integrity = "sha256-Pl9BnHj/eujXVMH/4/eCCHncsyYq2LDBoqH3ntG/gz4=",
+    strip_prefix = "envoy-69bc1cf5355798df3a041eafffda0a954b3b89d7/docs",
+    urls = ["https://github.com/envoyproxy/envoy/archive/69bc1cf5355798df3a041eafffda0a954b3b89d7.tar.gz"],
+)
+
+# END: generated from //:versions.bzl
+
+####################################################################################
+# setup: Python
+####################################################################################
+
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+python.toolchain(
+    is_default = True,
+    python_version = "3.12",
+)
+use_repo(
+    python,
+    # `@envoy_archive` expects the WORKSPACE repo name
+    python3_12 = "python_3_12",
+    python = "python_versions",
+)
+
+# Pip hub names are unique across modules - `website_pip3` is created by
+# `@envoy_toolshed`, and `base_pip3` (required by `@envoy_archive`) by `@envoy`,
+# so they are imported here rather than redeclared.
+pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
+use_repo(pip, "base_pip3", "website_pip3")
+
+####################################################################################
+# setup: Toolchains
+####################################################################################
+
+envoy_toolchains_ext = use_extension("@envoy//bazel:extensions.bzl", "envoy_toolchains_extension")
+use_repo(envoy_toolchains_ext, "clang_platform")
+
+bazel_lib_toolchains = use_extension("@aspect_bazel_lib//lib:extensions.bzl", "toolchains")
+bazel_lib_toolchains.jq(version = "1.7")
+use_repo(bazel_lib_toolchains, "jq_toolchains")
+
+register_toolchains("@jq_toolchains//:all")
+
+####################################################################################
+# deps: Website
+####################################################################################
+
+website_archives = use_extension("//bazel:extensions.bzl", "website_archives")
+use_repo(website_archives, "com_github_twbs_bootstrap", "envoy_archive")
