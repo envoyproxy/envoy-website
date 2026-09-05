@@ -1,66 +1,52 @@
 # NOTE: you must `export UID` before building
 
+x-envoy-build: &envoy-build
+  working_dir: /src/workspace/envoy-website
+  volumes: &envoy-build-volumes
+  - .:/src/workspace/envoy-website
+  - ~/.cache/bazel:/home/envoybuild/.cache/bazel
+  - ~/.cache/bazelisk:/home/envoybuild/.cache/bazelisk
+  environment: &envoy-build-env
+    USER_UID: ${UID:?"`UID` must be set, try `export UID`"}
+    USER_GID: ${GID:-}
+    HOME: /home/envoybuild
+    BAZEL_BUILD_OPTIONS: ${BAZEL_BUILD_OPTIONS:-}
+  entrypoint: ["/bin/bash", "-c"]
+  command:
+  - |
+    if [[ -n "$${USER_GID}" ]]; then
+        groupmod -g "$${USER_GID}" envoybuild >/dev/null
+    fi
+    usermod -u "$${USER_UID}" envoybuild >/dev/null
+    chown envoybuild /proc/self/fd/2 2>/dev/null || true
+    exec gosu envoybuild "$${DOCKER_COMMAND}"
+
 services:
   build:
+    <<: *envoy-build
     build:
-      context: &context https://github.com/envoyproxy/toolshed.git#f89fb5df8defa4b7daf9a19a899dbdfbbf3b8d62:docker/bazel
-      args:
-        USER_NAME: "${USER}"
-        USER_ID: &uid "${UID}"
-        GROUP_ID: &gid "${GID:-}"
-        APT_PKGS: &apt_pkgs >-
-          autoconf
-          automake
-          bison
-          build-essential
-          gawk
-          git
-          gnupg2
-          libffi-dev
-          libgdbm-dev
-          libgmp-dev
-          libncurses5-dev
-          libreadline-dev
-          libsqlite3-dev
-          libssl-dev
-          libtool
-          libyaml-dev
-          pkg-config
-          sqlite3
-          zlib1g-dev
-    command: ./build-website.sh
-    user: ${UID:-1000}:${GID:-}
-    volumes: &volumes
-    - .:/src/workspace/envoy-website
-    - ~/.cache/bazel:$HOME/.cache/bazel
-    - ~/.cache/bazelisk:$HOME/.cache/bazelisk
-    working_dir: /src/workspace/envoy-website
+      context: docker
+      target: build
     environment:
-      BAZEL_BUILD_OPTIONS: &bazel_options ${BAZEL_BUILD_OPTIONS:-}
+      <<: *envoy-build-env
+      DOCKER_COMMAND: ./build-website.sh
 
   live:
+    <<: *envoy-build
     build:
-      context: *context
-      target: extra
-      args:
-        USER_NAME: ${USER}
-        USER_ID: *uid
-        GROUP_ID: *gid
-        APT_PKGS: *apt_pkgs
-        EXTRA_APT_PKGS: >-
-          inotify-tools
-    command: ./rebuild.sh
-    user: ${UID:?"`UID` must be set, try `export UID`"}:${GID:-}
-    volumes: *volumes
-    working_dir: /src/workspace/envoy-website
+      context: docker
+      target: live
     environment:
-      BAZEL_BUILD_OPTIONS: *bazel_options
+      <<: *envoy-build-env
+      DOCKER_COMMAND: ./rebuild.sh
       DEBUG: ${DEBUG:-}
       RUN_ON_START: ${RUN_ON_START:-1}
       WATCH_COMMAND: inotify
 
   website:
-    image: nginx
+    build:
+      context: docker
+      dockerfile: Dockerfile.website
     depends_on:
     - ${BUILDER:-build}
     command:
@@ -85,22 +71,16 @@ services:
     - 8000:8000
 
   update:
+    <<: *envoy-build
     build:
       context: docker
-      dockerfile: Dockerfile
-      args:
-        USER_NAME: "${USERNAME}"
-        USER_ID: "${UID}"
-        GROUP_ID: "${GID:-}"
-    command: ./sync_envoy.sh
-    user: "${UID:-1000}:${GID:-1000}"
+      target: update
     volumes:
-    - .:/src/workspace/envoy-website
+    - *envoy-build-volumes
     - ${ENVOY_SRC_DIR:-../envoy}:/src/workspace/envoy
-    - ~/.cache/bazel:/$HOME/.cache/bazel
-    - ~/.cache/bazelisk:/$HOME/.cache/bazelisk
-    working_dir: /src/workspace/envoy-website
     environment:
+      <<: *envoy-build-env
+      DOCKER_COMMAND: ./sync_envoy.sh
       ENVOY_SRC_DIR: ../envoy
       COMMITTER_NAME: ${COMMITTER_NAME:-}
       COMMITTER_EMAIL: ${COMMITTER_EMAIL:-}
