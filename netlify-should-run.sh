@@ -4,6 +4,7 @@ set -o pipefail
 
 
 IGNORED_PATHS=(
+    .github
     docker-compose.yml
     docker
     netlify-should-run.sh)

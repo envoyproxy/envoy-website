@@ -1,4 +1,4 @@
-name: macOS build
+name: Linux build
 
 permissions:
   contents: read
@@ -9,20 +9,24 @@ on:
     branches:
     - main
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     permissions:
       contents: read
       packages: read
-    runs-on: macos-14
+    runs-on: ubuntu-24.04
     steps:
     - name: Checkout Repository
       uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
     - run: |
-        brew install coreutils gnu-tar
-    - run: |
-        ./build-website.sh
+        export UID
+        mkdir -p ~/.cache/bazel
+        mkdir -p ~/.cache/bazelisk
+        docker compose run build
       env:
         GITHUB_TOKEN: ${{ github.token }}
-        BAZEL_BUILD_OPTIONS: --config=remote-cache --config=bes --config=ci
+        BAZEL_BUILD_OPTIONS: --config=rbe --config=bes --config=remote-ci
