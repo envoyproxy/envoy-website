@@ -9,6 +9,7 @@ x-envoy-build: &envoy-build
   environment: &envoy-build-env
     USER_UID: ${UID:?"`UID` must be set, try `export UID`"}
     USER_GID: ${GID:-}
+    GITHUB_TOKEN: ${GITHUB_TOKEN:-}
     HOME: /home/envoybuild
     BAZEL_BUILD_OPTIONS: ${BAZEL_BUILD_OPTIONS:-}
   entrypoint: ["/bin/bash", "-c"]
@@ -30,7 +31,6 @@ services:
     environment:
       <<: *envoy-build-env
       DOCKER_COMMAND: ./build-website.sh
-      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
 
   live:
     <<: *envoy-build

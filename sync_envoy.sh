@@ -15,6 +15,12 @@ if [[ -n "$COMMITTER_EMAIL" ]]; then
     git config --global user.email "$COMMITTER_EMAIL"
 fi
 
+if [[ -n "$BAZEL_BUILD_OPTIONS" ]]; then
+    read -ra BAZEL_BUILD_OPTIONS <<< $BAZEL_BUILD_OPTIONS
+else
+    BAZEL_BUILD_OPTIONS=()
+fi
+
 sync_envoy () {
     echo "Syncing Envoy -> ${ENVOY_VERSION}"
     ENVOY_SHA256=$(curl -fsSL "https://github.com/envoyproxy/envoy/archive/${ENVOY_VERSION}.tar.gz" | sha256sum | cut -d' ' -f1)
