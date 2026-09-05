@@ -15,10 +15,16 @@ if [[ -n "$COMMITTER_EMAIL" ]]; then
     git config --global user.email "$COMMITTER_EMAIL"
 fi
 
+if [[ -n "$BAZEL_BUILD_OPTIONS" ]]; then
+    read -ra BAZEL_BUILD_OPTIONS <<< $BAZEL_BUILD_OPTIONS
+else
+    BAZEL_BUILD_OPTIONS=()
+fi
+
 sync_envoy () {
     echo "Syncing Envoy -> ${ENVOY_VERSION}"
-    bazel run //bazel:update envoy "${ENVOY_VERSION}"
-    bazel run //bazel:update envoy-docs "${ENVOY_VERSION}"
+    bazel run "${BAZEL_BUILD_OPTIONS[@]}" //bazel:update envoy "${ENVOY_VERSION}"
+    bazel run "${BAZEL_BUILD_OPTIONS[@]}" //bazel:update envoy-docs "${ENVOY_VERSION}"
     if git diff --quiet --exit-code; then
         echo "No Envoy changes"
     else

@@ -1,0 +1,27 @@
+name: Linux build
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+  push:
+    branches:
+    - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    container:
+      image: envoyproxy/envoy-build:devtools-v0.2.3@sha256:7cbfd3c61439d510f5e21fcca6b08fcd6616b1d13ebd85d7550ecf4bfd8e3d23
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+    - run: ./build-website.sh
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        BAZEL_BUILD_OPTIONS: --config=rbe --config=remote-ci
