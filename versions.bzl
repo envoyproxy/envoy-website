@@ -8,13 +8,18 @@ VERSIONS = {
         "strip_prefix": "bootstrap-{version}",
         "build_file": "@envoy-website//bazel:bootstrap.BUILD",
     },
-    "envoy_archive": {
-        "type": "github_archive",
-        "repo": "envoyproxy/archive",
-        "version": "c4fb2bae45731cdb40fdafd2759adc62c43d2972",
-        "sha256": "50927af16f3fab831fdeb995b3bf417efb2873ac9c63f4c96a9d807b1299bc0f",
-        "urls": ["https://github.com/{repo}/archive/{version}.tar.gz"],
-        "patch_args": ["-p1"],
-        "strip_prefix": "archive-{version}",
+    # Manifest published by the `envoyproxy/archive` reconciler, listing all
+    # released Envoy docs versions in GCS. Pinned by sha256 (hermetic); bump
+    # with `sync_archive.sh` (see `.github/workflows/archive-sync.yaml`).
+    #
+    # NB: the manifest does not exist yet (a GCS backfill is in progress) -
+    # the sha256 below is a placeholder to be filled in before merge. To
+    # compute it once the manifest exists:
+    #   curl -sfL "${url}" | sha256sum
+    "envoy_archive_manifest": {
+        "type": "http_file",
+        "url": "https://storage.googleapis.com/envoy-cncf-meta/envoy/docs/versions.json",
+        "sha256": "TODO",
+        "downloaded_file_path": "versions.json",
     },
 }

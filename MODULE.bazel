@@ -3,7 +3,6 @@ module(name = "envoy-website")
 bazel_dep(name = "aspect_bazel_lib", version = "2.22.0")
 bazel_dep(name = "bazel_skylib", version = "1.9.0")
 bazel_dep(name = "envoy")
-bazel_dep(name = "envoy_archive")
 bazel_dep(name = "envoy_api", version = "1.40.0-dev.20260903.16b0d47.envoy")
 bazel_dep(name = "envoy-docs")
 bazel_dep(name = "envoy-examples", version = "0.2.6.envoy")
@@ -57,11 +56,6 @@ register_toolchains("@protobuf//bazel/private/oss/toolchains/prebuilt:all")
 pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
 use_repo(pip, "website_pip3")
 
-git_override(
-    module_name = "envoy_archive",
-    commit = "be71a4e4d987a4522e914f230475edd588b39242",
-    remote = "https://github.com/envoyproxy/archive",
-)
 http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 http_archive(
     name = "com_github_twbs_bootstrap",
@@ -69,4 +63,15 @@ http_archive(
     sha256 = "e48d2bb45df830b6f70e2fb5a592f07f8f892dcbd3eb33245a48593cc59aa6dd",
     strip_prefix = "bootstrap-5.3.8",
     urls = ["https://github.com/twbs/bootstrap/archive/refs/tags/v5.3.8.tar.gz"],
+)
+
+# TODO(archive migration): fill in the real sha256 once the manifest exists
+# (backfill in envoyproxy/archive is in progress) - see `versions.bzl` for
+# details on how to compute it.
+http_file = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
+http_file(
+    name = "envoy_archive_manifest",
+    url = "https://storage.googleapis.com/envoy-cncf-meta/envoy/docs/versions.json",
+    sha256 = "TODO",
+    downloaded_file_path = "versions.json",
 )
