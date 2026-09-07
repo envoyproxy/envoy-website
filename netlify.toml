@@ -41,8 +41,10 @@ status = 302
   to = "/docs/envoy/latest/:splat"
   status = 200
 
-[[redirects]]
-  from = "/docs/envoy/*"
-  to = "https://main--envoy-archive.netlify.app/docs/envoy/:splat"
-  status = 200
-  force = true
+# Archived (non-latest) docs are served from the GCS archive bucket via an
+# edge function. GCS does not map directory requests to index.html on
+# storage.googleapis.com, so a plain proxy redirect would 404 every
+# directory-shaped URL; the function normalises paths before proxying.
+[[edge_functions]]
+  path = "/docs/envoy/*"
+  function = "docs-archive"
