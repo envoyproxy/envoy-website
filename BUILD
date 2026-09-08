@@ -16,7 +16,10 @@ jq(
     srcs = [":deps"],
     out = "dependency_shas.json",
     filter = """
-    with_entries(select(.value | objects and .type == "github_archive") | .value |= {repo, sha256, urls, version})
+    with_entries(
+      select(.value | objects and (.type == "github_archive" or .type == "http_file"))
+      | .value |= {repo, sha256, urls, url, version}
+    )
     """,
     visibility = ["//visibility:public"],
 )

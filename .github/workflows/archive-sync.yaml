@@ -5,6 +5,10 @@ permissions:
 
 on:
   workflow_dispatch:
+  schedule:
+    # Fallback in case the `sync-envoy[bot]` dispatch from envoyproxy/archive
+    # is missed; the manifest changes infrequently so this is just a backstop.
+    - cron: "17 4 * * *"
 
 concurrency:
   group: SYNC
@@ -27,14 +31,6 @@ jobs:
         key: ${{ secrets.ENVOY_CI_UPDATE_BOT_KEY }}
         app_id: ${{ secrets.ENVOY_CI_UPDATE_APP_ID }}
 
-    # Checkout the Archive repo
-    - name: 'Checkout Repository (archive)'
-      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
-      with:
-        repository: envoyproxy/archive
-        ref: main
-        path: archive
-
     # Checkout the repo
     - name: 'Checkout Repository (envoy-website)'
       uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
@@ -46,6 +42,5 @@ jobs:
     - run: ./sync_archive.sh
       working-directory: envoy-website
       env:
-        ENVOY_ARCHIVE_DIR: ../archive
         COMMITTER_NAME: "update-envoy[bot]"
         COMMITTER_EMAIL: "135279899+update-envoy[bot]@users.noreply.github.com"
