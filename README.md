@@ -6,7 +6,9 @@ The website is built with bazel using Pelican and Sphinx.
 
 The site is deployed to Netlify.
 
-Envoy's documentation for release versions is stored in https://github.com/envoyproxy/archive/.
+Archived release docs are served from the GCS archive bucket via a Netlify edge function
+([`netlify/edge-functions/docs-archive.ts`](./netlify/edge-functions/docs-archive.ts)), and the
+list of versions comes from the manifest pinned as `envoy_archive_manifest` in `MODULE.bazel`.
 
 
 ## Contribute content to the website
