@@ -5,9 +5,19 @@
 // Sphinx emits directory-shaped relative links throughout, and humans strip
 // trailing slashes when pasting URLs, so both shapes must keep working.
 //
+// The archive used to be proxied from a Netlify site with "Pretty URLs"
+// post-processing enabled, which 301s `/foo.html` -> `/foo` and serves `/foo`
+// from `foo.html`. Sphinx's `html` builder emits `foo.html` files and links
+// throughout, and those extensionless URLs were entirely produced by that
+// Netlify post-processing - `storage.googleapis.com` does none of it. This
+// function reproduces that behaviour so `.html` doesn't leak into the address
+// bar and previously published extensionless links keep working.
+//
 //   /docs/envoy/v1.34.1                   -> 301 /docs/envoy/v1.34.1/
 //   /docs/envoy/v1.34.1/                  -> proxy .../v1.34.1/index.html
-//   /docs/envoy/v1.34.1/configuration     -> 301 .../configuration/
+//   /docs/envoy/v1.34.1/about_docs.html   -> 301 .../about_docs        (pretty url)
+//   /docs/envoy/v1.34.1/about_docs        -> proxy .../about_docs.html
+//   /docs/envoy/v1.34.1/configuration     -> 301 .../configuration/    (no .html, has index.html)
 //   /docs/envoy/v1.34.1/configuration/    -> proxy .../configuration/index.html
 //   /docs/envoy/v1.34.1/_static/foo.css   -> proxy as-is
 //
@@ -45,6 +55,9 @@ const RESPONSE_HEADERS = [
   "last-modified",
 ];
 
+const fetchObject = (objectPath: string, headers: Headers) =>
+  fetch(`${ARCHIVE_ORIGIN}/${objectPath}`, { headers });
+
 export default async (request: Request, context: Context) => {
   const url = new URL(request.url);
 
@@ -58,16 +71,15 @@ export default async (request: Request, context: Context) => {
     return context.next();
   }
 
-  // Canonicalise directory requests to a trailing slash so Sphinx's relative
-  // links resolve against the right base.
-  if (!url.pathname.endsWith("/") && !hasExtension(url.pathname)) {
-    url.pathname += "/";
+  // Pretty URLs: /foo.html -> /foo, /foo/index.html -> /foo/. This mirrors
+  // Netlify's "Pretty URLs" post-processing (see header comment above).
+  if (url.pathname.endsWith("/index.html")) {
+    url.pathname = url.pathname.slice(0, -"index.html".length);
     return Response.redirect(url.toString(), 301);
   }
-
-  let objectPath = rel;
-  if (objectPath.endsWith("/")) {
-    objectPath += "index.html";
+  if (url.pathname.endsWith(".html")) {
+    url.pathname = url.pathname.slice(0, -".html".length);
+    return Response.redirect(url.toString(), 301);
   }
 
   // Forward only conditional-request headers, and only when present: GCS
@@ -79,9 +91,24 @@ export default async (request: Request, context: Context) => {
     if (value) upstreamHeaders.set(name, value);
   }
 
-  const upstream = await fetch(`${ARCHIVE_ORIGIN}/${objectPath}`, {
-    headers: upstreamHeaders,
-  });
+  let upstream: Response;
+  if (rel.endsWith("/")) {
+    upstream = await fetchObject(`${rel}index.html`, upstreamHeaders);
+  } else if (hasExtension(rel)) {
+    upstream = await fetchObject(rel, upstreamHeaders);
+  } else {
+    // Extensionless: prefer `foo.html` (a page), fall back to `foo/index.html`
+    // (a directory), canonicalising the latter to a trailing slash so
+    // Sphinx's relative links resolve against the right base.
+    upstream = await fetchObject(`${rel}.html`, upstreamHeaders);
+    if (upstream.status === 404) {
+      const dir = await fetchObject(`${rel}/index.html`, new Headers());
+      if (dir.ok) {
+        url.pathname += "/";
+        return Response.redirect(url.toString(), 301);
+      }
+    }
+  }
 
   const headers = new Headers();
   for (const name of RESPONSE_HEADERS) {
