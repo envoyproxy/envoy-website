@@ -5,6 +5,3 @@ FROM build AS live
 RUN apt-get update -qq \
     && apt-get -qq install -y --no-install-recommends inotify-tools \
     && rm -rf /var/lib/apt/lists/*
-
-
-FROM build AS update

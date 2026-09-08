@@ -3,8 +3,7 @@
 set -o pipefail
 
 
-ENVOY_SRC_DIR="${ENVOY_SRC_DIR:-../envoy}"
-ENVOY_VERSION=$(git -C "$ENVOY_SRC_DIR" rev-parse HEAD)
+ENVOY_VERSION="${ENVOY_VERSION:-$(git -C "${ENVOY_SRC_DIR:-../envoy}" rev-parse HEAD)}"
 UPDATED=
 
 if [[ -n "$COMMITTER_NAME" ]]; then
@@ -15,20 +14,9 @@ if [[ -n "$COMMITTER_EMAIL" ]]; then
     git config --global user.email "$COMMITTER_EMAIL"
 fi
 
-if [[ -n "$BAZEL_BUILD_OPTIONS" ]]; then
-    read -ra BAZEL_BUILD_OPTIONS <<< $BAZEL_BUILD_OPTIONS
-else
-    BAZEL_BUILD_OPTIONS=()
-fi
-
 sync_envoy () {
     echo "Syncing Envoy -> ${ENVOY_VERSION}"
-    ENVOY_SHA256=$(curl -fsSL "https://github.com/envoyproxy/envoy/archive/${ENVOY_VERSION}.tar.gz" | sha256sum | cut -d' ' -f1)
-    sed -i -E \
-        -e "/archive_override\\(/,/^\\)/ s#archive/[0-9a-f]+\\.tar\\.gz#archive/${ENVOY_VERSION}.tar.gz#" \
-        -e "/archive_override\\(/,/^\\)/ s#sha256 = \"[0-9a-f]+\"#sha256 = \"${ENVOY_SHA256}\"#" \
-        -e "/archive_override\\(/,/^\\)/ s#strip_prefix = \"envoy-[0-9a-f]+#strip_prefix = \"envoy-${ENVOY_VERSION}#" \
-        MODULE.bazel
+    sed -i -E "/^git_override\(/,/^\)/ s#commit = \"[0-9a-f]{40}\"#commit = \"${ENVOY_VERSION}\"#" MODULE.bazel
     if git diff --quiet --exit-code; then
         echo "No Envoy changes"
     else

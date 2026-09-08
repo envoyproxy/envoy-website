@@ -2,10 +2,6 @@ load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
 load("@envoy_toolshed//website:macros.bzl", "static_website")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
 
-exports_files([
-    "requirements.txt",
-])
-
 filegroup(
     name = "config",
     srcs = ["pelicanconf.py"],
