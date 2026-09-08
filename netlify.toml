@@ -44,7 +44,10 @@ status = 302
 # Archived (non-latest) docs are served from the GCS archive bucket via an
 # edge function. GCS does not map directory requests to index.html on
 # storage.googleapis.com, so a plain proxy redirect would 404 every
-# directory-shaped URL; the function normalises paths before proxying.
+# directory-shaped URL; the function normalises paths before proxying. The
+# function also reproduces Netlify's "Pretty URLs" post-processing (stripping
+# `.html` from Sphinx's generated links) that the archive relied on when it
+# was previously hosted on Netlify.
 [[edge_functions]]
   path = "/docs/envoy/*"
   function = "docs-archive"
