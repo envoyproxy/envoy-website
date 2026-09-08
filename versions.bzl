@@ -19,7 +19,7 @@ VERSIONS = {
     "envoy_archive_manifest": {
         "type": "http_file",
         "url": "https://storage.googleapis.com/envoy-cncf-meta/envoy/docs/versions.json",
-        "sha256": "TODO",
+        "sha256": "ff18f132f3dd2d8f603ac1f531df62d3bc8fde0d5381b9ccabaaa20336c2009a",
         "downloaded_file_path": "versions.json",
     },
 }
