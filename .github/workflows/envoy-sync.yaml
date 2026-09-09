@@ -40,7 +40,15 @@ jobs:
         path: envoy-website
 
     - run: |
-        envoy_version="$(grep -m1 'archive/envoy' envoy-website/MODULE.bazel | sed -E 's#.*archive/([0-9a-f]+)\\.tar\\.gz.*#\\1#')"
+        envoy_version="$(
+            sed -nE '/^git_override\(/,/^\)/{
+                /module_name = "envoy"/,/^\)/ s/^\s*commit = "([0-9a-f]{40})".*/\1/p
+            }' envoy-website/MODULE.bazel | head -n1
+        )"
+        if [[ -z "$envoy_version" ]]; then
+            echo "Failed to determine current Envoy version from MODULE.bazel" >&2
+            exit 1
+        fi
         echo "envoy_version=${envoy_version}" >> "$GITHUB_OUTPUT"
       id: current
       name: Get current Envoy version
@@ -78,8 +86,6 @@ jobs:
       if: ${{ steps.state.outputs.should_update == 'true' }}
       working-directory: envoy-website
       env:
-        ENVOY_SRC_DIR: ../envoy
+        ENVOY_VERSION: ${{ inputs.commit_sha }}
         COMMITTER_NAME: "update-envoy[bot]"
         COMMITTER_EMAIL: "135279899+update-envoy[bot]@users.noreply.github.com"
-        GITHUB_TOKEN: ${{ github.token }}
-        BAZEL_BUILD_OPTIONS: --config=rbe --config=remote-ci

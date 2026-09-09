@@ -5,7 +5,7 @@ load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
 exports_files(["nav.yaml"])
 
 # Derived from the manifest published by the `envoyproxy/archive` reconciler
-# (`@envoy_archive_manifest//file`, pinned by sha256 in `//:versions.bzl`).
+# (`@envoy_archive_manifest//file`, pinned by sha256 in `MODULE.bazel`).
 # jq cannot emit YAML directly, but YAML is a superset of JSON, so this is
 # read unchanged by `yaml.safe_load` in `pelicanconf.py`.
 jq(
