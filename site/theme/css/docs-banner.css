@@ -1,0 +1,379 @@
+/* Site banner injected into docs pages by netlify/edge-functions/docs-archive.ts.
+   Geometry mirrors the site header (header.scss / nav.scss): 85px bar, 40px
+   side padding, bootstrap 25/50/25 columns (logo | nav | actions).
+
+   Docs pages do not load the site font (base.html pulls Source Sans Pro from
+   Google Fonts; the Sphinx themes ship Lato / Roboto Slab), so without this
+   the banner text falls back to the platform sans-serif and renders at a
+   visibly different size and weight from the site header. Same URL as
+   base.html so the browser cache is shared. */
+@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700&display=swap");
+
+:root {
+  --envoy-site-banner-height: 85px;
+}
+
+/* Reset anything the docs theme may set on inherited properties so the
+   banner renders identically regardless of which Sphinx theme is underneath. */
+.envoy-docs-banner,
+.envoy-docs-banner * {
+  box-sizing: border-box;
+}
+
+.envoy-docs-banner {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 2000;
+  background: #290b53;
+  color: #fff;
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: normal;
+  text-align: left;
+  -webkit-font-smoothing: auto;
+}
+
+.envoy-docs-banner__nav-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  align-items: center;
+  gap: 0;
+  height: var(--envoy-site-banner-height);
+  padding: 0 16px;
+}
+
+.envoy-docs-banner__logo {
+  display: flex;
+  align-items: center;
+  justify-self: start;
+  height: 100%;
+  /* bootstrap .col-sm-3 gutter: the site logo sits 15px inside the column */
+  padding-left: 0;
+}
+
+.envoy-docs-banner__logo img {
+  display: block;
+  width: auto;
+  height: 35px;
+  max-height: 35px;
+}
+
+.envoy-docs-banner__nav {
+  min-width: 0;
+  text-align: center;
+}
+
+.envoy-docs-banner__nav ul {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Flex, not inline-block, so the li is exactly the link's height with no
+   line-box strut. Mirrors .nav ul li in nav.scss. */
+.envoy-docs-banner__nav li {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+/* Same box as .nav a in nav.scss: hugs the text so the active border sits
+   directly under the label rather than at the bottom of the bar. */
+.envoy-docs-banner__nav a,
+.envoy-docs-banner__nav a:link,
+.envoy-docs-banner__nav a:visited {
+  display: inline-block;
+  margin: 0 10px;
+  padding: 4px 0 2px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  color: #fff;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  opacity: 0.85;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: normal;
+  background: transparent;
+}
+
+.envoy-docs-banner__nav a:hover,
+.envoy-docs-banner__nav a:focus-visible {
+  color: #fff;
+  opacity: 1;
+  text-decoration: none;
+}
+
+.envoy-docs-banner__nav a:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.envoy-docs-banner__nav a.is-active,
+.envoy-docs-banner__nav a[aria-current="page"] {
+  border-bottom-color: #e83e8c;
+  opacity: 1;
+}
+
+.envoy-docs-banner__version {
+  position: relative;
+}
+
+.envoy-docs-banner__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  height: 100%;
+}
+
+.envoy-docs-banner__icon,
+.envoy-docs-banner__icon:link,
+.envoy-docs-banner__icon:visited {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  color: inherit;
+  line-height: 1;
+  opacity: 0.85;
+  text-decoration: none;
+}
+
+.envoy-docs-banner__icon:hover,
+.envoy-docs-banner__icon:focus-visible {
+  color: inherit;
+  opacity: 1;
+  text-decoration: none;
+}
+
+.envoy-docs-banner__icon:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Shared geometry with .nav-icon* in nav.scss. */
+.envoy-docs-banner__icon-glyph {
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  background-color: #fff;
+}
+
+.envoy-docs-banner__icon--github .envoy-docs-banner__icon-glyph {
+  -webkit-mask: url("/theme/images/github.svg") no-repeat center / contain;
+  mask: url("/theme/images/github.svg") no-repeat center / contain;
+}
+
+.envoy-docs-banner__version-button {
+  min-height: 40px;
+  margin: 0;
+  padding: 0.35rem 0.75rem;
+  border: 0;
+  border-radius: 4px;
+  background: #fff;
+  color: #290b53;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.envoy-docs-banner__version-prefix {
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.envoy-docs-banner__version-button:focus-visible {
+  outline: 2px solid #6332a7;
+  outline-offset: 2px;
+}
+
+.envoy-docs-banner__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: min(300px, calc(100vw - 32px));
+  padding: 0.5rem;
+  border: 1px solid #cdcdcd;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 8px 20px rgb(0 0 0 / 20%);
+  color: #222;
+  font-size: 15px;
+  text-align: left;
+}
+
+.envoy-docs-banner__search {
+  width: 100%;
+  margin: 0 0 0.5rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid #cdcdcd;
+  border-radius: 4px;
+  font: inherit;
+  color: #222;
+  background: #fff;
+}
+
+.envoy-docs-banner__search:focus {
+  border-color: #6332a7;
+  outline: 2px solid #6332a7;
+  outline-offset: -1px;
+}
+
+.envoy-docs-banner__list {
+  max-height: 320px;
+  overflow: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.envoy-docs-banner__list li {
+  margin: 0;
+  padding: 0;
+}
+
+.envoy-docs-banner__item,
+.envoy-docs-banner__item:link,
+.envoy-docs-banner__item:visited {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.envoy-docs-banner__item.is-active {
+  background: #f0ebf8;
+}
+
+.envoy-docs-banner__item.is-current {
+  font-weight: 700;
+  color: #6332a7;
+}
+
+.envoy-docs-banner__item-meta {
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #777;
+}
+
+.envoy-docs-banner__item-meta--stable {
+  color: #6332a7;
+}
+
+.envoy-docs-banner__item-meta--dev {
+  color: #e83e8c;
+}
+
+.envoy-docs-banner__empty {
+  padding: 0.5rem;
+  color: #777;
+}
+
+.envoy-docs-banner__hint {
+  margin: 0.5rem 0 0;
+  padding-top: 0.5rem;
+  border-top: 1px solid #eee;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: #777;
+}
+
+.envoy-docs-banner__hint kbd {
+  padding: 0 0.3em;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background: #f7f7f7;
+  font-family: inherit;
+  font-size: 0.9em;
+}
+
+body.envoy-has-site-banner {
+  scroll-padding-top: calc(var(--envoy-site-banner-height) + 24px);
+}
+
+body.envoy-has-site-banner.envoy-shell-rtd .wy-grid-for-nav,
+body.envoy-has-site-banner.envoy-shell-rtd .wy-nav-side {
+  top: var(--envoy-site-banner-height);
+}
+
+body.envoy-has-site-banner.envoy-shell-rtd .wy-grid-for-nav {
+  height: calc(100% - var(--envoy-site-banner-height));
+}
+
+body.envoy-has-site-banner.envoy-shell-rtd .wy-nav-top {
+  margin-top: var(--envoy-site-banner-height);
+}
+
+body.envoy-has-site-banner.envoy-shell-rtd .wy-nav-content-wrap {
+  scroll-padding-top: calc(var(--envoy-site-banner-height) + 24px);
+}
+
+body.envoy-has-site-banner.envoy-shell-topbar .envoy-doc-topbar {
+  top: var(--envoy-site-banner-height);
+}
+
+body.envoy-has-site-banner.envoy-shell-topbar .wy-nav-side {
+  top: calc(var(--envoy-site-banner-height) + var(--envoy-topbar-height, 0px));
+}
+
+body.envoy-has-site-banner.envoy-shell-topbar .wy-nav-content-wrap {
+  padding-top: calc(var(--envoy-site-banner-height) + var(--envoy-topbar-height, 0px));
+  scroll-padding-top: calc(var(--envoy-site-banner-height) + var(--envoy-topbar-height, 0px) + 24px);
+}
+
+body.envoy-has-site-banner.envoy-shell-topbar {
+  scroll-padding-top: calc(var(--envoy-site-banner-height) + var(--envoy-topbar-height, 0px) + 24px);
+}
+
+@media (min-width: 768px) {
+  .envoy-docs-banner__nav-row {
+    padding: 0 40px;
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --envoy-site-banner-height: 56px;
+  }
+
+  .envoy-docs-banner__nav-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem;
+  }
+
+  .envoy-docs-banner__nav {
+    display: none;
+  }
+
+  .envoy-docs-banner__logo img {
+    height: 30px;
+    max-height: 30px;
+  }
+
+  .envoy-docs-banner__version-button {
+    min-height: 36px;
+    font-size: 14px;
+  }
+}

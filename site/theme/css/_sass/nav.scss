@@ -8,19 +8,97 @@
     padding: 0;
 
     li {
-      display: inline-block;
+      // Flex, not inline-block: an inline-block li holds a line box whose
+      // strut is sized from the inherited line-height (85px in the header),
+      // which adds a descender below the link and shifts it ~2px relative to
+      // the docs banner. With flex the li is exactly the link's height.
+      display: flex;
+      align-items: center;
 
+      // The link box hugs the text (rather than inheriting the header's 85px
+      // line-height) so the active border sits just under the label. Shared
+      // geometry with .envoy-docs-banner__nav a in docs-banner.css.
       a {
         display: inline-block;
         color: $color-white;
         text-transform: uppercase;
         font-weight: bold;
         font-size: 18px;
-        padding: 0 10px;
+        line-height: 1.2;
+        margin: 0 10px;
+        padding: 4px 0 2px;
+        border-bottom: 3px solid transparent;
+        opacity: 0.85;
+        text-decoration: none;
+
+        &:hover,
+        &:focus-visible {
+          opacity: 1;
+          text-decoration: none;
+        }
+      }
+
+      a.is-active,
+      a[aria-current="page"] {
+        opacity: 1;
+        border-bottom-color: #e83e8c;
+        text-decoration: none;
       }
 
     }
 
   }
 
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding-top: 6px;
+
+  @media (min-width: $screen-sm-min) {
+    justify-content: flex-end;
+    height: 85px;
+    padding-top: 0;
+  }
+}
+
+.nav-version {
+  position: relative;
+}
+
+.nav-icon {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  opacity: 0.85;
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    opacity: 1;
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-white;
+    outline-offset: 2px;
+  }
+}
+
+// Shared geometry with .envoy-docs-banner__icon* in docs-banner.css.
+.nav-icon__glyph {
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  background-color: $color-white;
+}
+
+.nav-icon--github .nav-icon__glyph {
+  -webkit-mask: url("/theme/images/github.svg") no-repeat center / contain;
+  mask: url("/theme/images/github.svg") no-repeat center / contain;
 }
