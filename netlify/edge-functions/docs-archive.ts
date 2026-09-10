@@ -27,23 +27,38 @@
 import type { Context } from "https://edge.netlify.com";
 
 const ARCHIVE_BUCKET = "envoy-cncf-archive";
-const ARCHIVE_ORIGIN = `https://storage.googleapis.com/${ARCHIVE_BUCKET}/envoy/docs`;
+const ARCHIVE_ORIGIN =
+  `https://storage.googleapis.com/${ARCHIVE_BUCKET}/envoy/docs`;
 const SITE_PREFIX = "/docs/envoy/";
 
-// Extensions a Sphinx html tree actually contains. Anything else is a
-// directory - notably `v1.39.1`, which contains dots but is not a file.
-const FILE_EXTENSIONS = new Set([
-  "html", "htm", "txt", "xml", "json", "js", "css", "map",
-  "png", "jpg", "jpeg", "gif", "svg", "ico", "webp",
-  "woff", "woff2", "ttf", "eot", "otf",
-  "pdf", "yaml", "yml", "proto", "inv", "buildinfo", "sh", "py", "md", "rst",
+// Extensions that are always static assets in archived docs and should be
+// fetched directly, skipping the `${rel}.html` probe.
+const ASSET_EXTENSIONS = new Set([
+  "js",
+  "css",
+  "map",
+  "png",
+  "jpg",
+  "jpeg",
+  "gif",
+  "svg",
+  "ico",
+  "webp",
+  "woff",
+  "woff2",
+  "ttf",
+  "eot",
+  "otf",
+  "pdf",
+  "inv",
+  "buildinfo",
 ]);
 
-const hasExtension = (path: string): boolean => {
+const hasAssetExtension = (path: string): boolean => {
   const last = path.slice(path.lastIndexOf("/") + 1);
   const dot = last.lastIndexOf(".");
   if (dot < 0) return false;
-  return FILE_EXTENSIONS.has(last.slice(dot + 1).toLowerCase());
+  return ASSET_EXTENSIONS.has(last.slice(dot + 1).toLowerCase());
 };
 
 const CONDITIONAL_HEADERS = ["if-none-match", "if-modified-since"];
@@ -94,20 +109,33 @@ export default async (request: Request, context: Context) => {
   let upstream: Response;
   if (rel.endsWith("/")) {
     upstream = await fetchObject(`${rel}index.html`, upstreamHeaders);
-  } else if (hasExtension(rel)) {
+  } else if (rel.endsWith(".html")) {
+    upstream = await fetchObject(rel, upstreamHeaders);
+  } else if (hasAssetExtension(rel)) {
     upstream = await fetchObject(rel, upstreamHeaders);
   } else {
-    // Extensionless: prefer `foo.html` (a page), fall back to `foo/index.html`
-    // (a directory), canonicalising the latter to a trailing slash so
-    // Sphinx's relative links resolve against the right base.
+    // Pretty URL for a Sphinx page (`foo`, `foo.proto`, `envoy.yaml` ...):
+    // prefer `foo.html`, then fall back to a verbatim object and directory.
     upstream = await fetchObject(`${rel}.html`, upstreamHeaders);
     if (upstream.status === 404) {
-      const dir = await fetchObject(`${rel}/index.html`, new Headers());
-      if (dir.ok) {
-        url.pathname += "/";
-        return Response.redirect(url.toString(), 301);
+      const asset = await fetchObject(rel, upstreamHeaders);
+      if (asset.status !== 404) {
+        upstream = asset;
+      } else {
+        const dir = await fetchObject(`${rel}/index.html`, upstreamHeaders);
+        if (dir.ok) {
+          url.pathname += "/";
+          return Response.redirect(url.toString(), 301);
+        }
       }
     }
+  }
+
+  if (upstream.status === 404) {
+    return new Response("Not Found", {
+      status: 404,
+      headers: { "content-type": "text/plain; charset=utf-8" },
+    });
   }
 
   const headers = new Headers();
