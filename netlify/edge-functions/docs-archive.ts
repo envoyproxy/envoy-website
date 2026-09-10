@@ -30,8 +30,14 @@ const ARCHIVE_BUCKET = "envoy-cncf-archive";
 const ARCHIVE_ORIGIN = `https://storage.googleapis.com/${ARCHIVE_BUCKET}/envoy/docs`;
 const SITE_PREFIX = "/docs/envoy/";
 const CDN_CACHE_CONTROL = "public, max-age=86400, stale-while-revalidate=604800";
+const escapeHtmlAttribute = (value: string) =>
+  value.replaceAll("&", "&amp;")
+    .replaceAll("\"", "&quot;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll("'", "&#39;");
 const HTML_INJECTION = (version: string) =>
-  `<link rel="stylesheet" href="/theme/css/docs-banner.css" />\n<script defer src="/theme/js/docs-banner.js" data-envoy-docs-version="${version}"></script>\n`;
+  `<link rel="stylesheet" href="/theme/css/docs-banner.css" />\n<script defer src="/theme/js/docs-banner.js" data-envoy-docs-version="${escapeHtmlAttribute(version)}"></script>\n`;
 
 // Extensions a Sphinx html tree actually contains. Anything else is a
 // directory - notably `v1.39.1`, which contains dots but is not a file.
@@ -48,6 +54,8 @@ const hasExtension = (path: string): boolean => {
   if (dot < 0) return false;
   return FILE_EXTENSIONS.has(last.slice(dot + 1).toLowerCase());
 };
+const isArchiveVersion = (segment: string): boolean =>
+  /^(v)?[0-9]+\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$/.test(segment);
 
 const CONDITIONAL_HEADERS = ["if-none-match", "if-modified-since"];
 const RESPONSE_HEADERS = [
@@ -60,18 +68,6 @@ const RESPONSE_HEADERS = [
 
 const fetchObject = (objectPath: string, headers: Headers) =>
   fetch(`${ARCHIVE_ORIGIN}/${objectPath}`, { headers });
-
-const withCacheHeaders = (response: Response): Response => {
-  if (response.status < 200 || response.status >= 300) {
-    return response;
-  }
-  const headers = new Headers(response.headers);
-  headers.set("netlify-cdn-cache-control", CDN_CACHE_CONTROL);
-  return new Response(response.body, {
-    status: response.status,
-    headers,
-  });
-};
 
 const injectIntoHead = (html: string, snippet: string): string => {
   const lower = html.toLowerCase();
@@ -111,7 +107,7 @@ export default async (request: Request, context: Context) => {
   if (
     version === "latest" ||
     version === "versions.json" ||
-    !version.startsWith("v")
+    !isArchiveVersion(version)
   ) {
     return context.next();
   }
@@ -176,9 +172,12 @@ export default async (request: Request, context: Context) => {
     });
   }
 
-  const response = new Response(upstream.body, {
+  if (upstream.status >= 200 && upstream.status < 300) {
+    headers.set("netlify-cdn-cache-control", CDN_CACHE_CONTROL);
+  }
+
+  return new Response(upstream.body, {
     status: upstream.status,
     headers,
   });
-  return withCacheHeaders(response);
 };

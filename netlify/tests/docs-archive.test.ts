@@ -82,6 +82,7 @@ Deno.test("HTML 200 is injected before </head> and drops content-length/etag", a
           "cache-control": "public, max-age=60",
         },
       });
+
     },
     async () => {
       const req = new Request(
@@ -109,6 +110,23 @@ Deno.test("HTML 200 is injected before </head> and drops content-length/etag", a
         res.headers.get("netlify-cdn-cache-control"),
         "public, max-age=86400, stale-while-revalidate=604800",
       );
+    },
+  );
+});
+
+Deno.test("HTML without </head> gets banner prepended", async () => {
+  await withFetchStub(
+    () =>
+      new Response("<html><body>no head</body></html>", {
+        status: 200,
+        headers: { "content-type": "text/html" },
+      }),
+    async () => {
+      const req = new Request("https://example.com/docs/envoy/v1.34.1/nohead");
+      const res = await handler(req, context as never);
+      const body = await res.text();
+      assertEquals(body.startsWith("<link rel=\"stylesheet\""), true);
+      assertEquals(body.includes("data-envoy-docs-version=\"v1.34.1\""), true);
     },
   );
 });

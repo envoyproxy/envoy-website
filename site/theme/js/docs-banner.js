@@ -1,7 +1,16 @@
 (() => {
+  const controllerKey = "__envoyDocsBannerListeners";
+  const previousController = globalThis[controllerKey];
+  if (previousController instanceof AbortController) {
+    previousController.abort();
+  }
+  const controller = new AbortController();
+  globalThis[controllerKey] = controller;
+
   const DOCS_PREFIX = "/docs/envoy/";
   const VERSIONS_URL = `${DOCS_PREFIX}versions.json`;
   const OPEN_SHORTCUT = "V";
+  const LIST_ID = "envoy-docs-banner-version-list";
 
   const currentScript = document.currentScript;
 
@@ -35,23 +44,26 @@
     return;
   }
 
-  const relPath = (() => {
+  const relPathSegments = (() => {
     const rel = location.pathname.slice(DOCS_PREFIX.length);
     const parts = rel.split("/");
     parts.shift();
-    return parts.join("/");
+    return parts.filter((segment) => segment.length > 0);
   })();
 
   const withLeadingV = (version) => (version === "latest" ? version : `v${normalizeVersion(version)}`);
 
   const buildDeepLink = (version) => {
-    const suffix = relPath ? `${relPath}${location.search}${location.hash}` : `${location.search}${location.hash}`;
-    return `${DOCS_PREFIX}${withLeadingV(version)}/${suffix}`;
+    const target = new URL(location.href);
+    target.pathname = `${DOCS_PREFIX}${withLeadingV(version)}/${relPathSegments.join("/")}`;
+    target.search = location.search;
+    target.hash = location.hash;
+    return `${target.pathname}${target.search}${target.hash}`;
   };
 
   const buildRootLink = (version) => `${DOCS_PREFIX}${withLeadingV(version)}/`;
 
-  fetch(VERSIONS_URL)
+  fetch(VERSIONS_URL, { cache: "no-cache" })
     .then((response) => {
       if (!response.ok) {
         throw new Error(`fetch failed: ${response.status}`);
@@ -99,9 +111,9 @@
               ${currentDisplay}
             </button>
             <div class="envoy-docs-banner__menu" hidden>
-              <p class="envoy-docs-banner__help">Type to filter versions, ↑/↓ + Enter to open, Esc to close. Shortcut: Shift+V.</p>
+              <p class="envoy-docs-banner__help">Type to filter versions, ↑/↓ + Enter to navigate, Esc to close. Shortcut: Shift+V.</p>
               <p class="envoy-docs-banner__query" hidden>Filter: <span></span></p>
-              <ul class="envoy-docs-banner__list" role="listbox"></ul>
+              <ul id="${LIST_ID}" class="envoy-docs-banner__list" role="listbox" aria-label="Envoy documentation versions"></ul>
             </div>
           </div>
         </div>
@@ -122,6 +134,8 @@
       const list = banner.querySelector(".envoy-docs-banner__list");
       const queryWrap = banner.querySelector(".envoy-docs-banner__query");
       const queryValue = queryWrap.querySelector("span");
+      versionButton.setAttribute("aria-controls", LIST_ID);
+      versionButton.setAttribute("aria-haspopup", "listbox");
 
       let isOpen = false;
       let filterText = "";
@@ -144,14 +158,21 @@
         list.innerHTML = "";
         visible.forEach((option, index) => {
           const item = document.createElement("li");
-          item.role = "option";
+          item.role = "none";
           item.dataset.version = option.version;
-          item.className = "envoy-docs-banner__item";
+
+          const button = document.createElement("button");
+          button.type = "button";
+          button.role = "option";
+          button.className = "envoy-docs-banner__item";
+          button.id = `envoy-docs-banner-option-${option.version.replaceAll(".", "-")}`;
           if (index === activeIndex) {
-            item.classList.add("is-active");
+            button.classList.add("is-active");
           }
+          button.setAttribute("aria-selected", index === activeIndex ? "true" : "false");
           if (normalizeVersion(option.version) === currentVersion) {
-            item.classList.add("is-current");
+            button.classList.add("is-current");
+            button.setAttribute("aria-current", "true");
           }
 
           const label = document.createElement("span");
@@ -167,11 +188,19 @@
             ? "archived"
             : "dev";
 
-          item.appendChild(label);
-          item.appendChild(meta);
-          item.addEventListener("click", () => navigateTo(option.version));
+          button.appendChild(label);
+          button.appendChild(meta);
+          button.addEventListener("click", () => navigateTo(option.version));
+          item.appendChild(button);
           list.appendChild(item);
         });
+
+        const active = list.querySelector(".envoy-docs-banner__item.is-active");
+        if (active?.id) {
+          list.setAttribute("aria-activedescendant", active.id);
+        } else {
+          list.removeAttribute("aria-activedescendant");
+        }
 
         queryWrap.hidden = !filterText;
         queryValue.textContent = filterText;
@@ -197,15 +226,24 @@
         closeMenu();
         const deepLink = buildDeepLink(targetVersion);
         try {
-          const probe = await fetch(deepLink, { method: "HEAD" });
+          const probe = await fetch(deepLink, {
+            method: "HEAD",
+            credentials: "same-origin",
+          });
           if (probe.ok) {
             location.assign(deepLink);
             return;
           }
+          if (probe.status === 404) {
+            location.assign(buildRootLink(targetVersion));
+            return;
+          }
+          location.assign(deepLink);
+          return;
         } catch {
-          // Fall back to root below.
+          location.assign(deepLink);
+          return;
         }
-        location.assign(buildRootLink(targetVersion));
       };
 
       versionButton.addEventListener("click", () => {
@@ -223,10 +261,15 @@
         if (event.target instanceof Node && !banner.contains(event.target)) {
           closeMenu();
         }
-      });
+      }, { signal: controller.signal });
 
       document.addEventListener("keydown", (event) => {
-        if (!isOpen && event.key === OPEN_SHORTCUT && !isEditableTarget(event.target)) {
+        if (
+          !isOpen &&
+          event.key.toLowerCase() === OPEN_SHORTCUT.toLowerCase() &&
+          event.shiftKey &&
+          !isEditableTarget(event.target)
+        ) {
           event.preventDefault();
           openMenu();
           return;
@@ -291,8 +334,9 @@
             renderList();
           }, 1000);
         }
-      });
+      }, { signal: controller.signal });
 
+      document.querySelector(".envoy-docs-banner")?.remove();
       const mountPoint = document.getElementById("envoy-docs-banner") || banner;
       if (mountPoint === banner) {
         document.body.prepend(banner);
