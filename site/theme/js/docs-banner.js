@@ -301,9 +301,16 @@
           return;
         }
 
-        if (/^[0-9.v]$/.test(event.key)) {
+        const filterKey = event.key.toLowerCase();
+        if (
+          !event.shiftKey &&
+          !event.altKey &&
+          !event.ctrlKey &&
+          !event.metaKey &&
+          /^[0-9.v]$/.test(filterKey)
+        ) {
           event.preventDefault();
-          filterText += event.key.toLowerCase().replace(/^v$/, "");
+          filterText += filterKey.replace(/^v$/, "");
           activeIndex = 0;
           renderList();
           if (clearFilterTimer) {
