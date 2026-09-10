@@ -1,6 +1,7 @@
 load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
 load("@envoy_toolshed//website:macros.bzl", "static_website")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
+load("@rules_pkg//pkg:mappings.bzl", "pkg_files")
 
 filegroup(
     name = "config",
@@ -20,6 +21,17 @@ pkg_tar(
     name = "docs",
     package_dir = "docs/envoy/latest",
     deps = ["@envoy-docs"],
+)
+
+pkg_files(
+    name = "docs_versions_json_file",
+    srcs = ["//site/data:versions_json"],
+    prefix = "docs/envoy",
+)
+
+pkg_tar(
+    name = "docs_versions_json",
+    srcs = [":docs_versions_json_file"],
 )
 
 label_flag(
@@ -46,7 +58,7 @@ static_website(
     data = "//site/data",
     extension = "tar.zst",
     theme = "//site/theme",
-    deps = select({
+    deps = [":docs_versions_json"] + select({
         ":disable_docs_latest": [],
         "//conditions:default": [":docs_latest"],
     }),
