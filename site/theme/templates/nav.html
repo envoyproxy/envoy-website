@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-sm-3 logo">
-    {% if active_page != 'home' and show_logo != 'no' %}
+    {% if show_logo != 'no' %}
     <a href="/">
       <img src="/theme/images/envoy-logo.svg"
            alt="Envoy">
@@ -12,10 +12,24 @@
       <ul class="container-fluid">
         {% for link in NAV %}
         <li>
-          <a href="{{ link.url }}">{{ link.text }}</a>
+          <a href="{{ link.url }}"{% if active_page == link.id or ((not active_page) and link.url.startswith('/') and (output_file == link.url.lstrip('/') ~ '.html' or output_file == link.url.lstrip('/') or output_file.startswith(link.url.lstrip('/') ~ '/'))) %} class="is-active" aria-current="page"{% endif %}>{{ link.text }}</a>
         </li>
         {% endfor %}
       </ul>
     </nav>
   </div>
+  {% if show_logo != 'no' %}
+  <div class="col-sm-3 nav-actions">
+    {% if active_page == 'documentation' %}
+    <div class="nav-version" data-envoy-docs-version-mount></div>
+    {% endif %}
+    <a class="nav-icon nav-icon--github"
+       href="https://github.com/envoyproxy/envoy"
+       target="_blank" rel="noopener noreferrer"
+       aria-label="Envoy on GitHub (opens in a new tab)"
+       title="Envoy on GitHub">
+      <span class="nav-icon__glyph" aria-hidden="true"></span>
+    </a>
+  </div>
+  {% endif %}
 </div>

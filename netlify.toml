@@ -36,18 +36,12 @@ from = "/slack"
 to = "https://join.slack.com/t/envoyproxy/shared_invite/zt-1fuxyzagj-jfO6OXk0zKOmIW35XkanXw"
 status = 302
 
-[[redirects]]
-  from = "/docs/envoy/latest/*"
-  to = "/docs/envoy/latest/:splat"
-  status = 200
-
-# Archived (non-latest) docs are served from the GCS archive bucket via an
-# edge function. GCS does not map directory requests to index.html on
+# Envoy docs requests are handled by an edge function. Latest docs are served
+# by Netlify static hosting and decorated there, while archived docs are
+# proxied from GCS. GCS does not map directory requests to index.html on
 # storage.googleapis.com, so a plain proxy redirect would 404 every
 # directory-shaped URL; the function normalises paths before proxying. The
 # function also reproduces Netlify's "Pretty URLs" post-processing (stripping
 # `.html` from Sphinx's generated links) that the archive relied on when it
-# was previously hosted on Netlify.
-[[edge_functions]]
-  path = "/docs/envoy/*"
-  function = "docs-archive"
+# was previously hosted on Netlify. Route and caching config live in
+# `netlify/edge-functions/docs-archive.ts`.

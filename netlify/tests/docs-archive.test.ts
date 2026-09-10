@@ -32,8 +32,78 @@ const context = {
   next: () => Promise.resolve(new Response("next", { status: 200 })),
 };
 
-Deno.test("latest/* passes through via context.next()", async () => {
-  const req = new Request("https://example.com/docs/envoy/latest/about_docs");
+Deno.test("latest HTML via context.next() is injected and fetch is not used", async () => {
+  await withFetchStub(
+    () => {
+      throw new Error("fetch should not be called for latest");
+    },
+    async () => {
+      const req = new Request("https://example.com/docs/envoy/latest/about_docs");
+      const latestContext = {
+        next: () =>
+          Promise.resolve(
+            new Response("<html><head><title>x</title></head><body>ok</body></html>", {
+              status: 200,
+              headers: {
+                "content-type": "text/html; charset=utf-8",
+                "content-length": "61",
+                "etag": "W/\"abc\"",
+                "cache-control": "public, max-age=60",
+              },
+            }),
+          ),
+      };
+      const res = await handler(req, latestContext as never);
+      const body = await res.text();
+      assertEquals(body.includes('data-envoy-docs-version="latest"'), true);
+      assertEquals(body.indexOf("docs-banner.js") < body.indexOf("</head>"), true);
+      assertEquals(res.headers.get("content-length"), null);
+      assertEquals(res.headers.get("etag"), null);
+      assertEquals(
+        res.headers.get("netlify-cdn-cache-control"),
+        "public, max-age=86400, stale-while-revalidate=604800",
+      );
+    },
+  );
+});
+
+Deno.test("latest non-HTML assets pass through untouched and fetch is not used", async () => {
+  await withFetchStub(
+    () => {
+      throw new Error("fetch should not be called for latest assets");
+    },
+    async () => {
+      const req = new Request("https://example.com/docs/envoy/latest/_static/foo.css");
+      const latestContext = {
+        next: () =>
+          Promise.resolve(
+            new Response("body { color: red }", {
+              status: 200,
+              headers: {
+                "content-type": "text/css",
+                "content-length": "18",
+                "etag": "W/\"asset\"",
+              },
+            }),
+          ),
+      };
+      const res = await handler(req, latestContext as never);
+      assertEquals(await res.text(), "body { color: red }");
+      assertEquals(res.headers.get("content-length"), "18");
+      assertEquals(res.headers.get("etag"), "W/\"asset\"");
+      assertEquals(res.headers.get("netlify-cdn-cache-control"), null);
+    },
+  );
+});
+
+Deno.test("/docs/envoy/versions.json passes through via context.next()", async () => {
+  const req = new Request("https://example.com/docs/envoy/versions.json");
+  const res = await handler(req, context as never);
+  assertEquals(await res.text(), "next");
+});
+
+Deno.test("non-version path under /docs/envoy passes through", async () => {
+  const req = new Request("https://example.com/docs/envoy/assets/help");
   const res = await handler(req, context as never);
   assertEquals(await res.text(), "next");
 });
@@ -50,6 +120,10 @@ Deno.test(".html -> 301 stripped, preserving query string", async () => {
       assertEquals(
         res.headers.get("location"),
         "https://example.com/docs/envoy/v1.34.1/about_docs?x=1",
+      );
+      assertEquals(
+        res.headers.get("netlify-cdn-cache-control"),
+        "public, max-age=86400, stale-while-revalidate=604800",
       );
     },
   );
@@ -68,26 +142,98 @@ Deno.test("/index.html -> 301 to /", async () => {
         res.headers.get("location"),
         "https://example.com/docs/envoy/v1.34.1/configuration/",
       );
+      assertEquals(
+        res.headers.get("netlify-cdn-cache-control"),
+        "public, max-age=86400, stale-while-revalidate=604800",
+      );
     },
   );
 });
 
-Deno.test("extensionless page proxies the .html object", async () => {
+Deno.test("archived HTML 200 is injected before </head> and drops content-length/etag", async () => {
   await withFetchStub(
-    (url) => {
-      assertEquals(url.endsWith("/about_docs.html"), true);
-      return new Response("page body", {
+    (_url, init) => {
+      const forwarded = new Headers(init?.headers);
+      assertEquals(forwarded.has("if-none-match"), false);
+      assertEquals(forwarded.has("if-modified-since"), false);
+      return new Response("<html><head><title>x</title></head><body>ok</body></html>", {
         status: 200,
-        headers: { "content-type": "text/html" },
+        headers: {
+          "content-type": "text/html; charset=utf-8",
+          "content-length": "61",
+          "etag": "W/\"abc\"",
+          "cache-control": "public, max-age=60",
+        },
       });
     },
     async () => {
       const req = new Request(
         "https://example.com/docs/envoy/v1.34.1/about_docs",
+        {
+          headers: {
+            "if-none-match": "W/\"downstream\"",
+            "if-modified-since": "Wed, 01 Jan 2025 00:00:00 GMT",
+          },
+        },
+      );
+      const res = await handler(req, context as never);
+      const body = await res.text();
+      assertEquals(body.includes('data-envoy-docs-version="v1.34.1"'), true);
+      assertEquals(body.indexOf("docs-banner.js") < body.indexOf("</head>"), true);
+      assertEquals(res.headers.get("content-length"), null);
+      assertEquals(res.headers.get("etag"), null);
+      assertEquals(
+        res.headers.get("netlify-cdn-cache-control"),
+        "public, max-age=86400, stale-while-revalidate=604800",
+      );
+    },
+  );
+});
+
+Deno.test("conditional headers are not forwarded for html-ish directory requests", async () => {
+  await withFetchStub(
+    (_url, init) => {
+      const forwarded = new Headers(init?.headers);
+      assertEquals(forwarded.has("if-none-match"), false);
+      assertEquals(forwarded.has("if-modified-since"), false);
+      return new Response("<html><head></head><body>ok</body></html>", {
+        status: 200,
+        headers: {
+          "content-type": "text/html",
+          "etag": "W/\"etag\"",
+        },
+      });
+    },
+    async () => {
+      const req = new Request(
+        "https://example.com/docs/envoy/v1.34.1/configuration/",
+        {
+          headers: {
+            "if-none-match": "W/\"downstream\"",
+            "if-modified-since": "Wed, 01 Jan 2025 00:00:00 GMT",
+          },
+        },
       );
       const res = await handler(req, context as never);
       assertEquals(res.status, 200);
-      assertEquals(await res.text(), "page body");
+      assertEquals(res.headers.get("etag"), null);
+    },
+  );
+});
+
+Deno.test("HTML without </head> gets banner prepended", async () => {
+  await withFetchStub(
+    () =>
+      new Response("<html><body>no head</body></html>", {
+        status: 200,
+        headers: { "content-type": "text/html" },
+      }),
+    async () => {
+      const req = new Request("https://example.com/docs/envoy/v1.34.1/nohead");
+      const res = await handler(req, context as never);
+      const body = await res.text();
+      assertEquals(body.startsWith("<link rel=\"stylesheet\""), true);
+      assertEquals(body.includes('data-envoy-docs-version="v1.34.1"'), true);
     },
   );
 });
@@ -116,6 +262,10 @@ Deno.test("extensionless directory 404s on .html, 301s to trailing slash", async
         res.headers.get("location"),
         "https://example.com/docs/envoy/v1.34.1/configuration/",
       );
+      assertEquals(
+        res.headers.get("netlify-cdn-cache-control"),
+        "public, max-age=86400, stale-while-revalidate=604800",
+      );
     },
   );
 });
@@ -126,7 +276,7 @@ Deno.test("foo.proto pretty URL resolves to foo.proto.html first", async () => {
       if (url.endsWith("/route_components.proto.html")) {
         return new Response("proto page", {
           status: 200,
-          headers: { "content-type": "text/html" },
+          headers: { "content-type": "text/plain" },
         });
       }
       if (url.endsWith("/route_components.proto")) {
@@ -216,6 +366,47 @@ Deno.test("non-asset dotted path falls back from .html 404 to verbatim object", 
   );
 });
 
+Deno.test("non-HTML assets stay untouched and forward conditional headers", async () => {
+  await withFetchStub(
+    (_url, init) => {
+      const forwarded = new Headers(init?.headers);
+      assertEquals(forwarded.get("if-none-match"), "W/\"asset\"");
+      assertEquals(
+        forwarded.get("if-modified-since"),
+        "Wed, 01 Jan 2025 00:00:00 GMT",
+      );
+      return new Response("body { color: red }", {
+        status: 200,
+        headers: {
+          "content-type": "text/css",
+          "content-length": "18",
+          "etag": "W/\"asset-upstream\"",
+        },
+      });
+    },
+    async () => {
+      const req = new Request(
+        "https://example.com/docs/envoy/v1.34.1/_static/foo.css",
+        {
+          headers: {
+            "if-none-match": "W/\"asset\"",
+            "if-modified-since": "Wed, 01 Jan 2025 00:00:00 GMT",
+          },
+        },
+      );
+      const res = await handler(req, context as never);
+      assertEquals(res.status, 200);
+      assertEquals(await res.text(), "body { color: red }");
+      assertEquals(res.headers.get("content-length"), "18");
+      assertEquals(res.headers.get("etag"), "W/\"asset-upstream\"");
+      assertEquals(
+        res.headers.get("netlify-cdn-cache-control"),
+        "public, max-age=86400, stale-while-revalidate=604800",
+      );
+    },
+  );
+});
+
 Deno.test("404 upstream response is sanitized (no GCS XML passthrough)", async () => {
   const urls: string[] = [];
   await withFetchStub(
@@ -238,6 +429,7 @@ Deno.test("404 upstream response is sanitized (no GCS XML passthrough)", async (
       assertEquals(res.status, 404);
       assertEquals(body.includes("NoSuchKey"), false);
       assertEquals(res.headers.get("content-type")?.includes("xml"), false);
+      assertEquals(res.headers.get("netlify-cdn-cache-control"), null);
       assertArrayEquals(urls, [
         "https://storage.googleapis.com/envoy-cncf-archive/envoy/docs/v1.34.1/api-v3/config/route/v3/missing.proto.html",
         "https://storage.googleapis.com/envoy-cncf-archive/envoy/docs/v1.34.1/api-v3/config/route/v3/missing.proto",
@@ -247,34 +439,24 @@ Deno.test("404 upstream response is sanitized (no GCS XML passthrough)", async (
   );
 });
 
-Deno.test("conditional headers are forwarded on first probe", async () => {
+Deno.test("304 responses are passed through without decoration", async () => {
   await withFetchStub(
-    (url, init) => {
-      assertEquals(url.endsWith("/about_docs.html"), true);
-      assertEquals(init?.headers instanceof Headers, true);
-      const headers = init?.headers as Headers;
-      assertEquals(headers.get("if-none-match"), '"etag123"');
-      assertEquals(
-        headers.get("if-modified-since"),
-        "Wed, 21 Oct 2015 07:28:00 GMT",
-      );
-      return new Response("page body", {
-        status: 200,
-        headers: { "content-type": "text/html" },
-      });
-    },
+    () =>
+      new Response(null, {
+        status: 304,
+        headers: {
+          "content-type": "text/css",
+          "etag": "W/\"cached\"",
+        },
+      }),
     async () => {
       const req = new Request(
-        "https://example.com/docs/envoy/v1.34.1/about_docs",
-        {
-          headers: {
-            "if-none-match": '"etag123"',
-            "if-modified-since": "Wed, 21 Oct 2015 07:28:00 GMT",
-          },
-        },
+        "https://example.com/docs/envoy/v1.34.1/_static/maybe.css",
       );
       const res = await handler(req, context as never);
-      assertEquals(res.status, 200);
+      assertEquals(res.status, 304);
+      assertEquals(res.headers.get("etag"), "W/\"cached\"");
+      assertEquals(res.headers.get("netlify-cdn-cache-control"), null);
     },
   );
 });

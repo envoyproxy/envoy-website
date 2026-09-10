@@ -1,7 +1,12 @@
-// Proxy archived Envoy docs from the GCS archive bucket.
+// Proxy Envoy docs pages with runtime banner injection.
 //
-// The bucket is a plain object store: it has no notion of directories and
-// will not resolve `/v1.34.1/configuration/` to `.../configuration/index.html`.
+// Archived docs are fetched from the GCS archive bucket, while `latest` is
+// served by Netlify static hosting. This function decorates HTML responses for
+// both so the docs banner is injected at request time (the archived HTML stored
+// in GCS is never rewritten).
+//
+// The bucket is a plain object store: it has no notion of directories and will
+// not resolve `/v1.34.1/configuration/` to `.../configuration/index.html`.
 // Sphinx emits directory-shaped relative links throughout, and humans strip
 // trailing slashes when pasting URLs, so both shapes must keep working.
 //
@@ -20,9 +25,6 @@
 //   /docs/envoy/v1.34.1/configuration     -> 301 .../configuration/    (no .html, has index.html)
 //   /docs/envoy/v1.34.1/configuration/    -> proxy .../configuration/index.html
 //   /docs/envoy/v1.34.1/_static/foo.css   -> proxy as-is
-//
-// `/docs/envoy/latest/` is not handled here; it is built into the site and
-// matched by the redirect rule in netlify.toml before this function runs.
 
 import type { Context } from "https://edge.netlify.com";
 
@@ -30,6 +32,8 @@ const ARCHIVE_BUCKET = "envoy-cncf-archive";
 const ARCHIVE_ORIGIN =
   `https://storage.googleapis.com/${ARCHIVE_BUCKET}/envoy/docs`;
 const SITE_PREFIX = "/docs/envoy/";
+const CDN_CACHE_CONTROL =
+  "public, max-age=86400, stale-while-revalidate=604800";
 
 // Extensions that are always static assets in archived docs and should be
 // fetched directly, skipping the `${rel}.html` probe.
@@ -61,6 +65,22 @@ const hasAssetExtension = (path: string): boolean => {
   return ASSET_EXTENSIONS.has(last.slice(dot + 1).toLowerCase());
 };
 
+const isArchiveVersion = (segment: string): boolean =>
+  /^(v)?[0-9]+\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$/.test(segment);
+
+const isHtmlishPath = (path: string): boolean => {
+  if (!path || path.endsWith("/")) {
+    return true;
+  }
+  const last = path.slice(path.lastIndexOf("/") + 1);
+  const dot = last.lastIndexOf(".");
+  if (dot < 0) {
+    return true;
+  }
+  const ext = last.slice(dot + 1).toLowerCase();
+  return ext === "html" || ext === "htm";
+};
+
 const CONDITIONAL_HEADERS = ["if-none-match", "if-modified-since"];
 const RESPONSE_HEADERS = [
   "content-type",
@@ -73,6 +93,83 @@ const RESPONSE_HEADERS = [
 const fetchObject = (objectPath: string, headers: Headers) =>
   fetch(`${ARCHIVE_ORIGIN}/${objectPath}`, { headers });
 
+const escapeHtmlAttribute = (value: string) =>
+  value.replaceAll("&", "&amp;")
+    .replaceAll("\"", "&quot;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll("'", "&#39;");
+
+const HTML_INJECTION = (version: string) =>
+  `<link rel="stylesheet" href="/theme/css/docs-banner.css" />\n<script defer src="/theme/js/docs-banner.js" data-envoy-docs-version="${escapeHtmlAttribute(version)}"></script>\n`;
+
+const injectIntoHead = (html: string, snippet: string): string => {
+  const lower = html.toLowerCase();
+  const idx = lower.indexOf("</head>");
+  if (idx < 0) {
+    return `${snippet}${html}`;
+  }
+  return `${html.slice(0, idx)}${snippet}${html.slice(idx)}`;
+};
+
+const copyResponseHeaders = (upstream: Response): Headers => {
+  const headers = new Headers();
+  for (const name of RESPONSE_HEADERS) {
+    const value = upstream.headers.get(name);
+    if (value) {
+      headers.set(name, value);
+    }
+  }
+  return headers;
+};
+
+const decorate = async (upstream: Response, version: string): Promise<Response> => {
+  if (upstream.status === 404) {
+    return new Response("Not Found", {
+      status: 404,
+      headers: { "content-type": "text/plain; charset=utf-8" },
+    });
+  }
+
+  const headers = copyResponseHeaders(upstream);
+  const contentType = upstream.headers.get("content-type") || "";
+
+  if (upstream.ok && contentType.toLowerCase().startsWith("text/html")) {
+    const body = injectIntoHead(await upstream.text(), HTML_INJECTION(version));
+    headers.delete("content-length");
+    headers.delete("etag");
+    headers.set("netlify-cdn-cache-control", CDN_CACHE_CONTROL);
+    return new Response(body, {
+      status: upstream.status,
+      headers,
+    });
+  }
+
+  if (upstream.status >= 200 && upstream.status < 300) {
+    headers.set("netlify-cdn-cache-control", CDN_CACHE_CONTROL);
+  }
+
+  return new Response(upstream.body, {
+    status: upstream.status,
+    headers,
+  });
+};
+
+const cachedRedirect = (url: string, status = 301): Response => {
+  const response = Response.redirect(url, status);
+  const headers = new Headers(response.headers);
+  headers.set("netlify-cdn-cache-control", CDN_CACHE_CONTROL);
+  return new Response(response.body, {
+    status: response.status,
+    headers,
+  });
+};
+
+export const config = {
+  path: "/docs/envoy/*",
+  cache: "manual",
+};
+
 export default async (request: Request, context: Context) => {
   const url = new URL(request.url);
 
@@ -80,9 +177,18 @@ export default async (request: Request, context: Context) => {
     return context.next();
   }
 
-  // Belt and braces: `latest` is owned by the site build.
   const rel = url.pathname.slice(SITE_PREFIX.length);
-  if (rel === "latest" || rel.startsWith("latest/")) {
+  const version = rel.split("/", 1)[0];
+
+  if (version === "latest") {
+    const latestRel = rel === "latest" ? "" : rel.slice("latest/".length);
+    if (!isHtmlishPath(latestRel)) {
+      return context.next();
+    }
+    return decorate(await context.next(), "latest");
+  }
+
+  if (version === "versions.json" || !isArchiveVersion(version)) {
     return context.next();
   }
 
@@ -90,20 +196,23 @@ export default async (request: Request, context: Context) => {
   // Netlify's "Pretty URLs" post-processing (see header comment above).
   if (url.pathname.endsWith("/index.html")) {
     url.pathname = url.pathname.slice(0, -"index.html".length);
-    return Response.redirect(url.toString(), 301);
+    return cachedRedirect(url.toString(), 301);
   }
   if (url.pathname.endsWith(".html")) {
     url.pathname = url.pathname.slice(0, -".html".length);
-    return Response.redirect(url.toString(), 301);
+    return cachedRedirect(url.toString(), 301);
   }
 
   // Forward only conditional-request headers, and only when present: GCS
   // rejects an empty `If-Modified-Since:` with InvalidArgument. Never forward
   // cookies or auth to the bucket.
+  const shouldForwardConditionals = !isHtmlishPath(rel);
   const upstreamHeaders = new Headers();
-  for (const name of CONDITIONAL_HEADERS) {
-    const value = request.headers.get(name);
-    if (value) upstreamHeaders.set(name, value);
+  if (shouldForwardConditionals) {
+    for (const name of CONDITIONAL_HEADERS) {
+      const value = request.headers.get(name);
+      if (value) upstreamHeaders.set(name, value);
+    }
   }
 
   let upstream: Response;
@@ -125,27 +234,11 @@ export default async (request: Request, context: Context) => {
         const dir = await fetchObject(`${rel}/index.html`, upstreamHeaders);
         if (dir.ok) {
           url.pathname += "/";
-          return Response.redirect(url.toString(), 301);
+          return cachedRedirect(url.toString(), 301);
         }
       }
     }
   }
 
-  if (upstream.status === 404) {
-    return new Response("Not Found", {
-      status: 404,
-      headers: { "content-type": "text/plain; charset=utf-8" },
-    });
-  }
-
-  const headers = new Headers();
-  for (const name of RESPONSE_HEADERS) {
-    const value = upstream.headers.get(name);
-    if (value) headers.set(name, value);
-  }
-
-  return new Response(upstream.body, {
-    status: upstream.status,
-    headers,
-  });
+  return decorate(upstream, version);
 };
