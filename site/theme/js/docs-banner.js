@@ -66,7 +66,7 @@
     return `${target.pathname}${target.search}${target.hash}`;
   };
 
-  fetch(VERSIONS_URL, { cache: "no-cache" })
+  fetch(VERSIONS_URL)
     .then((response) => {
       if (!response.ok) {
         throw new Error(`fetch failed: ${response.status}`);
