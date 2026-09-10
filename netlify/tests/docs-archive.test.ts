@@ -190,6 +190,37 @@ Deno.test("archived HTML 200 is injected before </head> and drops content-length
   );
 });
 
+Deno.test("conditional headers are not forwarded for html-ish directory requests", async () => {
+  await withFetchStub(
+    (_url, init) => {
+      const forwarded = new Headers(init?.headers);
+      assertEquals(forwarded.has("if-none-match"), false);
+      assertEquals(forwarded.has("if-modified-since"), false);
+      return new Response("<html><head></head><body>ok</body></html>", {
+        status: 200,
+        headers: {
+          "content-type": "text/html",
+          "etag": "W/\"etag\"",
+        },
+      });
+    },
+    async () => {
+      const req = new Request(
+        "https://example.com/docs/envoy/v1.34.1/configuration/",
+        {
+          headers: {
+            "if-none-match": "W/\"downstream\"",
+            "if-modified-since": "Wed, 01 Jan 2025 00:00:00 GMT",
+          },
+        },
+      );
+      const res = await handler(req, context as never);
+      assertEquals(res.status, 200);
+      assertEquals(res.headers.get("etag"), null);
+    },
+  );
+});
+
 Deno.test("HTML without </head> gets banner prepended", async () => {
   await withFetchStub(
     () =>

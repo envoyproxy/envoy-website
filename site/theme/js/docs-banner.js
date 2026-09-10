@@ -11,6 +11,7 @@
   const VERSIONS_URL = `${DOCS_PREFIX}versions.json`;
   const OPEN_SHORTCUT = "V";
   const LIST_ID = "envoy-docs-banner-version-list";
+  const MENU_ID = "envoy-docs-banner-version-menu";
 
   const currentScript = document.currentScript;
 
@@ -110,7 +111,7 @@
             <button type="button" class="envoy-docs-banner__version-button" aria-expanded="false">
               ${currentDisplay}
             </button>
-            <div class="envoy-docs-banner__menu" hidden>
+            <div id="${MENU_ID}" class="envoy-docs-banner__menu" hidden>
               <p class="envoy-docs-banner__help">Type to filter versions, ↑/↓ + Enter to navigate, Esc to close. Shortcut: Shift+V.</p>
               <p class="envoy-docs-banner__query" hidden>Filter: <span></span></p>
               <ul id="${LIST_ID}" class="envoy-docs-banner__list" role="listbox" aria-label="Envoy documentation versions"></ul>
@@ -134,7 +135,7 @@
       const list = banner.querySelector(".envoy-docs-banner__list");
       const queryWrap = banner.querySelector(".envoy-docs-banner__query");
       const queryValue = queryWrap.querySelector("span");
-      versionButton.setAttribute("aria-controls", LIST_ID);
+      versionButton.setAttribute("aria-controls", MENU_ID);
       versionButton.setAttribute("aria-haspopup", "listbox");
 
       let isOpen = false;
@@ -190,7 +191,11 @@
 
           button.appendChild(label);
           button.appendChild(meta);
-          button.addEventListener("click", () => navigateTo(option.version));
+          button.addEventListener(
+            "click",
+            () => navigateTo(option.version),
+            { signal: controller.signal },
+          );
           item.appendChild(button);
           list.appendChild(item);
         });
