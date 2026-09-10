@@ -12,6 +12,8 @@
   const OPEN_SHORTCUT = "V";
   const LIST_ID = "envoy-docs-banner-version-list";
   const MENU_ID = "envoy-docs-banner-version-menu";
+  const HELP_ID = "envoy-docs-banner-help";
+  const QUERY_ID = "envoy-docs-banner-query";
 
   const currentScript = document.currentScript;
 
@@ -112,8 +114,8 @@
               ${currentDisplay}
             </button>
             <div id="${MENU_ID}" class="envoy-docs-banner__menu" hidden>
-              <p class="envoy-docs-banner__help">Type to filter versions, ↑/↓ + Enter to navigate, Esc to close. Shortcut: Shift+V.</p>
-              <p class="envoy-docs-banner__query" hidden>Filter: <span></span></p>
+              <p id="${HELP_ID}" class="envoy-docs-banner__help">Type to filter versions, ↑/↓ + Enter to navigate, Esc to close. Shortcut: Shift+V.</p>
+              <p id="${QUERY_ID}" class="envoy-docs-banner__query" hidden>Filter: <span></span></p>
               <ul id="${LIST_ID}" class="envoy-docs-banner__list" role="listbox" aria-label="Envoy documentation versions"></ul>
             </div>
           </div>
@@ -137,6 +139,7 @@
       const queryValue = queryWrap.querySelector("span");
       versionButton.setAttribute("aria-controls", MENU_ID);
       versionButton.setAttribute("aria-haspopup", "listbox");
+      list.setAttribute("aria-describedby", `${HELP_ID} ${QUERY_ID}`);
 
       let isOpen = false;
       let filterText = "";
@@ -218,6 +221,12 @@
         versionButton.setAttribute("aria-expanded", "false");
         menu.hidden = true;
         renderList();
+        versionButton.focus();
+      };
+
+      const focusActiveOption = () => {
+        const active = list.querySelector(".envoy-docs-banner__item.is-active");
+        active?.focus();
       };
 
       const openMenu = () => {
@@ -225,6 +234,7 @@
         versionButton.setAttribute("aria-expanded", "true");
         menu.hidden = false;
         renderList();
+        focusActiveOption();
       };
 
       const navigateTo = async (targetVersion) => {
