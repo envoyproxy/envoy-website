@@ -15,6 +15,58 @@ jq(
     filter_file = "versions.jq",
 )
 
+jq(
+    name = "versions_browser_base_json",
+    srcs = ["@envoy_archive_manifest//file"],
+    out = "versions-browser-base.json",
+    filter_file = "versions-browser.jq",
+)
+
+genrule(
+    name = "docs_nav_json",
+    srcs = ["nav.yaml"],
+    outs = ["docs-nav.json"],
+    cmd = """
+    printf '[' > $@
+    awk -v out="$@" '
+      BEGIN { first = 1 }
+      /^- text:/ {
+        text = $0
+        sub(/^- text:[ ]*/, "", text)
+      }
+      /^[ ]+url:/ {
+        url = $0
+        sub(/^[ ]+url:[ ]*/, "", url)
+        gsub(/"/, "\\\\\"", text)
+        gsub(/"/, "\\\\\"", url)
+        if (!first) {
+          printf "," >> out
+        }
+        first = 0
+        printf("{\\"text\\":\\"%s\\",\\"url\\":\\"%s\\"}", text, url) >> out
+      }
+    ' $(location nav.yaml)
+    printf ']' >> $@
+    """,
+)
+
+genrule(
+    name = "versions_json",
+    srcs = [
+        ":docs_nav_json",
+        ":versions_browser_base_json",
+    ],
+    outs = ["versions.json"],
+    cmd = """
+    jq -nc \
+      --slurpfile versions $(location :versions_browser_base_json) \
+      --slurpfile nav $(location :docs_nav_json) \
+      '$$versions[0] + {nav: $$nav[0]}' > $@
+    jq -e 'has("latest_stable") and has("stable") and has("archived") and has("nav")' $@ > /dev/null
+    """,
+    visibility = ["//visibility:public"],
+)
+
 pkg_files(
     name = "yaml_files",
     srcs = glob(["*.yaml"]) + [":versions_yaml"],
