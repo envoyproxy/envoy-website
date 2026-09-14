@@ -67,6 +67,68 @@ Deno.test("latest HTML via context.next() is injected and fetch is not used", as
   );
 });
 
+Deno.test("latest pretty URL .proto HTML via context.next() is injected", async () => {
+  await withFetchStub(
+    () => {
+      throw new Error("fetch should not be called for latest");
+    },
+    async () => {
+      const req = new Request(
+        "https://example.com/docs/envoy/latest/api-v3/extensions/clusters/dynamic_forward_proxy/v3/cluster.proto",
+      );
+      const latestContext = {
+        next: () =>
+          Promise.resolve(
+            new Response("<html><head><title>x</title></head><body>ok</body></html>", {
+              status: 200,
+              headers: {
+                "content-type": "text/html; charset=utf-8",
+              },
+            }),
+          ),
+      };
+      const res = await handler(req, latestContext as never);
+      const body = await res.text();
+      assertEquals(body.includes('data-envoy-docs-version="latest"'), true);
+      assertEquals(body.indexOf("docs-banner.js") < body.indexOf("</head>"), true);
+    },
+  );
+});
+
+Deno.test("latest raw YAML via context.next() passes through untouched", async () => {
+  await withFetchStub(
+    () => {
+      throw new Error("fetch should not be called for latest");
+    },
+    async () => {
+      const upstreamBody = "static_resources:\n  listeners: []\n";
+      const req = new Request(
+        "https://example.com/docs/envoy/latest/configuration/example/envoy.yaml",
+      );
+      const latestContext = {
+        next: () =>
+          Promise.resolve(
+            new Response(upstreamBody, {
+              status: 200,
+              headers: {
+                "content-type": "text/yaml; charset=utf-8",
+                "content-length": String(upstreamBody.length),
+                "etag": "W/\"yaml\"",
+              },
+            }),
+          ),
+      };
+      const res = await handler(req, latestContext as never);
+      const body = await res.text();
+      assertEquals(body, upstreamBody);
+      assertEquals(body.includes("docs-banner"), false);
+      assertEquals(res.headers.get("content-length"), String(upstreamBody.length));
+      assertEquals(res.headers.get("etag"), "W/\"yaml\"");
+      assertEquals(res.headers.get("netlify-cdn-cache-control"), null);
+    },
+  );
+});
+
 Deno.test("latest non-HTML assets pass through untouched and fetch is not used", async () => {
   await withFetchStub(
     () => {
@@ -74,20 +136,19 @@ Deno.test("latest non-HTML assets pass through untouched and fetch is not used",
     },
     async () => {
       const req = new Request("https://example.com/docs/envoy/latest/_static/foo.css");
+      const upstream = new Response("body { color: red }", {
+        status: 200,
+        headers: {
+          "content-type": "text/css",
+          "content-length": "18",
+          "etag": "W/\"asset\"",
+        },
+      });
       const latestContext = {
-        next: () =>
-          Promise.resolve(
-            new Response("body { color: red }", {
-              status: 200,
-              headers: {
-                "content-type": "text/css",
-                "content-length": "18",
-                "etag": "W/\"asset\"",
-              },
-            }),
-          ),
+        next: () => Promise.resolve(upstream),
       };
       const res = await handler(req, latestContext as never);
+      assertEquals(res, upstream);
       assertEquals(await res.text(), "body { color: red }");
       assertEquals(res.headers.get("content-length"), "18");
       assertEquals(res.headers.get("etag"), "W/\"asset\"");
