@@ -26,7 +26,9 @@
 //   /docs/envoy/v1.34.1/configuration/    -> proxy .../configuration/index.html
 //   /docs/envoy/v1.34.1/_static/foo.css   -> proxy as-is
 
-import type { Context } from "https://edge.netlify.com";
+type Context = {
+  next(): Response | Promise<Response>;
+};
 
 const ARCHIVE_BUCKET = "envoy-cncf-archive";
 const ARCHIVE_ORIGIN =
@@ -56,6 +58,10 @@ const ASSET_EXTENSIONS = new Set([
   "pdf",
   "inv",
   "buildinfo",
+  "yaml",
+  "yml",
+  "json",
+  "txt",
 ]);
 
 const hasAssetExtension = (path: string): boolean => {
@@ -182,7 +188,11 @@ export default async (request: Request, context: Context) => {
 
   if (version === "latest") {
     const latestRel = rel === "latest" ? "" : rel.slice("latest/".length);
-    if (!isHtmlishPath(latestRel)) {
+    // Netlify's Pretty URLs can serve `cluster.proto` from
+    // `cluster.proto.html`, so a dotted path is not evidence of a non-HTML
+    // response. Only skip known static assets; `decorate` injects solely into
+    // `text/html` responses.
+    if (hasAssetExtension(latestRel)) {
       return context.next();
     }
     return decorate(await context.next(), "latest");
