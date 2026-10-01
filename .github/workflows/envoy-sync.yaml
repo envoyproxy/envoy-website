@@ -8,7 +8,10 @@ on:
     inputs:
       commit_sha:
         type: string
-        required: true
+        required: false
+        default: ""
+  schedule:
+    - cron: '0 6 * * *'
 
 concurrency:
   group: SYNC
@@ -52,10 +55,12 @@ jobs:
         echo "envoy_version=${envoy_version}" >> "$GITHUB_OUTPUT"
       id: current
       name: Get current Envoy version
+      if: ${{ inputs.commit_sha != '' }}
 
     # Checkout the Envoy repo
     - name: 'Checkout Repository (envoy)'
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      if: ${{ inputs.commit_sha != '' }}
       with:
         repository: envoyproxy/envoy
         ref: main
@@ -65,6 +70,7 @@ jobs:
     - run: |
         if [[ "${{ inputs.commit_sha }}" == "${{ steps.current.outputs.envoy_version }}" ]]; then
             echo "Envoy is already up-to-date (${{ inputs.commit_sha }})" >&2
+            echo "should_update=false" >> "$GITHUB_OUTPUT"
             exit 0
         fi
         if ! git merge-base --is-ancestor "${{ inputs.commit_sha }}" HEAD; then
@@ -75,17 +81,39 @@ jobs:
         if ! git merge-base --is-ancestor "${{ steps.current.outputs.envoy_version }}" HEAD; then
             echo "Provided Envoy sha (${{ inputs.commit_sha }}) is not newer than " \
                  "the current sha (${{ steps.current.outputs.envoy_version }})" >&2
+            echo "should_update=false" >> "$GITHUB_OUTPUT"
             exit 0
         fi
         echo "should_update=true" >> "$GITHUB_OUTPUT"
       id: state
       working-directory: envoy
       name: Check provided Envoy version
+      if: ${{ inputs.commit_sha != '' }}
 
-    - run: ./sync_envoy.sh
-      if: ${{ steps.state.outputs.should_update == 'true' }}
+    - uses: envoyproxy/toolshed/actions/gcp/setup@4a6a2986abd53c8a2d1077de4165fae369c5bc41  # actions-v0.4.23
+      with:
+        key: ${{ secrets.GCS_ARCHIVE_KEY }}
+
+    - name: Reconcile archive manifest
+      id: manifest
       working-directory: envoy-website
       env:
-        ENVOY_VERSION: ${{ inputs.commit_sha }}
+        GCS_ARCHIVE_BUCKET: ${{ vars.GCS_ARCHIVE_BUCKET }}
+        GCS_META_BUCKET: ${{ vars.GCS_META_BUCKET }}
+      run: |
+        set -euo pipefail
+        ARGS=(--config=ci
+              --//tools/archive:archive_bucket="${GCS_ARCHIVE_BUCKET}"
+              --//tools/archive:meta_bucket="${GCS_META_BUCKET}")
+        bazel run "${ARGS[@]}" //tools/archive:backfill -- --all
+        bazel build "${ARGS[@]}" //tools/archive:manifest //tools/archive:changed //tools/archive:missing_sidecars //tools/archive:dropped
+        bazel run "${ARGS[@]}" //tools/archive:publish_manifest
+        echo "manifest_sha=$(sha256sum bazel-bin/tools/archive/versions.json | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+
+    - run: ./sync_envoy.sh
+      working-directory: envoy-website
+      env:
+        ENVOY_VERSION: ${{ steps.state.outputs.should_update == 'true' && inputs.commit_sha || '' }}
+        MANIFEST_SHA: ${{ steps.manifest.outputs.manifest_sha }}
         COMMITTER_NAME: "update-envoy[bot]"
         COMMITTER_EMAIL: "135279899+update-envoy[bot]@users.noreply.github.com"

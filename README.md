@@ -7,8 +7,17 @@ The website is built with bazel using Pelican and Sphinx.
 The site is deployed to Netlify.
 
 Archived release docs are served from the GCS archive bucket via a Netlify edge function
-([`netlify/edge-functions/docs-archive.ts`](./netlify/edge-functions/docs-archive.ts)), and the
-list of versions comes from the manifest pinned as `envoy_archive_manifest` in `MODULE.bazel`.
+([`netlify/edge-functions/docs-archive.ts`](./netlify/edge-functions/docs-archive.ts)). The
+`Sync Envoy` workflow reconciles archive metadata by backfilling missing per-version sidecars,
+rebuilding the manifest from the archive bucket listing, publishing an immutable
+`sha256-*.json` manifest and mutable `versions.json` to the meta bucket, and repinning the
+manifest in `MODULE.bazel`. Netlify then builds from the sha256-verified
+`envoy_archive_manifest` pin.
+
+The workflow requires the `GCS_ARCHIVE_KEY` repository secret and the
+`GCS_ARCHIVE_BUCKET` and `GCS_META_BUCKET` repository variables. Golden tests for the
+reconciler can be run offline with `bazel test //tools/archive/...`.
+
 The edge function injects the shared docs banner assets (`/theme/css/docs-banner.css`,
 `/theme/js/docs-banner.js`) into all docs HTML pages, including `latest` and archived versions,
 and the same script also mounts the version dropdown into the `/docs` landing page header.
