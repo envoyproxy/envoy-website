@@ -25,6 +25,7 @@
 //   /docs/envoy/v1.34.1/configuration     -> 301 .../configuration/    (no .html, has index.html)
 //   /docs/envoy/v1.34.1/configuration/    -> proxy .../configuration/index.html
 //   /docs/envoy/v1.34.1/_static/foo.css   -> proxy as-is
+//   /docs/envoy/latest/start/quick-start/index -> 301 .../quick-start/  (latest only; see below)
 
 type Context = {
   next(): Response | Promise<Response>;
@@ -188,6 +189,16 @@ export default async (request: Request, context: Context) => {
 
   if (version === "latest") {
     const latestRel = rel === "latest" ? "" : rel.slice("latest/".length);
+    // Sphinx's `html` builder links to `foo/index.html`. Netlify's Pretty
+    // URLs strips the `.html` from rendered links, but static hosting has no
+    // `index` -> `index.html` fallback for an extensionless path, so
+    // `/foo/index` 404s. Redirect to the directory form, which Netlify serves
+    // from `foo/index.html`. (The archive branch below covers this via the
+    // `${rel}/index.html` probe.)
+    if (latestRel === "index" || latestRel.endsWith("/index")) {
+      url.pathname = url.pathname.slice(0, -"index".length);
+      return cachedRedirect(url.toString(), 301);
+    }
     // Netlify's Pretty URLs can serve `cluster.proto` from
     // `cluster.proto.html`, so a dotted path is not evidence of a non-HTML
     // response. Only skip known static assets; `decorate` injects solely into
