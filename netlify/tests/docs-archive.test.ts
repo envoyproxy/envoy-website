@@ -32,6 +32,99 @@ const context = {
   next: () => Promise.resolve(new Response("next", { status: 200 })),
 };
 
+Deno.test("latest /foo/index -> 301 to /foo/, preserving query string", async () => {
+  await withFetchStub(
+    () => {
+      throw new Error("fetch should not be called for latest");
+    },
+    async () => {
+      const req = new Request(
+        "https://example.com/docs/envoy/latest/start/quick-start/index?x=1",
+      );
+      const res = await handler(req, {
+        next: () => {
+          throw new Error("context.next should not be called for redirects");
+        },
+      });
+      assertEquals(res.status, 301);
+      assertEquals(
+        res.headers.get("location"),
+        "https://example.com/docs/envoy/latest/start/quick-start/?x=1",
+      );
+      assertEquals(
+        res.headers.get("netlify-cdn-cache-control"),
+        "public, max-age=86400, stale-while-revalidate=604800",
+      );
+    },
+  );
+});
+
+Deno.test("latest /index -> 301 to /", async () => {
+  await withFetchStub(
+    () => {
+      throw new Error("fetch should not be called for latest");
+    },
+    async () => {
+      const req = new Request("https://example.com/docs/envoy/latest/index");
+      const res = await handler(req, {
+        next: () => {
+          throw new Error("context.next should not be called for redirects");
+        },
+      });
+      assertEquals(res.status, 301);
+      assertEquals(
+        res.headers.get("location"),
+        "https://example.com/docs/envoy/latest/",
+      );
+    },
+  );
+});
+
+Deno.test("latest path merely ending in 'index' is not redirected", async () => {
+  await withFetchStub(
+    () => {
+      throw new Error("fetch should not be called for latest");
+    },
+    async () => {
+      const req = new Request("https://example.com/docs/envoy/latest/api-v3/reindex");
+      const latestContext = {
+        next: () =>
+          Promise.resolve(
+            new Response("<html><head></head><body>ok</body></html>", {
+              status: 200,
+              headers: { "content-type": "text/html" },
+            }),
+          ),
+      };
+      const res = await handler(req, latestContext as never);
+      assertEquals(res.status, 200);
+      assertEquals(
+        (await res.text()).includes('data-envoy-docs-version="latest"'),
+        true,
+      );
+    },
+  );
+});
+
+Deno.test("archived /foo/index still resolves via /index.html probe", async () => {
+  await withFetchStub(
+    (url) =>
+      url.endsWith("/quick-start/index.html")
+        ? new Response("<html><head></head><body>ok</body></html>", {
+          status: 200,
+          headers: { "content-type": "text/html" },
+        })
+        : new Response("Not Found", { status: 404 }),
+    async () => {
+      const req = new Request(
+        "https://example.com/docs/envoy/v1.34.1/start/quick-start/index",
+      );
+      const res = await handler(req, context as never);
+      assertEquals(res.status, 200);
+    },
+  );
+});
+
 Deno.test("latest HTML via context.next() is injected and fetch is not used", async () => {
   await withFetchStub(
     () => {
