@@ -24,6 +24,7 @@
 //   /docs/envoy/v1.34.1/about_docs        -> proxy .../about_docs.html
 //   /docs/envoy/v1.34.1/configuration     -> 301 .../configuration/    (no .html, has index.html)
 //   /docs/envoy/v1.34.1/configuration/    -> proxy .../configuration/index.html
+//   /docs/envoy/v1.34.1/about_docs/       -> 301 .../about_docs        (no index.html, has .html)
 //   /docs/envoy/v1.34.1/_static/foo.css   -> proxy as-is
 //   /docs/envoy/latest/start/quick-start/index -> 301 .../quick-start/  (latest only; see below)
 
@@ -239,6 +240,17 @@ export default async (request: Request, context: Context) => {
   let upstream: Response;
   if (rel.endsWith("/")) {
     upstream = await fetchObject(`${rel}index.html`, upstreamHeaders);
+    // Cross-version links preserve the page path, so a `dirhtml`-shaped
+    // `/foo/` can land on an `html`-built archive that only has `foo.html`.
+    // Redirect to the extensionless form that version serves.
+    const page = rel.slice(0, -1);
+    if (upstream.status === 404 && page !== version && !page.endsWith("/")) {
+      const html = await fetchObject(`${page}.html`, upstreamHeaders);
+      if (html.ok) {
+        url.pathname = url.pathname.slice(0, -1);
+        return cachedRedirect(url.toString(), 301);
+      }
+    }
   } else if (rel.endsWith(".html")) {
     upstream = await fetchObject(rel, upstreamHeaders);
   } else if (hasAssetExtension(rel)) {
