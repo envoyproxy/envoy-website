@@ -92,6 +92,16 @@ jobs:
       with:
         key: ${{ secrets.GCS_ARCHIVE_META_KEY }}
 
+    # Apply the Envoy version first, so the archive tooling builds against
+    # the dependency graph of the Envoy being synced to, not the previous one
+    # (which may since have had a version yanked).
+    - run: NO_COMMIT=1 ./sync_envoy.sh
+      name: Apply Envoy version
+      if: ${{ steps.state.outputs.should_update == 'true' }}
+      working-directory: envoy-website
+      env:
+        ENVOY_VERSION: ${{ inputs.commit_sha }}
+
     - name: Reconcile archive manifest
       id: manifest
       working-directory: envoy-website
