@@ -71,6 +71,13 @@ if [[ -n "${MANIFEST_SHA}" ]]; then
     sync_manifest
 fi
 
+# `NO_COMMIT=1` only applies the changes, so the build can run against the
+# new Envoy before they are committed (a later run commits and pushes).
+if [[ -n "${NO_COMMIT:-}" ]]; then
+    git --no-pager diff -- MODULE.bazel .bazelrc
+    exit 0
+fi
+
 if ! git diff --quiet --exit-code -- MODULE.bazel .bazelrc; then
     commit_args=()
     if [[ -n "${ENVOY_UPDATED:-}" ]]; then
