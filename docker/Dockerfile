@@ -1,4 +1,4 @@
-FROM envoyproxy/envoy-build:devtools-v0.2.3@sha256:7cbfd3c61439d510f5e21fcca6b08fcd6616b1d13ebd85d7550ecf4bfd8e3d23 AS build
+FROM envoyproxy/envoy-build:devtools-v0.2.5@sha256:5914ff8694b377cbd137317acb4a0f91c9496e08a17e867743f942e15f4deb83 AS build
 
 
 FROM build AS live
