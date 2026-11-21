@@ -424,6 +424,81 @@ Deno.test("extensionless directory 404s on .html, 301s to trailing slash", async
   );
 });
 
+Deno.test("trailing slash 404s on index.html, 301s to extensionless .html page", async () => {
+  const fetched: string[] = [];
+  await withFetchStub(
+    (url) => {
+      fetched.push(url);
+      if (url.endsWith("/about_docs/index.html")) {
+        return new Response("not found", { status: 404 });
+      }
+      if (url.endsWith("/about_docs.html")) {
+        return new Response("page", { status: 200 });
+      }
+      throw new Error(`unexpected fetch: ${url}`);
+    },
+    async () => {
+      const req = new Request(
+        "https://example.com/docs/envoy/v1.34.1/intro/about_docs/?x=1",
+      );
+      const res = await handler(req, context as never);
+      assertEquals(res.status, 301);
+      assertEquals(
+        res.headers.get("location"),
+        "https://example.com/docs/envoy/v1.34.1/intro/about_docs?x=1",
+      );
+      assertEquals(
+        res.headers.get("netlify-cdn-cache-control"),
+        "public, max-age=86400, stale-while-revalidate=604800",
+      );
+      assertArrayEquals(fetched, [
+        "https://storage.googleapis.com/envoy-cncf-archive/envoy/docs/v1.34.1/intro/about_docs/index.html",
+        "https://storage.googleapis.com/envoy-cncf-archive/envoy/docs/v1.34.1/intro/about_docs.html",
+      ]);
+    },
+  );
+});
+
+Deno.test("trailing slash with neither index.html nor .html page returns 404", async () => {
+  await withFetchStub(
+    (url) => {
+      if (
+        url.endsWith("/missing/index.html") || url.endsWith("/missing.html")
+      ) {
+        return new Response("<Error>NoSuchKey</Error>", {
+          status: 404,
+          headers: { "content-type": "application/xml" },
+        });
+      }
+      throw new Error(`unexpected fetch: ${url}`);
+    },
+    async () => {
+      const req = new Request("https://example.com/docs/envoy/v1.34.1/missing/");
+      const res = await handler(req, context as never);
+      assertEquals(res.status, 404);
+      assertEquals(await res.text(), "Not Found");
+    },
+  );
+});
+
+Deno.test("version root 404 does not probe a sibling .html page", async () => {
+  const fetched: string[] = [];
+  await withFetchStub(
+    (url) => {
+      fetched.push(url);
+      return new Response("not found", { status: 404 });
+    },
+    async () => {
+      const req = new Request("https://example.com/docs/envoy/v1.34.1/");
+      const res = await handler(req, context as never);
+      assertEquals(res.status, 404);
+      assertArrayEquals(fetched, [
+        "https://storage.googleapis.com/envoy-cncf-archive/envoy/docs/v1.34.1/index.html",
+      ]);
+    },
+  );
+});
+
 Deno.test("foo.proto pretty URL resolves to foo.proto.html first", async () => {
   await withFetchStub(
     (url) => {
